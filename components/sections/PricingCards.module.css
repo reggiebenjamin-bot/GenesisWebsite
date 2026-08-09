@@ -5,6 +5,20 @@
   min-width: 0;
 }
 
+.cardColumn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.cardColumn .card {
+  height: auto;
+  flex: 1;
+}
+
 .outerStroke {
   position: absolute;
   z-index: 0;
@@ -137,6 +151,45 @@
     inset 0 -20px 38px rgb(201 165 94 / 0.05);
 }
 
+.featuredColumn {
+  padding-top: 30px;
+}
+
+.featuredCap {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(242 216 149 / 0.42);
+  border-bottom: 0;
+  border-radius: 20px 20px 0 0;
+  color: var(--color-gold-light);
+  background:
+    linear-gradient(180deg, rgb(242 216 149 / 0.16), rgb(201 165 94 / 0.045)),
+    #101219;
+  box-shadow:
+    inset 0 1px 0 rgb(244 239 232 / 0.13),
+    0 -8px 20px rgb(201 165 94 / 0.08);
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.featured {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.featured .surface {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 .card[data-plan="enterprise"] {
   box-shadow:
     0 28px 64px rgb(8 9 14 / 0.18),
@@ -214,12 +267,14 @@
 }
 
 .enterpriseCrest {
-  position: absolute;
-  top: clamp(34px, 3vw, 44px);
-  right: clamp(34px, 3vw, 44px);
   display: flex;
+  width: fit-content;
   align-items: center;
   gap: 7px;
+  margin-top: 9px;
+  margin-bottom: 3px;
+  transform: translateX(-1px);
+  transform-origin: left center;
   opacity: 0.86;
 }
 
@@ -250,14 +305,6 @@
   border-color: var(--color-gold-light);
   background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));
   box-shadow: 0 0 9px rgb(201 165 94 / 0.24);
-}
-
-.featuredHeader {
-  padding-top: 48px;
-}
-
-.featured .planName {
-  padding-left: 42px;
 }
 
 .planName {
@@ -366,41 +413,6 @@
   border-radius: 999px;
 }
 
-.ribbon {
-  position: absolute;
-  z-index: 4;
-  top: 0;
-  left: 0;
-  width: 152px;
-  height: 152px;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.ribbon span {
-  position: absolute;
-  top: 31px;
-  left: -49px;
-  display: flex;
-  width: 190px;
-  height: 38px;
-  transform: rotate(-45deg);
-  align-items: center;
-  justify-content: center;
-  color: var(--color-ink);
-  background: linear-gradient(
-    90deg,
-    var(--color-gold-dark),
-    var(--color-gold-light) 52%,
-    var(--color-gold)
-  );
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.34);
-  font-family: var(--font-display);
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
 
 @keyframes pricing-border-orbit {
   to {
@@ -423,10 +435,6 @@
   .surface {
     min-height: 540px;
     padding: 32px 28px;
-  }
-
-  .featuredHeader {
-    padding-top: 48px;
   }
 
   .priceBlock {

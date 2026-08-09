@@ -20,32 +20,29 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
             className={`${styles.reveal} ${enterprise ? styles.enterpriseReveal : ""}`}
           >
             <span className={styles.outerStroke} aria-hidden="true" />
+            <div className={`${styles.cardColumn} ${featured ? styles.featuredColumn : ""}`}>
+              {featured ? (
+                <div className={styles.featuredCap} aria-label="Most popular plan">
+                  Most popular
+                </div>
+              ) : null}
 
-            <article
-              className={`${styles.card} ${
-                condensed ? styles.condensed : styles.full
-              } ${featured ? styles.featured : ""}`}
-              data-plan={plan.slug}
-            >
-              <div className={styles.surface}>
-                {featured ? (
-                  <div className={styles.ribbon} aria-label="Most popular plan">
-                    <span>Most popular</span>
-                  </div>
-                ) : null}
-
-                {enterprise ? (
-                  <span className={styles.enterpriseCrest} aria-hidden="true">
-                    <i />
-                    <i />
-                    <i />
-                  </span>
-                ) : null}
-
-                <header
-                  className={`${styles.header} ${featured ? styles.featuredHeader : ""}`}
-                >
-                  <p className={styles.planName}>{plan.name}</p>
+              <article
+                className={`${styles.card} ${
+                  condensed ? styles.condensed : styles.full
+                } ${featured ? styles.featured : ""}`}
+                data-plan={plan.slug}
+              >
+                <div className={styles.surface}>
+                  <header className={styles.header}>
+                    <p className={styles.planName}>{plan.name}</p>
+                    {enterprise ? (
+                      <span className={styles.enterpriseCrest} aria-hidden="true">
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                    ) : null}
                   <div className={styles.priceBlock}>
                     <span className={styles.priceLabel}>Starting at</span>
                     <div className={styles.priceLine}>
@@ -79,8 +76,9 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
                   Discuss {plan.name}
                   <span aria-hidden="true">↗</span>
                 </Button>
-              </div>
-            </article>
+                </div>
+              </article>
+            </div>
           </Reveal>
         );
       })}
