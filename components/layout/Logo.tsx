@@ -19,7 +19,7 @@ export function Logo({ light = false }: { light?: boolean }) {
         fetchPriority="high"
         className="h-[37px] w-[37px] object-contain"
       />
-      <span className="-ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
+      <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
         <span className="text-[0.87rem] font-semibold">enesis</span>
         <span className="text-[0.72rem] font-bold text-gold-light">AI</span>
       </span>
