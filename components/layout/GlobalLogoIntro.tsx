@@ -28,10 +28,14 @@ const easeOut = (value: number) => 1 - Math.pow(1 - clamp(value), 3);
 function CompileAnimation({
   embedded = false,
   startWhenVisible = false,
+  replay = false,
+  replayDelay = 2600,
   className = "",
 }: {
   embedded?: boolean;
   startWhenVisible?: boolean;
+  replay?: boolean;
+  replayDelay?: number;
   className?: string;
 }) {
   const mark = useRef<SVGSVGElement>(null);
@@ -77,9 +81,29 @@ function CompileAnimation({
     const items: CompileItem[] = [];
     let animationFrame = 0;
     let exitTimer = 0;
+    let replayTimer = 0;
     let observer: IntersectionObserver | undefined;
+    let hasStarted = false;
+    let isRunning = false;
+    let isVisible = !startWhenVisible;
+
+    function scheduleReplay() {
+      window.clearTimeout(replayTimer);
+      if (!replay || !isVisible || isRunning) return;
+
+      replayTimer = window.setTimeout(() => {
+        if (isVisible) run();
+      }, replayDelay);
+    }
 
     function run() {
+      if (isRunning) return;
+
+      isRunning = true;
+      hasStarted = true;
+      window.clearTimeout(replayTimer);
+      items.length = 0;
+      setState("active");
       dotsElement.replaceChildren();
       cellsElement.replaceChildren();
       dotsElement.setAttribute("opacity", "1");
@@ -156,9 +180,11 @@ function CompileAnimation({
         finalLogoElement.setAttribute("opacity", "1");
         cellsElement.setAttribute("opacity", "0");
         dotsElement.setAttribute("opacity", "0");
+        isRunning = false;
 
         if (embedded) {
           setState("complete");
+          scheduleReplay();
         } else {
           root.dataset.brandIntro = "exiting";
           setState("exiting");
@@ -175,9 +201,19 @@ function CompileAnimation({
     if (startWhenVisible) {
       observer = new IntersectionObserver(
         ([entry]) => {
-          if (!entry?.isIntersecting) return;
-          observer?.disconnect();
-          run();
+          if (!entry) return;
+
+          isVisible = entry.isIntersecting;
+          if (!isVisible) {
+            window.clearTimeout(replayTimer);
+            return;
+          }
+
+          if (!hasStarted) {
+            run();
+          } else {
+            scheduleReplay();
+          }
         },
         { threshold: 0.35 },
       );
@@ -190,11 +226,12 @@ function CompileAnimation({
       observer?.disconnect();
       cancelAnimationFrame(animationFrame);
       window.clearTimeout(exitTimer);
+      window.clearTimeout(replayTimer);
       dotsElement.replaceChildren();
       cellsElement.replaceChildren();
       if (!embedded) delete root.dataset.brandIntro;
     };
-  }, [embedded, startWhenVisible]);
+  }, [embedded, replay, replayDelay, startWhenVisible]);
 
   if (state === "hidden") return null;
 
@@ -270,7 +307,15 @@ function CompileAnimation({
 }
 
 export function GenesisCompileLogo({ className = "" }: { className?: string }) {
-  return <CompileAnimation embedded startWhenVisible className={className} />;
+  return (
+    <CompileAnimation
+      embedded
+      startWhenVisible
+      replay
+      replayDelay={2600}
+      className={className}
+    />
+  );
 }
 
 export function GlobalLogoIntro() {

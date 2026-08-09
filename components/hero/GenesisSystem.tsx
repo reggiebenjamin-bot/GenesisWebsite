@@ -4,12 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   forwardRef,
+  useEffect,
   useId,
   useRef,
   useState,
   type ReactNode,
   type SVGProps,
 } from "react";
+import { useReducedMotion } from "motion/react";
 import { GenesisCompileLogo } from "@/components/layout/GlobalLogoIntro";
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 
@@ -101,6 +103,7 @@ export function GenesisSystem({
   decorative?: boolean;
 }) {
   const detailId = useId();
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const foundationRef = useRef<HTMLDivElement>(null);
   const workflowRef = useRef<HTMLDivElement>(null);
@@ -109,16 +112,67 @@ export function GenesisSystem({
   const genesisRef = useRef<HTMLDivElement>(null);
   const [selectedStage, setSelectedStage] = useState<number | null>(null);
   const [previewStage, setPreviewStage] = useState<number | null>(null);
+  const [autoStage, setAutoStage] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
-  const activeStageIndex = decorative ? null : (previewStage ?? selectedStage);
+  const activeStageIndex = decorative
+    ? null
+    : (previewStage ?? selectedStage ?? autoStage);
   const activeStage =
     activeStageIndex === null ? null : stages[activeStageIndex];
   const showBeams = !decorative;
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || decorative || reduceMotion) return;
+
+    let startTimer = 0;
+    let cycleTimer = 0;
+
+    const stopCycle = () => {
+      window.clearTimeout(startTimer);
+      window.clearInterval(cycleTimer);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        stopCycle();
+        if (!entry?.isIntersecting) return;
+
+        // Preserve the overview long enough for the photographic laptop and
+        // live section to crossfade before the system begins presenting layers.
+        startTimer = window.setTimeout(() => {
+          setAutoStage((current) =>
+            current === null ? 0 : (current + 1) % stages.length,
+          );
+          cycleTimer = window.setInterval(() => {
+            setAutoStage((current) =>
+              current === null ? 0 : (current + 1) % stages.length,
+            );
+          }, 4400);
+        }, 2800);
+      },
+      { threshold: 0.48 },
+    );
+
+    observer.observe(section);
+
+    return () => {
+      stopCycle();
+      observer.disconnect();
+    };
+  }, [decorative, reduceMotion]);
+
   return (
-    <section className="flex min-h-svh w-full flex-col justify-center bg-ink pt-[calc(var(--header-height)+clamp(1.25rem,3vh,2.25rem))] pb-[clamp(2rem,5vh,4rem)] text-ivory">
+    <section
+      ref={sectionRef}
+      className="flex min-h-svh w-full flex-col justify-center bg-ink pt-[calc(var(--header-height)+clamp(1.25rem,3vh,2.25rem))] pb-[clamp(2rem,5vh,4rem)] text-ivory"
+    >
       <div className="shell grid items-center gap-[clamp(2.5rem,6vw,6rem)] lg:grid-cols-[minmax(0,0.82fr)_minmax(34rem,1.18fr)]">
-        <div className="genesis-editorial-panel max-w-[32rem]">
+        <div
+          className="genesis-editorial-panel max-w-[32rem]"
+          data-stage={activeStage?.index ?? "overview"}
+        >
           <div
             aria-hidden="true"
             className="genesis-editorial-grid absolute inset-0"
@@ -155,6 +209,20 @@ export function GenesisSystem({
                 : "Your foundation, workflows, CRM, and ongoing management—connected by Genesis."}
             </p>
           </div>
+
+          {!decorative ? (
+            <div
+              className="genesis-editorial-progress relative z-10 mt-1 flex gap-2"
+              aria-hidden="true"
+            >
+              {stages.map((stage, index) => (
+                <span
+                  key={stage.index}
+                  data-active={activeStageIndex === index ? "true" : "false"}
+                />
+              ))}
+            </div>
+          ) : null}
 
           <div className="relative z-10 mt-4">
             {decorative ? (
