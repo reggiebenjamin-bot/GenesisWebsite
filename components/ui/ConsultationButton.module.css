@@ -8,9 +8,9 @@
   justify-content: center;
   gap: 12px;
   padding: 0 1.5rem;
-  overflow: visible;
+  overflow: hidden;
   border: 2px solid var(--color-gold-light);
-  border-radius: 0.75rem;
+  border-radius: 999px;
   color: var(--color-ink);
   background: linear-gradient(
     90deg,
@@ -35,34 +35,21 @@
     filter 220ms ease;
 }
 
-/* Bottom-left diagonal accent from the supplied Uiverse construction. */
-.button::before {
-  position: absolute;
-  z-index: 2;
-  bottom: -7px;
-  left: 4px;
-  width: 4px;
-  height: 28px;
-  border-right: 2px solid var(--color-gold-light);
-  border-radius: 10px 0 0 10px;
-  background: var(--color-ink);
-  box-shadow: 1px 0 8px rgb(242 216 149 / 0.24);
-  content: "";
-  pointer-events: none;
-  transform: rotate(-45deg);
-}
-
-/* The clipped lower-left corner keeps the accent intentional on every route. */
+/* A contained lower-left diagonal preserves the supplied Uiverse cue without
+   exposing a dark cutout over photographic backgrounds. */
 .button::after {
   position: absolute;
-  bottom: -2px;
-  left: -2px;
-  width: 0;
-  height: 0;
-  border-top: 15px solid transparent;
-  border-left: 15px solid var(--color-ink);
+  z-index: 1;
+  bottom: 5px;
+  left: -3px;
+  width: 31px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-ivory), transparent);
+  box-shadow: 0 0 8px rgb(242 216 149 / 0.34);
   content: "";
   pointer-events: none;
+  transform: rotate(-43deg);
+  transform-origin: left center;
 }
 
 .button:hover {
@@ -105,7 +92,7 @@
   inset: 2px;
   z-index: 0;
   overflow: hidden;
-  border-radius: calc(0.75rem - 2px);
+  border-radius: inherit;
   pointer-events: none;
 }
 

@@ -50,7 +50,7 @@ export function CinematicHero() {
           the real article — so it is hidden from assistive tech and kept out
           of the tab order. */}
       {!landed ? (
-        <div ref={entrance} className="hero-entrance" aria-hidden="true" inert>
+        <div ref={entrance} className="hero-entrance" aria-hidden="true">
           <div className="hero-entrance-frame">
             <CinematicFrame plateRef={widePlate} />
           </div>

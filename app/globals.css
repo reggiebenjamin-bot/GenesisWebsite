@@ -453,6 +453,17 @@
   transform: translate3d(0, var(--hero-handoff-y, 0px), 0);
 }
 
+/* The entrance is visual-only except for its pixel-aligned actions. They sit
+   above the static frame during the camera move, so the visible hero CTA keeps
+   its hover state instead of being masked by a second, inert copy. */
+.hero-entrance .hero-copy {
+  pointer-events: none;
+}
+
+.hero-entrance .hero-copy a {
+  pointer-events: auto;
+}
+
 /* Global brand compile. It mounts once with the root layout, so App Router
    navigation never replays it; a full reload deliberately does. */
 .global-logo-intro {
