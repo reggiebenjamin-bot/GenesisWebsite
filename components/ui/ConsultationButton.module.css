@@ -7,23 +7,21 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
+  padding: 0 1.5rem;
   overflow: visible;
-  border: 1.5px solid var(--color-gold-light);
-  border-radius: 999px;
-  padding: 0.78rem 1.55rem;
+  border: 2px solid var(--color-gold-light);
+  border-radius: 0.75rem;
   color: var(--color-ink);
-  background:
-    linear-gradient(
-      104deg,
-      rgb(242 216 149 / 0.96),
-      rgb(201 165 94 / 0.88) 58%,
-      rgb(242 216 149 / 0.78)
-    ),
-    var(--color-gold-light);
+  background: linear-gradient(
+    90deg,
+    rgb(242 216 149 / 0.88) -12.74%,
+    rgb(201 165 94 / 0.72) 56.76%,
+    rgb(242 216 149 / 0.78)
+  );
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.42),
-    inset 0 -8px 18px rgb(142 108 52 / 0.14),
-    0 8px 28px rgb(201 165 94 / 0.16);
+    inset 0 1px 0 rgb(255 255 255 / 0.38),
+    inset 0 -8px 18px rgb(142 108 52 / 0.12),
+    0 8px 24px rgb(201 165 94 / 0.14);
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -31,46 +29,51 @@
   text-align: center;
   cursor: pointer;
   transition:
-    transform 260ms var(--ease-editorial),
-    border-color 260ms ease,
-    box-shadow 260ms ease,
-    background-color 260ms ease;
+    transform 220ms var(--ease-editorial),
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease;
 }
 
-.button::before,
-.button::after {
+/* Bottom-left diagonal accent from the supplied Uiverse construction. */
+.button::before {
   position: absolute;
   z-index: 2;
-  width: 2px;
-  height: 18px;
-  border-radius: 999px;
-  background: var(--color-gold-light);
-  box-shadow: 0 0 8px rgb(242 216 149 / 0.45);
+  bottom: -7px;
+  left: 4px;
+  width: 4px;
+  height: 28px;
+  border-right: 2px solid var(--color-gold-light);
+  border-radius: 10px 0 0 10px;
+  background: var(--color-ink);
+  box-shadow: 1px 0 8px rgb(242 216 149 / 0.24);
   content: "";
   pointer-events: none;
+  transform: rotate(-45deg);
 }
 
-.button::before {
-  bottom: -5px;
-  left: 16px;
-  transform: rotate(45deg);
-}
-
+/* The clipped lower-left corner keeps the accent intentional on every route. */
 .button::after {
-  top: -5px;
-  right: 16px;
-  transform: rotate(45deg);
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-left: 15px solid var(--color-ink);
+  content: "";
+  pointer-events: none;
 }
 
 .button:hover {
   transform: translateY(-2px);
   border-color: var(--color-ivory);
-  background-color: var(--color-ivory);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.55),
-    inset 0 -8px 18px rgb(142 108 52 / 0.1),
-    0 12px 34px rgb(201 165 94 / 0.24),
+    inset 0 -8px 18px rgb(142 108 52 / 0.08),
+    0 12px 30px rgb(201 165 94 / 0.24),
     0 0 0 3px rgb(242 216 149 / 0.08);
+  filter: brightness(1.04);
 }
 
 .button:active {
@@ -90,7 +93,7 @@
 
 .arrow {
   font-size: 0.9rem;
-  transition: transform 260ms var(--ease-editorial);
+  transition: transform 220ms var(--ease-editorial);
 }
 
 .button:hover .arrow {
@@ -102,7 +105,7 @@
   inset: 2px;
   z-index: 0;
   overflow: hidden;
-  border-radius: inherit;
+  border-radius: calc(0.75rem - 2px);
   pointer-events: none;
 }
 
@@ -114,7 +117,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgb(255 255 255 / 0.38),
+    rgb(255 255 255 / 0.36),
     transparent
   );
   content: "";
@@ -128,7 +131,7 @@
 .compact {
   min-width: 174px;
   min-height: 46px;
-  padding: 0.68rem 1.25rem;
+  padding: 0 1.2rem;
   font-size: 0.8rem;
 }
 
