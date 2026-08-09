@@ -432,8 +432,21 @@
   visibility: visible;
   pointer-events: none;
   transition:
-    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 420ms step-end;
+    opacity 720ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 720ms step-end;
+}
+
+.site-runtime {
+  opacity: 1;
+  transition: opacity 720ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-brand-intro="active"] .site-runtime {
+  opacity: 0;
+}
+
+html[data-brand-intro="exiting"] .site-runtime {
+  opacity: 1;
 }
 
 .global-logo-intro::before {
@@ -462,6 +475,11 @@
 @media (prefers-reduced-motion: reduce) {
   .global-logo-intro {
     display: none;
+  }
+
+  .site-runtime {
+    opacity: 1 !important;
+    transition: none;
   }
 }
 
