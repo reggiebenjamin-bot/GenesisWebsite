@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
 
 /** The closing block shared by every page. */
@@ -18,9 +18,7 @@ export function ConsultationCTA() {
             Start with a focused consultation about your operation, priorities,
             and existing tools.
           </p>
-          <Button href="/contact" className="mt-8">
-            Book a Consultation
-          </Button>
+          <ConsultationButton href="/contact" className="mt-8" />
         </div>
       </div>
     </section>

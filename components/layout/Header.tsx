@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navigation } from "@/lib/content";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Logo } from "./Logo";
 
 /**
@@ -67,21 +68,19 @@ export function Header() {
             </Link>
           ))}
 
-          <Link
-            href="/contact"
-            onClick={() => setOpen(false)}
-            className="inline-flex min-h-11 items-center rounded-sm border border-gold-light bg-gold-light px-5 text-[0.83rem] font-medium text-ink transition-colors duration-200 hover:border-ivory hover:bg-ivory lg:hidden max-lg:mt-4 max-lg:justify-center"
-          >
-            Book a Consultation
-          </Link>
+          <div className="mt-4 lg:hidden">
+            <ConsultationButton
+              href="/contact"
+              compact
+              onClick={() => setOpen(false)}
+              className="w-full"
+            />
+          </div>
         </nav>
 
-        <Link
-          href="/contact"
-          className="hidden min-h-11 items-center rounded-sm border border-gold-light bg-gold-light px-5 text-[0.83rem] font-medium text-ink transition-colors duration-200 hover:border-ivory hover:bg-ivory lg:inline-flex"
-        >
-          Book a Consultation
-        </Link>
+        <div className="hidden lg:block">
+          <ConsultationButton href="/contact" compact />
+        </div>
       </div>
     </header>
   );

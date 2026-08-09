@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Ref } from "react";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { GenesisSystem } from "./GenesisSystem";
 
 /**
@@ -23,7 +24,11 @@ import { GenesisSystem } from "./GenesisSystem";
  * assistive tech, out of the tab order and not hit-testable, so it can never
  * duplicate the real section's links or be zoomed into a second time.
  */
-export function CinematicFrame({ plateRef }: { plateRef?: Ref<HTMLImageElement> }) {
+export function CinematicFrame({
+  plateRef,
+}: {
+  plateRef?: Ref<HTMLImageElement>;
+}) {
   return (
     <>
       <div className="hero-fit hero-rig-live">
@@ -135,12 +140,7 @@ export function CinematicFrame({ plateRef }: { plateRef?: Ref<HTMLImageElement> 
             className="hero-rise mt-7 flex flex-wrap justify-center gap-3 max-md:mt-6"
             style={{ "--i": 4 } as React.CSSProperties}
           >
-            <Link
-              href="/contact"
-              className="inline-flex min-h-12 items-center rounded-sm bg-gold-light px-6 text-sm font-medium text-ink transition-colors duration-300 hover:bg-ivory"
-            >
-              Book a Consultation
-            </Link>
+            <ConsultationButton href="/contact" />
             <Link
               href="/how-it-works"
               className="inline-flex min-h-12 items-center rounded-sm border border-ivory/25 bg-ivory/8 px-6 text-sm font-medium text-ivory backdrop-blur-xl transition-colors duration-300 hover:bg-ivory/15"

@@ -1,0 +1,146 @@
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  min-width: 190px;
+  min-height: 53px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: visible;
+  border: 1.5px solid var(--color-gold-light);
+  border-radius: 999px;
+  padding: 0.78rem 1.55rem;
+  color: var(--color-ink);
+  background:
+    linear-gradient(
+      104deg,
+      rgb(242 216 149 / 0.96),
+      rgb(201 165 94 / 0.88) 58%,
+      rgb(242 216 149 / 0.78)
+    ),
+    var(--color-gold-light);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.42),
+    inset 0 -8px 18px rgb(142 108 52 / 0.14),
+    0 8px 28px rgb(201 165 94 / 0.16);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 260ms var(--ease-editorial),
+    border-color 260ms ease,
+    box-shadow 260ms ease,
+    background-color 260ms ease;
+}
+
+.button::before,
+.button::after {
+  position: absolute;
+  z-index: 2;
+  width: 2px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-gold-light);
+  box-shadow: 0 0 8px rgb(242 216 149 / 0.45);
+  content: "";
+  pointer-events: none;
+}
+
+.button::before {
+  bottom: -5px;
+  left: 16px;
+  transform: rotate(45deg);
+}
+
+.button::after {
+  top: -5px;
+  right: 16px;
+  transform: rotate(45deg);
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-ivory);
+  background-color: var(--color-ivory);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 -8px 18px rgb(142 108 52 / 0.1),
+    0 12px 34px rgb(201 165 94 / 0.24),
+    0 0 0 3px rgb(242 216 149 / 0.08);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-ivory);
+  outline-offset: 4px;
+}
+
+.label,
+.arrow {
+  position: relative;
+  z-index: 1;
+}
+
+.arrow {
+  font-size: 0.9rem;
+  transition: transform 260ms var(--ease-editorial);
+}
+
+.button:hover .arrow {
+  transform: translate(2px, -2px);
+}
+
+.sheen {
+  position: absolute;
+  inset: 2px;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.sheen::before {
+  position: absolute;
+  inset: -20% auto -20% -45%;
+  width: 34%;
+  transform: skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.38),
+    transparent
+  );
+  content: "";
+  transition: translate 620ms var(--ease-editorial);
+}
+
+.button:hover .sheen::before {
+  translate: 440% 0;
+}
+
+.compact {
+  min-width: 174px;
+  min-height: 46px;
+  padding: 0.68rem 1.25rem;
+  font-size: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .arrow,
+  .sheen::before {
+    transition: none;
+  }
+
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+}
