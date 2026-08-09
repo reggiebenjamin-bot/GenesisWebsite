@@ -17,7 +17,11 @@ export function ConsultationButton({
       className={`${styles.button} ${compact ? styles.compact : ""} ${className}`}
       {...props}
     >
-      <span className={styles.sheen} aria-hidden="true" />
+      <span className={styles.backdrop} aria-hidden="true" />
+      <span className={`${styles.edge} ${styles.left}`} aria-hidden="true" />
+      <span className={`${styles.edge} ${styles.right}`} aria-hidden="true" />
+      <span className={`${styles.edge} ${styles.top}`} aria-hidden="true" />
+      <span className={`${styles.edge} ${styles.bottom}`} aria-hidden="true" />
       <span className={styles.label}>{children}</span>
       <span className={styles.arrow} aria-hidden="true">
         &#8599;

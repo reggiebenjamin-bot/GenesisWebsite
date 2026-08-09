@@ -9,19 +9,19 @@
   gap: 12px;
   padding: 0 1.5rem;
   overflow: hidden;
-  border: 2px solid var(--color-gold-light);
+  border: 1px solid rgb(242 216 149 / 0.8);
   border-radius: 999px;
-  color: var(--color-ink);
+  color: var(--color-ivory);
   background: linear-gradient(
-    90deg,
-    rgb(242 216 149 / 0.88) -12.74%,
-    rgb(201 165 94 / 0.72) 56.76%,
-    rgb(242 216 149 / 0.78)
+    120deg,
+    rgb(33 28 17 / 0.98),
+    rgb(10 12 17 / 0.98) 66%,
+    rgb(48 39 21 / 0.98)
   );
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.38),
-    inset 0 -8px 18px rgb(142 108 52 / 0.12),
-    0 8px 24px rgb(201 165 94 / 0.14);
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    inset 0 -10px 20px rgb(0 0 0 / 0.16),
+    0 8px 24px rgb(0 0 0 / 0.2);
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -31,36 +31,42 @@
   transition:
     transform 220ms var(--ease-editorial),
     border-color 220ms ease,
-    box-shadow 220ms ease,
-    filter 220ms ease;
+    box-shadow 300ms ease,
+    background-color 300ms ease;
 }
 
-/* A contained lower-left diagonal preserves the supplied Uiverse cue without
-   exposing a dark cutout over photographic backgrounds. */
-.button::after {
+/* Rounded Genesis adaptation of the supplied atmospheric grid layer. */
+.button::before {
   position: absolute;
-  z-index: 1;
-  bottom: 5px;
-  left: -3px;
-  width: 31px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--color-ivory), transparent);
-  box-shadow: 0 0 8px rgb(242 216 149 / 0.34);
+  z-index: 0;
+  inset: 0;
+  opacity: 0.12;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 0 20%,
+      rgb(8 9 14 / 0.66) 50%
+    ),
+    radial-gradient(ellipse 100% 100%, rgb(244 239 232 / 0.28), transparent);
+  background-size: 3px 3px, auto;
   content: "";
   pointer-events: none;
-  transform: rotate(-43deg);
-  transform-origin: left center;
+  transition: opacity 300ms ease;
 }
 
 .button:hover {
   transform: translateY(-2px);
   border-color: var(--color-ivory);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.55),
-    inset 0 -8px 18px rgb(142 108 52 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.24),
+    inset 0 -10px 20px rgb(0 0 0 / 0.14),
     0 12px 30px rgb(201 165 94 / 0.24),
     0 0 0 3px rgb(242 216 149 / 0.08);
-  filter: brightness(1.04);
+}
+
+.button:hover::before {
+  opacity: 0.38;
 }
 
 .button:active {
@@ -75,7 +81,7 @@
 .label,
 .arrow {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .arrow {
@@ -87,32 +93,94 @@
   transform: translate(2px, -2px);
 }
 
-.sheen {
+.backdrop {
   position: absolute;
-  inset: 2px;
+  inset: -100%;
   z-index: 0;
-  overflow: hidden;
-  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 20%,
+    rgb(17 17 17 / 0.38) 50%
+  );
+  background-size: 3px 3px;
+}
+
+.edge {
+  --width: 1px;
+  --travel: -40px;
+  --start: 40px;
+  --end: calc(100% - 40px);
+  --edge-gradient: transparent, rgb(201 165 94 / 0.16) var(--start),
+    rgb(242 216 149 / 0.66) var(--start), rgb(244 239 232 / 0.9),
+    rgb(242 216 149 / 0.66) var(--end), rgb(201 165 94 / 0.16) var(--end),
+    transparent;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 300ms ease;
+}
+
+.edge::before,
+.edge::after {
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  content: "";
   pointer-events: none;
 }
 
-.sheen::before {
-  position: absolute;
-  inset: -20% auto -20% -45%;
-  width: 34%;
-  transform: skewX(-18deg);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(255 255 255 / 0.36),
-    transparent
-  );
-  content: "";
-  transition: translate 620ms var(--ease-editorial);
+.edge::before {
+  filter: blur(3px);
+  opacity: 0.55;
 }
 
-.button:hover .sheen::before {
-  translate: 440% 0;
+.edge::after {
+  filter: blur(9px);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.button:hover .edge {
+  opacity: 1;
+}
+
+.button:hover .edge::after {
+  opacity: 0.76;
+}
+
+.left,
+.right {
+  top: var(--travel);
+  bottom: var(--travel);
+  width: var(--width);
+  background: linear-gradient(var(--edge-gradient));
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.top,
+.bottom {
+  right: var(--travel);
+  left: var(--travel);
+  height: var(--width);
+  background: linear-gradient(90deg, var(--edge-gradient));
+}
+
+.top {
+  top: 0;
+}
+
+.bottom {
+  bottom: 0;
 }
 
 .compact {
@@ -125,7 +193,8 @@
 @media (prefers-reduced-motion: reduce) {
   .button,
   .arrow,
-  .sheen::before {
+  .edge,
+  .edge::after {
     transition: none;
   }
 
