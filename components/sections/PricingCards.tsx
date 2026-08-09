@@ -8,6 +8,7 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
     <div className="grid items-stretch gap-5 lg:grid-cols-3">
       {pricingPlans.map((plan, index) => {
         const featured = Boolean(plan.featured);
+        const enterprise = plan.slug === "enterprise";
         const visibleFeatures = condensed
           ? plan.features.slice(0, 4)
           : plan.features;
@@ -16,21 +17,29 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
           <Reveal
             key={plan.slug}
             delay={index * 0.07}
-            className={styles.reveal}
+            className={`${styles.reveal} ${enterprise ? styles.enterpriseReveal : ""}`}
           >
+            <span className={styles.outerStroke} aria-hidden="true" />
+
             <article
               className={`${styles.card} ${
                 condensed ? styles.condensed : styles.full
               } ${featured ? styles.featured : ""}`}
               data-plan={plan.slug}
             >
-              <span className={styles.borderSweep} aria-hidden="true" />
-
               <div className={styles.surface}>
                 {featured ? (
                   <div className={styles.ribbon} aria-label="Most popular plan">
                     <span>Most popular</span>
                   </div>
+                ) : null}
+
+                {enterprise ? (
+                  <span className={styles.enterpriseCrest} aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                 ) : null}
 
                 <header
@@ -64,7 +73,7 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
 
                 <Button
                   href={`/contact?plan=${plan.slug}`}
-                  variant={featured ? "gold" : "ghost"}
+                  variant={featured || enterprise ? "gold" : "ghost"}
                   className={styles.cta}
                 >
                   Discuss {plan.name}

@@ -1,10 +1,48 @@
 .reveal {
+  position: relative;
+  isolation: isolate;
   height: 100%;
   min-width: 0;
 }
 
+.outerStroke {
+  position: absolute;
+  z-index: 0;
+  inset: -1.5px;
+  overflow: hidden;
+  border-radius: 21.5px;
+  filter: drop-shadow(0 0 4px rgb(201 165 94 / 0.24));
+  opacity: 0.76;
+  pointer-events: none;
+  transition:
+    opacity 350ms var(--ease-editorial),
+    filter 350ms var(--ease-editorial),
+    transform 350ms var(--ease-editorial);
+}
+
+.outerStroke::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 190%;
+  height: 190%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 82deg,
+    rgb(201 165 94 / 0.18) 108deg,
+    rgb(242 216 149 / 0.92) 137deg,
+    rgb(244 239 232 / 0.38) 154deg,
+    rgb(201 165 94 / 0.12) 176deg,
+    transparent 204deg 360deg
+  );
+  content: "";
+  transform: translate(-50%, -50%);
+  animation: pricing-border-orbit 10s linear infinite;
+}
+
 .card {
   position: relative;
+  z-index: 1;
   isolation: isolate;
   height: 100%;
   overflow: hidden;
@@ -25,25 +63,15 @@
   min-height: 650px;
 }
 
-.card:hover {
+.reveal:hover .card {
   transform: translateY(-5px);
   box-shadow: 0 30px 64px rgb(8 9 14 / 0.2);
 }
 
-.borderSweep {
-  position: absolute;
-  z-index: 0;
-  inset: -80%;
-  background: conic-gradient(
-    from 35deg,
-    transparent 0deg 92deg,
-    rgb(201 165 94 / 0.14) 116deg,
-    rgb(242 216 149 / 0.72) 142deg,
-    rgb(201 165 94 / 0.16) 168deg,
-    transparent 194deg 360deg
-  );
-  animation: pricing-border-orbit 13s linear infinite;
-  pointer-events: none;
+.reveal:hover .outerStroke {
+  transform: translateY(-5px);
+  filter: drop-shadow(0 0 7px rgb(242 216 149 / 0.38));
+  opacity: 1;
 }
 
 .surface {
@@ -109,6 +137,72 @@
     inset 0 -20px 38px rgb(201 165 94 / 0.05);
 }
 
+.card[data-plan="enterprise"] {
+  box-shadow:
+    0 28px 64px rgb(8 9 14 / 0.18),
+    0 10px 34px rgb(201 165 94 / 0.1);
+}
+
+.card[data-plan="enterprise"] .surface {
+  background-image:
+    radial-gradient(circle at 78% 2%, rgb(242 216 149 / 0.2), transparent 34%),
+    radial-gradient(circle at 8% 76%, rgb(201 165 94 / 0.17), transparent 42%),
+    linear-gradient(135deg, transparent 0% 48%, rgb(242 216 149 / 0.025) 49%, transparent 51%),
+    linear-gradient(155deg, #171a21 0%, #090b10 55%, #121620 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(242 216 149 / 0.2),
+    inset 0 -24px 44px rgb(201 165 94 / 0.055);
+}
+
+.enterpriseReveal .outerStroke {
+  filter: drop-shadow(0 0 7px rgb(201 165 94 / 0.34));
+  opacity: 0.94;
+}
+
+.enterpriseReveal .outerStroke::before {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 68deg,
+    rgb(201 165 94 / 0.3) 100deg,
+    rgb(244 239 232 / 0.9) 129deg,
+    rgb(242 216 149 / 1) 148deg,
+    rgb(201 165 94 / 0.22) 176deg,
+    transparent 210deg 360deg
+  );
+  animation-duration: 8s;
+}
+
+.card[data-plan="enterprise"] .priceLine strong {
+  color: transparent;
+  background: linear-gradient(118deg, var(--color-ivory) 8%, var(--color-gold-light) 58%, var(--color-gold) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.card[data-plan="enterprise"] .divider {
+  background: linear-gradient(
+    90deg,
+    var(--color-gold-light),
+    rgb(201 165 94 / 0.3) 52%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgb(201 165 94 / 0.12);
+}
+
+.card[data-plan="enterprise"] .cta {
+  border-color: var(--color-gold-light);
+  color: var(--color-ink);
+  background: linear-gradient(115deg, var(--color-gold) 0%, var(--color-gold-light) 54%, #f6e8bd 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.34),
+    0 8px 24px rgb(201 165 94 / 0.12);
+}
+
+.card[data-plan="enterprise"] .cta:hover {
+  border-color: var(--color-ivory);
+  background: var(--color-ivory);
+}
+
 .surface > * {
   position: relative;
   z-index: 1;
@@ -117,6 +211,45 @@
 .header {
   display: flex;
   flex-direction: column;
+}
+
+.enterpriseCrest {
+  position: absolute;
+  top: clamp(34px, 3vw, 44px);
+  right: clamp(34px, 3vw, 44px);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  opacity: 0.86;
+}
+
+.enterpriseCrest::before,
+.enterpriseCrest::after {
+  width: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(242 216 149 / 0.56));
+  content: "";
+}
+
+.enterpriseCrest::after {
+  transform: scaleX(-1);
+}
+
+.enterpriseCrest i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  transform: rotate(45deg);
+  border: 1px solid rgb(242 216 149 / 0.72);
+  background: rgb(201 165 94 / 0.12);
+}
+
+.enterpriseCrest i:nth-child(2) {
+  width: 8px;
+  height: 8px;
+  border-color: var(--color-gold-light);
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));
+  box-shadow: 0 0 9px rgb(201 165 94 / 0.24);
 }
 
 .featuredHeader {
@@ -271,7 +404,7 @@
 
 @keyframes pricing-border-orbit {
   to {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(360deg);
   }
 }
 
@@ -306,12 +439,13 @@
     transition: none;
   }
 
-  .card:hover {
+  .reveal:hover .card,
+  .reveal:hover .outerStroke {
     transform: none;
   }
 
-  .borderSweep {
+  .outerStroke::before {
     animation: none;
-    transform: rotate(120deg);
+    transform: translate(-50%, -50%) rotate(120deg);
   }
 }
