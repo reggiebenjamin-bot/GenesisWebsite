@@ -115,8 +115,6 @@ export function GenesisSystem({
   const crmRef = useRef<HTMLDivElement>(null);
   const managedRef = useRef<HTMLDivElement>(null);
   const genesisRef = useRef<HTMLDivElement>(null);
-  const [selectedStage, setSelectedStage] = useState<number | null>(null);
-  const [previewStage, setPreviewStage] = useState<number | null>(null);
   const [autoStage, setAutoStage] = useState<number | null>(null);
   const [outgoingStage, setOutgoingStage] = useState<OutgoingStage | null>(
     null,
@@ -126,9 +124,7 @@ export function GenesisSystem({
   const transitionIdRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
-  const activeStageIndex = decorative
-    ? null
-    : (previewStage ?? selectedStage ?? autoStage);
+  const activeStageIndex = decorative ? null : autoStage;
   const activeStage =
     activeStageIndex === null ? null : stages[activeStageIndex];
   const showBeams = !decorative;
@@ -284,37 +280,13 @@ export function GenesisSystem({
               const Icon = stage.icon;
 
               return (
-                <button
-                  type="button"
+                <div
                   key={stage.index}
-                  aria-label={`Show details for ${stage.title}`}
-                  aria-controls={decorative ? undefined : detailId}
-                  aria-pressed={
-                    decorative ? undefined : selectedStage === index
-                  }
+                  aria-hidden="true"
                   data-active={
                     !decorative && activeStageIndex === index ? "true" : "false"
                   }
-                  onPointerEnter={
-                    decorative ? undefined : () => setPreviewStage(index)
-                  }
-                  onPointerLeave={
-                    decorative ? undefined : () => setPreviewStage(null)
-                  }
-                  onFocus={
-                    decorative ? undefined : () => setPreviewStage(index)
-                  }
-                  onBlur={decorative ? undefined : () => setPreviewStage(null)}
-                  onClick={
-                    decorative
-                      ? undefined
-                      : () =>
-                          setSelectedStage((current) =>
-                            current === index ? null : index,
-                          )
-                  }
-                  tabIndex={decorative ? -1 : 0}
-                  className={`genesis-stage-trigger absolute z-10 size-px -translate-x-1/2 -translate-y-1/2 border-0 bg-transparent p-0 text-inherit focus-visible:outline-none ${nodePositions[index]}`}
+                  className={`genesis-stage-node pointer-events-none absolute z-10 size-px -translate-x-1/2 -translate-y-1/2 ${nodePositions[index]}`}
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <SystemCircle ref={nodeRefs[index]}>
@@ -332,7 +304,7 @@ export function GenesisSystem({
                       ) : null}
                     </p>
                   </div>
-                </button>
+                </div>
               );
             })}
 

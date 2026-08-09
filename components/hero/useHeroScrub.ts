@@ -4,7 +4,6 @@ import { useEffect, type RefObject } from "react";
 import {
   DESKTOP_GEOMETRY,
   LAYER_OVERSCAN,
-  MAX_BLUR,
   MOBILE_GEOMETRY,
   OVERSCAN,
   TIMING,
@@ -264,10 +263,6 @@ export function useHeroScrub({
       s.setProperty("--hero-photo-o", photoOpacity.toFixed(4));
 
       s.setProperty("--hero-wide-o", (1 - span(t, TIMING.wideOut)).toFixed(4));
-      s.setProperty(
-        "--hero-wide-blur",
-        `${(span(t, TIMING.defocus) * MAX_BLUR).toFixed(3)}px`,
-      );
       s.setProperty("--hero-detail-o", span(t, TIMING.detailIn).toFixed(4));
       s.setProperty(
         "--hero-atmosphere",

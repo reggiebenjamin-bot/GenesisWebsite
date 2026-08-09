@@ -129,10 +129,6 @@ export const TIMING = {
   detailIn: [0.42, 0.56], // detail plate takes over as resolution   (t)
   wideOut: [0.6, 0.76], // wide plate retires behind it            (t)
   canvasAlign: [0.12, 0.94], // miniature resolves to viewport geometry (t)
-  defocus: [0.05, 0.55], // wide plate pulls out of focus           (t)
   atmosphereOut: [0.5, 0.88], // grain and vignette clear completely     (t)
   copyOut: [0.0, 0.28], // headline clears the frame               (p)
 } as const;
-
-/** Peak defocus on the wide plate, in its own unscaled pixels. */
-export const MAX_BLUR = 1.4;

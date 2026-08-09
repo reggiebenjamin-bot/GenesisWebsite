@@ -96,11 +96,6 @@ export function CinematicFrame({
         className="hero-vignette pointer-events-none absolute inset-0 z-20"
         aria-hidden="true"
       />
-      <div
-        className="hero-grain pointer-events-none absolute inset-0 z-20 mix-blend-overlay"
-        aria-hidden="true"
-      />
-
       {/* The complete copy group shares one responsive anchor. Keeping the
           offset here leaves the camera rig and photograph geometry untouched. */}
       <div className="hero-copy absolute inset-x-0 top-[calc(var(--header-height)+clamp(4.25rem,9vh,6rem))] bottom-[40%] z-30 flex items-start justify-center px-6 max-md:top-[calc(var(--header-height)+clamp(4.75rem,10svh,6rem))]">
@@ -120,7 +115,7 @@ export function CinematicFrame({
               AI systems that help real estate professionals
             </span>{" "}
             <span
-              className="hero-rise inline-block text-gold-light"
+              className="hero-rise hero-outcome-glow inline-block text-gold-light"
               style={{ "--i": 2 } as React.CSSProperties}
             >
               work faster and close more deals.
