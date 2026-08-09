@@ -36,9 +36,9 @@ export function CinematicHero() {
     <>
       <section
         ref={hero}
-        className="hero-section relative isolate z-10 h-svh overflow-clip bg-ink max-md:h-[240svh]"
+        className="hero-section relative isolate z-10 h-dvh overflow-clip bg-ink max-md:h-[240svh]"
       >
-        <div className="hero-static-frame sticky top-0 h-svh overflow-clip bg-ink">
+        <div className="hero-static-frame sticky top-0 h-dvh overflow-clip bg-ink">
           <CinematicFrame />
         </div>
       </section>

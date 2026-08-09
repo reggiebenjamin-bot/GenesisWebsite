@@ -55,6 +55,7 @@
      it costs nothing, and it is the margin that fractional device pixels,
      browser zoom and high-DPI rounding all eat into. */
   --hero-bleed: 24px;
+  --hero-layer-overscan: 16px;
 
   /* geometry — see hero.config.ts */
   --hero-cx: 50.026%;
@@ -214,8 +215,14 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: max(100vw, calc(100svh * 16 / 9));
-    height: max(100svh, calc(100vw * 9 / 16));
+    width: max(
+      calc(100vw + var(--hero-layer-overscan) * 2),
+      calc((100dvh + var(--hero-layer-overscan) * 2) * 16 / 9)
+    );
+    height: max(
+      calc(100dvh + var(--hero-layer-overscan) * 2),
+      calc((100vw + var(--hero-layer-overscan) * 2) * 9 / 16)
+    );
     transform: translate(-50%, -50%);
     /* The rig is scenery. Left hit-testable, the plates are several times the
        viewport and swallow every click aimed at the interface behind them. */
@@ -224,8 +231,14 @@
 
   @media (max-width: 767px) {
     .hero-fit {
-      width: max(100vw, calc(100svh * 9 / 16));
-      height: max(100svh, calc(100vw * 16 / 9));
+      width: max(
+        calc(100vw + var(--hero-layer-overscan) * 2),
+        calc((100dvh + var(--hero-layer-overscan) * 2) * 9 / 16)
+      );
+      height: max(
+        calc(100dvh + var(--hero-layer-overscan) * 2),
+        calc((100vw + var(--hero-layer-overscan) * 2) * 16 / 9)
+      );
     }
   }
 
@@ -234,6 +247,8 @@
   .hero-zoom {
     position: absolute;
     inset: 0;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
   }
 
   /* The one-off settle on load, easing out of a slightly closer frame. */
@@ -313,6 +328,7 @@
     opacity: calc(var(--hero-wide-o) * var(--hero-photo-o));
     filter: blur(var(--hero-wide-blur));
     will-change: opacity, filter;
+    backface-visibility: hidden;
   }
 
   .hero-plate-wide img {
@@ -332,6 +348,7 @@
     height: var(--hero-detail-h);
     opacity: calc(var(--hero-detail-o) * var(--hero-photo-o));
     will-change: opacity;
+    backface-visibility: hidden;
   }
 
   .hero-plate-detail img {
@@ -385,12 +402,17 @@
   }
 
   .hero-vignette {
+    inset: calc(var(--hero-layer-overscan) * -1);
     background: radial-gradient(
-      120% 90% at 50% 42%,
-      transparent 45%,
-      rgb(8 9 14 / 0.55) 100%
+      ellipse 78% 74% at 50% 46%,
+      transparent 42%,
+      rgb(8 9 14 / 0.1) 66%,
+      rgb(8 9 14 / 0.34) 100%
     );
     opacity: var(--hero-atmosphere);
+    filter: blur(14px);
+    transform: translateZ(0);
+    will-change: opacity;
   }
 
   /* Film grain: one turbulence tile, jittered a step per frame. Scaled

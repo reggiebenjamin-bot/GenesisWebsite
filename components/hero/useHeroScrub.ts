@@ -3,6 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import {
   DESKTOP_GEOMETRY,
+  LAYER_OVERSCAN,
   MAX_BLUR,
   MOBILE_GEOMETRY,
   OVERSCAN,
@@ -114,7 +115,9 @@ export function useHeroScrub({
          scrollbar, so sizing from it lays the miniature out ~15px wider than
          the real section it hands over to — a visible jump at the seam. */
       const vw = document.documentElement.clientWidth;
-      const vh = document.documentElement.clientHeight;
+      const vh = Math.round(
+        window.visualViewport?.height ?? document.documentElement.clientHeight,
+      );
       /* A page can be laid out at zero — a hidden tab, a restored session, or
          simply a first paint that beats the stylesheet. Never fall back to a
          nominal height: progress is scroll ÷ hero height, so a hero of 1px
@@ -125,25 +128,23 @@ export function useHeroScrub({
       heroTop = el.getBoundingClientRect().top + window.scrollY;
       heroHeight = el.offsetHeight;
 
-      const geometry = mobilePlate.matches
-        ? MOBILE_GEOMETRY
-        : DESKTOP_GEOMETRY;
-      const cw = Math.max(vw, vh * geometry.aspect);
-      const ch = Math.max(vh, vw / geometry.aspect);
+      const geometry = mobilePlate.matches ? MOBILE_GEOMETRY : DESKTOP_GEOMETRY;
+      /* Match the CSS camera box rather than letting the image stop exactly
+         at the viewport. The extra paint is part of the camera geometry, so
+         the measured laptop screen and final cover scale stay aligned. */
+      const cameraWidth = window.innerWidth + LAYER_OVERSCAN * 2;
+      const cameraHeight = vh + LAYER_OVERSCAN * 2;
+      const cw = Math.max(cameraWidth, cameraHeight * geometry.aspect);
+      const ch = Math.max(cameraHeight, cameraWidth / geometry.aspect);
 
       /* Push far enough that the cut-out clears the viewport — the plates
          occlude everything outside it, so the hole is the binding constraint. */
       const innerScreenWidth = geometry.hole.w * cw;
       const innerScreenHeight = geometry.hole.h * ch;
-      const bareCover = Math.max(
-        vw / innerScreenWidth,
-        vh / innerScreenHeight,
-      );
+      const bareCover = Math.max(vw / innerScreenWidth, vh / innerScreenHeight);
       zoomMax =
-        Math.max(
-          (vw + 48) / innerScreenWidth,
-          (vh + 48) / innerScreenHeight,
-        ) * OVERSCAN;
+        Math.max((vw + 48) / innerScreenWidth, (vh + 48) / innerScreenHeight) *
+        OVERSCAN;
 
       /* Keep the preview box equal to the physical inner display. The live
          canvas inside it starts as a cover-fit miniature and independently
@@ -278,18 +279,14 @@ export function useHeroScrub({
     }
 
     function mobileHandoffReady() {
-      return (
-        current >= 0.999 &&
-        window.scrollY >= heroTop + heroHeight - 1
-      );
+      return current >= 0.999 && window.scrollY >= heroTop + heroHeight - 1;
     }
 
     function syncMobileHandoffPosition() {
       if (!mobilePlate.matches || current < 0.999) return;
 
       const realSection = hero.current?.nextElementSibling as
-        | HTMLElement
-        | undefined;
+        HTMLElement | undefined;
       const box = entrance.current;
       if (!realSection || !box) return;
 
@@ -313,11 +310,13 @@ export function useHeroScrub({
       const screen = box?.querySelector<HTMLElement>(".hero-screen");
       if (box && screen) {
         const rect = screen.getBoundingClientRect();
-        const handoffOffset = Number.parseFloat(
-          box.style.getPropertyValue("--hero-handoff-y"),
-        ) || 0;
+        const handoffOffset =
+          Number.parseFloat(box.style.getPropertyValue("--hero-handoff-y")) ||
+          0;
         const vw = document.documentElement.clientWidth;
-        const vh = document.documentElement.clientHeight;
+        const vh = Math.round(
+          window.visualViewport?.height ?? document.documentElement.clientHeight,
+        );
         const passes =
           rect.left <= -24 &&
           rect.top - handoffOffset <= -24 &&
@@ -407,10 +406,7 @@ export function useHeroScrub({
         ? heroHeight * MOBILE_ANIMATION_PORTION
         : heroHeight;
       target = clamp(travelled / animationDistance);
-      entrance.current?.setAttribute(
-        "data-target-progress",
-        target.toFixed(4),
-      );
+      entrance.current?.setAttribute("data-target-progress", target.toFixed(4));
 
       /* Desktop keeps its existing exact-end snap. Mobile never snaps: its
          rendered value catches the target through the damped frame loop. */
@@ -437,8 +433,21 @@ export function useHeroScrub({
 
     function onResize() {
       const w = document.documentElement.clientWidth;
-      const h = document.documentElement.clientHeight;
-      if (lastW && wobbly && w === lastW && Math.abs(h - lastH) < 140) return;
+      const h = Math.round(
+        window.visualViewport?.height ?? document.documentElement.clientHeight,
+      );
+      const chromeOnlyResize =
+        lastW && wobbly && w === lastW && Math.abs(h - lastH) < 140;
+
+      if (chromeOnlyResize) {
+        if (!measure()) return;
+        lastW = w;
+        lastH = h;
+        updateHeaderStage();
+        if (!landed) draw(current);
+        return;
+      }
+
       if (!measure()) return;
       lastW = w;
       lastH = h;
@@ -464,6 +473,7 @@ export function useHeroScrub({
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     window.addEventListener("load", onResize);
+    window.visualViewport?.addEventListener("resize", onResize);
     document.fonts?.ready.then(onResize);
 
     const observer = new ResizeObserver(onResize);
@@ -476,6 +486,7 @@ export function useHeroScrub({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("load", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
       reduced.removeEventListener("change", onMotionChange);
       observer.disconnect();
       cancelAnimationFrame(animationFrame);

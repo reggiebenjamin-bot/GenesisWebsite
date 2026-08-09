@@ -22,6 +22,10 @@
 const SOURCE = { width: 1920, height: 1080 } as const;
 const SCREEN_PX = { left: 845, right: 1076, top: 623, bottom: 762 } as const;
 
+/** Extra pixels painted beyond the live viewport by every camera layer. This
+ * protects against transform rounding, blur bounds and mobile browser chrome. */
+export const LAYER_OVERSCAN = 16;
+
 const screenWidth = SCREEN_PX.right - SCREEN_PX.left; // 231
 const screenHeight = SCREEN_PX.bottom - SCREEN_PX.top; // 139
 
