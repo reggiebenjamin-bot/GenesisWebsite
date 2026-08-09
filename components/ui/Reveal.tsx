@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 
+/** Fades and lifts its children into view once, on first intersection. */
 export function Reveal({
   children,
   className = "",

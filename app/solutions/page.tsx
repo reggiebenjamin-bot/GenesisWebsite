@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { ConsultationCTA, PageIntro, SectionHeading } from "@/components/Shared";
-import { SystemLayers } from "@/components/SystemLayers";
-import { Reveal } from "@/components/Reveal";
+import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
+import { SystemLayers } from "@/components/sections/SystemLayers";
+import { Reveal } from "@/components/ui/Reveal";
+import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
 import { audiences } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -18,42 +19,49 @@ export default function SolutionsPage() {
         title="Infrastructure, workflows, and support—designed as one managed system."
         description="Genesis connects the foundational tools, practical automation, and ongoing management that help real-estate operations move with more speed and consistency."
       />
-      <section className="section section-ivory">
-        <div className="shell">
-          <Reveal>
-            <SectionHeading
-              eyebrow="Connected by design"
-              title="The four layers of the operating system."
-              description="This is not a menu of unrelated services. Each layer gives the next one a stronger place to work."
-            />
-          </Reveal>
-          <SystemLayers />
+
+      <Section>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Connected by design"
+            title="The four layers of the operating system."
+            description="This is not a menu of unrelated services. Each layer gives the next one a stronger place to work."
+          />
+        </Reveal>
+        <SystemLayers />
+      </Section>
+
+      <Section tone="dark">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Use cases"
+            title="One architecture, adapted to the way you operate."
+            description="The system changes in scope—not in principle—as responsibilities, volume, and complexity increase."
+          />
+        </Reveal>
+
+        <div className="border-t border-line-dark">
+          {audiences.map((audience, index) => (
+            <Reveal
+              key={audience.title}
+              delay={index * 0.05}
+              className="grid items-start gap-6 border-b border-line-dark py-10 lg:grid-cols-[80px_1fr_1fr] lg:gap-12"
+            >
+              <span className="font-display text-[0.7rem] text-gold">
+                0{index + 1}
+              </span>
+              <div>
+                <p className="font-display text-[0.66rem] tracking-[0.12em] text-gold-dark uppercase">
+                  {audience.title}
+                </p>
+                <h3 className="mt-3 text-ivory">{audience.outcome}</h3>
+              </div>
+              <p className="text-muted-light">{audience.description}</p>
+            </Reveal>
+          ))}
         </div>
-      </section>
-      <section className="section section-dark">
-        <div className="shell">
-          <Reveal>
-            <SectionHeading
-              light
-              eyebrow="Use cases"
-              title="One architecture, adapted to the way you operate."
-              description="The system changes in scope—not in principle—as responsibilities, volume, and complexity increase."
-            />
-          </Reveal>
-          <div className="audience-list">
-            {audiences.map((audience, index) => (
-              <Reveal key={audience.title} className="audience-row" delay={index * 0.05}>
-                <span>0{index + 1}</span>
-                <div>
-                  <p>{audience.title}</p>
-                  <h3>{audience.outcome}</h3>
-                </div>
-                <p>{audience.description}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      </Section>
+
       <ConsultationCTA />
     </>
   );
