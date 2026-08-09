@@ -138,10 +138,9 @@ export function CinematicFrame({
             <ConsultationButton href="/contact" />
             <Link
               href="/how-it-works"
-              className="secondary-action inline-flex min-h-12 items-center justify-center gap-2 px-6 text-sm font-medium"
+              className="secondary-action inline-flex min-h-12 items-center justify-center px-6 text-sm font-medium"
             >
               <span>See How It Works</span>
-              <span aria-hidden="true">↗</span>
             </Link>
           </div>
         </div>
