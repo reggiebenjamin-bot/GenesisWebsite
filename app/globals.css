@@ -715,13 +715,13 @@ html[data-hero-stage="cinematic"] .site-header::before {
 }
 
 .genesis-editorial-copy[data-phase="enter"] {
-  animation: genesis-editorial-copy-in 980ms var(--ease-editorial) both;
+  animation: genesis-editorial-copy-in 1300ms var(--ease-editorial) both;
 }
 
 .genesis-editorial-copy[data-phase="exit"] {
   z-index: -1;
   pointer-events: none;
-  animation: genesis-editorial-copy-out 980ms ease-in-out both;
+  animation: genesis-editorial-copy-out 1300ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 .genesis-editorial-copy::after {
@@ -736,7 +736,7 @@ html[data-hero-stage="cinematic"] .site-header::before {
   );
   content: "";
   pointer-events: none;
-  animation: genesis-editorial-copy-sweep 1100ms var(--ease-editorial) both;
+  animation: genesis-editorial-copy-sweep 1300ms var(--ease-editorial) both;
 }
 
 .genesis-editorial-progress span {

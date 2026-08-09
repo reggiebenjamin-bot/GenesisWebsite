@@ -6,7 +6,6 @@ import {
   forwardRef,
   useEffect,
   useId,
-  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
@@ -122,7 +121,8 @@ export function GenesisSystem({
   const [outgoingStage, setOutgoingStage] = useState<OutgoingStage | null>(
     null,
   );
-  const previousStageRef = useRef<number | null>(null);
+  const [isEditorialTransitioning, setIsEditorialTransitioning] =
+    useState(false);
   const transitionIdRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
@@ -133,40 +133,52 @@ export function GenesisSystem({
     activeStageIndex === null ? null : stages[activeStageIndex];
   const showBeams = !decorative;
 
-  useLayoutEffect(() => {
-    if (decorative) return;
-
-    if (reduceMotion) {
-      previousStageRef.current = activeStageIndex;
-      return;
-    }
-
-    if (previousStageRef.current === activeStageIndex) return;
-
-    transitionIdRef.current += 1;
-    setOutgoingStage({
-      index: previousStageRef.current,
-      transitionId: transitionIdRef.current,
-    });
-    previousStageRef.current = activeStageIndex;
-
-    const transitionTimer = window.setTimeout(() => {
-      setOutgoingStage(null);
-    }, 1100);
-
-    return () => window.clearTimeout(transitionTimer);
-  }, [activeStageIndex, decorative, reduceMotion]);
-
   useEffect(() => {
     const section = sectionRef.current;
     if (!section || decorative || reduceMotion) return;
 
     let startTimer = 0;
-    let cycleTimer = 0;
+    let holdTimer = 0;
+    let exitTimer = 0;
+    let clearTimer = 0;
+
+    const clearTimers = () => {
+      window.clearTimeout(startTimer);
+      window.clearTimeout(holdTimer);
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(clearTimer);
+    };
 
     const stopCycle = () => {
-      window.clearTimeout(startTimer);
-      window.clearInterval(cycleTimer);
+      clearTimers();
+      setOutgoingStage(null);
+      setIsEditorialTransitioning(false);
+    };
+
+    const showStage = (stageIndex: number) => {
+      setAutoStage(stageIndex);
+      setIsEditorialTransitioning(false);
+
+      // Keep a complete stage on screen for more than five seconds, then let
+      // it finish its exit before the following stage is even mounted.
+      holdTimer = window.setTimeout(() => {
+        transitionIdRef.current += 1;
+        setOutgoingStage({
+          index: stageIndex,
+          transitionId: transitionIdRef.current,
+        });
+        setIsEditorialTransitioning(true);
+
+        exitTimer = window.setTimeout(() => {
+          setOutgoingStage(null);
+
+          // A short clear beat makes the end of one fade unmistakable before
+          // the next heading begins its own slower entrance.
+          clearTimer = window.setTimeout(() => {
+            showStage((stageIndex + 1) % stages.length);
+          }, 350);
+        }, 1300);
+      }, 5200);
     };
 
     const observer = new IntersectionObserver(
@@ -177,14 +189,7 @@ export function GenesisSystem({
         // Preserve the overview long enough for the photographic laptop and
         // live section to crossfade before the system begins presenting layers.
         startTimer = window.setTimeout(() => {
-          setAutoStage((current) =>
-            current === null ? 0 : (current + 1) % stages.length,
-          );
-          cycleTimer = window.setInterval(() => {
-            setAutoStage((current) =>
-              current === null ? 0 : (current + 1) % stages.length,
-            );
-          }, 4800);
+          showStage(0);
         }, 3000);
       },
       { threshold: 0.48 },
@@ -193,7 +198,7 @@ export function GenesisSystem({
     observer.observe(section);
 
     return () => {
-      stopCycle();
+      clearTimers();
       observer.disconnect();
     };
   }, [decorative, reduceMotion]);
@@ -226,12 +231,14 @@ export function GenesisSystem({
                 hidden
               />
             ) : null}
-            <EditorialCopy
-              key={`current-${activeStageIndex ?? "overview"}`}
-              id={detailId}
-              stageIndex={activeStageIndex}
-              phase="enter"
-            />
+            {!isEditorialTransitioning ? (
+              <EditorialCopy
+                key={`current-${activeStageIndex ?? "overview"}`}
+                id={detailId}
+                stageIndex={activeStageIndex}
+                phase="enter"
+              />
+            ) : null}
           </div>
 
           {!decorative ? (
