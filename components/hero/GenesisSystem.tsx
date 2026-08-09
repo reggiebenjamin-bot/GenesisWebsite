@@ -10,6 +10,7 @@ import {
   type ReactNode,
   type SVGProps,
 } from "react";
+import { GenesisCompileLogo } from "@/components/layout/GlobalLogoIntro";
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 
 type Stage = {
@@ -77,17 +78,16 @@ const HubGlowCircle = forwardRef<
 
 HubGlowCircle.displayName = "HubGlowCircle";
 
-const SystemCircle = forwardRef<
-  HTMLDivElement,
-  { children: ReactNode }
->(({ children }, ref) => (
-  <HubGlowCircle
-    ref={ref}
-    className="z-10 size-14 text-gold-light sm:size-16"
-  >
-    {children}
-  </HubGlowCircle>
-));
+const SystemCircle = forwardRef<HTMLDivElement, { children: ReactNode }>(
+  ({ children }, ref) => (
+    <HubGlowCircle
+      ref={ref}
+      className="z-10 size-14 text-gold-light sm:size-16"
+    >
+      {children}
+    </HubGlowCircle>
+  ),
+);
 
 SystemCircle.displayName = "SystemCircle";
 
@@ -95,7 +95,11 @@ SystemCircle.displayName = "SystemCircle";
  * Shared by the live destination and the static laptop preview. Every system
  * layer connects directly to the central Genesis hub rather than to one another.
  */
-export function GenesisSystem({ decorative = false }: { decorative?: boolean }) {
+export function GenesisSystem({
+  decorative = false,
+}: {
+  decorative?: boolean;
+}) {
   const detailId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const foundationRef = useRef<HTMLDivElement>(null);
@@ -106,9 +110,7 @@ export function GenesisSystem({ decorative = false }: { decorative?: boolean }) 
   const [selectedStage, setSelectedStage] = useState<number | null>(null);
   const [previewStage, setPreviewStage] = useState<number | null>(null);
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
-  const activeStageIndex = decorative
-    ? null
-    : (previewStage ?? selectedStage);
+  const activeStageIndex = decorative ? null : (previewStage ?? selectedStage);
   const activeStage =
     activeStageIndex === null ? null : stages[activeStageIndex];
   const showBeams = !decorative;
@@ -239,14 +241,18 @@ export function GenesisSystem({ decorative = false }: { decorative?: boolean }) 
               ref={genesisRef}
               className="absolute top-1/2 left-1/2 z-20 size-[5.5rem] -translate-x-1/2 -translate-y-1/2 sm:size-24"
             >
-              <Image
-                src="/brand/genesis-logo.svg"
-                alt="Genesis"
-                width={48}
-                height={48}
-                loading="eager"
-                className="h-auto w-10 sm:w-11"
-              />
+              {decorative ? (
+                <Image
+                  src="/brand/genesis-logo.svg"
+                  alt="Genesis"
+                  width={48}
+                  height={48}
+                  loading="eager"
+                  className="h-auto w-10 sm:w-11"
+                />
+              ) : (
+                <GenesisCompileLogo className="h-auto w-10 sm:w-11" />
+              )}
             </HubGlowCircle>
           </div>
 
@@ -330,14 +336,25 @@ function StaticHubConnectors() {
   };
 
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-      <svg className="hidden size-full sm:block" preserveAspectRatio="none" viewBox="0 0 100 100">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-0"
+    >
+      <svg
+        className="hidden size-full sm:block"
+        preserveAspectRatio="none"
+        viewBox="0 0 100 100"
+      >
         <path d="M 25 31 C 34 31, 40 43, 44 47" {...pathProps} />
         <path d="M 25 69 C 34 69, 40 57, 44 53" {...pathProps} />
         <path d="M 56 47 C 60 43, 66 31, 75 31" {...pathProps} />
         <path d="M 56 53 C 60 57, 66 69, 75 69" {...pathProps} />
       </svg>
-      <svg className="size-full sm:hidden" preserveAspectRatio="none" viewBox="0 0 100 100">
+      <svg
+        className="size-full sm:hidden"
+        preserveAspectRatio="none"
+        viewBox="0 0 100 100"
+      >
         <path d="M 31 24 C 38 29, 41 42, 44 47" {...pathProps} />
         <path d="M 31 76 C 38 71, 41 58, 44 53" {...pathProps} />
         <path d="M 56 47 C 59 42, 62 29, 69 24" {...pathProps} />
@@ -350,7 +367,12 @@ function StaticHubConnectors() {
 function FoundationIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-      <path d="M4 19.5h16M6 19V8l6-3 6 3v11M9 10.5h1M14 10.5h1M9 14h1M14 14h1" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.45" />
+      <path
+        d="M4 19.5h16M6 19V8l6-3 6 3v11M9 10.5h1M14 10.5h1M9 14h1M14 14h1"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.45"
+      />
     </svg>
   );
 }
@@ -361,7 +383,12 @@ function WorkflowIcon(props: SVGProps<SVGSVGElement>) {
       <circle cx="6" cy="6" r="2" strokeWidth="1.45" />
       <circle cx="18" cy="12" r="2" strokeWidth="1.45" />
       <circle cx="6" cy="18" r="2" strokeWidth="1.45" />
-      <path d="M8 6h2.5a3.5 3.5 0 0 1 3.5 3.5V12m0 0h2M14 12v2.5a3.5 3.5 0 0 1-3.5 3.5H8" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.45" />
+      <path
+        d="M8 6h2.5a3.5 3.5 0 0 1 3.5 3.5V12m0 0h2M14 12v2.5a3.5 3.5 0 0 1-3.5 3.5H8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.45"
+      />
     </svg>
   );
 }
@@ -369,7 +396,11 @@ function WorkflowIcon(props: SVGProps<SVGSVGElement>) {
 function CrmIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-      <path d="M4 6h16M7 6v5m5-5v11m5-11v8" strokeLinecap="round" strokeWidth="1.45" />
+      <path
+        d="M4 6h16M7 6v5m5-5v11m5-11v8"
+        strokeLinecap="round"
+        strokeWidth="1.45"
+      />
       <rect x="5" y="11" width="4" height="4" rx=".6" strokeWidth="1.45" />
       <rect x="10" y="17" width="4" height="3" rx=".6" strokeWidth="1.45" />
       <rect x="15" y="14" width="4" height="4" rx=".6" strokeWidth="1.45" />
@@ -380,8 +411,17 @@ function CrmIcon(props: SVGProps<SVGSVGElement>) {
 function ManagedIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-      <path d="M12 3.5 19 6v5.5c0 4.2-2.8 7.4-7 9-4.2-1.6-7-4.8-7-9V6l7-2.5Z" strokeLinejoin="round" strokeWidth="1.45" />
-      <path d="m8.7 12 2.1 2.1 4.5-4.5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.45" />
+      <path
+        d="M12 3.5 19 6v5.5c0 4.2-2.8 7.4-7 9-4.2-1.6-7-4.8-7-9V6l7-2.5Z"
+        strokeLinejoin="round"
+        strokeWidth="1.45"
+      />
+      <path
+        d="m8.7 12 2.1 2.1 4.5-4.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.45"
+      />
     </svg>
   );
 }

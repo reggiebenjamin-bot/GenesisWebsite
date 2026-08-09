@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SOURCE_DURATION = 7200;
@@ -25,24 +25,41 @@ const smooth = (value: number) => {
 };
 const easeOut = (value: number) => 1 - Math.pow(1 - clamp(value), 3);
 
-export function GlobalLogoIntro() {
+function CompileAnimation({
+  embedded = false,
+  startWhenVisible = false,
+  className = "",
+}: {
+  embedded?: boolean;
+  startWhenVisible?: boolean;
+  className?: string;
+}) {
+  const mark = useRef<SVGSVGElement>(null);
   const dotsLayer = useRef<SVGGElement>(null);
   const cellsLayer = useRef<SVGGElement>(null);
   const solid = useRef<SVGUseElement>(null);
-  const [state, setState] = useState<"active" | "exiting" | "hidden">(
-    "active",
-  );
+  const [state, setState] = useState<
+    "waiting" | "active" | "complete" | "exiting" | "hidden"
+  >(startWhenVisible ? "waiting" : "active");
+  const instanceId = useId().replaceAll(":", "");
+  const sampleGradientId = `${instanceId}-sample-gold`;
+  const solidGradientId = `${instanceId}-solid-gold`;
+  const shapeId = `${instanceId}-shape`;
+  const clipId = `${instanceId}-clip`;
 
   useEffect(() => {
     const dots = dotsLayer.current;
     const cells = cellsLayer.current;
     const finalLogo = solid.current;
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
+    const markElement = mark.current;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    if (!dots || !cells || !finalLogo || reducedMotion.matches) {
-      setState("hidden");
+    if (!dots || !cells || !finalLogo || !markElement) return;
+
+    if (reducedMotion.matches) {
+      finalLogo.setAttribute("opacity", "1");
+      dots.setAttribute("opacity", "0");
+      cells.setAttribute("opacity", "0");
       return;
     }
 
@@ -50,96 +67,189 @@ export function GlobalLogoIntro() {
     const cellsElement = cells;
     const finalLogoElement = finalLogo;
 
-    dotsElement.replaceChildren();
-    cellsElement.replaceChildren();
-
-    const spacing = 31;
+    const spacing = embedded ? 55 : 31;
+    const dotRadius = embedded ? 9 : 4.25;
+    const initialCellHeight = embedded ? 6 : 3;
     const items: CompileItem[] = [];
-
-    for (let y = 130, row = 0; y <= 870; y += spacing, row += 1) {
-      for (let x = 60, column = 0; x <= 1000; x += spacing, column += 1) {
-        const dot = document.createElementNS(SVG_NS, "circle");
-        dot.setAttribute("cx", String(x));
-        dot.setAttribute("cy", String(y));
-        dot.setAttribute("r", "4.25");
-        dot.setAttribute("opacity", ".88");
-        dotsElement.appendChild(dot);
-
-        const cell = document.createElementNS(SVG_NS, "rect");
-        cell.setAttribute("x", String(x));
-        cell.setAttribute("y", String(y - 1.5));
-        cell.setAttribute("width", "0");
-        cell.setAttribute("height", "3");
-        cell.setAttribute("opacity", "0");
-        cellsElement.appendChild(cell);
-
-        const lane = (row * 7 + column * 11 + (row % 3) * 5) % 29;
-        const diagonal = (row + column) * 13;
-        const start = 1700 + lane * 48 + diagonal * 2.1;
-
-        items.push({ dot, cell, x, y, start });
-      }
-    }
-
     let animationFrame = 0;
     let exitTimer = 0;
-    const started = performance.now();
+    let observer: IntersectionObserver | undefined;
 
-    function frame(now: number) {
-      const elapsed = (now - started) / PLAYBACK_SCALE;
+    function run() {
+      dotsElement.replaceChildren();
+      cellsElement.replaceChildren();
+      dotsElement.setAttribute("opacity", "1");
+      cellsElement.setAttribute("opacity", "1");
+      finalLogoElement.setAttribute("opacity", "0");
 
-      for (const { dot, cell, x, y, start } of items) {
-        const lineProgress = easeOut((elapsed - start) / 650);
-        const width = spacing * 1.08 * lineProgress;
+      for (let y = 130, row = 0; y <= 870; y += spacing, row += 1) {
+        for (let x = 60, column = 0; x <= 1000; x += spacing, column += 1) {
+          const dot = document.createElementNS(SVG_NS, "circle");
+          dot.setAttribute("cx", String(x));
+          dot.setAttribute("cy", String(y));
+          dot.setAttribute("r", String(dotRadius));
+          dot.setAttribute("opacity", ".88");
+          dotsElement.appendChild(dot);
 
-        cell.setAttribute("x", String(x - width / 2));
-        cell.setAttribute("width", String(width));
-        cell.setAttribute("opacity", String(lineProgress));
+          const cell = document.createElementNS(SVG_NS, "rect");
+          cell.setAttribute("x", String(x));
+          cell.setAttribute("y", String(y - initialCellHeight / 2));
+          cell.setAttribute("width", "0");
+          cell.setAttribute("height", String(initialCellHeight));
+          cell.setAttribute("opacity", "0");
+          cellsElement.appendChild(cell);
 
-        const lockProgress = smooth((elapsed - (start + 520)) / 780);
-        const height = 3 + (spacing * 1.08 - 3) * lockProgress;
+          const lane = (row * 7 + column * 11 + (row % 3) * 5) % 29;
+          const diagonal = (row + column) * 13;
+          const start = 1700 + lane * 48 + diagonal * 2.1;
 
-        cell.setAttribute("y", String(y - height / 2));
-        cell.setAttribute("height", String(height));
+          items.push({ dot, cell, x, y, start });
+        }
+      }
 
-        const dotProgress = smooth((elapsed - (start + 120)) / 520);
-        const idle = 0.94 + Math.sin((elapsed + x * 0.5 + y * 0.35) / 520) * 0.06;
-        dot.setAttribute(
+      const started = performance.now();
+
+      function frame(now: number) {
+        const elapsed = (now - started) / PLAYBACK_SCALE;
+
+        for (const { dot, cell, x, y, start } of items) {
+          const lineProgress = easeOut((elapsed - start) / 650);
+          const width = spacing * 1.08 * lineProgress;
+
+          cell.setAttribute("x", String(x - width / 2));
+          cell.setAttribute("width", String(width));
+          cell.setAttribute("opacity", String(lineProgress));
+
+          const lockProgress = smooth((elapsed - (start + 520)) / 780);
+          const height =
+            initialCellHeight +
+            (spacing * 1.08 - initialCellHeight) * lockProgress;
+
+          cell.setAttribute("y", String(y - height / 2));
+          cell.setAttribute("height", String(height));
+
+          const dotProgress = smooth((elapsed - (start + 120)) / 520);
+          const idle =
+            0.94 + Math.sin((elapsed + x * 0.5 + y * 0.35) / 520) * 0.06;
+          dot.setAttribute(
+            "opacity",
+            String((0.88 * idle * (1 - dotProgress)).toFixed(3)),
+          );
+        }
+
+        const vectorProgress = smooth((elapsed - 5050) / 900);
+        finalLogoElement.setAttribute("opacity", String(vectorProgress));
+        cellsElement.setAttribute(
           "opacity",
-          String((0.88 * idle * (1 - dotProgress)).toFixed(3)),
+          String(1 - smooth((elapsed - 5450) / 650)),
         );
+
+        if (elapsed < SOURCE_DURATION) {
+          animationFrame = requestAnimationFrame(frame);
+          return;
+        }
+
+        finalLogoElement.setAttribute("opacity", "1");
+        cellsElement.setAttribute("opacity", "0");
+        dotsElement.setAttribute("opacity", "0");
+
+        if (embedded) {
+          setState("complete");
+        } else {
+          setState("exiting");
+          exitTimer = window.setTimeout(
+            () => setState("hidden"),
+            EXIT_DURATION,
+          );
+        }
       }
 
-      const vectorProgress = smooth((elapsed - 5050) / 900);
-      finalLogoElement.setAttribute("opacity", String(vectorProgress));
-      cellsElement.setAttribute(
-        "opacity",
-        String(1 - smooth((elapsed - 5450) / 650)),
-      );
-
-      if (elapsed < SOURCE_DURATION) {
-        animationFrame = requestAnimationFrame(frame);
-        return;
-      }
-
-      finalLogoElement.setAttribute("opacity", "1");
-      cellsElement.setAttribute("opacity", "0");
-      dotsElement.setAttribute("opacity", "0");
-      setState("exiting");
-      exitTimer = window.setTimeout(() => setState("hidden"), EXIT_DURATION);
+      animationFrame = requestAnimationFrame(frame);
     }
 
-    animationFrame = requestAnimationFrame(frame);
+    if (startWhenVisible) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          observer?.disconnect();
+          run();
+        },
+        { threshold: 0.35 },
+      );
+      observer.observe(markElement);
+    } else {
+      run();
+    }
 
     return () => {
+      observer?.disconnect();
       cancelAnimationFrame(animationFrame);
       window.clearTimeout(exitTimer);
       dotsElement.replaceChildren();
       cellsElement.replaceChildren();
     };
-  }, []);
+  }, [embedded, startWhenVisible]);
 
   if (state === "hidden") return null;
+
+  const logo = (
+    <svg
+      ref={mark}
+      viewBox="0 0 1080 1080"
+      className={className}
+      role={embedded ? "img" : undefined}
+      aria-label={embedded ? "Genesis" : undefined}
+    >
+      <defs>
+        <linearGradient
+          id={sampleGradientId}
+          x1="170"
+          y1="135"
+          x2="930"
+          y2="900"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#f4dfa6" />
+          <stop offset=".48" stopColor="#dfbd75" />
+          <stop offset="1" stopColor="#b68a42" />
+        </linearGradient>
+        <linearGradient
+          id={solidGradientId}
+          x1="950.916661"
+          y1="888.833322"
+          x2="468.499995"
+          y2="497.511282"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#f1d898" />
+          <stop offset="1" stopColor="#c8a562" />
+        </linearGradient>
+        <path id={shapeId} d={LOGO_PATH} />
+        <clipPath id={clipId}>
+          <use href={`#${shapeId}`} />
+        </clipPath>
+      </defs>
+
+      <g
+        ref={cellsLayer}
+        clipPath={`url(#${clipId})`}
+        fill={`url(#${sampleGradientId})`}
+      />
+      <g
+        ref={dotsLayer}
+        clipPath={`url(#${clipId})`}
+        fill={`url(#${sampleGradientId})`}
+      />
+      <use
+        ref={solid}
+        href={`#${shapeId}`}
+        fill={`url(#${solidGradientId})`}
+        opacity="0"
+      />
+    </svg>
+  );
+
+  if (embedded) return logo;
 
   return (
     <div
@@ -148,54 +258,15 @@ export function GlobalLogoIntro() {
       aria-hidden="true"
       inert
     >
-      <svg viewBox="0 0 1080 1080" className="global-logo-intro-mark">
-        <defs>
-          <linearGradient
-            id="global-logo-sample-gold"
-            x1="170"
-            y1="135"
-            x2="930"
-            y2="900"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0" stopColor="#f4dfa6" />
-            <stop offset=".48" stopColor="#dfbd75" />
-            <stop offset="1" stopColor="#b68a42" />
-          </linearGradient>
-          <linearGradient
-            id="global-logo-solid-gold"
-            x1="950.916661"
-            y1="888.833322"
-            x2="468.499995"
-            y2="497.511282"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0" stopColor="#f1d898" />
-            <stop offset="1" stopColor="#c8a562" />
-          </linearGradient>
-          <path id="global-logo-shape" d={LOGO_PATH} />
-          <clipPath id="global-logo-clip">
-            <use href="#global-logo-shape" />
-          </clipPath>
-        </defs>
-
-        <g
-          ref={cellsLayer}
-          clipPath="url(#global-logo-clip)"
-          fill="url(#global-logo-sample-gold)"
-        />
-        <g
-          ref={dotsLayer}
-          clipPath="url(#global-logo-clip)"
-          fill="url(#global-logo-sample-gold)"
-        />
-        <use
-          ref={solid}
-          href="#global-logo-shape"
-          fill="url(#global-logo-solid-gold)"
-          opacity="0"
-        />
-      </svg>
+      {logo}
     </div>
   );
+}
+
+export function GenesisCompileLogo({ className = "" }: { className?: string }) {
+  return <CompileAnimation embedded startWhenVisible className={className} />;
+}
+
+export function GlobalLogoIntro() {
+  return <CompileAnimation className="global-logo-intro-mark" />;
 }
