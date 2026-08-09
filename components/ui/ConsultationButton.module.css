@@ -10,7 +10,7 @@
   padding: 0 1.5rem;
   overflow: hidden;
   border: 1px solid rgb(242 216 149 / 0.8);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--color-ivory);
   background: linear-gradient(
     120deg,
