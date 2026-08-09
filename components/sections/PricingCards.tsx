@@ -1,83 +1,77 @@
 import { pricingPlans } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
+import styles from "./PricingCards.module.css";
 
 export function PricingCards({ condensed = false }: { condensed?: boolean }) {
   return (
-    <div className="grid items-stretch border border-line-light lg:grid-cols-3">
+    <div className="grid items-stretch gap-5 lg:grid-cols-3">
       {pricingPlans.map((plan, index) => {
         const featured = Boolean(plan.featured);
+        const visibleFeatures = condensed
+          ? plan.features.slice(0, 4)
+          : plan.features;
 
         return (
           <Reveal
             key={plan.slug}
             delay={index * 0.07}
-            className={`relative flex flex-col p-[clamp(34px,4vw,52px)] max-lg:border-t max-lg:border-line-light max-lg:first:border-t-0 lg:border-l lg:border-line-light lg:first:border-l-0 ${
-              condensed ? "lg:min-h-[480px]" : "lg:min-h-[650px]"
-            } ${featured ? "bg-navy text-ivory" : "bg-paper"}`}
+            className={styles.reveal}
           >
-            {featured ? (
-              <p className="absolute top-5 right-5 font-display text-[0.57rem] tracking-[0.12em] text-gold-light uppercase">
-                Most popular
-              </p>
-            ) : null}
-
-            <p
-              className={`mb-14 font-display text-[0.76rem] tracking-[0.14em] uppercase ${
-                featured ? "text-gold-light" : "text-gold-dark"
-              }`}
+            <article
+              className={`${styles.card} ${
+                condensed ? styles.condensed : styles.full
+              } ${featured ? styles.featured : ""}`}
+              data-plan={plan.slug}
             >
-              {plan.name}
-            </p>
+              <span className={styles.borderSweep} aria-hidden="true" />
 
-            <div className="mb-7 grid grid-cols-[auto_1fr] items-baseline">
-              <span
-                className={`col-span-full mb-1.5 text-[0.77rem] tracking-[0.1em] uppercase ${
-                  featured ? "text-muted-light" : "text-muted-dark"
-                }`}
-              >
-                Starting at
-              </span>
-              <strong className="text-[clamp(2.5rem,4vw,4.2rem)] leading-none font-normal tracking-[-0.055em]">
-                {plan.monthlyPrice}
-              </strong>
-              <span
-                className={`text-[0.83rem] ${featured ? "text-muted-light" : "text-muted-dark"}`}
-              >
-                /month
-              </span>
-            </div>
+              <div className={styles.surface}>
+                {featured ? (
+                  <div className={styles.ribbon} aria-label="Most popular plan">
+                    <span>Most popular</span>
+                  </div>
+                ) : null}
 
-            <p
-              className={`mb-8 ${featured ? "text-muted-light" : "text-muted-dark"}`}
-            >
-              {plan.audience}
-            </p>
+                <header
+                  className={`${styles.header} ${featured ? styles.featuredHeader : ""}`}
+                >
+                  <p className={styles.planName}>{plan.name}</p>
+                  <div className={styles.priceBlock}>
+                    <span className={styles.priceLabel}>Starting at</span>
+                    <div className={styles.priceLine}>
+                      <strong>{plan.monthlyPrice}</strong>
+                      <span>/month</span>
+                    </div>
+                  </div>
+                  <p className={styles.audience}>{plan.audience}</p>
+                </header>
 
-            {!condensed ? (
-              <ul
-                className={`mb-9 border-t pt-6 ${featured ? "border-line-dark" : "border-line-light"}`}
-              >
-                {plan.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className={`relative py-1.5 pl-[18px] text-[0.9rem] before:absolute before:top-[15px] before:left-0 before:size-1.5 before:bg-gold before:content-[''] ${
-                      featured ? "text-muted-light" : "text-muted-dark"
-                    }`}
-                  >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+                <div className={styles.divider} aria-hidden="true" />
 
-            <Button
-              href={`/contact?plan=${plan.slug}`}
-              variant={featured ? "gold" : "outline"}
-              className="mt-auto w-full"
-            >
-              Discuss {plan.name}
-            </Button>
+                <ul className={styles.featureList}>
+                  {visibleFeatures.map((feature) => (
+                    <li key={feature}>
+                      <span className={styles.check} aria-hidden="true">
+                        <svg viewBox="0 0 12 12">
+                          <path d="m3 6.2 1.8 1.9L9.2 3.7" />
+                        </svg>
+                      </span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button
+                  href={`/contact?plan=${plan.slug}`}
+                  variant={featured ? "gold" : "ghost"}
+                  className={styles.cta}
+                >
+                  Discuss {plan.name}
+                  <span aria-hidden="true">↗</span>
+                </Button>
+              </div>
+            </article>
           </Reveal>
         );
       })}
