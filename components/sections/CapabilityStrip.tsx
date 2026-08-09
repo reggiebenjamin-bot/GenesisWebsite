@@ -27,7 +27,7 @@ export function CapabilityStrip() {
               {capabilities.map((capability) => (
                 <span
                   key={capability}
-                  className="capability-marquee-item flex shrink-0 items-center whitespace-nowrap text-[0.76rem] tracking-[0.025em] text-ivory/58"
+                  className="capability-marquee-item flex shrink-0 items-center whitespace-nowrap text-[clamp(0.88rem,1.1vw,1.02rem)] tracking-[0.025em] text-ivory/58"
                 >
                   {capability}
                   <span
