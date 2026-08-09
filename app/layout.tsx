@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/orbitron";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
+import { GlobalLogoIntro } from "@/components/layout/GlobalLogoIntro";
 import { Header } from "@/components/layout/Header";
 import { contact, faqs, pricingPlans } from "@/lib/content";
 
@@ -109,6 +110,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
+        <GlobalLogoIntro />
         <a
           href="#main-content"
           className="fixed top-3 left-3 z-1000 -translate-y-[150%] bg-ivory px-4 py-2.5 text-ink transition-transform duration-200 focus:translate-y-0"

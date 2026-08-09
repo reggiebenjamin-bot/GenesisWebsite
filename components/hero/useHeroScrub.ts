@@ -28,18 +28,25 @@ const push = (t: number) => 0.35 * t + 0.65 * smooth(t);
 
 const pct = (n: number) => `${(n * 100).toFixed(4)}%`;
 
+/* Mobile has a deliberately longer document runway than the visual push. The
+   last portion is a hold on the completed Genesis card, which gives touch
+   momentum room to settle before the real section reaches the viewport. */
+const MOBILE_ANIMATION_PORTION = 0.72;
+const MOBILE_DAMPING = 0.12;
+const MOBILE_MAX_PROGRESS_STEP = 0.022;
+const MOBILE_HANDOFF_MS = 220;
+
 /**
  * Drives the entrance overlay.
  *
  * The page is two ordinary stacked sections — hero, then Genesis System — and
- * the document is never interfered with: no scroll lock, no runway, no pinned
- * container, no repositioning. The overlay is a fixed layer that sits on top
- * during the entrance and is removed when it finishes.
+ * the document is never interfered with: no scroll lock or scroll hijacking.
+ * Mobile gives the first section a longer runway with a sticky static frame;
+ * the overlay remains the only animated layer and is removed when it lands.
  *
- * Progress is simply how far the hero has been scrolled out of view. At p = 1
- * the hero is exactly gone and the Genesis System is exactly at the top of the
- * viewport — which is also the frame the overlay has zoomed to. The two agree,
- * so removing the overlay at that instant changes nothing on screen.
+ * Desktop progress remains the original one-viewport mapping. Mobile maps the
+ * first part of its longer runway to a damped target and holds p = 1 through
+ * the final part, so the visual catches up before the real section arrives.
  *
  * Custom properties are written to the overlay, not to the document, so the
  * static copy of the frame in the hero section keeps the `:root` defaults and
@@ -66,6 +73,9 @@ export function useHeroScrub({
     let canvasEndScale = 1;
     let canvasStartX = 0;
     let canvasStartY = 0;
+    let staticCanvasStartScale = 1;
+    let staticCanvasStartX = 0;
+    let staticCanvasStartY = 0;
     let canvasEndX = 0;
     let canvasEndY = 0;
     let photoFadeStart = 0.96;
@@ -74,6 +84,21 @@ export function useHeroScrub({
     let ticking = false;
     let landed = false;
     let measured = false;
+    let animationFrame = 0;
+    let handoffFrame = 0;
+    let handoffTimer = 0;
+
+    function offsetTopWithin(element: HTMLElement, ancestor: HTMLElement) {
+      let top = 0;
+      let node: HTMLElement | null = element;
+
+      while (node && node !== ancestor) {
+        top += node.offsetTop;
+        node = node.offsetParent as HTMLElement | null;
+      }
+
+      return node === ancestor ? top : element.offsetTop;
+    }
 
     /** Transparent over the photograph, restrained once past it. Keyed to
      *  scroll rather than to the entrance, so it still holds on the way back
@@ -135,9 +160,40 @@ export function useHeroScrub({
       canvasEndScale = 1 / zoomMax;
       canvasStartX = (innerScreenWidth - vw * canvasStartScale) / 2;
       canvasStartY = (innerScreenHeight - vh * canvasStartScale) / 2;
+      staticCanvasStartScale = canvasStartScale;
+      staticCanvasStartX = canvasStartX;
+      staticCanvasStartY = canvasStartY;
       canvasEndX = (innerScreenWidth - vw * canvasEndScale) / 2;
       canvasEndY = (innerScreenHeight - vh * canvasEndScale) / 2;
       photoFadeStart = clamp(Math.log(bareCover) / Math.log(zoomMax), 0, 0.995);
+
+      /* The transition canvas is cover-centred because it must resolve into a
+         full viewport. The returned mobile hero is a different state: frame
+         its editorial card inside the physical laptop display instead of
+         preserving the transition's mid-page crop. Offset geometry is read
+         before transforms, so this remains accurate at every mobile width. */
+      if (mobilePlate.matches && hero.current) {
+        const staticCanvas = hero.current.querySelector<HTMLElement>(
+          ".hero-screen-canvas",
+        );
+        const staticPanel = staticCanvas?.querySelector<HTMLElement>(
+          ".genesis-editorial-panel",
+        );
+
+        if (staticCanvas && staticPanel) {
+          const panelTop = offsetTopWithin(staticPanel, staticCanvas);
+          const panelHeight = staticPanel.offsetHeight;
+          staticCanvasStartScale = Math.min(
+            canvasStartScale,
+            (innerScreenHeight - 4) / panelHeight,
+          );
+          staticCanvasStartX =
+            (innerScreenWidth - vw * staticCanvasStartScale) / 2;
+          staticCanvasStartY =
+            (innerScreenHeight - panelHeight * staticCanvasStartScale) / 2 -
+            panelTop * staticCanvasStartScale;
+        }
+      }
 
       /* Geometry — as opposed to animation state — goes to *both* frames. The
          hero needs it so its laptop screen shows a correctly sized miniature;
@@ -161,9 +217,19 @@ export function useHeroScrub({
         st.setProperty("--hero-box-y", pct(geometry.centre.y - boxH / 2));
         st.setProperty("--hero-canvas-w", `${vw}px`);
         st.setProperty("--hero-canvas-h", `${vh}px`);
-        st.setProperty("--hero-canvas-scale", canvasStartScale.toFixed(6));
-        st.setProperty("--hero-canvas-x", `${canvasStartX.toFixed(4)}px`);
-        st.setProperty("--hero-canvas-y", `${canvasStartY.toFixed(4)}px`);
+        const isStaticHero = el === hero.current;
+        st.setProperty(
+          "--hero-canvas-scale",
+          (isStaticHero ? staticCanvasStartScale : canvasStartScale).toFixed(6),
+        );
+        st.setProperty(
+          "--hero-canvas-x",
+          `${(isStaticHero ? staticCanvasStartX : canvasStartX).toFixed(4)}px`,
+        );
+        st.setProperty(
+          "--hero-canvas-y",
+          `${(isStaticHero ? staticCanvasStartY : canvasStartY).toFixed(4)}px`,
+        );
       }
 
       measured = true;
@@ -208,6 +274,28 @@ export function useHeroScrub({
       );
       s.setProperty("--hero-copy-t", span(p, TIMING.copyOut).toFixed(4));
       box.dataset.photoHidden = t >= 0.9999 ? "true" : "false";
+      box.dataset.renderedProgress = clamp(p).toFixed(4);
+    }
+
+    function mobileHandoffReady() {
+      return (
+        current >= 0.999 &&
+        window.scrollY >= heroTop + heroHeight - 1
+      );
+    }
+
+    function syncMobileHandoffPosition() {
+      if (!mobilePlate.matches || current < 0.999) return;
+
+      const realSection = hero.current?.nextElementSibling as
+        | HTMLElement
+        | undefined;
+      const box = entrance.current;
+      if (!realSection || !box) return;
+
+      const offset = Math.min(0, realSection.getBoundingClientRect().top);
+      box.style.setProperty("--hero-handoff-y", `${offset.toFixed(2)}px`);
+      box.dataset.handoffOffset = offset.toFixed(2);
     }
 
     /**
@@ -225,13 +313,16 @@ export function useHeroScrub({
       const screen = box?.querySelector<HTMLElement>(".hero-screen");
       if (box && screen) {
         const rect = screen.getBoundingClientRect();
+        const handoffOffset = Number.parseFloat(
+          box.style.getPropertyValue("--hero-handoff-y"),
+        ) || 0;
         const vw = document.documentElement.clientWidth;
         const vh = document.documentElement.clientHeight;
         const passes =
           rect.left <= -24 &&
-          rect.top <= -24 &&
+          rect.top - handoffOffset <= -24 &&
           rect.right >= vw + 24 &&
-          rect.bottom >= vh + 24;
+          rect.bottom - handoffOffset >= vh + 24;
 
         root.dataset.heroFinalCoverage = passes ? "pass" : "fail";
         root.dataset.heroFinalBounds = [
@@ -243,10 +334,30 @@ export function useHeroScrub({
           .map((value) => value.toFixed(2))
           .join(",");
 
+        box.style.pointerEvents = "none";
         box.dataset.photoHidden = "true";
+
+        /* On touch screens, leave both identical HTML states painted for one
+           brief overlap. The photographic layer has already disappeared;
+           only the viewport-aligned Genesis UI crossfades to the real section
+           underneath, avoiding a one-frame cut at the handoff. */
+        if (mobilePlate.matches) {
+          box.dataset.handoff = "true";
+          box.style.transition = `opacity ${MOBILE_HANDOFF_MS}ms ease-out`;
+          handoffFrame = requestAnimationFrame(() => {
+            handoffFrame = requestAnimationFrame(() => {
+              box.style.opacity = "0";
+            });
+          });
+          handoffTimer = window.setTimeout(() => {
+            box.style.visibility = "hidden";
+            onLand();
+          }, MOBILE_HANDOFF_MS + 34);
+          return;
+        }
+
         box.style.opacity = "0";
         box.style.visibility = "hidden";
-        box.style.pointerEvents = "none";
       }
       onLand();
     }
@@ -259,12 +370,26 @@ export function useHeroScrub({
         current = target;
         draw(current);
         ticking = false;
-        if (current >= 0.999) land();
+        if (
+          current >= 0.999 &&
+          (!mobilePlate.matches || mobileHandoffReady())
+        ) {
+          land();
+        }
         return;
       }
-      current += delta * 0.18;
+      if (mobilePlate.matches) {
+        const damped = delta * MOBILE_DAMPING;
+        current += clamp(
+          damped,
+          -MOBILE_MAX_PROGRESS_STEP,
+          MOBILE_MAX_PROGRESS_STEP,
+        );
+      } else {
+        current += delta * 0.18;
+      }
       draw(current);
-      requestAnimationFrame(frame);
+      animationFrame = requestAnimationFrame(frame);
     }
 
     function onScroll() {
@@ -274,21 +399,33 @@ export function useHeroScrub({
          this costs nothing. */
       if (!measured && !measure()) return;
       updateHeaderStage();
+      syncMobileHandoffPosition();
       if (landed) return;
 
-      target = clamp((window.scrollY - heroTop) / heroHeight);
+      const travelled = window.scrollY - heroTop;
+      const animationDistance = mobilePlate.matches
+        ? heroHeight * MOBILE_ANIMATION_PORTION
+        : heroHeight;
+      target = clamp(travelled / animationDistance);
+      entrance.current?.setAttribute(
+        "data-target-progress",
+        target.toFixed(4),
+      );
 
-      /* Once the hero is fully scrolled past, the section below is already in
-         its final position. Snap rather than ease in, so a fast flick cannot
-         strand the overlay mid-zoom over a page that has moved on. */
-      if (target >= 1) {
+      /* Desktop keeps its existing exact-end snap. Mobile never snaps: its
+         rendered value catches the target through the damped frame loop. */
+      if (!mobilePlate.matches && target >= 1) {
         current = 1;
+        land();
+        return;
+      }
+      if (mobilePlate.matches && mobileHandoffReady()) {
         land();
         return;
       }
       if (!ticking) {
         ticking = true;
-        requestAnimationFrame(frame);
+        animationFrame = requestAnimationFrame(frame);
       }
     }
 
@@ -307,7 +444,10 @@ export function useHeroScrub({
       lastH = h;
       updateHeaderStage();
       if (landed) return;
-      target = clamp((window.scrollY - heroTop) / heroHeight);
+      const animationDistance = mobilePlate.matches
+        ? heroHeight * MOBILE_ANIMATION_PORTION
+        : heroHeight;
+      target = clamp((window.scrollY - heroTop) / animationDistance);
       current = target; // no easing across a resize
       draw(current);
     }
@@ -338,6 +478,9 @@ export function useHeroScrub({
       window.removeEventListener("load", onResize);
       reduced.removeEventListener("change", onMotionChange);
       observer.disconnect();
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(handoffFrame);
+      window.clearTimeout(handoffTimer);
       delete root.dataset.heroStage;
     };
   }, [hero, entrance, onLand]);

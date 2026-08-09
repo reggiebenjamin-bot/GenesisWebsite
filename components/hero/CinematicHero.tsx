@@ -12,15 +12,14 @@ import { useHeroReady, useHeroScrub } from "./useHeroScrub";
  *   2. Genesis System  — an ordinary section, permanently below it
  *   3. the entrance    — a fixed overlay that plays the push once, then goes
  *
- * The overlay is the only thing that ever moves. Neither section is pinned,
- * collapsed, repositioned or transformed, and the document is never locked, so
- * scrolling is ordinary from the first frame to the last.
+ * The overlay is the only thing that ever transforms. Mobile keeps the static
+ * frame sticky within a longer first section so touch momentum has a useful
+ * runway; both sections remain in ordinary document flow and scrolling is
+ * never locked.
  *
- * Progress is just how far the hero has been scrolled out of view. When it is
- * fully out, the Genesis System is exactly at the top of the viewport — which
- * is precisely the frame the overlay has zoomed to. They agree, so the overlay
- * can be removed without a seam, leaving the visitor in the section with the
- * hero sitting above them to scroll back to.
+ * The final part of the mobile runway holds the completed system view. When
+ * the hero is fully out, the real Genesis System is at the viewport and the
+ * overlay can crossfade away, leaving the hero above it to scroll back to.
  */
 export function CinematicHero() {
   const hero = useRef<HTMLElement>(null);
@@ -37,9 +36,11 @@ export function CinematicHero() {
     <>
       <section
         ref={hero}
-        className="hero-section relative isolate z-10 h-svh overflow-clip bg-ink"
+        className="hero-section relative isolate z-10 h-svh overflow-clip bg-ink max-md:h-[240svh]"
       >
-        <CinematicFrame />
+        <div className="hero-static-frame sticky top-0 h-svh overflow-clip bg-ink">
+          <CinematicFrame />
+        </div>
       </section>
 
       <GenesisSystem />
@@ -50,7 +51,9 @@ export function CinematicHero() {
           of the tab order. */}
       {!landed ? (
         <div ref={entrance} className="hero-entrance" aria-hidden="true" inert>
-          <CinematicFrame plateRef={widePlate} />
+          <div className="hero-entrance-frame">
+            <CinematicFrame plateRef={widePlate} />
+          </div>
         </div>
       ) : null}
     </>

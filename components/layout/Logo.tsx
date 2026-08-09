@@ -6,7 +6,7 @@ export function Logo({ light = false }: { light?: boolean }) {
     <Link
       href="/"
       aria-label="Genesis AI home"
-      className={`inline-flex min-h-12 items-center gap-1 ${
+      className={`inline-flex min-h-12 items-center gap-0 ${
         light ? "text-ivory" : "text-ink"
       }`}
     >
@@ -19,7 +19,7 @@ export function Logo({ light = false }: { light?: boolean }) {
         fetchPriority="high"
         className="h-[37px] w-[37px] object-contain"
       />
-      <span className="flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
+      <span className="-ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
         <span className="text-[0.87rem] font-semibold">enesis</span>
         <span className="text-[0.72rem] font-bold text-gold-light">AI</span>
       </span>

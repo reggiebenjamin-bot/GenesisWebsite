@@ -410,6 +410,61 @@
   pointer-events: none;
 }
 
+.hero-entrance-frame {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, var(--hero-handoff-y, 0px), 0);
+}
+
+/* Global brand compile. It mounts once with the root layout, so App Router
+   navigation never replays it; a full reload deliberately does. */
+.global-logo-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgb(201 165 94 / 0.09), transparent 34%),
+    var(--color-ink);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: none;
+  transition:
+    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 420ms step-end;
+}
+
+.global-logo-intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image: radial-gradient(rgb(244 239 232 / 0.22) 0.55px, transparent 0.55px);
+  background-size: 6px 6px;
+  -webkit-mask-image: radial-gradient(circle at center, black, transparent 58%);
+  mask-image: radial-gradient(circle at center, black, transparent 58%);
+}
+
+.global-logo-intro[data-state="exiting"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.global-logo-intro-mark {
+  position: relative;
+  width: clamp(9rem, 24vw, 17rem);
+  height: auto;
+  filter: drop-shadow(0 0 28px rgb(201 165 94 / 0.12));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .global-logo-intro {
+    display: none;
+  }
+}
+
 /* ── the header over the hero ──────────────────────────────────────────
    A solid bar cuts the photograph in half and boxes the hero in. Over the
    cinematic frame the header carries no container of its own; a short
