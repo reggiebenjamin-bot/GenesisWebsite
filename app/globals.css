@@ -468,13 +468,14 @@
   color: var(--color-ivory);
   background: rgb(8 9 14 / 0.54);
   box-shadow: inset 0 1px 0 rgb(244 239 232 / 0.06);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   transition:
-    color 750ms ease,
-    border-color 750ms ease,
-    transform 750ms var(--ease-editorial),
-    box-shadow 750ms ease;
+    color 1400ms ease,
+    border-color 1400ms ease,
+    transform 1400ms var(--ease-editorial),
+    box-shadow 1400ms ease;
 }
 
 .secondary-action::before {
@@ -494,7 +495,7 @@
   pointer-events: none;
   transform: skewX(38deg);
   transform-origin: left center;
-  transition: width 750ms cubic-bezier(0.55, 0, 0.1, 1);
+  transition: width 1400ms cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 .secondary-action > * {
