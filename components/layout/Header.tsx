@@ -36,13 +36,15 @@ export function Header() {
           aria-controls="primary-navigation"
           aria-expanded={open}
           aria-label={open ? "Close navigation" : "Open navigation"}
+          data-open={open}
           onClick={() => setOpen((current) => !current)}
-          className="grid h-12 w-12 place-items-center rounded-sm lg:hidden"
+          className="mobile-menu-toggle grid h-12 w-12 place-items-center lg:hidden"
         >
           <span className="sr-only">Menu</span>
-          <span aria-hidden="true" className="block">
-            <span className="mx-auto my-[7px] block h-px w-6 bg-current" />
-            <span className="mx-auto my-[7px] block h-px w-6 bg-current" />
+          <span aria-hidden="true" className="mobile-menu-icon">
+            <span />
+            <span />
+            <span />
           </span>
         </button>
 
