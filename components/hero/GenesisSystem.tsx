@@ -6,6 +6,7 @@ import {
   forwardRef,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
@@ -21,6 +22,11 @@ type Stage = {
   note?: string;
   body: string;
   icon: (props: SVGProps<SVGSVGElement>) => ReactNode;
+};
+
+type OutgoingStage = {
+  index: number | null;
+  transitionId: number;
 };
 
 const stages: Stage[] = [
@@ -113,6 +119,11 @@ export function GenesisSystem({
   const [selectedStage, setSelectedStage] = useState<number | null>(null);
   const [previewStage, setPreviewStage] = useState<number | null>(null);
   const [autoStage, setAutoStage] = useState<number | null>(null);
+  const [outgoingStage, setOutgoingStage] = useState<OutgoingStage | null>(
+    null,
+  );
+  const previousStageRef = useRef<number | null>(null);
+  const transitionIdRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
   const activeStageIndex = decorative
@@ -121,6 +132,30 @@ export function GenesisSystem({
   const activeStage =
     activeStageIndex === null ? null : stages[activeStageIndex];
   const showBeams = !decorative;
+
+  useLayoutEffect(() => {
+    if (decorative) return;
+
+    if (reduceMotion) {
+      previousStageRef.current = activeStageIndex;
+      return;
+    }
+
+    if (previousStageRef.current === activeStageIndex) return;
+
+    transitionIdRef.current += 1;
+    setOutgoingStage({
+      index: previousStageRef.current,
+      transitionId: transitionIdRef.current,
+    });
+    previousStageRef.current = activeStageIndex;
+
+    const transitionTimer = window.setTimeout(() => {
+      setOutgoingStage(null);
+    }, 1100);
+
+    return () => window.clearTimeout(transitionTimer);
+  }, [activeStageIndex, decorative, reduceMotion]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -149,8 +184,8 @@ export function GenesisSystem({
             setAutoStage((current) =>
               current === null ? 0 : (current + 1) % stages.length,
             );
-          }, 4400);
-        }, 2800);
+          }, 4800);
+        }, 3000);
       },
       { threshold: 0.48 },
     );
@@ -182,32 +217,21 @@ export function GenesisSystem({
             className="genesis-editorial-accent absolute top-0 left-0"
           />
 
-          <div
-            key={activeStage?.index ?? "overview"}
-            id={detailId}
-            className="genesis-editorial-copy relative z-10"
-          >
-            <p className="font-display text-[0.62rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
-              {activeStage
-                ? `${activeStage.index} · ${stageKickers[activeStageIndex!]}`
-                : "The Genesis System"}
-            </p>
-
-            <h2 className="mt-3 min-h-[2.05em] max-w-[16ch] text-[clamp(1.75rem,min(3vw,4.4vh),2.8rem)] leading-[1.04]">
-              {activeStage
-                ? activeStage.title
-                : "One managed system behind the operation."}
-            </h2>
-
-            <p
-              className={`mt-4 min-h-[4.35rem] max-w-[45ch] text-[clamp(0.82rem,1vw,0.94rem)] leading-relaxed text-ivory/58 ${
-                activeStage ? "line-clamp-3" : "line-clamp-2"
-              }`}
-            >
-              {activeStage
-                ? activeStage.body
-                : "Your foundation, workflows, CRM, and ongoing management—connected by Genesis."}
-            </p>
+          <div className="genesis-editorial-copy-stack relative z-10">
+            {outgoingStage && !reduceMotion ? (
+              <EditorialCopy
+                key={`outgoing-${outgoingStage.transitionId}`}
+                stageIndex={outgoingStage.index}
+                phase="exit"
+                hidden
+              />
+            ) : null}
+            <EditorialCopy
+              key={`current-${activeStageIndex ?? "overview"}`}
+              id={detailId}
+              stageIndex={activeStageIndex}
+              phase="enter"
+            />
           </div>
 
           {!decorative ? (
@@ -391,6 +415,49 @@ export function GenesisSystem({
         </div>
       </div>
     </section>
+  );
+}
+
+function EditorialCopy({
+  stageIndex,
+  phase,
+  id,
+  hidden = false,
+}: {
+  stageIndex: number | null;
+  phase: "enter" | "exit";
+  id?: string;
+  hidden?: boolean;
+}) {
+  const stage = stageIndex === null ? null : stages[stageIndex];
+
+  return (
+    <div
+      id={id}
+      className="genesis-editorial-copy"
+      data-phase={phase}
+      aria-hidden={hidden || undefined}
+    >
+      <p className="font-display text-[0.62rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
+        {stage
+          ? `${stage.index} · ${stageKickers[stageIndex!]}`
+          : "The Genesis System"}
+      </p>
+
+      <h2 className="mt-3 min-h-[2.05em] max-w-[16ch] text-[clamp(1.75rem,min(3vw,4.4vh),2.8rem)] leading-[1.04]">
+        {stage ? stage.title : "One managed system behind the operation."}
+      </h2>
+
+      <p
+        className={`mt-4 min-h-[4.35rem] max-w-[45ch] text-[clamp(0.82rem,1vw,0.94rem)] leading-relaxed text-ivory/58 ${
+          stage ? "line-clamp-3" : "line-clamp-2"
+        }`}
+      >
+        {stage
+          ? stage.body
+          : "Your foundation, workflows, CRM, and ongoing management—connected by Genesis."}
+      </p>
+    </div>
   );
 }
 
