@@ -378,9 +378,9 @@
   .hero-scrim {
     background: linear-gradient(
       180deg,
-      rgb(8 9 14 / 0.52) 0%,
-      rgb(8 9 14 / 0.34) 34%,
-      rgb(8 9 14 / 0.12) 60%,
+      rgb(8 9 14 / 0.64) 0%,
+      rgb(8 9 14 / 0.46) 34%,
+      rgb(8 9 14 / 0.24) 60%,
       transparent 100%
     );
     opacity: calc(1 - var(--hero-copy-t));
@@ -390,8 +390,9 @@
     .hero-scrim {
       background: linear-gradient(
         180deg,
-        rgb(8 9 14 / 0.58) 0%,
-        rgb(8 9 14 / 0.34) 42%,
+        rgb(8 9 14 / 0.7) 0%,
+        rgb(8 9 14 / 0.46) 42%,
+        rgb(8 9 14 / 0.16) 68%,
         transparent 100%
       );
     }
@@ -406,6 +407,31 @@
       rgb(8 9 14 / 0.24) 100%
     );
     opacity: var(--hero-atmosphere);
+    will-change: opacity;
+  }
+
+  /* A separate, non-transformed and overscanned edge-only surface. Camera
+     layers remain filter-free; this blur fades with the hero atmosphere. */
+  .hero-edge-blur {
+    position: absolute;
+    inset: -12px;
+    z-index: 21;
+    pointer-events: none;
+    opacity: var(--hero-atmosphere);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-mask-image: radial-gradient(
+      ellipse 92% 90% at 50% 50%,
+      transparent 57%,
+      rgb(0 0 0 / 0.4) 73%,
+      black 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 92% 90% at 50% 50%,
+      transparent 57%,
+      rgb(0 0 0 / 0.4) 73%,
+      black 100%
+    );
     will-change: opacity;
   }
 
@@ -443,7 +469,19 @@
 }
 
 .hero-outcome-glow {
-  animation: hero-outcome-glow 3.8s ease-in-out infinite;
+  color: transparent;
+  background-image: linear-gradient(
+    105deg,
+    var(--color-gold-light) 0%,
+    var(--color-ivory) 32%,
+    var(--color-gold) 54%,
+    var(--color-gold-light) 72%,
+    var(--color-ivory) 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: hero-outcome-glow 6.4s ease-in-out infinite;
 }
 
 /* The entrance is visual-only except for its pixel-aligned actions. They sit
@@ -463,7 +501,7 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1px solid rgb(242 216 149 / 0.56);
+  border: 1px solid rgb(242 216 149 / 0.8);
   border-radius: 6px;
   color: var(--color-ivory);
   background: rgb(8 9 14 / 0.54);
@@ -700,12 +738,14 @@ html[data-hero-stage="cinematic"] .site-header::before {
 @keyframes hero-outcome-glow {
   0%,
   100% {
+    background-position: 0% 50%;
     text-shadow: 0 0 0 rgb(242 216 149 / 0);
   }
   50% {
+    background-position: 100% 50%;
     text-shadow:
-      0 0 12px rgb(242 216 149 / 0.28),
-      0 0 28px rgb(201 165 94 / 0.16);
+      0 0 14px rgb(242 216 149 / 0.34),
+      0 0 32px rgb(201 165 94 / 0.2);
   }
 }
 
@@ -751,7 +791,7 @@ html[data-hero-stage="cinematic"] .site-header::before {
 .hero-ready .hero-outcome-glow {
   animation:
     hero-rise 0.95s var(--ease-editorial) both,
-    hero-outcome-glow 3.8s ease-in-out 1.1s infinite;
+    hero-outcome-glow 6.4s ease-in-out 1.1s infinite;
   animation-delay:
     calc(0.18s + var(--i, 0) * 0.085s),
     1.1s;

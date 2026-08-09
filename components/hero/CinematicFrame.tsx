@@ -96,9 +96,12 @@ export function CinematicFrame({
         className="hero-vignette pointer-events-none absolute inset-0 z-20"
         aria-hidden="true"
       />
+      {/* Kept outside the camera transforms so this subtle edge-only surface
+          can never expose a transformed photo layer at the viewport bounds. */}
+      <div className="hero-edge-blur" aria-hidden="true" />
       {/* The complete copy group shares one responsive anchor. Keeping the
           offset here leaves the camera rig and photograph geometry untouched. */}
-      <div className="hero-copy absolute inset-x-0 top-[calc(var(--header-height)+clamp(4.25rem,9vh,6rem))] bottom-[40%] z-30 flex items-start justify-center px-6 max-md:top-[calc(var(--header-height)+clamp(4.75rem,10svh,6rem))]">
+      <div className="hero-copy absolute inset-x-0 top-[calc(var(--header-height)+clamp(4.25rem,9vh,6rem)+2.25rem)] bottom-[40%] z-30 flex items-start justify-center px-6 max-md:top-[calc(var(--header-height)+clamp(4.75rem,10svh,6rem)+1.5rem)]">
         <div className="w-full max-w-5xl text-center text-ivory">
           <p
             className="hero-rise font-display text-[0.69rem] font-semibold tracking-[0.18em] text-gold uppercase"
