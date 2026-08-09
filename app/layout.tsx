@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/orbitron";
+import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { GlobalLogoIntro } from "@/components/layout/GlobalLogoIntro";

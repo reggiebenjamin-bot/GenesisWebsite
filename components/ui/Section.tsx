@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** The Orbitron kicker that opens most blocks. */
+/** The JetBrains Mono kicker that opens most blocks. */
 export function Eyebrow({
   children,
   className = "",

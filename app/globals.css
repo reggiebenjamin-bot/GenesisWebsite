@@ -37,7 +37,8 @@
   --color-line-light: rgb(8 9 14 / 0.15);
 
   --font-sans: "Satoshi", ui-sans-serif, system-ui, Arial, sans-serif;
-  --font-display: "Orbitron Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
+    Consolas, "Liberation Mono", monospace;
 
   --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-cinematic: cubic-bezier(0.65, 0, 0.12, 1);
@@ -361,12 +362,26 @@
   }
 
   .hero-scrim {
-    background: linear-gradient(
-      rgb(8 9 14 / 0.72) 0%,
-      rgb(8 9 14 / 0.38) 42%,
-      transparent 100%
+    background: radial-gradient(
+      ellipse 54% 72% at 50% 49%,
+      rgb(8 9 14 / 0.76) 0%,
+      rgb(8 9 14 / 0.52) 34%,
+      rgb(8 9 14 / 0.2) 58%,
+      transparent 82%
     );
     opacity: calc(1 - var(--hero-copy-t));
+  }
+
+  @media (max-width: 767px) {
+    .hero-scrim {
+      background: radial-gradient(
+        ellipse 88% 70% at 50% 50%,
+        rgb(8 9 14 / 0.74) 0%,
+        rgb(8 9 14 / 0.46) 38%,
+        rgb(8 9 14 / 0.16) 62%,
+        transparent 84%
+      );
+    }
   }
 
   .hero-vignette {

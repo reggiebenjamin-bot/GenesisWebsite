@@ -96,10 +96,9 @@ export function CinematicFrame({ plateRef }: { plateRef?: Ref<HTMLImageElement> 
         aria-hidden="true"
       />
 
-      {/* Anchored to the top of a safe area below the navigation rather than
-          centred in a band — centred content overflows a band it outgrows, and
-          on short viewports that put the eyebrow behind the header. */}
-      <div className="hero-copy absolute inset-x-0 top-[calc(var(--header-height)+clamp(0.5rem,2vh,1.5rem))] bottom-[40%] z-30 flex items-start justify-center px-6 pt-[clamp(0.5rem,5vh,4rem)]">
+      {/* The complete copy group shares one responsive anchor. Keeping the
+          offset here leaves the camera rig and photograph geometry untouched. */}
+      <div className="hero-copy absolute inset-x-0 top-[calc(var(--header-height)+clamp(4.25rem,9vh,6rem))] bottom-[40%] z-30 flex items-start justify-center px-6 max-md:top-[calc(var(--header-height)+clamp(4.75rem,10svh,6rem))]">
         <div className="w-full max-w-5xl text-center text-ivory">
           <p
             className="hero-rise font-display text-[0.69rem] font-semibold tracking-[0.18em] text-gold uppercase"
@@ -124,7 +123,7 @@ export function CinematicFrame({ plateRef }: { plateRef?: Ref<HTMLImageElement> 
           </h1>
 
           <p
-            className="hero-rise mx-auto mt-5 max-w-xl text-[clamp(0.85rem,min(1.05vw,1.7vh),1.05rem)] text-ivory/72 max-md:hidden"
+            className="hero-rise mx-auto mt-5 max-w-xl text-[clamp(0.85rem,min(1.05vw,1.7vh),1.05rem)] text-ivory/90 max-md:hidden"
             style={{ "--i": 3 } as React.CSSProperties}
           >
             Genesis provisions your Microsoft 365 foundation, builds practical
