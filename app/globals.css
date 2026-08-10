@@ -70,18 +70,10 @@
   --hero-detail-h: 43.8273%;
   /* The supplied 1920×1080 hardware render is registered from its transparent
      display opening to the measured photograph display opening. */
-  --hero-hardware-desktop-x: 40%;
-  --hero-hardware-desktop-y: 56.584%;
-  --hero-hardware-desktop-w: 20%;
-  --hero-hardware-desktop-h: 20.186%;
-  --hero-hardware-mobile-x: 31.939%;
-  --hero-hardware-mobile-y: 53.121%;
-  --hero-hardware-mobile-w: 36.078%;
-  --hero-hardware-mobile-h: 12.916%;
-  --hero-hardware-x: var(--hero-hardware-desktop-x);
-  --hero-hardware-y: var(--hero-hardware-desktop-y);
-  --hero-hardware-w: var(--hero-hardware-desktop-w);
-  --hero-hardware-h: var(--hero-hardware-desktop-h);
+  --hero-hardware-x: 40%;
+  --hero-hardware-y: 56.584%;
+  --hero-hardware-w: 20%;
+  --hero-hardware-h: 20.186%;
   --hero-pan-x: -0.026%;
   --hero-pan-y: -14.1204%;
 
@@ -114,10 +106,10 @@
     --hero-detail-y: 31.2522%;
     --hero-detail-w: 54.5936%;
     --hero-detail-h: 54.3147%;
-    --hero-hardware-x: var(--hero-hardware-mobile-x);
-    --hero-hardware-y: var(--hero-hardware-mobile-y);
-    --hero-hardware-w: var(--hero-hardware-mobile-w);
-    --hero-hardware-h: var(--hero-hardware-mobile-h);
+    --hero-hardware-x: 31.939%;
+    --hero-hardware-y: 53.121%;
+    --hero-hardware-w: 36.078%;
+    --hero-hardware-h: 12.916%;
     --hero-pan-x: -0.0347%;
     --hero-pan-y: -8.5156%;
   }
