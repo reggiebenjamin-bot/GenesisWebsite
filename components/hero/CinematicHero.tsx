@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { CinematicFrame } from "./CinematicFrame";
 import { GenesisSystem } from "./GenesisSystem";
+import { MobileHardwareTuner } from "./MobileHardwareTuner";
 import { useHeroReady, useHeroScrub } from "./useHeroScrub";
 
 /**
@@ -57,6 +58,8 @@ export function CinematicHero() {
           </div>
         </div>
       ) : null}
+
+      {process.env.NODE_ENV === "development" ? <MobileHardwareTuner /> : null}
     </>
   );
 }
