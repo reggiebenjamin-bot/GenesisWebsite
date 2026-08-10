@@ -6,8 +6,8 @@ type Mode = "desktop" | "mobile";
 type Geometry = Record<"x" | "y" | "w" | "h", number>;
 
 const defaults: Record<Mode, Geometry> = {
-  desktop: { x: 40.561, y: 56.089, w: 18.858, h: 21.5 },
-  mobile: { x: 33.152, y: 53.027, w: 33.634, h: 13.964 },
+  desktop: { x: 39.88, y: 56.464, w: 20.227, h: 19.886 },
+  mobile: { x: 31.939, y: 53.121, w: 36.078, h: 12.916 },
 };
 
 const fields: Array<{ key: keyof Geometry; label: string; max: number }> = [

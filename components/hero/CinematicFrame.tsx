@@ -95,14 +95,14 @@ export function CinematicFrame({
                 <div className="hero-hardware" aria-hidden="true">
                   {/* The transform can magnify this layer beyond its resting
                       footprint, so it intentionally bypasses responsive image
-                      candidate selection and loads the supplied 1536px PNG. */}
+                      candidate selection and loads the supplied 1920px PNG. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     ref={hardwareRef}
                     src="/images/hero/macbook-hardware.png"
                     alt=""
-                    width={1536}
-                    height={1024}
+                    width={1920}
+                    height={1080}
                     loading="eager"
                     fetchPriority="high"
                     decoding="sync"
