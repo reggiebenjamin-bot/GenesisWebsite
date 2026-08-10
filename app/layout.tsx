@@ -35,9 +35,6 @@ export const metadata: Metadata = {
         nocache: true,
         googleBot: { index: false, follow: false, noimageindex: true },
       },
-  icons: {
-    icon: "/brand/genesis-logo-gradient.svg",
-  },
   openGraph: {
     type: "website",
     siteName: "Genesis AI",
