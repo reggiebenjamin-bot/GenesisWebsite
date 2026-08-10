@@ -601,7 +601,7 @@
 }
 
 .secondary-action:hover::after {
-  opacity: 0.3;
+  opacity: 0;
 }
 
 .secondary-action:focus-visible {
