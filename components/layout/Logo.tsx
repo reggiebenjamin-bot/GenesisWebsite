@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,6 +8,12 @@ export function Logo({ light = false }: { light?: boolean }) {
     <Link
       href="/"
       aria-label="Genesis AI home"
+      onClick={(event) => {
+        if (window.location.pathname !== "/") return;
+
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
       className={`inline-flex min-h-12 items-center gap-0 ${
         light ? "text-ivory" : "text-ink"
       }`}
