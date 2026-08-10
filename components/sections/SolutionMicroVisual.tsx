@@ -30,23 +30,15 @@ export function SolutionMicroVisual({ kind }: { kind: SolutionVisualKind }) {
 function Foundation() {
   return (
     <>
-      <svg className={styles.foundationLines} viewBox="0 0 300 170" fill="none">
-        <path d="M150 86 65 30M150 86 236 30M150 86 45 91M150 86 69 143M150 86 231 143" />
+      <svg className={styles.foundationLines} viewBox="0 0 300 150" fill="none">
+        <path d="M150 75 73 31M150 75 225 31M150 75 49 75M150 75 73 119M150 75 225 119" />
       </svg>
-      <span className={`${styles.foundationCore} ${styles.core}`}>365</span>
-      {[
-        ["Email", "mail", "one"],
-        ["Identity", "id", "two"],
-        ["Calendar", "calendar", "three"],
-        ["Documents", "document", "four"],
-        ["Teams", "teams", "five"],
-      ].map(([label, icon, position]) => (
-        <span key={label} className={`${styles.foundationModule} ${styles[position]}`}>
-          <i className={styles.icon} data-icon={icon} />
-          <b>{label}</b>
-        </span>
-      ))}
-      <span className={styles.foundationCaption}>Provisioned foundation</span>
+      <span className={styles.foundationCore}>365</span>
+      <i className={`${styles.foundationNode} ${styles.foundationNodeOne}`} />
+      <i className={`${styles.foundationNode} ${styles.foundationNodeTwo}`} />
+      <i className={`${styles.foundationNode} ${styles.foundationNodeThree}`} />
+      <i className={`${styles.foundationNode} ${styles.foundationNodeFour}`} />
+      <i className={`${styles.foundationNode} ${styles.foundationNodeFive}`} />
     </>
   );
 }
@@ -54,58 +46,42 @@ function Foundation() {
 function Workflows() {
   return (
     <>
-      <svg className={styles.workflowPath} viewBox="0 0 300 170" fill="none">
-        <path d="M30 86h52l22-34h48l22 68h52l22-34h22" />
+      <svg className={styles.workflowLine} viewBox="0 0 300 150" fill="none">
+        <path d="M35 75h230" />
       </svg>
-      <span className={`${styles.workflowNode} ${styles.request}`}>Request</span>
-      <span className={`${styles.workflowNode} ${styles.draft}`}>Draft</span>
-      <span className={`${styles.workflowNode} ${styles.route}`}>Route</span>
-      <span className={`${styles.workflowNode} ${styles.complete}`}>Complete</span>
-      <span className={styles.workflowPulse} />
-      <span className={styles.workflowCaption}>Follow-up routed automatically</span>
+      <i className={`${styles.workflowNode} ${styles.workflowNodeOne}`} />
+      <i className={`${styles.workflowNode} ${styles.workflowNodeTwo}`} />
+      <i className={`${styles.workflowNode} ${styles.workflowNodeThree}`} />
+      <i className={`${styles.workflowNode} ${styles.workflowNodeFour}`} />
+      <i className={styles.workflowPulse} />
     </>
   );
 }
 
 function Crm() {
-  const stages = ["New", "Follow-up", "Booked", "Closed"];
   return (
-    <>
-      <span className={styles.optional}>Optional layer</span>
-      <div className={styles.pipeline}>
-        {stages.map((stage, index) => (
-          <span className={styles.pipelineStage} key={stage}>
-            <i>{index + 1}</i>
-            <b>{stage}</b>
-          </span>
-        ))}
-        <span className={styles.pipelineLead} />
-      </div>
-      <span className={styles.crmCaption}>Opportunity progression</span>
-    </>
+    <div className={styles.pipeline}>
+      <span>New</span>
+      <span>Follow-up</span>
+      <span>Booked</span>
+      <span>Closed</span>
+      <i className={styles.pipelineLead} />
+    </div>
   );
 }
 
 function Managed() {
   return (
     <>
-      <span className={styles.managedCore}>G</span>
-      <svg className={styles.managedOrbit} viewBox="0 0 300 170" fill="none">
-        <circle cx="150" cy="84" r="51" />
-        <circle className={styles.scanArc} cx="150" cy="84" r="51" />
+      <svg className={styles.managedOrbit} viewBox="0 0 300 150" fill="none">
+        <circle cx="150" cy="75" r="45" />
+        <circle className={styles.scanArc} cx="150" cy="75" r="45" />
       </svg>
-      {[
-        ["Monitor", "monitor"],
-        ["Maintain", "maintain"],
-        ["Refine", "refine"],
-        ["Support", "support"],
-      ].map(([label, position]) => (
-        <span key={label} className={`${styles.managedIndicator} ${styles[position]}`}>
-          <i />
-          {label}
-        </span>
-      ))}
-      <span className={styles.managedCaption}>System health: stable</span>
+      <span className={styles.managedCore}>G</span>
+      <i className={`${styles.managedNode} ${styles.managedNodeOne}`} />
+      <i className={`${styles.managedNode} ${styles.managedNodeTwo}`} />
+      <i className={`${styles.managedNode} ${styles.managedNodeThree}`} />
+      <i className={`${styles.managedNode} ${styles.managedNodeFour}`} />
     </>
   );
 }
