@@ -6,7 +6,7 @@ type Mode = "desktop" | "mobile";
 type Geometry = Record<"x" | "y" | "w" | "h", number>;
 
 const defaults: Record<Mode, Geometry> = {
-  desktop: { x: 39.88, y: 56.464, w: 20.227, h: 19.886 },
+  desktop: { x: 40, y: 56.584, w: 20, h: 20.186 },
   mobile: { x: 31.939, y: 53.121, w: 36.078, h: 12.916 },
 };
 

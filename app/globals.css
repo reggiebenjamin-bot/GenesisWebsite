@@ -70,10 +70,10 @@
   --hero-detail-h: 43.8273%;
   /* The supplied 1920×1080 hardware render is registered from its transparent
      display opening to the measured photograph display opening. */
-  --hero-hardware-desktop-x: 39.88%;
-  --hero-hardware-desktop-y: 56.464%;
-  --hero-hardware-desktop-w: 20.227%;
-  --hero-hardware-desktop-h: 19.886%;
+  --hero-hardware-desktop-x: 40%;
+  --hero-hardware-desktop-y: 56.584%;
+  --hero-hardware-desktop-w: 20%;
+  --hero-hardware-desktop-h: 20.186%;
   --hero-hardware-mobile-x: 31.939%;
   --hero-hardware-mobile-y: 53.121%;
   --hero-hardware-mobile-w: 36.078%;
