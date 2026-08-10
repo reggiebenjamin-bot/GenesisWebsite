@@ -28,7 +28,7 @@ export default function SolutionsPage() {
             description="This is not a menu of unrelated services. Each layer gives the next one a stronger place to work."
           />
         </Reveal>
-        <SystemLayers />
+        <SystemLayers tone="light" visuals />
       </Section>
 
       <Section tone="dark">
