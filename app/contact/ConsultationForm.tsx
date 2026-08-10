@@ -245,7 +245,11 @@ export function ConsultationForm({
         </div>
       ) : null}
 
-      <SubmitButton type="submit" disabled={status === "submitting"}>
+      <SubmitButton
+        type="submit"
+        variant="secondary"
+        disabled={status === "submitting"}
+      >
         {status === "submitting" ? "Sending…" : "Request a Consultation"}
       </SubmitButton>
 

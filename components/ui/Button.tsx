@@ -8,6 +8,7 @@ const variants = {
   gold: "border-gold-light bg-gold-light text-ink hover:bg-ivory hover:border-ivory",
   outline: "border-ink/30 text-ink hover:bg-ink hover:text-ivory",
   ghost: "border-ivory/30 bg-ink/20 text-ivory hover:bg-ivory/12",
+  secondary: "secondary-action",
 } as const;
 
 export type ButtonVariant = keyof typeof variants;
@@ -23,7 +24,7 @@ export function Button({
 }) {
   return (
     <Link className={`${base} ${variants[variant]} ${className}`} {...props}>
-      {children}
+      {variant === "secondary" ? <span>{children}</span> : children}
     </Link>
   );
 }
@@ -42,7 +43,7 @@ export function SubmitButton({
       className={`${base} ${variants[variant]} disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       {...props}
     >
-      {children}
+      {variant === "secondary" ? <span>{children}</span> : children}
     </button>
   );
 }

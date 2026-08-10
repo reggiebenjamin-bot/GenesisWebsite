@@ -70,11 +70,10 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
 
                 <Button
                   href={`/contact?plan=${plan.slug}`}
-                  variant={featured || enterprise ? "gold" : "ghost"}
+                  variant="secondary"
                   className={styles.cta}
                 >
                   Discuss {plan.name}
-                  <span aria-hidden="true">↗</span>
                 </Button>
                 </div>
               </article>

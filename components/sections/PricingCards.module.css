@@ -242,20 +242,6 @@
   box-shadow: 0 0 10px rgb(201 165 94 / 0.12);
 }
 
-.card[data-plan="enterprise"] .cta {
-  border-color: var(--color-gold-light);
-  color: var(--color-ink);
-  background: linear-gradient(115deg, var(--color-gold) 0%, var(--color-gold-light) 54%, #f6e8bd 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.34),
-    0 8px 24px rgb(201 165 94 / 0.12);
-}
-
-.card[data-plan="enterprise"] .cta:hover {
-  border-color: var(--color-ivory);
-  background: var(--color-ivory);
-}
-
 .surface > * {
   position: relative;
   z-index: 1;
@@ -410,7 +396,7 @@
 .cta {
   width: 100%;
   margin-top: auto;
-  border-radius: 999px;
+  border-radius: 6px;
 }
 
 
