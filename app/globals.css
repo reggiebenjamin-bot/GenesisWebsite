@@ -107,7 +107,11 @@
     --hero-detail-w: 54.5936%;
     --hero-detail-h: 54.3147%;
     --hero-hardware-x: 31.939%;
-    --hero-hardware-y: 53.121%;
+    /* The portrait plate's physical display begins 5px lower than the
+       supplied render at the reference mobile canvas. Keep the horizontal
+       registration intact and move only the hardware down to lock its inner
+       opening to the live screen. */
+    --hero-hardware-y: 53.657%;
     --hero-hardware-w: 36.078%;
     --hero-hardware-h: 12.916%;
     --hero-pan-x: -0.0347%;
