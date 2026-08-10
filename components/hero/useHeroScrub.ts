@@ -75,8 +75,6 @@ export function useHeroScrub({
     let canvasStartX = 0;
     let canvasStartY = 0;
     let entranceCanvasStartScale = 1;
-    let entranceCanvasStartX = 0;
-    let entranceCanvasStartY = 0;
     let staticCanvasStartScale = 1;
     let staticCanvasStartX = 0;
     let staticCanvasStartY = 0;
@@ -102,18 +100,6 @@ export function useHeroScrub({
       }
 
       return node === ancestor ? top : element.offsetTop;
-    }
-
-    function offsetLeftWithin(element: HTMLElement, ancestor: HTMLElement) {
-      let left = 0;
-      let node: HTMLElement | null = element;
-
-      while (node && node !== ancestor) {
-        left += node.offsetLeft;
-        node = node.offsetParent as HTMLElement | null;
-      }
-
-      return node === ancestor ? left : element.offsetLeft;
     }
 
     /** Transparent over the photograph, restrained once past it. Keyed to
@@ -180,8 +166,6 @@ export function useHeroScrub({
       staticCanvasStartX = canvasStartX;
       staticCanvasStartY = canvasStartY;
       entranceCanvasStartScale = canvasStartScale;
-      entranceCanvasStartX = canvasStartX;
-      entranceCanvasStartY = canvasStartY;
       canvasEndX = (innerScreenWidth - vw * canvasEndScale) / 2;
       canvasEndY = (innerScreenHeight - vh * canvasEndScale) / 2;
       photoFadeStart = clamp(Math.log(bareCover) / Math.log(zoomMax), 0, 0.995);
@@ -214,33 +198,13 @@ export function useHeroScrub({
         }
       }
 
-      /* The desktop entrance opens on an intentionally oversized portion of
-         the real Genesis UI. The focal point is the upper half of its editorial
-         card, not the canvas centre, so the expanded interface stays composed
-         inside the photographed screen instead of drifting as it counter-scales
-         back to the viewport-aligned handoff. The physical .hero-screen clips
-         all of this — the UI can never paint over the laptop bezel. */
-      if (!mobilePlate.matches && entrance.current) {
-        const entranceCanvas = entrance.current.querySelector<HTMLElement>(
-          ".hero-screen-canvas",
-        );
-        const editorialPanel = entranceCanvas?.querySelector<HTMLElement>(
-          ".genesis-editorial-panel",
-        );
-
-        if (entranceCanvas && editorialPanel) {
-          const panelLeft = offsetLeftWithin(editorialPanel, entranceCanvas);
-          const panelTop = offsetTopWithin(editorialPanel, entranceCanvas);
-          const focusX = panelLeft + editorialPanel.offsetWidth / 2;
-          const focusY = panelTop + editorialPanel.offsetHeight * 0.28;
-
-          entranceCanvasStartScale =
-            canvasStartScale * DESKTOP_ENTRANCE_UI_SCALE;
-          entranceCanvasStartX =
-            innerScreenWidth * 0.5 - focusX * entranceCanvasStartScale;
-          entranceCanvasStartY =
-            innerScreenHeight * 0.46 - focusY * entranceCanvasStartScale;
-        }
+      /* Desktop has a centered parallax layer: only its scale changes. The
+         canvas is positioned by CSS at the physical display's 50% / 50%, so
+         the actual Genesis UI centre remains locked to the screen centre from
+         the opening crop through the final, viewport-aligned handoff. */
+      if (!mobilePlate.matches) {
+        entranceCanvasStartScale =
+          canvasStartScale * DESKTOP_ENTRANCE_UI_SCALE;
       }
 
       /* Geometry — as opposed to animation state — goes to *both* frames. The
@@ -266,36 +230,21 @@ export function useHeroScrub({
         st.setProperty("--hero-canvas-w", `${vw}px`);
         st.setProperty("--hero-canvas-h", `${vh}px`);
         const isStaticHero = el === hero.current;
-        const isEntrance = el === entrance.current;
         st.setProperty(
           "--hero-canvas-scale",
           (
             isStaticHero
               ? staticCanvasStartScale
-              : isEntrance
-                ? entranceCanvasStartScale
-                : canvasStartScale
+              : entranceCanvasStartScale
           ).toFixed(6),
         );
         st.setProperty(
           "--hero-canvas-x",
-          `${(
-            isStaticHero
-              ? staticCanvasStartX
-              : isEntrance
-                ? entranceCanvasStartX
-                : canvasStartX
-          ).toFixed(4)}px`,
+          `${(isStaticHero ? staticCanvasStartX : canvasStartX).toFixed(4)}px`,
         );
         st.setProperty(
           "--hero-canvas-y",
-          `${(
-            isStaticHero
-              ? staticCanvasStartY
-              : isEntrance
-                ? entranceCanvasStartY
-                : canvasStartY
-          ).toFixed(4)}px`,
+          `${(isStaticHero ? staticCanvasStartY : canvasStartY).toFixed(4)}px`,
         );
       }
 
@@ -323,11 +272,11 @@ export function useHeroScrub({
       );
       s.setProperty(
         "--hero-canvas-x",
-        `${mix(entranceCanvasStartX, canvasEndX, align).toFixed(4)}px`,
+        `${mix(canvasStartX, canvasEndX, align).toFixed(4)}px`,
       );
       s.setProperty(
         "--hero-canvas-y",
-        `${mix(entranceCanvasStartY, canvasEndY, align).toFixed(4)}px`,
+        `${mix(canvasStartY, canvasEndY, align).toFixed(4)}px`,
       );
       s.setProperty("--hero-photo-o", photoOpacity.toFixed(4));
 

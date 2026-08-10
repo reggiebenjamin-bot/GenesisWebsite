@@ -319,6 +319,27 @@
     transform-origin: top left;
   }
 
+  /* Desktop entrance only: unlike the returned static laptop preview, this
+     canvas is an optical depth layer. Pinning its own centre to the physical
+     display centre removes all lateral movement while its scale counteracts
+     the photograph's push-in. Mobile retains its measured top-card preview. */
+  .hero-entrance .hero-screen-canvas {
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0) scale(var(--hero-canvas-scale));
+    transform-origin: 50% 50%;
+  }
+
+  @media (max-width: 767px) {
+    .hero-entrance .hero-screen-canvas {
+      top: 0;
+      left: 0;
+      transform: translate3d(var(--hero-canvas-x), var(--hero-canvas-y), 0)
+        scale(var(--hero-canvas-scale));
+      transform-origin: top left;
+    }
+  }
+
   /* Plate A — the wide shot, screen cut to transparency. It only defocuses
      as we push, so the magnification reads as a focus pull. */
   .hero-plate-wide {
