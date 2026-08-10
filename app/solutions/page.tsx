@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
-import { SystemLayers } from "@/components/sections/SystemLayers";
+import { GenesisSystemScale } from "@/components/sections/GenesisSystemScale";
 import { Reveal } from "@/components/ui/Reveal";
 import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
 import { audiences } from "@/lib/content";
@@ -21,14 +21,7 @@ export default function SolutionsPage() {
       />
 
       <Section>
-        <Reveal>
-          <SectionHeading
-            eyebrow="Connected by design"
-            title="The four layers of the operating system."
-            description="This is not a menu of unrelated services. Each layer gives the next one a stronger place to work."
-          />
-        </Reveal>
-        <SystemLayers tone="light" visuals />
+        <GenesisSystemScale />
       </Section>
 
       <Section tone="dark">
