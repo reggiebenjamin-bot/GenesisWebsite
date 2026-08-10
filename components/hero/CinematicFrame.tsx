@@ -26,8 +26,12 @@ import { GenesisSystem } from "./GenesisSystem";
  */
 export function CinematicFrame({
   plateRef,
+  hardwareRef,
+  showHardware = true,
 }: {
   plateRef?: Ref<HTMLImageElement>;
+  hardwareRef?: Ref<HTMLImageElement>;
+  showHardware?: boolean;
 }) {
   return (
     <>
@@ -83,6 +87,29 @@ export function CinematicFrame({
                   />
                 </picture>
               </div>
+
+              {/* The screen itself is transparent in this source. It rides
+                  inside the exact same camera rig as the room plates, while
+                  the live Genesis UI remains beneath it in the display hole. */}
+              {showHardware ? (
+                <div className="hero-hardware" aria-hidden="true">
+                  {/* The transform can magnify this layer beyond its resting
+                      footprint, so it intentionally bypasses responsive image
+                      candidate selection and loads the supplied 1536px PNG. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    ref={hardwareRef}
+                    src="/images/hero/macbook-hardware.png"
+                    alt=""
+                    width={1536}
+                    height={1024}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="sync"
+                    draggable={false}
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

@@ -25,12 +25,13 @@ export function CinematicHero() {
   const hero = useRef<HTMLElement>(null);
   const entrance = useRef<HTMLDivElement>(null);
   const widePlate = useRef<HTMLImageElement>(null);
+  const hardware = useRef<HTMLImageElement>(null);
   const [landed, setLanded] = useState(false);
 
   const onLand = useCallback(() => setLanded(true), []);
 
   useHeroScrub({ hero, entrance, onLand });
-  useHeroReady(widePlate);
+  useHeroReady(widePlate, hardware);
 
   return (
     <>
@@ -39,7 +40,7 @@ export function CinematicHero() {
         className="hero-section relative isolate z-10 h-dvh overflow-clip bg-ink max-md:h-[240svh]"
       >
         <div className="hero-static-frame sticky top-0 h-dvh overflow-clip bg-ink">
-          <CinematicFrame />
+          <CinematicFrame showHardware={landed} />
         </div>
       </section>
 
@@ -52,7 +53,7 @@ export function CinematicHero() {
       {!landed ? (
         <div ref={entrance} className="hero-entrance" aria-hidden="true">
           <div className="hero-entrance-frame">
-            <CinematicFrame plateRef={widePlate} />
+            <CinematicFrame plateRef={widePlate} hardwareRef={hardware} />
           </div>
         </div>
       ) : null}

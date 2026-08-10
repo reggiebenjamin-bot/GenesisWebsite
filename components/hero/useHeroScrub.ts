@@ -514,18 +514,28 @@ export function useHeroScrub({
  * Holds the entrance until the wide plate has decoded, so the settle never
  * plays against an empty frame. Capped so a slow network cannot strand it.
  */
-export function useHeroReady(plate: RefObject<HTMLImageElement | null>) {
+export function useHeroReady(
+  plate: RefObject<HTMLImageElement | null>,
+  hardware: RefObject<HTMLImageElement | null>,
+) {
   useEffect(() => {
     const ready = () => document.documentElement.classList.add("hero-ready");
-    const img = plate.current;
+    const images = [plate.current, hardware.current].filter(
+      (image): image is HTMLImageElement => image !== null,
+    );
 
-    if (img && !img.complete) {
-      img.addEventListener("load", ready, { once: true });
-      img.addEventListener("error", ready, { once: true });
-    }
-    img?.decode?.().then(ready, ready);
+    images.forEach((image) => {
+      if (image.complete) return;
+      image.addEventListener("load", ready, { once: true });
+      image.addEventListener("error", ready, { once: true });
+    });
+
+    Promise.all(images.map((image) => image.decode?.() ?? Promise.resolve())).then(
+      ready,
+      ready,
+    );
     const timer = window.setTimeout(ready, 1600);
 
     return () => window.clearTimeout(timer);
-  }, [plate]);
+  }, [hardware, plate]);
 }

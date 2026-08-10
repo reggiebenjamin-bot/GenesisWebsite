@@ -68,6 +68,12 @@
   --hero-detail-y: 39.894%;
   --hero-detail-w: 43.8273%;
   --hero-detail-h: 43.8273%;
+  /* The supplied 1536×1024 hardware render is registered from its transparent
+     display opening to the measured photograph display opening. */
+  --hero-hardware-x: 40.561%;
+  --hero-hardware-y: 56.089%;
+  --hero-hardware-w: 18.858%;
+  --hero-hardware-h: 21.5%;
   --hero-pan-x: -0.026%;
   --hero-pan-y: -14.1204%;
 
@@ -100,6 +106,10 @@
     --hero-detail-y: 31.2522%;
     --hero-detail-w: 54.5936%;
     --hero-detail-h: 54.3147%;
+    --hero-hardware-x: 33.152%;
+    --hero-hardware-y: 53.027%;
+    --hero-hardware-w: 33.634%;
+    --hero-hardware-h: 13.964%;
     --hero-pan-x: -0.0347%;
     --hero-pan-y: -8.5156%;
   }
@@ -371,6 +381,25 @@
   }
 
   .hero-plate-detail img {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* A transparent, full-resolution hardware layer. It is deliberately inside
+     the plates' master camera rig: the photo and rendered MacBook share every
+     pan, zoom and transform origin. Only the live UI has its own depth scale. */
+  .hero-hardware {
+    position: absolute;
+    top: var(--hero-hardware-y);
+    left: var(--hero-hardware-x);
+    width: var(--hero-hardware-w);
+    height: var(--hero-hardware-h);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-hardware img {
+    display: block;
     width: 100%;
     height: 100%;
   }
