@@ -78,10 +78,12 @@
   --hero-keys-y: 71.210%;
   --hero-keys-w: 5.770%;
   --hero-keys-h: 8.300%;
+  --hero-keys-scale: 1;
   --hero-folder-x: 60.150%;
   --hero-folder-y: 67.580%;
   --hero-folder-w: 12.060%;
   --hero-folder-h: 14.770%;
+  --hero-folder-scale: 1;
   --hero-pan-x: -0.026%;
   --hero-pan-y: -14.1204%;
 
@@ -120,6 +122,18 @@
     --hero-hardware-y: 53.500%;
     --hero-hardware-w: 35.850%;
     --hero-hardware-h: 14.400%;
+    /* Final mobile registration for the portrait key render. */
+    --hero-keys-x: 19.090%;
+    --hero-keys-y: 63.460%;
+    --hero-keys-w: 19.080%;
+    --hero-keys-h: 7.980%;
+    --hero-keys-scale: 0.520;
+    /* Final mobile registration for the portrait folder render. */
+    --hero-folder-x: 55.890%;
+    --hero-folder-y: 59.770%;
+    --hero-folder-w: 37.400%;
+    --hero-folder-h: 15.740%;
+    --hero-folder-scale: 0.540;
     --hero-pan-x: -0.0347%;
     --hero-pan-y: -8.5156%;
   }
@@ -400,6 +414,7 @@
      pan, zoom and transform origin. Only the live UI has its own depth scale. */
   .hero-hardware {
     position: absolute;
+    z-index: 2;
     top: var(--hero-hardware-y);
     left: var(--hero-hardware-x);
     width: var(--hero-hardware-w);
@@ -427,12 +442,15 @@
      it remains physically registered to the photographed keys through zoom. */
   .hero-keys {
     position: absolute;
+    z-index: 3;
     top: var(--hero-keys-y);
     left: var(--hero-keys-x);
     width: var(--hero-keys-w);
     height: var(--hero-keys-h);
     pointer-events: none;
     user-select: none;
+    transform: scale(var(--hero-keys-scale));
+    transform-origin: center;
   }
 
   .hero-keys img {
@@ -441,14 +459,23 @@
     height: 100%;
   }
 
+  .hero-keys picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .hero-folder {
     position: absolute;
+    z-index: 4;
     top: var(--hero-folder-y);
     left: var(--hero-folder-x);
     width: var(--hero-folder-w);
     height: var(--hero-folder-h);
     pointer-events: none;
     user-select: none;
+    transform: scale(var(--hero-folder-scale));
+    transform-origin: center;
   }
 
   .hero-folder img {
@@ -457,11 +484,14 @@
     height: 100%;
   }
 
+  .hero-folder picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   @media (max-width: 767px) {
-    .hero-keys,
-    .hero-folder {
-      display: none;
-    }
+    .hero-folder { display: block; }
   }
 
   .hero-entrance[data-photo-hidden="true"] .hero-plate-wide,

@@ -122,31 +122,41 @@ export function CinematicFrame({
 
               {showKeys ? (
                 <div className="hero-keys" aria-hidden="true">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/hero/keys-hardware-desktop.png"
-                    alt=""
-                    width={1536}
-                    height={1024}
-                    loading="eager"
-                    decoding="sync"
-                    draggable={false}
-                  />
+                  <picture>
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet="/images/hero/keys-hardware-mobile.png"
+                    />
+                    <img
+                      src="/images/hero/keys-hardware-desktop.png"
+                      alt=""
+                      width={1536}
+                      height={1024}
+                      loading="eager"
+                      decoding="sync"
+                      draggable={false}
+                    />
+                  </picture>
                 </div>
               ) : null}
 
               {showFolder ? (
                 <div className="hero-folder" aria-hidden="true">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/hero/folder-hardware-desktop.png"
-                    alt=""
-                    width={1536}
-                    height={1024}
-                    loading="eager"
-                    decoding="sync"
-                    draggable={false}
-                  />
+                  <picture>
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet="/images/hero/folder-hardware-mobile.png"
+                    />
+                    <img
+                      src="/images/hero/folder-hardware-desktop.png"
+                      alt=""
+                      width={1536}
+                      height={1024}
+                      loading="eager"
+                      decoding="sync"
+                      draggable={false}
+                    />
+                  </picture>
                 </div>
               ) : null}
             </div>
