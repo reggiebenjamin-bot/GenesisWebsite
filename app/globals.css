@@ -74,12 +74,16 @@
   --hero-hardware-y: 56.250%;
   --hero-hardware-w: 20.290%;
   --hero-hardware-h: 20.550%;
-  /* Desktop-only transparent key render; temporary values are exposed in the
-     development-only key calibrator. */
-  --hero-keys-x: 25.5%;
-  --hero-keys-y: 59.5%;
-  --hero-keys-w: 5.5%;
-  --hero-keys-h: 8.3%;
+  --hero-keys-x: 31.760%;
+  --hero-keys-y: 71.210%;
+  --hero-keys-w: 5.770%;
+  --hero-keys-h: 8.300%;
+  /* Desktop-only transparent folder render; temporary values are exposed in
+     the development-only folder calibrator. */
+  --hero-folder-x: 51.5%;
+  --hero-folder-y: 59%;
+  --hero-folder-w: 8%;
+  --hero-folder-h: 12%;
   --hero-pan-x: -0.026%;
   --hero-pan-y: -14.1204%;
 
@@ -439,8 +443,25 @@
     height: 100%;
   }
 
+  .hero-folder {
+    position: absolute;
+    top: var(--hero-folder-y);
+    left: var(--hero-folder-x);
+    width: var(--hero-folder-w);
+    height: var(--hero-folder-h);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-folder img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   @media (max-width: 767px) {
-    .hero-keys {
+    .hero-keys,
+    .hero-folder {
       display: none;
     }
   }

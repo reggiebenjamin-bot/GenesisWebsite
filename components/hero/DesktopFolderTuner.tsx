@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-const DEFAULTS = { x: 25.5, y: 59.5, w: 5.5, h: 8.3 } as const;
+const DEFAULTS = { x: 51.5, y: 59, w: 8, h: 12 } as const;
 type Control = keyof typeof DEFAULTS;
 
 const controls: Array<{ key: Control; label: string; min: number; max: number }> = [
-  { key: "x", label: "Left", min: 15, max: 40 },
+  { key: "x", label: "Left", min: 40, max: 68 },
   { key: "y", label: "Top", min: 45, max: 75 },
-  { key: "w", label: "Width", min: 2, max: 16 },
-  { key: "h", label: "Height", min: 3, max: 20 },
+  { key: "w", label: "Width", min: 3, max: 20 },
+  { key: "h", label: "Height", min: 4, max: 24 },
 ];
 
-/** Dev-only adjustment surface for the desktop key model. It never persists
- * values or ships in production; Copy gives the final CSS declarations. */
-export function DesktopKeysTuner() {
+/** Dev-only adjustment surface for the desktop folder render. */
+export function DesktopFolderTuner() {
   const [values, setValues] = useState(DEFAULTS);
   const [copied, setCopied] = useState(false);
 
@@ -23,44 +22,44 @@ export function DesktopKeysTuner() {
     const desktop = window.matchMedia("(min-width: 768px)");
     const apply = () => {
       if (desktop.matches) {
-        root.style.setProperty("--hero-keys-x", `${values.x}%`);
-        root.style.setProperty("--hero-keys-y", `${values.y}%`);
-        root.style.setProperty("--hero-keys-w", `${values.w}%`);
-        root.style.setProperty("--hero-keys-h", `${values.h}%`);
+        root.style.setProperty("--hero-folder-x", `${values.x}%`);
+        root.style.setProperty("--hero-folder-y", `${values.y}%`);
+        root.style.setProperty("--hero-folder-w", `${values.w}%`);
+        root.style.setProperty("--hero-folder-h", `${values.h}%`);
       } else {
-        root.style.removeProperty("--hero-keys-x");
-        root.style.removeProperty("--hero-keys-y");
-        root.style.removeProperty("--hero-keys-w");
-        root.style.removeProperty("--hero-keys-h");
+        root.style.removeProperty("--hero-folder-x");
+        root.style.removeProperty("--hero-folder-y");
+        root.style.removeProperty("--hero-folder-w");
+        root.style.removeProperty("--hero-folder-h");
       }
     };
     apply();
     desktop.addEventListener("change", apply);
     return () => {
       desktop.removeEventListener("change", apply);
-      root.style.removeProperty("--hero-keys-x");
-      root.style.removeProperty("--hero-keys-y");
-      root.style.removeProperty("--hero-keys-w");
-      root.style.removeProperty("--hero-keys-h");
+      root.style.removeProperty("--hero-folder-x");
+      root.style.removeProperty("--hero-folder-y");
+      root.style.removeProperty("--hero-folder-w");
+      root.style.removeProperty("--hero-folder-h");
     };
   }, [values]);
 
   const reset = () => setValues(DEFAULTS);
   const copy = async () => {
     await navigator.clipboard.writeText([
-      `--hero-keys-x: ${values.x.toFixed(3)}%;`,
-      `--hero-keys-y: ${values.y.toFixed(3)}%;`,
-      `--hero-keys-w: ${values.w.toFixed(3)}%;`,
-      `--hero-keys-h: ${values.h.toFixed(3)}%;`,
+      `--hero-folder-x: ${values.x.toFixed(3)}%;`,
+      `--hero-folder-y: ${values.y.toFixed(3)}%;`,
+      `--hero-folder-w: ${values.w.toFixed(3)}%;`,
+      `--hero-folder-h: ${values.h.toFixed(3)}%;`,
     ].join("\n"));
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   };
 
   return (
-    <aside className="fixed right-4 bottom-4 z-[100] hidden w-56 rounded-md border border-gold/50 bg-ink/95 p-3 font-display text-[0.65rem] text-ivory shadow-2xl backdrop-blur md:block" aria-label="Desktop keys alignment controls">
+    <aside className="fixed right-4 bottom-4 z-[100] hidden w-56 rounded-md border border-gold/50 bg-ink/95 p-3 font-display text-[0.65rem] text-ivory shadow-2xl backdrop-blur md:block" aria-label="Desktop folder alignment controls">
       <div className="mb-3 flex items-center justify-between gap-3 border-b border-ivory/15 pb-2">
-        <span className="tracking-[0.12em] text-gold-light uppercase">Desktop keys</span>
+        <span className="tracking-[0.12em] text-gold-light uppercase">Desktop folder</span>
         <button type="button" onClick={reset} className="text-ivory/70 underline underline-offset-2">Reset</button>
       </div>
       <div className="grid gap-2.5">

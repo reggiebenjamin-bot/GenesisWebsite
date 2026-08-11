@@ -29,11 +29,13 @@ export function CinematicFrame({
   hardwareRef,
   showHardware = true,
   showKeys = true,
+  showFolder = true,
 }: {
   plateRef?: Ref<HTMLImageElement>;
   hardwareRef?: Ref<HTMLImageElement>;
   showHardware?: boolean;
   showKeys?: boolean;
+  showFolder?: boolean;
 }) {
   return (
     <>
@@ -123,6 +125,21 @@ export function CinematicFrame({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/images/hero/keys-hardware-desktop.png"
+                    alt=""
+                    width={1536}
+                    height={1024}
+                    loading="eager"
+                    decoding="sync"
+                    draggable={false}
+                  />
+                </div>
+              ) : null}
+
+              {showFolder ? (
+                <div className="hero-folder" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/hero/folder-hardware-desktop.png"
                     alt=""
                     width={1536}
                     height={1024}

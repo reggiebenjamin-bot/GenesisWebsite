@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { CinematicFrame } from "./CinematicFrame";
-import { DesktopKeysTuner } from "./DesktopKeysTuner";
+import { DesktopFolderTuner } from "./DesktopFolderTuner";
 import { GenesisSystem } from "./GenesisSystem";
 import { useHeroReady, useHeroScrub } from "./useHeroScrub";
 
@@ -41,7 +41,11 @@ export function CinematicHero() {
         className="hero-section relative isolate z-10 h-dvh overflow-clip bg-ink max-md:h-[240svh]"
       >
         <div className="hero-static-frame sticky top-0 h-dvh overflow-clip bg-ink">
-          <CinematicFrame showHardware={landed} showKeys={landed} />
+          <CinematicFrame
+            showHardware={landed}
+            showKeys={landed}
+            showFolder={landed}
+          />
         </div>
       </section>
 
@@ -59,7 +63,7 @@ export function CinematicHero() {
         </div>
       ) : null}
 
-      {process.env.NODE_ENV === "development" ? <DesktopKeysTuner /> : null}
+      {process.env.NODE_ENV === "development" ? <DesktopFolderTuner /> : null}
     </>
   );
 }
