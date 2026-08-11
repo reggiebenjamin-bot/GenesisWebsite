@@ -3,35 +3,50 @@
 import { useEffect, useState } from "react";
 
 const DEFAULTS = {
-  x: 31.939,
-  y: 53.21,
-  w: 36.078,
-  h: 16.45,
+  x: 40,
+  y: 56.584,
+  w: 20,
+  h: 20.186,
 } as const;
 
 type Control = keyof typeof DEFAULTS;
 
 const controls: Array<{ key: Control; label: string; min: number; max: number; step: number }> = [
-  { key: "x", label: "Left", min: 20, max: 45, step: 0.01 },
-  { key: "y", label: "Top", min: 42, max: 65, step: 0.01 },
-  { key: "w", label: "Width", min: 24, max: 52, step: 0.01 },
-  { key: "h", label: "Height", min: 8, max: 20, step: 0.01 },
+  { key: "x", label: "Left", min: 28, max: 52, step: 0.01 },
+  { key: "y", label: "Top", min: 45, max: 68, step: 0.01 },
+  { key: "w", label: "Width", min: 10, max: 34, step: 0.01 },
+  { key: "h", label: "Height", min: 10, max: 34, step: 0.01 },
 ];
 
-/** Development-only mobile calibration panel. Values are applied to the
+/** Development-only desktop calibration panel. Values are applied to the
  * document in real time and deliberately stay in runtime state only. */
-export function MobileHardwareTuner() {
+export function DesktopHardwareTuner() {
   const [values, setValues] = useState(DEFAULTS);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty("--hero-hardware-x", `${values.x}%`);
-    root.style.setProperty("--hero-hardware-y", `${values.y}%`);
-    root.style.setProperty("--hero-hardware-w", `${values.w}%`);
-    root.style.setProperty("--hero-hardware-h", `${values.h}%`);
+    const desktop = window.matchMedia("(min-width: 768px)");
+
+    const apply = () => {
+      if (desktop.matches) {
+        root.style.setProperty("--hero-hardware-x", `${values.x}%`);
+        root.style.setProperty("--hero-hardware-y", `${values.y}%`);
+        root.style.setProperty("--hero-hardware-w", `${values.w}%`);
+        root.style.setProperty("--hero-hardware-h", `${values.h}%`);
+      } else {
+        root.style.removeProperty("--hero-hardware-x");
+        root.style.removeProperty("--hero-hardware-y");
+        root.style.removeProperty("--hero-hardware-w");
+        root.style.removeProperty("--hero-hardware-h");
+      }
+    };
+
+    apply();
+    desktop.addEventListener("change", apply);
 
     return () => {
+      desktop.removeEventListener("change", apply);
       root.style.removeProperty("--hero-hardware-x");
       root.style.removeProperty("--hero-hardware-y");
       root.style.removeProperty("--hero-hardware-w");
@@ -56,11 +71,11 @@ export function MobileHardwareTuner() {
 
   return (
     <aside
-      className="fixed right-3 bottom-3 z-[100] w-56 rounded-md border border-gold/50 bg-ink/95 p-3 font-display text-[0.65rem] text-ivory shadow-2xl backdrop-blur md:hidden"
-      aria-label="Mobile laptop alignment controls"
+      className="fixed right-4 bottom-4 z-[100] hidden w-56 rounded-md border border-gold/50 bg-ink/95 p-3 font-display text-[0.65rem] text-ivory shadow-2xl backdrop-blur md:block"
+      aria-label="Desktop laptop alignment controls"
     >
       <div className="mb-3 flex items-center justify-between gap-3 border-b border-ivory/15 pb-2">
-        <span className="tracking-[0.12em] text-gold-light uppercase">Mobile alignment</span>
+        <span className="tracking-[0.12em] text-gold-light uppercase">Desktop alignment</span>
         <button type="button" onClick={reset} className="text-ivory/70 underline underline-offset-2">
           Reset
         </button>

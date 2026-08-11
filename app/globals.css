@@ -107,11 +107,11 @@
     --hero-detail-w: 54.5936%;
     --hero-detail-h: 54.3147%;
     --hero-hardware-x: 31.939%;
-    /* The mobile hardware has its own lower-profile screen opening. These
-       values register that opening to the portrait plate's live UI viewport. */
-    --hero-hardware-y: 53.210%;
-    --hero-hardware-w: 36.078%;
-    --hero-hardware-h: 16.450%;
+    /* Final mobile hardware registration for the portrait-specific render. */
+    --hero-hardware-x: 32.360%;
+    --hero-hardware-y: 53.500%;
+    --hero-hardware-w: 35.850%;
+    --hero-hardware-h: 14.400%;
     --hero-pan-x: -0.0347%;
     --hero-pan-y: -8.5156%;
   }
