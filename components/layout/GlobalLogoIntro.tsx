@@ -31,12 +31,14 @@ function CompileAnimation({
   startWhenVisible = false,
   replay = false,
   replayDelay = 2600,
+  deferStartMs = 0,
   className = "",
 }: {
   embedded?: boolean;
   startWhenVisible?: boolean;
   replay?: boolean;
   replayDelay?: number;
+  deferStartMs?: number;
   className?: string;
 }) {
   const mark = useRef<SVGSVGElement>(null);
@@ -83,6 +85,7 @@ function CompileAnimation({
     let animationFrame = 0;
     let exitTimer = 0;
     let replayTimer = 0;
+    let startTimer = 0;
     let observer: IntersectionObserver | undefined;
     let hasStarted = false;
     let isRunning = false;
@@ -212,6 +215,23 @@ function CompileAnimation({
       animationFrame = requestAnimationFrame(frame);
     }
 
+    function startWhenReady() {
+      window.clearTimeout(startTimer);
+      if (hasStarted) {
+        scheduleReplay();
+        return;
+      }
+
+      if (!deferStartMs) {
+        run();
+        return;
+      }
+
+      startTimer = window.setTimeout(() => {
+        if (isVisible) run();
+      }, deferStartMs);
+    }
+
     if (startWhenVisible) {
       observer = new IntersectionObserver(
         ([entry]) => {
@@ -219,15 +239,12 @@ function CompileAnimation({
 
           isVisible = entry.isIntersecting;
           if (!isVisible) {
+            window.clearTimeout(startTimer);
             window.clearTimeout(replayTimer);
             return;
           }
 
-          if (!hasStarted) {
-            run();
-          } else {
-            scheduleReplay();
-          }
+          startWhenReady();
         },
         { threshold: 0.35 },
       );
@@ -241,11 +258,12 @@ function CompileAnimation({
       cancelAnimationFrame(animationFrame);
       window.clearTimeout(exitTimer);
       window.clearTimeout(replayTimer);
+      window.clearTimeout(startTimer);
       dotsElement.replaceChildren();
       cellsElement.replaceChildren();
       if (!embedded) delete root.dataset.brandIntro;
     };
-  }, [embedded, replay, replayDelay, startWhenVisible]);
+  }, [deferStartMs, embedded, replay, replayDelay, startWhenVisible]);
 
   if (state === "hidden") return null;
 
@@ -301,7 +319,7 @@ function CompileAnimation({
         ref={solid}
         href={`#${shapeId}`}
         fill={`url(#${solidGradientId})`}
-        opacity="0"
+        opacity={embedded && startWhenVisible ? "1" : "0"}
       />
     </svg>
   );
@@ -320,13 +338,20 @@ function CompileAnimation({
   );
 }
 
-export function GenesisCompileLogo({ className = "" }: { className?: string }) {
+export function GenesisCompileLogo({
+  className = "",
+  deferStartMs = 0,
+}: {
+  className?: string;
+  deferStartMs?: number;
+}) {
   return (
     <CompileAnimation
       embedded
       startWhenVisible
       replay
       replayDelay={2600}
+      deferStartMs={deferStartMs}
       className={className}
     />
   );

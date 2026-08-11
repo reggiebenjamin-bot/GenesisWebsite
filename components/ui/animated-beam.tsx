@@ -35,6 +35,7 @@ export type AnimatedBeamProps = {
   startYOffset?: number;
   endXOffset?: number;
   endYOffset?: number;
+  animated?: boolean;
 };
 
 const emptyGeometry: BeamGeometry = { width: 1, height: 1, path: "" };
@@ -59,6 +60,7 @@ export function AnimatedBeam({
   startYOffset = 0,
   endXOffset = 0,
   endYOffset = 0,
+  animated = true,
 }: AnimatedBeamProps) {
   const [geometry, setGeometry] = useState<BeamGeometry>(emptyGeometry);
   const reduceMotion = useReducedMotion();
@@ -184,7 +186,7 @@ export function AnimatedBeam({
         vectorEffect="non-scaling-stroke"
       />
 
-      {!reduceMotion && geometry.path ? (
+      {!reduceMotion && animated && geometry.path ? (
         <motion.path
           d={geometry.path}
           fill="none"

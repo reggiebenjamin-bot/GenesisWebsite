@@ -26,6 +26,14 @@ export const metadata: Metadata = {
     "Genesis AI provisions and manages the complete technology foundation beneath a real-estate operation: Microsoft 365, practical AI workflows, optional CRM, integrations, and ongoing support.",
   applicationName: "Genesis AI",
   category: "Business services",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
   alternates: indexable ? { canonical: "/" } : undefined,
   robots: indexable
     ? { index: true, follow: true }
@@ -38,14 +46,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Genesis AI",
+    url: "/",
     title: "Genesis AI | Managed Systems for Real Estate Operators",
     description:
       "Work faster and close more deals with a professional foundation, practical AI workflows, and ongoing management.",
     images: [
       {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
+        url: "/images/social/og-home-1920x1080.png",
+        width: 1920,
+        height: 1080,
         alt: "Genesis AI — managed systems for real-estate operators",
       },
     ],
@@ -55,7 +64,7 @@ export const metadata: Metadata = {
     title: "Genesis AI | Managed Systems for Real Estate Operators",
     description:
       "Work faster and close more deals with practical, fully managed systems.",
-    images: ["/og.png"],
+    images: ["/images/social/og-home-1920x1080.png"],
   },
 };
 
@@ -106,6 +115,29 @@ const structuredData = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/satoshi-400.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/satoshi-500.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/satoshi-700.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <GlobalLogoIntro />
         <div className="site-runtime">

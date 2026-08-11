@@ -27,15 +27,9 @@ import { GenesisSystem } from "./GenesisSystem";
 export function CinematicFrame({
   plateRef,
   hardwareRef,
-  showHardware = true,
-  showKeys = true,
-  showFolder = true,
 }: {
   plateRef?: Ref<HTMLImageElement>;
   hardwareRef?: Ref<HTMLImageElement>;
-  showHardware?: boolean;
-  showKeys?: boolean;
-  showFolder?: boolean;
 }) {
   return (
     <>
@@ -70,6 +64,7 @@ export function CinematicFrame({
                     fill
                     loading="eager"
                     fetchPriority="high"
+                    data-hero-critical="true"
                     quality={92}
                     sizes="(max-width: 767px) 100vw, 140vw"
                   />
@@ -86,6 +81,8 @@ export function CinematicFrame({
                     src="/images/hero/hero-plate-detail.webp"
                     alt=""
                     fill
+                    loading="eager"
+                    data-hero-critical="true"
                     quality={92}
                     sizes="(max-width: 767px) 55vw, 44vw"
                   />
@@ -95,70 +92,67 @@ export function CinematicFrame({
               {/* The screen itself is transparent in this source. It rides
                   inside the exact same camera rig as the room plates, while
                   the live Genesis UI remains beneath it in the display hole. */}
-              {showHardware ? (
-                <div className="hero-hardware" aria-hidden="true">
-                  {/* The transform can magnify this layer beyond its resting
-                      footprint, so it intentionally bypasses responsive image
-                      candidate selection and loads the supplied 1920px PNG. */}
-                  <picture>
-                    <source
-                      media="(max-width: 767px)"
-                      srcSet="/images/hero/macbook-hardware-mobile.png"
-                    />
-                    <img
-                      ref={hardwareRef}
-                      src="/images/hero/macbook-hardware.png"
-                      alt=""
-                      width={1920}
-                      height={1080}
-                      loading="eager"
-                      fetchPriority="high"
-                      decoding="sync"
-                      draggable={false}
-                    />
-                  </picture>
-                </div>
-              ) : null}
+              <div className="hero-hardware" aria-hidden="true">
+                {/* The transform can magnify this layer beyond its resting
+                    footprint, so it intentionally bypasses responsive image
+                    candidate selection and loads the supplied 1920px PNG. */}
+                <picture>
+                  <source
+                    media="(max-width: 767px)"
+                    srcSet="/images/hero/macbook-hardware-mobile.png"
+                  />
+                  <img
+                    ref={hardwareRef}
+                    src="/images/hero/macbook-hardware.png"
+                    alt=""
+                    width={1920}
+                    height={1080}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="sync"
+                    data-hero-critical="true"
+                    draggable={false}
+                  />
+                </picture>
+              </div>
 
-              {showKeys ? (
-                <div className="hero-keys" aria-hidden="true">
-                  <picture>
-                    <source
-                      media="(max-width: 767px)"
-                      srcSet="/images/hero/keys-hardware-mobile.png"
-                    />
-                    <img
-                      src="/images/hero/keys-hardware-desktop.png"
-                      alt=""
-                      width={1536}
-                      height={1024}
-                      loading="eager"
-                      decoding="sync"
-                      draggable={false}
-                    />
-                  </picture>
-                </div>
-              ) : null}
+              <div className="hero-keys" aria-hidden="true">
+                <picture>
+                  <source
+                    media="(max-width: 767px)"
+                    srcSet="/images/hero/keys-hardware-mobile.png"
+                  />
+                  <img
+                    src="/images/hero/keys-hardware-desktop.png"
+                    alt=""
+                    width={1536}
+                    height={1024}
+                    loading="eager"
+                    decoding="sync"
+                    data-hero-critical="true"
+                    draggable={false}
+                  />
+                </picture>
+              </div>
 
-              {showFolder ? (
-                <div className="hero-folder" aria-hidden="true">
-                  <picture>
-                    <source
-                      media="(max-width: 767px)"
-                      srcSet="/images/hero/folder-hardware-mobile.png"
-                    />
-                    <img
-                      src="/images/hero/folder-hardware-desktop.png"
-                      alt=""
-                      width={1536}
-                      height={1024}
-                      loading="eager"
-                      decoding="sync"
-                      draggable={false}
-                    />
-                  </picture>
-                </div>
-              ) : null}
+              <div className="hero-folder" aria-hidden="true">
+                <picture>
+                  <source
+                    media="(max-width: 767px)"
+                    srcSet="/images/hero/folder-hardware-mobile.png"
+                  />
+                  <img
+                    src="/images/hero/folder-hardware-desktop.png"
+                    alt=""
+                    width={1536}
+                    height={1024}
+                    loading="eager"
+                    decoding="sync"
+                    data-hero-critical="true"
+                    draggable={false}
+                  />
+                </picture>
+              </div>
             </div>
           </div>
         </div>

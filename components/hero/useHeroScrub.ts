@@ -515,27 +515,67 @@ export function useHeroScrub({
  * plays against an empty frame. Capped so a slow network cannot strand it.
  */
 export function useHeroReady(
-  plate: RefObject<HTMLImageElement | null>,
-  hardware: RefObject<HTMLImageElement | null>,
+  {
+    hero,
+    entrance,
+    plate,
+    hardware,
+  }: {
+    hero: RefObject<HTMLElement | null>;
+    entrance: RefObject<HTMLElement | null>;
+    plate: RefObject<HTMLImageElement | null>;
+    hardware: RefObject<HTMLImageElement | null>;
+  },
 ) {
   useEffect(() => {
-    const ready = () => document.documentElement.classList.add("hero-ready");
-    const images = [plate.current, hardware.current].filter(
-      (image): image is HTMLImageElement => image !== null,
-    );
+    let settled = false;
+    const root = document.documentElement;
+    root.dataset.heroAssets = "preparing";
 
-    images.forEach((image) => {
-      if (image.complete) return;
-      image.addEventListener("load", ready, { once: true });
-      image.addEventListener("error", ready, { once: true });
+    const markReady = (status: "ready" | "timed-out") => {
+      if (settled) return;
+      settled = true;
+      root.classList.add("hero-ready");
+      root.dataset.heroAssets = status;
+      performance.mark(`genesis-hero-media-${status}`);
+    };
+
+    const seen = new Set<HTMLImageElement>();
+    const images = [
+      plate.current,
+      hardware.current,
+      ...(hero.current?.querySelectorAll<HTMLImageElement>(
+        "img[data-hero-critical]",
+      ) ?? []),
+      ...(entrance.current?.querySelectorAll<HTMLImageElement>(
+        "img[data-hero-critical]",
+      ) ?? []),
+    ].filter((image): image is HTMLImageElement => {
+      if (!image || seen.has(image)) return false;
+      seen.add(image);
+      return true;
     });
 
-    Promise.all(images.map((image) => image.decode?.() ?? Promise.resolve())).then(
-      ready,
-      ready,
-    );
-    const timer = window.setTimeout(ready, 1600);
+    // Decode every camera plate and transparent foreground surface before the
+    // visitor reaches the laptop. The static frame and entrance share URLs,
+    // so this also warms the returned hero rather than mounting/decoding it
+    // during the final handoff.
+    Promise.allSettled(
+      images.map(async (image) => {
+        if (!image.complete) {
+          await new Promise<void>((resolve) => {
+            image.addEventListener("load", () => resolve(), { once: true });
+            image.addEventListener("error", () => resolve(), { once: true });
+          });
+        }
+        await image.decode?.().catch(() => undefined);
+      }),
+    ).then(() => markReady("ready"));
+
+    // Keep the original fail-safe so an unavailable optional foreground asset
+    // cannot strand the opening. A normal page reaches the ready branch.
+    const timer = window.setTimeout(() => markReady("timed-out"), 6000);
 
     return () => window.clearTimeout(timer);
-  }, [hardware, plate]);
+  }, [entrance, hardware, hero, plate]);
 }

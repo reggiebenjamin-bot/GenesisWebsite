@@ -121,6 +121,7 @@ export function GenesisSystem({
   );
   const [isEditorialTransitioning, setIsEditorialTransitioning] =
     useState(false);
+  const [ambientPrepared, setAmbientPrepared] = useState(false);
   const transitionIdRef = useRef(0);
   const reduceMotion = useReducedMotion();
   const nodeRefs = [foundationRef, workflowRef, crmRef, managedRef] as const;
@@ -196,6 +197,56 @@ export function GenesisSystem({
     return () => {
       clearTimers();
       observer.disconnect();
+    };
+  }, [decorative, reduceMotion]);
+
+  // The destination is mounted from the first render, including beam geometry.
+  // Only the optional ambient motion is deferred until the section is within a
+  // generous approach margin. On mobile this completes while the visitor is
+  // still in the hero runway, never in the final laptop-to-Hub crossfade.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || decorative || reduceMotion) return;
+
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    let idleId: number | undefined;
+    let timer = 0;
+    let cancelled = false;
+
+    const prepare = () => {
+      const markPrepared = () => {
+        if (cancelled) return;
+        setAmbientPrepared(true);
+        performance.mark("genesis-hub-ambient-prepared");
+      };
+
+      if (idleWindow.requestIdleCallback) {
+        idleId = idleWindow.requestIdleCallback(markPrepared, { timeout: 900 });
+      } else {
+        timer = window.setTimeout(markPrepared, 180);
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        prepare();
+      },
+      { rootMargin: "0px 0px 75% 0px", threshold: 0 },
+    );
+    observer.observe(section);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      if (idleId !== undefined && idleWindow.cancelIdleCallback) {
+        idleWindow.cancelIdleCallback(idleId);
+      }
+      window.clearTimeout(timer);
     };
   }, [decorative, reduceMotion]);
 
@@ -322,7 +373,10 @@ export function GenesisSystem({
                   className="h-auto w-10 sm:w-11"
                 />
               ) : (
-                <GenesisCompileLogo className="h-auto w-10 sm:w-11" />
+                <GenesisCompileLogo
+                  className="h-auto w-10 sm:w-11"
+                  deferStartMs={1100}
+                />
               )}
             </HubGlowCircle>
           </div>
@@ -343,6 +397,7 @@ export function GenesisSystem({
                 pathOpacity={0.22}
                 gradientStartColor="#C9A55E"
                 gradientStopColor="#F2D895"
+                animated={ambientPrepared}
               />
               <AnimatedBeam
                 containerRef={containerRef}
@@ -358,6 +413,7 @@ export function GenesisSystem({
                 pathOpacity={0.22}
                 gradientStartColor="#C9A55E"
                 gradientStopColor="#F2D895"
+                animated={ambientPrepared}
               />
               <AnimatedBeam
                 containerRef={containerRef}
@@ -373,6 +429,7 @@ export function GenesisSystem({
                 pathOpacity={0.22}
                 gradientStartColor="#C9A55E"
                 gradientStopColor="#F2D895"
+                animated={ambientPrepared}
               />
               <AnimatedBeam
                 containerRef={containerRef}
@@ -388,6 +445,7 @@ export function GenesisSystem({
                 pathOpacity={0.22}
                 gradientStartColor="#C9A55E"
                 gradientStopColor="#F2D895"
+                animated={ambientPrepared}
               />
             </>
           ) : null}

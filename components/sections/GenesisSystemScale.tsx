@@ -1,61 +1,98 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { useReducedMotion } from "motion/react";
 import { systemLayers } from "@/lib/content";
 import styles from "./GenesisSystemScale.module.css";
 
-const VIEWBOX = { width: 1400, height: 760, floor: 675 };
-const checkpoints = [
-  { x: "13%", y: "73%" },
-  { x: "36%", y: "63%" },
-  { x: "61%", y: "45%" },
-  { x: "83%", y: "20%" },
-] as const;
+const VIEWBOX = { width: 1440, height: 760 };
+const CURVE =
+  "M 0 676 C 330 676, 590 646, 825 566 C 1090 476, 1265 248, 1440 0";
+const checkpoints = [0.39, 0.58, 0.76, 0.9] as const;
 
 type SignalState = {
   x: number;
   y: number;
   length: number;
   speed: number;
-  brightness: number;
+  opacity: number;
   dormantUntil: number;
-  initialized: boolean;
 };
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 const random = (min: number, max: number) => min + Math.random() * (max - min);
 
+/**
+ * The Solutions-page system visual. The curve itself is the shared operating
+ * spine; the four content checkpoints are positioned from its real SVG path
+ * whenever the visual resizes, so their connectors cannot drift away.
+ */
 export function GenesisSystemScale() {
   const sectionRef = useRef<HTMLElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
+  const curveRef = useRef<SVGPathElement>(null);
+  const stepRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const detailRef = useRef<HTMLElement>(null);
   const signalRefs = useRef<Array<HTMLSpanElement | null>>([]);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [entered, setEntered] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [mobileActiveIndex, setMobileActiveIndex] = useState<number | null>(0);
   const reduceMotion = useReducedMotion();
 
-  const { curvePath, maskPath } = useMemo(() => {
-    const points = Array.from({ length: 121 }, (_, index) => {
-      const t = index / 120;
-      return [
-        (VIEWBOX.width * t).toFixed(1),
-        (VIEWBOX.floor - VIEWBOX.floor * Math.pow(t, 2.15)).toFixed(1),
-      ];
-    });
-    const path = `M${points.map(([x, y]) => `${x} ${y}`).join(" L ")}`;
+  const placeDetail = useCallback((index: number) => {
+    const visual = visualRef.current;
+    const step = stepRefs.current[index];
+    const detail = detailRef.current;
+    if (!visual || !step || !detail || window.innerWidth <= 860) return;
 
-    return {
-      curvePath: path,
-      maskPath: `M0 0 L${VIEWBOX.width} 0 L${[...points]
-        .reverse()
-        .map(([x, y]) => `${x} ${y}`)
-        .join(" L ")} Z`,
-    };
+    const visualRect = visual.getBoundingClientRect();
+    const stepRect = step.getBoundingClientRect();
+    const width = detail.offsetWidth || 340;
+    const height = detail.offsetHeight || 175;
+    const margin = 22;
+    let x = stepRect.left - visualRect.left + 30;
+    if (x + width > visualRect.width - margin) {
+      x = stepRect.left - visualRect.left - width - 30;
+    }
+
+    let y = stepRect.top - visualRect.top - height - 24;
+    if (y < margin) y = stepRect.top - visualRect.top + 34;
+    y = Math.min(y, visualRect.height - height - margin);
+    detail.style.setProperty("--card-x", `${Math.max(margin, x)}px`);
+    detail.style.setProperty("--card-y", `${Math.max(margin, y)}px`);
   }, []);
+
+  const placeSteps = useCallback(() => {
+    const visual = visualRef.current;
+    const curve = curveRef.current;
+    if (!visual || !curve) return;
+
+    const bounds = visual.getBoundingClientRect();
+    const total = curve.getTotalLength();
+    checkpoints.forEach((progress, index) => {
+      const point = curve.getPointAtLength(total * progress);
+      const step = stepRefs.current[index];
+      if (!step) return;
+      step.style.setProperty("--x", `${(point.x / VIEWBOX.width) * bounds.width}px`);
+      step.style.setProperty("--y", `${(point.y / VIEWBOX.height) * bounds.height}px`);
+    });
+
+    if (activeIndex !== null) placeDetail(activeIndex);
+  }, [activeIndex, placeDetail]);
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
-    if (reduceMotion) return;
+    if (!section || reduceMotion) {
+      setEntered(true);
+      return;
+    }
 
     let played = false;
     const observer = new IntersectionObserver(
@@ -65,12 +102,24 @@ export function GenesisSystemScale() {
         setEntered(true);
         observer.disconnect();
       },
-      { threshold: 0.2 },
+      { threshold: 0.16 },
     );
-
     observer.observe(section);
     return () => observer.disconnect();
   }, [reduceMotion]);
+
+  useEffect(() => {
+    const visual = visualRef.current;
+    if (!visual) return;
+    const observer = new ResizeObserver(() => placeSteps());
+    observer.observe(visual);
+    placeSteps();
+    return () => observer.disconnect();
+  }, [placeSteps]);
+
+  useEffect(() => {
+    if (activeIndex !== null) placeDetail(activeIndex);
+  }, [activeIndex, placeDetail]);
 
   useEffect(() => {
     const visual = visualRef.current;
@@ -82,93 +131,92 @@ export function GenesisSystemScale() {
     const state: SignalState[] = signals.map(() => ({
       x: 0,
       y: 0,
-      length: 180,
+      length: 120,
       speed: 1,
-      brightness: 0.5,
+      opacity: 0.4,
       dormantUntil: 0,
-      initialized: false,
     }));
     let bounds = { width: 0, height: 0 };
-    let active = false;
-    let raf = 0;
-    let lastTime = performance.now();
+    let visible = false;
+    let frame = 0;
+    let previous = performance.now();
 
-    const resetSignal = (signal: SignalState, now: number, initial = false) => {
-      const spacing = 12;
+    const reset = (signal: SignalState, now: number, initial = false) => {
+      const spacing = 18;
       const columns = Math.max(1, Math.floor(bounds.width / spacing));
-      const centerOffset = ((bounds.width / 2) % spacing + spacing) % spacing;
-      signal.x = centerOffset + spacing * Math.floor(random(0, columns));
-      signal.length = random(90, 220);
-      signal.speed = random(0.55, 0.9);
-      signal.brightness = random(0.28, 0.58);
+      signal.x = spacing * Math.floor(random(1, columns - 1));
+      signal.length = random(70, 150);
+      signal.speed = random(0.34, 0.56);
+      signal.opacity = random(0.2, 0.4);
       signal.y = initial
         ? random(-signal.length, bounds.height)
-        : random(bounds.height, bounds.height + signal.length * 1.5);
-      signal.dormantUntil = now + (initial ? 0 : random(900, 2800));
-      signal.initialized = true;
+        : bounds.height + signal.length;
+      signal.dormantUntil = now + (initial ? 0 : random(1200, 3600));
     };
 
-    const frame = (now: number) => {
-      raf = 0;
-      if (!active || !bounds.width || !bounds.height) return;
-      const delta = Math.min((now - lastTime) / 1000, 0.05);
-      lastTime = now;
+    const tick = (now: number) => {
+      frame = 0;
+      if (!visible || !bounds.width || !bounds.height) return;
+      const delta = Math.min((now - previous) / 1000, 0.05);
+      previous = now;
 
       state.forEach((signal, index) => {
         const element = signals[index];
-        if (!signal.initialized) resetSignal(signal, now, index === 0);
         if (signal.dormantUntil > now) {
           element.style.opacity = "0";
           return;
         }
-
-        signal.y -= 118 * signal.speed * delta;
+        signal.y -= 105 * signal.speed * delta;
         if (signal.y + signal.length < 0) {
-          resetSignal(signal, now);
+          reset(signal, now);
           element.style.opacity = "0";
           return;
         }
-
         const fromBottom = clamp01((bounds.height - signal.y) / signal.length);
-        const nearTop = clamp01((signal.y + signal.length) / 130);
-        const opacity = signal.brightness * fromBottom * nearTop;
-        element.style.transform = `translate3d(${signal.x - 0.5}px, ${signal.y}px, 0) scaleY(${signal.length / 220})`;
-        element.style.opacity = opacity.toFixed(3);
+        const nearTop = clamp01((signal.y + signal.length) / 105);
+        element.style.transform = `translate3d(${signal.x}px, ${signal.y}px, 0) scaleY(${signal.length / 150})`;
+        element.style.opacity = String(signal.opacity * fromBottom * nearTop);
       });
-
-      raf = requestAnimationFrame(frame);
+      frame = requestAnimationFrame(tick);
     };
 
-    const start = () => {
-      if (raf || !active) return;
-      lastTime = performance.now();
-      raf = requestAnimationFrame(frame);
-    };
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
+    const resize = new ResizeObserver(([entry]) => {
       bounds = { width: entry.contentRect.width, height: entry.contentRect.height };
-      if (active) start();
+      state.forEach((signal, index) => reset(signal, performance.now(), index === 0));
     });
-    const visibilityObserver = new IntersectionObserver(
+    const visibility = new IntersectionObserver(
       ([entry]) => {
-        active = Boolean(entry?.isIntersecting);
-        if (active) start();
-        if (!active && raf) {
-          cancelAnimationFrame(raf);
-          raf = 0;
+        visible = Boolean(entry?.isIntersecting);
+        if (visible && !frame) {
+          previous = performance.now();
+          frame = requestAnimationFrame(tick);
+        }
+        if (!visible && frame) {
+          cancelAnimationFrame(frame);
+          frame = 0;
         }
       },
-      { rootMargin: "200px" },
+      { rootMargin: "160px" },
     );
-
-    resizeObserver.observe(visual);
-    visibilityObserver.observe(visual);
+    resize.observe(visual);
+    visibility.observe(visual);
     return () => {
-      cancelAnimationFrame(raf);
-      resizeObserver.disconnect();
-      visibilityObserver.disconnect();
+      cancelAnimationFrame(frame);
+      resize.disconnect();
+      visibility.disconnect();
     };
   }, [entered, reduceMotion]);
+
+  const show = (index: number) => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    setActiveIndex(index);
+  };
+  const hideSoon = () => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setActiveIndex(null), 150);
+  };
+
+  const activeLayer = activeIndex === null ? null : systemLayers[activeIndex];
 
   return (
     <section
@@ -177,10 +225,39 @@ export function GenesisSystemScale() {
       data-entered={entered ? "true" : "false"}
     >
       <div className={styles.shell}>
-        <div ref={visualRef} className={styles.visual} aria-hidden="true">
-          <div className={styles.grid} />
-          <div className={styles.signals}>
-            {Array.from({ length: 11 }, (_, index) => (
+        <header className={styles.heading}>
+          <p className={styles.eyebrow}>The Genesis System</p>
+          <h2>One managed foundation behind every part of your operation.</h2>
+          <p className={styles.mobileSubtitle}>
+            Four connected layers, built to operate as one accountable system.
+          </p>
+        </header>
+
+        <div ref={visualRef} className={styles.visual}>
+          <svg
+            className={styles.grid}
+            viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`}
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <pattern
+                id="genesis-system-stems"
+                width="12"
+                height={VIEWBOX.height}
+                patternUnits="userSpaceOnUse"
+              >
+                <path className={styles.gridLine} d={`M 11.5 0 V ${VIEWBOX.height}`} />
+              </pattern>
+            </defs>
+            <path
+              className={styles.gridShape}
+              d={`${CURVE} L ${VIEWBOX.width} ${VIEWBOX.height} L 0 ${VIEWBOX.height} Z`}
+            />
+          </svg>
+          <div className={styles.bloom} aria-hidden="true" />
+          <div className={styles.signals} aria-hidden="true">
+            {Array.from({ length: 7 }, (_, index) => (
               <span
                 key={index}
                 ref={(element) => {
@@ -190,44 +267,126 @@ export function GenesisSystemScale() {
               />
             ))}
           </div>
-          <div className={styles.bloom} />
-          <svg className={styles.curve} viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`} preserveAspectRatio="none">
-            <path className={styles.curveMask} d={maskPath} />
-            <path className={styles.curveBase} d={curvePath} />
-            <path className={styles.curveAccent} d={curvePath} />
+          <svg
+            className={styles.curve}
+            viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`}
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path className={styles.curveBase} d={CURVE} />
+            <path
+              ref={curveRef}
+              className={styles.curveAccent}
+              d={CURVE}
+              pathLength="1"
+            />
+            <path className={styles.curvePulse} d={CURVE} pathLength="1" />
           </svg>
-          <div className={styles.checkpoints}>
-            {checkpoints.map((point, index) => (
-              <span
-                key={systemLayers[index].number}
-                className={styles.dot}
-                style={{ "--x": point.x, "--y": point.y, "--delay": `${540 + index * 220}ms` } as CSSProperties}
-              />
+
+          <div className={styles.steps}>
+            {systemLayers.map((layer, index) => (
+              <div
+                key={layer.number}
+                ref={(element) => {
+                  stepRefs.current[index] = element;
+                }}
+                className={styles.step}
+                data-active={activeIndex === index || undefined}
+                style={
+                  {
+                    "--stem": `${[82, 104, 94, 78][index]}px`,
+                    "--chip-width": `${[220, 205, 185, 172][index]}px`,
+                    "--delay": `${280 + index * 175}ms`,
+                  } as CSSProperties
+                }
+                onMouseEnter={() => show(index)}
+                onMouseLeave={hideSoon}
+              >
+                <span className={styles.marker} aria-hidden="true" />
+                <span className={styles.stem} aria-hidden="true" />
+                <button
+                  type="button"
+                  className={styles.trigger}
+                  aria-expanded={activeIndex === index}
+                  aria-controls="genesis-system-detail"
+                  onFocus={() => show(index)}
+                  onBlur={hideSoon}
+                  onClick={() => setActiveIndex((current) => (current === index ? null : index))}
+                >
+                  <span className={styles.number}>{layer.number}</span>
+                  <span className={styles.name}>{layer.title}</span>
+                </button>
+              </div>
             ))}
           </div>
+
+          <aside
+            ref={detailRef}
+            id="genesis-system-detail"
+            className={styles.detail}
+            data-visible={activeLayer ? "true" : "false"}
+            onMouseEnter={() => {
+              if (hideTimer.current) clearTimeout(hideTimer.current);
+            }}
+            onMouseLeave={hideSoon}
+            aria-live="polite"
+          >
+            {activeLayer ? (
+              <>
+                <p className={styles.detailKicker}>Layer {activeLayer.number}</p>
+                <h3>{activeLayer.title}</h3>
+                <p>{activeLayer.description}</p>
+              </>
+            ) : null}
+          </aside>
         </div>
 
-        <header className={styles.heading}>
-          <p className={styles.eyebrow}>The Genesis System</p>
-          <h2>One managed foundation behind every part of your operation.</h2>
-        </header>
+        <div className={styles.mobileTimeline}>
+          {systemLayers.map((layer, index) => {
+            const isOpen = mobileActiveIndex === index;
+            const bodyId = `genesis-mobile-layer-${layer.number}`;
 
-        <div className={styles.layers}>
-          {systemLayers.map((layer, index) => (
-            <article
-              key={layer.number}
-              className={styles.layer}
-              style={{
-                "--x": checkpoints[index].x,
-                "--y": checkpoints[index].y,
-                "--delay": `${280 + index * 180}ms`,
-              } as CSSProperties}
-            >
-              <p className={styles.number}>{layer.number}</p>
-              <h3>{layer.title}</h3>
-              <p>{layer.description}</p>
-            </article>
-          ))}
+            return (
+              <article
+                key={layer.number}
+                className={styles.mobileStep}
+                data-open={isOpen ? "true" : "false"}
+                style={{ "--mobile-delay": `${120 + index * 90}ms` } as CSSProperties}
+              >
+                <div className={styles.mobileRail} aria-hidden="true">
+                  <span className={styles.mobileDiamondWrap}>
+                    <span className={styles.mobileDiamond} />
+                  </span>
+                </div>
+
+                <div className={styles.mobileChip}>
+                  <button
+                    type="button"
+                    className={styles.mobileTrigger}
+                    aria-expanded={isOpen}
+                    aria-controls={bodyId}
+                    onClick={() =>
+                      setMobileActiveIndex((current) =>
+                        current === index ? null : index,
+                      )
+                    }
+                  >
+                    <span>
+                      <span className={styles.mobileNumber}>{layer.number}</span>
+                      <span className={styles.mobileName}>{layer.title}</span>
+                    </span>
+                    <span className={styles.mobileToggle} aria-hidden="true" />
+                  </button>
+
+                  <div id={bodyId} className={styles.mobileBody}>
+                    <div className={styles.mobileBodyInner}>
+                      <p>{layer.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
