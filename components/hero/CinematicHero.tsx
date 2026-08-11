@@ -2,7 +2,6 @@
 
 import { useCallback, useRef, useState } from "react";
 import { CinematicFrame } from "./CinematicFrame";
-import { DesktopFolderTuner } from "./DesktopFolderTuner";
 import { GenesisSystem } from "./GenesisSystem";
 import { useHeroReady, useHeroScrub } from "./useHeroScrub";
 
@@ -63,7 +62,6 @@ export function CinematicHero() {
         </div>
       ) : null}
 
-      {process.env.NODE_ENV === "development" ? <DesktopFolderTuner /> : null}
     </>
   );
 }

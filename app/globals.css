@@ -78,12 +78,10 @@
   --hero-keys-y: 71.210%;
   --hero-keys-w: 5.770%;
   --hero-keys-h: 8.300%;
-  /* Desktop-only transparent folder render; temporary values are exposed in
-     the development-only folder calibrator. */
-  --hero-folder-x: 51.5%;
-  --hero-folder-y: 59%;
-  --hero-folder-w: 8%;
-  --hero-folder-h: 12%;
+  --hero-folder-x: 60.150%;
+  --hero-folder-y: 67.580%;
+  --hero-folder-w: 12.060%;
+  --hero-folder-h: 14.770%;
   --hero-pan-x: -0.026%;
   --hero-pan-y: -14.1204%;
 
