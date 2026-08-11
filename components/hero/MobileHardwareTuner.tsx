@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 const DEFAULTS = {
   x: 31.939,
-  y: 53.657,
+  y: 53.21,
   w: 36.078,
-  h: 12.916,
+  h: 16.45,
 } as const;
 
 type Control = keyof typeof DEFAULTS;

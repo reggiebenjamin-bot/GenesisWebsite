@@ -96,18 +96,23 @@ export function CinematicFrame({
                   {/* The transform can magnify this layer beyond its resting
                       footprint, so it intentionally bypasses responsive image
                       candidate selection and loads the supplied 1920px PNG. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    ref={hardwareRef}
-                    src="/images/hero/macbook-hardware.png"
-                    alt=""
-                    width={1920}
-                    height={1080}
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="sync"
-                    draggable={false}
-                  />
+                  <picture>
+                    <source
+                      media="(max-width: 767px)"
+                      srcSet="/images/hero/macbook-hardware-mobile.png"
+                    />
+                    <img
+                      ref={hardwareRef}
+                      src="/images/hero/macbook-hardware.png"
+                      alt=""
+                      width={1920}
+                      height={1080}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="sync"
+                      draggable={false}
+                    />
+                  </picture>
                 </div>
               ) : null}
             </div>
