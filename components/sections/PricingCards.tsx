@@ -13,7 +13,7 @@ export function PricingCards({
   featuredLabel?: string;
 }) {
   return (
-    <div className="grid items-stretch gap-5 lg:grid-cols-3">
+    <div className="grid items-stretch gap-6 xl:grid-cols-3">
       {plans.map((plan, index) => {
         const featured = Boolean(plan.featured);
         const flagship = plan.slug === "flagship";
