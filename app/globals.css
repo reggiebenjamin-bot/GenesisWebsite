@@ -222,6 +222,170 @@
   margin-inline: auto;
 }
 
+@media (max-width: 640px) {
+  .shell {
+    width: min(1280px, calc(100vw - 32px));
+  }
+}
+
+/* Below-the-fold sections stay out of the initial paint and layout budget.
+   The intrinsic fallback keeps scroll geometry stable until each band nears
+   the viewport. */
+.site-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Progressive, CSS-only reveals avoid hydrating dozens of animation wrappers.
+   Browsers without view timelines simply render the content immediately. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in 0.62s var(--ease-editorial) both;
+    animation-delay: var(--reveal-delay, 0s);
+    animation-timeline: view();
+    animation-range: entry 8% entry 34%;
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animated-beam-flow {
+  animation: animated-beam-travel var(--beam-cycle, 6.6s) linear
+    var(--beam-delay, 0s) var(--beam-iterations, infinite);
+}
+
+.animated-beam-flow[data-reverse="true"] {
+  animation-direction: reverse;
+}
+
+@keyframes animated-beam-travel {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  28% {
+    opacity: 1;
+    stroke-dashoffset: -1;
+  }
+  34%,
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -1;
+  }
+}
+
+/* Lightweight laptop-screen preview. The real interactive system appears in
+   the following section; duplicating it inside both hero composites was a
+   large hydration and paint cost. */
+.hero-system-preview {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: 0.8fr 1.2fr;
+  align-items: center;
+  gap: 6%;
+  padding: 8%;
+  color: var(--color-ivory);
+  background:
+    radial-gradient(circle at 70% 50%, rgb(201 165 94 / 0.12), transparent 35%),
+    var(--color-ink);
+}
+
+.hero-system-preview-copy {
+  display: grid;
+  gap: 0.7em;
+}
+
+.hero-system-preview-copy span {
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: clamp(5px, 0.55vw, 10px);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero-system-preview-copy strong {
+  max-width: 15ch;
+  font-size: clamp(10px, 1.25vw, 22px);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.hero-system-preview-copy i {
+  width: 34%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-gold), transparent);
+}
+
+.hero-system-preview-map {
+  position: relative;
+  aspect-ratio: 1.35;
+}
+
+.hero-preview-node,
+.hero-preview-hub {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgb(242 216 149 / 0.28);
+  border-radius: 50%;
+  background: rgb(8 9 14 / 0.8);
+  box-shadow: 0 0 18px rgb(201 165 94 / 0.1);
+}
+
+.hero-preview-node {
+  width: 12%;
+  aspect-ratio: 1;
+}
+
+.hero-preview-node::after {
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-gold-light);
+  content: "";
+}
+
+.hero-preview-node-one { top: 11%; left: 8%; }
+.hero-preview-node-two { bottom: 11%; left: 8%; }
+.hero-preview-node-three { top: 11%; right: 8%; }
+.hero-preview-node-four { right: 8%; bottom: 11%; }
+
+.hero-preview-hub {
+  top: 50%;
+  left: 50%;
+  width: 21%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.hero-preview-hub::before {
+  position: absolute;
+  inset: -75%;
+  z-index: -1;
+  background:
+    linear-gradient(28deg, transparent 49.6%, rgb(201 165 94 / 0.28) 50%, transparent 50.4%),
+    linear-gradient(-28deg, transparent 49.6%, rgb(201 165 94 / 0.28) 50%, transparent 50.4%);
+  content: "";
+}
+
+.hero-preview-hub img {
+  width: 52%;
+  height: auto;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    3. THE HERO CAMERA RIG
 
@@ -820,6 +984,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .animated-beam-flow {
+    animation: none;
+  }
+
   .secondary-action,
   .secondary-action::before {
     transition: none;

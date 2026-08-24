@@ -1,5 +1,6 @@
 import { CinematicHero } from "@/components/hero/CinematicHero";
 import { CapabilityStrip } from "@/components/sections/CapabilityStrip";
+import { AppliedIntelligence } from "@/components/sections/AppliedIntelligence";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
 import { PricingCards } from "@/components/sections/PricingCards";
 import { SystemLayers } from "@/components/sections/SystemLayers";
@@ -50,6 +51,8 @@ export default function Home() {
           Explore the complete system
         </TextLink>
       </Section>
+
+      <AppliedIntelligence />
 
       <Section>
         <Reveal>

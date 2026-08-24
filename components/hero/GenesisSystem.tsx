@@ -11,8 +11,7 @@ import {
   type ReactNode,
   type SVGProps,
 } from "react";
-import { useReducedMotion } from "motion/react";
-import { GenesisCompileLogo } from "@/components/layout/GlobalLogoIntro";
+import { useReducedMotion } from "@/components/hooks/useMotionPreference";
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 
 type Stage = {
@@ -37,8 +36,8 @@ const stages: Stage[] = [
   },
   {
     index: "02",
-    title: "AI Workflows & Automation",
-    body: "Practical workflows for follow-up, administration, document handling, routing, and repetitive real-estate work.",
+    title: "Applied AI & Data Synthesis",
+    body: "Connected operational data becomes usable context for follow-up, document handling, routing, and repetitive real-estate work.",
     icon: WorkflowIcon,
   },
   {
@@ -66,7 +65,7 @@ const nodePositions = [
 
 const stageKickers = [
   "Foundation",
-  "Automation",
+  "Synthesis + automation",
   "Optional layer",
   "Ongoing management",
 ] as const;
@@ -363,21 +362,14 @@ export function GenesisSystem({
               ref={genesisRef}
               className="absolute top-1/2 left-1/2 z-20 size-[5.5rem] -translate-x-1/2 -translate-y-1/2 sm:size-24"
             >
-              {decorative ? (
-                <Image
-                  src="/brand/genesis-logo.svg"
-                  alt="Genesis"
-                  width={48}
-                  height={48}
-                  loading="eager"
-                  className="h-auto w-10 sm:w-11"
-                />
-              ) : (
-                <GenesisCompileLogo
-                  className="h-auto w-10 sm:w-11"
-                  deferStartMs={1100}
-                />
-              )}
+              <Image
+                src="/brand/genesis-logo.svg"
+                alt={decorative ? "" : "Genesis"}
+                width={48}
+                height={48}
+                loading={decorative ? "eager" : "lazy"}
+                className="h-auto w-10 sm:w-11"
+              />
             </HubGlowCircle>
           </div>
 

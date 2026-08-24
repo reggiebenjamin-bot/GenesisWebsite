@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Ref } from "react";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
-import { GenesisSystem } from "./GenesisSystem";
 
 /**
  * The cinematic frame: the room, the laptop, and the hero copy.
@@ -39,7 +38,27 @@ export function CinematicFrame({
             <div className="hero-zoom">
               <div className="hero-screen" aria-hidden="true" inert>
                 <div className="hero-screen-canvas">
-                  <GenesisSystem decorative />
+                  <div className="hero-system-preview">
+                    <div className="hero-system-preview-copy">
+                      <span>The Genesis System</span>
+                      <strong>One managed system behind the operation.</strong>
+                      <i />
+                    </div>
+                    <div className="hero-system-preview-map">
+                      <span className="hero-preview-node hero-preview-node-one" />
+                      <span className="hero-preview-node hero-preview-node-two" />
+                      <span className="hero-preview-node hero-preview-node-three" />
+                      <span className="hero-preview-node hero-preview-node-four" />
+                      <span className="hero-preview-hub">
+                        <Image
+                          src="/brand/genesis-logo.svg"
+                          alt=""
+                          width={44}
+                          height={44}
+                        />
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -65,7 +84,7 @@ export function CinematicFrame({
                     loading="eager"
                     fetchPriority="high"
                     data-hero-critical="true"
-                    quality={92}
+                    quality={75}
                     sizes="(max-width: 767px) 100vw, 140vw"
                   />
                 </picture>
@@ -81,9 +100,9 @@ export function CinematicFrame({
                     src="/images/hero/hero-plate-detail.webp"
                     alt=""
                     fill
-                    loading="eager"
-                    data-hero-critical="true"
-                    quality={92}
+                    loading="lazy"
+                    fetchPriority="low"
+                    quality={75}
                     sizes="(max-width: 767px) 55vw, 44vw"
                   />
                 </picture>
@@ -99,17 +118,17 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/macbook-hardware-mobile.png"
+                    srcSet="/images/hero/macbook-hardware-mobile.webp"
                   />
                   <img
                     ref={hardwareRef}
-                    src="/images/hero/macbook-hardware.png"
+                    src="/images/hero/macbook-hardware.webp"
                     alt=""
                     width={1920}
                     height={1080}
                     loading="eager"
                     fetchPriority="high"
-                    decoding="sync"
+                    decoding="async"
                     data-hero-critical="true"
                     draggable={false}
                   />
@@ -120,16 +139,16 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/keys-hardware-mobile.png"
+                    srcSet="/images/hero/keys-hardware-mobile.webp"
                   />
                   <img
-                    src="/images/hero/keys-hardware-desktop.png"
+                    src="/images/hero/keys-hardware-desktop.webp"
                     alt=""
                     width={1536}
                     height={1024}
-                    loading="eager"
-                    decoding="sync"
-                    data-hero-critical="true"
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                     draggable={false}
                   />
                 </picture>
@@ -139,16 +158,16 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/folder-hardware-mobile.png"
+                    srcSet="/images/hero/folder-hardware-mobile.webp"
                   />
                   <img
-                    src="/images/hero/folder-hardware-desktop.png"
+                    src="/images/hero/folder-hardware-desktop.webp"
                     alt=""
                     width={1536}
                     height={1024}
-                    loading="eager"
-                    decoding="sync"
-                    data-hero-critical="true"
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                     draggable={false}
                   />
                 </picture>
@@ -177,7 +196,7 @@ export function CinematicFrame({
             className="hero-rise hero-eyebrow font-display text-[0.69rem] font-semibold tracking-[0.18em] uppercase"
             style={{ "--i": 0 } as React.CSSProperties}
           >
-            AI + Systems for Real Estate Professionals
+            Applied AI + Managed Systems for Real Estate Professionals
           </p>
 
           <h1 className="mt-4 text-[clamp(1.3rem,min(2.9vw,4.4vh),2.95rem)] leading-[1.08]">
@@ -200,9 +219,9 @@ export function CinematicFrame({
             className="hero-rise mx-auto mt-5 max-w-xl text-[clamp(0.85rem,min(1.05vw,1.7vh),1.05rem)] text-ivory/90 max-md:hidden"
             style={{ "--i": 3 } as React.CSSProperties}
           >
-            Genesis provisions your Microsoft 365 foundation, builds practical
-            AI workflows, adds an optional CRM layer, and manages the system as
-            your operation evolves.
+            Genesis provisions your Microsoft 365 foundation, synthesizes the
+            information already moving through your operation, applies AI to
+            practical workflows, and manages the system as you evolve.
           </p>
 
           <div

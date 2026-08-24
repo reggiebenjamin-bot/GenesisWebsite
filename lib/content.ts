@@ -61,11 +61,12 @@ export const systemLayers: SystemLayer[] = [
   },
   {
     number: "02",
-    title: "AI Workflows & Automation",
+    title: "Applied AI & Data Synthesis",
     shortTitle: "Workflows",
     description:
-      "Practical workflows for drafting, follow-up, document handling, administration, and repetitive real-estate work.",
+      "Operational data is synthesized into usable context, then applied through practical AI workflows for follow-up, documents, administration, and repetitive real-estate work.",
     details: [
+      "Cross-system context synthesis",
       "Follow-up workflows",
       "Administrative automation",
       "Document and information handling",

@@ -7,7 +7,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/components/hooks/useMotionPreference";
 import { systemLayers } from "@/lib/content";
 import styles from "./GenesisSystemScale.module.css";
 

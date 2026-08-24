@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "@/components/hooks/useMotionPreference";
 import {
   useCallback,
   useId,
   useLayoutEffect,
   useState,
+  type CSSProperties,
   type RefObject,
 } from "react";
 
@@ -187,22 +188,23 @@ export function AnimatedBeam({
       />
 
       {!reduceMotion && animated && geometry.path ? (
-        <motion.path
+        <path
           d={geometry.path}
+          className="animated-beam-flow"
+          data-reverse={reverse ? "true" : "false"}
           fill="none"
-          initial={{ pathLength: 0.18, pathOffset: reverse ? 1 : 0 }}
-          animate={{ pathOffset: reverse ? [1, 0] : [0, 1] }}
-          pathLength={0.18}
+          pathLength={1}
           stroke={`url(#${gradientId})`}
           strokeLinecap="round"
           strokeWidth={pathWidth + 0.7}
-          transition={{
-            delay,
-            duration,
-            ease: "linear",
-            repeat,
-            repeatDelay,
-          }}
+          strokeDasharray="0.18 0.82"
+          style={
+            {
+              "--beam-delay": `${delay}s`,
+              "--beam-cycle": `${duration + repeatDelay}s`,
+              "--beam-iterations": repeat === Infinity ? "infinite" : repeat,
+            } as CSSProperties
+          }
           vectorEffect="non-scaling-stroke"
         />
       ) : null}

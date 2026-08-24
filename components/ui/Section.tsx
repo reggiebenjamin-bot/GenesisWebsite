@@ -38,7 +38,7 @@ export function Section({
 } & React.ComponentProps<"section">) {
   return (
     <section
-      className={`relative py-[clamp(88px,11vw,168px)] ${tones[tone]} ${className}`}
+      className={`site-section relative py-[clamp(88px,11vw,168px)] ${tones[tone]} ${className}`}
       {...props}
     >
       <div className="shell">{children}</div>

@@ -8,7 +8,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "Solutions",
-  "See how Genesis connects Microsoft 365, practical AI workflows, an optional CRM, and ongoing management into one operating system.",
+  "See how Genesis connects Microsoft 365, applied AI, data synthesis, an optional CRM, and ongoing management into one operating system.",
 );
 
 export default function SolutionsPage() {
@@ -17,7 +17,7 @@ export default function SolutionsPage() {
       <PageIntro
         eyebrow="The Genesis system"
         title="Infrastructure, workflows, and support—designed as one managed system."
-        description="Genesis connects the foundational tools, practical automation, and ongoing management that help real-estate operations move with more speed and consistency."
+        description="Genesis connects the foundational tools, operational data, applied AI, and ongoing management that help real-estate operations move with more speed and consistency."
       />
 
       <Section>

@@ -1,7 +1,7 @@
 # Genesis AI marketing website
 
 A managed-systems marketing site for real-estate operators. Next.js App Router,
-TypeScript, Tailwind CSS v4, and Motion.
+TypeScript, Tailwind CSS v4, and native CSS animation.
 
 ```bash
 npm install

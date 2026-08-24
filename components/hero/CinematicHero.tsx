@@ -40,11 +40,10 @@ export function CinematicHero() {
         className="hero-section relative isolate z-10 h-dvh overflow-clip bg-ink max-md:h-[240svh]"
       >
         <div className="hero-static-frame sticky top-0 h-dvh overflow-clip bg-ink">
-          {/* Keep the returned hero's foreground composite mounted from the
-              first paint. The entrance layer sits above it until landing, so
-              this does not alter the opening image, but it prevents a second
-              MacBook/keys/folder decode when the handoff completes. */}
-          <CinematicFrame />
+          {/* Mount one cinematic composite at a time. The browser keeps decoded
+              image resources warm for the handoff without paying to paint two
+              full-screen GPU stacks during the critical first interaction. */}
+          {landed ? <CinematicFrame /> : null}
         </div>
       </section>
 

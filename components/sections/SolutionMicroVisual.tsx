@@ -1,14 +1,17 @@
 "use client";
 
-import { useInView, useReducedMotion } from "motion/react";
 import { useRef } from "react";
+import {
+  useInViewOnce,
+  useReducedMotion,
+} from "@/components/hooks/useMotionPreference";
 import styles from "./SolutionMicroVisual.module.css";
 
 export type SolutionVisualKind = "foundation" | "workflows" | "crm" | "managed";
 
 export function SolutionMicroVisual({ kind }: { kind: SolutionVisualKind }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.55 });
+  const inView = useInViewOnce(ref, 0.55);
   const reducedMotion = useReducedMotion();
   const state = reducedMotion ? "complete" : inView ? "active" : "idle";
 
