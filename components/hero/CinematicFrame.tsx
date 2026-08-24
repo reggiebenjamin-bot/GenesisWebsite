@@ -48,6 +48,22 @@ export function CinematicFrame({
   const keysMobile = heroAsset("keys-hardware", true);
   const folder = heroAsset("folder-hardware-desktop");
   const folderMobile = heroAsset("folder-hardware", true);
+  const mobileRoom = {
+    src: progressive
+      ? "/images/hero/hero-mobile-room-preview.webp"
+      : "/images/hero/hero-mobile-room-optimized.webp",
+    fullSrc: progressive
+      ? "/images/hero/hero-mobile-room-optimized.webp"
+      : undefined,
+  };
+  const mobileDetail = {
+    src: progressive
+      ? "/images/hero/hero-mobile-detail-preview.webp"
+      : "/images/hero/hero-mobile-detail-optimized.webp",
+    fullSrc: progressive
+      ? "/images/hero/hero-mobile-detail-optimized.webp"
+      : undefined,
+  };
 
   return (
     <>
@@ -93,7 +109,8 @@ export function CinematicFrame({
                 <picture className="absolute inset-0 block">
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/hero-mobile-room.webp"
+                    srcSet={mobileRoom.src}
+                    data-hero-full-src={mobileRoom.fullSrc}
                   />
                   <Image
                     ref={plateRef}
@@ -113,7 +130,8 @@ export function CinematicFrame({
                 <picture className="absolute inset-0 block">
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/hero-mobile-detail.webp"
+                    srcSet={mobileDetail.src}
+                    data-hero-full-src={mobileDetail.fullSrc}
                   />
                   <Image
                     src="/images/hero/hero-plate-detail.webp"

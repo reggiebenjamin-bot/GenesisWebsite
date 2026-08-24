@@ -37,8 +37,8 @@
   --color-line-light: rgb(8 9 14 / 0.15);
 
   --font-sans: "Satoshi", ui-sans-serif, system-ui, Arial, sans-serif;
-  --font-display: "JetBrains Mono Variable", ui-monospace, SFMono-Regular,
-    Consolas, "Liberation Mono", monospace;
+  --font-display: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", monospace;
 
   --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-cinematic: cubic-bezier(0.65, 0, 0.12, 1);
@@ -1128,11 +1128,6 @@ html[data-hero-stage="cinematic"] .site-header::before {
   }
 }
 
-@keyframes hero-settle {
-  from { transform: scale(1.06); }
-  to { transform: scale(1); }
-}
-
 @keyframes hero-rise {
   from {
     opacity: 0;
@@ -1181,10 +1176,6 @@ html[data-hero-stage="cinematic"] .site-header::before {
 .hero-rise {
   opacity: 0;
 }
-.hero-ready .hero-intro {
-  animation: hero-settle 2.9s cubic-bezier(0.18, 0.75, 0.25, 1) both;
-}
-
 /* Genesis hub atmosphere and circular adaptation of the complete Uiverse
    glow-grid stack. The effect stays deliberately quiet until a hub is hovered. */
 .genesis-system-surface {
