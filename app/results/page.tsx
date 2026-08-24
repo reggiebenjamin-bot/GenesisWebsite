@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
+import { EvidenceFlow } from "@/components/sections/EvidenceFlow";
 import { Reveal } from "@/components/ui/Reveal";
 import {
   Eyebrow,
@@ -46,6 +47,19 @@ export default function ResultsPage() {
         title="Live systems now. Client-level claims only when the evidence is ready."
         description="Genesis is live in production for two independent operations today, with a third large-scale engagement underway. Specific outcomes appear only when the source, context, and permission are verified."
       />
+
+      <Section tone="dark">
+        <Reveal>
+          <SectionHeading
+            eyebrow="Evidence architecture"
+            title="Data synthesis makes the result inspectable."
+            description="Genesis connects each operational stage to exact source records, exposes the gaps between stages, and keeps unsupported conclusions out of the story."
+          />
+        </Reveal>
+        <Reveal delay={0.08}>
+          <EvidenceFlow />
+        </Reveal>
+      </Section>
 
       {proofItems.length > 0 ? (
         <Section>

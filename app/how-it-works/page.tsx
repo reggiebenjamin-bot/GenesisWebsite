@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
+import { EngagementPath } from "@/components/sections/EngagementPath";
 import { Reveal } from "@/components/ui/Reveal";
 import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
 import { processSteps } from "@/lib/content";
@@ -35,6 +36,19 @@ export default function HowItWorksPage() {
         title="Underwrite the operation. Build what matters. Keep it running."
         description="Genesis treats an operation with the same discipline a deal receives before capital moves: understand it, quantify it, build deliberately, launch, and continue operating the system."
       />
+
+      <Section tone="dark">
+        <Reveal>
+          <SectionHeading
+            eyebrow="The engagement path"
+            title="One path from first conversation to continuous operation."
+            description="Pilot and Enterprise are deliberate branches. Launch is the bridge between the system build and ongoing managed operation—not a handoff where Genesis disappears."
+          />
+        </Reveal>
+        <Reveal delay={0.08}>
+          <EngagementPath />
+        </Reveal>
+      </Section>
 
       <Section>
         <Reveal>

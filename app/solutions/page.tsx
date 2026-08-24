@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
 import { GenesisSystemScale } from "@/components/sections/GenesisSystemScale";
+import { ProductCockpit } from "@/components/sections/ProductCockpit";
 import { Reveal } from "@/components/ui/Reveal";
 import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
 import { audiences } from "@/lib/content";
@@ -22,6 +23,19 @@ export default function SolutionsPage() {
 
       <Section>
         <GenesisSystemScale />
+      </Section>
+
+      <Section tone="navy">
+        <Reveal>
+          <SectionHeading
+            eyebrow="The product underneath the system"
+            title="Reusable product intelligence—not a new custom build every time."
+            description="The live Genesis product organizes signals, evidence, next actions, deal movement, and operational diagnostics. Managed delivery configures those durable mechanisms around each operation."
+          />
+        </Reveal>
+        <Reveal delay={0.08}>
+          <ProductCockpit />
+        </Reveal>
       </Section>
 
       <Section tone="dark">
