@@ -27,6 +27,28 @@ export type ProofItem = {
   attribution?: string;
 };
 
+export type ActiveEngagement = {
+  slug: string;
+  number: string;
+  identity: string;
+  identityKind: "deidentified" | "named";
+  status: "Live — In Production" | "Engagement Underway";
+  description: string;
+  quote?: {
+    text: string;
+    attribution: string;
+    writtenApproval: true;
+  };
+  metric?: {
+    value: string;
+    label: string;
+    measurementSource: string;
+    clientCleared: true;
+  };
+  caseStudyHref?: string;
+  identityPermission?: true;
+};
+
 export const contact = {
   email: "info@geai.us",
   phoneDisplay: "+1 682 647 5934",
@@ -137,5 +159,64 @@ export const faqs = [
 ] as const;
 
 export const proofItems: ProofItem[] = [];
+
+export const activeEngagements: ActiveEngagement[] = [
+  {
+    slug: "private-lending-operation",
+    number: "01",
+    identity: "Private Lending Operation",
+    identityKind: "deidentified",
+    status: "Live — In Production",
+    description:
+      "A private lending operation was running loan originations the way most lenders still do: qualification, borrower updates, and servicing tracking split across spreadsheets, email threads, and phone calls, with no single view of where a loan actually stood or what needed attention next. Genesis built a managed system on top of the operation’s existing infrastructure—an origination-to-close workflow that automates borrower and broker status updates, a centralized dashboard replacing the scattered spreadsheets, and a qualification desk that pre-screens inbound borrower interest before it reaches underwriting. The system runs on the lender’s live servicing book today.",
+  },
+  {
+    slug: "real-estate-brokerage",
+    number: "02",
+    identity: "Real Estate Brokerage",
+    identityKind: "deidentified",
+    status: "Live — In Production",
+    description:
+      "A real estate brokerage’s acquisition and outreach process depended on agents manually cross-referencing public records, buyer lists, and outreach tools to find and qualify new opportunities—hours of research for every deal considered. Genesis built a digital operations foundation for the brokerage and layered Applied AI workflows on top: automated opportunity sourcing, buyer-match outreach, and a structured pipeline replacing what used to live across individual agents’ notes and a handful of open browser tabs. The system is running the brokerage’s active acquisition workflow today.",
+  },
+  {
+    slug: "database-reactivation",
+    number: "03",
+    identity: "Database Reactivation",
+    identityKind: "deidentified",
+    status: "Engagement Underway",
+    description:
+      "A brokerage was sitting on a contact database that had gone dormant over years of normal business—real relationships and real names, but no working system for reaching back out at any meaningful scale. Genesis is running a structured reactivation engagement: segmenting the database, running systematic re-engagement outreach, and routing anyone who responds back into a live, worked conversation instead of a dead record. The engagement is underway; specific results will be published once they’re measured and the client has cleared the numbers for release.",
+  },
+];
+
+function validateActiveEngagements(items: ActiveEngagement[]) {
+  for (const item of items) {
+    if (item.identityKind === "named" && item.identityPermission !== true) {
+      throw new Error(`${item.slug}: named identities require client permission.`);
+    }
+
+    if (item.quote && item.quote.writtenApproval !== true) {
+      throw new Error(`${item.slug}: quotes require written client approval.`);
+    }
+
+    if (
+      item.metric &&
+      (!item.metric.measurementSource || item.metric.clientCleared !== true)
+    ) {
+      throw new Error(
+        `${item.slug}: metrics require a measurement source and client clearance.`,
+      );
+    }
+
+    if (item.caseStudyHref && item.status === "Engagement Underway") {
+      throw new Error(
+        `${item.slug}: an underway engagement cannot publish a case study.`,
+      );
+    }
+  }
+}
+
+validateActiveEngagements(activeEngagements);
 
 export const routes = ["", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;

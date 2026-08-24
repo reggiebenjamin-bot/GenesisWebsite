@@ -31,9 +31,9 @@ export function EvidenceFlow() {
 
       <ol className={styles.proof} aria-label="Genesis evidence requirements">
         <li><span>01</span><b>Baseline</b><small>Document the starting state before the build.</small></li>
-        <li><span>02</span><b>System change</b><small>Identify the exact workflow Genesis changed.</small></li>
-        <li><span>03</span><b>Source records</b><small>Measure inside the operation&rsquo;s system of record.</small></li>
-        <li><span>04</span><b>Permission</b><small>Publish only with approved context and wording.</small></li>
+        <li><span>02</span><b>Source record</b><small>Measure inside the client&rsquo;s own operating system.</small></li>
+        <li><span>03</span><b>Same window</b><small>Use consistent periods—not cherry-picked snapshots.</small></li>
+        <li><span>04</span><b>Written sign-off</b><small>Clear the number, context, and wording before publication.</small></li>
       </ol>
     </div>
   );

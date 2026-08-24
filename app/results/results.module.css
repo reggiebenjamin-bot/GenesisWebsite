@@ -1,0 +1,81 @@
+.restraintLayout,
+.founderLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(56px, 10vw, 150px);
+}
+
+.restraintTitle {
+  max-width: 620px;
+  margin-top: 20px;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+}
+
+.restraintCopy {
+  max-width: 580px;
+  margin-top: 28px;
+  color: var(--color-muted-dark);
+  font-size: 1.04rem;
+}
+
+.restraintList {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-line-light);
+  list-style: none;
+}
+
+.restraintItem {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 18px;
+  align-items: start;
+  min-height: 88px;
+  padding: 23px 0;
+  border-bottom: 1px solid var(--color-line-light);
+}
+
+.restraintItem span {
+  color: var(--color-gold-dark);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+.restraintItem p {
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  line-height: 1.5;
+}
+
+.founderLayout {
+  align-items: end;
+}
+
+.founderLayout h2 {
+  max-width: 690px;
+  margin-top: 20px;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+}
+
+.founderLayout p {
+  max-width: 650px;
+  padding-bottom: 8px;
+  color: rgb(244 239 232 / 0.74);
+  font-size: clamp(1rem, 1.35vw, 1.18rem);
+  line-height: 1.75;
+}
+
+@media (max-width: 900px) {
+  .restraintLayout,
+  .founderLayout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .restraintItem {
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+  }
+}

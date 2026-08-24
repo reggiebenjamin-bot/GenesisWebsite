@@ -1,0 +1,248 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.card {
+  position: relative;
+  grid-column: span 6;
+  display: flex;
+  min-height: 640px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(244 239 232 / 0.15);
+  border-radius: 22px;
+  color: var(--color-ivory);
+  background:
+    radial-gradient(circle at 100% 0%, rgb(201 165 94 / 0.14), transparent 34%),
+    linear-gradient(145deg, #111827, #090b10 58%);
+  box-shadow: 0 30px 80px rgb(8 9 14 / 0.16);
+}
+
+.card:nth-child(3) {
+  grid-column: 3 / span 8;
+}
+
+.card::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(244 239 232 / 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 239 232 / 0.018) 1px, transparent 1px);
+  background-size: 32px 32px;
+  content: "";
+  pointer-events: none;
+}
+
+.header,
+.body,
+.slots,
+.card footer {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgb(244 239 232 / 0.13);
+}
+
+.number {
+  color: rgb(244 239 232 / 0.62);
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  letter-spacing: 0.13em;
+}
+
+.status {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px;
+  border: 1px solid rgb(63 201 117 / 0.34);
+  border-radius: 999px;
+  color: #a9edc2;
+  background: rgb(63 201 117 / 0.08);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  box-shadow: 0 0 14px rgb(63 201 117 / 0.58);
+}
+
+.status[data-state="underway"] {
+  border-color: rgb(201 165 94 / 0.38);
+  color: var(--color-gold-light);
+  background: rgb(201 165 94 / 0.1);
+}
+
+.status[data-state="underway"] i {
+  background: var(--color-gold);
+  box-shadow: 0 0 14px rgb(201 165 94 / 0.5);
+}
+
+.body {
+  flex: 1;
+  padding: clamp(30px, 4vw, 52px);
+}
+
+.identity {
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.body h3 {
+  max-width: 520px;
+  margin-top: 15px;
+  font-size: clamp(2rem, 3.7vw, 3.5rem);
+}
+
+.description {
+  max-width: 700px;
+  margin-top: 28px;
+  color: rgb(244 239 232 / 0.72);
+  font-size: clamp(0.96rem, 1.15vw, 1.06rem);
+  line-height: 1.72;
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid rgb(244 239 232 / 0.13);
+}
+
+.slots > div {
+  min-width: 0;
+  padding: 20px;
+  border-right: 1px solid rgb(244 239 232 / 0.13);
+}
+
+.slots > div:last-child {
+  border-right: 0;
+}
+
+.slots dt {
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.slots dd {
+  margin-top: 11px;
+  color: rgb(244 239 232 / 0.64);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.slots blockquote,
+.slots p {
+  margin: 0;
+}
+
+.slots cite {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+}
+
+.slots strong {
+  color: var(--color-ivory);
+  font-size: 1rem;
+}
+
+.slots a {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  color: var(--color-gold-light);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.card footer {
+  padding: 15px 20px;
+  border-top: 1px solid rgb(244 239 232 / 0.13);
+  color: rgb(244 239 232 / 0.64);
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+  .card,
+  .card:nth-child(3) {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    gap: 16px;
+  }
+
+  .header {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .status {
+    max-width: 210px;
+    align-items: flex-start;
+    border-radius: 14px;
+    line-height: 1.35;
+  }
+
+  .status i {
+    flex: 0 0 auto;
+    margin-top: 4px;
+  }
+
+  .body {
+    padding: 28px 20px 34px;
+  }
+
+  .body h3 {
+    font-size: clamp(1.9rem, 10vw, 2.7rem);
+  }
+
+  .description {
+    font-size: 0.96rem;
+  }
+
+  .slots {
+    grid-template-columns: 1fr;
+  }
+
+  .slots > div {
+    min-height: 98px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(244 239 232 / 0.13);
+  }
+
+  .slots > div:last-child {
+    border-bottom: 0;
+  }
+}
