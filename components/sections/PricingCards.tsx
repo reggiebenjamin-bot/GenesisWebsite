@@ -1,14 +1,22 @@
-import { pricingPlans } from "@/lib/content";
+import { pricingPlans, type PricingPlan } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import styles from "./PricingCards.module.css";
 
-export function PricingCards({ condensed = false }: { condensed?: boolean }) {
+export function PricingCards({
+  condensed = false,
+  plans = pricingPlans,
+  featuredLabel = "Most common engagement",
+}: {
+  condensed?: boolean;
+  plans?: PricingPlan[];
+  featuredLabel?: string;
+}) {
   return (
     <div className="grid items-stretch gap-5 lg:grid-cols-3">
-      {pricingPlans.map((plan, index) => {
+      {plans.map((plan, index) => {
         const featured = Boolean(plan.featured);
-        const enterprise = plan.slug === "enterprise";
+        const flagship = plan.slug === "flagship";
         const visibleFeatures = condensed
           ? plan.features.slice(0, 4)
           : plan.features;
@@ -17,13 +25,13 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
           <Reveal
             key={plan.slug}
             delay={index * 0.07}
-            className={`${styles.reveal} ${enterprise ? styles.enterpriseReveal : ""}`}
+            className={`${styles.reveal} ${flagship ? styles.enterpriseReveal : ""}`}
           >
             <span className={styles.outerStroke} aria-hidden="true" />
             <div className={`${styles.cardColumn} ${featured ? styles.featuredColumn : ""}`}>
               {featured ? (
                 <div className={styles.featuredCap} aria-label="Most popular plan">
-                  Most popular
+                  {featuredLabel}
                 </div>
               ) : null}
 
@@ -31,12 +39,12 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
                 className={`${styles.card} ${
                   condensed ? styles.condensed : styles.full
                 } ${featured ? styles.featured : ""}`}
-                data-plan={plan.slug}
+                data-plan={flagship ? "enterprise" : plan.slug}
               >
                 <div className={styles.surface}>
                   <header className={styles.header}>
                     <p className={styles.planName}>{plan.name}</p>
-                    {enterprise ? (
+                    {flagship ? (
                       <span className={styles.enterpriseCrest} aria-hidden="true">
                         <i />
                         <i />
@@ -46,8 +54,8 @@ export function PricingCards({ condensed = false }: { condensed?: boolean }) {
                   <div className={styles.priceBlock}>
                     <span className={styles.priceLabel}>Starting at</span>
                     <div className={styles.priceLine}>
-                      <strong>{plan.monthlyPrice}</strong>
-                      <span>/month</span>
+                      <strong>{plan.price}</strong>
+                      <span>{plan.cadence}</span>
                     </div>
                   </div>
                   <p className={styles.audience}>{plan.audience}</p>

@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "About",
-  "Why Genesis AI takes an operator-first, managed approach to infrastructure, automation, and ongoing improvement.",
+  "Why Genesis combines reusable Applied AI technology with operator-led implementation and ongoing managed service.",
 );
 
 export default function AboutPage() {
@@ -19,8 +19,8 @@ export default function AboutPage() {
     <>
       <PageIntro
         eyebrow="About Genesis AI"
-        title="The best system is the one that keeps working after launch."
-        description="Genesis helps real-estate operators turn scattered tools and manual work into a professional, practical, and fully managed operating environment."
+        title="Built from inside the operating problem."
+        description="Genesis helps real estate, lending, and property-driven teams turn scattered tools and founder-dependent work into a practical, fully managed Applied AI system."
       />
 
       <Section>
@@ -28,18 +28,19 @@ export default function AboutPage() {
           <Reveal>
             <SectionHeading
               eyebrow="Why Genesis exists"
-              title="Useful technology needs operational ownership."
+              title="Product discipline. Service accountability. One working system."
             />
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-[1.15rem] leading-relaxed">
-              Real-estate operators do not need more disconnected software. They
-              need a foundation, workflows, and support that work together.
+              Genesis is not a generic consultancy and it is not self-serve SaaS.
+              Its reusable platform mechanisms are configured around the client,
+              then delivered and improved through a managed service.
             </p>
             <p className="mt-6 text-muted-dark">
-              Genesis starts with the work, builds around practical priorities,
-              introduces change clearly, and stays involved as the system
-              evolves.
+              That model makes the technology repeatable without pretending every
+              operation is identical—and keeps responsibility with Genesis after
+              the initial implementation.
             </p>
             <blockquote className="my-9 border-l-2 border-gold pl-6 text-[clamp(1.4rem,2.4vw,2rem)] leading-tight tracking-[-0.03em]">
               Become trusted before needed.
@@ -63,18 +64,24 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              Reginald Benjamin leads Genesis AI&rsquo;s operator-first approach
-              to practical implementation and ongoing system management.
+              Reginald Benjamin is a licensed Texas real estate professional with
+              an enterprise technology sales background. He remains active in
+              real estate and lending operations while building Genesis.
             </p>
             <p className="mt-6 text-muted-light">
-              Further experience, credentials, and biographical details will be
-              added only when supporting source material is available.
+              Genesis grew from that operating vantage point: build reusable
+              technology around real workflows, apply AI where context and
+              repetition justify it, and stay accountable for the system in use.
             </p>
           </Reveal>
         </div>
       </Section>
 
-      <ConsultationCTA />
+      <ConsultationCTA
+        eyebrow="Operator to operator"
+        title="Talk about the work your current system leaves with you."
+        description="Start with a practical conversation about the operation, the friction, and whether Genesis is the right fit."
+      />
     </>
   );
 }

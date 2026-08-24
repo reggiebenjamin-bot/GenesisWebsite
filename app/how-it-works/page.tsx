@@ -7,18 +7,15 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "How It Works",
-  "From consultation and system design through implementation, support, and ongoing improvement.",
+  "Follow the Genesis path from a free consultation and paid Discovery through implementation, launch, and ongoing platform management.",
 );
 
 const stageDetails = [
-  [
-    "Current tools and responsibilities",
-    "Operational bottlenecks",
-    "Priority outcomes",
-  ],
-  ["System architecture", "Workflow priorities", "Implementation sequence"],
-  ["Foundation provisioning", "Workflow configuration", "Focused adoption"],
-  ["Support and maintenance", "Monitoring", "Continuous improvement"],
+  ["Current operating reality", "Highest-value friction", "Fit and next step"],
+  ["Tools and data flow", "Written scope and roadmap", "Optional Pilot branch"],
+  ["Platform provisioning", "Workflow and integration build", "Focused adoption"],
+  ["Daily use and validation", "Human approval points", "Go-live support"],
+  ["Monitoring and support", "Workflow refinement", "Continuous improvement"],
 ];
 
 const principles = [
@@ -34,17 +31,17 @@ export default function HowItWorksPage() {
   return (
     <>
       <PageIntro
-        eyebrow="How it works"
-        title="A practical path from consultation to continuous improvement."
-        description="Genesis starts with how the operation works today, implements in focused stages, and stays involved after launch."
+        eyebrow="The Genesis System"
+        title="Underwrite the operation. Build what matters. Keep it running."
+        description="Genesis treats an operation with the same discipline a deal receives before capital moves: understand it, quantify it, build deliberately, launch, and continue operating the system."
       />
 
       <Section>
         <Reveal>
           <SectionHeading
             eyebrow="The process"
-            title="Clear decisions at every stage."
-            description="The goal is a system your operation can actually use—not a long transformation project that loses momentum."
+            title="A commercial path with a useful outcome at every stage."
+            description="Discovery produces a roadmap. Implementation produces a working platform. Managed service keeps that platform accountable after launch."
           />
         </Reveal>
 
@@ -102,7 +99,11 @@ export default function HowItWorksPage() {
         </div>
       </Section>
 
-      <ConsultationCTA />
+      <ConsultationCTA
+        eyebrow="Start at the beginning"
+        title="Bring the bottleneck. Leave with a clear next step."
+        description="The first consultation is free and focused on how the operation runs today—not a generic software demonstration."
+      />
     </>
   );
 }

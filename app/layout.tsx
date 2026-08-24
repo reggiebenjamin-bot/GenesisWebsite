@@ -15,11 +15,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Genesis AI | Managed Systems for Real Estate Operators",
+    default: "Genesis AI | Managed Applied AI Systems for Deal Operations",
     template: "%s | Genesis AI",
   },
   description:
-    "Genesis AI provisions and manages the complete technology foundation beneath a real-estate operation: Microsoft 365, practical AI workflows, optional CRM, integrations, and ongoing support.",
+    "Genesis delivers a managed Applied AI system for real estate, lending, and property-driven teams, powered by reusable platform technology and operated on an ongoing basis.",
   applicationName: "Genesis AI",
   category: "Business services",
   manifest: "/manifest.webmanifest",
@@ -43,23 +43,23 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Genesis AI",
     url: "/",
-    title: "Genesis AI | Managed Systems for Real Estate Operators",
+    title: "Genesis AI | Managed Applied AI Systems for Deal Operations",
     description:
-      "Work faster and close more deals with a professional foundation, practical AI workflows, and ongoing management.",
+      "Connect data, documents, follow-up, and handoffs in one managed Applied AI system for deal operations.",
     images: [
       {
         url: "/images/social/og-home-1920x1080.png",
         width: 1920,
         height: 1080,
-        alt: "Genesis AI — managed systems for real-estate operators",
+        alt: "Genesis AI — managed Applied AI systems for deal operations",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Genesis AI | Managed Systems for Real Estate Operators",
+    title: "Genesis AI | Managed Applied AI Systems for Deal Operations",
     description:
-      "Work faster and close more deals with practical, fully managed systems.",
+      "A reusable Applied AI platform, delivered as a fully managed system.",
     images: ["/images/social/og-home-1920x1080.png"],
   },
 };
@@ -81,18 +81,18 @@ const structuredData = {
     {
       "@type": "Service",
       "@id": `${siteUrl}/#service`,
-      name: "Managed AI Infrastructure for Real Estate Professionals",
-      serviceType: "Managed AI and IT infrastructure",
+      name: "Genesis Managed Applied AI System",
+      serviceType: "Applied AI platform implementation and managed service",
       provider: { "@id": `${siteUrl}/#organization` },
       areaServed: { "@type": "Country", name: "United States" },
       audience: {
         "@type": "Audience",
-        audienceType: "Real estate agents, teams, brokerages, and investors",
+        audienceType: "Real estate, lending, and property-driven owner-operators",
       },
       offers: pricingPlans.map((plan) => ({
         "@type": "Offer",
         name: plan.name,
-        price: plan.monthlyPrice.replace(/[$,]/g, ""),
+        description: `${plan.price}${plan.cadence}`,
         priceCurrency: "USD",
         url: `${siteUrl}/pricing`,
       })),

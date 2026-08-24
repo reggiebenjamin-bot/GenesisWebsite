@@ -6,13 +6,13 @@ import { ConsultationForm } from "./ConsultationForm";
 
 export const metadata: Metadata = pageMetadata(
   "Contact",
-  "Book a consultation with Genesis AI to discuss your real-estate operation, workflows, and managed system needs.",
+  "Book a focused consultation with Genesis AI about your operation, its bottlenecks, and the right managed-system starting point.",
 );
 
 const expectations = [
-  ["01", "Review your current environment"],
-  ["02", "Identify the highest-value friction"],
-  ["03", "Define the right next step"],
+  ["01", "Talk through how the operation runs today"],
+  ["02", "Identify the handoff creating the most drag"],
+  ["03", "Recommend a specific, priced next step"],
 ];
 
 export default async function ContactPage({
@@ -25,8 +25,8 @@ export default async function ContactPage({
     <>
       <PageIntro
         eyebrow="Book a consultation"
-        title="Start with the operation you have—and the one you are building toward."
-        description="Tell us where work slows down, what your team uses today, and what a stronger system needs to make possible."
+        title="Start with a conversation about your operation."
+        description="A focused call about how things run today, where the friction actually is, and whether Genesis is a fit—not a pitch, and no commitment either way."
       />
 
       <Section>

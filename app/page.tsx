@@ -2,7 +2,6 @@ import { CinematicHero } from "@/components/hero/CinematicHero";
 import { CapabilityStrip } from "@/components/sections/CapabilityStrip";
 import { AppliedIntelligence } from "@/components/sections/AppliedIntelligence";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
-import { PricingCards } from "@/components/sections/PricingCards";
 import { SystemLayers } from "@/components/sections/SystemLayers";
 import { TextLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
@@ -18,21 +17,21 @@ export default function Home() {
       <Section>
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
           <Reveal>
-            <Eyebrow>The operational problem</Eyebrow>
+            <Eyebrow>The real operating constraint</Eyebrow>
             <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Deals move quickly. Disconnected systems do not.
+              More leads cannot fix an operation that still depends on you.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-[1.15rem] leading-relaxed">
-              Leads, follow-up, documents, calendars, and team communication
-              often live in separate places—with people filling the gaps
-              manually.
+              Every file, follow-up, and handoff only moves when someone
+              personally pushes it across a CRM, spreadsheet, text thread, or
+              inbox.
             </p>
             <p className="mt-6 text-muted-dark">
-              Genesis brings the work into a managed operating system designed
-              to make the business more responsive, consistent, and ready to
-              scale.
+              Genesis turns that scattered work into a connected Applied AI
+              system—powered by reusable platform technology and kept useful,
+              current, and running as a managed service.
             </p>
           </Reveal>
         </div>
@@ -42,8 +41,8 @@ export default function Home() {
         <Reveal>
           <SectionHeading
             eyebrow="One connected system"
-            title="Four layers. One operation."
-            description="Each layer supports the next, creating a professional environment that can be implemented, used, and improved over time."
+            title="A product underneath it. A managed service around it. One Genesis System."
+            description="Genesis is the managed Applied AI deal operations system for real estate, lending, and property-driven teams—powered by a reusable platform and continuously operated as one accountable environment."
           />
         </Reveal>
         <SystemLayers compact />
@@ -58,11 +57,11 @@ export default function Home() {
         <Reveal>
           <SectionHeading
             eyebrow="How it works"
-            title="From operational friction to a system your team can rely on."
+            title="From founder-dependent work to a managed operating advantage."
             description="The work begins with the operation—not a prepackaged stack of tools."
           />
         </Reveal>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5">
           {processSteps.map((step, index) => (
             <Reveal
               key={step.number}
@@ -88,7 +87,7 @@ export default function Home() {
         <Reveal>
           <SectionHeading
             eyebrow="Built around the operator"
-            title="The same system, shaped to different operating realities."
+            title="Built for owner-led, property-driven operations."
           />
         </Reveal>
         <div className="grid md:grid-cols-2">
@@ -120,14 +119,15 @@ export default function Home() {
           <Reveal>
             <Eyebrow>Accountability by design</Eyebrow>
             <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              The system is not handed off and forgotten.
+              Live in the operation—not waiting in a demo.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              Genesis stays responsible for monitoring, support, maintenance,
-              and practical improvement. Published results will follow the same
-              standard: specific, attributable, and verified.
+              Genesis is live in production for two independent operations
+              today, with a third large-scale engagement underway. Client-level
+              outcomes are published only when the evidence, context, and
+              permission are verified.
             </p>
             <TextLink href="/results" light className="mt-8">
               See the proof standard
@@ -139,12 +139,14 @@ export default function Home() {
       <Section>
         <Reveal>
           <SectionHeading
-            eyebrow="Starting pricing"
-            title="A clear starting point. A scope built around your operation."
-            description="Every engagement begins with a consultation so the recommendation matches the people, workflows, and complexity involved."
+            eyebrow="Transparent starting ranges"
+            title="Know the commercial path before the first call."
+            description="Every engagement begins with a consultation. Pricing reflects the operational complexity, implementation depth, and ongoing management involved."
           />
         </Reveal>
-        <PricingCards condensed />
+        <TextLink href="/pricing">
+          See implementation and managed-platform pricing
+        </TextLink>
       </Section>
 
       <Section className="bg-paper">

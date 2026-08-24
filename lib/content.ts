@@ -1,7 +1,4 @@
-export type NavItem = {
-  label: string;
-  href: string;
-};
+export type NavItem = { label: string; href: string };
 
 export type SystemLayer = {
   number: string;
@@ -12,9 +9,10 @@ export type SystemLayer = {
 };
 
 export type PricingPlan = {
-  slug: "foundation" | "professional" | "enterprise";
+  slug: "foundation" | "growth" | "flagship";
   name: string;
-  monthlyPrice: string;
+  price: string;
+  cadence: string;
   audience: string;
   features: string[];
   featured?: boolean;
@@ -48,198 +46,96 @@ export const navigation: NavItem[] = [
 export const systemLayers: SystemLayer[] = [
   {
     number: "01",
-    title: "Microsoft 365 Foundation",
+    title: "Operational Foundation",
     shortTitle: "Foundation",
-    description:
-      "Business email, identity, calendars, documents, and Teams—professionally provisioned as the base of the operation.",
-    details: [
-      "Business email on your domain",
-      "Identity and access",
-      "Calendars, documents, and Teams",
-      "A professional operating foundation",
-    ],
+    description: "Microsoft 365, business email, identity, documents, and integrations—provisioned as dependable business infrastructure.",
+    details: ["Business email on your domain", "Identity and permission management", "Calendars, documents, and Teams", "Connections to the tools you keep"],
   },
   {
     number: "02",
     title: "Applied AI & Data Synthesis",
-    shortTitle: "Workflows",
-    description:
-      "Operational data is synthesized into usable context, then applied through practical AI workflows for follow-up, documents, administration, and repetitive real-estate work.",
-    details: [
-      "Cross-system context synthesis",
-      "Follow-up workflows",
-      "Administrative automation",
-      "Document and information handling",
-      "Real-estate operations support",
-    ],
+    shortTitle: "Intelligence",
+    description: "Genesis connects scattered operational signals, turns them into usable context, and applies AI inside the workflows where work gets stuck.",
+    details: ["Cross-system context synthesis", "Follow-up and routing workflows", "Document and information handling", "Human approval where judgment matters"],
   },
   {
     number: "03",
-    title: "Genesis CRM — Optional Layer",
+    title: "Genesis CRM — Optional",
     shortTitle: "Optional CRM",
-    description:
-      "Pipelines, campaigns, booking, marketing automation, and structured follow-up when the operation needs them.",
-    details: [
-      "Pipelines and opportunities",
-      "Campaigns and booking",
-      "Marketing automation",
-      "Structured follow-up",
-    ],
+    description: "A system of record for pipelines, campaigns, booking, and structured follow-up when the operation actually needs one.",
+    details: ["No forced rip-and-replace", "Pipelines and opportunities", "Campaigns and booking", "Structured follow-up"],
   },
   {
     number: "04",
     title: "Fully Managed — Ongoing",
     shortTitle: "Managed",
-    description:
-      "Monitoring, support, maintenance, and continuous improvement after the initial system is in place.",
-    details: [
-      "Monitoring and support",
-      "System maintenance",
-      "Workflow refinement",
-      "Ongoing improvement",
-    ],
+    description: "Genesis monitors, supports, maintains, and improves the platform so running the system does not become the operator’s next job.",
+    details: ["Monitoring and support", "System maintenance", "Workflow refinement", "Continuous improvement"],
   },
 ];
 
 export const processSteps = [
-  {
-    number: "01",
-    title: "Consult",
-    description:
-      "We map your current tools, workflows, and gaps—and scope the right starting point for how you actually work.",
-  },
-  {
-    number: "02",
-    title: "Provision",
-    description:
-      "Genesis provisions the Microsoft 365 foundation, migrates what is in scope, and prepares the operating environment.",
-  },
-  {
-    number: "03",
-    title: "Integrate & Automate",
-    description:
-      "We connect the right tools, build practical workflows, and add Genesis CRM when it belongs in the solution.",
-  },
-  {
-    number: "04",
-    title: "Manage & Improve",
-    description:
-      "We continue with monitoring, support, maintenance, and improvements as the business changes.",
-  },
+  { number: "01", title: "Consultation", description: "A focused, no-cost conversation about the operation, its priorities, and where work currently depends on you." },
+  { number: "02", title: "Discovery", description: "Genesis maps the tools, data flow, and workflow gaps, then returns a written scope and implementation roadmap." },
+  { number: "03", title: "Implementation", description: "The foundation, Applied AI workflows, integrations, and optional CRM are provisioned and connected around the operation." },
+  { number: "04", title: "Launch", description: "The platform goes into daily use with focused adoption, validation, and Genesis still accountable for what happens next." },
+  { number: "05", title: "Managed Platform", description: "Genesis keeps the system supported, current, and improving as volume, responsibilities, and priorities change." },
 ] as const;
 
 export const audiences = [
-  {
-    title: "Solo agents",
-    outcome: "Look professional. Protect more selling time.",
-    description:
-      "Professional email, organized documents, and practical automation that reduces the administrative work between client conversations.",
-  },
-  {
-    title: "Teams & team leads",
-    outcome: "Make every handoff more consistent.",
-    description:
-      "Shared calendars, standardized follow-up, CRM pipelines, and repeatable workflows across the team.",
-  },
-  {
-    title: "Brokers & brokerages",
-    outcome: "Standardize without slowing people down.",
-    description:
-      "Multi-user identity, access, onboarding, and a managed environment that can scale across the operation.",
-  },
-  {
-    title: "Investors & operators",
-    outcome: "Keep opportunities and documents moving.",
-    description:
-      "Deal flow, vendor communication, and document management structured in one secure environment.",
-  },
+  { title: "Broker-owners", outcome: "Keep files, follow-up, and handoffs moving without becoming the bottleneck.", description: "Connect producer activity, documents, communication, and pipeline oversight in one managed operating environment." },
+  { title: "Lending principals", outcome: "Create usable context across a document-heavy operation.", description: "Synthesize borrower, property, communication, and workflow signals so the next action is clearer and more consistent." },
+  { title: "Acquisitions & builders", outcome: "Move opportunities from intake to decision with fewer manual gaps.", description: "Structure deal flow, diligence, vendor communication, documents, and decision support around the way the team already works." },
+  { title: "Solo operators", outcome: "Build the foundation before growth makes the gaps expensive.", description: "Start with professional infrastructure and focused automation, then add platform depth as the operation expands." },
 ] as const;
 
-export const pricingPlans: PricingPlan[] = [
+export const implementationPlans: PricingPlan[] = [
   {
-    slug: "foundation",
-    name: "Foundation",
-    monthlyPrice: "$750",
-    audience:
-      "For a solo agent or small operator who needs a professional foundation, done right.",
-    features: [
-      "Up to 3 users included",
-      "Microsoft 365 provisioning and setup",
-      "Business email on your domain, identity, and documents",
-      "Core AI infrastructure setup",
-      "Fully managed and supported, ongoing",
-    ],
+    slug: "foundation", name: "Foundation", price: "$1,500–$2,500", cadence: "one-time",
+    audience: "For a solo operator or small team establishing a dependable operating foundation.",
+    features: ["Microsoft 365 foundation provisioning", "Business email, identity, and documents", "Core platform configuration", "Focused workflow implementation"],
   },
   {
-    slug: "professional",
-    name: "Professional",
-    monthlyPrice: "$1,750",
-    audience:
-      "For a growing team ready to run marketing, follow-up, and operations on one system.",
-    features: [
-      "Up to 8 users included",
-      "Everything in Foundation",
-      "Genesis CRM and marketing automation",
-      "AI workflows and automation built for your team",
-      "Deeper integrations across your stack",
-    ],
-    featured: true,
+    slug: "growth", name: "Growth", price: "$5,000–$9,500", cadence: "one-time",
+    audience: "For an owner-led operation ready to connect its data, workflows, and team.",
+    features: ["Everything in Foundation", "Applied AI workflow build", "Data synthesis across key systems", "Genesis CRM when needed", "Deeper integrations and adoption"], featured: true,
   },
   {
-    slug: "enterprise",
-    name: "Enterprise",
-    monthlyPrice: "$4,500",
-    audience:
-      "For brokerages and larger operations that need the full stack across many users.",
-    features: [
-      "Up to 15 users included, then $200 per additional user monthly",
-      "Full stack for multi-user teams",
-      "Custom AI agents and integrations",
-      "Everything in Professional, at brokerage scale",
-      "Priority support",
-    ],
+    slug: "flagship", name: "Flagship", price: "$15,000–$35,000", cadence: "one-time",
+    audience: "For larger or more complex operations requiring a broader platform build.",
+    features: ["Everything in Growth", "Multiple operational workflows", "Custom AI agents and integrations", "Multi-team implementation", "Expanded governance and launch support"],
   },
 ];
 
+export const managedPlatformPlans: PricingPlan[] = [
+  {
+    slug: "foundation", name: "Foundation", price: "$297–$497", cadence: "/month",
+    audience: "Ongoing management for a focused operating foundation.",
+    features: ["Monitoring and support", "Platform maintenance", "Core workflow refinement", "Planned operating reviews"],
+  },
+  {
+    slug: "growth", name: "Growth", price: "$897–$1,497", cadence: "/month",
+    audience: "Continuous management for a growing, owner-led deal operation.",
+    features: ["Everything in Foundation", "Applied AI workflow tuning", "Integration oversight", "CRM and data-flow management", "Continuous improvement"], featured: true,
+  },
+  {
+    slug: "flagship", name: "Flagship", price: "$1,997–$4,500", cadence: "/month",
+    audience: "A typical range for larger operations; complex scopes may run higher.",
+    features: ["Everything in Growth", "Broader workflow portfolio", "Custom agent monitoring", "Priority operating support", "Multi-team platform improvement"],
+  },
+];
+
+export const pricingPlans = managedPlatformPlans;
+
 export const faqs = [
-  {
-    question: "What exactly is AI infrastructure?",
-    answer:
-      "It is the professional foundation your business runs on: Microsoft 365 for email, identity, documents, and Teams, with AI workflows and automation built on top—all set up and managed as one system.",
-  },
-  {
-    question: "I already have email or Microsoft 365. Do I have to start over?",
-    answer:
-      "No. During the consultation, Genesis assesses what you have. If the existing setup is solid, the work can build on it; if it is fragmented or uses consumer accounts, a clean migration can be scoped.",
-  },
-  {
-    question: "What is Genesis CRM, and do I need it?",
-    answer:
-      "Genesis CRM is the optional CRM and marketing automation layer for pipelines, campaigns, booking, and follow-up. It is available with Professional and Enterprise; Foundation clients may not need it yet.",
-  },
-  {
-    question: "How fast can I be up and running?",
-    answer:
-      "Core provisioning typically completes within days. Migrations, CRM buildout, and custom AI workflows are scoped during the consultation so the timeline is clear before work begins.",
-  },
-  {
-    question: "Is this a one-time project or an ongoing service?",
-    answer:
-      "It is ongoing. Monthly pricing covers the agreed provisioning and setup plus continuous management, including monitoring, support, and improving automations as the business changes.",
-  },
+  { question: "How is Genesis different from an AI CRM?", answer: "A CRM is one possible layer. Genesis is the broader Applied AI platform connecting infrastructure, operational data, workflows, integrations, and ongoing management. If your existing CRM works, Genesis can build around it." },
+  { question: "Why is there no self-serve signup?", answer: "The value comes from fitting the platform to the way your operation actually moves information and work. Genesis scopes, implements, and manages that environment with you rather than handing over another tool to configure." },
+  { question: "What is the difference between the consultation and Discovery?", answer: "The consultation is a free fit conversation. Discovery is a paid, deliverable-bearing assessment that maps your operation and produces a written scope and roadmap you keep either way." },
+  { question: "Do I have to complete a Pilot before Implementation?", answer: "No. A Pilot is optional and is most useful when a larger or more complex operation wants to validate one workflow on real data before committing to the broader build." },
+  { question: "What if I am not sure which tier fits?", answer: "That is what the consultation is for. Team size matters, but workflow complexity, number of systems, data quality, and support requirements determine the right scope inside the published range." },
+  { question: "What happens above Flagship?", answer: "Multi-brand, multi-location, and high-transaction-volume operations are scoped as an Enterprise Managed Partnership around their actual operating requirements." },
 ] as const;
 
-// No verified testimonials, client results, or publishable case studies were
-// present in the supplied Genesis snapshot. The UI renders proof only when
-// this typed collection contains approved, attributable material.
 export const proofItems: ProofItem[] = [];
 
-export const routes = [
-  "",
-  "/solutions",
-  "/how-it-works",
-  "/pricing",
-  "/results",
-  "/about",
-  "/contact",
-] as const;
+export const routes = ["", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;

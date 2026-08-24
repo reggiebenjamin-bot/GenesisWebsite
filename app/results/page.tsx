@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "Results",
-  "The Genesis AI standard for publishing verified case studies, testimonials, and operating results.",
+  "See where the Genesis System is live today and the evidence standard used for every published operating result.",
 );
 
 const proofRequirements = [
@@ -43,8 +43,8 @@ export default function ResultsPage() {
     <>
       <PageIntro
         eyebrow="Results"
-        title="Credibility is built with evidence—not decorated with claims."
-        description="Genesis publishes client outcomes only when the source, context, and permission are verified. No unsupported testimonials or performance figures are shown."
+        title="Live systems now. Client-level claims only when the evidence is ready."
+        description="Genesis is live in production for two independent operations today, with a third large-scale engagement underway. Specific outcomes appear only when the source, context, and permission are verified."
       />
 
       {proofItems.length > 0 ? (
@@ -89,8 +89,8 @@ export default function ResultsPage() {
           <Reveal>
             <SectionHeading
               eyebrow="The proof standard"
-              title="What belongs in a Genesis case study."
-              description="The publishing system is ready for verified work without presenting placeholders as proof."
+              title="What earns its place in a Genesis case study."
+              description="Every published outcome must show the starting point, the system change, the result, and permission to make the claim."
             />
           </Reveal>
           <div className="grid gap-8">
@@ -116,20 +116,24 @@ export default function ResultsPage() {
           <Reveal>
             <Eyebrow>What is verifiable today</Eyebrow>
             <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Genesis remains involved after implementation.
+              Management is part of the system—not an afterthought.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              The supplied service model includes monitoring, support,
-              maintenance, and ongoing improvement. That continuing ownership is
-              built into every plan—not sold as an afterthought.
+              Genesis combines reusable platform mechanisms with hands-on
+              implementation and ongoing operation. That continuing ownership
+              is the managed-service layer clients receive today.
             </p>
           </Reveal>
         </div>
       </Section>
 
-      <ConsultationCTA />
+      <ConsultationCTA
+        eyebrow="Build the next verified system"
+        title="Start with the operational result that matters most."
+        description="Use the consultation to define the bottleneck, the evidence available today, and the change worth measuring."
+      />
     </>
   );
 }

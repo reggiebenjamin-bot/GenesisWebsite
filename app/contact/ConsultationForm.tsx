@@ -71,9 +71,10 @@ export function ConsultationForm({
       `Name: ${payload.name ?? ""}`,
       `Email: ${payload.email ?? ""}`,
       `Phone: ${payload.phone ?? ""}`,
-      `Company / Brokerage: ${payload.company ?? ""}`,
+      `Company / Operation: ${payload.company ?? ""}`,
       `Role: ${payload.vertical ?? ""}`,
       `Team Size: ${payload.monthly_leads ?? ""}`,
+      `Operation Type: ${payload.operation_type ?? ""}`,
       `Plan: ${payload.plan ?? ""}`,
       `Current Setup: ${payload.notes ?? ""}`,
       `Page: ${payload.page ?? ""}`,
@@ -117,10 +118,13 @@ export function ConsultationForm({
       >
         <Eyebrow>Request received</Eyebrow>
         <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.6rem)]">
-          Thank you. Genesis will follow up about your consultation.
+          Thanks—we have it. Here is what happens next.
         </h2>
         <p className="mt-5 text-muted-dark">
-          If you need immediate assistance, email{" "}
+          Genesis will reach out to confirm a time. The call is a working
+          conversation about the operation, priorities, and existing tools. If
+          it looks like a fit, we will recommend a specific starting point
+          before anything is proposed in writing. For immediate assistance, email{" "}
           <a
             href={`mailto:${contact.email}`}
             className="border-b border-ink/30 text-ink"
@@ -168,10 +172,11 @@ export function ConsultationForm({
 
       <div className="grid gap-6 md:grid-cols-2">
         <label className={field}>
-          Company / Brokerage
+          Company / Operation <span aria-hidden="true">*</span>
           <input
             name="company"
             autoComplete="organization"
+            required
             className={control}
           />
         </label>
@@ -181,10 +186,10 @@ export function ConsultationForm({
             <option value="" disabled>
               Select
             </option>
-            <option value="Solo Agent">Solo Agent</option>
-            <option value="Team Lead">Team Lead</option>
-            <option value="Broker / Brokerage">Broker / Brokerage</option>
-            <option value="Investor / Operator">Investor / Operator</option>
+            <option value="Owner">Owner</option>
+            <option value="Principal">Principal</option>
+            <option value="Broker-Owner">Broker-Owner</option>
+            <option value="Founder">Founder</option>
             <option value="Other">Other</option>
           </select>
         </label>
@@ -192,34 +197,43 @@ export function ConsultationForm({
 
       <div className="grid gap-6 md:grid-cols-2">
         <label className={field}>
-          Team Size
-          <select name="monthly_leads" defaultValue="" className={control}>
-            <option value="">Select</option>
+          Team Size <span aria-hidden="true">*</span>
+          <select name="monthly_leads" defaultValue="" required className={control}>
+            <option value="" disabled>Select</option>
             <option value="Just me">Just me</option>
-            <option value="2-5">2–5</option>
-            <option value="6-20">6–20</option>
-            <option value="20+">20+</option>
+            <option value="2–4">2–4</option>
+            <option value="5–50">5–50</option>
+            <option value="50+">50+</option>
           </select>
         </label>
         <label className={field}>
-          Plan of Interest
-          <select name="plan" defaultValue={normalizedPlan} className={control}>
-            <option value="">Not sure yet</option>
-            {pricingPlans.map((plan) => (
-              <option key={plan.slug} value={plan.slug}>
-                {plan.name} — starting at {plan.monthlyPrice}/month
-              </option>
-            ))}
+          Operation Type <span aria-hidden="true">*</span>
+          <select name="operation_type" defaultValue="" required className={control}>
+            <option value="" disabled>Select</option>
+            <option value="Brokerage">Brokerage</option>
+            <option value="Private Lending">Private lending</option>
+            <option value="Acquisitions / Builder">Acquisitions / builder</option>
+            <option value="Other Property-Driven">Other property-driven</option>
           </select>
         </label>
       </div>
 
       <label className={field}>
-        What does your current setup look like?
+        Starting Tier
+        <select name="plan" defaultValue={normalizedPlan} className={control}>
+          <option value="">Not sure yet</option>
+          {pricingPlans.map((plan) => (
+            <option key={plan.slug} value={plan.slug}>{plan.name}</option>
+          ))}
+        </select>
+      </label>
+
+      <label className={field}>
+        What are you running on today, and where does the team lose the most time?
         <textarea
           name="notes"
           rows={6}
-          placeholder="Current email setup, CRM (if any), team size, and what you want AI to handle…"
+          placeholder="Describe the manual handoff, repeated task, or information gap creating the most drag…"
           className={`${control} py-4`}
         />
       </label>

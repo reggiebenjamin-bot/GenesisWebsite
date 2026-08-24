@@ -30,21 +30,21 @@ type OutgoingStage = {
 const stages: Stage[] = [
   {
     index: "01",
-    title: "Microsoft 365 Foundation",
-    body: "Business email, identity, calendars, Teams, and documents — professionally provisioned as the base of the operation.",
+    title: "Operational Foundation",
+    body: "Microsoft 365, business email, identity, documents, and integrations—provisioned as dependable infrastructure.",
     icon: FoundationIcon,
   },
   {
     index: "02",
     title: "Applied AI & Data Synthesis",
-    body: "Connected operational data becomes usable context for follow-up, document handling, routing, and repetitive real-estate work.",
+    body: "Connected operational data becomes usable context for follow-up, document handling, routing, and repetitive deal work.",
     icon: WorkflowIcon,
   },
   {
     index: "03",
     title: "Genesis CRM",
     note: "Optional",
-    body: "Pipelines, campaigns, booking, marketing automation, and structured follow-up when the operation needs them.",
+    body: "A system of record for pipelines, campaigns, booking, and structured follow-up when the operation actually needs one.",
     icon: CrmIcon,
   },
   {
@@ -484,7 +484,7 @@ function EditorialCopy({
       >
         {stage
           ? stage.body
-          : "Your foundation, workflows, CRM, and ongoing management—connected by Genesis."}
+          : "A reusable Applied AI platform, delivered as one managed system."}
       </p>
     </div>
   );

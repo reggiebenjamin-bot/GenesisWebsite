@@ -8,16 +8,16 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "Solutions",
-  "See how Genesis connects Microsoft 365, applied AI, data synthesis, an optional CRM, and ongoing management into one operating system.",
+  "See the four connected parts of the Genesis Applied AI system: operational infrastructure, data synthesis, optional CRM, and ongoing management.",
 );
 
 export default function SolutionsPage() {
   return (
     <>
       <PageIntro
-        eyebrow="The Genesis system"
-        title="Infrastructure, workflows, and support—designed as one managed system."
-        description="Genesis connects the foundational tools, operational data, applied AI, and ongoing management that help real-estate operations move with more speed and consistency."
+        eyebrow="The Genesis System"
+        title="Not four tools bolted together. One managed system built around the operation."
+        description="A reusable Genesis platform powers the product. Managed delivery fits it to the operation. Together they create the system the client actually uses."
       />
 
       <Section>
@@ -27,9 +27,9 @@ export default function SolutionsPage() {
       <Section tone="dark">
         <Reveal>
           <SectionHeading
-            eyebrow="Use cases"
-            title="One architecture, adapted to the way you operate."
-            description="The system changes in scope—not in principle—as responsibilities, volume, and complexity increase."
+            eyebrow="Built around the operator"
+            title="One platform, adapted to different deal operations."
+            description="Scope changes with the team, volume, and complexity. The operating principle stays the same: connect the work, apply intelligence, and keep someone accountable for the system."
           />
         </Reveal>
 
@@ -55,7 +55,11 @@ export default function SolutionsPage() {
         </div>
       </Section>
 
-      <ConsultationCTA />
+      <ConsultationCTA
+        eyebrow="Find the right architecture"
+        title="See what Genesis would connect inside your operation."
+        description="Start with a focused consultation about the workflows, data, and handoffs your team is carrying today."
+      />
     </>
   );
 }

@@ -239,7 +239,7 @@ export function CinematicFrame({
             className="hero-rise hero-eyebrow font-display text-[0.69rem] font-semibold tracking-[0.18em] uppercase"
             style={{ "--i": 0 } as React.CSSProperties}
           >
-            Applied AI + Managed Systems for Real Estate Professionals
+            The Managed Applied AI System for Deal Operations
           </p>
 
           <h1 className="mt-4 text-[clamp(1.3rem,min(2.9vw,4.4vh),2.95rem)] leading-[1.08]">
@@ -247,14 +247,14 @@ export function CinematicFrame({
               className="hero-rise inline-block"
               style={{ "--i": 1 } as React.CSSProperties}
             >
-              AI systems that help real estate professionals
+              You should not have to be the system
             </span>{" "}
             <span
               className="hero-rise hero-outcome-glow inline-block text-gold-light"
-              data-text="work faster and close more deals."
+              data-text="holding every deal together."
               style={{ "--i": 2 } as React.CSSProperties}
             >
-              work faster and close more deals.
+              holding every deal together.
             </span>
           </h1>
 
@@ -262,9 +262,9 @@ export function CinematicFrame({
             className="hero-rise mx-auto mt-5 max-w-xl text-[clamp(0.85rem,min(1.05vw,1.7vh),1.05rem)] text-ivory/90 max-md:hidden"
             style={{ "--i": 3 } as React.CSSProperties}
           >
-            Genesis provisions your Microsoft 365 foundation, synthesizes the
-            information already moving through your operation, applies AI to
-            practical workflows, and manages the system as you evolve.
+            Powered by the Genesis platform and delivered as a managed service,
+            the system connects your data, documents, follow-up, and handoffs—and
+            keeps improving as your operation evolves.
           </p>
 
           <div

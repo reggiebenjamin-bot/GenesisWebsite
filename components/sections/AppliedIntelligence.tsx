@@ -36,10 +36,10 @@ export function AppliedIntelligence() {
               Better context before the next action.
             </h2>
             <p className="mt-6 max-w-xl text-[1.05rem] text-muted-light">
-              Genesis does not add AI as a novelty layer. It synthesizes the
-              information already moving through the business, then applies AI
-              inside the managed workflows where it can save time and improve
-              consistency.
+              Applied AI is the product core—not a novelty layer. Genesis
+              synthesizes the information already moving through the business,
+              applies intelligence inside reusable workflow mechanisms, and
+              manages those workflows in the client&rsquo;s real operation.
             </p>
           </div>
         </Reveal>

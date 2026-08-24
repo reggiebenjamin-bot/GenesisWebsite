@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { indexable } from "@/lib/site";
 
 const description =
-  "Genesis AI builds and manages practical systems that help real-estate operators work faster and close more deals.";
+  "Genesis AI delivers a managed Applied AI system for real estate, lending, and property-driven deal operations.";
 type PagePreview = {
   path: string;
   image: string;

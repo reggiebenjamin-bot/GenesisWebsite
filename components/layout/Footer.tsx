@@ -14,8 +14,8 @@ export function Footer() {
         <div className="max-lg:col-span-full">
           <Logo light />
           <p className="mt-5 max-w-sm text-[0.95rem] text-ivory/62">
-            Managed systems that help real-estate operators work faster and
-            close more deals.
+            The managed Applied AI system for real estate, lending, and
+            property-driven deal operations.
           </p>
         </div>
 

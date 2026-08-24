@@ -1,12 +1,12 @@
 const capabilities = [
-  "Fully Managed 24/7",
-  "Built for Real Estate",
-  "Microsoft 365 Foundation",
+  "The Genesis System",
+  "Reusable Product Core",
+  "Managed Service Delivery",
+  "Built for Deal Operations",
+  "Operational Foundation",
   "Applied AI",
   "Data Synthesis",
   "Genesis CRM",
-  "Business Email on Your Domain",
-  "Identity & Documents",
   "Integrations",
 ];
 
