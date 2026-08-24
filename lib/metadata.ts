@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
+import { indexable } from "@/lib/site";
 
 const description =
   "Genesis AI builds and manages practical systems that help real-estate operators work faster and close more deals.";
-const indexable = process.env.NEXT_PUBLIC_SITE_INDEXABLE === "true";
-
 type PagePreview = {
   path: string;
   image: string;

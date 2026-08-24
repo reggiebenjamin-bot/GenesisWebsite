@@ -89,6 +89,21 @@ export function useHeroScrub({
     let animationFrame = 0;
     let handoffFrame = 0;
     let handoffTimer = 0;
+    let heroAssetsPromoted = false;
+
+    function promoteHeroAssets() {
+      if (heroAssetsPromoted) return;
+      heroAssetsPromoted = true;
+      entrance.current
+        ?.querySelectorAll<HTMLElement>("[data-hero-full-src]")
+        .forEach((asset) => {
+          const fullSrc = asset.dataset.heroFullSrc;
+          if (!fullSrc) return;
+          if (asset instanceof HTMLSourceElement) asset.srcset = fullSrc;
+          if (asset instanceof HTMLImageElement) asset.src = fullSrc;
+          delete asset.dataset.heroFullSrc;
+        });
+    }
 
     function offsetTopWithin(element: HTMLElement, ancestor: HTMLElement) {
       let top = 0;
@@ -419,6 +434,7 @@ export function useHeroScrub({
         ? heroHeight * MOBILE_ANIMATION_PORTION
         : heroHeight;
       target = clamp(travelled / animationDistance);
+      if (target > 0.015) promoteHeroAssets();
       entrance.current?.setAttribute("data-target-progress", target.toFixed(4));
 
       /* Desktop keeps its existing exact-end snap. Mobile never snaps: its

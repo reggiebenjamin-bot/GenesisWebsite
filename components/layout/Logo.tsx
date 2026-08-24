@@ -7,7 +7,7 @@ export function Logo({ light = false }: { light?: boolean }) {
   return (
     <Link
       href="/"
-      aria-label="Genesis AI home"
+      aria-label="Genesis AI"
       onClick={(event) => {
         if (window.location.pathname !== "/") return;
 

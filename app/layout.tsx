@@ -4,9 +4,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { contact, faqs, pricingPlans } from "@/lib/content";
-
-const indexable = process.env.NEXT_PUBLIC_SITE_INDEXABLE === "true";
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://genesis-ai-preview.vercel.app";
+import { indexable, siteUrl } from "@/lib/site";
 
 export const viewport: Viewport = {
   width: "device-width",

@@ -27,7 +27,7 @@
 
   --color-gold: #c9a55e;
   --color-gold-light: #f2d895;
-  --color-gold-dark: #8e6c34;
+  --color-gold-dark: #765426;
   --color-signal: #3fc975;
 
   --color-muted-dark: #6d6c69;
@@ -226,6 +226,15 @@
   .shell {
     width: min(1280px, calc(100vw - 32px));
   }
+}
+
+.eyebrow {
+  color: var(--color-gold-dark);
+}
+
+.bg-ink .eyebrow,
+.bg-navy .eyebrow {
+  color: var(--color-gold);
 }
 
 /* Below-the-fold sections stay out of the initial paint and layout budget.

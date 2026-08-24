@@ -26,10 +26,29 @@ import { ConsultationButton } from "@/components/ui/ConsultationButton";
 export function CinematicFrame({
   plateRef,
   hardwareRef,
+  progressive = false,
 }: {
   plateRef?: Ref<HTMLImageElement>;
   hardwareRef?: Ref<HTMLImageElement>;
+  progressive?: boolean;
 }) {
+  const heroAsset = (name: string, mobile = false) => {
+    const suffix = mobile ? "-mobile" : "";
+    const optimized = `/images/hero/${name}${suffix}-optimized.webp`;
+    return {
+      src: progressive
+        ? `/images/hero/${name}${suffix}-preview.webp`
+        : optimized,
+      fullSrc: progressive ? optimized : undefined,
+    };
+  };
+  const macbook = heroAsset("macbook-hardware");
+  const macbookMobile = heroAsset("macbook-hardware", true);
+  const keys = heroAsset("keys-hardware-desktop");
+  const keysMobile = heroAsset("keys-hardware", true);
+  const folder = heroAsset("folder-hardware-desktop");
+  const folderMobile = heroAsset("folder-hardware", true);
+
   return (
     <>
       <div className="hero-fit hero-rig-live">
@@ -118,14 +137,16 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/macbook-hardware-mobile.webp"
+                    srcSet={macbookMobile.src}
+                    data-hero-full-src={macbookMobile.fullSrc}
                   />
                   <img
                     ref={hardwareRef}
-                    src="/images/hero/macbook-hardware.webp"
+                    src={macbook.src}
+                    data-hero-full-src={macbook.fullSrc}
                     alt=""
-                    width={1920}
-                    height={1080}
+                    width={720}
+                    height={410}
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
@@ -139,13 +160,15 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/keys-hardware-mobile.webp"
+                    srcSet={keysMobile.src}
+                    data-hero-full-src={keysMobile.fullSrc}
                   />
                   <img
-                    src="/images/hero/keys-hardware-desktop.webp"
+                    src={keys.src}
+                    data-hero-full-src={keys.fullSrc}
                     alt=""
-                    width={1536}
-                    height={1024}
+                    width={320}
+                    height={259}
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"
@@ -158,13 +181,15 @@ export function CinematicFrame({
                 <picture>
                   <source
                     media="(max-width: 767px)"
-                    srcSet="/images/hero/folder-hardware-mobile.webp"
+                    srcSet={folderMobile.src}
+                    data-hero-full-src={folderMobile.fullSrc}
                   />
                   <img
-                    src="/images/hero/folder-hardware-desktop.webp"
+                    src={folder.src}
+                    data-hero-full-src={folder.fullSrc}
                     alt=""
-                    width={1536}
-                    height={1024}
+                    width={480}
+                    height={331}
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"
@@ -228,9 +253,10 @@ export function CinematicFrame({
             className="hero-rise mt-7 flex flex-wrap justify-center gap-3 max-md:mt-6"
             style={{ "--i": 4 } as React.CSSProperties}
           >
-            <ConsultationButton href="/contact" />
+            <ConsultationButton href="/contact" tabIndex={progressive ? -1 : undefined} />
             <Link
               href="/how-it-works"
+              tabIndex={progressive ? -1 : undefined}
               className="secondary-action inline-flex min-h-12 items-center justify-center px-6 text-[0.84rem] font-bold"
             >
               <span>See How It Works</span>

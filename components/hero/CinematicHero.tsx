@@ -56,7 +56,11 @@ export function CinematicHero() {
       {!landed ? (
         <div ref={entrance} className="hero-entrance" aria-hidden="true">
           <div className="hero-entrance-frame">
-            <CinematicFrame plateRef={widePlate} hardwareRef={hardware} />
+            <CinematicFrame
+              plateRef={widePlate}
+              hardwareRef={hardware}
+              progressive
+            />
           </div>
         </div>
       ) : null}
