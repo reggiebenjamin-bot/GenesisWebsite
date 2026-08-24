@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navigation } from "@/lib/content";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Logo } from "./Logo";
@@ -16,11 +16,15 @@ import { Logo } from "./Logo";
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButton.current?.focus();
+      }
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
@@ -32,6 +36,7 @@ export function Header() {
         <Logo light />
 
         <button
+          ref={menuButton}
           type="button"
           aria-controls="primary-navigation"
           aria-expanded={open}

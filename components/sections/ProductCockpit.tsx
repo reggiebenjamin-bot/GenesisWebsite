@@ -9,7 +9,11 @@ const capabilities = [
 
 export function ProductCockpit() {
   return (
-    <div className={styles.frame}>
+    <figure
+      className={styles.frame}
+      role="img"
+      aria-label="Illustrative Genesis product interface showing a ranked priority queue, supporting evidence, a recommended next move, deal activity, and a source-linked Genesis brief."
+    >
       <div className={styles.glow} aria-hidden="true" />
       <div className={styles.chrome}>
         <span className={styles.dots} aria-hidden="true"><i /><i /><i /></span>
@@ -35,7 +39,7 @@ export function ProductCockpit() {
           <span><i aria-hidden="true" />Reports</span>
         </aside>
 
-        <main className={styles.main}>
+        <div className={styles.main}>
           <header className={styles.head}>
             <div><small>Daily operating view</small><h3>Today</h3><p>One clear view of what deserves movement.</p></div>
             <span>Illustrative product view</span>
@@ -72,7 +76,7 @@ export function ProductCockpit() {
               <span>Source-linked · Permission-aware</span>
             </aside>
           </div>
-        </main>
+        </div>
       </div>
 
       <div className={styles.capabilities}>
@@ -80,6 +84,6 @@ export function ProductCockpit() {
           <div key={title}><span>0{index + 1}</span><b>{title}</b><small>{copy}</small></div>
         ))}
       </div>
-    </div>
+    </figure>
   );
 }

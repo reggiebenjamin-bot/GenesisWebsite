@@ -68,7 +68,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="shell flex justify-between gap-6 border-t border-line-dark pt-6 text-[0.76rem] text-ivory/42 max-md:flex-col">
+      <div className="shell flex justify-between gap-6 border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62 max-md:flex-col">
         <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
         <p>Designed for clarity. Managed for continuity.</p>
       </div>

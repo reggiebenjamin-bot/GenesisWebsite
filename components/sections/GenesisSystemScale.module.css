@@ -29,7 +29,7 @@
   margin: 0;
   color: var(--color-gold-dark);
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 650;
   letter-spacing: 0.18em;
   line-height: 1;
@@ -477,7 +477,7 @@
     margin-bottom: 0.5rem;
     color: var(--color-gold-dark);
     font-family: var(--font-display);
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     line-height: 1;

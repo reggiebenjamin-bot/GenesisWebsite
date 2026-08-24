@@ -12,7 +12,13 @@ export function Logo({ light = false }: { light?: boolean }) {
         if (window.location.pathname !== "/") return;
 
         event.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        window.scrollTo({
+          top: 0,
+          behavior: reducedMotion ? "auto" : "smooth",
+        });
       }}
       className={`inline-flex min-h-12 items-center gap-0 ${
         light ? "text-ivory" : "text-ink"
