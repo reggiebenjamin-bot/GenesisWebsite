@@ -6,10 +6,12 @@ export function ConsultationCTA({
   eyebrow = "Build the operating advantage",
   title = "Make the system behind the work as strong as the work itself.",
   description = "Start with a focused consultation about your operation, priorities, and existing tools.",
+  buttonLabel = "Book a Consultation",
 }: {
   eyebrow?: string;
   title?: string;
   description?: string;
+  buttonLabel?: string;
 }) {
   return (
     <section className="border-t border-line-dark bg-ink py-[clamp(90px,10vw,150px)] text-ivory">
@@ -25,7 +27,9 @@ export function ConsultationCTA({
           <p className="text-muted-light">
             {description}
           </p>
-          <ConsultationButton href="/contact" className="mt-8" />
+          <ConsultationButton href="/contact" className="mt-8">
+            {buttonLabel}
+          </ConsultationButton>
         </div>
       </div>
     </section>

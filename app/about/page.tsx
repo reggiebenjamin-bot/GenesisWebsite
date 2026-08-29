@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "About",
-  "Why Genesis combines reusable Applied AI technology with operator-led implementation and ongoing managed service.",
+  "Why Genesis separates standardized G-Core Mini software from consultation-led custom Infrastructure work.",
 );
 
 export default function AboutPage() {
@@ -19,8 +19,8 @@ export default function AboutPage() {
     <>
       <PageIntro
         eyebrow="About Genesis AI"
-        title="Built from inside the operating problem."
-        description="Genesis helps real estate, lending, and property-driven teams turn scattered tools and founder-dependent work into a practical, fully managed Applied AI system."
+        title="Build the right operating layer for the work."
+        description="Genesis is preparing standardized software for independent agents and small teams, and separately designs and manages custom Infrastructure for organizations with more complex operating requirements."
       />
 
       <Section>
@@ -28,27 +28,28 @@ export default function AboutPage() {
           <Reveal>
             <SectionHeading
               eyebrow="Why Genesis exists"
-              title="Product discipline. Service accountability. One working system."
+              title="A software subscription and a custom implementation solve different problems."
             />
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-[1.15rem] leading-relaxed">
-              Genesis is not a generic consultancy and it is not self-serve SaaS.
-              Its reusable platform mechanisms are configured around the client,
-              then delivered and improved through a managed service.
+              G-Core Mini is being prepared as bounded software access: a
+              repeatable product for knowing what needs attention, taking the
+              next revenue-moving action, and recording what happened.
             </p>
             <p className="mt-6 text-muted-dark">
-              That model makes the technology repeatable without pretending every
-              operation is identical—and keeps responsibility with Genesis after
-              the initial implementation.
+              Genesis Infrastructure starts with the existing operation. Genesis
+              assesses the environment, scopes the work, implements the agreed
+              systems and integrations, and remains responsible for the ongoing
+              management included in the engagement.
             </p>
             <blockquote className="my-9 border-l-2 border-gold pl-6 text-[clamp(1.4rem,2.4vw,2rem)] leading-tight tracking-[-0.03em]">
               Become trusted before needed.
             </blockquote>
             <p className="text-muted-dark">
-              That principle shapes both the consultation and the system itself:
-              prepare carefully, communicate plainly, and remain accountable
-              when the operation depends on it.
+              That principle shapes how Genesis scopes work, communicates what is
+              included, and stays accountable when an operation depends on the
+              system.
             </p>
           </Reveal>
         </div>
@@ -64,23 +65,25 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              Reginald Benjamin is a licensed Texas real estate professional with
-              an enterprise technology sales background. He remains active in
-              real estate and lending operations while building Genesis.
+              Reginald Benjamin is the founder of Genesis AI. The company&rsquo;s
+              operating approach is direct: understand the work, define the
+              boundary, implement what was agreed, and remain involved after
+              launch when the engagement includes ongoing management.
             </p>
             <p className="mt-6 text-muted-light">
-              Genesis grew from that operating vantage point: build reusable
-              technology around real workflows, apply AI where context and
-              repetition justify it, and stay accountable for the system in use.
+              Additional biographical details, credentials, and client evidence
+              will be published only when the supporting source and permission
+              are available.
             </p>
           </Reveal>
         </div>
       </Section>
 
       <ConsultationCTA
-        eyebrow="Operator to operator"
-        title="Talk about the work your current system leaves with you."
-        description="Start with a practical conversation about the operation, the friction, and whether Genesis is the right fit."
+        eyebrow="Genesis Infrastructure"
+        title="Start with the systems and work already in place."
+        description="The consultation reviews the current environment, the responsibilities creating friction, and whether a custom Infrastructure engagement is the right next step."
+        buttonLabel="Book an Infrastructure consultation"
       />
     </>
   );

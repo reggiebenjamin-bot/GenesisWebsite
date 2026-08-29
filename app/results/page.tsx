@@ -13,7 +13,7 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "Results",
-  "See where the Genesis System is live today and the evidence standard used for every published operating result.",
+  "See what Genesis can verify today and the evidence required before client results are published.",
 );
 
 const proofRequirements = [
@@ -44,16 +44,16 @@ export default function ResultsPage() {
     <>
       <PageIntro
         eyebrow="Results"
-        title="Live systems now. Client-level claims only when the evidence is ready."
-        description="Genesis is live in production for two independent operations today, with a third large-scale engagement underway. Specific outcomes appear only when the source, context, and permission are verified."
+        title="A clear line between verified facts and future client proof."
+        description="No approved client case studies, testimonials, or performance figures are presented here yet. Genesis will publish them only when the source, context, attribution, and permission are confirmed."
       />
 
       <Section tone="dark">
         <Reveal>
           <SectionHeading
             eyebrow="Evidence architecture"
-            title="Data synthesis makes the result inspectable."
-            description="Genesis connects each operational stage to exact source records, exposes the gaps between stages, and keeps unsupported conclusions out of the story."
+            title="A result should remain connected to its source."
+            description="This illustrative model shows the standard: define the starting state, identify the system change, measure from source records, and keep unsupported conclusions out of the story."
           />
         </Reveal>
         <Reveal delay={0.08}>
@@ -103,8 +103,8 @@ export default function ResultsPage() {
           <Reveal>
             <SectionHeading
               eyebrow="The proof standard"
-              title="What earns its place in a Genesis case study."
-              description="Every published outcome must show the starting point, the system change, the result, and permission to make the claim."
+              title="What Genesis requires before calling something a result."
+              description="A case study must explain the starting condition, the work completed, the supported outcome, and who approved publication."
             />
           </Reveal>
           <div className="grid gap-8">
@@ -130,23 +130,26 @@ export default function ResultsPage() {
           <Reveal>
             <Eyebrow>What is verifiable today</Eyebrow>
             <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Management is part of the system—not an afterthought.
+              The service boundary defines who remains responsible.
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              Genesis combines reusable platform mechanisms with hands-on
-              implementation and ongoing operation. That continuing ownership
-              is the managed-service layer clients receive today.
+              The current Genesis materials support the two-product model, the
+              published Infrastructure starting prices, and ongoing monitoring, support,
+              maintenance, and workflow refinement when those services are in
+              scope. Client outcomes remain separate until they can be supported
+              and attributed.
             </p>
           </Reveal>
         </div>
       </Section>
 
       <ConsultationCTA
-        eyebrow="Build the next verified system"
-        title="Start with the operational result that matters most."
-        description="Use the consultation to define the bottleneck, the evidence available today, and the change worth measuring."
+        eyebrow="Evaluate the fit"
+        title="Discuss the operation without relying on unsupported claims."
+        description="The Infrastructure consultation reviews the current system, the proposed scope, and what can be measured before you decide to proceed."
+        buttonLabel="Book an Infrastructure consultation"
       />
     </>
   );

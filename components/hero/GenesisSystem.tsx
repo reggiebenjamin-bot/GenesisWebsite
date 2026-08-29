@@ -137,6 +137,7 @@ export function GenesisSystem({
     let holdTimer = 0;
     let exitTimer = 0;
     let clearTimer = 0;
+    let sectionVisible = false;
 
     const clearTimers = () => {
       window.clearTimeout(startTimer);
@@ -177,24 +178,45 @@ export function GenesisSystem({
       }, 5200);
     };
 
+    const startCycleWhenReady = () => {
+      if (
+        !sectionVisible ||
+        document.documentElement.dataset.heroEntrance === "active"
+      ) {
+        return;
+      }
+
+      startTimer = window.setTimeout(() => {
+        showStage(0);
+      }, 3000);
+    };
+
+    const onHeroLanded = () => {
+      stopCycle();
+      startCycleWhenReady();
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         stopCycle();
-        if (!entry?.isIntersecting) return;
+        sectionVisible = Boolean(entry?.isIntersecting);
+        if (!sectionVisible) return;
 
-        // Preserve the overview long enough for the photographic laptop and
-        // live section to crossfade before the system begins presenting layers.
-        startTimer = window.setTimeout(() => {
-          showStage(0);
-        }, 3000);
+        // Preserve the overview through the complete photographic handoff.
+        // Slow scrolling can leave half the destination visible for several
+        // seconds beneath the fixed entrance, so intersection alone is not a
+        // sufficient signal to begin changing its content.
+        startCycleWhenReady();
       },
       { threshold: 0.48 },
     );
 
+    window.addEventListener("genesis:hero-landed", onHeroLanded);
     observer.observe(section);
 
     return () => {
       clearTimers();
+      window.removeEventListener("genesis:hero-landed", onHeroLanded);
       observer.disconnect();
     };
   }, [decorative, reduceMotion]);

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { navigation } from "@/lib/content";
+import { contact, navigation } from "@/lib/content";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Logo } from "./Logo";
 
@@ -17,6 +17,13 @@ export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const miniPage = pathname === "/mini" || pathname.startsWith("/mini/");
+  const primaryActionHref = miniPage
+    ? `mailto:${contact.email}?subject=${encodeURIComponent("G-Core Mini beta interest")}`
+    : "/contact";
+  const primaryActionLabel = miniPage
+    ? "Ask About Mini"
+    : "Book a Consultation";
 
   useEffect(() => {
     if (!open) return;
@@ -77,16 +84,20 @@ export function Header() {
 
           <div className="mt-4 lg:hidden">
             <ConsultationButton
-              href="/contact"
+              href={primaryActionHref}
               compact
               onClick={() => setOpen(false)}
               className="w-full"
-            />
+            >
+              {primaryActionLabel}
+            </ConsultationButton>
           </div>
         </nav>
 
         <div className="hidden lg:block">
-          <ConsultationButton href="/contact" compact />
+          <ConsultationButton href={primaryActionHref} compact>
+            {primaryActionLabel}
+          </ConsultationButton>
         </div>
       </div>
     </header>

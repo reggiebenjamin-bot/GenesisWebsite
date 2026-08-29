@@ -12,14 +12,14 @@ import { useHeroReady, useHeroScrub } from "./useHeroScrub";
  *   2. Genesis System  — an ordinary section, permanently below it
  *   3. the entrance    — a fixed overlay that plays the push once, then goes
  *
- * The overlay is the only thing that ever transforms. Mobile keeps the static
- * frame sticky within a longer first section so touch momentum has a useful
- * runway; both sections remain in ordinary document flow and scrolling is
- * never locked.
+ * The overlay is the only thing that ever transforms. The static frame stays
+ * sticky within a short settle runway so wheel and touch momentum cannot carry
+ * the document past the real system while the damped camera is catching up;
+ * both sections remain in ordinary document flow and scrolling is never locked.
  *
- * The final part of the mobile runway holds the completed system view. When
- * the hero is fully out, the real Genesis System is at the viewport and the
- * overlay can crossfade away, leaving the hero above it to scroll back to.
+ * The final part of the runway holds the completed system view. When the hero
+ * is fully out, the real Genesis System is at the viewport and the overlay can
+ * crossfade away, leaving the hero above it to scroll back to.
  */
 export function CinematicHero() {
   const hero = useRef<HTMLElement>(null);
@@ -37,13 +37,14 @@ export function CinematicHero() {
     <>
       <section
         ref={hero}
-        className="hero-section relative isolate z-10 h-dvh overflow-clip bg-ink max-md:h-[240svh]"
+        className="hero-section relative isolate z-10 h-[140dvh] overflow-clip bg-ink max-md:h-[240svh]"
       >
         <div className="hero-static-frame sticky top-0 h-dvh overflow-clip bg-ink">
-          {/* Mount one cinematic composite at a time. The browser keeps decoded
-              image resources warm for the handoff without paying to paint two
-              full-screen GPU stacks during the critical first interaction. */}
-          {landed ? <CinematicFrame /> : null}
+          {/* Keep the ordinary hero mounted from first paint. The fixed entrance
+              covers it during the push, but its layout and media are already
+              prepared when the overlay retires. Mounting this tree on the
+              handoff frame caused a measurable layout/paint hitch. */}
+          <CinematicFrame />
         </div>
       </section>
 

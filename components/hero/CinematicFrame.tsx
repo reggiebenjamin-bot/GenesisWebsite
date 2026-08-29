@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Ref } from "react";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { GenesisSystem } from "./GenesisSystem";
 
 /**
  * The cinematic frame: the room, the laptop, and the hero copy.
@@ -73,27 +74,7 @@ export function CinematicFrame({
             <div className="hero-zoom">
               <div className="hero-screen" aria-hidden="true" inert>
                 <div className="hero-screen-canvas">
-                  <div className="hero-system-preview">
-                    <div className="hero-system-preview-copy">
-                      <span>The Genesis System</span>
-                      <strong>One managed system behind the operation.</strong>
-                      <i />
-                    </div>
-                    <div className="hero-system-preview-map">
-                      <span className="hero-preview-node hero-preview-node-one" />
-                      <span className="hero-preview-node hero-preview-node-two" />
-                      <span className="hero-preview-node hero-preview-node-three" />
-                      <span className="hero-preview-node hero-preview-node-four" />
-                      <span className="hero-preview-hub">
-                        <Image
-                          src="/brand/genesis-logo.svg"
-                          alt=""
-                          width={44}
-                          height={44}
-                        />
-                      </span>
-                    </div>
-                  </div>
+                  <GenesisSystem decorative />
                 </div>
               </div>
             </div>

@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Genesis AI",
     short_name: "Genesis AI",
     description:
-      "A managed Applied AI system for real estate, lending, and property-driven deal operations.",
+      "Ready-to-use G-Core Mini software for agents and custom Genesis Infrastructure for complex real-estate organizations.",
     start_url: "/",
     display: "standalone",
     background_color: "#08090e",

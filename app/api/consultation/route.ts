@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
+import { infrastructureCatalog } from "@/lib/products";
 
 const WEBHOOK_URL =
   process.env.GENESIS_CONSULTATION_WEBHOOK_URL ||
   "https://services.leadconnectorhq.com/hooks/xFA4eosJIjIpJqvXZJtS/webhook-trigger/018af955-79ee-4cd6-b2c1-2c43c2025716";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const allowedPlans = new Set(["", "foundation", "growth", "flagship"]);
+const allowedPlans = new Set<string>([
+  "",
+  ...infrastructureCatalog.plans.map((plan) => plan.slug),
+]);
 const allowedRoles = new Set([
   "Owner",
   "Principal",
@@ -51,7 +55,7 @@ export async function POST(request: Request) {
     const outbound = new FormData();
     Object.entries({
       ...data,
-      source: "Website Contact Intake",
+      source: "Website Infrastructure Consultation",
       submitted_at: new Date().toISOString(),
     }).forEach(([key, value]) => {
       if (key !== "website" && typeof value === "string") outbound.append(key, value);

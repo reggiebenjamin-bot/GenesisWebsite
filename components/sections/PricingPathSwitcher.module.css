@@ -1,0 +1,107 @@
+.switcher {
+  margin-top: 0;
+}
+
+.tablist {
+  display: grid;
+  width: min(100%, 34rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
+  border: 1px solid rgb(8 9 14 / 0.12);
+  border-radius: 10px;
+  padding: 0.25rem;
+  background: rgb(8 9 14 / 0.045);
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 48px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 0.7rem 1rem;
+  color: rgb(8 9 14 / 0.62);
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 260ms var(--ease-editorial),
+    border-color 260ms var(--ease-editorial),
+    background-color 260ms var(--ease-editorial),
+    box-shadow 260ms var(--ease-editorial);
+}
+
+.tab strong {
+  color: inherit;
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.tab span {
+  margin-top: 0.15rem;
+  color: rgb(8 9 14 / 0.5);
+  font-size: 0.7rem;
+  font-weight: 450;
+  line-height: 1.35;
+}
+
+.tab[aria-selected="true"] span {
+  color: rgb(8 9 14 / 0.66);
+}
+
+.tab:hover {
+  color: var(--color-ink);
+  background: rgb(255 255 255 / 0.5);
+}
+
+.tab[aria-selected="true"] {
+  border-color: rgb(201 165 94 / 0.32);
+  color: var(--color-ink);
+  background: rgb(255 255 255 / 0.92);
+  box-shadow:
+    0 4px 14px rgb(8 9 14 / 0.06),
+    inset 0 1px 0 rgb(255 255 255 / 0.9);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-gold-dark);
+  outline-offset: 3px;
+}
+
+.panel {
+  margin-top: clamp(1.8rem, 3.5vw, 2.8rem);
+  outline: none;
+  animation: pricing-panel-in 480ms var(--ease-editorial) both;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+@keyframes pricing-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+
+  .panel {
+    animation: none;
+  }
+}

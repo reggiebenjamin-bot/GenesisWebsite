@@ -124,10 +124,10 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.08}>
             <p className="text-muted-light">
-              Genesis is live in production for two independent operations
-              today, with a third large-scale engagement underway. Client-level
-              outcomes are published only when the evidence, context, and
-              permission are verified.
+              Genesis does not publish an outcome as proof until the evidence,
+              context, attribution, and permission can be verified. Approved
+              client case studies and performance figures are not available on
+              the public site yet.
             </p>
             <TextLink href="/results" light className="mt-8">
               See the proof standard
@@ -139,14 +139,43 @@ export default function Home() {
       <Section>
         <Reveal>
           <SectionHeading
-            eyebrow="Transparent starting ranges"
-            title="Know the commercial path before the first call."
-            description="Every engagement begins with a consultation. Pricing reflects the operational complexity, implementation depth, and ongoing management involved."
+            eyebrow="Two commercial paths"
+            title="Software for agents. Infrastructure for complex operations."
+            description="Use a ready-to-use workspace, or hire Genesis to design and implement a system around the business."
           />
         </Reveal>
-        <TextLink href="/pricing">
-          See implementation and managed-platform pricing
-        </TextLink>
+        <div className="grid gap-5 md:grid-cols-2">
+          <Reveal className="rounded-lg border border-line-light bg-paper p-[clamp(28px,4vw,48px)]">
+            <Eyebrow>G-Core Mini</Eyebrow>
+            <h3 className="mt-5 text-[clamp(2rem,3vw,3.2rem)]">
+              Ready-to-use software for agents.
+            </h3>
+            <p className="mt-5 text-muted-dark">
+              A monthly Agent Dashboard for independent agents and small teams.
+              Use the product without commissioning a custom implementation.
+            </p>
+            <TextLink href="/mini" className="mt-8">
+              See the Agent Dashboard
+            </TextLink>
+          </Reveal>
+          <Reveal
+            delay={0.06}
+            className="rounded-lg border border-line-light bg-paper p-[clamp(28px,4vw,48px)]"
+          >
+            <Eyebrow>Genesis Infrastructure</Eyebrow>
+            <h3 className="mt-5 text-[clamp(2rem,3vw,3.2rem)]">
+              Custom systems for the organization.
+            </h3>
+            <p className="mt-5 text-muted-dark">
+              For brokerages, lenders, acquisitions teams, and complex
+              operations that need systems assessed, connected, implemented,
+              and launched around their business.
+            </p>
+            <TextLink href="/pricing#infrastructure" className="mt-8">
+              See Infrastructure pricing
+            </TextLink>
+          </Reveal>
+        </div>
       </Section>
 
       <Section className="bg-paper">
@@ -180,7 +209,12 @@ export default function Home() {
         </div>
       </Section>
 
-      <ConsultationCTA />
+      <ConsultationCTA
+        eyebrow="Genesis Infrastructure"
+        title="Discuss the custom-build path for your operation."
+        description="The consultation reviews the current environment and identifies whether Foundation, Growth, or a fully custom Infrastructure scope is appropriate."
+        buttonLabel="Book an Infrastructure consultation"
+      />
     </>
   );
 }

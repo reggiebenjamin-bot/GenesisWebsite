@@ -14,8 +14,9 @@ export function Footer() {
         <div className="max-lg:col-span-full">
           <Logo light />
           <p className="mt-5 max-w-sm text-[0.95rem] text-ivory/62">
-            The managed Applied AI system for real estate, lending, and
-            property-driven deal operations.
+            G-Core Mini is ready-to-use software for agents and small teams.
+            Genesis Infrastructure delivers custom systems for brokerages,
+            lenders, acquisitions teams, and complex operations.
           </p>
         </div>
 
@@ -28,7 +29,7 @@ export function Footer() {
               </Link>
             ))}
             <Link href="/contact" className={columnLink}>
-              Contact
+              Infrastructure consultation
             </Link>
           </div>
         </div>
@@ -70,7 +71,7 @@ export function Footer() {
 
       <div className="shell flex justify-between gap-6 border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62 max-md:flex-col">
         <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
-        <p>Designed for clarity. Managed for continuity.</p>
+        <p>Software when repeatable. Infrastructure when custom.</p>
       </div>
     </footer>
   );

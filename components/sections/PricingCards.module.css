@@ -10,48 +10,35 @@
   z-index: 1;
   display: flex;
   height: 100%;
-  min-height: 0;
   flex-direction: column;
-}
-
-.cardColumn .card {
-  height: auto;
-  flex: 1;
 }
 
 .outerStroke {
   position: absolute;
   z-index: 0;
-  inset: -1.5px;
+  inset: -1px;
   overflow: hidden;
-  border-radius: 21.5px;
-  filter: drop-shadow(0 0 4px rgb(201 165 94 / 0.24));
-  opacity: 0.76;
+  border-radius: 11px;
+  opacity: 0.5;
   pointer-events: none;
-  transition:
-    opacity 350ms var(--ease-editorial),
-    filter 350ms var(--ease-editorial),
-    transform 350ms var(--ease-editorial);
 }
 
 .outerStroke::before {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 190%;
-  height: 190%;
+  width: 185%;
+  height: 185%;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 82deg,
-    rgb(201 165 94 / 0.18) 108deg,
-    rgb(242 216 149 / 0.92) 137deg,
-    rgb(244 239 232 / 0.38) 154deg,
-    rgb(201 165 94 / 0.12) 176deg,
-    transparent 204deg 360deg
+    transparent 0deg 110deg,
+    rgb(201 165 94 / 0.15) 128deg,
+    rgb(242 216 149 / 0.85) 151deg,
+    transparent 182deg 360deg
   );
   content: "";
   transform: translate(-50%, -50%);
-  animation: pricing-border-orbit 10s linear infinite;
+  animation: pricing-border-orbit 12s linear infinite;
 }
 
 .card {
@@ -59,54 +46,37 @@
   z-index: 1;
   isolation: isolate;
   height: 100%;
+  flex: 1;
   overflow: hidden;
   padding: 1px;
-  border-radius: 20px;
+  border-radius: 10px;
   background: #222630;
-  box-shadow: 0 22px 48px rgb(8 9 14 / 0.13);
+  box-shadow: 0 16px 38px rgb(8 9 14 / 0.16);
   transition:
-    transform 350ms var(--ease-editorial),
-    box-shadow 350ms var(--ease-editorial);
-}
-
-.condensed {
-  min-height: 0;
-}
-
-.full {
-  min-height: 0;
+    transform 320ms var(--ease-editorial),
+    box-shadow 320ms var(--ease-editorial);
 }
 
 .reveal:hover .card {
-  transform: translateY(-5px);
-  box-shadow: 0 30px 64px rgb(8 9 14 / 0.2);
-}
-
-.reveal:hover .outerStroke {
-  transform: translateY(-5px);
-  filter: drop-shadow(0 0 7px rgb(242 216 149 / 0.38));
-  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgb(16 25 41 / 0.1);
 }
 
 .surface {
   position: relative;
   z-index: 1;
   display: flex;
-  min-height: 100%;
   height: 100%;
+  min-height: 100%;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 19px;
-  padding: clamp(34px, 3.2vw, 46px);
+  border-radius: 9px;
+  padding: clamp(1.25rem, 2.3vw, 1.7rem);
   color: var(--color-ivory);
-  background-color: #0b0d13;
-  background-image:
-    radial-gradient(circle at 88% 8%, rgb(242 216 149 / 0.08), transparent 35%),
-    radial-gradient(circle at 0% 68%, rgb(201 165 94 / 0.12), transparent 43%),
-    linear-gradient(155deg, #11141c 0%, #090b10 56%, #0d1018 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(244 239 232 / 0.08),
-    inset 0 -18px 34px rgb(201 165 94 / 0.025);
+  background:
+    radial-gradient(circle at 90% 0%, rgb(242 216 149 / 0.11), transparent 36%),
+    linear-gradient(155deg, #141821, #090b10 66%);
+  box-shadow: inset 0 1px 0 rgb(244 239 232 / 0.08);
   container-type: inline-size;
 }
 
@@ -115,69 +85,40 @@
   inset: 0;
   z-index: 0;
   background-image:
-    linear-gradient(rgb(244 239 232 / 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(244 239 232 / 0.022) 1px, transparent 1px);
-  background-size: 28px 28px;
+    linear-gradient(rgb(244 239 232 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 239 232 / 0.025) 1px, transparent 1px);
+  background-size: 22px 22px;
   content: "";
   pointer-events: none;
 }
 
-.surface::after {
-  position: absolute;
-  z-index: 0;
-  width: 240px;
-  height: 240px;
-  right: -120px;
-  bottom: -140px;
-  border-radius: 999px;
-  background: rgb(201 165 94 / 0.12);
-  filter: blur(72px);
-  opacity: 0.7;
-  content: "";
-  pointer-events: none;
-  transition: opacity 350ms ease;
-}
-
-.card:hover .surface::after {
-  opacity: 1;
-}
-
-.featured .surface {
-  background-image:
-    radial-gradient(circle at 86% 9%, rgb(242 216 149 / 0.15), transparent 38%),
-    radial-gradient(circle at 4% 72%, rgb(201 165 94 / 0.18), transparent 45%),
-    linear-gradient(155deg, #151822 0%, #0a0c12 58%, #11141c 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(244 239 232 / 0.12),
-    inset 0 -20px 38px rgb(201 165 94 / 0.05);
+.surface > * {
+  position: relative;
+  z-index: 1;
 }
 
 .featuredColumn {
-  padding-top: 30px;
+  padding-top: 26px;
 }
 
 .featuredCap {
   position: absolute;
   inset: 0 0 auto;
   display: flex;
-  height: 30px;
+  height: 26px;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgb(242 216 149 / 0.42);
+  border: 1px solid rgb(201 165 94 / 0.42);
   border-bottom: 0;
-  border-radius: 20px 20px 0 0;
+  border-radius: 10px 10px 0 0;
   color: var(--color-gold-light);
   background:
-    linear-gradient(180deg, rgb(242 216 149 / 0.16), rgb(201 165 94 / 0.045)),
+    linear-gradient(180deg, rgb(242 216 149 / 0.15), rgb(201 165 94 / 0.04)),
     #101219;
-  box-shadow:
-    inset 0 1px 0 rgb(244 239 232 / 0.13),
-    0 -8px 20px rgb(201 165 94 / 0.08);
   font-family: var(--font-display);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1;
+  font-size: 0.59rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -189,63 +130,31 @@
 .featured .surface {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  background:
+    radial-gradient(circle at 90% 0%, rgb(242 216 149 / 0.18), transparent 39%),
+    linear-gradient(155deg, #191c24, #0a0c12 66%);
 }
 
-.card[data-plan="enterprise"] {
-  box-shadow:
-    0 28px 64px rgb(8 9 14 / 0.18),
-    0 10px 34px rgb(201 165 94 / 0.1);
+.card[data-plan="custom-infrastructure"] .surface {
+  background:
+    linear-gradient(135deg, transparent 0 48%, rgb(242 216 149 / 0.025) 49%, transparent 51%),
+    radial-gradient(circle at 88% 4%, rgb(242 216 149 / 0.2), transparent 37%),
+    linear-gradient(155deg, #181b23, #090b10 66%);
 }
 
-.card[data-plan="enterprise"] .surface {
-  background-image:
-    radial-gradient(circle at 78% 2%, rgb(242 216 149 / 0.2), transparent 34%),
-    radial-gradient(circle at 8% 76%, rgb(201 165 94 / 0.17), transparent 42%),
-    linear-gradient(135deg, transparent 0% 48%, rgb(242 216 149 / 0.025) 49%, transparent 51%),
-    linear-gradient(155deg, #171a21 0%, #090b10 55%, #121620 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(242 216 149 / 0.2),
-    inset 0 -24px 44px rgb(201 165 94 / 0.055);
+.customReveal .outerStroke {
+  opacity: 0.8;
 }
 
-.enterpriseReveal .outerStroke {
-  filter: drop-shadow(0 0 7px rgb(201 165 94 / 0.34));
-  opacity: 0.94;
-}
-
-.enterpriseReveal .outerStroke::before {
+.customReveal .outerStroke::before {
   background: conic-gradient(
     from 0deg,
-    transparent 0deg 68deg,
-    rgb(201 165 94 / 0.3) 100deg,
-    rgb(244 239 232 / 0.9) 129deg,
-    rgb(242 216 149 / 1) 148deg,
-    rgb(201 165 94 / 0.22) 176deg,
-    transparent 210deg 360deg
+    transparent 0deg 96deg,
+    rgb(201 165 94 / 0.25) 120deg,
+    rgb(242 216 149 / 0.95) 147deg,
+    transparent 184deg 360deg
   );
-  animation-duration: 8s;
-}
-
-.card[data-plan="enterprise"] .priceLine strong {
-  color: transparent;
-  background: linear-gradient(118deg, var(--color-ivory) 8%, var(--color-gold-light) 58%, var(--color-gold) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
-.card[data-plan="enterprise"] .divider {
-  background: linear-gradient(
-    90deg,
-    var(--color-gold-light),
-    rgb(201 165 94 / 0.3) 52%,
-    transparent
-  );
-  box-shadow: 0 0 10px rgb(201 165 94 / 0.12);
-}
-
-.surface > * {
-  position: relative;
-  z-index: 1;
+  animation-duration: 10s;
 }
 
 .header {
@@ -253,142 +162,134 @@
   flex-direction: column;
 }
 
-.enterpriseCrest {
-  display: flex;
-  width: fit-content;
-  align-items: center;
-  gap: 7px;
-  margin-top: 9px;
-  margin-bottom: 3px;
-  transform: translateX(-1px);
-  transform-origin: left center;
-  opacity: 0.86;
-}
-
-.enterpriseCrest::before,
-.enterpriseCrest::after {
-  width: 20px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(242 216 149 / 0.56));
-  content: "";
-}
-
-.enterpriseCrest::after {
-  transform: scaleX(-1);
-}
-
-.enterpriseCrest i {
-  display: block;
-  width: 5px;
-  height: 5px;
-  transform: rotate(45deg);
-  border: 1px solid rgb(242 216 149 / 0.72);
-  background: rgb(201 165 94 / 0.12);
-}
-
-.enterpriseCrest i:nth-child(2) {
-  width: 8px;
-  height: 8px;
-  border-color: var(--color-gold-light);
-  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));
-  box-shadow: 0 0 9px rgb(201 165 94 / 0.24);
-}
-
 .planName {
+  color: var(--color-gold-light);
   font-family: var(--font-display);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.17em;
+  font-weight: 650;
+  letter-spacing: 0.14em;
   line-height: 1.4;
-  color: var(--color-gold-light);
   text-transform: uppercase;
 }
 
+.customCrest {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  opacity: 0.72;
+}
+
+.customCrest::before,
+.customCrest::after {
+  width: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(242 216 149 / 0.55));
+  content: "";
+}
+
+.customCrest::after {
+  transform: scaleX(-1);
+}
+
+.customCrest i {
+  width: 4px;
+  height: 4px;
+  transform: rotate(45deg);
+  border: 1px solid rgb(242 216 149 / 0.68);
+}
+
+.customCrest i:nth-child(2) {
+  width: 7px;
+  height: 7px;
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold-dark));
+}
+
 .priceBlock {
-  margin-top: clamp(36px, 4vw, 52px);
+  margin-top: 1.35rem;
 }
 
 .priceLabel {
   display: block;
-  margin-bottom: 7px;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  color: rgb(244 239 232 / 0.54);
+  margin-bottom: 0.35rem;
+  color: rgb(244 239 232 / 0.5);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-
-.priceLine {
-  display: block;
 }
 
 .priceLine strong {
   display: block;
-  font-size: clamp(1.85rem, 10.5cqi, 3.15rem);
+  font-size: clamp(1.7rem, 9.5cqi, 2.5rem);
   font-weight: 400;
-  letter-spacing: -0.055em;
-  line-height: 0.95;
+  letter-spacing: -0.045em;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .priceLine span {
   display: block;
-  margin-top: 10px;
-  font-size: 0.82rem;
+  margin-top: 0.35rem;
   color: rgb(244 239 232 / 0.5);
+  font-size: 0.72rem;
 }
 
-.audience {
-  margin-top: 24px;
-  color: rgb(244 239 232 / 0.66);
-  font-size: 0.96rem;
-  line-height: 1.65;
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-  margin-block: 28px;
-  background: linear-gradient(
-    90deg,
-    rgb(201 165 94 / 0.52),
-    rgb(244 239 232 / 0.09) 48%,
-    transparent
-  );
-}
-
-.featureList {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  margin-bottom: 34px;
-}
-
-.featureList li {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: start;
-  gap: 11px;
+.enterpriseIntro {
+  min-height: 4.25rem;
+  margin-top: 1.15rem;
   color: rgb(244 239 232 / 0.78);
   font-size: 0.86rem;
   line-height: 1.5;
 }
 
+.audience {
+  min-height: 2.7rem;
+  margin-top: 0.85rem;
+  color: rgb(244 239 232 / 0.66);
+  font-size: 0.84rem;
+  line-height: 1.48;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  margin-block: 1rem;
+  background: linear-gradient(90deg, rgb(201 165 94 / 0.58), transparent);
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.featureList li {
+  display: grid;
+  grid-template-columns: 17px minmax(0, 1fr);
+  align-items: start;
+  gap: 0.55rem;
+  color: rgb(244 239 232 / 0.72);
+  font-size: 0.79rem;
+  line-height: 1.42;
+}
+
 .check {
   display: flex;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   align-items: center;
   justify-content: center;
   margin-top: 1px;
-  border-radius: 999px;
+  border-radius: 50%;
   color: var(--color-ink);
   background: linear-gradient(145deg, var(--color-gold-light), var(--color-gold));
-  box-shadow: 0 0 0 3px rgb(201 165 94 / 0.08);
 }
 
 .check svg {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -402,26 +303,13 @@
   border-radius: 6px;
 }
 
+.cta:focus-visible {
+  outline-color: var(--color-gold-light);
+}
 
 @keyframes pricing-border-orbit {
   to {
     transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-@media (max-width: 1023px) {
-  .surface {
-    min-height: 0;
-  }
-}
-
-@media (max-width: 560px) {
-  .surface {
-    padding: 32px 28px;
-  }
-
-  .priceBlock {
-    margin-top: 34px;
   }
 }
 
@@ -430,8 +318,7 @@
     transition: none;
   }
 
-  .reveal:hover .card,
-  .reveal:hover .outerStroke {
+  .reveal:hover .card {
     transform: none;
   }
 

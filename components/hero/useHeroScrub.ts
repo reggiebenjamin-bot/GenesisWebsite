@@ -32,9 +32,12 @@ const pct = (n: number) => `${(n * 100).toFixed(4)}%`;
    last portion is a hold on the completed Genesis card, which gives touch
    momentum room to settle before the real section reaches the viewport. */
 const MOBILE_ANIMATION_PORTION = 0.72;
+const DESKTOP_ANIMATION_PORTION = 1 / 1.4;
 const MOBILE_DAMPING = 0.12;
 const MOBILE_MAX_PROGRESS_STEP = 0.022;
+const DESKTOP_MAX_PROGRESS_STEP = 0.02;
 const MOBILE_HANDOFF_MS = 220;
+const DESKTOP_HANDOFF_MS = 180;
 const DESKTOP_ENTRANCE_UI_SCALE = 1.6;
 
 /**
@@ -45,9 +48,9 @@ const DESKTOP_ENTRANCE_UI_SCALE = 1.6;
  * Mobile gives the first section a longer runway with a sticky static frame;
  * the overlay remains the only animated layer and is removed when it lands.
  *
- * Desktop progress remains the original one-viewport mapping. Mobile maps the
- * first part of its longer runway to a damped target and holds p = 1 through
- * the final part, so the visual catches up before the real section arrives.
+ * Both layouts map roughly the first viewport of their runway to a damped
+ * target and hold p = 1 through the final part, so the visual catches up
+ * before the real section arrives.
  *
  * Custom properties are written to the overlay, not to the document, so the
  * static copy of the frame in the hero section keeps the `:root` defaults and
@@ -66,6 +69,18 @@ export function useHeroScrub({
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const mobilePlate = window.matchMedia("(max-width: 767px)");
+
+    /* App Router navigation can mount the homepage before it finishes
+       resetting the previous route's scroll position. Measuring that stale
+       offset can make the entrance look complete on its very first frame.
+       Start a fresh, unhashed homepage mount at the top, with smooth scrolling
+       disabled only for this one synchronous reset. */
+    const shouldResetInitialScroll = !window.location.hash && window.scrollY > 0;
+    const initialScrollBehavior = root.style.scrollBehavior;
+    if (shouldResetInitialScroll) {
+      root.style.scrollBehavior = "auto";
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
 
     let heroTop = 0;
     let heroHeight = 1;
@@ -89,22 +104,14 @@ export function useHeroScrub({
     let animationFrame = 0;
     let handoffFrame = 0;
     let handoffTimer = 0;
-    let heroAssetsPromoted = false;
 
-    function promoteHeroAssets() {
-      if (heroAssetsPromoted) return;
-      heroAssetsPromoted = true;
-      entrance.current
-        ?.querySelectorAll<HTMLElement>("[data-hero-full-src]")
-        .forEach((asset) => {
-          const fullSrc = asset.dataset.heroFullSrc;
-          if (!fullSrc) return;
-          if (asset instanceof HTMLSourceElement) asset.srcset = fullSrc;
-          if (asset instanceof HTMLImageElement) asset.src = fullSrc;
-          delete asset.dataset.heroFullSrc;
-        });
+    function signalLanded() {
+      root.dataset.heroEntrance = "landed";
+      onLand();
+      window.dispatchEvent(new Event("genesis:hero-landed"));
     }
 
+    root.dataset.heroEntrance = "active";
     function offsetTopWithin(element: HTMLElement, ancestor: HTMLElement) {
       let top = 0;
       let node: HTMLElement | null = element;
@@ -306,7 +313,7 @@ export function useHeroScrub({
       box.dataset.renderedProgress = clamp(p).toFixed(4);
     }
 
-    function mobileHandoffReady() {
+    function handoffReady() {
       return current >= 0.999 && window.scrollY >= heroTop + heroHeight - 1;
     }
 
@@ -364,29 +371,26 @@ export function useHeroScrub({
         box.style.pointerEvents = "none";
         box.dataset.photoHidden = "true";
 
-        /* On touch screens, leave both identical HTML states painted for one
-           brief overlap. The photographic layer has already disappeared;
-           only the viewport-aligned Genesis UI crossfades to the real section
-           underneath, avoiding a one-frame cut at the handoff. */
-        if (mobilePlate.matches) {
-          box.dataset.handoff = "true";
-          box.style.transition = `opacity ${MOBILE_HANDOFF_MS}ms ease-out`;
+        /* Both sides of the seam are now the same GenesisSystem markup. Leave
+           them painted together for a brief overlap so text antialiasing and
+           compositing settle without a one-frame flash. */
+        const handoffMs = mobilePlate.matches
+          ? MOBILE_HANDOFF_MS
+          : DESKTOP_HANDOFF_MS;
+        box.dataset.handoff = "true";
+        box.style.transition = `opacity ${handoffMs}ms ease-out`;
+        handoffFrame = requestAnimationFrame(() => {
           handoffFrame = requestAnimationFrame(() => {
-            handoffFrame = requestAnimationFrame(() => {
-              box.style.opacity = "0";
-            });
+            box.style.opacity = "0";
           });
-          handoffTimer = window.setTimeout(() => {
-            box.style.visibility = "hidden";
-            onLand();
-          }, MOBILE_HANDOFF_MS + 34);
-          return;
-        }
-
-        box.style.opacity = "0";
-        box.style.visibility = "hidden";
+        });
+        handoffTimer = window.setTimeout(() => {
+          box.style.visibility = "hidden";
+          signalLanded();
+        }, handoffMs + 34);
+        return;
       }
-      onLand();
+      signalLanded();
     }
 
     /* Damping makes wheel and trackpad feel like a camera rather than a
@@ -399,7 +403,7 @@ export function useHeroScrub({
         ticking = false;
         if (
           current >= 0.999 &&
-          (!mobilePlate.matches || mobileHandoffReady())
+          handoffReady()
         ) {
           land();
         }
@@ -413,7 +417,11 @@ export function useHeroScrub({
           MOBILE_MAX_PROGRESS_STEP,
         );
       } else {
-        current += delta * 0.18;
+        current += clamp(
+          delta * 0.18,
+          -DESKTOP_MAX_PROGRESS_STEP,
+          DESKTOP_MAX_PROGRESS_STEP,
+        );
       }
       draw(current);
       animationFrame = requestAnimationFrame(frame);
@@ -432,19 +440,14 @@ export function useHeroScrub({
       const travelled = window.scrollY - heroTop;
       const animationDistance = mobilePlate.matches
         ? heroHeight * MOBILE_ANIMATION_PORTION
-        : heroHeight;
+        : heroHeight * DESKTOP_ANIMATION_PORTION;
       target = clamp(travelled / animationDistance);
-      if (target > 0.015) promoteHeroAssets();
       entrance.current?.setAttribute("data-target-progress", target.toFixed(4));
 
-      /* Desktop keeps its existing exact-end snap. Mobile never snaps: its
-         rendered value catches the target through the damped frame loop. */
-      if (!mobilePlate.matches && target >= 1) {
-        current = 1;
-        land();
-        return;
-      }
-      if (mobilePlate.matches && mobileHandoffReady()) {
+      /* Never snap the rendered camera to the raw scroll target. Trackpad and
+         touch momentum can jump the document to the section boundary, but
+         the visual layer must finish through the damped frame loop. */
+      if (handoffReady()) {
         land();
         return;
       }
@@ -484,7 +487,7 @@ export function useHeroScrub({
       if (landed) return;
       const animationDistance = mobilePlate.matches
         ? heroHeight * MOBILE_ANIMATION_PORTION
-        : heroHeight;
+        : heroHeight * DESKTOP_ANIMATION_PORTION;
       target = clamp((window.scrollY - heroTop) / animationDistance);
       current = target; // no easing across a resize
       draw(current);
@@ -492,11 +495,15 @@ export function useHeroScrub({
 
     onResize();
 
+    if (shouldResetInitialScroll) {
+      root.style.scrollBehavior = initialScrollBehavior;
+    }
+
     /* Reduced motion never animates: retire the entrance immediately and let
        the two sections stand as ordinary page. No scroll is moved. */
     if (reduced.matches) {
       landed = true;
-      onLand();
+      signalLanded();
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -522,6 +529,7 @@ export function useHeroScrub({
       cancelAnimationFrame(handoffFrame);
       window.clearTimeout(handoffTimer);
       delete root.dataset.heroStage;
+      delete root.dataset.heroEntrance;
     };
   }, [hero, entrance, onLand]);
 }
@@ -556,10 +564,36 @@ export function useHeroReady(
       performance.mark(`genesis-hero-media-${status}`);
     };
 
+    /* Promote the active entrance sources before the page becomes
+       interactive, then decode them here. Previously this URL swap happened
+       inside the first scroll event, forcing network and image work into the
+       camera's requestAnimationFrame loop. */
+    const promotedImages = new Set<HTMLImageElement>();
+    entrance.current
+      ?.querySelectorAll<HTMLElement>("[data-hero-full-src]")
+      .forEach((asset) => {
+        const fullSrc = asset.dataset.heroFullSrc;
+        if (!fullSrc) return;
+
+        if (asset instanceof HTMLSourceElement) {
+          asset.srcset = fullSrc;
+          const pictureImage = asset
+            .closest("picture")
+            ?.querySelector<HTMLImageElement>("img");
+          if (pictureImage) promotedImages.add(pictureImage);
+        } else if (asset instanceof HTMLImageElement) {
+          asset.src = fullSrc;
+          promotedImages.add(asset);
+        }
+
+        delete asset.dataset.heroFullSrc;
+      });
+
     const seen = new Set<HTMLImageElement>();
     const images = [
       plate.current,
       hardware.current,
+      ...promotedImages,
       ...(hero.current?.querySelectorAll<HTMLImageElement>(
         "img[data-hero-critical]",
       ) ?? []),
@@ -573,9 +607,8 @@ export function useHeroReady(
     });
 
     // Decode every camera plate and transparent foreground surface before the
-    // visitor reaches the laptop. The static frame and entrance share URLs,
-    // so this also warms the returned hero rather than mounting/decoding it
-    // during the final handoff.
+    // visitor can begin the push. The static frame and entrance share URLs,
+    // so this also warms the returned hero without handoff-time media work.
     Promise.allSettled(
       images.map(async (image) => {
         if (!image.complete) {

@@ -8,33 +8,59 @@ import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "How It Works",
-  "Follow the Genesis path from a free consultation and paid Discovery through implementation, launch, and ongoing platform management.",
+  "See what Genesis reviews, scopes, builds, and manages during a custom Infrastructure engagement.",
 );
 
 const stageDetails = [
-  ["Current operating reality", "Highest-value friction", "Fit and next step"],
-  ["Tools and data flow", "Written scope and roadmap", "Optional Pilot branch"],
-  ["Platform provisioning", "Workflow and integration build", "Focused adoption"],
-  ["Daily use and validation", "Human approval points", "Go-live support"],
-  ["Monitoring and support", "Workflow refinement", "Continuous improvement"],
+  [
+    "Current systems and responsibilities",
+    "Highest-value operating friction",
+    "Fit and recommended next step",
+  ],
+  [
+    "Tools, access, and data flow",
+    "Recommended scope and implementation order",
+    "Paid Discovery or a focused Pilot only when warranted",
+  ],
+  [
+    "In-scope provisioning and configuration",
+    "Workflow and integration build",
+    "Client access and adoption requirements",
+  ],
+  [
+    "Daily use and validation",
+    "Human approval points",
+    "Go-live support",
+  ],
+  [
+    "Monitoring and support",
+    "Maintenance and workflow refinement",
+    "Improvements within the agreed boundary",
+  ],
 ];
 
 const principles = [
-  ["Start with the work", "Technology follows the operational need."],
   [
-    "Build in stages",
-    "Focused releases keep the system understandable and usable.",
+    "Start with the current operation",
+    "Genesis reviews the systems and manual work already in place before recommending changes.",
   ],
-  ["Stay accountable", "Management continues after implementation."],
+  [
+    "Confirm the scope first",
+    "The implementation priorities, required access, and client responsibilities are documented before the build begins.",
+  ],
+  [
+    "Keep one accountable owner",
+    "When ongoing management is included, Genesis continues monitoring, supporting, maintaining, and refining the agreed system.",
+  ],
 ];
 
 export default function HowItWorksPage() {
   return (
     <>
       <PageIntro
-        eyebrow="The Genesis System"
-        title="Underwrite the operation. Build what matters. Keep it running."
-        description="Genesis treats an operation with the same discipline a deal receives before capital moves: understand it, quantify it, build deliberately, launch, and continue operating the system."
+        eyebrow="Genesis Infrastructure"
+        title="What happens after you book a consultation."
+        description="Genesis reviews the operation, confirms the scope, builds the agreed system, supports launch, and remains responsible for the ongoing work included in the engagement."
       />
 
       <Section tone="dark">
@@ -42,7 +68,7 @@ export default function HowItWorksPage() {
           <SectionHeading
             eyebrow="The engagement path"
             title="One path from first conversation to continuous operation."
-            description="Pilot and Enterprise are deliberate branches. Launch is the bridge between the system build and ongoing managed operation—not a handoff where Genesis disappears."
+            description="The consultation establishes fit and a recommended next step. Paid Discovery or a focused Pilot may be proposed when complexity warrants deeper scoping before implementation."
           />
         </Reveal>
         <Reveal delay={0.08}>
@@ -54,8 +80,8 @@ export default function HowItWorksPage() {
         <Reveal>
           <SectionHeading
             eyebrow="The process"
-            title="A commercial path with a useful outcome at every stage."
-            description="Discovery produces a roadmap. Implementation produces a working platform. Managed service keeps that platform accountable after launch."
+            title="A defined outcome at every stage."
+            description="Scoping establishes the recommended boundary. Implementation produces the agreed system. Launch puts it into use. Ongoing management keeps the in-scope environment supported and current."
           />
         </Reveal>
 
@@ -94,8 +120,8 @@ export default function HowItWorksPage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
           <Reveal>
             <SectionHeading
-              eyebrow="Implementation principles"
-              title="Useful from the beginning. Managed for the long term."
+              eyebrow="What clients can expect"
+              title="The boundary is established before the system changes."
             />
           </Reveal>
           <div className="grid gap-8">
@@ -114,9 +140,10 @@ export default function HowItWorksPage() {
       </Section>
 
       <ConsultationCTA
-        eyebrow="Start at the beginning"
-        title="Bring the bottleneck. Leave with a clear next step."
-        description="The first consultation is free and focused on how the operation runs today—not a generic software demonstration."
+        eyebrow="Begin with the review"
+        title="Bring the current setup. Leave with a clearer next step."
+        description="The Infrastructure consultation covers the existing environment, the work creating friction, and the starting scope Genesis would recommend."
+        buttonLabel="Book an Infrastructure consultation"
       />
     </>
   );

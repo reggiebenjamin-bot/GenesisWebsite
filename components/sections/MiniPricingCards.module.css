@@ -1,0 +1,281 @@
+.reviewNotice,
+.holdPanel {
+  border: 1px solid rgb(8 9 14 / 0.13);
+  border-radius: 8px;
+  background:
+    linear-gradient(115deg, rgb(201 165 94 / 0.1), transparent 42%),
+    rgb(255 253 249 / 0.82);
+}
+
+.reviewNotice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0.9rem 1rem;
+}
+
+.reviewNotice span,
+.stateLabel {
+  color: var(--color-gold-dark);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.reviewNotice p,
+.holdPanel p {
+  color: var(--color-muted-dark);
+  font-size: 0.86rem;
+}
+
+.holdPanel {
+  display: grid;
+  align-items: center;
+  gap: 1.25rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+}
+
+.holdPanel h3 {
+  margin-top: 0.55rem;
+  color: var(--color-ink);
+  font-size: clamp(1.45rem, 2.6vw, 2rem);
+}
+
+.holdPanel p:not(.stateLabel) {
+  max-width: 44rem;
+  margin-top: 0.65rem;
+}
+
+.grid {
+  display: grid;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(8 9 14 / 0.14);
+  border-radius: 10px;
+  padding: clamp(1.25rem, 2.3vw, 1.7rem);
+  color: var(--color-ivory);
+  background:
+    radial-gradient(circle at 90% 0%, rgb(242 216 149 / 0.12), transparent 34%),
+    linear-gradient(155deg, #141821, #090b10 66%);
+  box-shadow: 0 16px 38px rgb(8 9 14 / 0.16);
+  transition:
+    border-color 320ms var(--ease-editorial),
+    transform 320ms var(--ease-editorial),
+    box-shadow 320ms var(--ease-editorial);
+}
+
+.card::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgb(244 239 232 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(244 239 232 / 0.025) 1px, transparent 1px);
+  background-size: 22px 22px;
+  content: "";
+  pointer-events: none;
+}
+
+.card:hover {
+  border-color: rgb(201 165 94 / 0.52);
+  box-shadow: 0 20px 44px rgb(8 9 14 / 0.22);
+  transform: translateY(-2px);
+}
+
+.card[data-featured="true"] {
+  border-color: rgb(201 165 94 / 0.58);
+  background:
+    radial-gradient(circle at 90% 0%, rgb(242 216 149 / 0.19), transparent 38%),
+    linear-gradient(155deg, #191c24, #0a0c12 66%);
+}
+
+.cardTopline {
+  position: absolute;
+  inset: 0 20% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  opacity: 0.75;
+}
+
+.planHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.planHeading h3 {
+  margin: 0;
+  color: var(--color-gold-light);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.planHeading span {
+  border: 1px solid rgb(201 165 94 / 0.38);
+  border-radius: 999px;
+  padding: 0.2rem 0.42rem;
+  color: rgb(242 216 149 / 0.78);
+  font-family: var(--font-display);
+  font-size: 0.49rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.priceLabel {
+  margin-top: 1.35rem;
+  color: rgb(244 239 232 / 0.5);
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.price {
+  margin-top: 0.28rem;
+  font-size: clamp(1.8rem, 3vw, 2.45rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.audience {
+  min-height: 2.8rem;
+  margin-top: 0.85rem;
+  color: rgb(244 239 232 / 0.66);
+  font-size: 0.86rem;
+  line-height: 1.48;
+}
+
+.rule {
+  height: 1px;
+  margin-block: 1rem;
+  background: linear-gradient(90deg, rgb(201 165 94 / 0.58), transparent);
+}
+
+.features {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  color: rgb(244 239 232 / 0.72);
+  font-size: 0.8rem;
+}
+
+.features li {
+  display: grid;
+  grid-template-columns: 0.45rem minmax(0, 1fr);
+  gap: 0.55rem;
+}
+
+.features li span {
+  width: 0.3rem;
+  height: 0.3rem;
+  margin-top: 0.43rem;
+  border-radius: 50%;
+  background: var(--color-gold);
+}
+
+.cta {
+  width: 100%;
+  margin-top: auto;
+}
+
+.cta:focus-visible {
+  outline-color: var(--color-gold-light);
+}
+
+.comparison {
+  margin-top: 1rem;
+  border: 1px solid rgb(8 9 14 / 0.12);
+  border-radius: 8px;
+  background: rgb(255 253 249 / 0.7);
+}
+
+.comparison > summary {
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.comparisonGrid {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid rgb(8 9 14 / 0.1);
+  padding: 1rem;
+}
+
+.comparisonGrid section {
+  padding: 0.9rem;
+  border-radius: 7px;
+  background: rgb(244 239 232 / 0.65);
+}
+
+.comparisonGrid h4 {
+  color: var(--color-gold-dark);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.comparisonGrid dl {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.comparisonGrid dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  color: var(--color-muted-dark);
+  font-size: 0.75rem;
+}
+
+.comparisonGrid dd {
+  color: var(--color-ink);
+  text-align: right;
+}
+
+@media (min-width: 640px) {
+  .holdPanel {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+@media (min-width: 720px) {
+  .grid,
+  .comparisonGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

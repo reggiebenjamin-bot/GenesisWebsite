@@ -1,12 +1,14 @@
 # Genesis AI marketing website
 
-A managed-systems marketing site for real-estate operators. Next.js App Router,
+A marketing site for two separate Genesis offers: G-Core Mini standardized
+software and Genesis Infrastructure custom systems. Next.js App Router,
 TypeScript, Tailwind CSS v4, and native CSS animation.
 
 ```bash
 npm install
 npm run dev      # http://localhost:3000
 npm run lint
+npm test
 npm run build
 ```
 
@@ -16,7 +18,7 @@ npm run build
 app/
   globals.css              theme tokens, base layer, the hero camera rig
   layout.tsx  page.tsx     root layout and homepage
-  about/ how-it-works/ solutions/ pricing/ results/ contact/
+  mini/ about/ how-it-works/ solutions/ pricing/ results/ contact/
   api/consultation/        forwards the intake form to the CRM webhook
   robots.ts  sitemap.ts
 components/
@@ -25,7 +27,9 @@ components/
   sections/                CapabilityStrip, SystemLayers, PricingCards, ConsultationCTA
   ui/                      Button, Section, Reveal
 lib/
-  content.ts               all business content and plan data, typed
+  content.ts               shared business content
+  products.ts              versioned Mini and Infrastructure catalogs
+  commerce/                future provider-neutral entitlement contracts
   metadata.ts              per-page metadata helper
 assets/hero-source/        photographic masters — not served
 docs/                      hero transition, migration inventory
@@ -56,12 +60,17 @@ before touching the plates or the geometry.
 - `NEXT_PUBLIC_SITE_URL` — origin used for metadata and sitemap URLs.
 - `GENESIS_CONSULTATION_WEBHOOK_URL` — server-only override for the consultation
   webhook.
+- `MINI_CATALOG_REVIEW_MODE` — set to `review` only on an approved preview to
+  show provisional Mini prices and engineering-seed limits. Development shows
+  them automatically; ordinary production builds hold them back.
 
 ## Content
 
-Business content and plan data are centralised in `lib/content.ts`. Migration
-decisions and the missing-proof checklist are in
-[docs/migration-inventory.md](docs/migration-inventory.md).
+Shared business content remains in `lib/content.ts`. Mini and Infrastructure
+use separate typed catalogs in `lib/products.ts`; Mini is explicitly draft and
+cannot be treated as a production offer by default. The future auth, billing,
+entitlement, and dashboard boundary is documented in
+[docs/mini-infrastructure-commercial-boundary.md](docs/mini-infrastructure-commercial-boundary.md).
 
 No Mercury or Vanta implementation code is included; those snapshots were used
 only as visual and structural references.

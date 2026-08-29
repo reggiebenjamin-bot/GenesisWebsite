@@ -8,16 +8,6 @@ export type SystemLayer = {
   details: string[];
 };
 
-export type PricingPlan = {
-  slug: "foundation" | "growth" | "flagship";
-  name: string;
-  price: string;
-  cadence: string;
-  audience: string;
-  features: string[];
-  featured?: boolean;
-};
-
 export type ProofItem = {
   slug: string;
   client: string;
@@ -36,7 +26,8 @@ export const contact = {
 } as const;
 
 export const navigation: NavItem[] = [
-  { label: "Solutions", href: "/solutions" },
+  { label: "Agent Software", href: "/mini" },
+  { label: "Custom Infrastructure", href: "/solutions" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Pricing", href: "/pricing" },
   { label: "Results", href: "/results" },
@@ -76,10 +67,10 @@ export const systemLayers: SystemLayer[] = [
 
 export const processSteps = [
   { number: "01", title: "Consultation", description: "A focused, no-cost conversation about the operation, its priorities, and where work currently depends on you." },
-  { number: "02", title: "Discovery", description: "Genesis maps the tools, data flow, and workflow gaps, then returns a written scope and implementation roadmap." },
+  { number: "02", title: "Scoping", description: "Genesis recommends the implementation boundary. When complexity warrants deeper paid Discovery or a focused Pilot, that work is proposed after the consultation." },
   { number: "03", title: "Implementation", description: "The foundation, Applied AI workflows, integrations, and optional CRM are provisioned and connected around the operation." },
-  { number: "04", title: "Launch", description: "The platform goes into daily use with focused adoption, validation, and Genesis still accountable for what happens next." },
-  { number: "05", title: "Managed Platform", description: "Genesis keeps the system supported, current, and improving as volume, responsibilities, and priorities change." },
+  { number: "04", title: "Launch", description: "The platform goes into daily use with focused adoption, validation, and support through the agreed launch boundary." },
+  { number: "05", title: "Managed Platform", description: "When ongoing management is in scope, Genesis keeps the agreed system supported, current, and improving as priorities change." },
 ] as const;
 
 export const audiences = [
@@ -89,53 +80,15 @@ export const audiences = [
   { title: "Solo operators", outcome: "Build the foundation before growth makes the gaps expensive.", description: "Start with professional infrastructure and focused automation, then add platform depth as the operation expands." },
 ] as const;
 
-export const implementationPlans: PricingPlan[] = [
-  {
-    slug: "foundation", name: "Foundation", price: "$1,500–$2,500", cadence: "one-time",
-    audience: "For a solo operator or small team establishing a dependable operating foundation.",
-    features: ["Microsoft 365 foundation provisioning", "Business email, identity, and documents", "Core platform configuration", "Focused workflow implementation"],
-  },
-  {
-    slug: "growth", name: "Growth", price: "$5,000–$9,500", cadence: "one-time",
-    audience: "For an owner-led operation ready to connect its data, workflows, and team.",
-    features: ["Everything in Foundation", "Applied AI workflow build", "Data synthesis across key systems", "Genesis CRM when needed", "Deeper integrations and adoption"], featured: true,
-  },
-  {
-    slug: "flagship", name: "Flagship", price: "$15,000–$35,000", cadence: "one-time",
-    audience: "For larger or more complex operations requiring a broader platform build.",
-    features: ["Everything in Growth", "Multiple operational workflows", "Custom AI agents and integrations", "Multi-team implementation", "Expanded governance and launch support"],
-  },
-];
-
-export const managedPlatformPlans: PricingPlan[] = [
-  {
-    slug: "foundation", name: "Foundation", price: "$297–$497", cadence: "/month",
-    audience: "Ongoing management for a focused operating foundation.",
-    features: ["Monitoring and support", "Platform maintenance", "Core workflow refinement", "Planned operating reviews"],
-  },
-  {
-    slug: "growth", name: "Growth", price: "$897–$1,497", cadence: "/month",
-    audience: "Continuous management for a growing, owner-led deal operation.",
-    features: ["Everything in Foundation", "Applied AI workflow tuning", "Integration oversight", "CRM and data-flow management", "Continuous improvement"], featured: true,
-  },
-  {
-    slug: "flagship", name: "Flagship", price: "$1,997–$4,500", cadence: "/month",
-    audience: "A typical range for larger operations; complex scopes may run higher.",
-    features: ["Everything in Growth", "Broader workflow portfolio", "Custom agent monitoring", "Priority operating support", "Multi-team platform improvement"],
-  },
-];
-
-export const pricingPlans = managedPlatformPlans;
-
 export const faqs = [
-  { question: "How is Genesis different from an AI CRM?", answer: "A CRM is one possible layer. Genesis is the broader Applied AI platform connecting infrastructure, operational data, workflows, integrations, and ongoing management. If your existing CRM works, Genesis can build around it." },
-  { question: "Why is there no self-serve signup?", answer: "The value comes from fitting the platform to the way your operation actually moves information and work. Genesis scopes, implements, and manages that environment with you rather than handing over another tool to configure." },
-  { question: "What is the difference between the consultation and Discovery?", answer: "The consultation is a free fit conversation. Discovery is a paid, deliverable-bearing assessment that maps your operation and produces a written scope and roadmap you keep either way." },
-  { question: "Do I have to complete a Pilot before Implementation?", answer: "No. A Pilot is optional and is most useful when a larger or more complex operation wants to validate one workflow on real data before committing to the broader build." },
-  { question: "What if I am not sure which tier fits?", answer: "That is what the consultation is for. Team size matters, but workflow complexity, number of systems, data quality, and support requirements determine the right scope inside the published range." },
-  { question: "What happens above Flagship?", answer: "Multi-brand, multi-location, and high-transaction-volume operations are scoped as an Enterprise Managed Partnership around their actual operating requirements." },
+  { question: "What does Genesis offer?", answer: "Genesis has two separate commercial paths. G-Core Mini is being prepared as standardized subscription software for independent agents and small teams. Genesis Infrastructure is a consultation-led custom build for brokerages, lenders, acquisitions teams, and complex operators." },
+  { question: "Is G-Core Mini a smaller Infrastructure engagement?", answer: "No. When released, Mini will provide bounded software access with standardized features and plan limits. Infrastructure includes assessment, customer-specific implementation, integrations, governance, adoption, and the ongoing responsibility documented in the scope." },
+  { question: "Can I sign up for G-Core Mini today?", answer: "Not yet. The Mini plan model is in commercial review, and no public account creation or checkout is enabled. The Mini page explains the proposed product boundary without implying that access has been granted." },
+  { question: "Does an Infrastructure build require replacing our current systems?", answer: "Not automatically. Genesis reviews the current environment first, keeps useful systems where appropriate, and scopes the foundation, workflows, integrations, and optional CRM around the actual operation." },
+  { question: "Why does Infrastructure require a consultation?", answer: "The published starting prices establish a minimum entry point. The final scope depends on the systems already in place, workflow complexity, data quality, team structure, integrations, governance, and the support required after launch." },
+  { question: "What does ongoing management mean?", answer: "When ongoing management is included in the agreed scope, Genesis monitors and supports the implemented environment, maintains in-scope workflows and integrations, and refines the system as the operation changes. The exact support boundary is documented in the proposal." },
 ] as const;
 
 export const proofItems: ProofItem[] = [];
 
-export const routes = ["", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;
+export const routes = ["", "/mini", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;

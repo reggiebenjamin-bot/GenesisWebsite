@@ -1,128 +1,146 @@
 import type { Metadata } from "next";
-import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
+import { MiniPricingCards } from "@/components/sections/MiniPricingCards";
 import { PricingCards } from "@/components/sections/PricingCards";
-import { TextLink } from "@/components/ui/Button";
+import { PricingPathSwitcher } from "@/components/sections/PricingPathSwitcher";
 import { Reveal } from "@/components/ui/Reveal";
-import { Eyebrow, PageIntro, Section, SectionHeading } from "@/components/ui/Section";
-import { faqs, implementationPlans, managedPlatformPlans } from "@/lib/content";
+import { Eyebrow, Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/metadata";
+import { getMiniCatalogDisplayMode } from "@/lib/products";
 
 export const metadata: Metadata = pageMetadata(
   "Pricing",
-  "Real starting ranges for Genesis Discovery, optional Pilots, implementation, and ongoing managed platform service.",
+  "Compare ready-to-use G-Core Mini software for agents with custom Genesis Infrastructure for brokerages, lenders, acquisitions teams, and complex operations.",
 );
 
+const infrastructurePricingFaqs = [
+  {
+    question: "What do the custom-build starting prices cover?",
+    answer:
+      "Foundation and Growth show the minimum starting point for a one-time implementation. A written proposal confirms the systems, workflows, integrations, launch responsibilities, and any ongoing support included in the engagement.",
+  },
+  {
+    question: "What changes the final custom-build scope?",
+    answer:
+      "The current environment, workflow complexity, data quality, number of systems and teams, integration depth, governance requirements, adoption work, and post-launch support can all affect the final scope.",
+  },
+  {
+    question: "Where do Discovery and a Pilot fit?",
+    answer:
+      "After the consultation, Genesis may recommend paid Discovery to map a complex operation or an optional Pilot to validate one workflow before a wider build. They are scoping tools, not additional public pricing tiers.",
+  },
+  {
+    question: "Is ongoing management included forever?",
+    answer:
+      "No. Foundation and Growth show one-time implementation starting prices. If monitoring, support, maintenance, or workflow refinement is needed after launch, that responsibility and fee are stated separately in the proposal.",
+  },
+] as const;
+
 export default function PricingPage() {
+  const miniCatalogMode = getMiniCatalogDisplayMode();
+  const miniPricingFaq =
+    miniCatalogMode === "hold"
+      ? {
+          question: "Why are Agent Dashboard prices not shown?",
+          answer:
+            "The G-Core Mini subscription model is still in commercial review. Genesis has not approved its prices, limits, or legal terms for public release, and this website does not yet provide signup, billing, or product access.",
+        }
+      : miniCatalogMode === "review"
+        ? {
+            question: "Why are the Agent Dashboard prices marked provisional?",
+            answer:
+              "The $20, $100, and $200 structure is shown for review. Genesis still needs to approve product scope, usage limits, support requirements, unit economics, and legal language before these plans can become a production offer.",
+          }
+        : {
+            question: "What does an Agent Dashboard subscription include?",
+            answer:
+              "Each G-Core Mini plan provides standardized software access within its published features and usage limits. Custom implementation and Genesis Infrastructure services are separate engagements.",
+          };
+  const pricingFaqs = [miniPricingFaq, ...infrastructurePricingFaqs];
+
+  const miniPanel = (
+    <div id="mini">
+      <div className="mb-6 max-w-2xl">
+        <Eyebrow>G-Core Mini</Eyebrow>
+        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)]">
+          Ready-to-use software for agents.
+        </h2>
+        <p className="mt-2 text-[0.95rem] text-muted-dark">
+          Monthly plans for independent agents and small teams—without a custom implementation.
+        </p>
+      </div>
+      <MiniPricingCards mode={miniCatalogMode} />
+    </div>
+  );
+
+  const infrastructurePanel = (
+    <div id="infrastructure">
+      <div className="mb-6 max-w-2xl">
+        <Eyebrow>Genesis Infrastructure</Eyebrow>
+        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)]">
+          Infrastructure built around the business.
+        </h2>
+        <p className="mt-2 text-[0.95rem] text-muted-dark">
+          For brokerages, lenders, acquisitions teams, and complex real-estate operations.
+        </p>
+      </div>
+      <PricingCards condensed featuredLabel="Common starting point" />
+      <p className="mt-5 text-[0.82rem] text-muted-dark">
+        Final scope depends on the systems, workflows, integrations, and rollout involved.
+      </p>
+    </div>
+  );
+
   return (
     <>
-      <PageIntro
-        eyebrow="The Genesis System"
-        title="Starting pricing."
-        description="Choose a starting point. Define the right scope together. Pricing reflects the level of operational complexity and ongoing support involved. Every engagement begins with a consultation before work is proposed."
-      />
-
-      <Section className="bg-paper">
-        <Reveal className="grid gap-8 border-y border-line-light py-9 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
-          <div>
-            <Eyebrow>Start here · Free</Eyebrow>
-            <h2 className="mt-4 text-[clamp(2rem,4vw,3.5rem)]">Intro consultation</h2>
-          </div>
-          <p className="max-w-2xl text-[1.05rem] text-muted-dark">
-            A no-cost conversation about your operation and where it fits below.
-            Nothing is scoped or proposed before this call.
+      <section className="border-b border-line-light bg-paper pt-[calc(var(--header-height)+42px)] pb-[42px] text-ink md:pt-[calc(var(--header-height)+52px)] md:pb-[48px]">
+        <div className="shell max-w-[960px]">
+          <Eyebrow>Pricing</Eyebrow>
+          <h1 className="mt-5 text-[clamp(2.55rem,5.4vw,4.8rem)]">
+            Agent software or custom infrastructure.
+          </h1>
+          <p className="mt-5 max-w-3xl text-[1.02rem] text-muted-dark md:text-[1.08rem]">
+            G-Core Mini is ready-to-use software for agents and small teams.
+            Genesis Infrastructure is designed and implemented for brokerages,
+            lenders, acquisitions teams, and complex operations.
           </p>
-        </Reveal>
-      </Section>
-
-      <Section tone="dark">
-        <Reveal>
-          <SectionHeading eyebrow="Understand before building" title="Discovery, with an optional Pilot when proof should come first." />
-        </Reveal>
-        <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal className="border border-gold/35 bg-navy p-[clamp(32px,4vw,56px)]">
-            <Eyebrow>Discovery</Eyebrow>
-            <p className="mt-9 text-[clamp(2.5rem,5vw,4.5rem)] tracking-[-0.05em]">$1,500–$6,000</p>
-            <p className="mt-2 text-[0.82rem] text-muted-light">Up to $12,000 for multi-entity or complex operations</p>
-            <p className="mt-7 max-w-2xl text-muted-light">
-              A deliverable-bearing operational assessment—not a sales call.
-              Genesis maps the current tools, data flow, and workflow gaps, then
-              returns a written scope and roadmap you keep either way.
-            </p>
-            <p className="mt-7 border-l-2 border-gold pl-5 text-ivory">100% credited toward Implementation when you proceed within 60 days.</p>
-          </Reveal>
-          <Reveal delay={0.06} className="border border-line-dark bg-ink p-[clamp(32px,4vw,56px)]">
-            <Eyebrow>Optional Pilot</Eyebrow>
-            <p className="mt-9 text-[clamp(2.2rem,4vw,3.7rem)] tracking-[-0.05em]">$4,500–$15,000</p>
-            <p className="mt-7 text-muted-light">
-              A scoped proof of concept on one workflow inside your operation,
-              built and run on real data. Most Growth engagements can proceed
-              directly to Implementation.
-            </p>
-            <p className="mt-7 border-l-2 border-gold/60 pl-5 text-ivory/82">50% credited toward Implementation when you proceed within 90 days.</p>
-          </Reveal>
         </div>
+      </section>
+
+      <Section className="!py-[clamp(52px,7vw,92px)]">
+        <PricingPathSwitcher
+          mini={miniPanel}
+          infrastructure={infrastructurePanel}
+        />
       </Section>
 
-      <Section>
+      <Section className="border-t border-line-light bg-paper !py-[clamp(68px,8vw,108px)]">
         <Reveal>
-          <SectionHeading eyebrow="One-time build" title="Implementation" description="Every tier can include foundation provisioning, business email, identity and document management, Applied AI workflows, integrations, and Genesis CRM when needed. Scope and depth scale with the operation." />
+          <div className="mb-9 max-w-3xl">
+            <Eyebrow>Pricing FAQ</Eyebrow>
+            <h2 className="mt-4 text-[clamp(2rem,4vw,3.5rem)]">
+              Pricing questions.
+            </h2>
+          </div>
         </Reveal>
-        <PricingCards plans={implementationPlans} />
-      </Section>
-
-      <Section tone="navy">
-        <Reveal>
-          <SectionHeading eyebrow="Ongoing responsibility" title="Managed Platform" description="The reusable Genesis platform is delivered as an ongoing managed service: monitored, supported, maintained, and improved after launch." />
-        </Reveal>
-        <PricingCards plans={managedPlatformPlans} />
-      </Section>
-
-      <Section className="bg-paper">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
-          <Reveal>
-            <Eyebrow>Enterprise / Managed Partnership</Eyebrow>
-            <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">Complex operations are scoped around the partnership.</h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="text-[1.05rem] text-muted-dark">
-              For multi-brand, multi-location, or high-transaction-volume operations,
-              pricing is scoped individually. This is built around what the larger
-              managed system actually requires—not a fixed package.
-            </p>
-            <div className="mt-9 border-t border-line-light pt-7">
-              <h3>Why ranges, not hidden quotes?</h3>
-              <p className="mt-3 text-muted-dark">
-                These are real ranges, not placeholders. The consultation finds the
-                right number inside the published band; it is not where a withheld
-                price is finally revealed.
-              </p>
-            </div>
-            <TextLink href="/how-it-works" className="mt-8">See how the stages work</TextLink>
-          </Reveal>
-        </div>
-      </Section>
-
-      <Section>
-        <Reveal><SectionHeading eyebrow="FAQ" title="Commercial questions, answered directly." /></Reveal>
         <div className="mx-auto max-w-4xl">
-          {faqs.map((faq, index) => (
+          {pricingFaqs.map((faq, index) => (
             <Reveal key={faq.question} delay={index * 0.035}>
               <details className="group border-t border-line-light last:border-b">
-                <summary className="flex cursor-pointer list-none justify-between gap-6 py-7 text-[clamp(1.05rem,1.5vw,1.25rem)] font-medium [&::-webkit-details-marker]:hidden">
-                  {faq.question}<span aria-hidden="true" className="text-[1.4rem] font-light text-gold-dark transition-transform group-open:rotate-45">+</span>
+                <summary className="flex cursor-pointer list-none justify-between gap-6 py-6 text-[clamp(1rem,1.5vw,1.2rem)] font-medium [&::-webkit-details-marker]:hidden">
+                  {faq.question}
+                  <span
+                    aria-hidden="true"
+                    className="text-[1.35rem] font-light text-gold-dark transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
                 </summary>
-                <p className="max-w-2xl pr-12 pb-7 text-muted-dark">{faq.answer}</p>
+                <p className="max-w-2xl pr-12 pb-6 text-muted-dark">{faq.answer}</p>
               </details>
             </Reveal>
           ))}
         </div>
       </Section>
-
-      <ConsultationCTA
-        eyebrow="Find your number inside the range"
-        title="Choose the right starting point for your operation."
-        description="You have seen what Discovery, Implementation, and ongoing management cost. The consultation determines the right tier and scope."
-      />
     </>
   );
 }

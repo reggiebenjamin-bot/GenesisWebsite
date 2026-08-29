@@ -2,18 +2,18 @@ import styles from "./EngagementPath.module.css";
 
 const stages = [
   ["01", "Consultation", "Free fit conversation"],
-  ["02", "Discovery", "Scope + roadmap"],
+  ["02", "Scoping", "Recommendation + next step"],
   ["03", "Implementation", "The system build"],
   ["04", "Launch", "Live in the operation"],
-  ["05", "Managed Platform", "Operate + improve"],
+  ["05", "Scoped Management", "Support + improve when included"],
 ] as const;
 
 export function EngagementPath() {
   return (
     <div className={styles.frame} aria-label="Genesis engagement path">
       <div className={styles.topline}>
-        <span>One commercial path</span>
-        <span>From operating constraint to managed system</span>
+        <span>One Infrastructure path</span>
+        <span>From operating constraint to an implemented system</span>
       </div>
 
       <ol className={styles.rail}>
@@ -24,12 +24,12 @@ export function EngagementPath() {
             <div><h3>{title}</h3><p>{copy}</p></div>
             {index === 1 ? (
               <aside className={`${styles.branch} ${styles.pilot}`}>
-                <span>Optional branch</span><b>Pilot</b><small>Validate one workflow</small>
+                <span>Optional scoping</span><b>Discovery / Pilot</b><small>Used when complexity warrants</small>
               </aside>
             ) : null}
             {index === 4 ? (
               <aside className={`${styles.branch} ${styles.enterprise}`}>
-                <span>Larger operations</span><b>Enterprise</b><small>Managed partnership</small>
+                <span>Complex operations</span><b>Custom Infrastructure</b><small>Scoped engagement</small>
               </aside>
             ) : null}
           </li>
@@ -38,8 +38,8 @@ export function EngagementPath() {
 
       <div className={styles.outcome}>
         <span className={styles.outcomeLine} aria-hidden="true" />
-        <div><small>The resulting state</small><b>Continuous operation</b></div>
-        <p>The product stays live, managed, and accountable as the business changes.</p>
+        <div><small>The resulting state</small><b>Defined ownership</b></div>
+        <p>Launch and any continuing management follow the boundary stated in the proposal.</p>
       </div>
     </div>
   );

@@ -3,7 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
-import { contact, pricingPlans } from "@/lib/content";
+import { contact } from "@/lib/content";
+import {
+  infrastructureCatalog,
+  isInfrastructurePlanSlug,
+} from "@/lib/products";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -18,8 +22,7 @@ export function ConsultationForm({
   initialPlan?: string;
 }) {
   const normalizedPlan = useMemo(
-    () =>
-      pricingPlans.some((plan) => plan.slug === initialPlan) ? initialPlan : "",
+    () => (isInfrastructurePlanSlug(initialPlan) ? initialPlan : ""),
     [initialPlan],
   );
 
@@ -66,7 +69,7 @@ export function ConsultationForm({
     /* Composed before the request so a network failure still leaves the
        visitor with a way to reach us that carries their answers. */
     const fallbackBody = [
-      "Genesis AI consultation request",
+      "Genesis Infrastructure consultation request",
       "",
       `Name: ${payload.name ?? ""}`,
       `Email: ${payload.email ?? ""}`,
@@ -81,7 +84,7 @@ export function ConsultationForm({
     ].join("\n");
     setFallbackHref(
       `mailto:${contact.email}?subject=${encodeURIComponent(
-        "Website Contact Intake",
+        "Genesis Infrastructure consultation",
       )}&body=${encodeURIComponent(fallbackBody)}`,
     );
 
@@ -142,6 +145,18 @@ export function ConsultationForm({
       onSubmit={handleSubmit}
       className="grid gap-6 border border-line-light bg-paper p-[clamp(28px,3.5vw,48px)]"
     >
+      <div className="border-b border-line-light pb-7">
+        <Eyebrow>Infrastructure intake</Eyebrow>
+        <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.55rem)]">
+          Give Genesis enough context to make the first call useful.
+        </h2>
+        <p className="mt-4 text-[0.94rem] text-muted-dark">
+          Your role, team, current systems, and the work creating the most drag
+          help us prepare for the consultation. This form is not used for Mini
+          signup, billing, or product provisioning.
+        </p>
+      </div>
+
       <label className={field}>
         Full Name <span aria-hidden="true">*</span>
         <input name="name" autoComplete="name" required className={control} />
@@ -159,7 +174,7 @@ export function ConsultationForm({
           />
         </label>
         <label className={field}>
-          Phone <span aria-hidden="true">*</span>
+          Phone for consultation follow-up <span aria-hidden="true">*</span>
           <input
             name="phone"
             type="tel"
@@ -219,21 +234,25 @@ export function ConsultationForm({
       </div>
 
       <label className={field}>
-        Starting Tier
+        Infrastructure starting point
         <select name="plan" defaultValue={normalizedPlan} className={control}>
           <option value="">Not sure yet</option>
-          {pricingPlans.map((plan) => (
-            <option key={plan.slug} value={plan.slug}>{plan.name}</option>
+          {infrastructureCatalog.plans.map((plan) => (
+            <option key={plan.key} value={plan.slug}>
+                {plan.price.kind === "starting_at"
+                  ? `${plan.name} — Starting at ${plan.price.display}`
+                  : plan.name}
+            </option>
           ))}
         </select>
       </label>
 
       <label className={field}>
-        What are you running on today, and where does the team lose the most time?
+        Where does work slow down today?
         <textarea
           name="notes"
           rows={6}
-          placeholder="Describe the manual handoff, repeated task, or information gap creating the most drag…"
+          placeholder="Describe the current email, Microsoft 365, CRM, document, follow-up, or administrative setup—and the manual handoff creating the most drag…"
           className={`${control} py-4`}
         />
       </label>
@@ -264,12 +283,12 @@ export function ConsultationForm({
         variant="secondary"
         disabled={status === "submitting"}
       >
-        {status === "submitting" ? "Sending…" : "Request a Consultation"}
+        {status === "submitting" ? "Sending request…" : "Request an Infrastructure consultation"}
       </SubmitButton>
 
       <p className="text-[0.8rem] text-muted-dark">
-        Submitted information is used only to evaluate fit and schedule your
-        consultation.
+        Genesis uses these details only to evaluate fit, prepare for the call,
+        and follow up about the Infrastructure request.
       </p>
     </form>
   );
