@@ -94,7 +94,7 @@ export default function AboutPage() {
                     alt={`${member.name}, ${member.role} at Genesis AI`}
                     fill
                     sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
-                    quality={92}
+                    unoptimized
                     className="object-cover"
                     style={{ objectPosition: member.position }}
                   />
