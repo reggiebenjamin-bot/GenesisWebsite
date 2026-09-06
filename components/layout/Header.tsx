@@ -64,7 +64,7 @@ export function Header() {
           id="primary-navigation"
           aria-label="Primary navigation"
           data-open={open}
-          className="flex items-center gap-[clamp(12px,1.2vw,24px)] lg:absolute lg:left-1/2 lg:-translate-x-1/2 max-lg:absolute max-lg:inset-x-0 max-lg:top-full max-lg:flex-col max-lg:items-stretch max-lg:gap-0 max-lg:border-b max-lg:border-ivory/10 max-lg:bg-ink max-lg:p-6 max-lg:data-[open=false]:hidden"
+          className="flex items-center gap-[clamp(18px,1.8vw,28px)] lg:absolute lg:left-1/2 lg:-translate-x-1/2 max-lg:absolute max-lg:inset-x-0 max-lg:top-full max-lg:flex-col max-lg:items-stretch max-lg:gap-0 max-lg:border-b max-lg:border-ivory/10 max-lg:bg-ink max-lg:p-6 max-lg:data-[open=false]:hidden"
         >
           {navigation.map((item) => (
             <Link
@@ -72,7 +72,7 @@ export function Header() {
               href={item.href}
               aria-current={pathname === item.href ? "page" : undefined}
               onClick={() => setOpen(false)}
-              className="group relative inline-flex min-h-11 whitespace-nowrap items-center text-[0.75rem] font-medium text-ivory/78 transition-colors duration-200 hover:text-ivory aria-[current=page]:text-ivory"
+              className="group relative inline-flex min-h-11 whitespace-nowrap items-center text-[0.78rem] font-medium text-ivory/78 transition-colors duration-200 hover:text-ivory aria-[current=page]:text-ivory"
             >
               {item.label}
               <span
