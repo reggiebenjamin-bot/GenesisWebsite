@@ -40,6 +40,11 @@ const pagePreviews: Record<string, PagePreview> = {
     image: "/images/social/og-about-1920x1080.png",
     alt: "About Genesis AI — operational foundations built to keep working",
   },
+  Team: {
+    path: "/team",
+    image: "/images/social/og-about-1920x1080.png",
+    alt: "The Genesis AI team",
+  },
   Contact: {
     path: "/contact",
     image: "/images/social/og-contact-1920x1080.png",
