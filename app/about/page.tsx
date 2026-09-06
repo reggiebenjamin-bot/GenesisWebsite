@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
 import { Reveal } from "@/components/ui/Reveal";
 import {
-  Eyebrow,
   PageIntro,
   Section,
   SectionHeading,
@@ -13,6 +13,27 @@ export const metadata: Metadata = pageMetadata(
   "About",
   "Why Genesis separates standardized G-Core Mini software from consultation-led custom Infrastructure work.",
 );
+
+const teamMembers = [
+  {
+    name: "Reggie",
+    role: "Founder",
+    image: "/images/team/reggie.png",
+    position: "center center",
+  },
+  {
+    name: "Graham",
+    role: "Head of Operations",
+    image: "/images/team/graham.webp",
+    position: "center 32%",
+  },
+  {
+    name: "Aiden",
+    role: "Director of Technology",
+    image: "/images/team/aiden.webp",
+    position: "center 32%",
+  },
+] as const;
 
 export default function AboutPage() {
   return (
@@ -55,27 +76,39 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section tone="dark">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
-          <Reveal>
-            <Eyebrow>Founder</Eyebrow>
-            <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Reginald Benjamin
-            </h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="text-muted-light">
-              Reginald Benjamin is the founder of Genesis AI. The company&rsquo;s
-              operating approach is direct: understand the work, define the
-              boundary, implement what was agreed, and remain involved after
-              launch when the engagement includes ongoing management.
-            </p>
-            <p className="mt-6 text-muted-light">
-              Additional biographical details, credentials, and client evidence
-              will be published only when the supporting source and permission
-              are available.
-            </p>
-          </Reveal>
+      <Section>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Leadership"
+            title="Meet the team."
+          />
+        </Reveal>
+
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {teamMembers.map((member, index) => (
+            <Reveal key={member.name} delay={index * 0.07}>
+              <article className="h-full overflow-hidden rounded-lg border border-line-light bg-paper shadow-[0_18px_50px_rgb(8_9_14_/_0.07)]">
+                <div className="relative aspect-square overflow-hidden bg-ink">
+                  <Image
+                    src={member.image}
+                    alt={`${member.name}, ${member.role} at Genesis AI`}
+                    fill
+                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
+                    quality={92}
+                    className="object-cover"
+                    style={{ objectPosition: member.position }}
+                  />
+                </div>
+                <div className="p-7 sm:p-8">
+                  <p className="font-display text-[0.68rem] font-semibold tracking-[0.15em] text-gold-dark uppercase">
+                    Genesis AI
+                  </p>
+                  <h2 className="mt-4 text-[clamp(2rem,3vw,2.8rem)]">{member.name}</h2>
+                  <p className="mt-3 text-muted-dark">{member.role}</p>
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </Section>
 

@@ -32,7 +32,6 @@ export const navigation: NavItem[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Results", href: "/results" },
   { label: "About", href: "/about" },
-  { label: "Team", href: "/team" },
 ];
 
 export const systemLayers: SystemLayer[] = [
@@ -92,4 +91,4 @@ export const faqs = [
 
 export const proofItems: ProofItem[] = [];
 
-export const routes = ["", "/mini", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/team", "/contact"] as const;
+export const routes = ["", "/mini", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;
