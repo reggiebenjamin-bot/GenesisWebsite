@@ -228,14 +228,14 @@ export function CinematicFrame({
               className="hero-rise inline-block"
               style={{ "--i": 1 } as React.CSSProperties}
             >
-              You should not have to be the system
+              Stop holding
             </span>{" "}
             <span
               className="hero-rise hero-outcome-glow inline-block text-gold-light"
-              data-text="holding every deal together."
+              data-text="every deal together."
               style={{ "--i": 2 } as React.CSSProperties}
             >
-              holding every deal together.
+              every deal together.
             </span>
           </h1>
 
