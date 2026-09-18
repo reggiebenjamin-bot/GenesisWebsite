@@ -1,146 +1,157 @@
 import type { Metadata } from "next";
-import { MiniPricingCards } from "@/components/sections/MiniPricingCards";
-import { PricingCards } from "@/components/sections/PricingCards";
-import { PricingPathSwitcher } from "@/components/sections/PricingPathSwitcher";
-import { Reveal } from "@/components/ui/Reveal";
-import { Eyebrow, Section } from "@/components/ui/Section";
+import { ManagedComparison } from "@/components/offers/ManagedComparison";
+import { PathToggle } from "@/components/offers/PathToggle";
+import { ToolPriceCards } from "@/components/offers/ToolPriceCards";
+import { ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
+import { Button, TextLink } from "@/components/ui/Button";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { FaqList } from "@/components/ui/FaqList";
+import { Eyebrow } from "@/components/ui/Section";
+import { contact } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
-import { getMiniCatalogDisplayMode } from "@/lib/products";
+import {
+  managedOverview,
+  offerPathHashAliases,
+  offerPaths,
+  TOOLS_INTEREST_SUBJECT,
+  toolsOverview,
+} from "@/lib/offers";
 
 export const metadata: Metadata = pageMetadata(
   "Pricing",
-  "Compare ready-to-use G-Core Mini software for agents with custom Genesis Infrastructure for brokerages, lenders, acquisitions teams, and complex operations.",
+  "Compare Genesis Tools, focused self-service AI applications, with Genesis Managed AI plans that operate across the business.",
 );
 
-const infrastructurePricingFaqs = [
+const pricingFaqs = [
   {
-    question: "What do the custom-build starting prices cover?",
+    question: "Why aren't the tools priced like the managed plans?",
     answer:
-      "Foundation and Growth show the minimum starting point for a one-time implementation. A written proposal confirms the systems, workflows, integrations, launch responsibilities, and any ongoing support included in the engagement.",
+      "They solve different scopes of problems. Genesis Tools help you perform a specific task yourself. Genesis Managed AI integrates Genesis into the way your business operates.",
   },
   {
-    question: "What changes the final custom-build scope?",
+    question: "Which tool is a subscription?",
     answer:
-      "The current environment, workflow complexity, data quality, number of systems and teams, integration depth, governance requirements, adoption work, and post-launch support can all affect the final scope.",
+      "Deal Desk is the recurring product, at $49 per month. Deal Architect is priced per full analysis and Funding Ready per financing package.",
   },
   {
-    question: "Where do Discovery and a Pilot fit?",
+    question: "Does Funding Ready guarantee financing?",
     answer:
-      "After the consultation, Genesis may recommend paid Discovery to map a complex operation or an optional Pilot to validate one workflow before a wider build. They are scoping tools, not additional public pricing tiers.",
+      "No. Funding Ready turns a deal into a professional, lender-ready financing submission. It does not imply guaranteed approval, guaranteed rates, or guaranteed financing.",
   },
   {
-    question: "Is ongoing management included forever?",
+    question: "Are third-party software costs included in a managed plan?",
+    answer: managedOverview.thirdPartyNote,
+  },
+  {
+    question: "What changes between the managed plans?",
     answer:
-      "No. Foundation and Growth show one-time implementation starting prices. If monitoring, support, maintenance, or workflow refinement is needed after launch, that responsibility and fee are stated separately in the proposal.",
+      "The three plans represent increasing levels of implementation, integration, automation, intelligence, and operational support: Genesis assists the operator, then connects and assists the team, then helps orchestrate the operation.",
   },
 ] as const;
 
 export default function PricingPage() {
-  const miniCatalogMode = getMiniCatalogDisplayMode();
-  const miniPricingFaq =
-    miniCatalogMode === "hold"
-      ? {
-          question: "Why are Agent Dashboard prices not shown?",
-          answer:
-            "The G-Core Mini subscription model is still in commercial review. Genesis has not approved its prices, limits, or legal terms for public release, and this website does not yet provide signup, billing, or product access.",
-        }
-      : miniCatalogMode === "review"
-        ? {
-            question: "Why are the Agent Dashboard prices marked provisional?",
-            answer:
-              "The $20, $100, and $200 structure is shown for review. Genesis still needs to approve product scope, usage limits, support requirements, unit economics, and legal language before these plans can become a production offer.",
-          }
-        : {
-            question: "What does an Agent Dashboard subscription include?",
-            answer:
-              "Each G-Core Mini plan provides standardized software access within its published features and usage limits. Custom implementation and Genesis Infrastructure services are separate engagements.",
-          };
-  const pricingFaqs = [miniPricingFaq, ...infrastructurePricingFaqs];
+  const toolsInterestHref = `mailto:${contact.email}?subject=${encodeURIComponent(
+    TOOLS_INTEREST_SUBJECT,
+  )}`;
 
-  const miniPanel = (
-    <div id="mini">
-      <div className="mb-6 max-w-2xl">
-        <Eyebrow>G-Core Mini</Eyebrow>
-        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)]">
-          Ready-to-use software for agents.
-        </h2>
-        <p className="mt-2 text-[0.95rem] text-muted-dark">
-          Monthly plans for independent agents and small teams—without a custom implementation.
+  const toolsPanel = (
+    <div>
+      <SectionIntro
+        layout="split"
+        eyebrow={toolsOverview.product}
+        title={toolsOverview.headline}
+        aside={
+          <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">
+            {toolsOverview.summary} Deal Desk is the recurring one.
+          </p>
+        }
+      />
+
+      <ToolPriceCards />
+
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+        <p className="max-w-[40ch] text-[0.9rem] text-muted-dark">
+          {toolsOverview.invitation.description}
         </p>
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+          <TextLink href="/mini">See the tools</TextLink>
+          <Button href={toolsInterestHref} variant="outline" className="shrink-0">
+            Ask About Tools
+          </Button>
+        </div>
       </div>
-      <MiniPricingCards mode={miniCatalogMode} />
     </div>
   );
 
-  const infrastructurePanel = (
-    <div id="infrastructure">
-      <div className="mb-6 max-w-2xl">
-        <Eyebrow>Genesis Infrastructure</Eyebrow>
-        <h2 className="mt-3 text-[clamp(2rem,4vw,3.1rem)]">
-          Infrastructure built around the business.
-        </h2>
-        <p className="mt-2 text-[0.95rem] text-muted-dark">
-          For brokerages, lenders, acquisitions teams, and complex real-estate operations.
+  const managedPanel = (
+    <div>
+      <SectionIntro
+        layout="split"
+        eyebrow={managedOverview.product}
+        title={managedOverview.headline}
+        aside={
+          <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">{managedOverview.progression}</p>
+        }
+      />
+
+      <ManagedComparison />
+
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+        <p className="max-w-[44ch] text-[0.9rem] text-muted-dark">
+          A consultation confirms the right level for your operation.
         </p>
+        <TextLink href="/solutions">See how it is built</TextLink>
       </div>
-      <PricingCards condensed featuredLabel="Common starting point" />
-      <p className="mt-5 text-[0.82rem] text-muted-dark">
-        Final scope depends on the systems, workflows, integrations, and rollout involved.
-      </p>
     </div>
   );
 
   return (
     <>
-      <section className="border-b border-line-light bg-paper pt-[calc(var(--header-height)+42px)] pb-[42px] text-ink md:pt-[calc(var(--header-height)+52px)] md:pb-[48px]">
+      <section className="border-b border-line-light bg-paper pt-[calc(var(--header-height)+42px)] pb-[42px] text-ink md:pt-[calc(var(--header-height)+56px)] md:pb-[52px]">
         <div className="shell max-w-[960px]">
           <Eyebrow>Pricing</Eyebrow>
-          <h1 className="mt-5 text-[clamp(2.55rem,5.4vw,4.8rem)]">
-            Agent software or custom infrastructure.
+          <h1 className="mt-5 text-[clamp(2.55rem,5.4vw,4.8rem)] leading-[1.02] tracking-[-0.045em]">
+            How do you want to use Genesis?
           </h1>
-          <p className="mt-5 max-w-3xl text-[1.02rem] text-muted-dark md:text-[1.08rem]">
-            G-Core Mini is ready-to-use software for agents and small teams.
-            Genesis Infrastructure is designed and implemented for brokerages,
-            lenders, acquisitions teams, and complex operations.
+          <p className="mt-5 max-w-[46ch] text-[1.02rem] text-muted-dark md:text-[1.08rem]">
+            Two offers, priced differently because they solve different scopes of problems.
           </p>
         </div>
       </section>
 
-      <Section className="!py-[clamp(52px,7vw,92px)]">
-        <PricingPathSwitcher
-          mini={miniPanel}
-          infrastructure={infrastructurePanel}
-        />
-      </Section>
+      {/* The path shown is chosen with the toggle here or in the navigation;
+          old #mini and #infrastructure links still select one. */}
+      <section data-offer-region className="relative bg-paper py-[clamp(40px,6vw,80px)] text-ink">
+        {[...offerPaths.map((path) => path.id), ...Object.keys(offerPathHashAliases)].map((id) => (
+          <span key={id} id={id} aria-hidden="true" className="absolute top-0 left-0 block size-px" />
+        ))}
 
-      <Section className="border-t border-line-light bg-paper !py-[clamp(68px,8vw,108px)]">
-        <Reveal>
-          <div className="mb-9 max-w-3xl">
-            <Eyebrow>Pricing FAQ</Eyebrow>
-            <h2 className="mt-4 text-[clamp(2rem,4vw,3.5rem)]">
-              Pricing questions.
-            </h2>
+        <div className="shell">
+          <div className="mb-[clamp(40px,6vw,72px)] flex justify-center">
+            <PathToggle variant="section" />
           </div>
-        </Reveal>
-        <div className="mx-auto max-w-4xl">
-          {pricingFaqs.map((faq, index) => (
-            <Reveal key={faq.question} delay={index * 0.035}>
-              <details className="group border-t border-line-light last:border-b">
-                <summary className="flex cursor-pointer list-none justify-between gap-6 py-6 text-[clamp(1rem,1.5vw,1.2rem)] font-medium [&::-webkit-details-marker]:hidden">
-                  {faq.question}
-                  <span
-                    aria-hidden="true"
-                    className="text-[1.35rem] font-light text-gold-dark transition-transform group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-2xl pr-12 pb-6 text-muted-dark">{faq.answer}</p>
-              </details>
-            </Reveal>
-          ))}
+          <div data-offer-panel="agent">{toolsPanel}</div>
+          <div data-offer-panel="custom-infrastructure">{managedPanel}</div>
         </div>
-      </Section>
+      </section>
+
+      <Sheet surface="paper" aria-labelledby="pricing-faq-title" className="site-section border-t border-line-light">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <SectionIntro
+            eyebrow="Pricing FAQ"
+            title="Pricing questions."
+            titleId="pricing-faq-title"
+            className="mb-0"
+          />
+          <FaqList items={pricingFaqs} />
+        </div>
+      </Sheet>
+
+      <ClosingBand
+        title="Not sure which one fits?"
+        line="A focused, no-cost conversation about your operation."
+        actions={<ConsultationButton href="/contact" />}
+      />
     </>
   );
 }

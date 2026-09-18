@@ -12,9 +12,9 @@ import {
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 const field =
-  "grid gap-2 text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
+  "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
 const control =
-  "min-h-13 w-full border border-line-light bg-paper px-4 text-[0.95rem] tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none";
+  "min-h-12 w-full border border-line-light bg-paper px-4 text-[0.95rem] tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none";
 
 export function ConsultationForm({
   initialPlan = "",
@@ -143,14 +143,14 @@ export function ConsultationForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid gap-6 border border-line-light bg-paper p-[clamp(28px,3.5vw,48px)]"
+      className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
-      <div className="border-b border-line-light pb-7">
+      <div className="border-b border-line-light pb-5">
         <Eyebrow>Infrastructure intake</Eyebrow>
-        <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.55rem)]">
+        <h2 className="mt-3 text-[clamp(1.45rem,2.4vw,2rem)]">
           Give Genesis enough context to make the first call useful.
         </h2>
-        <p className="mt-4 text-[0.94rem] text-muted-dark">
+        <p className="mt-3 text-[0.9rem] text-muted-dark">
           Your role, team, current systems, and the work creating the most drag
           help us prepare for the consultation. This form is not used for Mini
           signup, billing, or product provisioning.
@@ -162,7 +162,7 @@ export function ConsultationForm({
         <input name="name" autoComplete="name" required className={control} />
       </label>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className={field}>
           Work Email <span aria-hidden="true">*</span>
           <input
@@ -174,7 +174,7 @@ export function ConsultationForm({
           />
         </label>
         <label className={field}>
-          Phone for consultation follow-up <span aria-hidden="true">*</span>
+          Phone <span aria-hidden="true">*</span>
           <input
             name="phone"
             type="tel"
@@ -185,7 +185,7 @@ export function ConsultationForm({
         </label>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className={field}>
           Company / Operation <span aria-hidden="true">*</span>
           <input
@@ -210,7 +210,7 @@ export function ConsultationForm({
         </label>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className={field}>
           Team Size <span aria-hidden="true">*</span>
           <select name="monthly_leads" defaultValue="" required className={control}>
@@ -251,7 +251,7 @@ export function ConsultationForm({
         Where does work slow down today?
         <textarea
           name="notes"
-          rows={6}
+          rows={4}
           placeholder="Describe the current email, Microsoft 365, CRM, document, follow-up, or administrative setup—and the manual handoff creating the most drag…"
           className={`${control} py-4`}
         />

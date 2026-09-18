@@ -1,0 +1,107 @@
+/* The hero runs a little past the bottom of the screen, so the first view is
+   all hero and the paper section below starts out of sight. */
+.hero {
+  --hero-overrun: 6rem;
+
+  display: flex;
+  flex-direction: column;
+  min-height: min(calc(100svh + var(--hero-overrun)), 1100px);
+}
+
+/* The hawk fills the frame, centred on its eye (see hawkAsset.ts) and set a
+   little low. It fades in below the navigation, and out at the bottom into
+   whatever follows. Position and fades come from hawkSettings.ts, set on the
+   hero as custom properties. */
+.art {
+  position: absolute;
+  top: var(--hawk-y);
+  right: 0;
+  bottom: calc(var(--hawk-y) * -1);
+  left: 0;
+  z-index: 0;
+  transform: translateX(var(--hawk-x));
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent,
+    #000 var(--hawk-fade-top),
+    #000 var(--hawk-fade-bottom),
+    transparent 90%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent,
+    #000 var(--hawk-fade-top),
+    #000 var(--hawk-fade-bottom),
+    transparent 90%
+  );
+}
+
+/* The copy is centred in the screen below the navigation. The overrun is
+   added back at the bottom, so it does not push the copy down. */
+.inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: calc(var(--header-height) + clamp(2.5rem, 8vh, 6rem));
+  padding-bottom: calc(clamp(2.5rem, 8vh, 6rem) + var(--hero-overrun));
+  text-align: center;
+  /* The pointer passes through to the hawk, which ripples under it, everywhere
+     except the copy itself. */
+  pointer-events: none;
+}
+
+.copy,
+.toggle {
+  pointer-events: auto;
+}
+
+.copy {
+  position: relative;
+  max-width: 56rem;
+}
+
+/* A soft dark ground under the copy, wherever it sits: the hawk recedes
+   behind the words and stays whole around them. It is held narrower than the
+   copy's box, which is wider than the lines of text. */
+.copy::before {
+  position: absolute;
+  inset: -24% 8%;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgb(8 9 14 / var(--hawk-scrim)),
+    rgb(8 9 14 / calc(var(--hawk-scrim) * 0.82)) 60%,
+    transparent
+  );
+}
+
+.toggle {
+  margin-bottom: 28px;
+}
+
+/* From tablet up the toggle sits in the navigation bar. */
+@media (min-width: 640px) {
+  .toggle {
+    display: none !important;
+  }
+}
+
+/* A phone has no room around the title, so the hawk is drawn smaller (see
+   HawkAscii) and raised, with its whole head above the copy. */
+@media (max-width: 639px) {
+  .copy::before {
+    inset: -22% -16%;
+  }
+
+  .art {
+    top: -28%;
+    bottom: 28%;
+    transform: none;
+    -webkit-mask-image: linear-gradient(180deg, transparent 30%, #000 37%, #000 70%, transparent 94%);
+    mask-image: linear-gradient(180deg, transparent 30%, #000 37%, #000 70%, transparent 94%);
+  }
+}

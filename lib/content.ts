@@ -1,4 +1,32 @@
+import type { OfferPathId } from "./offers";
+
 export type NavItem = { label: string; href: string };
+
+export type NavLink = NavItem & { description?: string };
+
+/** A navigation entry that stands for several destinations: a dropdown. */
+export type NavGroup = {
+  label: string;
+  items: NavLink[];
+  feature?: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    href: string;
+    action: string;
+  };
+};
+
+export type NavEntry = NavLink | NavGroup;
+
+export function isNavGroup(entry: NavEntry): entry is NavGroup {
+  return "items" in entry;
+}
+
+/** Every destination in the navigation, flattened, in display order. */
+export function navigationLinks(entries: NavEntry[]): NavLink[] {
+  return entries.flatMap((entry) => (isNavGroup(entry) ? entry.items : [entry]));
+}
 
 export type SystemLayer = {
   number: string;
@@ -25,13 +53,22 @@ export const contact = {
   facebook: "https://www.facebook.com/profile.php?id=61586903450734",
 } as const;
 
-export const navigation: NavItem[] = [
-  { label: "Agent Software", href: "/mini" },
-  { label: "Custom Infrastructure", href: "/solutions" },
+/**
+ * Entries with more than one destination are groups, and render as dropdowns.
+ * The two path pages (/mini and /solutions) are reached through the Agent /
+ * Custom Infrastructure toggle in the navigation bar, not from this list.
+ */
+export const navigation: NavEntry[] = [
   { label: "How It Works", href: "/how-it-works" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Results", href: "/results" },
-  { label: "About", href: "/about" },
+  {
+    label: "Company",
+    items: [
+      { label: "About", href: "/about", description: "Team and principles." },
+      { label: "Results", href: "/results", description: "The proof standard." },
+      { label: "Contact", href: "/contact", description: "Book a consultation." },
+    ],
+  },
 ];
 
 export const systemLayers: SystemLayer[] = [
@@ -65,30 +102,114 @@ export const systemLayers: SystemLayer[] = [
   },
 ];
 
+/** The managed engagement. `summary` is the short label the engagement path already uses. */
 export const processSteps = [
-  { number: "01", title: "Consultation", description: "A focused, no-cost conversation about the operation, its priorities, and where work currently depends on you." },
-  { number: "02", title: "Scoping", description: "Genesis recommends the implementation boundary. When complexity warrants deeper paid Discovery or a focused Pilot, that work is proposed after the consultation." },
-  { number: "03", title: "Implementation", description: "The foundation, Applied AI workflows, integrations, and optional CRM are provisioned and connected around the operation." },
-  { number: "04", title: "Launch", description: "The platform goes into daily use with focused adoption, validation, and support through the agreed launch boundary." },
-  { number: "05", title: "Managed Platform", description: "When ongoing management is in scope, Genesis keeps the agreed system supported, current, and improving as priorities change." },
+  { number: "01", title: "Consultation", summary: "Free fit conversation", description: "A focused, no-cost conversation about the operation, its priorities, and where work currently depends on you." },
+  { number: "02", title: "Scoping", summary: "Recommendation + next step", description: "Genesis recommends the implementation boundary. When complexity warrants deeper paid Discovery or a focused Pilot, that work is proposed after the consultation." },
+  { number: "03", title: "Implementation", summary: "The system build", description: "The foundation, Applied AI workflows, integrations, and optional CRM are provisioned and connected around the operation." },
+  { number: "04", title: "Launch", summary: "Live in the operation", description: "The platform goes into daily use with focused adoption, validation, and support through the agreed launch boundary." },
+  { number: "05", title: "Managed Platform", summary: "Support + improve when included", description: "When ongoing management is in scope, Genesis keeps the agreed system supported, current, and improving as priorities change." },
 ] as const;
 
 export const audiences = [
-  { title: "Broker-owners", outcome: "Keep files, follow-up, and handoffs moving without becoming the bottleneck.", description: "Connect producer activity, documents, communication, and pipeline oversight in one managed operating environment." },
-  { title: "Lending principals", outcome: "Create usable context across a document-heavy operation.", description: "Synthesize borrower, property, communication, and workflow signals so the next action is clearer and more consistent." },
-  { title: "Acquisitions & builders", outcome: "Move opportunities from intake to decision with fewer manual gaps.", description: "Structure deal flow, diligence, vendor communication, documents, and decision support around the way the team already works." },
-  { title: "Solo operators", outcome: "Build the foundation before growth makes the gaps expensive.", description: "Start with professional infrastructure and focused automation, then add platform depth as the operation expands." },
+  { title: "Broker-owners", outcome: "Stop being the bottleneck.", description: "Connect producer activity, documents, communication, and pipeline oversight in one managed operating environment." },
+  { title: "Lending principals", outcome: "Turn documents into context.", description: "Synthesize borrower, property, communication, and workflow signals so the next action is clearer and more consistent." },
+  { title: "Acquisitions & builders", outcome: "Fewer gaps from intake to decision.", description: "Structure deal flow, diligence, vendor communication, documents, and decision support around the way the team already works." },
+  { title: "Solo operators", outcome: "Build the foundation early.", description: "Start with professional infrastructure and focused automation, then add platform depth as the operation expands." },
 ] as const;
 
-export const faqs = [
-  { question: "What does Genesis offer?", answer: "Genesis has two separate commercial paths. G-Core Mini is being prepared as standardized subscription software for independent agents and small teams. Genesis Infrastructure is a consultation-led custom build for brokerages, lenders, acquisitions teams, and complex operators." },
-  { question: "Is G-Core Mini a smaller Infrastructure engagement?", answer: "No. When released, Mini will provide bounded software access with standardized features and plan limits. Infrastructure includes assessment, customer-specific implementation, integrations, governance, adoption, and the ongoing responsibility documented in the scope." },
-  { question: "Can I sign up for G-Core Mini today?", answer: "Not yet. The Mini plan model is in commercial review, and no public account creation or checkout is enabled. The Mini page explains the proposed product boundary without implying that access has been granted." },
-  { question: "Does an Infrastructure build require replacing our current systems?", answer: "Not automatically. Genesis reviews the current environment first, keeps useful systems where appropriate, and scopes the foundation, workflows, integrations, and optional CRM around the actual operation." },
-  { question: "Why does Infrastructure require a consultation?", answer: "The published starting prices establish a minimum entry point. The final scope depends on the systems already in place, workflow complexity, data quality, team structure, integrations, governance, and the support required after launch." },
-  { question: "What does ongoing management mean?", answer: "When ongoing management is included in the agreed scope, Genesis monitors and supports the implemented environment, maintains in-scope workflows and integrations, and refines the system as the operation changes. The exact support boundary is documented in the proposal." },
-] as const;
+export type Faq = {
+  question: string;
+  answer: string;
+  /** The homepage paths that ask it. */
+  paths: readonly OfferPathId[];
+};
+
+/** Homepage questions. Answers hold to the reviewed offer mandate and the site's existing approved statements. */
+export const faqs: readonly Faq[] = [
+  { question: "What is the difference between Genesis Tools and Genesis Managed AI?", answer: "Genesis Tools are focused, self-service AI applications: you use Genesis intelligence to solve a specific problem yourself. Genesis Managed AI works across your business, connecting systems, data, workflows, communication, CRM, AI agents, automation, and operational intelligence into an integrated AI infrastructure.", paths: ["agent", "custom-infrastructure"] },
+  { question: "Are the tools a smaller version of a managed plan?", answer: "No. They solve different scopes of problems. A tool helps you do a specific task yourself. Genesis Managed AI integrates Genesis into the way your business operates.", paths: ["agent", "custom-infrastructure"] },
+  { question: "Does Genesis use AI to calculate the numbers in a deal?", answer: "No. Deal Architect calculates financial metrics with deterministic formulas, and Genesis interprets the deal after those calculations are complete. Figures are labeled known, user provided, calculated, estimated, or missing, so nothing speculative is presented as fact.", paths: ["agent"] },
+  { question: "Does Funding Ready guarantee financing?", answer: "No. Funding Ready turns a deal into a professional, lender-ready financing submission. It does not imply guaranteed approval, guaranteed rates, or guaranteed financing.", paths: ["agent"] },
+  { question: "Does a managed deployment require replacing our current systems?", answer: "Not automatically. Genesis reviews the current environment first, keeps useful systems where appropriate, and scopes the foundation, workflows, integrations, and optional CRM around the actual operation.", paths: ["custom-infrastructure"] },
+  { question: "Are third-party software costs included in a managed plan?", answer: "Plan prices cover Genesis. Third-party licenses and usage, such as Microsoft 365, telephony, CRM, or model and API usage, are not included unless stated.", paths: ["custom-infrastructure"] },
+];
 
 export const proofItems: ProofItem[] = [];
 
 export const routes = ["", "/mini", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;
+
+export type ProductPillar = {
+  figure: string;
+  title: string;
+  description: string;
+};
+
+/** The three pillars under the opening thesis, each carried by a FIG drawing. */
+export const productPillars: ProductPillar[] = [
+  {
+    figure: "0.1",
+    title: "A reusable product core",
+    description:
+      "Genesis is built on one platform, not a fresh pile of tooling per client. The core is what makes the work repeatable.",
+  },
+  {
+    figure: "0.2",
+    title: "Applied AI inside the work",
+    description:
+      "Intelligence sits in the workflows where files stall, not in a separate window somebody has to remember to open.",
+  },
+  {
+    figure: "0.3",
+    title: "Run as a managed service",
+    description:
+      "The system is monitored, maintained, and refined by Genesis, so keeping it useful never becomes the operator’s job.",
+  },
+];
+
+export type Agent = {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  signals: string[];
+};
+
+/**
+ * The four workflow mechanisms named in the Applied AI section. Wording is
+ * held to what the site already claims: assistance with a person approving.
+ */
+export const agents: Agent[] = [
+  {
+    id: "follow-up",
+    name: "Follow-up",
+    role: "Keeps quiet files moving",
+    description:
+      "Drafts the next message on a file that has gone quiet, with the history and documents already attached. Nothing leaves without someone approving it.",
+    signals: ["Last contact", "Open items", "Deal stage"],
+  },
+  {
+    id: "documents",
+    name: "Documents",
+    role: "Files what arrives",
+    description:
+      "Reads incoming documents, files them against the right record, and flags what is still missing before the gap turns into a delay.",
+    signals: ["Inbox", "Shared drives", "Record match"],
+  },
+  {
+    id: "pipeline",
+    name: "Pipeline",
+    role: "Keeps the board honest",
+    description:
+      "Updates stage, owner, and next action from the activity already happening across email, calendar, and documents, instead of from memory.",
+    signals: ["Activity", "Ownership", "Next action"],
+  },
+  {
+    id: "briefs",
+    name: "Decision briefs",
+    role: "Prepares the conversation",
+    description:
+      "Assembles borrower, property, and conversation history into one brief before the call, with every claim linked back to its source.",
+    signals: ["History", "Documents", "Source links"],
+  },
+];

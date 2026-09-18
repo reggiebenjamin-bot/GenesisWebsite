@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { contact, navigation } from "@/lib/content";
+import { contact, navigation, navigationLinks } from "@/lib/content";
+import { genesisPositioning, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
 const columnLabel =
   "font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] uppercase text-ivory/55";
 const columnLink =
   "text-[0.92rem] text-ivory/72 transition-colors duration-200 hover:text-gold-light";
+
+/* The page dedicated to each path, by the name of its offer. The toggle's
+   labels lead to each path's homepage instead. */
+const pathPages = offerPaths.map((path) => ({ label: path.product, href: path.href }));
 
 export function Footer() {
   return (
@@ -14,23 +19,18 @@ export function Footer() {
         <div className="max-lg:col-span-full">
           <Logo light />
           <p className="mt-5 max-w-sm text-[0.95rem] text-ivory/62">
-            G-Core Mini is ready-to-use software for agents and small teams.
-            Genesis Infrastructure delivers custom systems for brokerages,
-            lenders, acquisitions teams, and complex operations.
+            {genesisPositioning.summary}
           </p>
         </div>
 
         <div>
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
-            {navigation.map((item) => (
+            {[...pathPages, ...navigationLinks(navigation)].map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>
             ))}
-            <Link href="/contact" className={columnLink}>
-              Infrastructure consultation
-            </Link>
           </div>
         </div>
 
@@ -71,7 +71,7 @@ export function Footer() {
 
       <div className="shell flex justify-between gap-6 border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62 max-md:flex-col">
         <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
-        <p>Software when repeatable. Infrastructure when custom.</p>
+        <p>Tools help you do the task. Managed AI helps your business operate.</p>
       </div>
     </footer>
   );

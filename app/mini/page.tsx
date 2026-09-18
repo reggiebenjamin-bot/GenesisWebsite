@@ -1,175 +1,117 @@
 import type { Metadata } from "next";
-import { MiniPricingCards } from "@/components/sections/MiniPricingCards";
-import { Button, TextLink } from "@/components/ui/Button";
-import { Reveal } from "@/components/ui/Reveal";
-import { Eyebrow, PageIntro, Section, SectionHeading } from "@/components/ui/Section";
+import { DealReportPreview } from "@/components/offers/DealReportPreview";
+import { ToolDetailCards } from "@/components/offers/ToolDetailCards";
+import { ToolFlow } from "@/components/home/ToolFlow";
+import { ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
+import { TextLink } from "@/components/ui/Button";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { PageIntro } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
-import { getMiniCatalogDisplayMode } from "@/lib/products";
+import {
+  dataProvenance,
+  dataProvenanceMeaning,
+  neverFabricated,
+  numbersHandled,
+  TOOLS_INTEREST_SUBJECT,
+  toolsOverview,
+  toolsToManaged,
+} from "@/lib/offers";
 
 export const metadata: Metadata = pageMetadata(
-  "G-Core Mini",
-  "Review G-Core Mini, a standardized revenue workspace being prepared for independent real-estate agents and small teams.",
+  "Genesis Tools",
+  "Focused, self-service AI applications for real estate professionals: Deal Architect, Funding Ready, and Deal Desk.",
 );
 
-const workspaceAreas = [
-  {
-    number: "01",
-    title: "Today",
-    description:
-      "See due work and the next revenue-moving action without rebuilding the list by hand.",
-  },
-  {
-    number: "02",
-    title: "Leads",
-    description:
-      "Keep the next follow-up, recent activity, and ownership of the relationship in one usable record.",
-  },
-  {
-    number: "03",
-    title: "Deals",
-    description:
-      "Track active opportunities, what changed, and what needs to happen next.",
-  },
-] as const;
-
-const notIncluded = [
-  "Brokerage membership, sponsorship, supervision, or recruiting",
-  "Custom workflows or custom integrations included in the subscription",
-  "Unlimited AI, calling, email, SMS, enrichment, or paid data",
-  "Legal, tax, financial, appraisal, or brokerage advice",
-  "Unconfirmed autonomous actions on a customer’s behalf",
-] as const;
-
-export default function MiniPage() {
-  const catalogMode = getMiniCatalogDisplayMode();
+/**
+ * The Agent path: Genesis Tools. Kept at /mini so every existing link to the
+ * agent offer still resolves.
+ */
+export default function ToolsPage() {
   const interestHref = `mailto:${contact.email}?subject=${encodeURIComponent(
-    "G-Core Mini beta interest",
+    TOOLS_INTEREST_SUBJECT,
   )}`;
 
   return (
     <>
       <PageIntro
-        eyebrow="G-Core Mini"
-        title="Know what needs attention. Take the next revenue-moving action. Record what happened."
-        description="Ready-to-use subscription software for independent real-estate agents and small teams. No custom implementation is required."
+        eyebrow={toolsOverview.product}
+        title={toolsOverview.invitation.title}
+        description={toolsOverview.invitation.description}
       />
 
-      <Section>
-        <Reveal>
-          <SectionHeading
-            eyebrow="A focused operating loop"
-            title="The day starts with the work that needs to move."
-            description="Mini is designed around a narrow daily workflow: identify the due action, complete it with human confirmation, and leave the record ready for what comes next."
-          />
-        </Reveal>
-        <div className="grid gap-4 md:grid-cols-3">
-          {workspaceAreas.map((area, index) => (
-            <Reveal
-              key={area.number}
-              delay={index * 0.06}
-              className="min-h-[260px] rounded-lg border border-line-light bg-paper p-[clamp(28px,4vw,44px)]"
-            >
-              <span className="font-display text-[0.68rem] tracking-[0.14em] text-gold-dark">
-                {area.number}
-              </span>
-              <h2 className="mt-12 text-[clamp(2rem,3vw,3rem)]">{area.title}</h2>
-              <p className="mt-5 text-muted-dark">{area.description}</p>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section className="bg-paper">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Commercial preview"
-            title="A proposed subscription model, held behind an explicit publication gate."
-            description="The prices and limits below are visible in local or approved review mode only. They remain provisional until customer evidence, unit economics, product scope, and legal language are approved."
-          />
-        </Reveal>
-        <MiniPricingCards mode={catalogMode} />
-      </Section>
-
-      <Section className="bg-paper">
-        <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-          <Reveal>
-            <Eyebrow>The product boundary</Eyebrow>
-            <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Software access, not a custom Infrastructure engagement.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <p className="text-[1.08rem] leading-relaxed">
-              When released, Mini will provide a bounded product with
-              standardized features and server-enforced plan limits. It will
-              not include assessment, customer-specific implementation,
-              governance, or ongoing operational ownership.
+      <Sheet surface="paper" aria-labelledby="tools-title" className="site-section">
+        <SectionIntro
+          layout="split"
+          eyebrow="Three focused tools"
+          title={toolsOverview.headline}
+          titleId="tools-title"
+          aside={
+            <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">
+              {toolsOverview.summary} Deal Desk is the recurring one.
             </p>
-            <div className="mt-8 border-t border-line-light pt-7">
-              <h3>When the operation needs a custom build</h3>
-              <p className="mt-3 text-muted-dark">
-                Brokerages, lenders, acquisitions teams, and complex operators
-                should review Genesis Infrastructure instead.
-              </p>
-              <TextLink href="/pricing#infrastructure" className="mt-7">
-                Review custom-build pricing
-              </TextLink>
-            </div>
-          </Reveal>
-        </div>
-      </Section>
+          }
+        />
 
-      <Section>
-        <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
-          <Reveal>
-            <Eyebrow>Clear exclusions</Eyebrow>
-            <h2 className="mt-5 text-[clamp(2.2rem,4vw,4rem)]">
-              Mini has a deliberate edge.
-            </h2>
-            <p className="mt-6 max-w-xl text-muted-dark">
-              These boundaries keep the software understandable, supportable,
-              and separate from customer-specific Infrastructure engagements.
-            </p>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <ul className="grid gap-0 border-y border-line-light">
-              {notIncluded.map((item) => (
-                <li
-                  key={item}
-                  className="grid grid-cols-[10px_minmax(0,1fr)] gap-4 border-b border-line-light py-5 last:border-b-0"
+        <ToolDetailCards />
+      </Sheet>
+
+      <Sheet surface="ink" rise aria-labelledby="numbers-title" className="site-section">
+        <div className="grid items-center gap-[clamp(40px,6vw,88px)] lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <SectionIntro
+              eyebrow="How the numbers are handled"
+              title={numbersHandled.title}
+              titleId="numbers-title"
+              className="mb-8"
+            />
+            <Points items={numbersHandled.points} />
+
+            <dl className="mt-10 grid gap-0 border-t border-line-dark">
+              {dataProvenance.map((label) => (
+                <div
+                  key={label}
+                  className="grid gap-1 border-b border-line-dark py-3 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="mt-[0.62rem] h-1.5 w-1.5 rounded-full bg-gold"
-                  />
-                  <span className="text-muted-dark">{item}</span>
-                </li>
+                  <dt className="font-display text-[0.62rem] leading-6 tracking-[0.14em] text-gold uppercase">
+                    {label}
+                  </dt>
+                  <dd className="text-[0.92rem] text-ivory/80">{dataProvenanceMeaning[label]}</dd>
+                </div>
               ))}
-            </ul>
-          </Reveal>
-        </div>
-      </Section>
+            </dl>
+          </div>
 
-      <section className="border-t border-line-dark bg-ink py-[clamp(90px,10vw,150px)] text-ivory">
-        <div className="shell grid items-end gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-24">
-          <div>
-            <Eyebrow>Mini is not open for purchase</Eyebrow>
-            <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">
-              Ask about the product review without entering an Infrastructure sales flow.
-            </h2>
-          </div>
-          <div>
-            <p className="text-muted-light">
-              This email does not create an account, start a trial, reserve a
-              price, or grant product access.
+          <div className="min-w-0">
+            <DealReportPreview className="bg-paper" />
+            <p className="mt-6 text-[0.88rem] leading-relaxed text-muted-light">
+              <span className="text-ivory">Never fabricated:</span>{" "}
+              {neverFabricated.join(", ").toLowerCase()}.
             </p>
-            <Button href={interestHref} variant="secondary" className="mt-8">
-              Ask about the Mini beta
-            </Button>
           </div>
         </div>
-      </section>
+      </Sheet>
+
+      <Sheet surface="paper" rise aria-labelledby="journey-title" className="site-section">
+        <SectionIntro
+          eyebrow="How the tools connect"
+          title="One tool leads to the next."
+          titleId="journey-title"
+        />
+        <ToolFlow />
+
+        <div className="mt-[clamp(36px,5vw,56px)] flex flex-wrap items-center justify-between gap-x-10 gap-y-4 border-t border-line-light pt-8">
+          <p className="max-w-[46ch] text-[0.98rem] text-muted-dark">{toolsToManaged.question}</p>
+          <TextLink href="/#custom-infrastructure">{toolsToManaged.action}</TextLink>
+        </div>
+      </Sheet>
+
+      <ClosingBand
+        eyebrow={toolsOverview.product}
+        title="Ask about Genesis Tools."
+        actions={<ConsultationButton href={interestHref}>Ask About Tools</ConsultationButton>}
+        footnote="This email does not create an account, start a purchase, reserve a price, or grant product access."
+      />
     </>
   );
 }

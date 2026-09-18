@@ -2,8 +2,21 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
 import { contact } from "@/lib/content";
-import { infrastructureCatalog } from "@/lib/products";
+import {
+  DEFAULT_OFFER_PATH,
+  genesisPositioning,
+  genesisTools,
+  managedOverview,
+  managedPlans,
+  OFFER_PATH_ATTRIBUTE,
+  OFFER_PATH_STORAGE_KEY,
+  offerPathByPage,
+  offerPathHashAliases,
+  offerPaths,
+  toolsOverview,
+} from "@/lib/offers";
 import { indexable, siteUrl } from "@/lib/site";
 
 export const viewport: Viewport = {
@@ -16,17 +29,20 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Genesis AI | Agent Software & Custom Infrastructure",
+    default: "Genesis AI | AI Infrastructure for Real Estate Professionals",
     template: "%s | Genesis AI",
   },
-  description:
-    "G-Core Mini is ready-to-use software for agents and small teams. Genesis Infrastructure delivers custom systems for brokerages, lenders, acquisitions teams, and complex operations.",
+  description: genesisPositioning.summary,
   applicationName: "Genesis AI",
   category: "Business services",
   manifest: "/manifest.webmanifest",
   icons: {
+    // The mark is gold on transparent, so every icon here is the disc version:
+    // ink circle behind the gradient G, which keeps it legible on a light tab.
+    // SVG first for browsers that take it, .ico as the universal fallback.
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
+      { url: "/brand/genesis-icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
       { url: "/icon.png", type: "image/png", sizes: "512x512" },
     ],
     apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
@@ -44,23 +60,22 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Genesis AI",
     url: "/",
-    title: "Genesis AI | Agent Software & Custom Infrastructure",
-    description:
-      "Ready-to-use G-Core Mini software for agents and small teams, plus custom Genesis Infrastructure for brokerages, lenders, acquisitions teams, and complex operations.",
+    title: "Genesis AI | AI Infrastructure for Real Estate Professionals",
+    description: genesisPositioning.summary,
     images: [
       {
         url: "/images/social/og-home-1920x1080.png",
         width: 1920,
         height: 1080,
-        alt: "Genesis AI — G-Core Mini software and Genesis Infrastructure custom systems",
+        alt: "Genesis AI — AI infrastructure for real estate professionals",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Genesis AI | Agent Software & Custom Infrastructure",
+    title: "Genesis AI | AI Infrastructure for Real Estate Professionals",
     description:
-      "Two distinct paths: ready-to-use software for agents and custom Infrastructure for complex real-estate organizations.",
+      "Genesis Tools for specific tasks, and Genesis Managed AI across the business.",
     images: ["/images/social/og-home-1920x1080.png"],
   },
 };
@@ -81,32 +96,79 @@ const structuredData = {
     },
     {
       "@type": "Service",
-      "@id": `${siteUrl}/#infrastructure-service`,
-      name: "Genesis Infrastructure",
-      serviceType: "Custom operating-system assessment, implementation, integration, and scoped managed support",
+      "@id": `${siteUrl}/#managed-ai`,
+      name: managedOverview.product,
+      description: managedOverview.summary,
       provider: { "@id": `${siteUrl}/#organization` },
       areaServed: { "@type": "Country", name: "United States" },
-      audience: {
-        "@type": "Audience",
-        audienceType: "Brokerages, lenders, acquisitions teams, and complex real-estate operators",
-      },
       hasOfferCatalog: {
         "@type": "OfferCatalog",
-        name: "Genesis Infrastructure custom builds",
-        itemListElement: infrastructureCatalog.plans.map((plan) => ({
-          "@type": "Service",
-          name: plan.name,
-          description: `${plan.audience} ${plan.features.join("; ")}.`,
-          url: `${siteUrl}/pricing#infrastructure`,
+        name: `${managedOverview.product} plans`,
+        itemListElement: managedPlans.map((plan) => ({
+          "@type": "Offer",
+          name: `${managedOverview.product} — ${plan.priceDisplay} per month`,
+          description: `${plan.ladder} ${plan.scope}`,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: plan.monthlyPriceUsd,
+            priceCurrency: "USD",
+            unitText: "MONTH",
+          },
+          url: `${siteUrl}/pricing#custom-infrastructure`,
+        })),
+      },
+    },
+    {
+      "@type": "Service",
+      "@id": `${siteUrl}/#genesis-tools`,
+      name: toolsOverview.product,
+      description: toolsOverview.summary,
+      provider: { "@id": `${siteUrl}/#organization` },
+      areaServed: { "@type": "Country", name: "United States" },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: toolsOverview.product,
+        itemListElement: genesisTools.map((tool) => ({
+          "@type": "Offer",
+          name: tool.name,
+          description: tool.promise,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            minPrice: tool.price.amountUsd[0],
+            maxPrice: tool.price.amountUsd[1],
+            priceCurrency: "USD",
+            unitText: tool.price.unit,
+          },
+          url: `${siteUrl}/mini#${tool.id}`,
         })),
       },
     },
   ],
 };
 
+/*
+ * Chooses the Agent / Custom Infrastructure path before first paint, so the
+ * matching content is visible immediately: a path page (/mini, /solutions)
+ * wins, then the URL hash, then this session's earlier choice. Built from the
+ * same constants the client code uses, so the two cannot drift.
+ */
+const offerPathScript = `(function(){try{var d=document.documentElement,v=${JSON.stringify(
+  offerPaths.map((path) => path.id),
+)},a=${JSON.stringify(offerPathHashAliases)},g=${JSON.stringify(
+  offerPathByPage,
+)},h=location.hash.slice(1),p=g[location.pathname]||(v.indexOf(h)>-1?h:a[h]);if(!p){p=sessionStorage.getItem(${JSON.stringify(
+  OFFER_PATH_STORAGE_KEY,
+)})}if(v.indexOf(p)>-1)d.setAttribute(${JSON.stringify(OFFER_PATH_ATTRIBUTE)},p)}catch(e){}})();`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      {...{ [OFFER_PATH_ATTRIBUTE]: DEFAULT_OFFER_PATH }}
+      // The inline script below may change the path attribute before React hydrates.
+      suppressHydrationWarning
+    >
       <head>
         <link
           rel="preload"
@@ -131,6 +193,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         />
       </head>
       <body>
+        <OfferPathBootstrap script={offerPathScript} />
         <div className="site-runtime">
           <a
             href="#main-content"

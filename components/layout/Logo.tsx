@@ -2,8 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export function Logo({ light = false }: { light?: boolean }) {
+/** The Genesis mark, followed by the wordmark unless `wordmark` is false. */
+export function Logo({
+  light = false,
+  wordmark = true,
+}: {
+  light?: boolean;
+  wordmark?: boolean;
+}) {
   return (
     <Link
       href="/"
@@ -20,9 +28,12 @@ export function Logo({ light = false }: { light?: boolean }) {
           behavior: reducedMotion ? "auto" : "smooth",
         });
       }}
-      className={`inline-flex min-h-12 items-center gap-0 ${
-        light ? "text-ivory" : "text-ink"
-      }`}
+      className={cn(
+        "inline-flex min-h-12 items-center gap-0",
+        // The mark alone still gets a full-size target.
+        !wordmark && "min-w-12",
+        light ? "text-ivory" : "text-ink",
+      )}
     >
       <Image
         src="/brand/genesis-logo.svg"
@@ -33,10 +44,12 @@ export function Logo({ light = false }: { light?: boolean }) {
         fetchPriority="high"
         className="h-[37px] w-[37px] object-contain"
       />
-      <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
-        <span className="text-[0.87rem] font-semibold">enesis</span>
-        <span className="text-[0.72rem] font-bold text-gold-light">AI</span>
-      </span>
+      {wordmark ? (
+        <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
+          <span className="text-[0.87rem] font-semibold">enesis</span>
+          <span className="text-[0.72rem] font-bold text-gold-light">AI</span>
+        </span>
+      ) : null}
     </Link>
   );
 }

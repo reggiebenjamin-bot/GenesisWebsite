@@ -183,11 +183,24 @@
   bottom: 0;
 }
 
+/* The navigation's version sits inside the pill, so it is a pill too. The
+   edge sheens need straight sides, and on the flat top and bottom alone they
+   read as a thicker line than the ends, so the pill keeps only its even 1px
+   border. */
 .compact {
   min-width: 174px;
   min-height: 46px;
   padding: 0 1.2rem;
+  border-radius: 999px;
   font-size: 0.8rem;
+}
+
+.compact .edge {
+  display: none;
+}
+
+.compact:focus-visible {
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

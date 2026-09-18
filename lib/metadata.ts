@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { indexable } from "@/lib/site";
 
 const description =
-  "Genesis AI is preparing G-Core Mini software and delivers consultation-led custom Infrastructure for real-estate operations.";
+  "Genesis helps real estate businesses deploy AI-powered operating infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.";
 type PagePreview = {
   path: string;
   image: string;
@@ -10,10 +10,10 @@ type PagePreview = {
 };
 
 const pagePreviews: Record<string, PagePreview> = {
-  "G-Core Mini": {
+  "Genesis Tools": {
     path: "/mini",
     image: "/images/social/og-home-1920x1080.png",
-    alt: "Genesis AI brand preview for G-Core Mini, a product in commercial review",
+    alt: "Genesis Tools — focused, self-service AI applications from Genesis AI",
   },
   Solutions: {
     path: "/solutions",
@@ -28,7 +28,7 @@ const pagePreviews: Record<string, PagePreview> = {
   Pricing: {
     path: "/pricing",
     image: "/images/social/og-pricing-1920x1080.png",
-    alt: "Genesis AI pricing — Agent Dashboard subscriptions and custom Infrastructure starting prices",
+    alt: "Genesis AI pricing — Genesis Tools and Genesis Managed AI plans",
   },
   Results: {
     path: "/results",

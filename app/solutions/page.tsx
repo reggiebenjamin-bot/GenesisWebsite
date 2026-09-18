@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
 import { GenesisSystemScale } from "@/components/sections/GenesisSystemScale";
 import { ProductCockpit } from "@/components/sections/ProductCockpit";
-import { Reveal } from "@/components/ui/Reveal";
-import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
+import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
+import { TextLink } from "@/components/ui/Button";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { PageIntro, Section } from "@/components/ui/Section";
 import { audiences } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -17,62 +18,76 @@ export default function SolutionsPage() {
     <>
       <PageIntro
         eyebrow="The Genesis System"
-        title="Not four tools bolted together. One managed system built around the operation."
-        description="A reusable Genesis platform powers the product. Managed delivery fits it to the operation. Together they create the system the client actually uses."
+        title="One managed system, not four tools bolted together."
+        description="A reusable Genesis platform, fitted to the operation and kept running."
       />
 
       <Section>
         <GenesisSystemScale />
       </Section>
 
-      <Section tone="navy">
-        <Reveal>
-          <SectionHeading
-            eyebrow="The product underneath the system"
-            title="Reusable product intelligence—not a new custom build every time."
-            description="The live Genesis product organizes signals, evidence, next actions, deal movement, and operational diagnostics. Managed delivery configures those durable mechanisms around each operation."
-          />
-        </Reveal>
-        <Reveal delay={0.08}>
-          <ProductCockpit />
-        </Reveal>
+      <Section tone="navy" aria-labelledby="product-title">
+        <SectionIntro
+          layout="split"
+          eyebrow="The product underneath"
+          title="Reusable product intelligence."
+          titleId="product-title"
+          aside={
+            <p className="max-w-[32ch] text-[0.95rem] text-muted-light">
+              Not a new custom build every time.
+            </p>
+          }
+        />
+        <ProductCockpit />
       </Section>
 
-      <Section tone="dark">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Built around the operator"
-            title="One platform, adapted to different deal operations."
-            description="Scope changes with the team, volume, and complexity. The operating principle stays the same: connect the work, apply intelligence, and keep someone accountable for the system."
-          />
-        </Reveal>
+      <Sheet surface="paper" aria-labelledby="operators-title" className="site-section">
+        <SectionIntro
+          layout="split"
+          eyebrow="Built around the operator"
+          title="One platform, different operations."
+          titleId="operators-title"
+          aside={
+            <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">
+              Scope changes with the team. The operating principle does not.
+            </p>
+          }
+        />
 
-        <div className="border-t border-line-dark">
+        <ul className="grid gap-4 md:grid-cols-2">
           {audiences.map((audience, index) => (
-            <Reveal
-              key={audience.title}
-              delay={index * 0.05}
-              className="grid items-start gap-6 border-b border-line-dark py-10 lg:grid-cols-[80px_1fr_1fr] lg:gap-12"
-            >
-              <span className="font-display text-[0.7rem] text-gold">
-                0{index + 1}
-              </span>
-              <div>
-                <p className="font-display text-[0.66rem] tracking-[0.12em] text-gold-dark uppercase">
+            <Card key={audience.title} as="li" className="flex flex-col">
+              <div className="flex items-baseline gap-3">
+                <span className="font-display text-[0.7rem] tracking-[0.14em] text-gold-dark">
+                  0{index + 1}
+                </span>
+                <p className="font-display text-[0.66rem] tracking-[0.12em] text-muted-dark uppercase">
                   {audience.title}
                 </p>
-                <h3 className="mt-3 text-ivory">{audience.outcome}</h3>
               </div>
-              <p className="text-muted-light">{audience.description}</p>
-            </Reveal>
+              <h3 className="mt-5 text-[clamp(1.5rem,2.1vw,1.9rem)] leading-[1.06] tracking-[-0.03em]">
+                {audience.outcome}
+              </h3>
+              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">
+                {audience.description}
+              </p>
+            </Card>
           ))}
-        </div>
-      </Section>
+        </ul>
+      </Sheet>
 
-      <ConsultationCTA
+      <ClosingBand
         eyebrow="Find the right architecture"
-        title="See what Genesis would connect inside your operation."
-        description="Start with a focused consultation about the workflows, data, and handoffs your team is carrying today."
+        title="See what Genesis would connect."
+        line="A focused consultation about the workflows, data, and handoffs your team carries today."
+        actions={
+          <>
+            <ConsultationButton href="/contact" />
+            <TextLink light href="/pricing#custom-infrastructure">
+              See the levels
+            </TextLink>
+          </>
+        }
       />
     </>
   );

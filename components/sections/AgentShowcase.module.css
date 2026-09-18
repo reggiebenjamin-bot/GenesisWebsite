@@ -1,0 +1,98 @@
+/* The stack.
+   Every card is sticky to the same rail, offset by its index, so a card that
+   arrives covers the one before it and leaves a visible edge behind. No
+   pinning, no scroll listener, no measured heights.
+
+   The runway between arrivals is a spacer element rather than a margin on the
+   card. That is not a style preference: a sticky element is held inside its
+   containing block by its MARGIN box, so a 42vh bottom margin would end each
+   card's travel 42vh early, and the last card, whose margin box would reach
+   the very bottom, would get no travel at all and slide away over the three
+   that stayed. Spacers keep every margin box equal to the card itself, so all
+   four release together. */
+
+.stack {
+  position: relative;
+}
+
+.gap {
+  height: 42vh;
+}
+
+/* Trailing runway, so the fourth card has somewhere to hold and the finished
+   stack sits on screen for a beat before the section moves on. */
+.tail {
+  height: 46vh;
+}
+
+.card {
+  position: sticky;
+  top: calc(var(--header-height) + 5rem + var(--i) * 14px);
+  border: 1px solid var(--color-line-dark);
+  border-radius: 12px;
+  /* Opaque, because a card's job here is to cover the one underneath. */
+  background: var(--color-ink);
+  box-shadow:
+    inset 0 1px 0 rgb(244 239 232 / 0.06),
+    0 -18px 40px rgb(8 9 14 / 0.55);
+  transition:
+    border-color 420ms var(--ease-editorial),
+    transform 420ms var(--ease-editorial);
+}
+
+/* Uniform height, so a shorter card cannot arrive over a taller one and leave
+   its neighbour hanging out below. */
+@media (min-width: 1024px) {
+  .card {
+    min-height: 330px;
+  }
+}
+
+.card[data-active="true"] {
+  border-color: rgb(201 165 94 / 0.42);
+}
+
+/* The rail marker fills as its card takes the top of the stack. */
+.railTrack {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-line-dark);
+}
+
+.railFill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--color-gold);
+  transition: transform 520ms var(--ease-editorial);
+}
+
+.railItem[data-active="true"] .railFill {
+  transform: scaleX(1);
+}
+
+@media (max-width: 1023px) {
+  .gap {
+    height: 16px;
+  }
+
+  .tail {
+    display: none;
+  }
+
+  .card {
+    position: static;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .railFill {
+    transition: none;
+  }
+}

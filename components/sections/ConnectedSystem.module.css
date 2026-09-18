@@ -1,0 +1,63 @@
+/* Hovering a layer in the list lights the matching plate in the diagram.
+   `:has()` keeps the relationship declarative, so no state, no client
+   component, and no JavaScript ships for a hover. */
+
+/* :global, because the plates are drawn by a shared scene component that
+   emits these class names as literals. Scoped selectors here would compile to
+   hashed names the SVG never carries, and the highlight would silently do
+   nothing. */
+.diagram :global(.system-plate-edge) {
+  transition:
+    stroke 320ms var(--ease-editorial),
+    opacity 320ms var(--ease-editorial);
+}
+
+.diagram :global(.system-plate-core) {
+  transition: opacity 320ms var(--ease-editorial);
+}
+
+.layout:has(.layer[data-layer="01"]:hover) .diagram [data-layer="01"] :global(.system-plate-edge),
+.layout:has(.layer[data-layer="02"]:hover) .diagram [data-layer="02"] :global(.system-plate-edge),
+.layout:has(.layer[data-layer="03"]:hover) .diagram [data-layer="03"] :global(.system-plate-edge),
+.layout:has(.layer[data-layer="04"]:hover) .diagram [data-layer="04"] :global(.system-plate-edge) {
+  stroke: var(--color-gold);
+}
+
+.layout:has(.layer[data-layer="01"]:hover) .diagram [data-layer="01"] :global(.system-plate-core),
+.layout:has(.layer[data-layer="02"]:hover) .diagram [data-layer="02"] :global(.system-plate-core),
+.layout:has(.layer[data-layer="03"]:hover) .diagram [data-layer="03"] :global(.system-plate-core),
+.layout:has(.layer[data-layer="04"]:hover) .diagram [data-layer="04"] :global(.system-plate-core) {
+  opacity: 1;
+}
+
+/* The whole diagram steps back while one plate is singled out. Opacity rather
+   than a currentColor swap: the plates carry their own fills now, so there is
+   no inherited colour left to dim. */
+.layout:has(.layer:hover) .diagram [data-layer] {
+  opacity: 0.28;
+  transition: opacity 320ms var(--ease-editorial);
+}
+
+.layout:has(.layer[data-layer="01"]:hover) .diagram [data-layer="01"],
+.layout:has(.layer[data-layer="02"]:hover) .diagram [data-layer="02"],
+.layout:has(.layer[data-layer="03"]:hover) .diagram [data-layer="03"],
+.layout:has(.layer[data-layer="04"]:hover) .diagram [data-layer="04"] {
+  opacity: 1;
+}
+
+.layer {
+  transition: border-color 320ms var(--ease-editorial);
+}
+
+.layer:hover {
+  border-color: rgb(201 165 94 / 0.42);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagram :global(.system-plate-edge),
+  .diagram :global(.system-plate-core),
+  .diagram [data-layer],
+  .layer {
+    transition: none;
+  }
+}

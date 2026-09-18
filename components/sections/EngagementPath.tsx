@@ -35,12 +35,6 @@ export function EngagementPath() {
           </li>
         ))}
       </ol>
-
-      <div className={styles.outcome}>
-        <span className={styles.outcomeLine} aria-hidden="true" />
-        <div><small>The resulting state</small><b>Defined ownership</b></div>
-        <p>Launch and any continuing management follow the boundary stated in the proposal.</p>
-      </div>
     </div>
   );
 }

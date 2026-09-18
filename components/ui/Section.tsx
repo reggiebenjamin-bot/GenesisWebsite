@@ -46,26 +46,6 @@ export function Section({
   );
 }
 
-export function SectionHeading({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description?: string;
-}) {
-  return (
-    <div className="mb-[clamp(52px,7vw,84px)] max-w-[900px]">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <h2 className="mt-5 text-[clamp(2.4rem,5vw,5rem)]">{title}</h2>
-      {description ? (
-        <p className="mt-6 max-w-2xl text-[1.05rem] opacity-72">{description}</p>
-      ) : null}
-    </div>
-  );
-}
-
 /** The dark masthead every page except the homepage opens with. */
 export function PageIntro({
   eyebrow,

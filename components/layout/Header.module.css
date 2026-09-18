@@ -1,0 +1,489 @@
+/* ── the bar ────────────────────────────────────────────────────────────
+   One element carries both states. At the top it is a full-width bar; once
+   the reader scrolls it settles into a centred floating pill. Every changing
+   property is transitioned together on one curve, so it resizes as one move
+   rather than a sequence of jumps. */
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  pointer-events: none;
+  transition: padding 700ms var(--ease-editorial);
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: var(--header-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  /* Matches the .shell gutter, so the logo and CTA line up with page content. */
+  padding-inline: max(32px, calc((100% - 1280px) / 2));
+  border: 1px solid transparent;
+  border-bottom-color: rgb(244 239 232 / 0.08);
+  border-radius: 0;
+  color: var(--color-ivory);
+  background-color: rgb(8 9 14 / 0.9);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  pointer-events: auto;
+  transition:
+    max-width 700ms var(--ease-editorial),
+    height 700ms var(--ease-editorial),
+    padding 700ms var(--ease-editorial),
+    border-radius 700ms var(--ease-editorial),
+    border-color 450ms ease,
+    background-color 450ms ease,
+    box-shadow 500ms ease;
+}
+
+/* Over the homepage's dark hero the top state needs no surface of its own. */
+.header[data-over-dark="true"]:not([data-scrolled="true"]) .bar {
+  border-color: transparent;
+  background-color: rgb(8 9 14 / 0);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* There the links sit on the hawk's characters, so a low dark wash lies
+   behind them, fading out below the bar so it has no edge. It clears as the
+   bar becomes the pill, which carries its own surface. */
+.header::before {
+  position: absolute;
+  inset: 0 0 -48px;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(8 9 14 / 0.85),
+    rgb(8 9 14 / 0.65) 50%,
+    rgb(8 9 14 / 0)
+  );
+  transition: opacity 450ms ease;
+}
+
+.header[data-over-dark="true"]:not([data-scrolled="true"])::before {
+  opacity: 1;
+}
+
+.brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── wide screens: the floating pill ─────────────────────────────────── */
+
+@media (min-width: 1024px) {
+  .header[data-scrolled="true"] {
+    padding: 12px 16px 0;
+  }
+
+  .header[data-scrolled="true"] .bar {
+    max-width: 1060px;
+    height: 62px;
+    padding-inline: 18px 7px;
+    border-color: rgb(244 239 232 / 0.12);
+    border-radius: 999px;
+    background-color: rgb(10 12 18 / 0.84);
+    box-shadow:
+      0 18px 50px rgb(0 0 0 / 0.34),
+      0 6px 18px rgb(0 0 0 / 0.18),
+      inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
+
+  .menuToggle {
+    display: none !important;
+  }
+}
+
+.barToggle {
+  margin-right: 4px;
+}
+
+.nav {
+  display: flex;
+  margin-right: 6px;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: clamp(0px, 0.4vw, 6px);
+}
+
+.link,
+.trigger {
+  position: relative;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 10px;
+  border: 0;
+  border-radius: 999px;
+  color: rgb(244 239 232 / 0.8);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 200ms ease,
+    background-color 200ms ease;
+}
+
+.link:hover,
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  color: var(--color-ivory);
+  background-color: rgb(244 239 232 / 0.06);
+}
+
+.link[aria-current="page"],
+.trigger[data-current="true"] {
+  color: var(--color-ivory);
+}
+
+.link[aria-current="page"]::after,
+.trigger[data-current="true"]::after {
+  position: absolute;
+  right: 10px;
+  bottom: 7px;
+  left: 10px;
+  height: 1px;
+  background: var(--color-gold);
+  content: "";
+}
+
+.link:focus-visible,
+.trigger:focus-visible,
+.item:focus-visible,
+.feature:focus-visible,
+.sheetLink:focus-visible,
+.sheetFeature:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+  transition: transform 200ms var(--ease-editorial);
+}
+
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* ── dropdowns ──────────────────────────────────────────────────────── */
+
+.group {
+  position: relative;
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  z-index: 10;
+  padding: 8px;
+  border: 1px solid rgb(244 239 232 / 0.12);
+  border-radius: 20px;
+  color: var(--color-ivory);
+  background: rgb(10 12 18);
+  box-shadow:
+    0 28px 70px rgb(0 0 0 / 0.46),
+    0 8px 22px rgb(0 0 0 / 0.24);
+  transform: translateX(-50%);
+  animation: panel-in 180ms var(--ease-editorial);
+}
+
+/* Bridges the gap between trigger and panel, so a mouse crossing it is still
+   inside the group and the hover close timer never starts. */
+.panel::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 16px;
+  content: "";
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panelWide {
+  width: min(600px, calc(100vw - 32px));
+}
+
+.panelNarrow {
+  width: min(340px, calc(100vw - 32px));
+}
+
+.panelGrid {
+  display: grid;
+  gap: 6px;
+}
+
+.panelWide .panelGrid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+  border: 1px solid rgb(201 165 94 / 0.18);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 20% 0%, rgb(201 165 94 / 0.14), transparent 60%),
+    rgb(16 25 41 / 0.8);
+  transition: border-color 200ms ease;
+}
+
+.feature:hover {
+  border-color: rgb(201 165 94 / 0.4);
+}
+
+.featureEyebrow {
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.featureTitle {
+  margin-top: 4px;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.featureDescription {
+  color: var(--color-muted-light);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.featureAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--color-gold-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.items {
+  display: grid;
+  gap: 2px;
+}
+
+.item {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: background-color 180ms ease;
+}
+
+.item:hover,
+.item[aria-current="page"] {
+  background-color: rgb(244 239 232 / 0.06);
+}
+
+.itemLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.itemDescription {
+  color: var(--color-muted-light);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ── narrow screens ─────────────────────────────────────────────────── */
+
+@media (max-width: 1023px) {
+  .bar {
+    height: 64px;
+    padding-inline: 16px 6px;
+  }
+
+  .nav,
+  .cta {
+    display: none !important;
+  }
+}
+
+/* A phone's bar has no room for the toggle; it lives in the menu there. */
+@media (max-width: 639px) {
+  .barToggle {
+    display: none !important;
+  }
+}
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--color-ivory);
+  background: var(--color-ink);
+  pointer-events: auto;
+  animation: sheet-in 220ms var(--ease-editorial);
+}
+
+.sheetHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 16px 6px;
+  border-bottom: 1px solid rgb(244 239 232 / 0.08);
+  background: var(--color-ink);
+}
+
+.sheetBody {
+  flex: 1;
+  padding: 12px 16px 24px;
+}
+
+.sheetGroup {
+  padding-block: 14px;
+  border-bottom: 1px solid rgb(244 239 232 / 0.08);
+}
+
+.sheetGroupLabel {
+  margin-bottom: 4px;
+  color: var(--color-gold);
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sheetLink {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 8px;
+  border-radius: 8px;
+}
+
+.sheetLinkText {
+  display: grid;
+  gap: 2px;
+}
+
+.sheetLinkLabel {
+  font-size: 1.12rem;
+  letter-spacing: -0.015em;
+}
+
+.sheetLink[aria-current="page"] .sheetLinkLabel {
+  color: var(--color-gold-light);
+}
+
+.sheetLinkDescription {
+  color: var(--color-muted-light);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.sheetArrow {
+  color: rgb(244 239 232 / 0.45);
+}
+
+.sheetFeature {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-gold-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sheetFooter {
+  position: sticky;
+  bottom: 0;
+  padding: 16px;
+  background: linear-gradient(180deg, rgb(8 9 14 / 0), var(--color-ink) 30%);
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .header::before,
+  .bar,
+  .link,
+  .trigger,
+  .chevron,
+  .feature,
+  .item {
+    transition: none;
+  }
+
+  .panel,
+  .sheet {
+    animation: none;
+  }
+}

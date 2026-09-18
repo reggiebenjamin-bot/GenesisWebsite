@@ -1,0 +1,162 @@
+/* One card per stage. A gold line across the top edge shows how far through
+   the five stages the card sits, and the card answers when touched: it lifts
+   under the pointer and holds a gold edge while its detail is open. */
+
+.stages {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .stages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  padding: clamp(22px, 2.4vw, 32px);
+  border: 1px solid var(--color-line-light);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 88% -10%, rgb(201 165 94 / 0.08), transparent 46%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.88), rgb(255 255 255 / 0.55));
+  box-shadow: 0 18px 44px rgb(8 9 14 / 0.06);
+  transition:
+    transform 320ms var(--ease-editorial),
+    box-shadow 320ms var(--ease-editorial),
+    border-color 320ms ease;
+}
+
+/* How far along the process this stage sits. */
+.stage::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--progress);
+  height: 2px;
+  background: linear-gradient(90deg, rgb(201 165 94 / 0.2), var(--color-gold));
+  content: "";
+  pointer-events: none;
+}
+
+.stage:hover {
+  border-color: rgb(201 165 94 / 0.38);
+  box-shadow: 0 26px 58px rgb(8 9 14 / 0.1);
+  transform: translateY(-3px);
+}
+
+.stage:has(details[open]) {
+  border-color: rgb(201 165 94 / 0.45);
+  box-shadow: 0 26px 58px rgb(8 9 14 / 0.1);
+}
+
+/* The stage number, ghosted large behind the corner. */
+.ghost {
+  position: absolute;
+  top: 8px;
+  right: 18px;
+  color: rgb(8 9 14 / 0.045);
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 5vw, 4.2rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.head {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.number {
+  color: var(--color-gold-dark);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+}
+
+.cue {
+  color: var(--color-muted-dark);
+  font-size: 0.78rem;
+}
+
+.title {
+  position: relative;
+  margin-top: 24px;
+  font-size: clamp(1.5rem, 2.1vw, 1.9rem);
+  letter-spacing: -0.03em;
+  line-height: 1.06;
+}
+
+/* No rule above this row: the card's own edge is the only line it needs. */
+.details {
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+.summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  list-style: none;
+  transition: color 200ms ease;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  color: var(--color-gold-dark);
+}
+
+.plus {
+  font-size: 1.35rem;
+  font-weight: 300;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+.details[open] .plus {
+  transform: rotate(45deg);
+}
+
+.body {
+  padding-top: 10px;
+  color: var(--color-muted-dark);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage,
+  .stage:hover {
+    transform: none;
+    transition: none;
+  }
+
+  .plus {
+    transition: none;
+  }
+}

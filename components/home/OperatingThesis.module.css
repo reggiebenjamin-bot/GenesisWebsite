@@ -1,0 +1,21 @@
+/* A pulse runs along each connector: in from the six domains to Genesis,
+   then out from Genesis to the two ways to use it. Paths are measured as 100
+   units long, so one dash and gap set works for every curve. */
+
+.pulse {
+  stroke-dasharray: 5 95;
+  stroke-dashoffset: 100;
+  animation: thesis-flow 3.6s linear infinite;
+}
+
+@keyframes thesis-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    display: none;
+  }
+}

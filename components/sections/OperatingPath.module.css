@@ -1,0 +1,121 @@
+/* The implementation path.
+   A single line across the band with the five steps hung above and below it.
+   The line draws itself as the section passes, using a view timeline, so there
+   is no scroll listener and browsers without the feature simply get the line
+   already drawn. */
+
+.rail {
+  position: relative;
+}
+
+.spine {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    var(--color-gold) 0%,
+    var(--color-gold) 82%,
+    rgb(201 165 94 / 0) 100%
+  );
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 9px;
+  width: 9px;
+  rotate: 45deg;
+  border: 1px solid var(--color-gold-dark);
+  background: var(--color-ivory);
+  transition: background-color 380ms var(--ease-editorial);
+}
+
+.step:hover .node {
+  background: var(--color-gold);
+}
+
+@supports (animation-timeline: view()) {
+  .spine {
+    animation: path-draw linear both;
+    animation-timeline: view();
+    animation-range: cover 10% cover 42%;
+  }
+
+  .node {
+    animation: node-arrive linear both;
+    animation-timeline: view();
+    animation-range: entry 30% entry 92%;
+  }
+}
+
+@keyframes path-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes node-arrive {
+  from {
+    background-color: var(--color-ivory);
+  }
+  to {
+    background-color: var(--color-gold);
+  }
+}
+
+/* Below the timeline breakpoint the line runs down the left edge instead, and
+   every step sits in the same column. */
+@media (max-width: 1023px) {
+  .spine {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 4px;
+    height: auto;
+    width: 1px;
+    transform-origin: center top;
+    background: linear-gradient(
+      180deg,
+      var(--color-gold) 0%,
+      var(--color-gold) 82%,
+      rgb(201 165 94 / 0) 100%
+    );
+  }
+
+  @supports (animation-timeline: view()) {
+    .spine {
+      animation-name: path-draw-vertical;
+      /* Stacked, the rail is several viewports tall, so the vertical line can
+         afford to keep drawing as the reader moves down it. */
+      animation-range: cover 5% cover 72%;
+    }
+  }
+}
+
+@keyframes path-draw-vertical {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spine,
+  .node {
+    animation: none;
+  }
+
+  .node {
+    background: var(--color-gold);
+  }
+}

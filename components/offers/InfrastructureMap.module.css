@@ -1,0 +1,118 @@
+/* The wiring sits behind the cells: two slowly turning dashed rings, eight
+   straight wires, and a pulse running down each wire into the core. */
+
+.glow {
+  position: absolute;
+  inset: 16%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgb(201 165 94 / 0.18), transparent 68%);
+  pointer-events: none;
+}
+
+.wiring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ring,
+.ringOuter {
+  transform-origin: 150px 150px;
+  animation: map-turn 70s linear infinite;
+}
+
+.ringOuter {
+  animation-duration: 110s;
+  animation-direction: reverse;
+}
+
+.pulse {
+  stroke-dasharray: 7 93;
+  stroke-dashoffset: 100;
+  animation: map-flow 3.4s linear infinite;
+}
+
+/* ── the cells ──────────────────────────────────────────────────────── */
+
+.cell {
+  display: grid;
+  align-content: space-between;
+  gap: 6px;
+  padding: clamp(8px, 2vw, 14px);
+  border: 1px solid var(--color-line-light);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.68));
+  box-shadow: 0 10px 24px rgb(8 9 14 / 0.05);
+}
+
+.cellIndex {
+  color: var(--color-gold-dark);
+  font-family: var(--font-display);
+  font-size: 0.56rem;
+  letter-spacing: 0.14em;
+}
+
+.cellLabel {
+  color: var(--color-ink);
+  font-size: clamp(0.72rem, 1.8vw, 0.88rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* ── the core ───────────────────────────────────────────────────────── */
+
+.core {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 50% 24%, #18202f, var(--color-ink) 72%);
+  box-shadow:
+    0 0 0 1px rgb(201 165 94 / 0.38),
+    0 0 34px rgb(201 165 94 / 0.22),
+    0 18px 40px rgb(8 9 14 / 0.3);
+  text-align: center;
+}
+
+.coreLabel {
+  color: var(--color-ivory);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+@media (min-width: 640px) {
+  .coreLabel {
+    font-size: 0.78rem;
+  }
+}
+
+@keyframes map-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes map-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring,
+  .ringOuter,
+  .pulse {
+    animation: none;
+  }
+
+  .pulse {
+    display: none;
+  }
+}

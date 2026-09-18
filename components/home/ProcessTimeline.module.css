@@ -1,0 +1,120 @@
+/* The rail is a dotted line; the pulse is a full-length strip carrying one dot
+   at its start, moved along the rail by transform alone. */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 32px;
+  padding-left: 32px;
+}
+
+.timeline::before,
+.timeline::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.timeline::before {
+  top: 8px;
+  bottom: 8px;
+  left: 4px;
+  width: 1px;
+  background: repeating-linear-gradient(180deg, rgb(201 165 94 / 0.55) 0 2px, transparent 2px 6px);
+}
+
+.timeline::after {
+  top: 6px;
+  bottom: 6px;
+  left: 1.5px;
+  width: 6px;
+  background: radial-gradient(circle at 3px 3px, var(--color-gold-light) 2.6px, transparent 3.2px)
+    no-repeat;
+  filter: drop-shadow(0 0 6px rgb(242 216 149 / 0.8));
+  animation: rail-down 7s linear infinite;
+}
+
+.stage {
+  position: relative;
+}
+
+.node {
+  position: absolute;
+  top: 0.55rem;
+  left: -32px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--color-gold);
+  border-radius: 999px;
+  background: var(--color-ink);
+}
+
+@media (min-width: 1024px) {
+  .timeline {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 28px;
+    padding-top: 36px;
+    padding-left: 0;
+  }
+
+  .timeline::before {
+    top: 4px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, rgb(201 165 94 / 0.55) 0 2px, transparent 2px 6px);
+  }
+
+  .timeline::after {
+    top: 1.5px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 6px;
+    animation-name: rail-across;
+  }
+
+  .node {
+    top: -36px;
+    left: 0;
+  }
+}
+
+@keyframes rail-across {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  8%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(calc(100% - 6px));
+  }
+}
+
+@keyframes rail-down {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  8%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(100% - 6px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline::after {
+    display: none;
+  }
+}

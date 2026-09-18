@@ -1,43 +1,15 @@
 import type { Metadata } from "next";
-import { ConsultationCTA } from "@/components/sections/ConsultationCTA";
 import { EngagementPath } from "@/components/sections/EngagementPath";
-import { Reveal } from "@/components/ui/Reveal";
-import { PageIntro, Section, SectionHeading } from "@/components/ui/Section";
-import { processSteps } from "@/lib/content";
+import { ProcessStages } from "@/components/sections/ProcessStages";
+import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { PageIntro } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata(
   "How It Works",
   "See what Genesis reviews, scopes, builds, and manages during a custom Infrastructure engagement.",
 );
-
-const stageDetails = [
-  [
-    "Current systems and responsibilities",
-    "Highest-value operating friction",
-    "Fit and recommended next step",
-  ],
-  [
-    "Tools, access, and data flow",
-    "Recommended scope and implementation order",
-    "Paid Discovery or a focused Pilot only when warranted",
-  ],
-  [
-    "In-scope provisioning and configuration",
-    "Workflow and integration build",
-    "Client access and adoption requirements",
-  ],
-  [
-    "Daily use and validation",
-    "Human approval points",
-    "Go-live support",
-  ],
-  [
-    "Monitoring and support",
-    "Maintenance and workflow refinement",
-    "Improvements within the agreed boundary",
-  ],
-];
 
 const principles = [
   [
@@ -52,7 +24,7 @@ const principles = [
     "Keep one accountable owner",
     "When ongoing management is included, Genesis continues monitoring, supporting, maintaining, and refining the agreed system.",
   ],
-];
+] as const;
 
 export default function HowItWorksPage() {
   return (
@@ -60,90 +32,67 @@ export default function HowItWorksPage() {
       <PageIntro
         eyebrow="Genesis Infrastructure"
         title="What happens after you book a consultation."
-        description="Genesis reviews the operation, confirms the scope, builds the agreed system, supports launch, and remains responsible for the ongoing work included in the engagement."
+        description="Review the operation, confirm the scope, build the agreed system, support launch, stay responsible for what is in scope."
       />
 
-      <Section tone="dark">
-        <Reveal>
-          <SectionHeading
-            eyebrow="The engagement path"
-            title="One path from first conversation to continuous operation."
-            description="The consultation establishes fit and a recommended next step. Paid Discovery or a focused Pilot may be proposed when complexity warrants deeper scoping before implementation."
-          />
-        </Reveal>
-        <Reveal delay={0.08}>
-          <EngagementPath />
-        </Reveal>
-      </Section>
+      <Sheet surface="ink" aria-labelledby="path-title" className="site-section">
+        <SectionIntro
+          layout="split"
+          eyebrow="The engagement path"
+          title="One path from first conversation to continuous operation."
+          titleId="path-title"
+          aside={
+            <p className="max-w-[30ch] text-[0.95rem] text-muted-light">
+              Deeper scoping is proposed only when complexity warrants it.
+            </p>
+          }
+        />
+        <EngagementPath />
+      </Sheet>
 
-      <Section>
-        <Reveal>
-          <SectionHeading
-            eyebrow="The process"
-            title="A defined outcome at every stage."
-            description="Scoping establishes the recommended boundary. Implementation produces the agreed system. Launch puts it into use. Ongoing management keeps the in-scope environment supported and current."
-          />
-        </Reveal>
+      <Sheet surface="paper" rise aria-labelledby="process-title" className="site-section">
+        <SectionIntro
+          layout="split"
+          eyebrow="The process"
+          title="A defined outcome at every stage."
+          titleId="process-title"
+          aside={
+            <p className="max-w-[30ch] text-[0.95rem] text-muted-dark">
+              Five stages, each with something to show for it.
+            </p>
+          }
+        />
 
-        <div className="border-t border-line-light">
-          {processSteps.map((step, index) => (
-            <Reveal
-              key={step.number}
-              delay={index * 0.06}
-              className="grid items-start gap-6 border-b border-line-light py-12 lg:grid-cols-[80px_1.4fr_1fr] lg:gap-12"
-            >
-              <div className="font-display text-[0.7rem] text-gold-dark">
-                {step.number}
-              </div>
-              <div>
-                <h2 className="text-[clamp(1.6rem,2.6vw,2.4rem)]">
-                  {step.title}
-                </h2>
-                <p className="mt-4 text-muted-dark">{step.description}</p>
-              </div>
-              <ul>
-                {stageDetails[index].map((detail) => (
-                  <li
-                    key={detail}
-                    className="relative py-1.5 pl-[18px] text-[0.92rem] text-muted-dark before:absolute before:top-[15px] before:left-0 before:size-1.5 before:bg-gold before:content-['']"
-                  >
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+        <ProcessStages />
+
+      </Sheet>
+
+      <Sheet surface="paper" aria-labelledby="expect-title" className="site-section">
+        <SectionIntro
+          eyebrow="What clients can expect"
+          title="The boundary is established before the system changes."
+          titleId="expect-title"
+        />
+
+        <ul className="grid gap-4 md:grid-cols-3">
+          {principles.map(([title, copy]) => (
+            <Card key={title} as="li">
+              <h3 className="text-[clamp(1.2rem,1.7vw,1.4rem)] leading-snug tracking-[-0.02em]">
+                {title}
+              </h3>
+              <p className="mt-4 text-[0.94rem] leading-relaxed text-muted-dark">{copy}</p>
+            </Card>
           ))}
-        </div>
-      </Section>
+        </ul>
+      </Sheet>
 
-      <Section tone="dark">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
-          <Reveal>
-            <SectionHeading
-              eyebrow="What clients can expect"
-              title="The boundary is established before the system changes."
-            />
-          </Reveal>
-          <div className="grid gap-8">
-            {principles.map(([title, copy], index) => (
-              <Reveal
-                key={title}
-                delay={index * 0.05}
-                className="border-t border-line-dark pt-6"
-              >
-                <h3 className="text-ivory">{title}</h3>
-                <p className="mt-3 text-muted-light">{copy}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      <ConsultationCTA
+      <ClosingBand
         eyebrow="Begin with the review"
         title="Bring the current setup. Leave with a clearer next step."
-        description="The Infrastructure consultation covers the existing environment, the work creating friction, and the starting scope Genesis would recommend."
-        buttonLabel="Book an Infrastructure consultation"
+        line="The consultation covers the existing environment, the work creating friction, and the scope Genesis would recommend."
+        actions={
+          <ConsultationButton href="/contact">Book an Infrastructure consultation</ConsultationButton>
+        }
       />
     </>
   );

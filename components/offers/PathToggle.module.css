@@ -1,0 +1,125 @@
+/* Agent / Custom Infrastructure as a segmented control: the chosen path is a
+   filled pill on a quiet track. Each variant sets the colours for its surface. */
+
+.toggle {
+  --track-border: rgb(244 239 232 / 0.12);
+  --track-background: rgb(244 239 232 / 0.06);
+  --segment-text: rgb(244 239 232 / 0.74);
+  --segment-text-hover: var(--color-ivory);
+  --chosen-text: var(--color-ink);
+  --chosen-background: var(--color-ivory);
+  --chosen-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+  --focus-ring: var(--color-gold-light);
+
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--track-border);
+  border-radius: 999px;
+  background: var(--track-background);
+}
+
+.segment {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 14px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--segment-text);
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 220ms var(--ease-editorial),
+    color 200ms ease,
+    box-shadow 220ms ease;
+}
+
+.segment:hover {
+  color: var(--segment-text-hover);
+}
+
+/* Chosen: from <html data-offer-path> where the page switches in place, from
+   the page itself where each option is a link. */
+:global(html[data-offer-path="agent"]) .toggle[data-kind="switch"] .segment[data-path="agent"],
+:global(html[data-offer-path="custom-infrastructure"])
+  .toggle[data-kind="switch"]
+  .segment[data-path="custom-infrastructure"],
+.segment[data-selected="true"] {
+  color: var(--chosen-text);
+  background: var(--chosen-background);
+  box-shadow: var(--chosen-shadow);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The mobile menu: full width, equal halves, larger targets. */
+.sheet {
+  display: grid;
+  width: 100%;
+  grid-auto-columns: minmax(0, 1fr);
+  padding: 4px;
+}
+
+.sheet .segment {
+  min-height: 48px;
+  padding-inline: 10px;
+  font-size: 0.92rem;
+}
+
+/* Opening the homepage hero on phones, over the hawk. */
+.hero {
+  --track-background: rgb(8 9 14 / 0.62);
+
+  padding: 4px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.hero .segment {
+  min-height: 44px;
+  padding-inline: 18px;
+  font-size: 0.88rem;
+}
+
+/* Above the offers, on the paper page: an ink pill on a light track. */
+.section {
+  --track-border: var(--color-line-light);
+  --track-background: rgb(255 255 255 / 0.6);
+  --segment-text: var(--color-muted-dark);
+  --segment-text-hover: var(--color-ink);
+  --chosen-text: var(--color-ivory);
+  --chosen-background: var(--color-ink);
+  --chosen-shadow: 0 6px 18px rgb(8 9 14 / 0.16);
+  --focus-ring: var(--color-ink);
+
+  padding: 4px;
+}
+
+.section .segment {
+  min-height: 44px;
+  padding-inline: 22px;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 379px) {
+  .section .segment {
+    padding-inline: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}

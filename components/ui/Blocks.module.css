@@ -1,0 +1,68 @@
+/* The gold grid the dark rounded sheets carry. It is brightest where the
+   sheet lifts over the section before it and gone before the copy starts, it
+   drifts slowly downward, and every few seconds a soft light runs down it. */
+
+.inkGrid::before,
+.inkGrid::after {
+  position: absolute;
+  z-index: 0;
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+.inkGrid::before {
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgb(201 165 94 / 0.16) 1px, transparent 1px),
+    linear-gradient(rgb(201 165 94 / 0.16) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: linear-gradient(to bottom, #000, rgb(0 0 0 / 0.4) 42%, transparent 76%);
+  animation: sheet-grid-drift 26s linear infinite;
+}
+
+.inkGrid::after {
+  inset: 0 0 auto;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent, rgb(242 216 149 / 0.14), transparent);
+  animation: sheet-grid-scan 11s ease-in-out infinite;
+}
+
+/* The copy sits above the grid. */
+.inkGrid > :global(.shell) {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes sheet-grid-drift {
+  to {
+    background-position:
+      0 54px,
+      0 54px;
+  }
+}
+
+@keyframes sheet-grid-scan {
+  0% {
+    opacity: 0;
+    transform: translateY(-140px);
+  }
+  18% {
+    opacity: 1;
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: translateY(400px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inkGrid::before {
+    animation: none;
+  }
+
+  .inkGrid::after {
+    display: none;
+  }
+}
