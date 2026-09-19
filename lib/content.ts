@@ -1,4 +1,4 @@
-import type { OfferPathId } from "./offers";
+import type { OfferPathId } from "./offers.ts";
 
 export type NavItem = { label: string; href: string };
 
@@ -76,46 +76,118 @@ export const systemLayers: SystemLayer[] = [
     number: "01",
     title: "Operational Foundation",
     shortTitle: "Foundation",
-    description: "Microsoft 365, business email, identity, documents, and integrations—provisioned as dependable business infrastructure.",
+    description: "Microsoft 365, business email, identity, documents, permissions, and approved integrations configured as dependable business infrastructure.",
     details: ["Business email on your domain", "Identity and permission management", "Calendars, documents, and Teams", "Connections to the tools you keep"],
   },
   {
     number: "02",
     title: "Applied AI & Data Synthesis",
     shortTitle: "Intelligence",
-    description: "Genesis connects scattered operational signals, turns them into usable context, and applies AI inside the workflows where work gets stuck.",
+    description: "Genesis turns scattered operational signals into usable context and applies AI inside the workflows where interpretation, coordination, generation, or follow-up can move the work forward.",
     details: ["Cross-system context synthesis", "Follow-up and routing workflows", "Document and information handling", "Human approval where judgment matters"],
   },
   {
     number: "03",
     title: "Genesis CRM — Optional",
     shortTitle: "Optional CRM",
-    description: "A system of record for pipelines, campaigns, booking, and structured follow-up when the operation actually needs one.",
+    description: "A system of record for pipeline, campaigns, booking, and structured follow-up when the operation needs one. Genesis does not force a CRM replacement simply to make the rest of the system work.",
     details: ["No forced rip-and-replace", "Pipelines and opportunities", "Campaigns and booking", "Structured follow-up"],
   },
   {
     number: "04",
     title: "Fully Managed — Ongoing",
     shortTitle: "Managed",
-    description: "Genesis monitors, supports, maintains, and improves the platform so running the system does not become the operator’s next job.",
+    description: "When included in the engagement, Genesis monitors, supports, maintains, and improves the agreed platform so managing the infrastructure does not become the operator’s next job.",
     details: ["Monitoring and support", "System maintenance", "Workflow refinement", "Continuous improvement"],
   },
 ];
 
-/** The managed engagement. `summary` is the short label the engagement path already uses. */
+/**
+ * The managed engagement. `summary` is the short label the engagement path
+ * uses; `description` is the homepage's account of each step, and `method`
+ * the How It Works page's.
+ */
 export const processSteps = [
-  { number: "01", title: "Consultation", summary: "Free fit conversation", description: "A focused, no-cost conversation about the operation, its priorities, and where work currently depends on you." },
-  { number: "02", title: "Scoping", summary: "Recommendation + next step", description: "Genesis recommends the implementation boundary. When complexity warrants deeper paid Discovery or a focused Pilot, that work is proposed after the consultation." },
-  { number: "03", title: "Implementation", summary: "The system build", description: "The foundation, Applied AI workflows, integrations, and optional CRM are provisioned and connected around the operation." },
-  { number: "04", title: "Launch", summary: "Live in the operation", description: "The platform goes into daily use with focused adoption, validation, and support through the agreed launch boundary." },
-  { number: "05", title: "Managed Platform", summary: "Support + improve when included", description: "When ongoing management is in scope, Genesis keeps the agreed system supported, current, and improving as priorities change." },
+  {
+    number: "01",
+    title: "Consultation",
+    summary: "Free fit conversation",
+    description:
+      "A focused, no-cost conversation about how leads, deals, communication, documents, data, and handoffs move through the business today.",
+    method:
+      "Understand the operation, its priorities, and where work currently depends on manual memory, disconnected systems, or repeated coordination.",
+  },
+  {
+    number: "02",
+    title: "Scoping",
+    summary: "Recommendation + next step",
+    description:
+      "Define the implementation boundary: what should stay, what needs to connect, where work is breaking down, and where automation or intelligence would be useful.",
+    method:
+      "Define what should remain, what needs to communicate, which workflows need structure, where automation is appropriate, and what stays with people.",
+  },
+  {
+    number: "03",
+    title: "Implementation",
+    summary: "The system build",
+    description:
+      "Configure the agreed foundation, integrations, workflows, AI capabilities, and optional CRM around the operation.",
+    method:
+      "Configure the agreed operational foundation, integrations, workflows, AI capabilities, and optional CRM.",
+  },
+  {
+    number: "04",
+    title: "Launch",
+    summary: "Live in the operation",
+    description:
+      "Put the platform into daily use, validate the workflow, and make sure the system is carrying the work it was designed to carry.",
+    method:
+      "Move the system into daily use, validate that information and actions are moving correctly, and support adoption through the agreed launch boundary.",
+  },
+  {
+    number: "05",
+    title: "Managed Platform",
+    summary: "Support + improve when included",
+    description:
+      "When ongoing management is included, Genesis keeps the agreed infrastructure supported, current, and improving as the business changes.",
+    method:
+      "Where ongoing management is part of the engagement, Genesis supports and refines the system as business priorities, processes, and volume change.",
+  },
 ] as const;
 
 export const audiences = [
-  { title: "Broker-owners", outcome: "Stop being the bottleneck.", description: "Connect producer activity, documents, communication, and pipeline oversight in one managed operating environment." },
-  { title: "Lending principals", outcome: "Turn documents into context.", description: "Synthesize borrower, property, communication, and workflow signals so the next action is clearer and more consistent." },
-  { title: "Acquisitions & builders", outcome: "Fewer gaps from intake to decision.", description: "Structure deal flow, diligence, vendor communication, documents, and decision support around the way the team already works." },
-  { title: "Solo operators", outcome: "Build the foundation early.", description: "Start with professional infrastructure and focused automation, then add platform depth as the operation expands." },
+  {
+    title: "Agents & Small Teams",
+    outcome: "Stop carrying the entire follow-up system in your head.",
+    body: [
+      "Connect the work around leads, follow-up, communication, CRM, active deals, and documents so producing more business does not require the owner to manually remember every next step.",
+      "Genesis is not there just to store another contact. It is there to help the work around that contact move.",
+    ],
+  },
+  {
+    title: "Brokerages",
+    outcome: "Stop making the broker-owner the integration layer.",
+    body: [
+      "Connect lead routing, producer follow-up, pipeline visibility, communication, documents, team handoffs, and operations so information can move through the brokerage without every exception eventually landing on one person.",
+      "The objective is not more dashboards. It is clearer ownership, better context, and fewer operational gaps between systems and people.",
+    ],
+  },
+  {
+    title: "Lenders",
+    outcome: "Keep borrower, property, document, and pipeline context connected.",
+    body: [
+      "Bring borrower information, property information, documents, communication, conditions, follow-up, pipeline activity, and internal handoffs into a clearer operational flow.",
+      "Genesis can help organize context, surface missing information, support workflow execution, and prepare people for decisions. Underwriting, credit decisions, approvals, and other regulated judgments remain with the responsible humans and institutions.",
+    ],
+  },
+  {
+    title: "Investors, Acquisitions & Development",
+    outcome: "Keep the opportunity connected from intake to decision.",
+    body: [
+      "Structure opportunity intake, diligence, deal information, documents, vendor communication, financing context, pipeline activity, and decision support around the way the team actually evaluates and advances projects.",
+      "The goal is fewer gaps between discovering an opportunity and having the information required to act on it.",
+    ],
+  },
 ] as const;
 
 export type Faq = {
@@ -125,19 +197,115 @@ export type Faq = {
   paths: readonly OfferPathId[];
 };
 
-/** Homepage questions. Answers hold to the reviewed offer mandate and the site's existing approved statements. */
+/** The tools' own questions: the tools page, each tool's page, and the homepage's Agent path. */
+export const toolFaqs = [
+  {
+    question: "Are Genesis Tools the same as a Managed AI plan?",
+    answer:
+      "No. Tools help you complete specific work yourself. Managed AI integrates Genesis into how the broader business operates.",
+  },
+  {
+    question: "Does Deal Architect invent missing deal information?",
+    answer:
+      "No. Information is identified as known, user provided, calculated, estimated, or missing. Missing information remains missing rather than being silently fabricated.",
+  },
+  {
+    question: "Does Funding Ready guarantee financing?",
+    answer:
+      "No. Funding Ready prepares and organizes a financing submission. Approval, pricing, terms, and lending decisions remain with the appropriate lender and decision-makers.",
+  },
+  {
+    question: "Is Deal Desk just a general-purpose AI chat?",
+    answer:
+      "No. It is designed around structured real-estate deal context, saved transactions, calculations, reusable workflows, documents, and persistent transaction history.",
+  },
+] as const;
+
+const [, doesDealArchitectInvent, doesFundingReadyGuarantee, isDealDeskChat] = toolFaqs;
+
+/** Homepage questions, by the path that asks them. */
 export const faqs: readonly Faq[] = [
-  { question: "What is the difference between Genesis Tools and Genesis Managed AI?", answer: "Genesis Tools are focused, self-service AI applications: you use Genesis intelligence to solve a specific problem yourself. Genesis Managed AI works across your business, connecting systems, data, workflows, communication, CRM, AI agents, automation, and operational intelligence into an integrated AI infrastructure.", paths: ["agent", "custom-infrastructure"] },
-  { question: "Are the tools a smaller version of a managed plan?", answer: "No. They solve different scopes of problems. A tool helps you do a specific task yourself. Genesis Managed AI integrates Genesis into the way your business operates.", paths: ["agent", "custom-infrastructure"] },
-  { question: "Does Genesis use AI to calculate the numbers in a deal?", answer: "No. Deal Architect calculates financial metrics with deterministic formulas, and Genesis interprets the deal after those calculations are complete. Figures are labeled known, user provided, calculated, estimated, or missing, so nothing speculative is presented as fact.", paths: ["agent"] },
-  { question: "Does Funding Ready guarantee financing?", answer: "No. Funding Ready turns a deal into a professional, lender-ready financing submission. It does not imply guaranteed approval, guaranteed rates, or guaranteed financing.", paths: ["agent"] },
-  { question: "Does a managed deployment require replacing our current systems?", answer: "Not automatically. Genesis reviews the current environment first, keeps useful systems where appropriate, and scopes the foundation, workflows, integrations, and optional CRM around the actual operation.", paths: ["custom-infrastructure"] },
-  { question: "Are third-party software costs included in a managed plan?", answer: "Plan prices cover Genesis. Third-party licenses and usage, such as Microsoft 365, telephony, CRM, or model and API usage, are not included unless stated.", paths: ["custom-infrastructure"] },
+  {
+    question: "What is Genesis?",
+    answer:
+      "Genesis is AI infrastructure for real estate professionals. It connects business systems, workflows, communication, data, automation, and AI capabilities around the way the operation actually works.",
+    paths: ["agent", "custom-infrastructure"],
+  },
+  {
+    question: "What is the difference between Genesis Tools and Genesis Managed AI?",
+    answer:
+      "Genesis Tools help you complete a defined task yourself. Genesis Managed AI works across the business by connecting and managing the infrastructure behind multiple workflows.",
+    paths: ["agent", "custom-infrastructure"],
+  },
+  { ...doesDealArchitectInvent, paths: ["agent"] },
+  { ...doesFundingReadyGuarantee, paths: ["agent"] },
+  { ...isDealDeskChat, paths: ["agent"] },
+  {
+    question: "Is Genesis another CRM?",
+    answer:
+      "No. CRM can be one part of the system, and Genesis CRM is optional. The broader job is connecting how work moves between communication, data, documents, workflows, deal activity, automation, and the people responsible for decisions.",
+    paths: ["custom-infrastructure"],
+  },
+  {
+    question: "Do we have to replace our current systems?",
+    answer:
+      "Not automatically. Genesis reviews the existing environment first and keeps useful systems where appropriate. The objective is a better-connected operation, not replacement for its own sake.",
+    paths: ["custom-infrastructure"],
+  },
+  {
+    question: "Is Genesis mainly a collection of AI agents?",
+    answer:
+      "No. AI agents are one capability inside Genesis. The larger value comes from how systems, data, context, workflows, automation, and human responsibilities are structured around them.",
+    paths: ["custom-infrastructure"],
+  },
+  {
+    question: "Does Genesis replace human judgment?",
+    answer:
+      "No. Genesis can organize information, surface context, automate defined work, and support decisions. Human users remain responsible for decisions that require human judgment, professional responsibility, or regulated authority.",
+    paths: ["custom-infrastructure"],
+  },
+  {
+    question: "Are third-party software costs included?",
+    answer:
+      "Plan prices cover Genesis. Third-party software, licenses, model or API usage, telephony, CRM, Microsoft 365, and similar external costs are separate unless explicitly stated otherwise.",
+    paths: ["custom-infrastructure"],
+  },
 ];
 
-export const proofItems: ProofItem[] = [];
+/** The pricing page's questions. */
+export const pricingFaqs = [
+  {
+    question: "Why aren't Genesis Tools priced like the managed plans?",
+    answer:
+      "Because they solve different problems. A Genesis Tool helps you complete a specific task yourself. A managed deployment makes Genesis part of how the business operates.",
+  },
+  {
+    question: "Which tool is recurring?",
+    answer:
+      "Deal Desk is $49 per month. Deal Architect is purchased per full analysis and Funding Ready per financing package.",
+  },
+  {
+    question: "Does purchasing a Genesis Tool include Managed AI?",
+    answer: "No. Self-service access and managed infrastructure are separate scopes.",
+  },
+  {
+    question: "What changes between the managed levels?",
+    answer:
+      "The implementation becomes broader across workflows, integrations, people, automation, operational intelligence, and the level of support required to run the system.",
+  },
+  {
+    question: "Are third-party software costs included?",
+    answer:
+      "No, unless explicitly stated. Plan pricing covers Genesis; external licenses and usage are separate.",
+  },
+  {
+    question: "How do I know which managed level fits?",
+    answer:
+      "The consultation maps the current operation and defines what Genesis would actually be responsible for connecting, implementing, and supporting before a scope is recommended.",
+  },
+] as const;
 
-export const routes = ["", "/mini", "/solutions", "/how-it-works", "/pricing", "/results", "/about", "/contact"] as const;
+export const proofItems: ProofItem[] = [];
 
 export type ProductPillar = {
   figure: string;

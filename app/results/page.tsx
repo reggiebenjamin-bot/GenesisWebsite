@@ -1,30 +1,60 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { EvidenceFlow } from "@/components/sections/EvidenceFlow";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow, PageIntro } from "@/components/ui/Section";
 import { proofItems } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, graph } from "@/lib/schema";
 
-export const metadata: Metadata = pageMetadata(
-  "Results",
-  "See what Genesis can verify today and the evidence required before client results are published.",
-);
+export const metadata: Metadata = pageMetadata("/results");
 
 const proofRequirements = [
-  ["01", "A specific starting point", "What was happening before implementation."],
-  ["02", "A defined system change", "What Genesis implemented, managed, or improved."],
-  ["03", "An attributable outcome", "Supported by source data or an approved client statement."],
-  ["04", "Permission to publish", "Clear approval for names, quotes, logos, or details."],
+  ["01", "A specific starting point", "Document what was happening before implementation."],
+  [
+    "02",
+    "A defined system change",
+    "Identify the workflow, infrastructure, or operating process Genesis actually changed.",
+  ],
+  [
+    "03",
+    "An attributable outcome",
+    "Tie the result to source data or an approved client statement with enough context to understand what the number means.",
+  ],
+  [
+    "04",
+    "Permission to publish",
+    "Receive clear approval for the names, quotes, logos, figures, and details being disclosed.",
+  ],
+] as const;
+
+/** What proof may eventually measure, once verified history exists. Not claims. */
+const futureMeasures = [
+  "Lead response coverage",
+  "Follow-up completion",
+  "Processing time",
+  "Pipeline completeness",
+  "Missing-document rates",
+  "Workflow completion",
+  "Manual touches or handoffs",
+  "Time between operational handoffs",
+  "Capacity supported by a workflow",
+  "Conversion movement where attribution is appropriate",
 ] as const;
 
 export default function ResultsPage() {
   return (
     <>
+      <JsonLd data={graph(breadcrumbSchema("/results"))} />
+
       <PageIntro
         eyebrow="Results"
-        title="A clear line between verified facts and future client proof."
-        description="No client case studies, testimonials, or performance figures are published here yet. Genesis will publish them only once the source, context, attribution, and permission are confirmed."
+        title="Proof should stay connected to the operation that produced it."
+        description={[
+          "Genesis does not publish client case studies, testimonials, or performance figures until the source, starting point, system change, attribution, and permission to publish are confirmed.",
+          "Until then, illustrative examples remain illustrative.",
+        ]}
       />
 
       <Sheet surface="ink" aria-labelledby="evidence-title" className="site-section">
@@ -34,8 +64,10 @@ export default function ResultsPage() {
           title="A result should remain connected to its source."
           titleId="evidence-title"
           aside={
-            <p className="max-w-[30ch] text-[0.95rem] text-muted-light">
-              An illustrative model, not a client outcome.
+            <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-light">
+              A useful business outcome needs more than an impressive number. Genesis should be able
+              to show what was measured, where the record came from, what changed in the system, and
+              what the result actually represents.
             </p>
           }
         />
@@ -76,11 +108,11 @@ export default function ResultsPage() {
         <SectionIntro
           layout="split"
           eyebrow="The proof standard"
-          title="What Genesis requires before calling something a result."
+          title="Four things must be clear before Genesis calls something a result."
           titleId="standard-title"
           aside={
             <p className="max-w-[30ch] text-[0.95rem] text-muted-dark">
-              All four, or it stays off the page.
+              If those conditions are not met, the claim stays off the page.
             </p>
           }
         />
@@ -100,30 +132,44 @@ export default function ResultsPage() {
         </ol>
       </Sheet>
 
-      <Sheet surface="paper" aria-labelledby="today-title" className="site-section">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
-          <SectionIntro
-            eyebrow="What is verifiable today"
-            title="The service boundary defines who remains responsible."
-            titleId="today-title"
-            className="mb-0"
-          />
-          <p className="self-center text-[1.02rem] leading-relaxed text-muted-dark">
-            Current Genesis materials support the two-product model, the published starting
-            prices, and ongoing monitoring, support, maintenance, and workflow refinement when
-            those services are in scope. Client outcomes stay separate until they can be
-            supported and attributed.
-          </p>
+      <Sheet surface="paper" aria-labelledby="measure-title" className="site-section">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <SectionIntro
+              eyebrow="Future proof"
+              title="Measure operations, not AI hype."
+              titleId="measure-title"
+              className="mb-6"
+            />
+            <p className="max-w-[46ch] text-[0.98rem] leading-relaxed text-muted-dark">
+              As managed deployments create enough verified history, useful proof may include:
+            </p>
+          </div>
+
+          <div>
+            <ul className="grid gap-2.5 sm:grid-cols-2">
+              {futureMeasures.map((measure) => (
+                <li
+                  key={measure}
+                  className="flex items-baseline gap-3 rounded-2xl border border-line-light bg-white/60 px-4 py-3 text-[0.94rem] leading-snug"
+                >
+                  <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-gold" />
+                  {measure}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 max-w-[60ch] text-[0.92rem] leading-relaxed text-muted-dark">
+              Results should only be published when the measurement method, source, context,
+              attribution, and client permission support the claim.
+            </p>
+          </div>
         </div>
       </Sheet>
 
       <ClosingBand
-        eyebrow="Evaluate the fit"
-        title="Discuss the operation without relying on unsupported claims."
-        line="The consultation reviews the current system, the proposed scope, and what can be measured."
-        actions={
-          <ConsultationButton href="/contact">Book an Infrastructure consultation</ConsultationButton>
-        }
+        title="Define what success should look like before the build."
+        line="A Genesis consultation can identify the current workflow, the proposed system change, and the operational signals worth measuring."
+        actions={<ConsultationButton href="/contact" />}
       />
     </>
   );

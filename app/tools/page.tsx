@@ -1,31 +1,33 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { DealReportPreview } from "@/components/offers/DealReportPreview";
 import { ToolDetailCards } from "@/components/offers/ToolDetailCards";
 import { ToolFlow } from "@/components/home/ToolFlow";
 import { ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { TextLink } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { FaqList } from "@/components/ui/FaqList";
 import { PageIntro } from "@/components/ui/Section";
-import { contact } from "@/lib/content";
+import { contact, toolFaqs } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, graph, toolsCollectionSchema } from "@/lib/schema";
 import {
   dataProvenance,
   dataProvenanceMeaning,
-  neverFabricated,
+  neverFabricatedSentence,
   numbersHandled,
+  toolFlow,
   TOOLS_INTEREST_SUBJECT,
   toolsOverview,
   toolsToManaged,
 } from "@/lib/offers";
 
-export const metadata: Metadata = pageMetadata(
-  "Genesis Tools",
-  "Focused, self-service AI applications for real estate professionals: Deal Architect, Funding Ready, and Deal Desk.",
-);
+export const metadata: Metadata = pageMetadata("/tools");
 
 /**
- * The Agent path: Genesis Tools. Kept at /mini so every existing link to the
- * agent offer still resolves.
+ * The Agent path: Genesis Tools, the three tools side by side. Each tool has
+ * its own page under /tools/; this one compares them. It lived at /mini, which
+ * now redirects here.
  */
 export default function ToolsPage() {
   const interestHref = `mailto:${contact.email}?subject=${encodeURIComponent(
@@ -34,21 +36,24 @@ export default function ToolsPage() {
 
   return (
     <>
+      <JsonLd data={graph(toolsCollectionSchema(), breadcrumbSchema("/tools"))} />
+
       <PageIntro
         eyebrow={toolsOverview.product}
-        title={toolsOverview.invitation.title}
-        description={toolsOverview.invitation.description}
+        title={toolsOverview.page.headline}
+        description={toolsOverview.page.summary}
+        actions={<ConsultationButton href={interestHref}>{toolsOverview.page.cta}</ConsultationButton>}
       />
 
       <Sheet surface="paper" aria-labelledby="tools-title" className="site-section">
         <SectionIntro
           layout="split"
-          eyebrow="Three focused tools"
-          title={toolsOverview.headline}
+          eyebrow={toolsOverview.page.introEyebrow}
+          title={toolsOverview.page.introHeadline}
           titleId="tools-title"
           aside={
-            <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">
-              {toolsOverview.summary} Deal Desk is the recurring one.
+            <p className="max-w-[40ch] text-[0.95rem] leading-relaxed text-muted-dark">
+              {toolsOverview.page.introBody}
             </p>
           }
         />
@@ -85,24 +90,34 @@ export default function ToolsPage() {
           <div className="min-w-0">
             <DealReportPreview className="bg-paper" />
             <p className="mt-6 text-[0.88rem] leading-relaxed text-muted-light">
-              <span className="text-ivory">Never fabricated:</span>{" "}
-              {neverFabricated.join(", ").toLowerCase()}.
+              {neverFabricatedSentence}
             </p>
           </div>
         </div>
       </Sheet>
 
       <Sheet surface="paper" rise aria-labelledby="journey-title" className="site-section">
-        <SectionIntro
-          eyebrow="How the tools connect"
-          title="One tool leads to the next."
-          titleId="journey-title"
-        />
+        <SectionIntro eyebrow={toolFlow.eyebrow} title={toolFlow.headline} titleId="journey-title" />
         <ToolFlow />
 
         <div className="mt-[clamp(36px,5vw,56px)] flex flex-wrap items-center justify-between gap-x-10 gap-y-4 border-t border-line-light pt-8">
-          <p className="max-w-[46ch] text-[0.98rem] text-muted-dark">{toolsToManaged.question}</p>
+          <div className="max-w-[56ch]">
+            <p className="text-[1.15rem] leading-snug tracking-[-0.01em]">{toolsToManaged.headline}</p>
+            <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-dark">{toolsToManaged.body}</p>
+          </div>
           <TextLink href="/#custom-infrastructure">{toolsToManaged.action}</TextLink>
+        </div>
+      </Sheet>
+
+      <Sheet surface="paper" aria-labelledby="tools-faq-title" className="site-section">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <SectionIntro
+            eyebrow="FAQ"
+            title="Genesis Tools questions."
+            titleId="tools-faq-title"
+            className="mb-0"
+          />
+          <FaqList items={toolFaqs} />
         </div>
       </Sheet>
 

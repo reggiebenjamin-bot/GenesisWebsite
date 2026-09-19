@@ -3,6 +3,7 @@ import test from "node:test";
 import { faqs, navigation, processSteps } from "../lib/content.ts";
 import {
   DEFAULT_OFFER_PATH,
+  genesisPositioning,
   genesisTools,
   isOfferPathId,
   managedOverview,
@@ -22,13 +23,15 @@ const wordCount = (text: string) => text.trim().split(/\s+/).length;
 test("the navigation toggle switches in place only where both paths are shown", () => {
   assert.deepEqual(offerPathPageKind("/"), { kind: "switch" });
   assert.deepEqual(offerPathPageKind("/pricing"), { kind: "switch" });
-  assert.deepEqual(offerPathPageKind("/mini"), { kind: "page", path: "agent" });
+  assert.deepEqual(offerPathPageKind("/tools"), { kind: "page", path: "agent" });
+  assert.deepEqual(offerPathPageKind("/tools/deal-desk"), { kind: "page", path: "agent" });
+  assert.deepEqual(offerPathPageKind("/mini"), { kind: "neutral" });
   assert.deepEqual(offerPathPageKind("/solutions"), { kind: "page", path: "custom-infrastructure" });
   assert.deepEqual(offerPathPageKind("/about"), { kind: "neutral" });
   assert.deepEqual(
     offerPaths.map((path) => [path.id, path.href]),
     [
-      ["agent", "/mini"],
+      ["agent", "/tools"],
       ["custom-infrastructure", "/solutions"],
     ],
   );
@@ -51,11 +54,12 @@ test("from other pages the toggle leads to each path's homepage", () => {
   }
 });
 
-test("each path opens the homepage with its own title; Custom Infrastructure keeps the approved one", () => {
+test("each path opens the homepage with its own title; Custom Infrastructure leads with the belief", () => {
   const title = (path: keyof typeof pathHeroes) =>
     `${pathHeroes[path].title} ${pathHeroes[path].accent}`;
-  assert.equal(title("custom-infrastructure"), "Stop holding every deal together.");
-  assert.notEqual(title("agent"), title("custom-infrastructure"));
+  assert.equal(title("custom-infrastructure"), genesisPositioning.belief);
+  assert.equal(pathHeroes["custom-infrastructure"].eyebrow, genesisPositioning.category);
+  assert.equal(title("agent"), "Solve a specific real estate problem with Genesis.");
 });
 
 test("each homepage path asks its own questions, and both ask how the offers differ", () => {
@@ -152,7 +156,7 @@ test("card copy stays scannable: one short line and points of a few words", () =
 
   const shortPoints = [
     ...managedPlans.flatMap((plan) => plan.points),
-    ...managedOverview.points,
+    ...managedOverview.does.map((item) => item.title),
     ...numbersHandled.points,
     ...processSteps.map((step) => step.summary),
   ];

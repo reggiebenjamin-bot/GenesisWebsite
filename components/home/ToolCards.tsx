@@ -3,8 +3,8 @@ import { Card, Figure, Points } from "@/components/ui/Blocks";
 import { genesisTools } from "@/lib/offers";
 
 /**
- * The three Genesis Tools as three simple cards: what it is, three things it
- * does, and what it costs. The tools page has the full detail for each.
+ * The three Genesis Tools as three cards: the tool, its headline and what it
+ * does, three points, and what it costs. Each tool's own page has the rest.
  */
 export function ToolCards() {
   return (
@@ -26,7 +26,8 @@ export function ToolCards() {
           <h3 className="mt-6 text-[clamp(1.6rem,2.2vw,2rem)] leading-[1.05] tracking-[-0.03em]">
             {tool.name}
           </h3>
-          <p className="mt-2 text-[0.98rem] leading-snug text-muted-dark">{tool.tagline}</p>
+          <p className="mt-2 text-[1.05rem] leading-snug tracking-[-0.01em]">{tool.tagline}</p>
+          <p className="mt-3 text-[0.92rem] leading-relaxed text-muted-dark">{tool.body}</p>
 
           <Points items={tool.keyPoints} className="mt-6" />
 
@@ -34,11 +35,10 @@ export function ToolCards() {
             <div className="flex items-end justify-between gap-4 border-t border-line-light pt-5">
               <Figure value={tool.price.display} unit={`/ ${tool.price.unit}`} />
               <Link
-                href={`/mini#${tool.id}`}
-                aria-label={`${tool.name} details`}
+                href={`/tools/${tool.id}`}
                 className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[0.88rem] font-bold text-ink transition-colors duration-200 hover:text-gold-dark"
               >
-                Details
+                View {tool.name}
                 <span aria-hidden="true">↗</span>
               </Link>
             </div>

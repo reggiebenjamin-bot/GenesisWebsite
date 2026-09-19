@@ -46,7 +46,6 @@
   text-wrap: balance;
 }
 
-.mobileSubtitle,
 .mobileTimeline {
   display: none;
 }
@@ -316,14 +315,6 @@
     line-height: 0.94;
   }
 
-  .mobileSubtitle {
-    display: block;
-    max-width: 20rem;
-    margin: 1rem 0 0;
-    color: #726e68;
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
 
   .visual {
     display: none;

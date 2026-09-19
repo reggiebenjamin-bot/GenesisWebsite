@@ -227,10 +227,7 @@ export function GenesisSystemScale() {
       <div className={styles.shell}>
         <header className={styles.heading}>
           <p className={styles.eyebrow}>The Genesis System</p>
-          <h2>One managed foundation behind every part of your operation.</h2>
-          <p className={styles.mobileSubtitle}>
-            Four connected layers, built to operate as one accountable system.
-          </p>
+          <h2>Four connected layers. One accountable system.</h2>
         </header>
 
         <div ref={visualRef} className={styles.visual}>

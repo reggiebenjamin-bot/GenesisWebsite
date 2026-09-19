@@ -1,10 +1,10 @@
 import styles from "./ProductCockpit.module.css";
 
 const capabilities = [
-  ["Signal intelligence", "Evidence becomes priority"],
-  ["Action queues", "The next move stays visible"],
-  ["Deal flow", "Ownership and handoffs stay clear"],
-  ["Revenue diagnostics", "Claims connect to records"],
+  ["Signal intelligence", "Turn approved operational signals into usable context."],
+  ["Action queues", "Keep the work that deserves attention visible."],
+  ["Deal flow", "Make ownership, status, and handoffs easier to follow."],
+  ["Revenue diagnostics", "Connect operational questions back to the underlying records."],
 ] as const;
 
 export function ProductCockpit() {

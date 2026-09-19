@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Eyebrow } from "@/components/ui/Section";
-import { genesisPositioning, offerPaths, type OfferPathId } from "@/lib/offers";
+import { genesisPositioning, genesisThesis, offerPaths, type OfferPathId } from "@/lib/offers";
 import styles from "./OperatingThesis.module.css";
 
 /* Row centres, in the connector's own 0–360 coordinate space. The domain list
@@ -9,9 +9,13 @@ import styles from "./OperatingThesis.module.css";
 const DOMAIN_ROWS = genesisPositioning.domains.map((_, index) => 30 + index * 60);
 const CORE = 180;
 
+const [thesisLead, ...thesisRest] = genesisThesis.headline.split(", ");
+const thesisTurn = thesisRest.join(", ");
+
 /**
  * The thesis, then the picture of it: six operating domains converge into
- * Genesis, and Genesis resolves into the offer this page is showing.
+ * Genesis, and Genesis resolves into the offer this page is showing. The
+ * argument sits beside the headline; the conclusion closes the section.
  */
 export function OperatingThesis({ current }: { current: OfferPathId }) {
   const outcome = offerPaths.find((path) => path.id === current);
@@ -22,14 +26,23 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
       className="relative bg-ink pt-[clamp(48px,7vw,104px)] pb-[clamp(128px,15vw,200px)] text-ivory"
     >
       <div className="shell">
-        <Eyebrow>The Genesis thesis</Eyebrow>
-        <h2
-          id="thesis-title"
-          className="mt-4 max-w-[36rem] text-[clamp(2.1rem,4vw,3.6rem)] leading-[1.05] tracking-[-0.04em] text-balance"
-        >
-          <span className="text-ivory/50">Expertise, data, software and AI,</span> turned into
-          operational infrastructure.
-        </h2>
+        <div className="grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:items-end">
+          <div>
+            <Eyebrow>{genesisThesis.eyebrow}</Eyebrow>
+            <h2
+              id="thesis-title"
+              className="mt-4 max-w-[36rem] text-[clamp(2.1rem,4vw,3.6rem)] leading-[1.05] tracking-[-0.04em] text-balance"
+            >
+              {/* The clause before the first comma is set back; the turn after it carries the line. */}
+              <span className="text-ivory/50">{thesisLead},</span> {thesisTurn}
+            </h2>
+          </div>
+          <div className="grid max-w-[60ch] gap-4 text-[0.98rem] leading-relaxed text-muted-light">
+            {genesisThesis.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </div>
 
         <div className="mt-[clamp(56px,7vw,96px)] grid items-center gap-y-2 lg:grid-cols-[minmax(0,15rem)_minmax(3rem,1fr)_auto_minmax(3rem,1fr)_minmax(0,21rem)]">
           <ul
@@ -139,6 +152,10 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
             </div>
           ) : null}
         </div>
+
+        <p className="mx-auto mt-[clamp(56px,7vw,88px)] max-w-[34ch] text-center text-[clamp(1.35rem,2.4vw,2rem)] leading-[1.25] tracking-[-0.02em] text-balance">
+          {genesisThesis.closing}
+        </p>
       </div>
     </section>
   );

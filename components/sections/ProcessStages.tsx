@@ -48,7 +48,7 @@ export function ProcessStages() {
                 +
               </span>
             </summary>
-            <p className={styles.body}>{step.description}</p>
+            <p className={styles.body}>{step.method}</p>
           </details>
         </li>
       ))}

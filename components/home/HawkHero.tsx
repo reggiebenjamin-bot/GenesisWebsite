@@ -4,7 +4,7 @@ import { preconnect } from "react-dom";
 import { PathToggle } from "@/components/offers/PathToggle";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { contact } from "@/lib/content";
-import { pathHeroes, TOOLS_INTEREST_SUBJECT, type OfferPathId } from "@/lib/offers";
+import { genesisPositioning, type OfferPathId, pathHeroes, TOOLS_INTEREST_SUBJECT } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { HawkAscii } from "./HawkAscii";
 import { HAWK_IMAGE_ORIGIN, HAWK_IMAGE_SRC } from "./hawkAsset";
@@ -20,9 +20,9 @@ const secondaryAction =
  * there from first paint and switching never reloads the hawk.
  *
  * The hawk fills the frame behind the centred copy, with a scrim under the
- * copy so the text stays readable. Custom Infrastructure keeps the approved
- * title and calls to action; Agent's lead to the tools page and the tools
- * enquiry, as that page's do.
+ * copy so the text stays readable. Each path has its own eyebrow, title and
+ * line: Custom Infrastructure leads with the belief and the consultation;
+ * Agent's lead to the tools page and the tools enquiry, as that page's do.
  *
  * The hero is the page's [data-offer-region]: choosing a path once it has
  * scrolled away brings the reader back up to the new title.
@@ -45,11 +45,16 @@ export function HawkHero() {
       </div>
 
       <div className={cn("shell relative z-10", styles.inner)}>
+        {/* The page's one H1 names what Genesis is, as the page title does. Each
+            path's title below is the visible heading for that path; there are
+            two of them in the HTML, so they cannot both be the H1. */}
+        <h1 className="sr-only">Genesis AI: {genesisPositioning.category}</h1>
+
         {/* A phone's bar has no room for the toggle, so it opens the hero there. */}
         <PathToggle variant="hero" className={styles.toggle} />
 
         <HeroCopy path="agent">
-          <ConsultationButton href="/mini" className="max-sm:w-full">
+          <ConsultationButton href="/tools" className="max-sm:w-full">
             Explore Genesis Tools
           </ConsultationButton>
           <a href={toolsInterestHref} className={secondaryAction}>
@@ -73,13 +78,12 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
 
   return (
     <div data-offer-panel={path} className={styles.copy}>
-      {/* Focusable from script: switching paths from inside the page moves focus here. */}
-      <h1
-        tabIndex={-1}
-        className="text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance outline-none"
-      >
+      <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
+        {hero.eyebrow}
+      </p>
+      <h2 className="mt-5 text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance">
         {hero.title} <span className="text-gold-light">{hero.accent}</span>
-      </h1>
+      </h2>
 
       <p className="mx-auto mt-6 max-w-[44ch] text-[clamp(1rem,1.3vw,1.18rem)] leading-relaxed text-balance text-ivory/74">
         {hero.summary}

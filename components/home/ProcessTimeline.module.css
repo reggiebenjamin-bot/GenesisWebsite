@@ -6,6 +6,9 @@
   display: grid;
   gap: 32px;
   padding-left: 32px;
+  /* The pulse strip slides by its own width; its dot never leaves the rail,
+     but the strip would reach past the page's edge without this. */
+  overflow-x: clip;
 }
 
 .timeline::before,

@@ -2,7 +2,12 @@ import { SwitchPathLink } from "@/components/offers/SwitchPathLink";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { contact } from "@/lib/content";
-import { TOOLS_INTEREST_SUBJECT, toolsOverview, toolsToManaged } from "@/lib/offers";
+import {
+  TOOLS_INTEREST_SUBJECT,
+  toolFlow,
+  toolsOverview,
+  toolsToManaged,
+} from "@/lib/offers";
 import { HomeFaq } from "./HomeFaq";
 import { ManagedBento } from "./ManagedBento";
 import { NumbersSplit } from "./NumbersSplit";
@@ -27,9 +32,15 @@ export function AgentSections() {
     <>
       <Sheet surface="paper" rise aria-labelledby="tools-title">
         <SectionIntro
+          layout="split"
           eyebrow={toolsOverview.product}
-          title="Three focused tools."
+          title={toolsOverview.home.headline}
           titleId="tools-title"
+          aside={
+            <p className="max-w-[40ch] text-[0.95rem] leading-relaxed text-muted-dark">
+              {toolsOverview.home.summary}
+            </p>
+          }
         />
         <ToolCards />
       </Sheet>
@@ -39,16 +50,19 @@ export function AgentSections() {
       </Sheet>
 
       <Sheet surface="paper" rise aria-labelledby="flow-title" className="site-section">
-        <SectionIntro title="How the tools connect." titleId="flow-title" />
+        <SectionIntro eyebrow={toolFlow.eyebrow} title={toolFlow.headline} titleId="flow-title" />
         <ToolFlow />
 
         <Card
           tone="inverse"
           className="mt-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p className="max-w-[36ch] text-[clamp(1.15rem,1.6vw,1.35rem)] leading-snug tracking-[-0.01em]">
-            {toolsToManaged.question}
-          </p>
+          <div className="max-w-[52ch]">
+            <p className="text-[clamp(1.15rem,1.6vw,1.35rem)] leading-snug tracking-[-0.01em]">
+              {toolsToManaged.headline}
+            </p>
+            <p className="mt-2 text-[0.92rem] leading-relaxed text-ivory/65">{toolsToManaged.body}</p>
+          </div>
           <SwitchPathLink
             path="custom-infrastructure"
             className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-gold-light/70 px-5 text-[0.88rem] font-bold text-ivory transition-colors duration-200 hover:bg-ivory hover:text-ink"
@@ -97,17 +111,17 @@ export function CustomInfrastructureSections() {
       <HomeFaq path="custom-infrastructure" rise />
 
       <ClosingBand
-        title="Start with a consultation."
-        line="A focused, no-cost conversation about your operation."
-        actions={<ConsultationButton href="/contact" />}
-        footnote={
+        title="Show us how the work moves today."
+        line="We’ll look at where information enters the business, where context gets lost, which handoffs still depend on memory, and what Genesis should connect first."
+        actions={
           <>
-            {toolsOverview.invitation.title}{" "}
+            <ConsultationButton href="/contact" />
             <SwitchPathLink
               path="agent"
-              className="font-bold whitespace-nowrap text-ivory underline decoration-gold/60 underline-offset-4 transition-colors hover:text-gold-light"
+              className="inline-flex min-h-11 items-center gap-2.5 border-b border-ivory/35 font-bold text-ivory transition-colors duration-200 hover:border-gold-light hover:text-gold-light"
             >
-              Try Genesis Tools →
+              Try Genesis Tools
+              <span aria-hidden="true">↗</span>
             </SwitchPathLink>
           </>
         }

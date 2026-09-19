@@ -237,6 +237,14 @@
   line-height: 1.3;
 }
 
+/* Who the level is for, under the line that names it. */
+.summary {
+  margin-top: 10px;
+  color: rgb(244 239 232 / 0.62);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .points {
   display: grid;
   gap: 11px;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { contact, navigation, navigationLinks } from "@/lib/content";
-import { genesisPositioning, offerPaths } from "@/lib/offers";
+import { genesisPositioning, genesisTools, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
 const columnLabel =
@@ -12,14 +12,20 @@ const columnLink =
    labels lead to each path's homepage instead. */
 const pathPages = offerPaths.map((path) => ({ label: path.product, href: path.href }));
 
+/* Each tool's own page, linked from every page of the site. */
+const toolPages = genesisTools.map((tool) => ({ label: tool.name, href: `/tools/${tool.id}` }));
+
 export function Footer() {
   return (
     <footer className="border-t border-line-dark bg-ink pt-20 pb-6 text-ivory">
-      <div className="shell grid gap-[clamp(40px,7vw,110px)] pb-[70px] md:grid-cols-2 lg:grid-cols-[2fr_repeat(3,1fr)]">
+      <div className="shell grid gap-x-[clamp(32px,5vw,80px)] gap-y-12 pb-[70px] sm:grid-cols-2 lg:grid-cols-[1.8fr_repeat(4,1fr)]">
         <div className="max-lg:col-span-full">
           <Logo light />
-          <p className="mt-5 max-w-sm text-[0.95rem] text-ivory/62">
-            {genesisPositioning.summary}
+          <p className="mt-6 font-display text-[0.66rem] leading-[1.5] tracking-[0.16em] text-gold uppercase">
+            {genesisPositioning.category}
+          </p>
+          <p className="mt-3 max-w-sm text-[0.95rem] text-ivory/62">
+            {genesisPositioning.brandDescription}
           </p>
         </div>
 
@@ -27,6 +33,17 @@ export function Footer() {
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
             {[...pathPages, ...navigationLinks(navigation)].map((item) => (
+              <Link key={item.href} href={item.href} className={columnLink}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className={columnLabel}>Tools</p>
+          <div className="mt-5 grid gap-3">
+            {toolPages.map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { GenesisSystemScale } from "@/components/sections/GenesisSystemScale";
 import { ProductCockpit } from "@/components/sections/ProductCockpit";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
@@ -7,19 +8,19 @@ import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { PageIntro, Section } from "@/components/ui/Section";
 import { audiences } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, graph, managedServiceSchema } from "@/lib/schema";
 
-export const metadata: Metadata = pageMetadata(
-  "Solutions",
-  "See the four connected parts of the Genesis Applied AI system: operational infrastructure, data synthesis, optional CRM, and ongoing management.",
-);
+export const metadata: Metadata = pageMetadata("/solutions");
 
 export default function SolutionsPage() {
   return (
     <>
+      <JsonLd data={graph(managedServiceSchema(), breadcrumbSchema("/solutions"))} />
+
       <PageIntro
         eyebrow="The Genesis System"
-        title="One managed system, not four tools bolted together."
-        description="A reusable Genesis platform, fitted to the operation and kept running."
+        title="One managed operating layer, not another disconnected tool."
+        description="Genesis connects the professional infrastructure, business data, workflows, AI capabilities, optional CRM, and ongoing management behind the operation so the systems become more useful together."
       />
 
       <Section>
@@ -30,26 +31,42 @@ export default function SolutionsPage() {
         <SectionIntro
           layout="split"
           eyebrow="The product underneath"
-          title="Reusable product intelligence."
+          title="Reusable intelligence, fitted to the operation."
           titleId="product-title"
           aside={
-            <p className="max-w-[32ch] text-[0.95rem] text-muted-light">
-              Not a new custom build every time.
-            </p>
+            <div className="grid max-w-[46ch] gap-3 text-[0.95rem] leading-relaxed text-muted-light">
+              <p>
+                Genesis is not a collection of one-off automations rebuilt from scratch for every
+                customer.
+              </p>
+              <p>
+                The platform carries reusable patterns for understanding signals, organizing work,
+                maintaining context, surfacing next actions, and connecting operational information.
+                The implementation then adapts those capabilities to the workflows and boundaries of
+                the business.
+              </p>
+            </div>
           }
         />
         <ProductCockpit />
+        <p className="mt-6 max-w-[80ch] text-[0.8rem] leading-relaxed text-muted-light">
+          Illustrative product view. The information shown is an example of how connected
+          operational context can be turned into a clearer next action; it is not a client
+          performance claim.
+        </p>
       </Section>
 
       <Sheet surface="paper" aria-labelledby="operators-title" className="site-section">
         <SectionIntro
           layout="split"
           eyebrow="Built around the operator"
-          title="One platform, different operations."
+          title="One platform. Different operational pressure."
           titleId="operators-title"
           aside={
-            <p className="max-w-[32ch] text-[0.95rem] text-muted-dark">
-              Scope changes with the team. The operating principle does not.
+            <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
+              The implementation changes with the business. The operating principle does not:
+              connect the context behind the work so growth creates more capacity instead of more
+              coordination.
             </p>
           }
         />
@@ -68,9 +85,11 @@ export default function SolutionsPage() {
               <h3 className="mt-5 text-[clamp(1.5rem,2.1vw,1.9rem)] leading-[1.06] tracking-[-0.03em]">
                 {audience.outcome}
               </h3>
-              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">
-                {audience.description}
-              </p>
+              <div className="mt-3 grid gap-3 text-[0.95rem] leading-relaxed text-muted-dark">
+                {audience.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
             </Card>
           ))}
         </ul>
@@ -78,13 +97,13 @@ export default function SolutionsPage() {
 
       <ClosingBand
         eyebrow="Find the right architecture"
-        title="See what Genesis would connect."
-        line="A focused consultation about the workflows, data, and handoffs your team carries today."
+        title="Show us how the work moves today."
+        line="We’ll look at the workflows, systems, data, communication, and handoffs your team carries now and determine where Genesis should connect the operation first."
         actions={
           <>
             <ConsultationButton href="/contact" />
             <TextLink light href="/pricing#custom-infrastructure">
-              See the levels
+              See the Levels
             </TextLink>
           </>
         }

@@ -47,9 +47,12 @@ export function ManagedComparison({ headingLevel = "h3" }: { headingLevel?: "h3"
               </p>
             </div>
 
-            <Heading className="text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
-              {plan.ladder}
-            </Heading>
+            <div>
+              <Heading className="text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
+                {plan.ladder}
+              </Heading>
+              <p className="mt-2 text-[0.9rem] leading-relaxed text-muted-dark">{plan.fit}</p>
+            </div>
 
             <Detail label="Deployment" value={plan.scope} />
             <Detail label="Automation" value={plan.automationLevel} />

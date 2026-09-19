@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/ui/Blocks";
 import { genesisTools } from "@/lib/offers";
 
@@ -44,14 +45,19 @@ export function ToolPriceCards({ headingLevel = "h3" }: { headingLevel?: "h3" | 
           </div>
 
           <Heading className="text-[clamp(1.35rem,2vw,1.7rem)] leading-tight tracking-[-0.03em]">
-            {tool.name}
+            <Link
+              href={`/tools/${tool.id}`}
+              className="transition-colors duration-200 hover:text-gold-dark"
+            >
+              {tool.name}
+            </Link>
           </Heading>
 
           <div className="border-t border-line-light pt-4">
             <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
               What it is for
             </p>
-            <p className="mt-2 text-[0.92rem] leading-snug">{tool.tagline}</p>
+            <p className="mt-2 text-[0.92rem] leading-snug">{tool.pricing.for}</p>
           </div>
 
           <div className="border-t border-line-light pt-4">
@@ -59,7 +65,7 @@ export function ToolPriceCards({ headingLevel = "h3" }: { headingLevel?: "h3" | 
               What you get
             </p>
             <ul className="mt-3 grid gap-2">
-              {tool.keyPoints.map((point) => (
+              {tool.pricing.get.map((point) => (
                 <li
                   key={point}
                   className="grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.9rem] leading-snug"

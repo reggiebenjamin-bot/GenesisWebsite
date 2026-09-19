@@ -3,7 +3,7 @@ import { Disclosure, Points, SectionIntro } from "@/components/ui/Blocks";
 import {
   dataProvenance,
   dataProvenanceMeaning,
-  neverFabricated,
+  neverFabricatedSentence,
   numbersHandled,
 } from "@/lib/offers";
 
@@ -35,10 +35,7 @@ export function NumbersSplit() {
               </div>
             ))}
           </dl>
-          <p className="mt-4">
-            <span className="text-ivory">Never fabricated:</span>{" "}
-            {neverFabricated.join(", ").toLowerCase()}.
-          </p>
+          <p className="mt-4 text-ivory/85">{neverFabricatedSentence}</p>
         </Disclosure>
       </div>
 

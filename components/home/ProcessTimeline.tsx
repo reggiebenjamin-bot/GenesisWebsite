@@ -12,7 +12,7 @@ export function ProcessTimeline() {
     <div>
       <SectionIntro
         eyebrow="How it runs"
-        title="From consultation to a managed platform."
+        title="Start with the operation. Build from what is actually there."
         titleId="process-title"
       />
 

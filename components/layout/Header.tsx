@@ -59,7 +59,7 @@ export function Header() {
   }
 
   // The tools page keeps its own contact action, as it did before the revamp.
-  const toolsPage = pathname === "/mini" || pathname.startsWith("/mini/");
+  const toolsPage = pathname === "/tools" || pathname.startsWith("/tools/");
   const primaryHref = toolsPage
     ? `mailto:${contact.email}?subject=${encodeURIComponent(TOOLS_INTEREST_SUBJECT)}`
     : "/contact";

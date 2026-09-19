@@ -20,9 +20,15 @@ export function PlanCards() {
   return (
     <div>
       <SectionIntro
-        eyebrow="Plans"
-        title="Three levels of Genesis Managed AI."
+        layout="split"
+        eyebrow={managedOverview.plans.eyebrow}
+        title={managedOverview.plans.headline}
         titleId="plans-title"
+        aside={
+          <p className="max-w-[46ch] text-[0.95rem] leading-relaxed text-muted-dark">
+            {managedOverview.plans.body}
+          </p>
+        }
       />
 
       <ol className={styles.plans}>
@@ -46,6 +52,7 @@ export function PlanCards() {
               <span aria-hidden="true" className={styles.divider} />
 
               <p className={styles.ladder}>{plan.ladder}</p>
+              <p className={styles.summary}>{plan.summary}</p>
 
               <ul className={styles.points}>
                 {plan.points.map((point) => (
@@ -77,7 +84,7 @@ export function PlanCards() {
         <p className="max-w-[58ch] text-[0.8rem] text-muted-dark">
           {managedOverview.thirdPartyShort}
         </p>
-        <TextLink href="/pricing#custom-infrastructure">See pricing details</TextLink>
+        <TextLink href="/pricing#custom-infrastructure">See Pricing Details</TextLink>
       </div>
     </div>
   );

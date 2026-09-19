@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { HawkHero } from "@/components/home/HawkHero";
 import { AgentSections, CustomInfrastructureSections } from "@/components/home/PathSections";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/metadata";
+import { graph, organizationSchema, websiteSchema } from "@/lib/schema";
+
+export const metadata: Metadata = pageMetadata("/");
 
 /**
  * A homepage for each way to use Genesis. The hero is shared: the hawk stays
@@ -12,6 +18,10 @@ import { AgentSections, CustomInfrastructureSections } from "@/components/home/P
 export default function Home() {
   return (
     <>
+      {/* The organization record lives here and on /about; every other page
+          points back to it. */}
+      <JsonLd data={graph(organizationSchema(), websiteSchema())} />
+
       <HawkHero />
 
       <div data-offer-panel="agent">

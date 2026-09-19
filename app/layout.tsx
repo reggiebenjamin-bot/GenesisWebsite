@@ -3,21 +3,27 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
-import { contact } from "@/lib/content";
 import {
   DEFAULT_OFFER_PATH,
   genesisPositioning,
-  genesisTools,
-  managedOverview,
-  managedPlans,
   OFFER_PATH_ATTRIBUTE,
   OFFER_PATH_STORAGE_KEY,
   offerPathByPage,
   offerPathHashAliases,
   offerPaths,
-  toolsOverview,
 } from "@/lib/offers";
 import { indexable, siteUrl } from "@/lib/site";
+
+/* Search Console and Bing Webmaster Tools ownership tags, set per deployment
+   so no verification token lives in the repository. */
+const verification = {
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : {}),
+  ...(process.env.BING_SITE_VERIFICATION
+    ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+    : {}),
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -47,7 +53,6 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
   },
-  alternates: indexable ? { canonical: "/" } : undefined,
   robots: indexable
     ? { index: true, follow: true }
     : {
@@ -78,77 +83,12 @@ export const metadata: Metadata = {
       "Genesis Tools for specific tasks, and Genesis Managed AI across the business.",
     images: ["/images/social/og-home-1920x1080.png"],
   },
-};
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${siteUrl}/#organization`,
-      name: "Genesis AI",
-      url: siteUrl,
-      logo: `${siteUrl}/brand/genesis-logo-gradient.svg`,
-      email: contact.email,
-      telephone: contact.phoneHref,
-      founder: { "@type": "Person", name: "Reginald Benjamin" },
-      sameAs: [contact.linkedin, contact.facebook],
-    },
-    {
-      "@type": "Service",
-      "@id": `${siteUrl}/#managed-ai`,
-      name: managedOverview.product,
-      description: managedOverview.summary,
-      provider: { "@id": `${siteUrl}/#organization` },
-      areaServed: { "@type": "Country", name: "United States" },
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: `${managedOverview.product} plans`,
-        itemListElement: managedPlans.map((plan) => ({
-          "@type": "Offer",
-          name: `${managedOverview.product} — ${plan.priceDisplay} per month`,
-          description: `${plan.ladder} ${plan.scope}`,
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            price: plan.monthlyPriceUsd,
-            priceCurrency: "USD",
-            unitText: "MONTH",
-          },
-          url: `${siteUrl}/pricing#custom-infrastructure`,
-        })),
-      },
-    },
-    {
-      "@type": "Service",
-      "@id": `${siteUrl}/#genesis-tools`,
-      name: toolsOverview.product,
-      description: toolsOverview.summary,
-      provider: { "@id": `${siteUrl}/#organization` },
-      areaServed: { "@type": "Country", name: "United States" },
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: toolsOverview.product,
-        itemListElement: genesisTools.map((tool) => ({
-          "@type": "Offer",
-          name: tool.name,
-          description: tool.promise,
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            minPrice: tool.price.amountUsd[0],
-            maxPrice: tool.price.amountUsd[1],
-            priceCurrency: "USD",
-            unitText: tool.price.unit,
-          },
-          url: `${siteUrl}/mini#${tool.id}`,
-        })),
-      },
-    },
-  ],
+  ...(Object.keys(verification).length ? { verification } : {}),
 };
 
 /*
  * Chooses the Agent / Custom Infrastructure path before first paint, so the
- * matching content is visible immediately: a path page (/mini, /solutions)
+ * matching content is visible immediately: a path page (/tools, /solutions)
  * wins, then the URL hash, then this session's earlier choice. Built from the
  * same constants the client code uses, so the two cannot drift.
  */
@@ -205,10 +145,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main id="main-content">{children}</main>
           <Footer />
         </div>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
       </body>
     </html>
   );

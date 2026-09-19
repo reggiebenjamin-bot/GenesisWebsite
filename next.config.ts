@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 92],
   },
+  /*
+   * The tools lived at /mini before they had pages of their own. A permanent
+   * redirect keeps every old link and bookmark working and tells search
+   * engines /tools is the page now. A #deal-desk style fragment carries over.
+   */
+  async redirects() {
+    return [
+      { source: "/mini", destination: "/tools", permanent: true },
+      { source: "/mini/:path*", destination: "/tools", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

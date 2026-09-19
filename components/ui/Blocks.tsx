@@ -37,6 +37,10 @@ export function Sheet({
         "relative py-[clamp(88px,10vw,136px)]",
         surfaces[surface],
         rise && "z-10 -mt-10 rounded-t-[32px]",
+        /* A sheet that does not rise still tucks under the section before it by
+           a pixel. Two sections meeting at a fractional position can otherwise
+           leave a hairline of the dark page showing between them. */
+        !rise && "-mt-px",
         rise && surface === "ink" && styles.inkGrid,
         className,
       )}
@@ -119,7 +123,7 @@ export function Card({
 }: {
   as?: "div" | "li" | "article";
   tone?: CardTone;
-  /** Set when the card is the target of a link, such as /mini#deal-desk. */
+  /** Set when the card is the target of a link, such as /tools#deal-desk. */
   id?: string;
   className?: string;
   style?: CSSProperties;

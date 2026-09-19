@@ -146,14 +146,14 @@ export function ConsultationForm({
       className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
       <div className="border-b border-line-light pb-5">
-        <Eyebrow>Infrastructure intake</Eyebrow>
+        <Eyebrow>Consultation request</Eyebrow>
         <h2 className="mt-3 text-[clamp(1.45rem,2.4vw,2rem)]">
-          Give Genesis enough context to make the first call useful.
+          Tell us about the operation.
         </h2>
         <p className="mt-3 text-[0.9rem] text-muted-dark">
-          Your role, team, current systems, and the work creating the most drag
-          help us prepare for the consultation. This form is not used for Mini
-          signup, billing, or product provisioning.
+          Give us enough context to understand the business and the workflow you
+          want to improve. Detailed technical documentation is not required for
+          the first conversation.
         </p>
       </div>
 
@@ -283,13 +283,20 @@ export function ConsultationForm({
         variant="secondary"
         disabled={status === "submitting"}
       >
-        {status === "submitting" ? "Sending request…" : "Request an Infrastructure consultation"}
+        {status === "submitting" ? "Sending request…" : "Book a Consultation"}
       </SubmitButton>
 
-      <p className="text-[0.8rem] text-muted-dark">
-        Genesis uses these details only to evaluate fit, prepare for the call,
-        and follow up about the Infrastructure request.
-      </p>
+      <div className="grid gap-2 text-[0.8rem] text-muted-dark">
+        <p>
+          Your inquiry starts a fit conversation. It does not create a managed
+          account, finalize implementation scope, or commit either party to a
+          deployment.
+        </p>
+        <p>
+          Genesis uses these details only to evaluate fit, prepare for the call,
+          and follow up about the request.
+        </p>
+      </div>
     </form>
   );
 }

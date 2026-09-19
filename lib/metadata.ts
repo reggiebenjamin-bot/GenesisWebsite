@@ -1,79 +1,36 @@
 import type { Metadata } from "next";
+import { absoluteUrl, fullTitle, seoPage } from "@/lib/seo";
 import { indexable } from "@/lib/site";
 
-const description =
-  "Genesis helps real estate businesses deploy AI-powered operating infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.";
-type PagePreview = {
-  path: string;
-  image: string;
-  alt: string;
-};
-
-const pagePreviews: Record<string, PagePreview> = {
-  "Genesis Tools": {
-    path: "/mini",
-    image: "/images/social/og-home-1920x1080.png",
-    alt: "Genesis Tools — focused, self-service AI applications from Genesis AI",
-  },
-  Solutions: {
-    path: "/solutions",
-    image: "/images/social/og-solutions-1920x1080.png",
-    alt: "Genesis AI Solutions — four connected layers in one managed system",
-  },
-  "How It Works": {
-    path: "/how-it-works",
-    image: "/images/social/og-how-it-works-1920x1080.png",
-    alt: "How Genesis AI works — a practical path from provisioning to ongoing management",
-  },
-  Pricing: {
-    path: "/pricing",
-    image: "/images/social/og-pricing-1920x1080.png",
-    alt: "Genesis AI pricing — Genesis Tools and Genesis Managed AI plans",
-  },
-  Results: {
-    path: "/results",
-    image: "/images/social/og-results-1920x1080.png",
-    alt: "Genesis AI Results — the standard for verified operating proof",
-  },
-  About: {
-    path: "/about",
-    image: "/images/social/og-about-1920x1080.png",
-    alt: "About Genesis AI — operational foundations built to keep working",
-  },
-  Contact: {
-    path: "/contact",
-    image: "/images/social/og-contact-1920x1080.png",
-    alt: "Contact Genesis AI — book a consultation for your operation",
-  },
-};
-
-export function pageMetadata(title: string, pageDescription = description): Metadata {
-  const preview = pagePreviews[title];
+/**
+ * A page's metadata, from its entry in lib/seo.ts: the title, description,
+ * canonical and social preview all say the same thing, because they come from
+ * the same place. Search engines build a result's title from several of these
+ * at once, so they should never disagree.
+ */
+export function pageMetadata(path: string): Metadata {
+  const page = seoPage(path);
+  const title = fullTitle(page);
+  const images = page.image ? [page.image] : undefined;
 
   return {
-    title,
-    description: pageDescription,
-    alternates: indexable ? { canonical: preview.path } : undefined,
+    title: page.title,
+    description: page.description,
+    alternates: indexable ? { canonical: absoluteUrl(page.path) } : undefined,
     openGraph: {
-      title: `${title} | Genesis AI`,
-      description: pageDescription,
+      title,
+      description: page.description,
       type: "website",
       siteName: "Genesis AI",
-      url: preview.path,
-      images: [
-        {
-          url: preview.image,
-          width: 1920,
-          height: 1080,
-          alt: preview.alt,
-        },
-      ],
+      locale: "en_US",
+      url: absoluteUrl(page.path),
+      ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | Genesis AI`,
-      description: pageDescription,
-      images: [preview.image],
+      title,
+      description: page.description,
+      ...(images ? { images: images.map((image) => image.url) } : {}),
     },
   };
 }
