@@ -1,0 +1,57 @@
+.draftBar {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  padding: 0.6rem 1rem;
+  color: var(--color-muted-dark);
+  background: #fff;
+  border: 1px solid #dedbd5;
+  border-radius: 7px;
+  font-size: 0.75rem;
+}
+
+.draftBar span,
+.draftBar button { display: inline-flex; align-items: center; gap: 0.45rem; }
+.draftBar button { min-height: 36px; padding-inline: 0.5rem; color: var(--color-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 0.2rem; cursor: pointer; touch-action: manipulation; }
+.draftBar button:hover { color: var(--color-gold-dark); }
+
+.inputPanel { min-width: 0; padding: clamp(1.2rem, 2.5vw, 2rem); background: #fff; }
+.fieldset { display: grid; gap: 0.85rem; margin: 0 0 1.3rem; padding: 0; border: 0; }
+.fieldset legend { width: 100%; margin-bottom: 0.8rem; padding-bottom: 0.6rem; color: var(--color-gold-dark); border-bottom: 1px solid rgb(118 84 38 / 0.2); font-family: var(--font-display); font-size: 0.69rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.twoFields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+
+.field { display: grid; min-width: 0; gap: 0.38rem; margin-bottom: 0.9rem; color: var(--color-ink); font-size: 0.76rem; font-weight: 700; }
+.field input,
+.field select,
+.field textarea { width: 100%; min-height: 44px; padding: 0.7rem 0.75rem; color: var(--color-ink); background: #fff; border: 1px solid #cfd4d5; border-radius: 7px; font: 500 0.86rem/1.45 var(--font-sans); transition: border-color 160ms ease, box-shadow 160ms ease; }
+.field textarea { resize: vertical; }
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible { border-color: var(--color-gold-dark); outline: 2px solid var(--color-gold-dark); outline-offset: 1px; box-shadow: 0 0 0 3px rgb(201 165 94 / 0.12); }
+.field :is(input, select, textarea)[aria-invalid="true"] { border-color: #a23e31; }
+.field input::placeholder,
+.field textarea::placeholder { color: #87837c; }
+.field small { color: var(--color-muted-dark); font-size: 0.68rem; font-weight: 400; }
+
+.primaryButton { display: flex; width: 100%; min-height: 54px; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.25rem; padding-inline: 1rem; color: var(--color-ink); background: var(--color-gold); border: 1px solid var(--color-gold-dark); border-radius: 7px; font-size: 0.84rem; font-weight: 800; cursor: pointer; touch-action: manipulation; transition: background 180ms ease, transform 180ms var(--ease-editorial); }
+.primaryButton:hover { background: var(--color-gold-light); transform: translateY(-1px); }
+.primaryButton:disabled { color: #615b50; background: #e9e2d5; border-color: #cec3ae; cursor: not-allowed; }
+.primaryButton:disabled:hover { background: #e9e2d5; transform: none; }
+.primaryButton span:last-child { font-family: var(--font-display); white-space: nowrap; }
+
+.purchaseDialog { position: fixed; inset: 0; width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow: auto; overscroll-behavior: contain; background: transparent; border: 0; border-radius: 12px; box-shadow: 0 28px 90px rgb(2 8 17 / 0.32); }
+.purchaseDialog::backdrop { background: rgb(4 10 18 / 0.62); backdrop-filter: blur(4px); }
+.purchaseReview { display: grid; gap: 1.2rem; padding: clamp(1.25rem, 3vw, 2rem); color: var(--color-ivory); background: var(--color-ink); border: 1px solid rgb(201 165 94 / 0.5); border-radius: 12px; }
+.purchaseKicker { color: var(--color-gold); font-family: var(--font-display); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.purchaseReview h3 { margin-block: 0.4rem; font-size: clamp(1.8rem, 3vw, 2.35rem); text-wrap: balance; }
+.purchaseReview p { color: var(--color-muted-light); font-size: 0.8rem; line-height: 1.55; }
+.purchaseNotice { display: flex; gap: 0.7rem; padding: 1rem; background: rgb(244 239 232 / 0.05); border: 1px solid var(--color-line-dark); }
+.purchaseNotice svg { flex: 0 0 auto; color: var(--color-gold); }
+.secondaryButton { justify-self: start; min-height: 44px; padding: 0.7rem 1rem; color: var(--color-ivory); border: 1px solid var(--color-line-dark); font-weight: 700; cursor: pointer; touch-action: manipulation; transition: color 180ms ease, border-color 180ms ease; }
+.secondaryButton:hover { color: var(--color-gold-light); border-color: var(--color-gold); }
+
+@media (max-width: 680px) { .draftBar { display: grid; justify-content: stretch; } .draftBar button { justify-self: start; } .twoFields { grid-template-columns: 1fr; } .primaryButton { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 0.6rem; } }
+@media (prefers-reduced-motion: reduce) { .field input, .field select, .field textarea, .primaryButton, .secondaryButton { transition: none; } .primaryButton:hover { transform: none; } }

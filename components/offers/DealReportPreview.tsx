@@ -1,25 +1,23 @@
 import type { DataProvenance } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 
-type Row = { label: string; value: string; source: DataProvenance; note?: string };
+type Row = {
+  label: string;
+  source: DataProvenance;
+  revealedValue?: string;
+  maskWidth?: string;
+};
 
-/* Illustrative figures only, internally consistent: total cost is purchase
-   plus rehab, spread is ARV minus total cost, and cash assumes the stated
-   purchase financing with the rehab paid in cash. */
+/* This is a layout example, not a free analysis. No calculated or sensitive
+   result is present in the markup, even behind a visual blur. */
 const ROWS: readonly Row[] = [
-  { label: "Property type", value: "Single-family", source: "Known" },
-  { label: "Purchase price", value: "$210,000", source: "User provided" },
-  { label: "Rehab budget", value: "$48,000", source: "User provided" },
-  { label: "ARV", value: "$335,000", source: "User provided" },
-  { label: "Total project cost", value: "$258,000", source: "Calculated" },
-  { label: "Estimated gross spread", value: "$77,000", source: "Calculated" },
-  {
-    label: "Estimated cash requirement",
-    value: "$90,000",
-    source: "Estimated",
-    note: "Assumes 80% purchase financing",
-  },
-  { label: "Title information", value: "Not provided", source: "Missing" },
+  { label: "Property type", revealedValue: "Single-family", source: "Known" },
+  { label: "Purchase price", source: "User provided", maskWidth: "w-24" },
+  { label: "Rehab budget", source: "User provided", maskWidth: "w-20" },
+  { label: "ARV", source: "User provided", maskWidth: "w-24" },
+  { label: "Total project cost", source: "Calculated", maskWidth: "w-28" },
+  { label: "Estimated gross spread", source: "Calculated", maskWidth: "w-20" },
+  { label: "Estimated cash requirement", source: "Estimated", maskWidth: "w-24" },
 ];
 
 /* Distinguished by shape as well as tone, so the label is never carried by
@@ -33,9 +31,8 @@ const SOURCE_STYLE: Record<DataProvenance, string> = {
 };
 
 /**
- * What a Deal Architect report looks like: every figure carries where it came
- * from, and what is missing is reported as missing. An illustrative example,
- * labelled as one, with real text rather than a picture of text.
+ * A non-interactive illustration of the report format. Harmless structure and
+ * provenance labels are visible, while the actual analysis is absent.
  */
 export function DealReportPreview({ className }: { className?: string }) {
   return (
@@ -67,19 +64,22 @@ export function DealReportPreview({ className }: { className?: string }) {
             key={row.label}
             className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 py-3 sm:grid-cols-[minmax(0,1fr)_auto_7.25rem]"
           >
-            <dt className="text-[0.88rem] text-ink/78">
-              {row.label}
-              {row.note ? (
-                <span className="block text-[0.74rem] text-muted-dark">{row.note}</span>
-              ) : null}
-            </dt>
-            <dd
-              className={cn(
-                "text-right text-[0.95rem] tabular-nums",
-                row.source === "Missing" ? "text-muted-dark italic" : "font-medium text-ink",
+            <dt className="text-[0.88rem] text-ink/78">{row.label}</dt>
+            <dd className="flex min-h-5 items-center justify-end text-right text-[0.95rem] font-medium text-ink">
+              {row.revealedValue ? (
+                row.revealedValue
+              ) : (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "block h-3 rounded-[3px] bg-gradient-to-r from-ink/[0.11] via-ink/[0.18] to-ink/[0.09]",
+                      row.maskWidth,
+                    )}
+                  />
+                  <span className="sr-only">Hidden in this example</span>
+                </>
               )}
-            >
-              {row.value}
             </dd>
             <dd className="col-span-2 sm:col-span-1 sm:text-right">
               <span
@@ -100,19 +100,22 @@ export function DealReportPreview({ className }: { className?: string }) {
           <span className="block font-display text-[0.58rem] tracking-[0.14em] text-muted-dark uppercase">
             Risk flag
           </span>
-          Rehab budget has no stated contingency.
+          <span aria-hidden="true" className="mt-2 block h-2.5 w-4/5 rounded-[3px] bg-ink/[0.14]" />
+          <span aria-hidden="true" className="mt-1.5 block h-2.5 w-2/3 rounded-[3px] bg-ink/[0.09]" />
+          <span className="sr-only">Details hidden in this example</span>
         </p>
         <p>
           <span className="block font-display text-[0.58rem] tracking-[0.14em] text-muted-dark uppercase">
             Next action
           </span>
-          Request title information before relying on the exit.
+          <span aria-hidden="true" className="mt-2 block h-2.5 w-11/12 rounded-[3px] bg-ink/[0.14]" />
+          <span aria-hidden="true" className="mt-1.5 block h-2.5 w-1/2 rounded-[3px] bg-ink/[0.09]" />
+          <span className="sr-only">Details hidden in this example</span>
         </p>
       </div>
 
-      <figcaption className="sr-only">
-        Illustrative Deal Architect report for an example property. Each figure is
-        labelled known, user provided, calculated, estimated, or missing.
+      <figcaption className="border-t border-line-light px-5 py-3 text-[0.74rem] leading-relaxed text-muted-dark sm:px-6">
+        Example layout only. Figures, risk analysis, and next actions are masked until purchase.
       </figcaption>
     </figure>
   );

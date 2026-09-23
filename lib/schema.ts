@@ -83,8 +83,8 @@ export function breadcrumbSchema(path: string) {
 
 const toolCategory: Record<GenesisTool["id"], string> = {
   "deal-architect": "Real estate deal analysis",
-  "funding-ready": "Real estate financing preparation",
-  "deal-desk": "Real estate transaction workspace",
+  "deal-packager": "Real estate deal presentation",
+  "capital-advisor": "Real estate capital planning",
 };
 
 export function softwareApplicationSchema(tool: GenesisTool) {

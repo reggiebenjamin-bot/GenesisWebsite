@@ -2,8 +2,8 @@
  * The two ways to use Genesis — the one source the website reads for offer
  * wording and prices.
  *
- * Every string and price here comes from the reviewed product mandate
- * ("Genesis AI — Self-Serve Tools Product Layer"). Nothing is invented: where
+ * The live three-product catalog and its approved one-time launch prices are
+ * the source of truth for Genesis Tools. Where
  * the mandate requires an entitlement to exist in data but has not defined it
  * yet (included users, connected accounts, integrations, implementation,
  * support), the field is `null`, and the site renders nothing for it.
@@ -80,8 +80,11 @@ export const offerPathHashAliases: Readonly<Record<string, OfferPathId>> = {
 export const offerPathByPage: Readonly<Record<string, OfferPathId>> = {
   "/tools": "agent",
   "/tools/deal-architect": "agent",
-  "/tools/funding-ready": "agent",
-  "/tools/deal-desk": "agent",
+  "/tools/deal-packager": "agent",
+  "/tools/capital-advisor": "agent",
+  "/workspace/deal-architect": "agent",
+  "/workspace/deal-packager": "agent",
+  "/workspace/capital-advisor": "agent",
   "/solutions": "custom-infrastructure",
 };
 
@@ -158,7 +161,7 @@ export const pathHeroes: Readonly<
     title: "Solve a specific real estate problem",
     accent: "with Genesis.",
     summary:
-      "Focused, self-service tools for analyzing opportunities, preparing financing requests, and working active transactions with clearer structure and context.",
+      "Focused, self-service products for evaluating an opportunity, presenting a deal, or reviewing a capital plan, each on its own page.",
   },
   "custom-infrastructure": {
     eyebrow: genesisPositioning.category,
@@ -169,17 +172,16 @@ export const pathHeroes: Readonly<
   },
 };
 
-/* ── Genesis Tools};
-
 /* ── Genesis Tools ─────────────────────────────────────────────────────── */
 
-export type ToolId = "deal-architect" | "funding-ready" | "deal-desk";
+export type ToolId = "deal-architect" | "deal-packager" | "capital-advisor";
+export type ToolJob = "Evaluate" | "Present" | "Finance";
 
 export type ToolPrice = {
-  /** As displayed. Deal Desk shows the top of its reviewed range for now. */
+  /** The one-time amount shown throughout the public product pages. */
   display: string;
   /** What one price buys. */
-  unit: "analysis" | "package" | "month";
+  unit: "analysis" | "package" | "capital plan";
   /** The unit spelled out where the tools page does, e.g. "full analysis". */
   detail?: string;
   cadence: "per-use" | "monthly";
@@ -190,7 +192,11 @@ export type ToolPrice = {
 export type GenesisTool = {
   id: ToolId;
   number: string;
+  /** The independent job this product owns in the catalog. */
+  job: ToolJob;
   name: string;
+  marketingHref: `/tools/${ToolId}`;
+  workspaceHref: `/workspace/${ToolId}`;
   promise: string;
   purpose: string;
   /** Who brings it work, where the copy names them. */
@@ -216,12 +222,12 @@ export type GenesisTool = {
 
 export const toolsOverview = {
   product: "Genesis Tools",
-  headline: "Use Genesis intelligence to solve a specific problem yourself.",
-  summary: "Focused, self-service AI applications.",
+  headline: "Choose the real estate job you need to complete.",
+  summary: "Three focused, self-service products, each with its own page.",
   examples: [
-    "Analyze this deal.",
-    "Prepare this financing request.",
-    "Help me work through this transaction.",
+    "Evaluate this opportunity.",
+    "Present this deal.",
+    "Review this capital plan.",
   ],
   invitation: {
     title: "Want to experience Genesis first?",
@@ -229,20 +235,20 @@ export const toolsOverview = {
   },
   /** The Genesis Tools section on the homepage. */
   home: {
-    headline: "Start with the job in front of you.",
+    headline: "Three jobs. Three focused products.",
     summary:
-      "Genesis Tools apply focused pieces of Genesis intelligence to individual real estate workflows. Use the tool you need now. Move into broader infrastructure when the problem extends beyond one task.",
+      "Evaluate, present, or finance the deal with the product built for that job. View an example and prepare a brief for free, then pay once for your finished result.",
   },
   /** The tools page. */
   page: {
-    headline: "Start with one real estate problem.",
+    headline: "Three jobs. Three focused products.",
     summary:
-      "Focused, self-service tools that apply Genesis intelligence to real transactions. Analyze an opportunity, prepare a financing package, or keep working a deal over time.",
-    cta: "Ask About Genesis Tools",
-    introEyebrow: "Three focused tools",
-    introHeadline: "Use Genesis where you need it now.",
+      "Choose the product for the job in front of you. Each has a read-only example, a free brief, and a one-time price for the finished result.",
+    cta: "View the Products",
+    introEyebrow: "Evaluate · Present · Finance",
+    introHeadline: "Start with the outcome you need.",
     introBody:
-      "These are not smaller versions of Genesis Managed AI. Each tool is designed around a specific job you can complete yourself.",
+      "The products are equally important and independent. Use one on its own, or move between them when the same deal creates another job.",
   },
   /** The Genesis Tools half of the pricing page. */
   pricing: {
@@ -256,7 +262,10 @@ export const genesisTools: readonly GenesisTool[] = [
   {
     id: "deal-architect",
     number: "01",
+    job: "Evaluate",
     name: "Deal Architect",
+    marketingHref: "/tools/deal-architect",
+    workspaceHref: "/workspace/deal-architect",
     promise: "Bring us the opportunity. Deal Architect helps you understand the deal.",
     purpose:
       "Help a real estate professional understand an opportunity before deciding how to pursue it.",
@@ -311,113 +320,131 @@ export const genesisTools: readonly GenesisTool[] = [
     },
   },
   {
-    id: "funding-ready",
+    id: "deal-packager",
     number: "02",
-    name: "Funding Ready",
-    promise: "Turn your deal into a lender-ready package.",
+    job: "Present",
+    name: "Deal Packager",
+    marketingHref: "/tools/deal-packager",
+    workspaceHref: "/workspace/deal-packager",
+    promise: "Turn scattered deal details into a clear, professional package.",
     purpose:
-      "Turn an unstructured borrower + property + project into a professional financing submission.",
+      "Help a real estate professional organize deal facts, evidence, and supporting documents into a presentation-ready package.",
     primaryUsers: null,
     price: { display: "$99", unit: "package", cadence: "per-use", amountUsd: [99, 99] },
-    tagline: "Turn the deal into a lender-ready package.",
-    body: "Organize borrower, property, project, financing, and documentation information into a professional financing submission without implying approval, rates, or lender terms that have not been provided.",
-    keyPoints: ["Executive financing summary", "Sources and uses", "Document checklist"],
+    tagline: "Present the deal with clarity.",
+    body: "Organize the property, project, numbers, strategy, and evidence into a polished package for the audience you choose without inventing facts or implying approval.",
+    keyPoints: ["Structured deal narrative", "Evidence and assumptions", "Professional shareable package"],
     hub: {
-      headline: "Turn an unstructured deal into a professional financing submission.",
+      headline: "Turn scattered deal information into a package people can review.",
       body: [
-        "Funding Ready organizes borrower, sponsor, property, project, financing, and documentation information into a clear package built for lender review.",
-        "It prepares the information. It does not promise approval, rates, terms, or financing.",
+        "Deal Packager organizes the property, project, financial story, strategy, and evidence into a clear package for lenders, partners, investors, or buyers.",
+        "It presents the information you provide. It does not invent evidence, promise approval, or make a recipient's decision.",
       ],
     },
     pricing: {
-      for: "Turn your deal into a lender-ready financing package.",
+      for: "Turn your deal into a professional, review-ready package.",
       get: [
-        "Executive financing summary",
-        "Sources and uses",
-        "Document checklist and missing-information review",
+        "Audience-ready deal narrative",
+        "Key numbers, evidence, and assumptions",
+        "Shareable package and missing-information review",
       ],
     },
     highlights: [
-      "Executive financing summary",
-      "Sources and uses",
-      "Document checklist",
-      "Lender-ready submission package",
+      "Executive deal summary",
+      "Property, project, and strategy narrative",
+      "Key numbers, evidence, and assumptions",
+      "Professional shareable package",
     ],
     outputs: [
-      "Executive financing summary",
+      "Executive deal summary",
       "Borrower / sponsor profile",
       "Property and project summary",
       "Sources and uses",
-      "Financing request",
+      "Deal strategy and request",
       "Exit strategy",
       "Risks and missing information",
       "Document checklist",
-      "Professional lender-submission summary",
+      "Professional review-ready package",
     ],
     structure: {
-      label: "Intake",
-      steps: ["Borrower / Sponsor", "Property", "Project", "Financing", "Documentation"],
+      label: "Package builder",
+      steps: ["Audience", "Property", "Project", "Numbers", "Strategy", "Evidence"],
     },
   },
   {
-    id: "deal-desk",
+    id: "capital-advisor",
     number: "03",
-    name: "Deal Desk",
-    promise: "An AI deal desk that understands real estate transactions.",
+    job: "Finance",
+    name: "Capital Advisor",
+    marketingHref: "/tools/capital-advisor",
+    workspaceHref: "/workspace/capital-advisor",
+    promise: "Review your capital plan before you make the request.",
     purpose:
-      "Provide an ongoing AI workspace for real estate operators working through transactions.",
+      "Help a real estate professional review user-provided financing assumptions, understand capital readiness, and prepare a clear capital request.",
     primaryUsers: null,
-    price: { display: "$49", unit: "month", cadence: "monthly", amountUsd: [29, 49] },
-    tagline: "Keep the transaction context with the transaction.",
-    body: "An ongoing Genesis workspace for reviewing opportunities, working through financing questions, organizing deal information, and continuing from the context you have already built.",
+    price: {
+      display: "$79",
+      unit: "capital plan",
+      cadence: "per-use",
+      amountUsd: [79, 79],
+    },
+    tagline: "Review the capital before you request it.",
+    body: "Bring the deal facts and your financing assumptions. Capital Advisor structures sources and uses, surfaces readiness gaps, and prepares a clear request without fabricating rates, terms, or lender interest.",
     keyPoints: [
-      "Review active opportunities",
-      "Compare financing structures",
-      "Recall saved deals and context",
+      "Your capital assumptions in context",
+      "Readiness gaps and questions",
+      "Clear capital request",
     ],
     hub: {
-      headline: "An ongoing workspace for the deals you are actually working.",
+      headline: "Review your capital plan and prepare a stronger request.",
       body: [
-        "Deal Desk keeps structured transaction context available as the deal changes so you can continue analysis, work through financing questions, prepare follow-up, organize information, and return to previous deals without starting over.",
+        "Capital Advisor reviews the financing assumptions you provide, organizes sources and uses, surfaces readiness gaps, and prepares a clear capital request.",
+        "It does not quote live rates, promise terms, approve financing, or replace a licensed financial professional.",
       ],
     },
     pricing: {
-      for: "Keep working active transactions with persistent deal context.",
+      for: "Review financing assumptions and prepare one capital plan.",
       get: [
-        "Review opportunities",
-        "Work through financing structures and questions",
-        "Recall saved deals and transaction history",
+        "Capital assumptions and cash requirement",
+        "Sources, uses, and readiness review",
+        "Professional capital request summary",
       ],
     },
     highlights: [
-      "Reviewing opportunities",
-      "Comparing loan structures",
-      "Analyzing cash-to-close",
-      "Recalling saved deals",
+      "Financing assumptions from your inputs",
+      "Sources and uses",
+      "Capital readiness review",
+      "Capital request summary",
+    ],
+    outputs: [
+      "Financing assumption review",
+      "Sources and uses",
+      "Estimated cash requirement from supplied inputs",
+      "Capital readiness gaps",
+      "Questions to resolve",
+      "Professional capital request summary",
     ],
     structure: {
-      label: "Built around",
+      label: "Capital plan",
       steps: [
-        "Structured deal context",
-        "Saved transactions",
-        "Calculators",
-        "Reusable workflows",
-        "Document generation",
-        "Persistent deal history",
+        "Deal facts",
+        "Borrower / Sponsor",
+        "Sources and uses",
+        "Scenario assumptions",
+        "Readiness",
+        "Request summary",
       ],
     },
   },
 ];
 
 /**
- * How the tools connect: each is where a deal can go next when the work calls
- * for it, not a stage every deal must pass through. The financing-review
- * hand-off is deliberately absent: it belongs to a separately branded partner
- * and is offered inside the product, never on Genesis marketing pages.
+ * The three independent jobs available from the catalog. Their array
+ * order is a catalog order, not a required sequence for the customer.
  */
 export const toolFlow = {
-  eyebrow: "Use the next tool when the work calls for it.",
-  headline: "One deal can create different next steps.",
+  eyebrow: "Three equal products",
+  headline: "Choose the job you need now.",
 } as const;
 
 export const toolJourney: readonly {
@@ -429,24 +456,24 @@ export const toolJourney: readonly {
 }[] = [
   {
     tool: "deal-architect",
-    task: "Analyze this deal.",
-    cue: "Start here",
+    task: "Evaluate this opportunity.",
+    cue: "Evaluate",
     description:
-      "Start by understanding the opportunity, the assumptions behind it, and what is still unknown.",
+      "Understand the opportunity, the assumptions behind it, and what is still unknown.",
   },
   {
-    tool: "funding-ready",
-    task: "I need to prepare this for financing.",
-    cue: "When financing matters",
+    tool: "deal-packager",
+    task: "Present this deal.",
+    cue: "Present",
     description:
-      "When financing becomes part of the path, organize the borrower, property, project, and documentation into a professional submission.",
+      "Turn the facts, story, and evidence into a professional package for the audience you choose.",
   },
   {
-    tool: "deal-desk",
-    task: "I’m going to keep working this transaction.",
-    cue: "When the deal continues",
+    tool: "capital-advisor",
+    task: "Finance this plan.",
+    cue: "Finance",
     description:
-      "When the deal requires ongoing analysis, questions, documents, and follow-up, keep its context in one recurring workspace.",
+      "Review supplied financing assumptions, find readiness gaps, and prepare a clear capital request.",
   },
 ];
 

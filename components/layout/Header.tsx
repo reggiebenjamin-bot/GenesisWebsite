@@ -12,11 +12,11 @@ import {
   type PointerEvent,
   type RefObject,
 } from "react";
-import { OFFER_PATH_ANNOUNCER_ID, setOfferPath } from "@/components/offers/offerPathState";
+import { OFFER_PATH_ANNOUNCER_ID, setOfferPath, useOfferPath } from "@/components/offers/offerPathState";
 import { PathToggle } from "@/components/offers/PathToggle";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
-import { contact, isNavGroup, navigation, type NavGroup } from "@/lib/content";
-import { offerPathByPage, offerPathFromHash, TOOLS_INTEREST_SUBJECT } from "@/lib/offers";
+import { isNavGroup, navigation, type NavGroup } from "@/lib/content";
+import { genesisTools, offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import styles from "./Header.module.css";
 import { Logo } from "./Logo";
@@ -44,6 +44,7 @@ function isCurrent(pathname: string, href: string) {
  */
 export function Header() {
   const pathname = usePathname();
+  const activePath = useOfferPath();
   const [scrolled, setScrolled] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -58,12 +59,14 @@ export function Header() {
     setMenuOpen(false);
   }
 
-  // The tools page keeps its own contact action, as it did before the revamp.
-  const toolsPage = pathname === "/tools" || pathname.startsWith("/tools/");
-  const primaryHref = toolsPage
-    ? `mailto:${contact.email}?subject=${encodeURIComponent(TOOLS_INTEREST_SUBJECT)}`
-    : "/contact";
-  const primaryLabel = toolsPage ? "Ask About Tools" : "Book a Consultation";
+  // Product marketing pages keep their direct example link. Catalog entry
+  // pages use a single account destination where visitors choose their flow.
+  const toolSlug = pathname.startsWith("/tools/") ? pathname.slice("/tools/".length) : null;
+  const selectedTool = genesisTools.find((tool) => tool.id === toolSlug);
+  const toolsPath = pathname === "/tools" ||
+    ((pathname === "/" || pathname === "/pricing") && activePath === "agent");
+  const primaryHref = selectedTool?.workspaceHref ?? "/assessment";
+  const primaryLabel = selectedTool ? "View Product Example" : "Assess My Business";
 
   // The homepage opens on a dark hero, so the bar can start transparent there.
   const overDarkHero = pathname === "/";
@@ -188,9 +191,15 @@ export function Header() {
             </ul>
           </nav>
 
-          <ConsultationButton href={primaryHref} compact className={styles.cta}>
-            {primaryLabel}
-          </ConsultationButton>
+          {toolsPath ? (
+            <div className={styles.accountActions}>
+              <Link href="/workspace/account" className={styles.accountLink}>Sign in / up</Link>
+            </div>
+          ) : (
+            <ConsultationButton href={primaryHref} compact className={styles.cta}>
+              {primaryLabel}
+            </ConsultationButton>
+          )}
 
           <button
             ref={menuButton}
@@ -219,6 +228,7 @@ export function Header() {
           pathname={pathname}
           primaryHref={primaryHref}
           primaryLabel={primaryLabel}
+          showAccountLink={toolsPath}
           onClose={() => setMenuOpen(false)}
           returnFocus={menuButton}
         />
@@ -408,12 +418,14 @@ function MobileMenu({
   pathname,
   primaryHref,
   primaryLabel,
+  showAccountLink,
   onClose,
   returnFocus,
 }: {
   pathname: string;
   primaryHref: string;
   primaryLabel: string;
+  showAccountLink: boolean;
   onClose: () => void;
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
@@ -546,9 +558,15 @@ function MobileMenu({
       </nav>
 
       <div className={styles.sheetFooter}>
-        <ConsultationButton href={primaryHref} className="w-full" onClick={onClose}>
-          {primaryLabel}
-        </ConsultationButton>
+        {showAccountLink ? (
+          <Link href="/workspace/account" className={cn(styles.accountLink, styles.sheetAccountLink)} onClick={onClose}>
+            Sign in / up
+          </Link>
+        ) : (
+          <ConsultationButton href={primaryHref} className="w-full" onClick={onClose}>
+            {primaryLabel}
+          </ConsultationButton>
+        )}
       </div>
     </div>
   );

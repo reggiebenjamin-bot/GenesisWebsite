@@ -210,18 +210,18 @@ export const toolFaqs = [
       "No. Information is identified as known, user provided, calculated, estimated, or missing. Missing information remains missing rather than being silently fabricated.",
   },
   {
-    question: "Does Funding Ready guarantee financing?",
+    question: "Does Deal Packager invent evidence or guarantee a response?",
     answer:
-      "No. Funding Ready prepares and organizes a financing submission. Approval, pricing, terms, and lending decisions remain with the appropriate lender and decision-makers.",
+      "No. Deal Packager organizes the facts, evidence, and assumptions you provide. It does not invent support, promise approval, or make a lender, partner, investor, or buyer's decision.",
   },
   {
-    question: "Is Deal Desk just a general-purpose AI chat?",
+    question: "Does Capital Advisor provide live lender terms or loan approval?",
     answer:
-      "No. It is designed around structured real-estate deal context, saved transactions, calculations, reusable workflows, documents, and persistent transaction history.",
+      "No. Capital Advisor reviews the assumptions you provide and helps prepare a capital request. It does not quote live rates, promise terms, approve financing, or replace a licensed financial professional.",
   },
 ] as const;
 
-const [, doesDealArchitectInvent, doesFundingReadyGuarantee, isDealDeskChat] = toolFaqs;
+const [, doesDealArchitectInvent, doesDealPackagerInvent, doesCapitalAdvisorApprove] = toolFaqs;
 
 /** Homepage questions, by the path that asks them. */
 export const faqs: readonly Faq[] = [
@@ -238,8 +238,8 @@ export const faqs: readonly Faq[] = [
     paths: ["agent", "custom-infrastructure"],
   },
   { ...doesDealArchitectInvent, paths: ["agent"] },
-  { ...doesFundingReadyGuarantee, paths: ["agent"] },
-  { ...isDealDeskChat, paths: ["agent"] },
+  { ...doesDealPackagerInvent, paths: ["agent"] },
+  { ...doesCapitalAdvisorApprove, paths: ["agent"] },
   {
     question: "Is Genesis another CRM?",
     answer:
@@ -280,9 +280,9 @@ export const pricingFaqs = [
       "Because they solve different problems. A Genesis Tool helps you complete a specific task yourself. A managed deployment makes Genesis part of how the business operates.",
   },
   {
-    question: "Which tool is recurring?",
+    question: "Are any Genesis Tools recurring subscriptions?",
     answer:
-      "Deal Desk is $49 per month. Deal Architect is purchased per full analysis and Funding Ready per financing package.",
+      "No. Deal Architect is purchased per analysis, Deal Packager per package, and Capital Advisor per capital plan. You can view examples and prepare a brief without an account. An account is only needed to keep progress beyond your local guest draft.",
   },
   {
     question: "Does purchasing a Genesis Tool include Managed AI?",

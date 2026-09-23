@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
 import {
   DEFAULT_OFFER_PATH,
@@ -134,17 +132,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <OfferPathBootstrap script={offerPathScript} />
-        <div className="site-runtime">
-          <a
-            href="#main-content"
-            className="fixed top-3 left-3 z-1000 -translate-y-[150%] bg-ivory px-4 py-2.5 text-ink transition-transform duration-200 focus:translate-y-0"
-          >
-            Skip to content
-          </a>
-          <Header />
-          <main id="main-content">{children}</main>
-          <Footer />
-        </div>
+        {children}
       </body>
     </html>
   );

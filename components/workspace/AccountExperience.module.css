@@ -1,0 +1,164 @@
+.page {
+  --account-canvas: #0e1114;
+  --account-surface: #252a2e;
+  --account-surface-hover: #30363a;
+  --account-text: #f5f3ed;
+  --account-muted: #c4c8c8;
+  --account-border: #41484c;
+  --account-accent: #f2d895;
+  min-height: 100dvh;
+  padding: 14px clamp(16px, 2vw, 32px) 20px;
+  color: var(--account-text);
+  background: var(--account-canvas);
+  color-scheme: dark;
+  -webkit-tap-highlight-color: rgb(242 216 149 / 0.2);
+}
+.page :focus-visible { outline-color: var(--account-accent); }
+
+.pageHeader {
+  width: min(1440px, 100%);
+  min-height: 52px;
+  margin: 0 auto clamp(8px, 1.5vh, 18px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--account-text);
+}
+
+.returnNav { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(12px, 2vw, 26px); }
+.returnLink { min-height: 44px; display: inline-flex; align-items: center; gap: 7px; color: #e1e5e5; font-size: 0.78rem; font-weight: 700; text-decoration: none; transition: color 180ms ease; }
+.returnLink:hover { color: var(--account-accent); }
+
+.card {
+  position: relative;
+  width: min(1440px, 100%);
+  min-height: min(700px, calc(100dvh - 120px));
+  margin-inline: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  background: transparent;
+  color-scheme: dark;
+  border: 0;
+}
+
+.content {
+  grid-column: 2;
+  min-width: 0;
+  min-height: 610px;
+  display: grid;
+  align-items: center;
+  padding: clamp(30px, 5vw, 74px);
+}
+.content[data-content-side="left"] { grid-column: 1; }
+.contentInner { width: min(100%, 430px); margin-inline: auto; animation: contentArrive 560ms both; }
+.kicker { margin: 0 0 17px; color: var(--account-accent); font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; }
+.content h1 { margin: 0; color: var(--account-text); font-size: clamp(2.3rem, 4.1vw, 4.25rem); font-weight: 400; letter-spacing: -0.065em; line-height: 1.06; text-wrap: balance; }
+.intro { max-width: 35ch; margin: 18px 0 0; color: var(--account-muted); font-size: clamp(0.94rem, 1.3vw, 1.06rem); line-height: 1.55; }
+
+.choiceList { display: grid; gap: 12px; margin-top: clamp(30px, 5vh, 48px); }
+.choiceButton { width: 100%; min-height: 104px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 19px 23px; color: var(--account-text); background: var(--account-surface); border: 1px solid var(--account-border); border-radius: 15px; text-align: left; cursor: pointer; touch-action: manipulation; transition: background 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease; }
+.choiceButton:hover { background: var(--account-surface-hover); border-color: var(--account-accent); transform: translateY(-2px); box-shadow: 0 12px 30px rgb(0 0 0 / 0.18); }
+.choiceButton strong { display: block; font-size: 1.13rem; font-weight: 700; }
+.choiceButton small { display: block; margin-top: 4px; color: var(--account-muted); font-size: 0.79rem; }
+.choiceButton svg { flex: 0 0 auto; color: var(--account-accent); }
+.exploreLink { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; gap: 10px; margin-top: 24px; color: var(--account-accent); font-size: 0.8rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; transition: color 180ms ease; }
+.exploreLink:hover { color: var(--account-text); }
+
+.backButton { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; margin: -14px 0 30px; padding: 0; color: var(--account-muted); background: none; border: 0; font-size: 0.8rem; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.backButton:hover { color: var(--account-accent); }
+.formArea { min-height: 260px; margin-top: 28px; }
+.modeSwitch { display: none; min-height: 44px; margin-top: 18px; padding: 0; color: var(--account-accent); background: none; border: 0; font-size: 0.78rem; font-weight: 700; text-align: left; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; touch-action: manipulation; }
+.modeSwitch:hover { color: var(--account-text); }
+.status { color: var(--account-muted); }
+
+.unavailable { padding: 25px; background: var(--account-surface); border: 1px solid var(--account-border); border-radius: 15px; }
+.unavailableIcon { width: 36px; height: 36px; display: grid; place-items: center; color: var(--account-canvas); background: var(--account-accent); border-radius: 10px; font-family: var(--font-display); font-size: 1rem; }
+.unavailable h2 { margin: 19px 0 10px; font-size: 1.45rem; font-weight: 500; line-height: 1.12; }
+.unavailable p { margin: 0; color: var(--account-muted); font-size: 0.85rem; line-height: 1.5; }
+.unavailableLink, .signedInLink { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; padding: 0 15px; color: var(--account-canvas); background: var(--account-accent); border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; transition: background 180ms ease; }
+.unavailableLink:hover, .signedInLink:hover { background: #ffe6ac; }
+.signedInPanel { padding: 15px 0; }
+.signedInMark { width: 48px; height: 48px; display: grid; place-items: center; margin: 0 0 16px; color: var(--account-canvas); background: var(--account-accent); border-radius: 50%; font-size: 1.3rem; }
+.signedInPanel h2 { margin: 0 0 10px; font-size: 1.6rem; }
+.signedInPanel p { color: var(--account-muted); font-size: 0.88rem; overflow-wrap: anywhere; }
+
+.visualPanel {
+  position: absolute;
+  z-index: 2;
+  inset: 8px auto 8px 8px;
+  width: calc(50% - 8px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--account-text);
+  background: var(--account-surface);
+  border-radius: 22px;
+  isolation: isolate;
+  transform: translateX(0);
+  transition: transform 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.card[data-panel-side="right"] .visualPanel { transform: translateX(100%); }
+.visualPanel::before { position: absolute; z-index: -1; inset: 0; content: ""; background: repeating-radial-gradient(circle at 72% 63%, transparent 0 71px, rgb(255 255 255 / 0.07) 72px 73px); }
+.visualTop { display: flex; align-items: center; gap: 4px; padding: clamp(26px, 3.4vw, 46px); font-family: var(--font-sans); font-size: clamp(1.27rem, 2vw, 1.5rem); font-weight: 700; letter-spacing: 0.015em; line-height: 1; }
+.visualTop img { width: 46px; height: 46px; object-fit: contain; }
+.visualBody { margin-top: auto; padding: clamp(30px, 3.4vw, 46px); }
+.visualLabel { margin: 0 0 13px; color: var(--account-muted); font-family: var(--font-display); font-size: 0.67rem; font-weight: 700; letter-spacing: 0.14em; }
+.visualBody h2 { max-width: 11ch; margin: 0; font-size: clamp(2.3rem, 4.2vw, 4.5rem); font-weight: 400; letter-spacing: -0.065em; line-height: 1.04; text-wrap: balance; }
+.visualDescription { max-width: 39ch; margin: 19px 0 0; color: var(--account-muted); font-size: clamp(0.85rem, 1.15vw, 0.99rem); line-height: 1.55; }
+.productTiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: clamp(34px, 6vh, 58px); }
+.productTiles span { min-height: 88px; display: flex; flex-direction: column; justify-content: space-between; padding: 13px; background: rgb(255 255 255 / 0.045); border: 1px solid var(--account-border); border-radius: 12px; font-size: 0.74rem; font-weight: 700; line-height: 1.2; }
+.productTiles i { color: var(--account-muted); font-family: var(--font-display); font-size: 0.64rem; font-style: normal; font-weight: 400; }
+.visualSwitch { min-height: 44px; display: inline-flex; align-items: center; gap: 11px; margin-top: 20px; padding: 0; color: var(--account-text); background: none; border: 0; font-size: 0.8rem; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; touch-action: manipulation; }
+.visualSwitch:hover { color: var(--account-accent); }
+.pageFootnote { width: min(1440px, 100%); margin: 17px auto 0; color: var(--account-muted); font-size: 0.74rem; text-align: center; }
+
+@keyframes contentArrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 850px) {
+  .content { padding: clamp(24px, 4vw, 40px); }
+  .visualTop, .visualBody { padding: clamp(23px, 3vw, 36px); }
+  .productTiles { gap: 6px; }
+  .productTiles span { min-height: 77px; padding: 10px; font-size: 0.68rem; }
+}
+
+@media (max-width: 700px) {
+  .page { padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .pageHeader { margin-bottom: 10px; }
+  .returnNav { width: 100%; justify-content: flex-start; gap: 16px; }
+  .returnLink { font-size: 0.75rem; }
+  .card { display: flex; flex-direction: column; min-height: 0; border-radius: 22px; }
+  .visualPanel { position: relative; inset: auto; order: 0; width: 100%; min-height: 294px; border-radius: 16px; transform: none !important; transition: none; }
+  .visualTop { padding: 21px 24px 0; }
+  .visualBody { padding: 22px 24px 25px; }
+  .visualBody h2 { max-width: 17ch; font-size: clamp(2rem, 7vw, 2.7rem); }
+  .visualDescription { margin-top: 9px; font-size: 0.78rem; }
+  .productTiles { margin-top: 20px; }
+  .productTiles span { min-height: 54px; }
+  .visualSwitch { margin-top: 12px; }
+  .card:not([data-mode="choose"]) .visualPanel { min-height: 200px; }
+  .card:not([data-mode="choose"]) .productTiles,
+  .card:not([data-mode="choose"]) .visualSwitch { display: none; }
+  .content, .content[data-content-side="left"] { order: 1; min-height: 0; padding: 36px 22px 32px; }
+  .contentInner { width: 100%; }
+  .content h1 { font-size: clamp(2.25rem, 9vw, 3.25rem); }
+  .choiceList { margin-top: 28px; }
+  .choiceButton { min-height: 88px; }
+  .formArea { min-height: 0; }
+  .modeSwitch { display: inline-flex; align-items: center; }
+  .pageFootnote { margin: 14px auto 0; }
+}
+
+@media (max-width: 420px) {
+  .visualDescription { display: none; }
+  .visualBody h2 { font-size: 2rem; }
+  .productTiles span { font-size: 0.61rem; }
+  .content, .content[data-content-side="left"] { padding: 28px 17px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visualPanel, .contentInner, .choiceButton, .returnLink, .unavailableLink, .signedInLink, .exploreLink { animation: none; transition: none; }
+  .choiceButton:hover { transform: none; }
+}

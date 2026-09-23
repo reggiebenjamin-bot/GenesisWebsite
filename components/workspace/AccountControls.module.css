@@ -1,0 +1,59 @@
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  justify-self: end;
+}
+
+.accountLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 4px;
+  color: var(--color-ivory);
+  background: var(--color-ink);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.accountLink:hover {
+  border-color: #333942;
+  background: #333942;
+}
+
+.accountLink:focus-visible {
+  outline: 2px solid var(--color-gold-dark);
+  outline-offset: 3px;
+}
+
+.signedIn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #47443f;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .accountLink {
+    padding-inline: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .signedIn > span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accountLink {
+    transition: none;
+  }
+}

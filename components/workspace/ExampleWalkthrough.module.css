@@ -1,0 +1,37 @@
+.walkthrough { min-width: 0; }
+.stage { display: grid; grid-template-columns: 0.9fr 1.1fr; min-height: 475px; overflow: hidden; background: #fff; border: 1px solid #ddd7ce; border-radius: 8px; box-shadow: 0 22px 60px rgb(8 9 14 / 0.08); }
+.demoForm { position: relative; z-index: 1; padding: clamp(1.3rem, 2.6vw, 2.4rem); background: #fff; }
+.demoFormHeading { display: flex; align-items: center; gap: 0.5rem; min-height: 30px; margin-bottom: 1.5rem; color: #413d36; font-size: 0.76rem; font-weight: 700; }
+.sparkle { color: var(--color-gold-dark); font-size: 1.15rem; }
+.demoFields { --cursor-step: 100px; position: relative; display: grid; gap: clamp(1.1rem, 2vw, 1.75rem); }
+.demoField { position: relative; min-width: 0; }
+.demoField > span:first-child { display: block; margin-bottom: 0.5rem; color: #544f48; font-size: 0.72rem; font-weight: 700; }
+.fakeInput { display: flex; min-height: 47px; align-items: center; overflow: hidden; padding-inline: 0.78rem; color: #16150f; background: #fff; border: 1px solid #d8d2c9; border-radius: 5px; font-size: 0.82rem; white-space: nowrap; }
+.activeInput { border-color: #b89558; box-shadow: 0 0 0 2px rgb(201 165 94 / 0.13); }
+.caret { display: inline-block; width: 1px; height: 1rem; margin-left: 2px; background: #17150f; animation: blink 800ms steps(1) infinite; }
+.fakeCursor { position: absolute; z-index: 2; right: 0.5rem; top: 49px; filter: drop-shadow(1px 2px 1px rgb(0 0 0 / 0.2)); transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+.demoOutput { position: relative; display: grid; place-items: center; overflow: hidden; padding: 1.2rem; background: #11181d; }
+.demoOutput::before { position: absolute; inset: 0; background: radial-gradient(circle at 80% 30%, rgb(201 165 94 / 0.12), transparent 60%); content: ""; }
+.paperBack { position: absolute; width: 60%; height: 73%; top: 15%; right: 7%; background: #c5beb3; transform: rotate(5deg); box-shadow: 0 12px 28px rgb(0 0 0 / 0.25); }
+.paper { position: relative; width: min(83%, 315px); min-height: 355px; padding: 1.5rem; background: #faf7f1; box-shadow: 0 18px 40px rgb(0 0 0 / 0.24); transform: rotate(-3deg); }
+.paperBrand { text-align: right; font-size: 0.56rem; font-weight: 700; letter-spacing: 0.22em; }
+.paper h3 { margin-top: 1.4rem; font-size: clamp(1.35rem, 1.8vw, 1.8rem); letter-spacing: -0.05em; }
+.paperRule { height: 1px; margin-block: 1rem; background: #c8bca8; }
+.paperSection { display: grid; gap: 0.35rem; margin-top: 0.9rem; }
+.paperSection span { color: #857047; font-family: var(--font-display); font-size: 0.46rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.paperSection i { display: block; height: 5px; width: 92%; background: #d7d3cb; border-radius: 5px; }
+.paperSection i:nth-of-type(2) { width: 74%; }
+.paperSection i:nth-of-type(3) { width: 83%; }
+.maskNotice { position: absolute; right: 1rem; bottom: 1rem; padding: 0.55rem 0.7rem; color: #f4efe8; background: rgb(8 9 14 / 0.8); border: 1px solid rgb(244 239 232 / 0.22); border-radius: 4px; font-size: 0.65rem; }
+.playback { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.85rem; margin-top: 1rem; }
+.playback button { display: grid; width: 44px; height: 44px; place-items: center; color: #fff; background: var(--color-ink); border-radius: 50%; cursor: pointer; touch-action: manipulation; transition: background 160ms ease; }
+.playback button:hover { background: #3b3832; }
+.playback > div { min-width: 0; }
+.playback > div > span { display: block; margin-bottom: 0.45rem; color: #46423b; font-size: 0.76rem; font-weight: 700; }
+.playback small { color: #817d74; font-size: 0.72rem; }
+.progressTrack { height: 2px; overflow: hidden; background: #dad5cc; }
+.progressTrack div { width: 100%; height: 100%; background: var(--color-gold-dark); transform-origin: left center; }
+.a11yDescription { margin-top: 0.65rem; color: #777269; font-size: 0.75rem; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (max-width: 660px) { .stage { min-height: 0; grid-template-columns: 1fr; } .demoFields { --cursor-step: 84px; gap: 0.8rem; } .demoOutput { min-height: 310px; } .paper { min-height: 280px; } .paperSection:nth-of-type(3) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } .fakeCursor, .playback button { transition: none; } }

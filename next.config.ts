@@ -16,12 +16,23 @@ const nextConfig: NextConfig = {
   /*
    * The tools lived at /mini before they had pages of their own. A permanent
    * redirect keeps every old link and bookmark working and tells search
-   * engines /tools is the page now. A #deal-desk style fragment carries over.
+   * engines /tools is the page now. The two renamed product routes also keep
+   * existing links working while the catalog moves to its canonical names.
    */
   async redirects() {
     return [
       { source: "/mini", destination: "/tools", permanent: true },
       { source: "/mini/:path*", destination: "/tools", permanent: true },
+      {
+        source: "/tools/funding-ready",
+        destination: "/tools/deal-packager",
+        permanent: true,
+      },
+      {
+        source: "/tools/deal-desk",
+        destination: "/tools/capital-advisor",
+        permanent: true,
+      },
     ];
   },
 };

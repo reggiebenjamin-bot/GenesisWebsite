@@ -11,7 +11,7 @@ import {
   toolsCollectionSchema,
   websiteSchema,
 } from "../lib/schema.ts";
-import { absoluteUrl, breadcrumbTrail, fullTitle, seoPages } from "../lib/seo.ts";
+import { absoluteUrl, breadcrumbTrail, fullTitle, seoPages, toolSeo } from "../lib/seo.ts";
 import { canonicalOrigin, siteUrl } from "../lib/site.ts";
 import { toolPages } from "../lib/toolPages.ts";
 
@@ -42,6 +42,7 @@ test("every indexable page has one path, one title and one description of its ow
 test("the page that moved stays out, and every tool has its own page", () => {
   const paths = seoPages.map((page) => page.path);
   assert.ok(!paths.includes("/mini"), "/mini redirects, so it must not be listed");
+  assert.ok(paths.includes("/assessment"), "the infrastructure assessment must be indexable");
   for (const tool of genesisTools) {
     assert.ok(paths.includes(`/tools/${tool.id}`), `${tool.name} has no page`);
   }
@@ -67,8 +68,8 @@ test("every breadcrumb trail starts at home and ends at the page", () => {
     list.itemListElement.forEach((item, index) => assert.equal(item.position, index + 1));
   }
   assert.deepEqual(
-    breadcrumbTrail("/tools/deal-desk").map((page) => page.label),
-    ["Home", "Genesis Tools", "Deal Desk"],
+    breadcrumbTrail("/tools/capital-advisor").map((page) => page.label),
+    ["Home", "Genesis Tools", "Capital Advisor"],
   );
 });
 
@@ -133,6 +134,20 @@ test("each tool page answers what it is, who makes it, and what it costs", () =>
     assert.ok(page.faqs.length >= 2);
   }
 
-  const fundingReady = toolPages["funding-ready"].facts.find((fact) => fact.label === "Does not");
-  assert.match(fundingReady?.value ?? "", /Promise approval, rates, terms, or financing/);
+  const dealPackager = toolPages["deal-packager"].facts.find((fact) => fact.label === "Does not");
+  assert.match(dealPackager?.value ?? "", /Invent evidence/);
+
+  const capitalAdvisor = toolPages["capital-advisor"].facts.find((fact) => fact.label === "Does not");
+  assert.match(capitalAdvisor?.value ?? "", /Quote live rates/);
+});
+
+test("tool search snippets stay aligned with the live catalog and shared prices", () => {
+  for (const tool of genesisTools) {
+    const snippet = toolSeo[tool.id];
+    assert.ok(snippet.description.includes(`${tool.price.display} per ${tool.price.unit}`), `${tool.name} snippet price`);
+  }
+
+  const searchCopy = seoPages.map((page) => `${fullTitle(page)} ${page.description}`).join(" ");
+  assert.doesNotMatch(searchCopy, /Funding Ready|Deal Desk/);
+  assert.doesNotMatch(toolSeo["capital-advisor"].description, /compar(?:e|ing|ison).*scenarios?/i);
 });

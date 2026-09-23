@@ -63,7 +63,9 @@ export function HawkHero() {
         </HeroCopy>
 
         <HeroCopy path="custom-infrastructure">
-          <ConsultationButton href="/contact" className="max-sm:w-full" />
+          <ConsultationButton href="/assessment" className="max-sm:w-full">
+            Assess My Business
+          </ConsultationButton>
           <Link href="/how-it-works" className={secondaryAction}>
             <span>See How It Works</span>
           </Link>

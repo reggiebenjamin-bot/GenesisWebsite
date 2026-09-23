@@ -1,9 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { DealReportPreview } from "@/components/offers/DealReportPreview";
 import { Card, SectionIntro } from "@/components/ui/Blocks";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { TextLink } from "@/components/ui/Button";
-import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { Button } from "@/components/ui/Button";
 import { FactList } from "@/components/ui/FactList";
 import { Eyebrow } from "@/components/ui/Section";
 import {
@@ -11,79 +11,108 @@ import {
   dataProvenanceMeaning,
   genesisTools,
   neverFabricatedSentence,
-  toolFlow,
-  toolJourney,
-  toolsToManaged,
   type GenesisTool,
 } from "@/lib/offers";
 import type { ToolPage } from "@/lib/toolPages";
+import { getWorkspaceTool } from "@/lib/toolWorkspace";
 import { cn } from "@/lib/utils";
 
 const pad = (index: number) => String(index + 1).padStart(2, "0");
 
+/* ── catalog ────────────────────────────────────────────────────────── */
+
+/**
+ * Three peer entries into distinct product pages. Photography identifies each
+ * job; each page begins with a read-only example and a free brief.
+ */
+export function ToolCatalog() {
+  return (
+    <ul className="grid gap-4 lg:grid-cols-3">
+      {genesisTools.map((tool) => {
+        const { heroImage } = getWorkspaceTool(tool.id);
+        return (
+          <li key={tool.id} id={tool.id} className="min-w-0 scroll-mt-28">
+            <Link
+              href={tool.workspaceHref}
+              aria-label={`View ${tool.name} example and start a brief`}
+              className="group relative isolate flex min-h-[390px] overflow-hidden rounded-[24px] border border-ivory/18 bg-ink-soft text-ivory transition-colors duration-300 hover:border-gold/65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold lg:min-h-[470px]"
+            >
+              <Image
+                src={heroImage}
+                alt=""
+                fill
+                sizes="(max-width: 1023px) 100vw, 33vw"
+                className="object-cover object-[62%_center] opacity-90 transition-transform duration-700 group-hover:scale-[1.035] motion-reduce:transition-none"
+              />
+              <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(0deg,rgb(8_9_14/0.98)_0%,rgb(8_9_14/0.8)_38%,rgb(8_9_14/0.06)_100%)]" />
+              <div className="relative z-10 flex w-full flex-col justify-end p-[clamp(24px,3vw,36px)]">
+                <span className="font-display text-[0.7rem] tracking-[0.15em] text-gold uppercase">
+                  {tool.job}
+                </span>
+                <h2 className="mt-3 text-[clamp(2rem,3vw,3rem)] leading-none tracking-[-0.045em]">
+                  {tool.name}
+                </h2>
+                <p className="mt-3 max-w-[31ch] text-[1rem] leading-snug text-ivory/76">
+                  {tool.tagline}
+                </p>
+                <span className="mt-7 flex min-h-11 items-center justify-between border-t border-ivory/22 pt-4 text-[0.9rem] font-bold">
+                  View product
+                  <span aria-hidden="true" className="text-gold transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none">↗</span>
+                </span>
+              </div>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 /* ── hero ───────────────────────────────────────────────────────────── */
 
 /**
- * The tool's name as the page's one H1, what it is in a sentence, and what it
- * costs with the way to ask about it — everything a search result or an
- * answer engine needs, in the first screen of server-rendered HTML.
+ * A focused public overview for search visitors. The selected product opens
+ * on its own page, with an example and a free brief before purchase.
  */
-export function ToolHero({ page, interestHref }: { page: ToolPage; interestHref: string }) {
+export function ToolHero({ page, workspaceHref }: { page: ToolPage; workspaceHref: string }) {
   const { tool } = page;
+  const workspaceTool = getWorkspaceTool(tool.id);
 
   return (
     <section className="relative overflow-hidden border-b border-line-dark bg-ink pt-[calc(var(--header-height)+56px)] pb-[clamp(64px,8vw,112px)] text-ivory">
+      <Image
+        src={workspaceTool.heroImage}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none object-cover object-center opacity-90"
+      />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgb(201_165_94/0.14),transparent_46%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgb(8_9_14/0.99)_0%,rgb(8_9_14/0.93)_43%,rgb(8_9_14/0.18)_72%,rgb(8_9_14/0.4)_100%)]"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgb(8_9_14/0.65),transparent_52%)]"
       />
       <div className="shell relative">
         <Breadcrumbs path={`/tools/${tool.id}`} light />
 
-        <div className="mt-[clamp(40px,6vw,72px)] grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-16">
-          <div>
-            <Eyebrow>Genesis Tools · {tool.number}</Eyebrow>
-            <h1 className="mt-5 text-[clamp(2.9rem,6.4vw,5.6rem)] leading-[0.98] tracking-[-0.05em]">
-              {tool.name}
-            </h1>
-            <p className="mt-6 max-w-[26ch] text-[clamp(1.3rem,2.2vw,1.75rem)] leading-[1.2] tracking-[-0.02em] text-balance text-ivory/88">
-              {tool.tagline}
-            </p>
-            <p className="mt-6 max-w-[62ch] text-[1rem] leading-relaxed text-ivory/62">
-              {page.definition}
+        <div className="mt-[clamp(40px,6vw,72px)] max-w-[800px]">
+          <Eyebrow>Genesis Tools · {tool.job}</Eyebrow>
+          <h1 className="mt-5 text-[clamp(2.9rem,6.4vw,5.6rem)] leading-[0.98] tracking-[-0.05em]">
+            {tool.name}
+          </h1>
+          <p className="mt-6 max-w-[28ch] text-[clamp(1.3rem,2.2vw,1.75rem)] leading-[1.2] tracking-[-0.02em] text-balance text-ivory/88">
+            {tool.tagline}
+          </p>
+          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Button href={workspaceHref}>View {tool.name} example</Button>
+            <p className="max-w-[27ch] text-[0.86rem] leading-snug text-ivory/72">
+              View the example and prepare your brief free. Pay {tool.price.display} once for the finished {tool.price.unit}.
             </p>
           </div>
-
-          <Card tone="dark" className="relative overflow-hidden border-gold/30">
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,rgb(242_216_149/0.7),transparent)]"
-            />
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
-                Price
-              </p>
-              {tool.price.cadence === "monthly" ? (
-                <span className="rounded-full border border-line-dark px-2.5 py-0.5 text-[0.72rem] text-muted-light">
-                  Recurring
-                </span>
-              ) : null}
-            </div>
-            <p className="mt-4 flex items-baseline gap-2">
-              <span className="text-[clamp(2.6rem,4vw,3.4rem)] leading-none tracking-[-0.05em] tabular-nums">
-                {tool.price.display}
-              </span>
-              <span className="text-[0.95rem] text-muted-light">per {tool.price.unit}</span>
-            </p>
-            <div className="mt-7 grid gap-4">
-              <ConsultationButton href={interestHref} className="w-full">
-                Ask About {tool.name}
-              </ConsultationButton>
-              <TextLink light href="/pricing" className="justify-self-start text-[0.88rem]">
-                Compare all pricing
-              </TextLink>
-            </div>
-          </Card>
         </div>
       </div>
     </section>
@@ -110,8 +139,8 @@ export function ToolFacts({ page }: { page: ToolPage }) {
 /* ── what you get ───────────────────────────────────────────────────── */
 
 /**
- * What the tool produces, then — for Deal Architect — the steps it works
- * through, or — for Funding Ready — everything it can produce.
+ * What the tool produces, plus the workflow or output detail needed to
+ * understand the result before entering the workspace.
  */
 export function ToolOutputs({ tool }: { tool: GenesisTool }) {
   return (
@@ -123,53 +152,54 @@ export function ToolOutputs({ tool }: { tool: GenesisTool }) {
         titleId="outputs-title"
       />
 
-      <ol className="grid gap-4 sm:grid-cols-2">
+      <ol className="grid border-t border-line-light sm:grid-cols-2">
         {tool.highlights.map((highlight, index) => (
-          <Card key={highlight} as="li" className="flex items-baseline gap-4">
+          <li
+            key={highlight}
+            className="flex items-baseline gap-4 border-b border-line-light py-5 sm:odd:border-r sm:odd:pr-8 sm:even:pl-8"
+          >
             <span className="font-display text-[0.7rem] tracking-[0.14em] text-gold-dark">
               {pad(index)}
             </span>
             <p className="text-[1.05rem] leading-snug">{highlight}</p>
-          </Card>
+          </li>
         ))}
       </ol>
 
-      {tool.structure.label === "Structured workflow" ? (
-        <div className="mt-10">
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
-            {tool.structure.label}
-          </p>
-          <ol className="mt-4 flex flex-wrap gap-2">
-            {tool.structure.steps.map((step, index) => (
-              <li
-                key={step}
-                className="inline-flex items-center gap-2 rounded-full border border-line-light bg-white/60 px-3.5 py-1.5 text-[0.85rem]"
-              >
-                <span className="font-display text-[0.6rem] text-gold-dark">{pad(index)}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
+      <details className="group mt-10 border-t border-line-light">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[0.95rem] font-medium [&::-webkit-details-marker]:hidden">
+          See the full workflow and result list
+          <span aria-hidden="true" className="text-xl leading-none transition-transform duration-200 group-open:rotate-45 motion-reduce:transition-none">+</span>
+        </summary>
+        <div className="grid gap-8 border-t border-line-light py-6 lg:grid-cols-2">
+          <div>
+            <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
+              {tool.structure.label}
+            </p>
+            <ul className="mt-4 border-t border-line-light">
+              {tool.structure.steps.map((step) => (
+                <li key={step} className="border-b border-line-light py-3 text-[0.88rem]">
+                  {step}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {tool.outputs ? (
+            <div>
+              <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
+                Potential outputs
+              </p>
+              <ul className="mt-4 border-t border-line-light">
+                {tool.outputs.map((output) => (
+                  <li key={output} className="border-b border-line-light py-3 text-[0.88rem]">
+                    {output}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-
-      {tool.outputs ? (
-        <div className="mt-10">
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
-            Potential outputs
-          </p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {tool.outputs.map((output) => (
-              <li
-                key={output}
-                className="inline-flex items-center rounded-full border border-line-light bg-white/60 px-3.5 py-1.5 text-[0.85rem]"
-              >
-                {output}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+      </details>
     </div>
   );
 }
@@ -264,81 +294,6 @@ export function ToolStructure({
           <p className="text-[0.98rem] leading-relaxed text-ivory/80">{note.body}</p>
         </div>
       ) : null}
-    </div>
-  );
-}
-
-/* ── where it fits ──────────────────────────────────────────────────── */
-
-/**
- * The three tools, with this one marked, each card linking to that tool's
- * own page. Each is where a deal can go when the work calls for it, not a
- * stage every deal has to pass through.
- */
-export function ToolJourneyStrip({ current }: { current: GenesisTool["id"] }) {
-  return (
-    <div>
-      <SectionIntro
-        eyebrow="Where it fits"
-        title={toolFlow.headline}
-        titleId="journey-title"
-      />
-
-      <ol className="grid gap-4 md:grid-cols-3">
-        {toolJourney.map((step) => {
-          const tool = genesisTools.find((candidate) => candidate.id === step.tool);
-          if (!tool) return null;
-          const here = tool.id === current;
-
-          return (
-            <li key={tool.id}>
-              <Link
-                href={`/tools/${tool.id}`}
-                aria-current={here ? "page" : undefined}
-                className={cn(
-                  "group flex h-full flex-col rounded-[24px] border p-[clamp(22px,2.4vw,32px)] transition-[border-color,box-shadow,transform] duration-300",
-                  here
-                    ? "border-ink bg-ink text-ivory shadow-[0_22px_50px_rgb(8_9_14/0.2)]"
-                    : "border-line-light bg-white/70 text-ink shadow-[0_18px_44px_rgb(8_9_14/0.06)] hover:-translate-y-0.5 hover:border-gold/40",
-                )}
-              >
-                <span
-                  className={cn(
-                    "font-display text-[0.62rem] tracking-[0.16em] uppercase",
-                    here ? "text-gold" : "text-gold-dark",
-                  )}
-                >
-                  {here ? "You are here" : step.cue}
-                </span>
-                <span className="mt-5 text-[clamp(1.35rem,2vw,1.6rem)] leading-tight tracking-[-0.02em]">
-                  {tool.name}
-                </span>
-                <span
-                  className={cn("mt-2 text-[0.95rem]", here ? "text-muted-light" : "text-muted-dark")}
-                >
-                  “{step.task}”
-                </span>
-                <span
-                  className={cn(
-                    "mt-auto pt-6 text-[0.88rem] font-bold",
-                    here ? "text-ivory/60" : "text-ink group-hover:text-gold-dark",
-                  )}
-                >
-                  {tool.price.display} per {tool.price.unit}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ol>
-
-      <div className="mt-[clamp(32px,4vw,48px)] flex flex-wrap items-center justify-between gap-x-10 gap-y-4 border-t border-line-light pt-8">
-        <div className="max-w-[56ch]">
-          <p className="text-[1.15rem] leading-snug tracking-[-0.01em]">{toolsToManaged.headline}</p>
-          <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-dark">{toolsToManaged.body}</p>
-        </div>
-        <TextLink href="/solutions">{toolsToManaged.action}</TextLink>
-      </div>
     </div>
   );
 }

@@ -36,7 +36,7 @@ export type SeoPage = {
 
 const REBUILD = "2026-09-17";
 /* The tools pages, the tools overview and About changed again with the SEO pass. */
-const SEO_PASS = "2026-09-18";
+const SEO_PASS = "2026-09-22";
 
 const socialImage = (name: string, alt: string): SeoImage => ({
   url: `/images/social/og-${name}-1920x1080.png`,
@@ -50,22 +50,28 @@ const toolPrices = genesisTools
   .join(", ");
 const planPrices = managedPlans.map((plan) => plan.priceDisplay).join(", ");
 
+function toolPricePhrase(id: ToolId): string {
+  const tool = genesisTools.find((candidate) => candidate.id === id);
+  if (!tool) throw new Error(`No Genesis Tool price for ${id}`);
+  return `${tool.price.display} per ${tool.price.unit}`;
+}
+
 /** Per-tool search copy: the job each tool owns, in the words people search with. */
 export const toolSeo: Readonly<Record<ToolId, { title: string; description: string }>> = {
   "deal-architect": {
-    title: "Deal Architect: AI Real Estate Deal Analysis",
+    title: "Deal Architect: Real Estate Deal Analysis",
     description:
-      "Real estate deal analysis from Genesis AI: total project cost, estimated cash required, risk flags, missing information and suggested next actions. $49 per analysis.",
+      `Evaluate a real estate opportunity with deterministic calculations, risk flags, missing-information review, and next questions. ${toolPricePhrase("deal-architect")}.`,
   },
-  "funding-ready": {
-    title: "Funding Ready: Lender-Ready Financing Packages",
+  "deal-packager": {
+    title: "Deal Packager: Real Estate Deal Packages",
     description:
-      "Turn a real estate deal into a lender-ready financing package: an executive financing summary, sources and uses, and a document checklist. $99 per package.",
+      `Turn real estate deal facts, evidence, numbers, and strategy into a professional package for the audience you choose. ${toolPricePhrase("deal-packager")}.`,
   },
-  "deal-desk": {
-    title: "Deal Desk: An AI Deal Desk for Real Estate",
+  "capital-advisor": {
+    title: "Capital Advisor: Real Estate Capital Plans",
     description:
-      "An ongoing AI workspace for real estate transactions: review opportunities, compare loan structures, analyze cash-to-close and recall saved deals. $49 per month.",
+      `Review user-provided financing assumptions and capital readiness, then prepare a clear real estate capital request. ${toolPricePhrase("capital-advisor")}.`,
   },
 };
 
@@ -76,7 +82,7 @@ export const seoPages: readonly SeoPage[] = [
     description: genesisPositioning.summary,
     label: "Home",
     image: socialImage("home", "Genesis AI — AI infrastructure for real estate professionals"),
-    lastModified: REBUILD,
+    lastModified: SEO_PASS,
     changeFrequency: "weekly",
     priority: 1,
   },
@@ -84,7 +90,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/tools",
     title: "Genesis Tools: Focused AI Tools for Real Estate",
     description:
-      "Deal Architect, Funding Ready and Deal Desk: focused, self-service AI tools to analyze a deal, prepare a financing request and work through a transaction.",
+      "Deal Architect, Deal Packager, and Capital Advisor help real estate professionals evaluate, present, and finance a deal with one-time pricing.",
     label: "Genesis Tools",
     image: null,
     lastModified: SEO_PASS,
@@ -116,12 +122,24 @@ export const seoPages: readonly SeoPage[] = [
     priority: 0.9,
   },
   {
+    path: "/assessment",
+    title: "Business AI Assessment",
+    description:
+      "Assess where disconnected systems, manual coordination, and workflow gaps are creating operational drag in your real estate business.",
+    label: "Business Assessment",
+    parent: "/solutions",
+    image: null,
+    lastModified: SEO_PASS,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
     path: "/pricing",
     title: "Pricing: Genesis Tools and Managed AI Plans",
     description: `${toolPrices}. Genesis Managed AI plans at ${planPrices} per month.`,
     label: "Pricing",
     image: socialImage("pricing", "Genesis AI pricing — Genesis Tools and Genesis Managed AI plans"),
-    lastModified: REBUILD,
+    lastModified: SEO_PASS,
     changeFrequency: "monthly",
     priority: 0.9,
   },

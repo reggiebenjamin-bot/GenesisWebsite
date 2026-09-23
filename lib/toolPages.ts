@@ -47,8 +47,8 @@ const price = (item: GenesisTool) =>
 const list = (items: readonly string[]) => items.join(", ");
 
 const dealArchitect = tool("deal-architect");
-const fundingReady = tool("funding-ready");
-const dealDesk = tool("deal-desk");
+const dealPackager = tool("deal-packager");
+const capitalAdvisor = tool("capital-advisor");
 
 export const toolPages: Readonly<Record<ToolId, ToolPage>> = {
   "deal-architect": {
@@ -78,35 +78,36 @@ export const toolPages: Readonly<Record<ToolId, ToolPage>> = {
     ],
     faqs: [faq("Does Deal Architect invent missing deal information?"), sameAsManaged, whatIsGenesis],
   },
-  "funding-ready": {
-    tool: fundingReady,
+  "deal-packager": {
+    tool: dealPackager,
     definition:
-      "Funding Ready is a financing-preparation tool from Genesis AI. It organizes borrower, sponsor, property, project, financing, and documentation information into a clear package built for lender review. It prepares the information. It does not promise approval, rates, terms, or financing.",
+      "Deal Packager is a real estate deal presentation tool from Genesis AI. It organizes the property, project, financial story, strategy, evidence, and supporting documents into a clear package for the audience you choose.",
     facts: [
-      { label: "Product", value: "Funding Ready" },
+      { label: "Product", value: "Deal Packager" },
       { label: "Made by", value: "Genesis AI" },
-      { label: "Category", value: "Real estate financing preparation" },
-      { label: "Price", value: price(fundingReady) },
-      { label: "Primary job", value: fundingReady.purpose },
-      { label: "Can produce", value: list(fundingReady.outputs ?? fundingReady.highlights) },
-      { label: "Does not", value: "Promise approval, rates, terms, or financing." },
+      { label: "Category", value: "Real estate deal presentation" },
+      { label: "Price", value: price(dealPackager) },
+      { label: "Primary job", value: dealPackager.purpose },
+      { label: "Can produce", value: list(dealPackager.outputs ?? dealPackager.highlights) },
+      { label: "Does not", value: "Invent evidence, promise approval, or make the recipient's decision." },
     ],
-    faqs: [faq("Does Funding Ready guarantee financing?"), sameAsManaged, whatIsGenesis],
+    faqs: [faq("Does Deal Packager invent evidence or guarantee a response?"), sameAsManaged, whatIsGenesis],
   },
-  "deal-desk": {
-    tool: dealDesk,
+  "capital-advisor": {
+    tool: capitalAdvisor,
     definition:
-      "Deal Desk is an ongoing AI workspace from Genesis AI for the deals you are actually working. It keeps structured transaction context available as the deal changes so you can continue analysis, work through financing questions, prepare follow-up, organize information, and return to previous deals without starting over.",
+      "Capital Advisor is a real estate capital-planning tool from Genesis AI. It reviews the financing assumptions you provide, organizes sources and uses, surfaces readiness gaps, and prepares a clear capital request.",
     facts: [
-      { label: "Product", value: "Deal Desk" },
+      { label: "Product", value: "Capital Advisor" },
       { label: "Made by", value: "Genesis AI" },
-      { label: "Category", value: "Real estate transaction workspace" },
-      { label: "Price", value: price(dealDesk) },
-      { label: "Primary job", value: dealDesk.purpose },
-      { label: "Used for", value: list(dealDesk.keyPoints) },
-      { label: dealDesk.structure.label, value: list(dealDesk.structure.steps) },
+      { label: "Category", value: "Real estate capital planning" },
+      { label: "Price", value: price(capitalAdvisor) },
+      { label: "Primary job", value: capitalAdvisor.purpose },
+      { label: "Can produce", value: list(capitalAdvisor.outputs ?? capitalAdvisor.highlights) },
+      { label: capitalAdvisor.structure.label, value: list(capitalAdvisor.structure.steps) },
+      { label: "Does not", value: "Quote live rates, promise terms, approve financing, or replace a licensed professional." },
     ],
-    faqs: [faq("Is Deal Desk just a general-purpose AI chat?"), sameAsManaged, whatIsGenesis],
+    faqs: [faq("Does Capital Advisor provide live lender terms or loan approval?"), sameAsManaged, whatIsGenesis],
   },
 };
 
@@ -114,7 +115,7 @@ export function isToolId(value: string): value is ToolId {
   return genesisTools.some((candidate) => candidate.id === value);
 }
 
-/** Where a tool sits among the others: the step before it and the step after. */
+/** Neighboring products in the catalog. No product is a required first or next step. */
 export function journeyAround(id: ToolId) {
   const index = toolJourney.findIndex((step) => step.tool === id);
   return {

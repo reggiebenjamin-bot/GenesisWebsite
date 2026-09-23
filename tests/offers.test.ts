@@ -17,6 +17,7 @@ import {
   toolJourney,
   toolPriceLabel,
 } from "../lib/offers.ts";
+import { workspaceTools } from "../lib/toolWorkspace.ts";
 
 const wordCount = (text: string) => text.trim().split(/\s+/).length;
 
@@ -24,7 +25,8 @@ test("the navigation toggle switches in place only where both paths are shown", 
   assert.deepEqual(offerPathPageKind("/"), { kind: "switch" });
   assert.deepEqual(offerPathPageKind("/pricing"), { kind: "switch" });
   assert.deepEqual(offerPathPageKind("/tools"), { kind: "page", path: "agent" });
-  assert.deepEqual(offerPathPageKind("/tools/deal-desk"), { kind: "page", path: "agent" });
+  assert.deepEqual(offerPathPageKind("/tools/capital-advisor"), { kind: "page", path: "agent" });
+  assert.deepEqual(offerPathPageKind("/workspace/deal-packager"), { kind: "page", path: "agent" });
   assert.deepEqual(offerPathPageKind("/mini"), { kind: "neutral" });
   assert.deepEqual(offerPathPageKind("/solutions"), { kind: "page", path: "custom-infrastructure" });
   assert.deepEqual(offerPathPageKind("/about"), { kind: "neutral" });
@@ -84,13 +86,13 @@ test("the Agent path is first and selected by default", () => {
   assert.equal(isOfferPathId("offers"), false);
 });
 
-test("Genesis Tools carry the reviewed prices and units", () => {
+test("Genesis Tools carry one-time prices and units", () => {
   assert.deepEqual(
     genesisTools.map((tool) => [tool.name, toolPriceLabel(tool.price)]),
     [
       ["Deal Architect", "$49 / analysis"],
-      ["Funding Ready", "$99 / package"],
-      ["Deal Desk", "$49 / month"],
+      ["Deal Packager", "$99 / package"],
+      ["Capital Advisor", "$79 / capital plan"],
     ],
   );
   assert.deepEqual(
@@ -98,8 +100,18 @@ test("Genesis Tools carry the reviewed prices and units", () => {
     [
       [49, 49],
       [99, 99],
-      [29, 49],
+      [79, 79],
     ],
+  );
+  assert.deepEqual(
+    workspaceTools.map((tool) => [tool.id, tool.price]),
+    genesisTools.map((tool) => [tool.id, tool.price.amountUsd[0]]),
+    "catalog and purchase placeholders must match the public offer prices",
+  );
+  assert.ok(genesisTools.every((tool) => tool.price.cadence === "per-use"));
+  assert.deepEqual(
+    genesisTools.map((tool) => tool.job),
+    ["Evaluate", "Present", "Finance"],
   );
 });
 
