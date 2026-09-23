@@ -35,6 +35,14 @@ const clerkAppearance = {
     footerAction: { display: "none" },
     formButtonPrimary: { minHeight: "48px", fontWeight: 700, backgroundColor: "#f2d895", color: "#0e1114" },
     formFieldInput: { minHeight: "44px" },
+    socialButtonsIconButton: {
+      minHeight: "48px",
+      backgroundColor: "#30363a",
+      border: "1px solid #586167",
+      transition: "background-color 180ms ease, border-color 180ms ease",
+      "&:hover": { backgroundColor: "#3b4348", borderColor: "#f2d895" },
+      "&:focus-visible": { outline: "2px solid #f2d895", outlineOffset: "2px" },
+    },
   },
 };
 

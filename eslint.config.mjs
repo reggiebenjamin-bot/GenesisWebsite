@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Installed agent reference templates are not part of this application.
+    ".agents/**",
   ]),
 ]);
 

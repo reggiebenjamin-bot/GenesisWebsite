@@ -70,6 +70,13 @@
 .backButton { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; margin: -14px 0 30px; padding: 0; color: var(--account-muted); background: none; border: 0; font-size: 0.8rem; font-weight: 700; cursor: pointer; touch-action: manipulation; }
 .backButton:hover { color: var(--account-accent); }
 .formArea { min-height: 260px; margin-top: 28px; }
+.formArea :global(.cl-phoneInputBox) { background: var(--account-surface); }
+.formArea :global(.cl-phoneInputBox input) { padding-inline-start: 10px; }
+.formArea :global(.cl-phoneInputBox input:-webkit-autofill) {
+  -webkit-box-shadow: 0 0 0 100px var(--account-surface) inset;
+  -webkit-text-fill-color: var(--account-text);
+  caret-color: var(--account-text);
+}
 .modeSwitch { display: none; min-height: 44px; margin-top: 18px; padding: 0; color: var(--account-accent); background: none; border: 0; font-size: 0.78rem; font-weight: 700; text-align: left; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; touch-action: manipulation; }
 .modeSwitch:hover { color: var(--account-text); }
 .status { color: var(--account-muted); }

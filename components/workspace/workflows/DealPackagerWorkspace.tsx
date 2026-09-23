@@ -71,7 +71,7 @@ function optionalAmountValid(value: string) {
 }
 
 export function DealPackagerWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("deal-packager", initialDraft);
+  const { data, setData, status, clear, hydrated, conflict, chooseDraft } = useWorkspaceDraft("deal-packager", initialDraft);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [touched, setTouched] = useState<Partial<Record<keyof PackagerDraft, boolean>>>({});
 
@@ -98,13 +98,16 @@ export function DealPackagerWorkspace() {
   }
 
   function clearDraft() {
-    clear();
+    void clear();
     setTouched({});
   }
 
+  const draftBar = <DraftBar status={status} onClear={clearDraft} conflict={conflict?.reason} onChoose={(source) => void chooseDraft(source)} />;
+  if (!hydrated || conflict) return draftBar;
+
   return (
     <>
-      <DraftBar status={status} onClear={clearDraft} />
+      {draftBar}
 
       <div className={visual.intakeIntro}>
         <div>

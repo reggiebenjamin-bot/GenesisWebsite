@@ -10,7 +10,14 @@ const currency = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-export function DraftBar({ status, onClear }: { status: string; onClear: () => void }) {
+export function DraftBar({
+  status, onClear, conflict, onChoose,
+}: {
+  status: string;
+  onClear: () => void;
+  conflict?: "different" | "clear" | null;
+  onChoose?: (source: "account" | "device") => void;
+}) {
   const [confirming, setConfirming] = useState(false);
 
   function clearDraft() {
@@ -22,20 +29,37 @@ export function DraftBar({ status, onClear }: { status: string; onClear: () => v
     setConfirming(false);
   }
 
+  if (conflict) return (
+    <section className={styles.draftConflict} aria-labelledby="draft-conflict-title" role="status">
+      <div>
+        <h2 id="draft-conflict-title">Choose which draft to keep</h2>
+        <p>{conflict === "clear"
+          ? "This account draft changed elsewhere. Keep its latest version, or clear it from your account."
+          : "You have a draft on this device and a different one in your account. Choosing one replaces the other for this product."}</p>
+      </div>
+      <div className={styles.draftChoices}>
+        <button type="button" onClick={() => onChoose?.("account")}>Use account draft</button>
+        <button type="button" onClick={() => onChoose?.("device")}>{conflict === "clear" ? "Clear account draft" : "Use this device’s draft"}</button>
+      </div>
+    </section>
+  );
+
+  const message = status === "Storage unavailable" ? "Device storage is unavailable. Check browser storage settings before leaving."
+    : status === "Loading draft" ? "Loading your draft…"
+      : status === "Account sync unavailable" ? "Account sync is unavailable. This draft is on this device only; refresh to retry."
+        : status === "Account save failed" ? "Account save failed. Check your connection and refresh before leaving."
+          : status === "Saving to your account" ? "Saving to your account…"
+            : status === "Account ready" ? "Your edits will save to your account."
+            : status === "Saved to your account" ? "Saved to your account for up to 365 days after your last edit."
+              : "Saved on this device for 30 days.";
+
   return (
     <div className={styles.draftBar}>
-      <span aria-live="polite">
-        <Check aria-hidden="true" size={15} weight="bold" />
-        {status === "Storage unavailable"
-          ? "Storage unavailable. Your edits may not be kept."
-          : status === "Loading draft"
-            ? "Loading your draft…"
-            : "Saved on this device for 30 days."}
-      </span>
-      <button type="button" onClick={clearDraft} onBlur={() => setConfirming(false)}>
+      <span aria-live="polite"><Check aria-hidden="true" size={15} weight="bold" />{message}</span>
+      {status !== "Loading draft" && status !== "Account ready" ? <button type="button" onClick={clearDraft} onBlur={() => setConfirming(false)}>
         <Trash aria-hidden="true" size={14} />
-        {confirming ? "Confirm clear draft" : "Clear draft"}
-      </button>
+        {confirming ? "Confirm clear draft" : status === "Account sync unavailable" ? "Clear device draft" : "Clear draft"}
+      </button> : null}
     </div>
   );
 }

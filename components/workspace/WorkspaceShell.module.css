@@ -18,6 +18,15 @@
 .draftBar button { min-height: 36px; padding-inline: 0.5rem; color: var(--color-ink); font-weight: 700; text-decoration: underline; text-underline-offset: 0.2rem; cursor: pointer; touch-action: manipulation; }
 .draftBar button:hover { color: var(--color-gold-dark); }
 
+.draftConflict { display: grid; gap: 1rem; margin-bottom: 1rem; padding: 1.25rem; color: var(--color-ink); background: #fffaf0; border: 1px solid var(--color-gold-dark); border-radius: 8px; }
+.draftConflict h2 { margin: 0 0 0.35rem; font-size: 1.1rem; }
+.draftConflict p { max-width: 64ch; margin: 0; color: var(--color-muted-dark); font-size: 0.82rem; line-height: 1.5; }
+.draftChoices { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.draftChoices button { min-height: 44px; padding: 0.65rem 0.9rem; color: #fff; background: var(--color-ink); border-radius: 6px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.draftChoices button + button { color: var(--color-ink); background: #fff; border: 1px solid var(--color-ink); }
+.draftChoices button:hover { outline: 2px solid var(--color-gold-dark); outline-offset: 2px; }
+.draftChoices button:focus-visible, .draftBar button:focus-visible { outline: 2px solid var(--color-gold-dark); outline-offset: 3px; }
+
 .inputPanel { min-width: 0; padding: clamp(1.2rem, 2.5vw, 2rem); background: #fff; }
 .fieldset { display: grid; gap: 0.85rem; margin: 0 0 1.3rem; padding: 0; border: 0; }
 .fieldset legend { width: 100%; margin-bottom: 0.8rem; padding-bottom: 0.6rem; color: var(--color-gold-dark); border-bottom: 1px solid rgb(118 84 38 / 0.2); font-family: var(--font-display); font-size: 0.69rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }

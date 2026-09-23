@@ -6,7 +6,7 @@ import { CapitalAdvisorWorkspace } from "./workflows/CapitalAdvisorWorkspace";
 import { DealArchitectWorkspace } from "./workflows/DealArchitectWorkspace";
 import { DealPackagerWorkspace } from "./workflows/DealPackagerWorkspace";
 import { ExampleWalkthrough } from "./ExampleWalkthrough";
-import { AccountControls } from "./AccountControls";
+import { AccountControls, useWorkspaceIdentity } from "./AccountControls";
 import { ProductCard } from "./ProductCard";
 import { getWorkspaceTool, workspaceTools, type WorkspaceToolId } from "@/lib/toolWorkspace";
 import styles from "./WorkspaceApp.module.css";
@@ -53,6 +53,7 @@ export function WorkspaceHome() {
 
 export function WorkspaceShell({ toolId }: { toolId: WorkspaceToolId }) {
   const tool = getWorkspaceTool(toolId);
+  const identity = useWorkspaceIdentity();
   return (
     <div className={styles.page}>
       <CatalogHeader productPage />
@@ -73,11 +74,13 @@ export function WorkspaceShell({ toolId }: { toolId: WorkspaceToolId }) {
             <h2 id="brief-title">Make it yours.</h2>
             <p>Enter what you know. You can review and change your information before choosing to purchase.</p>
           </div>
-          <div className={styles.workbench}>
-            {toolId === "deal-architect" ? <DealArchitectWorkspace /> : null}
-            {toolId === "deal-packager" ? <DealPackagerWorkspace /> : null}
-            {toolId === "capital-advisor" ? <CapitalAdvisorWorkspace /> : null}
-          </div>
+          {identity.loaded ? (
+            <div className={styles.workbench} key={identity.userId ?? "guest"}>
+              {toolId === "deal-architect" ? <DealArchitectWorkspace /> : null}
+              {toolId === "deal-packager" ? <DealPackagerWorkspace /> : null}
+              {toolId === "capital-advisor" ? <CapitalAdvisorWorkspace /> : null}
+            </div>
+          ) : <p role="status">Loading your account…</p>}
         </section>
       </div>
     </div>

@@ -65,7 +65,7 @@ function validTerm(value: string) {
 }
 
 export function CapitalAdvisorWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("capital-advisor", initialDraft);
+  const { data, setData, status, clear, hydrated, conflict, chooseDraft } = useWorkspaceDraft("capital-advisor", initialDraft);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
 
   const invalid = {
@@ -98,9 +98,12 @@ export function CapitalAdvisorWorkspace() {
     setData((current) => ({ ...current, [key]: value }));
   }
 
+  const draftBar = <DraftBar status={status} onClear={() => void clear()} conflict={conflict?.reason} onChoose={(source) => void chooseDraft(source)} />;
+  if (!hydrated || conflict) return draftBar;
+
   return (
     <>
-      <DraftBar status={status} onClear={clear} />
+      {draftBar}
       <div className={visual.flow}>
         <form className={visual.formPanel} autoComplete="off" onSubmit={(event) => event.preventDefault()}>
           <header className={visual.formHeader}>
@@ -109,7 +112,7 @@ export function CapitalAdvisorWorkspace() {
               <h2>Build Your Capital Brief</h2>
               <p>Start with the facts you know. Supporting evidence is optional.</p>
             </div>
-            <span className={visual.stepBadge}>LOCAL DRAFT</span>
+            <span className={visual.stepBadge}>PRIVATE DRAFT</span>
           </header>
 
           <div className={visual.formSections}>

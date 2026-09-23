@@ -77,18 +77,26 @@ before touching the plates or the geometry.
 The `/workspace` catalog and its product briefs remain public. One account
 button leads to `/workspace/account`, where visitors can choose to create an
 account or log in. To activate the Clerk forms and signed-in profile avatar
-with account settings, create a Clerk application and put these keys in this
-repository's ignored
-`.env.local`, then restart `npm run dev`:
+with account settings, link the intended Clerk application and put its keys in
+this repository's ignored `.env.local`, then restart `npm run dev`:
 
 ```text
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
 CLERK_SECRET_KEY=your_secret_key
+UPSTASH_REDIS_REST_URL=your_redis_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_redis_rest_token
 ```
 
-Without both keys, the account page shows an honest setup-pending notice. Drafts
-remain on the current device for 30 days; account-based draft sync, checkout,
-and paid result generation are not connected yet.
+Without both Clerk keys, the account page shows a setup-pending notice and
+drafts remain on the current device for 30 days. With Clerk and Upstash
+configured, signed-in drafts save per user and product to Redis for 365 days
+after the last edit. An existing device draft is copied to the account on first
+sign-in; if both copies differ, the visitor chooses which one to keep. Clearing
+a signed-in draft removes the account copy. If the storage service is
+unavailable, the interface says so and uses a device-only draft. Do not put
+the secret key or Redis token in client code or commit `.env.local`. Configure
+the same variables in the deployment environment when account sync is ready
+for production. Checkout and paid result generation are not connected yet.
 
 ## Content
 

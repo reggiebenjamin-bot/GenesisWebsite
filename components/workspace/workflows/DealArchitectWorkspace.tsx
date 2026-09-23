@@ -46,7 +46,7 @@ function validOptionalAmount(value: string) {
 }
 
 export function DealArchitectWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("deal-architect", initialDraft);
+  const { data, setData, status, clear, hydrated, conflict, chooseDraft } = useWorkspaceDraft("deal-architect", initialDraft);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const isRental = data.strategy === "Rental";
   const missing = [
@@ -65,15 +65,18 @@ export function DealArchitectWorkspace() {
     setData((current) => ({ ...current, [key]: value }));
   }
 
+  const draftBar = <DraftBar status={status} onClear={() => void clear()} conflict={conflict?.reason} onChoose={(source) => void chooseDraft(source)} />;
+  if (!hydrated || conflict) return draftBar;
+
   return (
     <>
-      <DraftBar status={status} onClear={clear} />
+      {draftBar}
       <div className={visual.flow}>
         <form className={`${styles.inputPanel} ${visual.formPanel}`} autoComplete="off" onSubmit={(event) => event.preventDefault()}>
           <div className={visual.formHeading}>
             <span className={visual.kicker}>Your deal</span>
             <h2>Start with what you know.</h2>
-            <p>Your inputs stay in a local draft. Nothing here calculates or reveals a result before purchase.</p>
+            <p>Start free. Your draft saves on this device, or to your account when signed in. Nothing here reveals a finished result before purchase.</p>
           </div>
 
           <fieldset className={styles.fieldset}>
