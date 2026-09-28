@@ -142,6 +142,19 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
   display: none !important;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html[data-offer-switching] [data-offer-panel],
+  html[data-offer-switching] header a[href="/assessment"],
+  html[data-offer-switching] header a[href="/workspace/account"] {
+    animation: 300ms var(--ease-editorial) both offer-panel-enter;
+  }
+}
+
+@keyframes offer-panel-enter {
+  from { opacity: 0.7; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* The page gutter, used on every section. A utility so it composes with
    variants rather than being a class components have to remember. */
 @utility shell {

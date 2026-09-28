@@ -17,6 +17,7 @@ import {
  */
 
 const CHANGE_EVENT = "genesis:offer-path";
+let switchTimer = 0;
 export const OFFER_PATH_ANNOUNCER_ID = "offer-path-announcer";
 
 function readPath(): OfferPathId {
@@ -66,6 +67,12 @@ export function choosePathInPlace(
   path: OfferPathId,
   { afterMenuCloses = false }: { afterMenuCloses?: boolean } = {},
 ) {
+  const changed = readPath() !== path;
+  if (changed) {
+    window.clearTimeout(switchTimer);
+    document.documentElement.dataset.offerSwitching = "true";
+  }
+
   setOfferPath(path, { announce: true });
   window.history.replaceState(null, "", `#${path}`);
 
@@ -84,4 +91,10 @@ export function choosePathInPlace(
   // closed, so this waits a moment.
   if (afterMenuCloses) window.setTimeout(settle, 60);
   else settle();
+
+  if (changed) {
+    switchTimer = window.setTimeout(() => {
+      delete document.documentElement.dataset.offerSwitching;
+    }, 320);
+  }
 }

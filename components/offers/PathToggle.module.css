@@ -37,9 +37,9 @@
   white-space: nowrap;
   cursor: pointer;
   transition:
-    background-color 220ms var(--ease-editorial),
-    color 200ms ease,
-    box-shadow 220ms ease;
+    background-color 150ms var(--ease-editorial),
+    color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .segment:hover {
