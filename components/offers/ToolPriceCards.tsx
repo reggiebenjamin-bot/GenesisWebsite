@@ -30,7 +30,7 @@ export function ToolPriceCards({ headingLevel = "h3" }: { headingLevel?: "h3" | 
                 Tool {tool.number}
               </p>
               {tool.price.cadence === "monthly" ? (
-                <span className="rounded-full border border-line-light px-2.5 py-0.5 text-[0.72rem] text-muted-dark">
+                <span className="rounded-[6px] border border-line-light px-2.5 py-0.5 text-[0.72rem] text-muted-dark">
                   Recurring
                 </span>
               ) : null}

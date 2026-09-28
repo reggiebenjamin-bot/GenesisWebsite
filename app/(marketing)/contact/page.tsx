@@ -62,7 +62,7 @@ export default async function ContactPage({
               {areas.map((area) => (
                 <li
                   key={area}
-                  className="rounded-full border border-line-light bg-white/55 px-3 py-1 text-[0.82rem]"
+                  className="rounded-[6px] border border-line-light bg-white/55 px-3 py-1 text-[0.82rem]"
                 >
                   {area}
                 </li>
@@ -113,7 +113,7 @@ export default async function ContactPage({
           </div>
           <Link
             href="/tools"
-            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-gold-light/70 px-5 text-[0.88rem] font-bold text-ivory transition-colors duration-200 hover:bg-ivory hover:text-ink"
+            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[6px] border border-gold-light/70 px-5 text-[0.88rem] font-bold text-ivory transition-colors duration-200 hover:bg-ivory hover:text-ink"
           >
             Explore Genesis Tools
             <span aria-hidden="true">→</span>

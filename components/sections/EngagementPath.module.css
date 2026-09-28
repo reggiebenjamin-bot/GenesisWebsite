@@ -3,7 +3,7 @@
   overflow: hidden;
   padding: clamp(24px, 4vw, 52px);
   border: 1px solid rgb(201 165 94 / 0.32);
-  border-radius: 22px;
+  border-radius: 6px;
   color: var(--color-ivory);
   background:
     radial-gradient(circle at 50% -20%, rgb(201 165 94 / 0.15), transparent 42%),

@@ -171,7 +171,7 @@ export default function AboutPage() {
         <ul className="grid gap-5 sm:grid-cols-2 lg:max-w-[820px]">
           {teamMembers.map((member) => (
             <li key={member.name}>
-              <article className="h-full overflow-hidden rounded-[24px] border border-line-light bg-white/70 shadow-[0_18px_44px_rgb(8_9_14/0.06)]">
+              <article className="h-full overflow-hidden rounded-[6px] border border-line-light bg-white/70 shadow-[0_18px_44px_rgb(8_9_14/0.06)]">
                 <div className="relative aspect-square overflow-hidden bg-ink">
                   <Image
                     src={member.image}

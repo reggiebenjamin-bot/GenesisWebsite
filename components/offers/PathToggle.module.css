@@ -1,5 +1,5 @@
 /* Agent / Custom Infrastructure as a segmented control: the chosen path is a
-   filled pill on a quiet track. Each variant sets the colours for its surface. */
+   filled rectangle on a quiet track. Each variant sets its surface colours. */
 
 .toggle {
   --track-border: rgb(244 239 232 / 0.12);
@@ -17,7 +17,7 @@
   gap: 2px;
   padding: 3px;
   border: 1px solid var(--track-border);
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--track-background);
 }
 
@@ -28,7 +28,7 @@
   justify-content: center;
   padding-inline: 14px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--segment-text);
   background: transparent;
   font-size: 0.8rem;
@@ -92,7 +92,7 @@
   font-size: 0.88rem;
 }
 
-/* Above the offers, on the paper page: an ink pill on a light track. */
+/* Above the offers, on the paper page: an ink segment on a light track. */
 .section {
   --track-border: var(--color-line-light);
   --track-background: rgb(255 255 255 / 0.6);

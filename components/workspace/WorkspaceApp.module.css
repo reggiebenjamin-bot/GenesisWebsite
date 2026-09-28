@@ -12,9 +12,9 @@
 .catalogIntro h1 { margin-top: 1.05rem; font-size: clamp(3.2rem, 6.5vw, 6.4rem); font-weight: 300; letter-spacing: -0.067em; line-height: 1.02; text-wrap: balance; }
 .catalogIntro > p:last-child { margin-top: 1rem; color: #5d5b56; font-size: clamp(1rem, 1.4vw, 1.17rem); }
 .catalogGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 2.25rem); max-width: 1240px; margin-inline: auto; }
-.productCard { display: flex; min-width: 0; flex-direction: column; overflow: hidden; color: #f8f5ef; background: #222426; border: 1px solid #343638; border-radius: 26px; box-shadow: 0 14px 28px rgb(20 19 16 / 0.12), 0 2px 5px rgb(20 19 16 / 0.06); touch-action: manipulation; -webkit-tap-highlight-color: rgb(198 165 108 / 0.22); transition: transform 220ms ease; }
+.productCard { display: flex; min-width: 0; flex-direction: column; overflow: hidden; color: #f8f5ef; background: #222426; border: 1px solid #343638; border-radius: 6px; box-shadow: 0 14px 28px rgb(20 19 16 / 0.12), 0 2px 5px rgb(20 19 16 / 0.06); touch-action: manipulation; -webkit-tap-highlight-color: rgb(198 165 108 / 0.22); transition: transform 220ms ease; }
 .productCard:hover, .productCard:focus-visible { border-color: #9a835f; box-shadow: 0 22px 38px rgb(20 19 16 / 0.18), 0 4px 10px rgb(20 19 16 / 0.08); transform: translateY(-4px); }
-.cardImage { position: relative; aspect-ratio: 1.06; overflow: hidden; margin: clamp(0.75rem, 1.3vw, 1.1rem) clamp(0.75rem, 1.3vw, 1.1rem) 0; background: var(--color-navy); border-radius: 18px; }
+.cardImage { position: relative; aspect-ratio: 1.06; overflow: hidden; margin: clamp(0.75rem, 1.3vw, 1.1rem) clamp(0.75rem, 1.3vw, 1.1rem) 0; background: var(--color-navy); border-radius: 6px; }
 .cardImage img { object-fit: cover; transition: transform 650ms var(--ease-editorial); }
 .cardImage[data-product="deal-architect"] img { object-position: 78% center; }
 .cardImage[data-product="deal-packager"] img { object-position: 64% center; }
@@ -26,7 +26,7 @@
 .cardPurchaseFacts { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; margin-top: auto; padding-top: clamp(1.1rem, 1.7vw, 1.6rem); }
 .cardPriceUnit { max-width: 7rem; padding-bottom: 0.15rem; color: #c4c5c2; font-size: 0.76rem; line-height: 1.3; text-align: right; }
 .cardPrice { color: #fffdf9; font-size: clamp(2.25rem, 3vw, 2.9rem); font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: -0.055em; line-height: 0.95; white-space: nowrap; }
-.cardAction { display: flex; align-items: center; justify-content: center; gap: 0.7rem; min-height: 48px; margin-top: 1.1rem; padding: 0.65rem 1rem; color: #222426; background: #f5f1e8; border-radius: 999px; font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.015em; white-space: nowrap; }
+.cardAction { display: flex; align-items: center; justify-content: center; gap: 0.7rem; min-height: 48px; margin-top: 1.1rem; padding: 0.65rem 1rem; color: #222426; background: #f5f1e8; border-radius: 6px; font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700; letter-spacing: -0.015em; white-space: nowrap; }
 .productCard:hover .cardAction, .productCard:focus-visible .cardAction { background: #fffaf0; }
 .cardAction svg { flex: none; transition: transform 180ms ease; }
 .productCard:hover .cardAction svg, .productCard:focus-visible .cardAction svg { transform: translateX(4px); }

@@ -44,7 +44,7 @@ function Chip({
   return (
     <label
       className={cn(
-        "inline-flex min-h-11 cursor-pointer items-center gap-2.5 rounded-full border px-4 py-2 text-[0.92rem] transition-colors duration-200",
+        "inline-flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[6px] border px-4 py-2 text-[0.92rem] transition-colors duration-200",
         "focus-within:border-gold-dark focus-within:ring-2 focus-within:ring-gold-dark/30",
         checked
           ? "border-ink bg-ink text-ivory"

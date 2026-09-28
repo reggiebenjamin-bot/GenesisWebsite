@@ -29,7 +29,7 @@
   position: sticky;
   top: calc(var(--header-height) + 5rem + var(--i) * 14px);
   border: 1px solid var(--color-line-dark);
-  border-radius: 12px;
+  border-radius: 6px;
   /* Opaque, because a card's job here is to cover the one underneath. */
   background: var(--color-ink);
   box-shadow:

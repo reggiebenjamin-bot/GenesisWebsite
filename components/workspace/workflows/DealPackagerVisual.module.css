@@ -61,7 +61,7 @@
   display: grid;
   background: #fff;
   border: 1px solid var(--color-line-light);
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .formSection {
@@ -179,7 +179,7 @@
   min-height: 48px;
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--color-line-light);
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.78rem;
   touch-action: manipulation;
@@ -215,7 +215,7 @@
   padding: clamp(1.3rem, 4vw, 3.5rem);
   color: var(--color-ivory);
   background: var(--color-ink);
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .previewHeading {

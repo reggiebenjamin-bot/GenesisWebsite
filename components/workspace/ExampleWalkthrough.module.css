@@ -1,5 +1,5 @@
 .walkthrough { min-width: 0; }
-.stage { display: grid; grid-template-columns: 0.9fr 1.1fr; min-height: 475px; overflow: hidden; background: #fff; border: 1px solid #ddd7ce; border-radius: 8px; box-shadow: 0 22px 60px rgb(8 9 14 / 0.08); }
+.stage { display: grid; grid-template-columns: 0.9fr 1.1fr; min-height: 475px; overflow: hidden; background: #fff; border: 1px solid #ddd7ce; border-radius: 6px; box-shadow: 0 22px 60px rgb(8 9 14 / 0.08); }
 .demoForm { position: relative; z-index: 1; padding: clamp(1.3rem, 2.6vw, 2.4rem); background: #fff; }
 .demoFormHeading { display: flex; align-items: center; gap: 0.5rem; min-height: 30px; margin-bottom: 1.5rem; color: #413d36; font-size: 0.76rem; font-weight: 700; }
 .sparkle { color: var(--color-gold-dark); font-size: 1.15rem; }

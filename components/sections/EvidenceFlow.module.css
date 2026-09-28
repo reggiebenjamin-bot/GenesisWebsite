@@ -1,10 +1,10 @@
-.frame { position: relative; overflow: hidden; padding: clamp(26px, 4vw, 52px); border: 1px solid rgb(201 165 94 / 0.3); border-radius: 22px; color: var(--color-ivory); background: radial-gradient(circle at 75% -20%, rgb(201 165 94 / 0.16), transparent 42%), #090b10; box-shadow: 0 34px 90px rgb(8 9 14 / 0.25); }
+.frame { position: relative; overflow: hidden; padding: clamp(26px, 4vw, 52px); border: 1px solid rgb(201 165 94 / 0.3); border-radius: 6px; color: var(--color-ivory); background: radial-gradient(circle at 75% -20%, rgb(201 165 94 / 0.16), transparent 42%), #090b10; box-shadow: 0 34px 90px rgb(8 9 14 / 0.25); }
 .frame::after { position: absolute; inset: 0; background-image: linear-gradient(rgb(244 239 232 / 0.016) 1px, transparent 1px), linear-gradient(90deg, rgb(244 239 232 / 0.016) 1px, transparent 1px); background-size: 30px 30px; content: ""; pointer-events: none; }
 .header, .flow, .proof { position: relative; z-index: 1; }
 .header { display: flex; justify-content: space-between; align-items: start; gap: 24px; }
 .header small { color: var(--color-gold); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
 .header h3 { max-width: 620px; margin-top: 8px; font-size: clamp(1.45rem, 3vw, 2.4rem); }
-.header > span { padding: 6px 9px; border: 1px solid rgb(244 239 232 / 0.22); border-radius: 999px; color: rgb(244 239 232 / 0.62); font-size: 0.68rem; }
+.header > span { padding: 6px 9px; border: 1px solid rgb(244 239 232 / 0.22); border-radius: 6px; color: rgb(244 239 232 / 0.62); font-size: 0.68rem; }
 .flow { --dot: clamp(58px, 7vw, 92px); --dot-top: calc(0.68rem * 1.2 + 12px); display: grid; grid-template-columns: repeat(5, 1fr); margin: clamp(48px, 7vw, 82px) 0 0; padding: 0; list-style: none; }
 .group { position: relative; min-width: 0; }
 .stage { position: relative; display: grid; justify-items: center; text-align: center; }

@@ -1,6 +1,6 @@
 /* ── the bar ────────────────────────────────────────────────────────────
    One element carries both states. At the top it is a full-width bar; once
-   the reader scrolls it settles into a centred floating pill. Every changing
+   the reader scrolls it settles into a centred floating bar. Every changing
    property is transitioned together on one curve, so it resizes as one move
    rather than a sequence of jumps. */
 
@@ -56,7 +56,7 @@
 
 /* There the links sit on the hawk's characters, so a low dark wash lies
    behind them, fading out below the bar so it has no edge. It clears as the
-   bar becomes the pill, which carries its own surface. */
+   bar becomes the floating surface. */
 .header::before {
   position: absolute;
   inset: 0 0 -48px;
@@ -105,7 +105,7 @@
   justify-content: center;
   padding-inline: 15px;
   border: 1px solid var(--color-gold);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--color-ivory);
   background: rgb(201 165 94 / 0.08);
   font-size: 0.8rem;
@@ -124,7 +124,7 @@
   outline-offset: 2px;
 }
 
-/* ── wide screens: the floating pill ─────────────────────────────────── */
+/* ── wide screens: the floating bar ─────────────────────────────────── */
 
 @media (min-width: 1024px) {
   .header[data-scrolled="true"] {
@@ -136,7 +136,7 @@
     height: 62px;
     padding-inline: 18px 7px;
     border-color: rgb(244 239 232 / 0.12);
-    border-radius: 999px;
+    border-radius: 6px;
     background-color: rgb(10 12 18 / 0.84);
     box-shadow:
       0 18px 50px rgb(0 0 0 / 0.34),
@@ -173,7 +173,7 @@
   gap: 6px;
   padding-inline: 10px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 6px;
   color: rgb(244 239 232 / 0.8);
   background: transparent;
   font-size: 0.8rem;
@@ -242,7 +242,7 @@
   z-index: 10;
   padding: 8px;
   border: 1px solid rgb(244 239 232 / 0.12);
-  border-radius: 20px;
+  border-radius: 6px;
   color: var(--color-ivory);
   background: rgb(10 12 18);
   box-shadow:
@@ -290,7 +290,7 @@
   gap: 6px;
   padding: 18px;
   border: 1px solid rgb(201 165 94 / 0.18);
-  border-radius: 14px;
+  border-radius: 6px;
   background:
     radial-gradient(circle at 20% 0%, rgb(201 165 94 / 0.14), transparent 60%),
     rgb(16 25 41 / 0.8);
@@ -342,7 +342,7 @@
   display: grid;
   gap: 3px;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: 6px;
   transition: background-color 180ms ease;
 }
 
@@ -449,7 +449,7 @@
   justify-content: space-between;
   gap: 16px;
   padding-block: 8px;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .sheetLinkText {

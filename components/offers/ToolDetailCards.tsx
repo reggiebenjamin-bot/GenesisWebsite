@@ -3,7 +3,7 @@ import { Card, Disclosure, Figure } from "@/components/ui/Blocks";
 import { genesisTools } from "@/lib/offers";
 
 const chip =
-  "inline-flex items-center gap-1.5 rounded-full border border-line-light bg-white/55 px-2.5 py-1 text-[0.78rem]";
+  "inline-flex items-center gap-1.5 rounded-[6px] border border-line-light bg-white/55 px-2.5 py-1 text-[0.78rem]";
 
 /**
  * One card per tool, as the tools page presents it: the job it does, who it
@@ -27,7 +27,7 @@ export function ToolDetailCards() {
                 {tool.number}
               </span>
               {tool.price.cadence === "monthly" ? (
-                <span className="rounded-full border border-line-light px-2.5 py-0.5 text-[0.72rem] text-muted-dark">
+                <span className="rounded-[6px] border border-line-light px-2.5 py-0.5 text-[0.72rem] text-muted-dark">
                   Recurring
                 </span>
               ) : null}

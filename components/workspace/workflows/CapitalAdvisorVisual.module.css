@@ -9,7 +9,7 @@
   padding: clamp(1.4rem, 3.5vw, 3rem);
   background: #fff;
   border: 1px solid var(--color-line-light);
-  border-radius: 14px;
+  border-radius: 6px;
   box-shadow: 0 18px 52px rgb(14 25 37 / 0.055);
 }
 
@@ -189,7 +189,7 @@
     radial-gradient(circle at 84% 8%, rgb(201 165 94 / 0.12), transparent 24rem),
     var(--color-navy);
   border: 1px solid rgb(201 165 94 / 0.36);
-  border-radius: 14px;
+  border-radius: 6px;
 }
 
 .lockedCopy .eyebrow {
@@ -362,7 +362,7 @@
   padding: clamp(1rem, 2.5vw, 1.7rem);
   background: #fff;
   border: 1px solid var(--color-line-light);
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .bottomAction > div:first-child {

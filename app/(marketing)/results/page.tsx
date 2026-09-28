@@ -151,7 +151,7 @@ export default function ResultsPage() {
               {futureMeasures.map((measure) => (
                 <li
                   key={measure}
-                  className="flex items-baseline gap-3 rounded-2xl border border-line-light bg-white/60 px-4 py-3 text-[0.94rem] leading-snug"
+                  className="flex items-baseline gap-3 rounded-[6px] border border-line-light bg-white/60 px-4 py-3 text-[0.94rem] leading-snug"
                 >
                   <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-gold" />
                   {measure}

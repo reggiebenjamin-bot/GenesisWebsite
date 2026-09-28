@@ -111,7 +111,7 @@ export function AgentShowcase() {
                   {agent.signals.map((signal) => (
                     <span
                       key={signal}
-                      className="rounded-sm border border-ivory/12 px-3 py-1.5 font-display text-[0.6rem] tracking-[0.1em] text-ivory/60 uppercase"
+                      className="rounded-[6px] border border-ivory/12 px-3 py-1.5 font-display text-[0.6rem] tracking-[0.1em] text-ivory/60 uppercase"
                     >
                       {signal}
                     </span>

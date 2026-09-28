@@ -36,7 +36,7 @@ export function Sheet({
       className={cn(
         "relative py-[clamp(88px,10vw,136px)]",
         surfaces[surface],
-        rise && "z-10 -mt-10 rounded-t-[32px]",
+        rise && "z-10 -mt-10 rounded-t-[6px]",
         /* A sheet that does not rise still tucks under the section before it by
            a pixel. Two sections meeting at a fractional position can otherwise
            leave a hairline of the dark page showing between them. */
@@ -132,7 +132,7 @@ export function Card({
   return (
     <Element
       id={id}
-      className={cn("rounded-[24px] border p-[clamp(22px,2.4vw,32px)]", cardTones[tone], className)}
+      className={cn("rounded-[6px] border p-[clamp(22px,2.4vw,32px)]", cardTones[tone], className)}
       style={style}
     >
       {children}

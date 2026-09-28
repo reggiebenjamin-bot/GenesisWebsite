@@ -35,7 +35,7 @@ export function ToolCatalog() {
             <Link
               href={tool.workspaceHref}
               aria-label={`View ${tool.name} example and start a brief`}
-              className="group relative isolate flex min-h-[390px] overflow-hidden rounded-[24px] border border-ivory/18 bg-ink-soft text-ivory transition-colors duration-300 hover:border-gold/65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold lg:min-h-[470px]"
+              className="group relative isolate flex min-h-[390px] overflow-hidden rounded-[6px] border border-ivory/18 bg-ink-soft text-ivory transition-colors duration-300 hover:border-gold/65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold lg:min-h-[470px]"
             >
               <Image
                 src={heroImage}
@@ -287,7 +287,7 @@ export function ToolStructure({
       </ol>
 
       {note ? (
-        <div className="mt-8 flex flex-col gap-3 rounded-[24px] border border-gold/30 p-[clamp(22px,2.4vw,32px)] sm:flex-row sm:items-baseline sm:gap-8">
+        <div className="mt-8 flex flex-col gap-3 rounded-[6px] border border-gold/30 p-[clamp(22px,2.4vw,32px)] sm:flex-row sm:items-baseline sm:gap-8">
           <p className="shrink-0 font-display text-[0.64rem] tracking-[0.16em] text-gold uppercase">
             {note.title}
           </p>

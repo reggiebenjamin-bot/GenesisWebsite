@@ -40,7 +40,7 @@ export function DealReportPreview({ className }: { className?: string }) {
       className={cn(
         /* min-w-0: the truncating header line would otherwise set a grid
            column's minimum width and push the page sideways on a phone. */
-        "min-w-0 overflow-hidden rounded-2xl border border-line-light bg-white/70 text-ink shadow-[0_24px_60px_rgb(8_9_14/0.08)]",
+        "min-w-0 overflow-hidden rounded-[6px] border border-line-light bg-white/70 text-ink shadow-[0_24px_60px_rgb(8_9_14/0.08)]",
         className,
       )}
     >
@@ -53,7 +53,7 @@ export function DealReportPreview({ className }: { className?: string }) {
             Analysis report · Example property
           </p>
         </div>
-        <span className="shrink-0 rounded-full border border-line-light px-2.5 py-1 text-[0.7rem] text-muted-dark">
+        <span className="shrink-0 rounded-[6px] border border-line-light px-2.5 py-1 text-[0.7rem] text-muted-dark">
           Illustrative example
         </span>
       </div>
@@ -84,7 +84,7 @@ export function DealReportPreview({ className }: { className?: string }) {
             <dd className="col-span-2 sm:col-span-1 sm:text-right">
               <span
                 className={cn(
-                  "inline-flex rounded-full border px-2 py-0.5 font-display text-[0.58rem] tracking-[0.1em] uppercase",
+                  "inline-flex rounded-[6px] border px-2 py-0.5 font-display text-[0.58rem] tracking-[0.1em] uppercase",
                   SOURCE_STYLE[row.source],
                 )}
               >
