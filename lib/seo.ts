@@ -1,4 +1,5 @@
 import { genesisPositioning, genesisTools, managedPlans, type ToolId } from "./offers.ts";
+import { blogPosts } from "./blog.ts";
 import { siteUrl } from "./site.ts";
 
 /*
@@ -187,6 +188,30 @@ export const seoPages: readonly SeoPage[] = [
     changeFrequency: "yearly",
     priority: 0.6,
   },
+  {
+    path: "/blog",
+    title: "Real Estate Operations and AI Blog",
+    description:
+      "Practical writing from Genesis AI on real estate operations, email deliverability, client data, and putting AI to work in brokerages and investor teams.",
+    label: "Blog",
+    image: null,
+    lastModified: blogPosts[0]?.date ?? REBUILD,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  },
+  ...blogPosts.map(
+    (post): SeoPage => ({
+      path: `/blog/${post.slug}`,
+      title: post.seoTitle,
+      description: post.seoDescription,
+      label: post.title,
+      parent: "/blog",
+      image: { url: post.image, alt: post.imageAlt, width: 1400, height: 1120 },
+      lastModified: post.date,
+      changeFrequency: "yearly",
+      priority: 0.6,
+    }),
+  ),
 ];
 
 export function seoPage(path: string): SeoPage {
