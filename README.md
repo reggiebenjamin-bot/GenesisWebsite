@@ -103,6 +103,40 @@ not the public Genesis Tools catalog. The future auth, billing, entitlement,
 and dashboard boundary is documented in
 [docs/mini-infrastructure-commercial-boundary.md](docs/mini-infrastructure-commercial-boundary.md).
 
+## Platform flow
+
+The done for you setup flow lives beside the marketing site. It does not replace the public pages.
+
+- `/start` landing
+- `/signup` one question at a time
+- `/onboarding` the same wizard, from the pack questions
+- `/work` dry run workspace
+- `/business-check` free Texas business check
+- `/desk/status` customer stage page for the Lending pack
+
+Framework: Next.js App Router, TypeScript, and Tailwind CSS v4. The brand tokens live in `app/theme.css`. Hosting for the existing site is Vercel (`VERCEL_ENV` in `lib/site.ts`). This flow is a preview surface. It does not deploy, change DNS, or call a live system.
+
+### How to add a vertical
+
+1. Copy `packs/general.ts` to `packs/your_id.ts`. Use an id with underscores. The id can appear in the setup file.
+2. Fill the label, promise, benefits, questions, stages, sample rows, and the next step. Keep company copy in "we".
+3. Register the pack in `packs/index.ts`.
+4. Stop there. The landing tabs, signup choices, onboarding, and workspace read the registry. Do not add a route per vertical.
+5. If the pack mentions funding, set `fundingDisclaimer` to the shared line: "Genesis is software. We do not lend, place or arrange funding. [CONFIRM: counsel]". Do not name a capital partner. Do not call the pack Genesis Lending or Genesis Capital.
+6. The word broker is allowed only inside `clientDesk`, which renders on the client desk. Do not put it in the promise, benefits, questions, or any line about Genesis.
+
+The Lending pack sets `broker_mode`. When it is on, the client keeps their own lender list and customers see stages only. When it is off, the client is the lender. Stage labels are the `stages` array on the pack.
+
+### What is stubbed
+
+- `POST /api/platform/signup` validates and returns a client config. It does not write a database, send email, or call a webhook.
+- `POST /api/platform/business-check` validates and returns `not_run`. It does not query a Texas filing.
+- Wizard progress stays in `localStorage` on this device.
+- Workspace counts, activity, leads, inbox, approvals, and pipeline cards are sample data.
+- Lender match names are fictional sample data on the client desk only. The customer status page does not receive them.
+- `sms_live` is false, `caps` is 0, and outbound stays in dry run. Approve and reply do not send.
+- Payments, provisioning, and voice guidance are not connected.
+
 ## Search launch checklist
 
 `npm run build` also checks rendered public-page titles, descriptions,
