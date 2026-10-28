@@ -207,9 +207,12 @@ function Overview({
           </p>
         </div>
         {pack.id === "lending" ? (
-          <Button href="/desk/status" variant="outline">
-            {pack.clientDesk?.customerLink ?? platformCopy.status.back}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button href="/desk">Submission desk</Button>
+            <Button href="/desk/status" variant="outline">
+              {pack.clientDesk?.customerLink ?? platformCopy.status.back}
+            </Button>
+          </div>
         ) : null}
       </div>
       <p className="text-[1.05rem] text-ink/70">{work.lede}</p>
