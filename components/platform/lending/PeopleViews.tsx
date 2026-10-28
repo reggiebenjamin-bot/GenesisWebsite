@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { feeNote, money } from "@/lib/platform/lending/model";
+import { HorizontalBars } from "./charts";
 import { Notice, fieldLabel, textInput } from "../Chrome";
 import { DeskDisclaimer, ScreenHead } from "./Shell";
 import { useDesk } from "./session";
@@ -26,6 +27,19 @@ export function LenderList() {
         actions={<Link className={primary} href="/desk/lenders/new">Add a source</Link>}
       />
       <input className={textInput} value={text} aria-label="Search your list" onChange={(event) => setText(event.target.value)} />
+      <section className={card}>
+        <h2 className="text-[1.35rem]">Where your sample list has coverage</h2>
+        <div className="mt-4">
+          <HorizontalBars
+            items={[
+              { label: "Bridge", value: 1, note: "1 source" },
+              { label: "Purchase", value: 1, note: "1 source" },
+              { label: "Refinance", value: 1, note: "1 source" },
+            ]}
+          />
+        </div>
+        <p className="mt-3 text-[0.95rem] text-ink/65">Sample data. Not a recommendation. [CONFIRM: counsel]</p>
+      </section>
       <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rows.map((source) => (
           <li key={source.id} className={card}>
@@ -65,6 +79,15 @@ export function LenderProfile({ id }: { id: string }) {
       <section className={card}>
         <h2 className="text-[1.4rem]">Contact</h2>
         <p className="mt-2 text-[1.125rem]">{source.contact}</p>
+      </section>
+      <section className={card}>
+        <h2 className="text-[1.4rem]">Sample scorecard</h2>
+        <p className="mt-2 text-[1rem] text-ink/70">Speed, flexibility, and communication. Sample stars only. [CONFIRM: counsel]</p>
+        <ul className="mt-3 grid gap-2 text-[1.05rem]">
+          <li>Speed. Gold marks on a sample of five.</li>
+          <li>Flexibility. Gold marks on a sample of five.</li>
+          <li>Communication. Gold marks on a sample of five.</li>
+        </ul>
       </section>
       <section className={card}>
         <h2 className="text-[1.4rem]">Criteria you saved</h2>
@@ -267,6 +290,14 @@ export function Learning() {
         title="What did this file teach us?"
         lede="A note for your desk. It does not change a stage or contact anyone."
       />
+      <section className="rounded-[6px] border border-line-light p-4">
+        <h2 className="text-[1.25rem]">Source results</h2>
+        <p className="mt-2 text-[1rem] text-ink/75">Website and referral samples. Funded counts are sample data, not a rate you can publish. [CONFIRM: counsel]</p>
+      </section>
+      <section className="rounded-[6px] border border-line-light p-4">
+        <h2 className="text-[1.25rem]">Your list results</h2>
+        <p className="mt-2 text-[1rem] text-ink/75">Sample Lender A is on your list. These notes are not approval odds. [CONFIRM: counsel]</p>
+      </section>
       <label className="grid gap-2"><span className={fieldLabel}>What happened</span><textarea required name="what" className={`${textInput} min-h-28 py-3`} /></label>
       <label className="grid gap-2"><span className={fieldLabel}>Evidence on this screen</span><input required name="evidence" className={textInput} /></label>
       <label className="flex min-h-14 items-start gap-3 rounded-[6px] border border-line-light p-4">

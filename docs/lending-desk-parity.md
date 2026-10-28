@@ -1,5 +1,7 @@
 # Lending desk parity
 
+The submission desk now also carries the sample dashboards from the anonymized dashboard spec: production hero, monthly bars, balances, a data quality note, a funding range, email radar, the assistant growth ledger, a lead sketch, funding partner mix, conversion quality, the work queue with "No loose ends.", and the seven older sample cards. Numbers are sample data. Mailbox scans, outreach, enrichment, and live charts that need a book of record stay off.
+
 Source: the anonymized function inventory for the reference desk. The Lending pack does not copy that product's brand, people, or books of record. Genesis is software. We do not lend, place or arrange funding. [CONFIRM: counsel]
 
 Stage names in the product are the owner list: Submitted, In review, Matched, Terms ready, Closing, Funded. The reference eight names are not shown.

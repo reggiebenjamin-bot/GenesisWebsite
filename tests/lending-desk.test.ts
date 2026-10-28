@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { adjustedCloseRate, compactMoney, rawCloseRate, sampleOutcomes } from "../lib/platform/lending/dashboards.ts";
 import { fundingDisclaimer } from "../lib/platform/copy.ts";
 import { publicDeal, sampleDeals } from "../lib/platform/lending/model.ts";
 import { isPublicDesk, resolveDesk } from "../lib/platform/lending/routes.ts";
@@ -35,6 +36,17 @@ test("desk routes cover the lending screens and keep the portal public", () => {
   assert.ok(portal && isPublicDesk(portal));
   const desk = resolveDesk([]);
   assert.ok(desk && !isPublicDesk(desk));
+});
+
+test("sample dashboard math stays labeled and client owned", () => {
+  assert.equal(compactMoney(860000), "$860K");
+  assert.equal(compactMoney(2400000), "$2.40M");
+  assert.equal(adjustedCloseRate(sampleOutcomes), 50);
+  assert.equal(rawCloseRate(sampleOutcomes), 40);
+  const home = readFileSync(new URL("../components/platform/lending/HomeDash.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(home, /Hawk/);
+  assert.match(home, /Assistant growth ledger/);
+  assert.match(home, /CONFIRM: counsel/);
 });
 
 test("borrower pages do not mention a sample lender", () => {

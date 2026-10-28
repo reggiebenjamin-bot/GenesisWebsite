@@ -47,6 +47,12 @@ export function PortalHome() {
       <SampleMark />
       <h1 className="text-[clamp(2.2rem,5vw,3.4rem)] leading-[1.05] tracking-[-0.04em]">Your deals</h1>
       <p className="text-[1.125rem] leading-relaxed text-ink/75">Stages only. This page does not show a funding source.</p>
+      <div>
+        <p className={fieldLabel}>Overall progress. Sample data.</p>
+        <div className="mt-2 h-2 rounded-full bg-ivory-deep" role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100}>
+          <div className="h-2 w-2/5 rounded-full bg-gold" />
+        </div>
+      </div>
       <ol className="grid gap-2">
         {lendingStages.map((stage, index) => (
           <li key={stage.id} className="flex min-h-14 items-center gap-4 rounded-[6px] border border-line-light px-4">

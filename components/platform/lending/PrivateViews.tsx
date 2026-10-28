@@ -20,6 +20,7 @@ import {
 import { matchSources } from "@/lib/platform/lending/sources";
 import { cn } from "@/lib/utils";
 import { Notice, fieldLabel, textInput } from "../Chrome";
+import { HomeDash } from "./HomeDash";
 import { DeskDisclaimer, ScreenHead } from "./Shell";
 import { useDesk } from "./session";
 
@@ -30,75 +31,7 @@ const quiet =
 const card = "rounded-[6px] border border-line-light bg-white/70 p-4";
 
 export function SubmissionDesk() {
-  const { deals } = useDesk();
-  const active = deals.filter((deal) => deal.outcome === "active");
-  const tiles = [
-    ["Active", active.length, "/desk/pipeline"],
-    ["In review", active.filter((deal) => deal.stageId === "in_review").length, "/desk/pipeline"],
-    ["Terms ready", active.filter((deal) => deal.stageId === "terms_ready").length, "/desk/pipeline"],
-    ["Funded", deals.filter((deal) => deal.outcome === "funded").length, "/desk/pipeline/board"],
-  ] as const;
-  const due = deals.filter((deal) => deal.follow === "due" && deal.outcome === "active").length;
-  const none = deals.filter((deal) => deal.follow === "none" && deal.outcome === "active").length;
-  return (
-    <div className="grid gap-8">
-      <ScreenHead
-        testId="lending-submission"
-        eyebrow="Lending pack"
-        title="Submission desk"
-        lede="Your next files, in a dry run. Counts are sample data, not a forecast."
-        actions={
-          <>
-            <Link className={primary} href="/desk/drop">Drop a deal</Link>
-            <Link className={quiet} href="/desk/pipeline">Open pipeline</Link>
-          </>
-        }
-      />
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {tiles.map(([label, count, href]) => (
-          <Link key={label} href={href} className={cn(card, "min-h-24 hover:border-gold-dark")}>
-            <p className={fieldLabel}>{label}</p>
-            <p className="mt-3 text-[2rem] leading-none tracking-[-0.04em] tabular-nums">{count}</p>
-            <p className="mt-2 text-[0.95rem] text-ink/60">Sample count.</p>
-          </Link>
-        ))}
-      </div>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(260px,0.6fr)]">
-        <section className={card}>
-          <h2 className="text-[1.5rem] leading-none tracking-[-0.04em]">Your next moves</h2>
-          <ul className="mt-4 grid gap-2">
-            {active.slice(0, 4).map((deal) => (
-              <li key={deal.id}>
-                <Link href={`/desk/deals/${deal.id}`} className="grid min-h-14 gap-1 rounded-[6px] border border-line-light px-4 py-3 hover:border-gold-dark">
-                  <span className="text-[1.125rem]">{deal.title}</span>
-                  <span className="text-[1rem] text-ink/70">
-                    {deal.borrowerName}. {money(deal.amount)}. {stageLabel(deal.stageId)}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <aside className="grid gap-4">
-          <section className={card}>
-            <h2 className="text-[1.35rem] leading-none">Keep it moving</h2>
-            <dl className="mt-4 grid gap-3 text-[1.05rem]">
-              <div className="flex justify-between gap-4 border-t border-line-light pt-3"><dt>Follow ups due</dt><dd>{due}</dd></div>
-              <div className="flex justify-between gap-4 border-t border-line-light pt-3"><dt>No reminder</dt><dd>{none}</dd></div>
-              <div className="flex justify-between gap-4 border-t border-line-light pt-3"><dt>Waiting on you</dt><dd>{active.length}</dd></div>
-            </dl>
-          </section>
-          <Link href="/desk/drop" className={cn(card, "block hover:border-gold-dark")}>
-            <p className={fieldLabel}>Capture</p>
-            <p className="mt-2 text-[1.25rem]">Got a deal in a message?</p>
-            <p className="mt-2 text-[1rem] text-ink/70">Start a review draft. Nothing is submitted.</p>
-          </Link>
-        </aside>
-      </div>
-      <p className="text-[1rem] text-ink/70">Feeds are not connected. [CONFIRM]</p>
-      <DeskDisclaimer />
-    </div>
-  );
+  return <HomeDash />;
 }
 
 export function DropDeal() {
@@ -256,6 +189,17 @@ export function Pipeline({ view }: { view: "list" | "board" }) {
           ))}
         </select>
       </div>
+      <section className={card}>
+        <h2 className="text-[1.35rem]">Move these forward</h2>
+        <ul className="mt-3 grid gap-2 md:grid-cols-2">
+          {deals.filter((deal) => deal.flag).slice(0, 6).map((deal) => (
+            <li key={deal.id} className="rounded-[6px] border border-line-light px-3 py-3">
+              <p className="text-[1.05rem]">{deal.borrowerName}, {deal.address}</p>
+              <p className="mt-1 text-[0.95rem] text-ink/70">{deal.flag} Sample screening hint. [CONFIRM: counsel]</p>
+            </li>
+          ))}
+        </ul>
+      </section>
       <p className="text-[1rem] text-ink/70">Showing {rows.length} of {visibleDeals(deals, outcome).length}. Sample data.</p>
       {view === "list" ? <DealList rows={rows} /> : <DealBoard rows={outcome === "active" ? rows : rows} />}
       <DeskDisclaimer />
@@ -421,6 +365,11 @@ export function DealDetail({ id }: { id: string }) {
         <h1 className="mt-3 text-[clamp(2rem,4vw,3rem)] leading-none tracking-[-0.04em]">{deal.borrowerName}</h1>
         <p className="mt-3 text-[1.125rem] text-ivory/80">{deal.address}, {deal.city}</p>
         <p className="mt-4 text-[1.05rem]">{stageLabel(deal.stageId)}. {deal.product}. {money(deal.amount)}</p>
+      </section>
+      <section className={card}>
+        <h2 className="text-[1.35rem]">File health</h2>
+        <p className="mt-2 text-[1rem] text-ink/70">Leverage is a sample hint, not an underwriting grade. [CONFIRM: counsel]</p>
+        <p className="mt-2 text-[1.05rem]">{deal.flag ?? "No sample flag on this file."} Next: {deal.next}</p>
       </section>
       <div className="flex flex-wrap gap-2">
         <Link className={quiet} href={`/desk/files/${deal.id}`}>Review file</Link>
@@ -611,6 +560,16 @@ export function FileRoom() {
   return (
     <div className="grid gap-6">
       <ScreenHead testId="lending-files" eyebrow="Lending pack" title="Files" lede="Every sample document in its place. Received does not mean approved." />
+      <div>
+        <p className={fieldLabel}>From requested to noted</p>
+        <div className="mt-2 flex h-3 overflow-hidden rounded-full bg-ivory-deep" role="progressbar" aria-label="Sample file status">
+          <div className="bg-ink" style={{ width: "30%" }} />
+          <div className="bg-gold-dark" style={{ width: "25%" }} />
+          <div className="bg-gold" style={{ width: "25%" }} />
+          <div className="bg-ivory" style={{ width: "20%" }} />
+        </div>
+        <p className="mt-2 text-[0.95rem] text-ink/65">Awaiting, partly noted, review needed, and archived. Sample data.</p>
+      </div>
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
           <button key={item} type="button" className={tab === item ? primary : quiet} onClick={() => setTab(item)}>{item}</button>
