@@ -67,14 +67,14 @@ export function WorkApp({ section }: { section: WorkSection }) {
         <p className="mt-auto text-[1rem] text-ivory/65">{platformCopy.dryRun}</p>
       </aside>
       <div className="min-w-0">
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line-light bg-paper/95 px-4 py-4 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line-dark bg-ink px-4 py-4 text-ivory md:border-line-light md:bg-paper md:text-ink md:px-8">
           <div className="flex min-w-0 items-center gap-4">
             <div className="md:hidden">
-              <Logo />
+              <Logo light />
             </div>
             <div className="min-w-0">
-            <p className={fieldLabel}>{pack.label}</p>
-            <h1 className="mt-2 truncate text-[1.75rem] leading-none tracking-[-0.04em]">{sectionTitle(section)}</h1>
+            <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold-light uppercase md:text-gold-dark">{pack.label}</p>
+            <h1 className="mt-2 truncate text-[1.75rem] leading-none tracking-[-0.04em] text-ivory md:text-ink">{sectionTitle(section)}</h1>
             </div>
           </div>
           {hasSetup ? (
@@ -82,7 +82,7 @@ export function WorkApp({ section }: { section: WorkSection }) {
               type="button"
               aria-pressed={sample}
               onClick={() => setSample((value) => !value)}
-              className="min-h-12 shrink-0 rounded-[6px] border border-line-light px-4 text-[0.95rem] transition-colors duration-200 ease-editorial hover:border-gold-dark motion-reduce:transition-none"
+              className="min-h-12 shrink-0 rounded-[6px] border border-ivory/30 px-4 text-[0.95rem] text-ivory transition-colors duration-200 ease-editorial hover:border-gold-light motion-reduce:transition-none md:border-line-light md:text-ink md:hover:border-gold-dark"
             >
               {sample ? platformCopy.hideSample : platformCopy.showSample}
             </button>

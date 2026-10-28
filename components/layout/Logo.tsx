@@ -8,9 +8,11 @@ import { cn } from "@/lib/utils";
 export function Logo({
   light = false,
   wordmark = true,
+  className = "",
 }: {
   light?: boolean;
   wordmark?: boolean;
+  className?: string;
 }) {
   return (
     <Link
@@ -30,24 +32,24 @@ export function Logo({
       }}
       className={cn(
         "inline-flex min-h-12 items-center gap-0",
-        // The mark alone still gets a full-size target.
         !wordmark && "min-w-12",
         light ? "text-ivory" : "text-ink",
+        className,
       )}
     >
       <Image
-        src={light ? "/brand/genesis-logo.svg" : "/brand/genesis-icon.svg"}
+        src={light ? "/brand/genesis-logo.svg" : "/brand/genesis-logo-ink.svg"}
         alt=""
         width={42}
         height={42}
         loading="eager"
         fetchPriority="high"
-        className="h-[37px] w-[37px] object-contain"
+        className="h-8 w-8 object-contain md:h-[37px] md:w-[37px]"
       />
       {wordmark ? (
         <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
-          <span className="text-[0.87rem] font-semibold">enesis</span>
-          <span className={cn("text-[0.72rem] font-bold", light ? "text-gold-light" : "text-gold-dark")}>AI</span>
+          <span className="text-[0.95rem] font-semibold">enesis</span>
+          <span className={cn("text-[0.8rem] font-bold", light ? "text-gold-light" : "text-gold-dark")}>AI</span>
         </span>
       ) : null}
     </Link>

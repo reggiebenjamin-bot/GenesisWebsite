@@ -36,10 +36,22 @@ export function QuietFrame({ children }: { children: ReactNode }) {
       <a href="#main-content" className={skip}>
         {platformCopy.skip}
       </a>
-      <header className="border-b border-line-light bg-paper">
+      <header className="border-b border-line-dark bg-ink md:border-line-light md:bg-paper">
         <div className="mx-auto flex min-h-16 w-full max-w-xl items-center justify-between gap-4 px-4">
-          <Logo />
-          <TextLink href="/business-check">{platformCopy.nav.check}</TextLink>
+          <span className="md:hidden">
+            <Logo light />
+          </span>
+          <span className="hidden md:inline-flex">
+            <Logo />
+          </span>
+          <span className="md:hidden">
+            <TextLink href="/business-check" light>
+              {platformCopy.nav.check}
+            </TextLink>
+          </span>
+          <span className="hidden md:inline-flex">
+            <TextLink href="/business-check">{platformCopy.nav.check}</TextLink>
+          </span>
         </div>
       </header>
       <main id="main-content">{children}</main>
@@ -53,7 +65,8 @@ export function QuietFrame({ children }: { children: ReactNode }) {
 export function SiteFoot() {
   return (
     <footer className="border-t border-line-dark bg-ink text-ivory">
-      <div className="shell py-8">
+      <div className="shell grid gap-4 py-8">
+        <Logo light />
         <FootLines light />
       </div>
     </footer>

@@ -37,22 +37,22 @@ export function LendingShell({ children }: { children: React.ReactNode }) {
         <p className="mt-auto text-[0.95rem] leading-relaxed text-ivory/65">Lending pack. Dry run.</p>
       </aside>
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line-light bg-paper/95 px-4 py-3 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line-dark bg-ink px-4 py-3 text-ivory md:border-line-light md:bg-paper md:px-8 md:text-ink">
           <div className="flex items-center gap-3 md:hidden">
             <button
               type="button"
-              className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-[6px] border border-line-light"
+              className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-[6px] border border-ivory/30 text-ivory"
               aria-expanded={open}
               aria-label="Open menu"
               onClick={() => setOpen(true)}
             >
               Menu
             </button>
-            <Logo />
+            <Logo light />
           </div>
           <button
             type="button"
-            className="ml-auto min-h-12 rounded-[6px] border border-line-light px-4 text-[1rem]"
+            className="ml-auto min-h-12 rounded-[6px] border border-ivory/30 px-4 text-[1rem] text-ivory md:border-line-light md:text-ink"
             onClick={() => setSearchOpen(true)}
           >
             Search

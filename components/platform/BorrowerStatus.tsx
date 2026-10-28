@@ -10,10 +10,15 @@ export function BorrowerStatus() {
   const model = borrowerView();
   return (
     <div className="min-h-dvh bg-paper text-ink" data-testid="borrower-status">
-      <header className="border-b border-line-light">
+      <header className="border-b border-line-dark bg-ink md:border-line-light md:bg-paper">
         <div className="mx-auto flex min-h-16 w-full max-w-xl items-center justify-between px-4">
-          <Logo />
-          <Link href="/work" className="min-h-11 text-[1rem] font-medium underline-offset-4 hover:underline">
+          <span className="md:hidden">
+            <Logo light />
+          </span>
+          <span className="hidden md:inline-flex">
+            <Logo />
+          </span>
+          <Link href="/work" className="min-h-11 text-[1rem] font-medium text-ivory underline-offset-4 hover:underline md:text-ink">
             {platformCopy.status.back}
           </Link>
         </div>
