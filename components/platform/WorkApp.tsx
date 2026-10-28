@@ -61,16 +61,21 @@ export function WorkApp({ section }: { section: WorkSection }) {
 
   return (
     <div className="min-h-dvh bg-paper text-ink md:grid md:grid-cols-[240px_minmax(0,1fr)]" data-testid="platform-work">
-      <aside className="hidden border-r border-line-light md:flex md:min-h-dvh md:flex-col md:gap-8 md:p-6">
-        <Logo />
+      <aside className="hidden border-r border-line-dark bg-ink text-ivory md:flex md:min-h-dvh md:flex-col md:gap-8 md:p-6">
+        <Logo light />
         <DeskNav section={section} />
-        <p className="mt-auto text-[1rem] text-ink/70">{platformCopy.dryRun}</p>
+        <p className="mt-auto text-[1rem] text-ivory/65">{platformCopy.dryRun}</p>
       </aside>
       <div className="min-w-0">
         <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line-light bg-paper/95 px-4 py-4 backdrop-blur md:px-8">
-          <div className="min-w-0">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="md:hidden">
+              <Logo />
+            </div>
+            <div className="min-w-0">
             <p className={fieldLabel}>{pack.label}</p>
             <h1 className="mt-2 truncate text-[1.75rem] leading-none tracking-[-0.04em]">{sectionTitle(section)}</h1>
+            </div>
           </div>
           {hasSetup ? (
             <button
@@ -125,7 +130,7 @@ export function WorkApp({ section }: { section: WorkSection }) {
       </div>
       <nav
         aria-label={platformCopy.nav.workspace}
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line-light bg-paper md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line-dark bg-ink text-ivory md:hidden"
       >
         {workSectionIds.map((item) => (
           <NavLink key={item} section={item} current={section} compact />
@@ -165,8 +170,8 @@ function NavLink({
           ? "min-h-14 justify-center px-1 text-center text-[0.75rem] leading-tight"
           : "min-h-12 border-l-2 px-4 text-[1.05rem]",
         active
-          ? "border-gold-dark bg-ivory font-medium text-ink"
-          : "border-transparent text-ink/70 hover:bg-ivory hover:text-ink",
+          ? "border-gold-light font-medium text-gold-light"
+          : "border-transparent text-ivory/75 hover:text-ivory",
         compact && active && "border-t-2 border-l-0",
       )}
     >

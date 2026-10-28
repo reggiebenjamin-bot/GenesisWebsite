@@ -36,7 +36,7 @@ export function Logo({
       )}
     >
       <Image
-        src="/brand/genesis-logo.svg"
+        src={light ? "/brand/genesis-logo.svg" : "/brand/genesis-icon.svg"}
         alt=""
         width={42}
         height={42}
@@ -47,7 +47,7 @@ export function Logo({
       {wordmark ? (
         <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
           <span className="text-[0.87rem] font-semibold">enesis</span>
-          <span className="text-[0.72rem] font-bold text-gold-light">AI</span>
+          <span className={cn("text-[0.72rem] font-bold", light ? "text-gold-light" : "text-gold-dark")}>AI</span>
         </span>
       ) : null}
     </Link>

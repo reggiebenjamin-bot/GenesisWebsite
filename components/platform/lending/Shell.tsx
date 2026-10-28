@@ -31,10 +31,10 @@ export function LendingShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-paper text-ink md:grid md:grid-cols-[240px_minmax(0,1fr)]">
-      <aside className="hidden border-r border-line-light md:flex md:min-h-dvh md:flex-col md:gap-6 md:p-6">
-        <Logo />
+      <aside className="hidden border-r border-line-dark bg-ink text-ivory md:flex md:min-h-dvh md:flex-col md:gap-6 md:p-6">
+        <Logo light />
         <Nav pathname={pathname} />
-        <p className="mt-auto text-[0.95rem] leading-relaxed text-ink/60">Lending pack. Dry run.</p>
+        <p className="mt-auto text-[0.95rem] leading-relaxed text-ivory/65">Lending pack. Dry run.</p>
       </aside>
       <div className="min-w-0">
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line-light bg-paper/95 px-4 py-3 backdrop-blur md:px-8">
@@ -52,7 +52,7 @@ export function LendingShell({ children }: { children: React.ReactNode }) {
           </div>
           <button
             type="button"
-            className="min-h-12 rounded-[6px] border border-line-light px-4 text-[1rem]"
+            className="ml-auto min-h-12 rounded-[6px] border border-line-light px-4 text-[1rem]"
             onClick={() => setSearchOpen(true)}
           >
             Search
@@ -70,33 +70,45 @@ export function LendingShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line-light bg-paper md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line-dark bg-ink text-ivory md:hidden">
         {[
           ["/desk", "Desk"],
           ["/desk/pipeline", "Pipeline"],
           ["/desk/follow", "Follow up"],
           ["/desk/files", "Files"],
-        ].map(([href, label]) => (
-          <Link key={href} href={href} className="flex min-h-14 items-center justify-center px-1 text-center text-[0.75rem]">
-            {label}
-          </Link>
-        ))}
-        <button type="button" className="min-h-14 text-[0.75rem]" onClick={() => setOpen(true)}>
+        ].map(([href, label]) => {
+          const active = href === "/desk" ? pathname === "/desk" : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex min-h-14 items-center justify-center border-t-2 px-1 text-center text-[0.75rem]",
+                active ? "border-gold-light text-gold-light" : "border-transparent text-ivory/75",
+              )}
+            >
+              {label}
+            </Link>
+          );
+        })}
+        <button type="button" className="min-h-14 text-[0.75rem] text-ivory/75" onClick={() => setOpen(true)}>
           More
         </button>
       </nav>
       {open ? (
         <div className="fixed inset-0 z-40 bg-ink/40 md:hidden" onClick={() => setOpen(false)}>
           <div
-            className="h-full w-[min(100%,320px)] overflow-y-auto bg-paper p-6"
+            className="flex h-full w-[min(100%,320px)] flex-col gap-6 overflow-y-auto bg-ink p-6 text-ivory"
             role="dialog"
             aria-label="Menu"
             onClick={(event) => event.stopPropagation()}
           >
-            <button type="button" className="min-h-12 text-[1rem] font-medium" onClick={() => setOpen(false)}>
+            <Logo light />
+            <button type="button" className="min-h-12 self-start text-[1rem] font-medium text-ivory" onClick={() => setOpen(false)}>
               Close
             </button>
-            <div className="mt-6" onClick={() => setOpen(false)}>
+            <div onClick={() => setOpen(false)}>
               <Nav pathname={pathname} />
             </div>
           </div>
@@ -148,16 +160,18 @@ function Nav({ pathname }: { pathname: string }) {
     <nav aria-label="Lending pack" className="grid gap-1">
       {links.map((link, index) => {
         const showGroup = index === 0 || links[index - 1]?.group !== link.group;
-        const active = pathname === link.href;
+        const active = link.href === "/desk"
+          ? pathname === "/desk"
+          : pathname === link.href || pathname.startsWith(`${link.href}/`);
         return (
           <div key={link.href}>
-            {showGroup ? <p className={cn(fieldLabel, "px-4 pt-4 pb-2")}>{link.group}</p> : null}
+            {showGroup ? <p className="px-4 pt-4 pb-2 font-display text-[0.69rem] tracking-[0.18em] text-ivory/50 uppercase">{link.group}</p> : null}
             <Link
               href={link.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-12 items-center border-l-2 px-4 text-[1.05rem]",
-                active ? "border-gold-dark bg-ivory font-medium" : "border-transparent text-ink/75 hover:bg-ivory",
+                "flex min-h-12 items-center border-l-2 px-4 text-[1.05rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light",
+                active ? "border-gold-light font-medium text-gold-light" : "border-transparent text-ivory/75 hover:text-ivory",
               )}
             >
               {link.label}
