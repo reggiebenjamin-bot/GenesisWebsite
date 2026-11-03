@@ -11,8 +11,10 @@ import {
 } from "../lib/aiEmployees.ts";
 import {
   AI_EMPLOYEES_CHECKOUT_INTEGRATION_ID,
+  checkoutLineItems,
   checkoutPriceEnv,
   checkoutPriceId,
+  setupPriceId,
   stripeSecretKey,
   subscriptionReference,
 } from "../lib/aiEmployeesCheckout.ts";
@@ -138,4 +140,30 @@ test("the person record ties Reginald Benjamin to Genesis", () => {
     [697, 1497, 2997, 2500],
   );
   assert.equal(seoPage("/ai-employees").label, "AI Employees");
+});
+
+test("each plan charges its approved one-time setup fee at checkout", () => {
+  assert.deepEqual(
+    aiEmployeePlans.map((plan) => [plan.name, plan.setupUsd, plan.setupLine]),
+    [
+      ["Single", 500, "plus $500 setup"],
+      ["Duo", 1000, "plus $1,000 setup"],
+      ["Full Fleet", 2000, "plus $2,000 setup"],
+    ],
+  );
+  for (const plan of aiEmployeePlans) {
+    assert.equal(priceNumber(plan.setupDisplay), plan.setupUsd);
+    assert.match(setupPriceId(plan.id, {}), /^price_/);
+  }
+  assert.equal(setupPriceId("single", {}), "price_1UXrIGFvlby2Ilp1ZxVFRUoL");
+  assert.equal(setupPriceId("duo", {}), "price_1UXrIKFvlby2Ilp1Exa0uVt3");
+  assert.equal(setupPriceId("fleet", {}), "price_1UXrINFvlby2Ilp1LwtOruDi");
+  assert.equal(
+    setupPriceId("duo", { STRIPE_PRICE_AI_EMPLOYEES_DUO_SETUP: "price_override" }),
+    "price_override",
+  );
+  assert.deepEqual(checkoutLineItems("price_m", "price_s"), [
+    { price: "price_m", quantity: 1 },
+    { price: "price_s", quantity: 1 },
+  ]);
 });

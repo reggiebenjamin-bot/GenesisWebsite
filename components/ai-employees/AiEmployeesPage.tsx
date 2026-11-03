@@ -155,6 +155,7 @@ export function AiEmployeesPage() {
                 {plan.priceDisplay}
               </p>
               <p className="mt-2 text-[0.85rem] text-ivory/60">{plan.cadence}</p>
+              <p className="mt-1 text-[0.85rem] text-ivory/60">{plan.setupLine}</p>
               <p className="mt-6 text-[0.98rem] leading-relaxed text-ivory/80">{plan.summary}</p>
               <p className="mt-3 text-[0.9rem] leading-relaxed text-ivory/60">{plan.detail}</p>
               <form action="/api/ai-employees/checkout" method="POST" className="mt-auto pt-8">
