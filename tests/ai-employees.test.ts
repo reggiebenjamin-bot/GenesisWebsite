@@ -17,7 +17,6 @@ import {
   subscriptionReference,
 } from "../lib/aiEmployeesCheckout.ts";
 import { parseInquiry } from "../lib/aiEmployeesInquiry.ts";
-import { contact } from "../lib/content.ts";
 import { priceNumber, aiEmployeesServiceSchema, organizationSchema, reginaldBenjaminSchema } from "../lib/schema.ts";
 import { seoPage } from "../lib/seo.ts";
 
@@ -40,8 +39,8 @@ test("AI employee copy stays plain", () => {
 });
 
 test("the expert phone is the configured constant", () => {
-  assert.equal(expertPhone.display, contact.phoneDisplay);
-  assert.equal(expertPhone.href, contact.phoneHref);
+  assert.equal(expertPhone.display, "(469) 210 8466");
+  assert.equal(expertPhone.href, "+14692108466");
   assert.equal(expertPhone.display.includes("-"), false);
 });
 

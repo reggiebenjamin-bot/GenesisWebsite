@@ -1,12 +1,8 @@
-import { contact } from "./content.ts";
 
-/**
- * Phone shown beside Reginald Benjamin. Kept as its own constant so the
- * expert section can take a dedicated line later without a copy edit.
- */
+/** Dedicated phone line shown beside Reginald Benjamin. */
 export const expertPhone = {
-  display: contact.phoneDisplay,
-  href: contact.phoneHref,
+  display: "(469) 210 8466",
+  href: "+14692108466",
 } as const;
 
 export const softwareDisclaimer =
