@@ -21,6 +21,13 @@ const APP = join(process.cwd(), ".next", "server", "app");
 const failures: string[] = [];
 const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
 
+/* Vercel builds do not leave prerendered pages in .next/server/app, so this
+   check runs on local and CI builds only. The unit tests run everywhere. */
+if (process.env.VERCEL) {
+  console.log("SEO check: skipped on Vercel builds; run it with a local build.");
+  process.exit(0);
+}
+
 if (!existsSync(APP)) {
   console.error(`SEO check: no build output at ${APP}. Run \`next build\` first.`);
   process.exit(1);

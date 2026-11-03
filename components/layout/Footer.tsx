@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { softwareDisclaimer } from "@/lib/aiEmployees";
 import { contact, navigation, navigationLinks } from "@/lib/content";
 import { genesisPositioning, genesisTools, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
@@ -86,9 +87,12 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="shell flex justify-between gap-6 border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62 max-md:flex-col">
-        <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
-        <p>Tools help you do the task. Managed AI helps your business operate.</p>
+      <div className="shell border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62">
+        <div className="flex justify-between gap-6 max-md:flex-col">
+          <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
+          <p>Tools help you do the task. Managed AI helps your business operate.</p>
+        </div>
+        <p className="mt-3 text-center">{softwareDisclaimer}</p>
       </div>
     </footer>
   );

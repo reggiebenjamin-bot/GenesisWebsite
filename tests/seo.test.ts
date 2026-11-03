@@ -3,9 +3,11 @@ import test from "node:test";
 import { genesisTools, managedPlans } from "../lib/offers.ts";
 import {
   aboutPageSchema,
+  aiEmployeesServiceSchema,
   breadcrumbSchema,
   managedServiceSchema,
   organizationSchema,
+  reginaldBenjaminSchema,
   priceNumber,
   softwareApplicationSchema,
   toolsCollectionSchema,
@@ -89,6 +91,8 @@ test("structured data never claims ratings or reviews Genesis does not have", ()
     toolsCollectionSchema(),
     managedServiceSchema(),
     aboutPageSchema(),
+    reginaldBenjaminSchema(),
+    aiEmployeesServiceSchema(),
     ...genesisTools.map(softwareApplicationSchema),
   ];
   const keys = new Set(all.flatMap(keysOf));
