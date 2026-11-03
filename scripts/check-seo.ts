@@ -12,7 +12,7 @@
  *
  *   node --experimental-strip-types scripts/check-seo.ts
  */
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { absoluteUrl, fullTitle, seoPages, type SeoPage } from "../lib/seo.ts";
 import { indexable, siteUrl } from "../lib/site.ts";
@@ -20,6 +20,13 @@ import { indexable, siteUrl } from "../lib/site.ts";
 const APP = join(process.cwd(), ".next", "server", "app");
 const failures: string[] = [];
 const fail = (where: string, message: string) => failures.push(`${where}: ${message}`);
+
+/* Vercel builds do not leave prerendered pages in .next/server/app, so this
+   check runs on local and CI builds only. The unit tests run everywhere. */
+if (process.env.VERCEL) {
+  console.log("SEO check: skipped on Vercel builds; run it with a local build.");
+  process.exit(0);
+}
 
 if (!existsSync(APP)) {
   console.error(`SEO check: no build output at ${APP}. Run \`next build\` first.`);
@@ -126,26 +133,11 @@ for (const page of seoPages) {
 }
 
 /* robots.txt and the sitemap agree with the kind of build this is. */
-/* Some build hosts write a metadata route without the ".body" suffix, or not
-   at all. Read whichever exists; the unit tests still cover the route logic. */
-function readRoute(name: string): string | null {
-  for (const file of [`${name}.body`, name]) {
-    const path = join(APP, file);
-    if (existsSync(path) && statSync(path).isFile()) return readFileSync(path, "utf8");
-  }
-  console.warn(`SEO check: no prerendered ${name} in the build output; skipped, covered by the unit tests.`);
-  return null;
-}
-const robotsRoute = readRoute("robots.txt");
-const sitemapRoute = readRoute("sitemap.xml");
-const routesFound = robotsRoute !== null && sitemapRoute !== null;
-const robotsTxt = robotsRoute ?? "";
-const sitemapXml = sitemapRoute ?? "";
+const robotsTxt = readFileSync(join(APP, "robots.txt.body"), "utf8");
+const sitemapXml = readFileSync(join(APP, "sitemap.xml.body"), "utf8");
 const sitemapUrls = [...sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 
-if (!routesFound) {
-  /* skipped above */
-} else if (indexable) {
+if (indexable) {
   if (/^Disallow: \/\s*$/m.test(robotsTxt)) fail("robots.txt", "disallows the whole site on an indexable build");
   if (!robotsTxt.includes(`Sitemap: ${siteUrl}/sitemap.xml`)) fail("robots.txt", "does not point at the sitemap");
   for (const bot of ["Googlebot", "Bingbot", "OAI-SearchBot"]) {
