@@ -89,6 +89,10 @@ export type AiEmployeePlan = {
   priceDisplay: string;
   monthlyPriceUsd: number;
   cadence: string;
+  /** One-time setup fee, charged once at checkout with the first month. */
+  setupUsd: number;
+  setupDisplay: string;
+  setupLine: string;
   summary: string;
   detail: string;
   action: string;
@@ -101,6 +105,9 @@ export const aiEmployeePlans: readonly AiEmployeePlan[] = [
     priceDisplay: "$697",
     monthlyPriceUsd: 697,
     cadence: "a month",
+    setupUsd: 500,
+    setupDisplay: "$500",
+    setupLine: "plus $500 setup",
     summary: "One AI employee of your choice, working your pipeline every day.",
     detail: "Choose Hawk, Susan, Darius, or Ava.",
     action: "Choose Single",
@@ -111,6 +118,9 @@ export const aiEmployeePlans: readonly AiEmployeePlan[] = [
     priceDisplay: "$1,497",
     monthlyPriceUsd: 1497,
     cadence: "a month",
+    setupUsd: 1000,
+    setupDisplay: "$1,000",
+    setupLine: "plus $1,000 setup",
     summary: "Two AI employees of your choice, working your pipeline every day.",
     detail: "Pair any two, including Ava.",
     action: "Choose Duo",
@@ -121,6 +131,9 @@ export const aiEmployeePlans: readonly AiEmployeePlan[] = [
     priceDisplay: "$2,997",
     monthlyPriceUsd: 2997,
     cadence: "a month",
+    setupUsd: 2000,
+    setupDisplay: "$2,000",
+    setupLine: "plus $2,000 setup",
     summary: "Hawk, Susan, and Darius, working the pipeline together every day.",
     detail: "The lead, the marketing employee, and the sales employee.",
     action: "Choose Full Fleet",

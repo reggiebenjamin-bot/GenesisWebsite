@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { aiEmployeePlans, type CheckoutPlanId } from "@/lib/aiEmployees";
 import {
   AI_EMPLOYEES_CHECKOUT_INTEGRATION_ID,
+  checkoutLineItems,
   checkoutPriceId,
+  setupPriceId,
 } from "@/lib/aiEmployeesCheckout";
 import { stripeServer } from "@/lib/stripeServer";
 
@@ -46,7 +48,7 @@ export async function POST(request: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      line_items: [{ price, quantity: 1 }],
+      line_items: checkoutLineItems(price, setupPriceId(plan)),
       metadata: { plan },
       subscription_data: { metadata: { plan } },
       success_url: `${origin}/ai-employees/welcome?session_id={CHECKOUT_SESSION_ID}`,

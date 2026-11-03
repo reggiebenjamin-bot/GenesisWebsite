@@ -7,6 +7,37 @@ export const checkoutPriceEnv: Record<CheckoutPlanId, string> = {
   fleet: "STRIPE_PRICE_AI_EMPLOYEES_FLEET",
 };
 
+/** Env names that can override the one-time setup Price IDs. */
+export const setupPriceEnv: Record<CheckoutPlanId, string> = {
+  single: "STRIPE_PRICE_AI_EMPLOYEES_SINGLE_SETUP",
+  duo: "STRIPE_PRICE_AI_EMPLOYEES_DUO_SETUP",
+  fleet: "STRIPE_PRICE_AI_EMPLOYEES_FLEET_SETUP",
+};
+
+/** Approved one-time setup Prices (Nov 3 2026). Price IDs are not secrets. */
+export const setupPriceDefaults: Record<CheckoutPlanId, string> = {
+  single: "price_1UXrIGFvlby2Ilp1ZxVFRUoL",
+  duo: "price_1UXrIKFvlby2Ilp1Exa0uVt3",
+  fleet: "price_1UXrINFvlby2Ilp1LwtOruDi",
+};
+
+export function setupPriceId(
+  plan: CheckoutPlanId,
+  env: Record<string, string | undefined> = process.env,
+): string {
+  const value = env[setupPriceEnv[plan]]?.trim() ?? "";
+  if (value && !/placeholder/i.test(value) && value.startsWith("price_")) return value;
+  return setupPriceDefaults[plan];
+}
+
+/** Checkout line items: the monthly Price plus the one-time setup Price. */
+export function checkoutLineItems(monthlyPrice: string, setupPrice: string) {
+  return [
+    { price: monthlyPrice, quantity: 1 },
+    { price: setupPrice, quantity: 1 },
+  ];
+}
+
 /** Stable Checkout label. The last eight letters are the tracking suffix. */
 export const AI_EMPLOYEES_CHECKOUT_INTEGRATION_ID = "genesis_ai_employees_krmxwqpl";
 
