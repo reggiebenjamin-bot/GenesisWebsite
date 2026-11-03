@@ -1,3 +1,10 @@
+import {
+  aiEmployeePlans,
+  aiEmployeesEnterprise,
+  aiEmployeesExpert,
+  aiEmployeesPricing,
+  expertPhone,
+} from "./aiEmployees.ts";
 import { contact } from "./content.ts";
 import {
   genesisPositioning,
@@ -21,6 +28,7 @@ import { siteUrl } from "./site.ts";
 
 const ORGANIZATION_ID = `${siteUrl}/#organization`;
 const WEBSITE_ID = `${siteUrl}/#website`;
+const REGINALD_ID = `${siteUrl}/#reginald-benjamin`;
 
 const organizationRef = { "@type": "Organization", "@id": ORGANIZATION_ID, name: "Genesis AI" };
 
@@ -34,6 +42,7 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": ORGANIZATION_ID,
     name: "Genesis AI",
+    alternateName: "Genesis",
     url: siteUrl,
     logo: {
       "@type": "ImageObject",
@@ -44,7 +53,12 @@ export function organizationSchema() {
     description: `${genesisPositioning.category}. ${genesisPositioning.brandDescription}`,
     email: contact.email,
     telephone: contact.phoneHref,
-    founder: { "@type": "Person", name: "Reginald Benjamin", jobTitle: "Founder" },
+    founder: {
+      "@type": "Person",
+      "@id": REGINALD_ID,
+      name: "Reginald Benjamin",
+      jobTitle: "Founder",
+    },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",
@@ -181,6 +195,84 @@ export function aboutPageSchema() {
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
     mainEntity: { "@id": ORGANIZATION_ID },
+  };
+}
+
+/** Reginald Benjamin, linked to the Genesis organization by @id. */
+export function reginaldBenjaminSchema() {
+  return {
+    "@type": "Person",
+    "@id": REGINALD_ID,
+    name: aiEmployeesExpert.name,
+    jobTitle: aiEmployeesExpert.jobTitle,
+    description: aiEmployeesExpert.body,
+    url: `${absoluteUrl("/ai-employees")}#expert`,
+    telephone: expertPhone.href,
+    worksFor: {
+      "@type": "Organization",
+      "@id": ORGANIZATION_ID,
+      name: "Genesis",
+      alternateName: "Genesis AI",
+      url: siteUrl,
+    },
+  };
+}
+
+export function aiEmployeesServiceSchema() {
+  const url = absoluteUrl("/ai-employees");
+  const monthly = (price: number, name: string, description: string) => ({
+    "@type": "Offer",
+    name,
+    description,
+    url: `${url}#plans`,
+    price,
+    priceCurrency: "USD",
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price,
+      priceCurrency: "USD",
+      unitText: "per month",
+    },
+  });
+
+  return {
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: "Genesis AI Employees",
+    serviceType: "AI employees for real estate pipeline work",
+    description: aiEmployeesPricing.summary,
+    url,
+    provider: organizationRef,
+    areaServed: { "@type": "Country", name: "United States" },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Genesis AI Employees plans",
+      itemListElement: [
+        ...aiEmployeePlans.map((plan) => monthly(plan.monthlyPriceUsd, plan.name, plan.summary)),
+        {
+          "@type": "Offer",
+          name: aiEmployeesEnterprise.name,
+          description: aiEmployeesEnterprise.priceLine,
+          url: `${url}#enterprise`,
+          price: aiEmployeesEnterprise.monthlyPriceUsd,
+          priceCurrency: "USD",
+          priceSpecification: [
+            {
+              "@type": "UnitPriceSpecification",
+              price: aiEmployeesEnterprise.setupUsd,
+              priceCurrency: "USD",
+              unitText: aiEmployeesEnterprise.setupUnit,
+            },
+            {
+              "@type": "UnitPriceSpecification",
+              price: aiEmployeesEnterprise.monthlyPriceUsd,
+              priceCurrency: "USD",
+              unitText: "per month",
+            },
+          ],
+        },
+      ],
+    },
   };
 }
 

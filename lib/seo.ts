@@ -1,3 +1,4 @@
+import { aiEmployeePlans, aiEmployeesHero } from "./aiEmployees.ts";
 import { genesisPositioning, genesisTools, managedPlans, type ToolId } from "./offers.ts";
 import { blogPosts } from "./blog.ts";
 import { siteUrl } from "./site.ts";
@@ -143,6 +144,19 @@ export const seoPages: readonly SeoPage[] = [
     lastModified: SEO_PASS,
     changeFrequency: "monthly",
     priority: 0.9,
+  },
+  {
+    path: "/ai-employees",
+    title: "AI Employees for Your Pipeline",
+    description: `${aiEmployeesHero.title} Meet Hawk, Susan, Darius, and Ava. Plans at ${aiEmployeePlans
+      .slice(0, -1)
+      .map((plan) => plan.priceDisplay)
+      .join(", ")}, and ${aiEmployeePlans.at(-1)?.priceDisplay} a month.`,
+    label: "AI Employees",
+    image: null,
+    lastModified: "2026-11-03",
+    changeFrequency: "monthly",
+    priority: 0.8,
   },
   {
     path: "/how-it-works",

@@ -68,6 +68,16 @@ before touching the plates or the geometry.
   defaults to `https://www.geai.us`.
 - `GENESIS_CONSULTATION_WEBHOOK_URL` — server-only override for the consultation
   webhook.
+- `STRIPE_SECRET_KEY` — restricted Stripe key (`rk_`) for AI Employees checkout.
+  A placeholder value leaves checkout closed.
+- `STRIPE_WEBHOOK_SECRET` — signing secret for `/api/stripe/webhook`.
+- `STRIPE_PRICE_AI_EMPLOYEES_SINGLE`, `STRIPE_PRICE_AI_EMPLOYEES_DUO`,
+  `STRIPE_PRICE_AI_EMPLOYEES_FLEET` — Stripe Price IDs for the three monthly
+  plans. Placeholder values such as `price_placeholder_single` keep the
+  buttons wired without opening a live Checkout Session.
+- `GENESIS_AI_EMPLOYEES_INQUIRY_WEBHOOK_URL` — destination for the Done For You
+  inquiry. Until it is set, production refuses the form and development accepts
+  it only as a preview.
 - `MINI_CATALOG_REVIEW_MODE` — set to `review` only on an approved preview to
   show provisional Mini prices and engineering-seed limits. Development shows
   them automatically; ordinary production builds hold them back.

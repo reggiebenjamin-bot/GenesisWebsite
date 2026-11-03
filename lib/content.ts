@@ -60,6 +60,7 @@ export const contact = {
  */
 export const navigation: NavEntry[] = [
   { label: "How It Works", href: "/how-it-works" },
+  { label: "AI Employees", href: "/ai-employees" },
   { label: "Pricing", href: "/pricing" },
   {
     label: "Company",

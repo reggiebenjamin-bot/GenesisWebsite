@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AiEmployeesHomeSection } from "@/components/ai-employees/AiEmployeesHomeSection";
 import { HawkHero } from "@/components/home/HawkHero";
 import { AgentSections, CustomInfrastructureSections } from "@/components/home/PathSections";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -31,6 +32,8 @@ export default function Home() {
       <div data-offer-panel="custom-infrastructure">
         <CustomInfrastructureSections />
       </div>
+
+      <AiEmployeesHomeSection />
     </>
   );
 }
