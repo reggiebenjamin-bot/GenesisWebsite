@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       line_items: [{ price, quantity: 1 }],
       metadata: { plan },
       subscription_data: { metadata: { plan } },
-      success_url: `${origin}/ai-employees?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/ai-employees/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/ai-employees?checkout=closed`,
       integration_identifier: AI_EMPLOYEES_CHECKOUT_INTEGRATION_ID,
     });
