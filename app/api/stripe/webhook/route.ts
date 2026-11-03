@@ -5,6 +5,7 @@ import {
   subscriptionReference,
 } from "@/lib/aiEmployeesCheckout";
 import { stripeServer } from "@/lib/stripeServer";
+import { alertFromSession, sendPurchaseAlert } from "@/lib/purchaseAlert";
 
 const handled = new Set<string>(stripeEventsHandled);
 
@@ -48,6 +49,10 @@ export async function POST(request: Request) {
         subscription: subscriptionReference(event.type, object),
       }),
     );
+  }
+
+  if (event.type === "checkout.session.completed") {
+    await sendPurchaseAlert(alertFromSession(object, !event.livemode));
   }
 
   return NextResponse.json({ received: true });
