@@ -6,6 +6,11 @@ import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
 import { resolvePlan } from "@/lib/checkoutPlans";
+import {
+  dayOneDeliverablesFor,
+  kickoffBookingUrl,
+  welcomeEmail,
+} from "@/lib/onboardingDelivery";
 import { stripeServer } from "@/lib/stripeServer";
 
 export const metadata: Metadata = {
@@ -14,15 +19,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const steps = [
-  "Complete your intake today",
-  "We begin your setup within 1 business day",
-  "Book your kickoff call",
-  "Day 1 deliverables",
-  "Seven day check in",
-] as const;
-
-type Confirmed = { planName: string; email: string };
+type Confirmed = { planName: string; planId: string; email: string };
 
 /** Confirms the Checkout Session with Stripe. Returns null when it cannot be read. */
 async function confirmSession(sessionId: string): Promise<Confirmed | null> {
@@ -36,11 +33,15 @@ async function confirmSession(sessionId: string): Promise<Confirmed | null> {
     const planId = typeof metadata.plan === "string" ? metadata.plan : "";
     const plan = resolvePlan(planId);
     const email = session.customer_details?.email ?? session.customer_email ?? "";
-    return { planName: plan?.name ?? "", email: email ?? "" };
+    return { planName: plan?.name ?? "", planId, email: email ?? "" };
   } catch {
     return null;
   }
 }
+
+/* Dark button with a gold outline, matching the brand's secondary action. */
+const kickoffButton =
+  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
 
 export default async function WelcomePage({
   searchParams,
@@ -50,6 +51,8 @@ export default async function WelcomePage({
   const params = await searchParams;
   const sessionId = typeof params.session_id === "string" ? params.session_id : "";
   const confirmed = await confirmSession(sessionId);
+  const bookingUrl = kickoffBookingUrl();
+  const deliverables = confirmed ? dayOneDeliverablesFor(confirmed.planId) : null;
 
   return (
     <>
@@ -96,20 +99,71 @@ export default async function WelcomePage({
           >
             What happens next.
           </h2>
+          <p className="mx-auto mt-5 max-w-[48ch] text-[1.02rem] leading-relaxed text-muted-dark">
+            {welcomeEmail.intro}
+          </p>
         </div>
+
         <ol className="mx-auto grid max-w-[44rem] gap-4">
-          {steps.map((step, index) => (
+          {welcomeEmail.sections.map((section, index) => (
             <li
-              key={step}
-              className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-5 rounded-[6px] border border-line-light bg-white/70 p-[clamp(18px,2vw,26px)]"
+              key={section.title}
+              className="grid grid-cols-[auto_minmax(0,1fr)] gap-5 rounded-[6px] border border-line-light bg-white/70 p-[clamp(18px,2vw,26px)]"
             >
               <span className="flex size-10 items-center justify-center rounded-full border border-gold bg-ink font-display text-[0.95rem] text-gold-light tabular-nums">
                 {index + 1}
               </span>
-              <span className="text-[1.02rem] leading-relaxed">{step}</span>
+              <div>
+                <h3 className="font-display text-[0.7rem] tracking-[0.16em] text-gold-dark uppercase">
+                  {section.title}
+                </h3>
+                <p className="mt-2 text-[1.02rem] leading-relaxed">{section.body}</p>
+
+                {section.title === "Day 1 deliverables" && deliverables ? (
+                  <ul className="mt-3 grid gap-2">
+                    {deliverables.map((item) => (
+                      <li
+                        key={item}
+                        className="grid grid-cols-[1rem_minmax(0,1fr)] gap-2.5 text-[0.95rem] leading-snug"
+                      >
+                        <span aria-hidden="true" className="text-gold-dark">
+                          +
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {section.title === "Book your kickoff" && bookingUrl ? (
+                  <a
+                    className={`${kickoffButton} mt-4`}
+                    href={bookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Book your kickoff
+                  </a>
+                ) : null}
+              </div>
             </li>
           ))}
         </ol>
+
+        <p className="mx-auto mt-8 max-w-[44rem] text-center text-[0.95rem] leading-relaxed text-muted-dark">
+          {welcomeEmail.closing}
+        </p>
+
+        {sessionId ? (
+          <p className="mx-auto mt-4 max-w-[44rem] text-center text-[0.9rem]">
+            <Link
+              href={`/welcome/status?session_id=${encodeURIComponent(sessionId)}`}
+              className="border-b border-ink/30 font-bold text-ink hover:border-gold-dark hover:text-gold-dark"
+            >
+              Check your onboarding status
+            </Link>
+          </p>
+        ) : null}
       </Sheet>
 
       <Sheet surface="paper" aria-labelledby="intake-title" className="site-section">

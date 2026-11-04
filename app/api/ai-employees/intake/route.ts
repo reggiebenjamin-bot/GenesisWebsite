@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { intakeMessages, parseIntake, sendIntakeAlert } from "@/lib/onboardingIntake";
+import { sendOnboardingAlert } from "@/lib/onboardingDelivery";
 import { stripeServer } from "@/lib/stripeServer";
 
 /**
@@ -43,6 +44,24 @@ export async function POST(request: Request) {
   const plan = typeof metadata.plan === "string" ? metadata.plan : "";
 
   await sendIntakeAlert(parsed.intake, plan);
+  await sendOnboardingAlert(parsed.intake, plan);
+
+  // Record that intake was received, so the status page can report it. Kept
+  // non-fatal: the visitor is already confirmed even if this write fails.
+  try {
+    const existing: Record<string, string> = {};
+    for (const [key, value] of Object.entries(metadata)) {
+      if (typeof value === "string") existing[key] = value;
+    }
+    await stripe.checkout.sessions.update(parsed.intake.sessionId, {
+      metadata: { ...existing, intake_received: "true" },
+    });
+  } catch (error) {
+    console.error(
+      "Intake status update failed",
+      error instanceof Error ? error.message : "unknown",
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }
