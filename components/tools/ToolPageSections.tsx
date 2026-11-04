@@ -3,7 +3,7 @@ import Link from "next/link";
 import { DealReportPreview } from "@/components/offers/DealReportPreview";
 import { Card, SectionIntro } from "@/components/ui/Blocks";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { Button } from "@/components/ui/Button";
+import { Button, SubmitButton } from "@/components/ui/Button";
 import { FactList } from "@/components/ui/FactList";
 import { Eyebrow } from "@/components/ui/Section";
 import {
@@ -107,12 +107,18 @@ export function ToolHero({ page, workspaceHref }: { page: ToolPage; workspaceHre
           <p className="mt-6 max-w-[28ch] text-[clamp(1.3rem,2.2vw,1.75rem)] leading-[1.2] tracking-[-0.02em] text-balance text-ivory/88">
             {tool.tagline}
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3">
             <Button href={workspaceHref}>View {tool.name} example</Button>
-            <p className="max-w-[27ch] text-[0.86rem] leading-snug text-ivory/72">
-              View the example and prepare your brief free. Pay {tool.price.display} once for the finished {tool.price.unit}.
-            </p>
+            <form action="/api/tools/checkout" method="POST">
+              <input type="hidden" name="tool" value={tool.id} />
+              <SubmitButton variant="secondary">
+                Buy {tool.name} {tool.price.display}
+              </SubmitButton>
+            </form>
           </div>
+          <p className="mt-5 max-w-[42ch] text-[0.86rem] leading-snug text-ivory/72">
+            View the example and prepare your brief free. Pay {tool.price.display} once for the finished {tool.price.unit}.
+          </p>
         </div>
       </div>
     </section>
