@@ -8,8 +8,7 @@ import {
   aiEmployeePlans,
   aiEmployeesEnterprise,
 } from "@/lib/aiEmployees";
-
-export const FUNDING_LINE = "Genesis is software. We do not lend, place or arrange funding.";
+import { FUNDING_LINE } from "@/lib/legal";
 
 const problems = [
   { title: "Missed calls", body: "The phone rings during a job or after hours, and that caller rarely calls back." },

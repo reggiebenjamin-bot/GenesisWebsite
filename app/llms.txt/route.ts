@@ -22,7 +22,7 @@ export function GET() {
     "",
     `> ${genesisPositioning.category}. ${genesisPositioning.summary}`,
     "",
-    `Genesis offers two things. ${tools.product}: focused, self-service AI applications ("${tools.distinction}"). ${managed.product}: AI operating across the business ("${managed.distinction}").`,
+    `Genesis offers two things. ${tools.product}: focused, self serve AI applications ("${tools.distinction}"). ${managed.product}: AI operating across the business ("${managed.distinction}").`,
     "",
     `## ${tools.product}`,
     "",

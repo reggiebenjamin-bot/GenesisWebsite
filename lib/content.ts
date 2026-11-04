@@ -287,7 +287,7 @@ export const pricingFaqs = [
   },
   {
     question: "Does purchasing a Genesis Tool include Managed AI?",
-    answer: "No. Self-service access and managed infrastructure are separate scopes.",
+    answer: "No. Self serve access and managed infrastructure are separate scopes.",
   },
   {
     question: "What changes between the managed levels?",

@@ -7,6 +7,7 @@ import { Button, TextLink } from "@/components/ui/Button";
 import { FaqList } from "@/components/ui/FaqList";
 import { Eyebrow } from "@/components/ui/Section";
 import { pricingFaqs } from "@/lib/content";
+import { FUNDING_LINE } from "@/lib/legal";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, graph, managedServiceSchema, softwareApplicationSchema } from "@/lib/schema";
 import {
@@ -177,6 +178,7 @@ export default function PricingPage() {
           />
           <FaqList items={pricingFaqs} />
         </div>
+        <p className="mt-10 text-[0.8rem] text-muted-dark">{FUNDING_LINE}</p>
       </Sheet>
 
       <ClosingBand
