@@ -19,6 +19,17 @@ const nextConfig: NextConfig = {
    * engines /tools is the page now. The two renamed product routes also keep
    * existing links working while the catalog moves to its canonical names.
    */
+  /*
+   * Live class sales page and thank-you page are static files in
+   * public/classes. These rewrites serve each folder's index.html at its
+   * clean path. Scoped to the class paths only.
+   */
+  async rewrites() {
+    return [
+      { source: "/classes/ai-employees", destination: "/classes/ai-employees/index.html" },
+      { source: "/classes/ai-employees/thank-you", destination: "/classes/ai-employees/thank-you/index.html" },
+    ];
+  },
   async redirects() {
     return [
       { source: "/mini", destination: "/tools", permanent: true },
