@@ -116,7 +116,7 @@ export default function PricingPage() {
         }
       />
 
-      <ManagedComparison />
+      <ManagedComparison checkout />
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
         <p className="max-w-[44ch] text-[0.9rem] text-muted-dark">{managedOverview.pricing.closing}</p>

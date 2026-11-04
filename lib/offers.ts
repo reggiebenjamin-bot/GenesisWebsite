@@ -587,8 +587,14 @@ export type ManagedPlanId = "managed-750" | "managed-1750" | "managed-4500";
 export type ManagedPlan = {
   id: ManagedPlanId;
   step: string;
+  /** The plan's own name, matching its Stripe product. */
+  name: string;
   monthlyPriceUsd: number;
   priceDisplay: string;
+  /** One-time setup fee, charged once at checkout with the first month. */
+  setupUsd: number;
+  setupDisplay: string;
+  setupLine: string;
   /** What the deployment is. */
   scope: string;
   /** Who Genesis serves at this level. */
@@ -631,8 +637,12 @@ export const managedPlans: readonly ManagedPlan[] = [
   {
     id: "managed-750",
     step: "01",
+    name: "Business Recover",
     monthlyPriceUsd: 750,
     priceDisplay: "$750",
+    setupUsd: 500,
+    setupDisplay: "$500",
+    setupLine: "plus $500 setup",
     scope: "Entry managed Genesis deployment.",
     ladder: "Genesis assists the operator.",
     automationLevel: "Focused workflows and individual productivity.",
@@ -645,8 +655,12 @@ export const managedPlans: readonly ManagedPlan[] = [
   {
     id: "managed-1750",
     step: "02",
+    name: "Business Grow",
     monthlyPriceUsd: 1750,
     priceDisplay: "$1,750",
+    setupUsd: 1500,
+    setupDisplay: "$1,500",
+    setupLine: "plus $1,500 setup",
     scope: "More substantial AI workflow and operational deployment.",
     ladder: "Genesis connects and assists the team.",
     automationLevel: "Cross-workflow automation and team operations.",
@@ -659,8 +673,12 @@ export const managedPlans: readonly ManagedPlan[] = [
   {
     id: "managed-4500",
     step: "03",
+    name: "Business Operate",
     monthlyPriceUsd: 4500,
     priceDisplay: "$4,500",
+    setupUsd: 5000,
+    setupDisplay: "$5,000",
+    setupLine: "plus $5,000 setup",
     scope: "Advanced business-wide AI infrastructure and automation.",
     ladder: "Genesis helps orchestrate the operation.",
     automationLevel:
@@ -675,4 +693,12 @@ export const managedPlans: readonly ManagedPlan[] = [
 
 export function toolPriceLabel(price: ToolPrice) {
   return `${price.display} / ${price.unit}`;
+}
+
+export function isManagedPlanId(value: string): value is ManagedPlanId {
+  return managedPlans.some((plan) => plan.id === value);
+}
+
+export function managedPlanById(id: string): ManagedPlan | undefined {
+  return managedPlans.find((plan) => plan.id === id);
 }
