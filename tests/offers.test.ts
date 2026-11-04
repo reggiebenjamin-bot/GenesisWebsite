@@ -61,7 +61,7 @@ test("each path opens the homepage with its own title; Custom Infrastructure lea
     `${pathHeroes[path].title} ${pathHeroes[path].accent}`;
   assert.equal(title("custom-infrastructure"), genesisPositioning.belief);
   assert.equal(pathHeroes["custom-infrastructure"].eyebrow, genesisPositioning.category);
-  assert.equal(title("agent"), "Solve a specific real estate problem with Genesis.");
+  assert.equal(title("agent"), "Solve a specific business problem with Genesis.");
 });
 
 test("each homepage path asks its own questions, and both ask how the offers differ", () => {
