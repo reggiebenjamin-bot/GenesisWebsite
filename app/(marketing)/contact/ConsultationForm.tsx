@@ -121,7 +121,7 @@ export function ConsultationForm({
       >
         <Eyebrow>Request received</Eyebrow>
         <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.6rem)]">
-          Thanks—we have it. Here is what happens next.
+          Thanks, we have it. Here is what happens next.
         </h2>
         <p className="mt-5 text-muted-dark">
           Genesis will reach out to confirm a time. The call is a working
@@ -252,7 +252,7 @@ export function ConsultationForm({
         <textarea
           name="notes"
           rows={4}
-          placeholder="Describe the current email, Microsoft 365, CRM, document, follow-up, or administrative setup—and the manual handoff creating the most drag…"
+          placeholder="Describe the current email, Microsoft 365, CRM, document, follow-up, or administrative setup, and the manual handoff creating the most drag…"
           className={`${control} py-4`}
         />
       </label>

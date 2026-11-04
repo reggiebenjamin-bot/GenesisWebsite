@@ -40,7 +40,7 @@ export default async function ContactPage({
         title="Show us how the work moves today."
         description={[
           "Tell us what your operation is trying to handle, where work is getting stuck, and which systems or workflows are carrying the most manual coordination.",
-          "The first conversation is about fit and scope—not forcing a predetermined stack into the business.",
+          "The first conversation is about fit and scope, not forcing a predetermined stack into the business.",
         ]}
       />
 
