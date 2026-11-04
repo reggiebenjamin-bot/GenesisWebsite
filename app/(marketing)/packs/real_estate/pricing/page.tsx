@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Card, Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { realEstatePack } from "@/lib/realEstatePack";
+import { FUNDING_LINE } from "@/lib/legal";
 import { absoluteUrl } from "@/lib/seo";
 import { indexable } from "@/lib/site";
 
@@ -104,6 +105,9 @@ export default function RealEstatePackPricingPage() {
 
         <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.84rem] text-muted-dark">
           {realEstatePack.footer}
+        </p>
+        <p className="mx-auto mt-6 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
+          {FUNDING_LINE}
         </p>
       </Sheet>
     </>

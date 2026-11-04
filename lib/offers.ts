@@ -161,7 +161,7 @@ export const pathHeroes: Readonly<
     title: "Solve a specific business problem",
     accent: "with Genesis.",
     summary:
-      "Focused, self-service products for evaluating an opportunity, presenting a deal, or reviewing a capital plan, each on its own page.",
+      "Focused, self serve products for evaluating an opportunity, presenting a deal, or reviewing a capital plan, each on its own page.",
   },
   "custom-infrastructure": {
     eyebrow: genesisPositioning.category,
@@ -223,7 +223,7 @@ export type GenesisTool = {
 export const toolsOverview = {
   product: "Genesis Tools",
   headline: "Choose the real estate job you need to complete.",
-  summary: "Three focused, self-service products, each with its own page.",
+  summary: "Three focused, self serve products, each with its own page.",
   examples: [
     "Evaluate this opportunity.",
     "Present this deal.",

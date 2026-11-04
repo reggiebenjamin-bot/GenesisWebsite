@@ -184,7 +184,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/about",
     title: { absolute: "About Genesis AI: AI Infrastructure for Real Estate" },
     description:
-      "Genesis AI builds AI infrastructure for real estate professionals: self-service Genesis Tools for specific tasks, and consultation-led Genesis Managed AI.",
+      "Genesis AI builds AI infrastructure for real estate professionals: self serve Genesis Tools for specific tasks, and consultation-led Genesis Managed AI.",
     label: "About",
     image: socialImage("about", "About Genesis AI — the team and principles behind Genesis"),
     lastModified: SEO_PASS,
