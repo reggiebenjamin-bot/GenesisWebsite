@@ -20,7 +20,7 @@ const stages = [
     number: "03",
     label: "Applied AI",
     title: "Put the context to work.",
-    body: "AI helps draft follow-up, route documents, prepare decision briefs, and keep pipelines current—with people in control.",
+    body: "AI helps draft follow-up, route documents, prepare decision briefs, and keep pipelines current, with people in control.",
     items: ["Draft", "Route", "Recommend"],
   },
 ] as const;
@@ -36,7 +36,7 @@ export function AppliedIntelligence() {
               Better context before the next action.
             </h2>
             <p className="mt-6 max-w-xl text-[1.05rem] text-muted-light">
-              Applied AI is the product core—not a novelty layer. Genesis
+              Applied AI is the product core, not a novelty layer. Genesis
               synthesizes the information already moving through the business,
               applies intelligence inside reusable workflow mechanisms, and
               manages those workflows in the client&rsquo;s real operation.
