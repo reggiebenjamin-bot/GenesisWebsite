@@ -1,6 +1,11 @@
+import { purchaseProductName } from "./checkoutPlans.ts";
+
 /** Purchase alert posted to the Genesis Sales Teams channel. */
 export type PurchaseAlert = {
+  /** The raw plan id from the Checkout Session metadata, kept for support. */
   plan: string;
+  /** Human product name for the title, for example "AI Employees Duo". */
+  product: string;
   amount: string;
   customerName: string;
   customerEmail: string;
@@ -23,8 +28,10 @@ export function formatAmount(total: unknown, currency: unknown): string {
 export function alertFromSession(session: SessionLike, test = false): PurchaseAlert {
   const metadata = (session.metadata ?? {}) as Record<string, unknown>;
   const details = (session.customer_details ?? {}) as Record<string, unknown>;
+  const planId = typeof metadata.plan === "string" ? metadata.plan.trim() : "";
   return {
     plan: text(metadata.plan),
+    product: purchaseProductName(planId),
     amount: formatAmount(session.amount_total, session.currency),
     customerName: text(details.name),
     customerEmail: text(details.email ?? session.customer_email),
@@ -34,7 +41,8 @@ export function alertFromSession(session: SessionLike, test = false): PurchaseAl
 }
 
 export function purchaseAlertCard(alert: PurchaseAlert) {
-  const title = `${alert.test ? "TEST " : ""}New AI Employees purchase`;
+  const named = alert.product ? `New purchase: ${alert.product}` : "New purchase";
+  const title = `${alert.test ? "TEST " : ""}${named}`;
   return {
     type: "message",
     attachments: [
@@ -49,7 +57,7 @@ export function purchaseAlertCard(alert: PurchaseAlert) {
             {
               type: "FactSet",
               facts: [
-                { title: "Plan", value: alert.plan },
+                { title: "Plan", value: alert.product || alert.plan },
                 { title: "Amount", value: alert.amount },
                 { title: "Customer", value: alert.customerName },
                 { title: "Email", value: alert.customerEmail },

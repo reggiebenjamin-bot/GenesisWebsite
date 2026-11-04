@@ -1,5 +1,5 @@
 import { aiEmployeePlans } from "./aiEmployees.ts";
-import { managedPlans } from "./offers.ts";
+import { genesisTools, managedPlans } from "./offers.ts";
 
 /**
  * The post checkout welcome page serves every paid plan, so it needs one way
@@ -22,4 +22,24 @@ export function resolvePlan(planId: string): ResolvedPlan | null {
   if (managed) return { id: managed.id, name: managed.name, kind: "managed" };
 
   return null;
+}
+
+/**
+ * Human product name for a purchase alert, resolved from the plan id carried in
+ * a Checkout Session's metadata. Covers the AI Employees plans, the Genesis
+ * Managed AI plans and the one time Genesis Tools, for example "AI Employees
+ * Duo", "Genesis Business Recover" or "Deal Architect". Returns an empty string
+ * when the id is not recognised so the alert can fall back to a generic title.
+ */
+export function purchaseProductName(planId: string): string {
+  const employee = aiEmployeePlans.find((plan) => plan.id === planId);
+  if (employee) return `AI Employees ${employee.name}`;
+
+  const managed = managedPlans.find((plan) => plan.id === planId);
+  if (managed) return `Genesis ${managed.name}`;
+
+  const tool = genesisTools.find((entry) => entry.id === planId);
+  if (tool) return tool.name;
+
+  return "";
 }
