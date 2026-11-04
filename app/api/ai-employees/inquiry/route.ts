@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { inquiryMessages } from "@/lib/aiEmployees";
 import { parseInquiry } from "@/lib/aiEmployeesInquiry";
+import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 const WEBHOOK_URL = process.env.GENESIS_AI_EMPLOYEES_INQUIRY_WEBHOOK_URL;
 
@@ -56,6 +57,17 @@ export async function POST(request: Request) {
       ? NextResponse.json({ error: inquiryMessages.unconfigured }, { status: 503 })
       : redirectInquiry(request, "unconfigured");
   }
+
+  await mirrorToGenesis(
+    {
+      name: parsed.inquiry.name,
+      phone: parsed.inquiry.phone,
+      email: parsed.inquiry.email,
+      message: parsed.inquiry.message,
+      want: "other",
+    },
+    "geai.us:ai-employees-inquiry",
+  );
 
   const outbound = new FormData();
   Object.entries({

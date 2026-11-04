@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { infrastructureCatalog } from "@/lib/products";
+import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 const WEBHOOK_URL =
   process.env.GENESIS_CONSULTATION_WEBHOOK_URL ||
@@ -51,6 +52,11 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: "Invalid form submission" }, { status: 400 });
     }
+
+    await mirrorToGenesis(
+      { name: String(data.name), phone: String(data.phone), email, want: "other" },
+      "geai.us:consultation",
+    );
 
     const outbound = new FormData();
     Object.entries({

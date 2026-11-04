@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { assessmentQuestions } from "@/lib/assessment";
+import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 /*
  * The assessment's answers, forwarded only to its dedicated lead destination.
@@ -70,6 +71,16 @@ export async function POST(request: Request) {
         { status: 503 },
       );
     }
+
+    await mirrorToGenesis(
+      {
+        name: `${firstName} ${lastName}`,
+        phone: asString(data.phone),
+        email,
+        want: "other",
+      },
+      "geai.us:assessment",
+    );
 
     const outbound = new FormData();
     Object.entries({
