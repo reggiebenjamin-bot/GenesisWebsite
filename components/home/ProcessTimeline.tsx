@@ -7,13 +7,13 @@ import styles from "./ProcessTimeline.module.css";
  * along a dotted rail with a pulse running through it. What each step
  * involves waits behind a disclosure. For an ink sheet.
  */
-export function ProcessTimeline() {
+export function ProcessTimeline({ titleId = "process-title" }: { titleId?: string } = {}) {
   return (
     <div>
       <SectionIntro
         eyebrow="How it runs"
         title="Start with the operation. Build from what is actually there."
-        titleId="process-title"
+        titleId={titleId}
       />
 
       <ol className={styles.timeline}>

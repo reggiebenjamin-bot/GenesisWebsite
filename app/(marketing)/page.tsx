@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { AiEmployeesHomeSection } from "@/components/ai-employees/AiEmployeesHomeSection";
 import { HawkHero } from "@/components/home/HawkHero";
 import { AgentSections, CustomInfrastructureSections } from "@/components/home/PathSections";
+import {
+  StoryClose,
+  StoryHowItWorks,
+  StoryOffers,
+  StoryOpening,
+  StoryTeamDay,
+} from "@/components/home/story/StorySections";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { pageMetadata } from "@/lib/metadata";
 import { graph, organizationSchema, websiteSchema } from "@/lib/schema";
@@ -9,21 +16,22 @@ import { graph, organizationSchema, websiteSchema } from "@/lib/schema";
 export const metadata: Metadata = pageMetadata("/");
 
 /**
- * A homepage for each way to use Genesis. The hero is shared: the hawk stays
- * and only the title changes. Everything after it is the chosen path's own
- * layout.
- *
- * Both are server-rendered, and the toggle chooses which one shows, in place,
- * through the attribute on <html>, so neither flashes before the other.
+ * The homepage tells the Genesis story beneath the unchanged Hawk hero:
+ * the problem, why Genesis exists, Genesis OS and its editions, the team,
+ * how it runs, the plans, then each path's existing sections and the close.
  */
 export default function Home() {
   return (
     <>
-      {/* The organization record lives here and on /about; every other page
-          points back to it. */}
       <JsonLd data={graph(organizationSchema(), websiteSchema())} />
 
       <HawkHero />
+
+      <StoryOpening />
+      <AiEmployeesHomeSection />
+      <StoryTeamDay />
+      <StoryHowItWorks />
+      <StoryOffers />
 
       <div data-offer-panel="agent">
         <AgentSections />
@@ -33,7 +41,10 @@ export default function Home() {
         <CustomInfrastructureSections />
       </div>
 
-      <AiEmployeesHomeSection />
+      {/* The custom-infrastructure path keeps its own closing band. */}
+      <div data-offer-panel="agent">
+        <StoryClose />
+      </div>
     </>
   );
 }

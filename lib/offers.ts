@@ -158,7 +158,7 @@ export const pathHeroes: Readonly<
 > = {
   agent: {
     eyebrow: "Genesis Tools",
-    title: "Solve a specific real estate problem",
+    title: "Solve a specific business problem",
     accent: "with Genesis.",
     summary:
       "Focused, self-service products for evaluating an opportunity, presenting a deal, or reviewing a capital plan, each on its own page.",
