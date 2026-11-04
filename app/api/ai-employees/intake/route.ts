@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { intakeMessages, parseIntake, sendIntakeAlert } from "@/lib/onboardingIntake";
 import { sendOnboardingAlert } from "@/lib/onboardingDelivery";
 import { stripeServer } from "@/lib/stripeServer";
+import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 /**
  * Receives the onboarding intake. Validates the fields, then confirms the
@@ -45,6 +46,16 @@ export async function POST(request: Request) {
 
   await sendIntakeAlert(parsed.intake, plan);
   await sendOnboardingAlert(parsed.intake, plan);
+  await mirrorToGenesis(
+    {
+      name: parsed.intake.name,
+      phone: parsed.intake.phone,
+      email: parsed.intake.email,
+      message: parsed.intake.whatYouSell,
+      want: "other",
+    },
+    "geai.us:ai-employees-intake",
+  );
 
   // Record that intake was received, so the status page can report it. Kept
   // non-fatal: the visitor is already confirmed even if this write fails.
