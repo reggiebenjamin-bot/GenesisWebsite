@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { Card } from "@/components/ui/Blocks";
+import { SubmitButton } from "@/components/ui/Button";
 import { managedOverview, managedPlans } from "@/lib/offers";
 
 /* The gold hairline gets stronger with the level, the way the plan cards on
@@ -11,23 +12,37 @@ const TIER_EDGES = [
 ] as const;
 
 /**
- * The three managed levels read across as well as down: four aligned rows —
- * the price, what Genesis does, the deployment, and the automation — held
- * level with each other by subgrid, so the cards stay the same size and only
- * the answers differ. Where subgrid is unavailable the cards simply size
- * themselves, which reads the same on one column.
+ * The three managed levels read across as well as down: five aligned rows —
+ * the price, what Genesis does, the deployment, the automation, and the call
+ * to action — held level with each other by subgrid, so the cards stay the
+ * same size and only the answers differ. Where subgrid is unavailable the
+ * cards simply size themselves, which reads the same on one column.
+ *
+ * With `checkout`, each card posts its plan to the managed Checkout route,
+ * which opens a Stripe Checkout Session for the monthly price plus the
+ * one-time setup fee.
  */
-export function ManagedComparison({ headingLevel = "h3" }: { headingLevel?: "h3" | "h4" }) {
+export function ManagedComparison({
+  headingLevel = "h3",
+  checkout = false,
+}: {
+  headingLevel?: "h3" | "h4";
+  checkout?: boolean;
+}) {
   const Heading = headingLevel;
+  const olRows = checkout
+    ? "md:[grid-template-rows:repeat(5,auto)]"
+    : "md:[grid-template-rows:repeat(4,auto)]";
+  const cardSpan = checkout ? "md:row-span-5" : "md:row-span-4";
 
   return (
     <div>
-      <ol className="grid gap-4 md:grid-cols-3 md:[grid-template-rows:repeat(4,auto)]">
+      <ol className={`grid gap-4 md:grid-cols-3 ${olRows}`}>
         {managedPlans.map((plan, index) => (
           <Card
             key={plan.id}
             as="li"
-            className="relative grid content-start gap-6 overflow-hidden md:row-span-4 md:gap-4 md:[grid-template-rows:subgrid]"
+            className={`relative grid content-start gap-6 overflow-hidden md:gap-4 md:[grid-template-rows:subgrid] ${cardSpan}`}
             style={{ "--tier-edge": TIER_EDGES[index] } as CSSProperties}
           >
             <span
@@ -45,6 +60,7 @@ export function ManagedComparison({ headingLevel = "h3" }: { headingLevel?: "h3"
                 </span>
                 <span className="text-[0.9rem] text-muted-dark">per month</span>
               </p>
+              <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
             </div>
 
             <div>
@@ -56,6 +72,19 @@ export function ManagedComparison({ headingLevel = "h3" }: { headingLevel?: "h3"
 
             <Detail label="Deployment" value={plan.scope} />
             <Detail label="Automation" value={plan.automationLevel} />
+
+            {checkout ? (
+              <form
+                action="/api/managed/checkout"
+                method="POST"
+                className="mt-2 flex items-end"
+              >
+                <input type="hidden" name="plan" value={plan.id} />
+                <SubmitButton variant="outline" className="w-full">
+                  Start {plan.name}
+                </SubmitButton>
+              </form>
+            ) : null}
           </Card>
         ))}
       </ol>
