@@ -161,7 +161,7 @@ export const pathHeroes: Readonly<
     title: "Solve a specific business problem",
     accent: "with Genesis.",
     summary:
-      "Focused, self serve products for evaluating an opportunity, presenting a deal, or reviewing a capital plan, each on its own page.",
+      "Get clear answers to big business decisions in minutes. Simple tools to size up an opportunity, pitch it and plan the money behind it.",
   },
   "custom-infrastructure": {
     eyebrow: genesisPositioning.category,
