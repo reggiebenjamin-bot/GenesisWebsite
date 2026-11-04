@@ -47,6 +47,7 @@ export function PlanCards() {
                 <span className={styles.currency}>{plan.priceDisplay.slice(0, 1)}</span>
                 {plan.priceDisplay.slice(1)}
                 <span className={styles.cadence}>per month</span>
+                <span className={styles.setup}>{plan.setupLine}</span>
               </p>
 
               <span aria-hidden="true" className={styles.divider} />

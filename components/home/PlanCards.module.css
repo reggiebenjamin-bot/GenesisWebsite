@@ -224,6 +224,15 @@
   text-transform: uppercase;
 }
 
+.setup {
+  display: block;
+  margin-top: 6px;
+  color: rgb(244 239 232 / 0.4);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .divider {
   display: block;
   height: 1px;
