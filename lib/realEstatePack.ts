@@ -20,7 +20,7 @@ export type RealEstatePackTier = {
   setupLabel: string;
   features: readonly string[];
   cta: string;
-  /** The external signup URL for this tier. */
+  /** The external checkout URL for this tier. */
   href: string;
 };
 
@@ -47,8 +47,8 @@ export const realEstatePack = {
         "Clean buyer and seller lanes",
         "Sample board with fictional data",
       ],
-      cta: "Request onboarding",
-      href: "https://genesisaisolutions.cloud/packs/real_estate/signup?tier=Agent",
+      cta: "Start checkout",
+      href: "https://genesisaisolutions.cloud/packs/real_estate/checkout?tier=Agent",
     },
     {
       id: "team",
@@ -66,8 +66,8 @@ export const realEstatePack = {
         "Team roles and routing rules",
         "Priority onboarding and configuration",
       ],
-      cta: "Request onboarding",
-      href: "https://genesisaisolutions.cloud/packs/real_estate/signup?tier=Team",
+      cta: "Start checkout",
+      href: "https://genesisaisolutions.cloud/packs/real_estate/checkout?tier=Team",
     },
   ],
 } as const satisfies {
