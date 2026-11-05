@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Lock } from "@phosphor-icons/react";
 import { getWorkspaceTool } from "@/lib/toolWorkspace";
+import { computeDealArchitect } from "@/lib/toolResults";
 import { useWorkspaceDraft } from "../useWorkspaceDraft";
+import { useToolUnlock } from "../useToolUnlock";
+import { ResultCard, ResultFacts, ResultList, ResultSection, ResultTable, UnlockNotice } from "../ResultView";
 import { DraftBar, Field, PurchaseReview, WorkspaceAction } from "../WorkspaceControls";
 import styles from "../WorkspaceShell.module.css";
 import visual from "./DealArchitectVisual.module.css";
@@ -46,7 +49,8 @@ function validOptionalAmount(value: string) {
 }
 
 export function DealArchitectWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("deal-architect", initialDraft);
+  const { data, setData, status, clear, hydrated } = useWorkspaceDraft("deal-architect", initialDraft);
+  const unlock = useToolUnlock("deal-architect");
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const isRental = data.strategy === "Rental";
   const missing = [
@@ -60,6 +64,7 @@ export function DealArchitectWorkspace() {
     !validOptionalAmount(data.sellingCosts) ? "valid selling costs" : null,
   ].filter((item): item is string => Boolean(item));
   const ready = missing.length === 0;
+  const result = ready ? computeDealArchitect(data) : null;
 
   function update<K extends keyof ArchitectDraft>(key: K, value: ArchitectDraft[K]) {
     setData((current) => ({ ...current, [key]: value }));
@@ -132,6 +137,8 @@ export function DealArchitectWorkspace() {
           </Field>
         </form>
 
+        {unlock.status === "locked" ? (
+        <>
         <section className={visual.previewPanel} aria-labelledby="architect-preview-title">
           <div className={visual.previewIntro}>
             <div>
@@ -168,9 +175,37 @@ export function DealArchitectWorkspace() {
           </div>
           <WorkspaceAction label="Purchase Deal Architect result" price={architectPrice} disabled={!ready} onClick={() => setPurchaseOpen(true)} />
         </section>
+        </>
+        ) : null}
       </div>
 
-      <PurchaseReview open={ready && purchaseOpen} name="Deal Architect" price={architectPrice} unit="analysis" onClose={() => setPurchaseOpen(false)} />
+      {unlock.status === "verifying" || (unlock.status === "unlocked" && !hydrated) ? <UnlockNotice state="verifying" /> : null}
+      {unlock.status === "failed" ? <UnlockNotice state="failed" /> : null}
+      {unlock.status === "unlocked" && hydrated && !result ? <UnlockNotice state="missing" /> : null}
+      {unlock.status === "unlocked" && result ? (
+        <ResultCard
+          eyebrow="GENESIS / DEAL ARCHITECT"
+          stamp="PRIVATE DECISION BRIEF"
+          title={result.projectName || "Your project"}
+          subtitle={`${result.strategy} analysis prepared from your inputs`}
+        >
+          <ResultFacts
+            rows={[
+              { label: "Strategy", value: result.strategy },
+              ...(result.address ? [{ label: "Property", value: result.address }] : []),
+            ]}
+          />
+          <div className={styles.resultVerdict}>{result.verdict}</div>
+          <ResultSection title="Cost and exit analysis">
+            <ResultTable rows={result.rows} />
+          </ResultSection>
+          <ResultSection title="Assumptions used">
+            <ResultList items={result.assumptions} />
+          </ResultSection>
+        </ResultCard>
+      ) : null}
+
+      <PurchaseReview open={unlock.status === "locked" && ready && purchaseOpen} name="Deal Architect" price={architectPrice} unit="analysis" onClose={() => setPurchaseOpen(false)} />
     </>
   );
 }
