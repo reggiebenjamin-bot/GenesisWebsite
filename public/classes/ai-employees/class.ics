@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Genesis AI Solutions//AI Employees Class//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:ai-employees-20261113T010000Z@genesisaisolutions.cloud
+DTSTAMP:20261104T000000Z
+DTSTART:20261113T010000Z
+DTEND:20261113T030000Z
+SUMMARY:AI Employees for Real Estate Investors, live class with Reginald Benjamin
+DESCRIPTION:Join link arrives by email 24 hours before class.
+END:VEVENT
+END:VCALENDAR
