@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { Check, FileText, ImageSquare, LockKey } from "@phosphor-icons/react";
 import { getWorkspaceTool } from "@/lib/toolWorkspace";
+import { computeDealPackager } from "@/lib/toolResults";
 import { useWorkspaceDraft } from "../useWorkspaceDraft";
+import { useToolUnlock } from "../useToolUnlock";
+import { ResultCard, ResultFacts, ResultList, ResultSection, ResultTable, UnlockNotice } from "../ResultView";
 import { DraftBar, Field, PurchaseReview, WorkspaceAction } from "../WorkspaceControls";
 import styles from "../WorkspaceShell.module.css";
 import visual from "./DealPackagerVisual.module.css";
@@ -71,7 +74,8 @@ function optionalAmountValid(value: string) {
 }
 
 export function DealPackagerWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("deal-packager", initialDraft);
+  const { data, setData, status, clear, hydrated } = useWorkspaceDraft("deal-packager", initialDraft);
+  const unlock = useToolUnlock("deal-packager");
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [touched, setTouched] = useState<Partial<Record<keyof PackagerDraft, boolean>>>({});
 
@@ -88,6 +92,8 @@ export function DealPackagerWorkspace() {
     !optionalAmountValid(data.rehabCost) && "Valid project budget",
     invalidEmail && "Valid contact email",
   ].filter((item): item is string => Boolean(item));
+  const ready = missing.length === 0;
+  const result = ready ? computeDealPackager(data) : null;
 
   function update<K extends keyof PackagerDraft>(key: K, value: PackagerDraft[K]) {
     setData((current) => ({ ...current, [key]: value }));
@@ -327,6 +333,8 @@ export function DealPackagerWorkspace() {
         </details>
       </form>
 
+      {unlock.status === "locked" ? (
+      <>
       <section className={visual.preview} aria-labelledby="package-preview-title">
         <div className={visual.previewHeading}>
           <div>
@@ -398,8 +406,52 @@ export function DealPackagerWorkspace() {
           <WorkspaceAction label="Purchase finished package" price={packagerPrice} disabled={missing.length > 0} onClick={() => setPurchaseOpen(true)} />
         </div>
       </section>
+      </>
+      ) : null}
 
-      <PurchaseReview open={purchaseOpen} name="Deal Packager" price={packagerPrice} unit="package" onClose={() => setPurchaseOpen(false)} />
+      {unlock.status === "verifying" || (unlock.status === "unlocked" && !hydrated) ? <UnlockNotice state="verifying" /> : null}
+      {unlock.status === "failed" ? <UnlockNotice state="failed" /> : null}
+      {unlock.status === "unlocked" && hydrated && !result ? <UnlockNotice state="missing" /> : null}
+      {unlock.status === "unlocked" && result ? (
+        <ResultCard
+          eyebrow="GENESIS / DEAL PACKAGE"
+          stamp="PRIVATE RESULT"
+          title={result.title}
+          subtitle={`Prepared for ${result.preparedFor}`}
+          copyText={result.plainText}
+          copyLabel="Copy text"
+        >
+          <ResultFacts rows={result.property} />
+          {result.summary ? (
+            <ResultSection title="Summary">
+              <p className={styles.resultText}>{result.summary}</p>
+            </ResultSection>
+          ) : null}
+          <ResultSection title="Numbers">
+            <ResultTable rows={result.numbers} />
+          </ResultSection>
+          <ResultSection title="The ask">
+            <p className={styles.resultText}>{result.theAsk}</p>
+          </ResultSection>
+          {result.highlights.length > 0 ? (
+            <ResultSection title="Highlights">
+              <ResultList items={result.highlights} />
+            </ResultSection>
+          ) : null}
+          {result.risks.length > 0 ? (
+            <ResultSection title="Risks the seller listed">
+              <ResultList items={result.risks} />
+            </ResultSection>
+          ) : null}
+          {result.contact.length > 0 ? (
+            <ResultSection title="Contact">
+              <ResultFacts rows={result.contact} />
+            </ResultSection>
+          ) : null}
+        </ResultCard>
+      ) : null}
+
+      <PurchaseReview open={unlock.status === "locked" && purchaseOpen} name="Deal Packager" price={packagerPrice} unit="package" onClose={() => setPurchaseOpen(false)} />
     </>
   );
 }

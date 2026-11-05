@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { FileLock, Files, Info } from "@phosphor-icons/react";
 import { getWorkspaceTool } from "@/lib/toolWorkspace";
+import { computeCapitalAdvisor } from "@/lib/toolResults";
 import { useWorkspaceDraft } from "../useWorkspaceDraft";
+import { useToolUnlock } from "../useToolUnlock";
+import { ResultCard, ResultFacts, ResultList, ResultSection, ResultTable, UnlockNotice } from "../ResultView";
 import {
   DraftBar,
   Field,
@@ -65,7 +68,8 @@ function validTerm(value: string) {
 }
 
 export function CapitalAdvisorWorkspace() {
-  const { data, setData, status, clear } = useWorkspaceDraft("capital-advisor", initialDraft);
+  const { data, setData, status, clear, hydrated } = useWorkspaceDraft("capital-advisor", initialDraft);
+  const unlock = useToolUnlock("capital-advisor");
   const [purchaseOpen, setPurchaseOpen] = useState(false);
 
   const invalid = {
@@ -93,6 +97,8 @@ export function CapitalAdvisorWorkspace() {
   ].filter((item): item is string => Boolean(item));
   const previewProject = data.projectName.trim().slice(0, 56) || "Your project";
   const previewAsset = data.assetType.trim().slice(0, 36) || "Asset type";
+  const ready = incomplete.length === 0;
+  const result = ready ? computeCapitalAdvisor(data) : null;
 
   function update<K extends keyof CapitalDraft>(key: K, value: CapitalDraft[K]) {
     setData((current) => ({ ...current, [key]: value }));
@@ -192,6 +198,8 @@ export function CapitalAdvisorWorkspace() {
           </div>
         </form>
 
+        {unlock.status === "locked" ? (
+        <>
         <section className={visual.lockedPanel} aria-labelledby="capital-result-title">
           <div className={visual.lockedCopy}>
             <span className={visual.eyebrow}>Result preview</span>
@@ -243,10 +251,37 @@ export function CapitalAdvisorWorkspace() {
             onClick={() => setPurchaseOpen(true)}
           />
         </section>
+        </>
+        ) : null}
+
+        {unlock.status === "verifying" || (unlock.status === "unlocked" && !hydrated) ? <UnlockNotice state="verifying" /> : null}
+        {unlock.status === "failed" ? <UnlockNotice state="failed" /> : null}
+        {unlock.status === "unlocked" && hydrated && !result ? <UnlockNotice state="missing" /> : null}
+        {unlock.status === "unlocked" && result ? (
+          <ResultCard
+            eyebrow="GENESIS / CAPITAL ADVISOR"
+            stamp="PRIVATE CAPITAL PLAN"
+            title={data.projectName.trim() || "Your project"}
+            subtitle="A capital plan prepared from your inputs. Decision support only."
+          >
+            <ResultFacts
+              rows={[
+                ...(data.purpose ? [{ label: "Purpose", value: data.purpose }] : []),
+                ...(data.assetType.trim() ? [{ label: "Asset type", value: data.assetType.trim() }] : []),
+              ]}
+            />
+            <ResultSection title="Sources and uses">
+              <ResultTable rows={result.rows} />
+            </ResultSection>
+            <ResultSection title="What to have ready">
+              <ResultList items={result.checklist} />
+            </ResultSection>
+          </ResultCard>
+        ) : null}
       </div>
 
       <PurchaseReview
-        open={purchaseOpen}
+        open={unlock.status === "locked" && purchaseOpen}
         name="Capital Advisor"
         price={advisorPrice}
         unit="capital plan"

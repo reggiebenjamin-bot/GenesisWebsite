@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       line_items: [toolLineItem(tool)],
       metadata: { plan: tool.id, kind: "tool", source: "geai_site" },
       payment_intent_data: { metadata: { plan: tool.id, kind: "tool" } },
-      success_url: `${origin}/workspace/${tool.id}?checkout=success`,
+      success_url: `${origin}/workspace/${tool.id}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/tools/${tool.id}?checkout=closed`,
       integration_identifier: TOOLS_CHECKOUT_INTEGRATION_ID,
     });
