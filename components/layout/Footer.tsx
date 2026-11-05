@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
 import { contact, navigation, navigationLinks } from "@/lib/content";
+import { editions } from "@/lib/editions";
 import { genesisPositioning, genesisTools, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
@@ -15,6 +16,19 @@ const pathPages = offerPaths.map((path) => ({ label: path.product, href: path.hr
 
 /* Each tool's own page, linked from every page of the site. */
 const toolPages = genesisTools.map((tool) => ({ label: tool.name, href: `/tools/${tool.id}` }));
+
+/* The Genesis OS editions, each with its own landing page. */
+const editionPages = editions.map((edition) => ({
+  label: edition.name.replace(/^Genesis /, ""),
+  href: edition.href,
+}));
+
+/* Draft legal pages and the classes index, linked from the bottom bar. */
+const bottomLinks = [
+  { label: "Classes", href: "/classes" },
+  { label: "Privacy", href: "/privacy" },
+  { label: "Terms", href: "/terms" },
+];
 
 export function Footer() {
   return (
@@ -33,7 +47,7 @@ export function Footer() {
         <div>
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
-            {[...pathPages, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
+            {[...pathPages, ...editionPages, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>
@@ -91,6 +105,13 @@ export function Footer() {
         <div className="flex justify-between gap-6 max-md:flex-col">
           <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
           <p>Tools help you do the task. Managed AI helps your business operate.</p>
+        </div>
+        <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2">
+          {bottomLinks.map((item) => (
+            <Link key={item.href} href={item.href} className={columnLink}>
+              {item.label}
+            </Link>
+          ))}
         </div>
         <p className="mt-3 text-center">{softwareDisclaimer}</p>
       </div>

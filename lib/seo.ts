@@ -203,6 +203,61 @@ export const seoPages: readonly SeoPage[] = [
     priority: 0.6,
   },
   {
+    path: "/real-estate",
+    title: "Software for Real Estate Pros",
+    description:
+      "Genesis is software for real estate pros. Agents, investors and teams work every buyer and seller lead the same day and keep the deal board current.",
+    label: "Real Estate Pros",
+    image: null,
+    lastModified: "2026-11-05",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/business",
+    title: "Software for Service Businesses",
+    description:
+      "Genesis is software for service businesses. Calls get answered, quotes get followed up, and appointments get confirmed so no customer waits.",
+    label: "Business",
+    image: null,
+    lastModified: "2026-11-05",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/enterprise",
+    title: "Software for Multi Location Operations",
+    description:
+      "Genesis is software for multi location operations. Connect your systems, run custom workflows, and keep a managed build operating every month.",
+    label: "Enterprise",
+    image: null,
+    lastModified: "2026-11-05",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/privacy",
+    title: "Privacy Policy Draft",
+    description:
+      "Draft Genesis privacy notice for legal review. What information the Genesis software collects, how payments and sign in work, and how to reach us.",
+    label: "Privacy",
+    image: null,
+    lastModified: "2026-11-05",
+    changeFrequency: "yearly",
+    priority: 0.3,
+  },
+  {
+    path: "/terms",
+    title: "Terms of Service Draft",
+    description:
+      "Draft Genesis terms for legal review. The software is provided as is, you are responsible for lawful use, and classes are education only.",
+    label: "Terms",
+    image: null,
+    lastModified: "2026-11-05",
+    changeFrequency: "yearly",
+    priority: 0.3,
+  },
+  {
     path: "/blog",
     title: "Real Estate Operations and AI Blog",
     description:

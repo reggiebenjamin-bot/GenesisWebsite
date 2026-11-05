@@ -101,7 +101,6 @@ export function ExampleWalkthrough({ toolId }: { toolId: WorkspaceToolId }) {
       <div className={styles.stage} aria-hidden="true">
         <div className={styles.demoForm}>
           <div className={styles.demoFormHeading}>
-            <span className={styles.sparkle}>✦</span>
             <span>Preparing a sample brief</span>
           </div>
           <div className={styles.demoFields}>
