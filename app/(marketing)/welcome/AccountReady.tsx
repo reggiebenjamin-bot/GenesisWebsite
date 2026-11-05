@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { SignInCard } from "./SignInCard";
-import { workspaceCardCopy, type WorkspacePhase } from "@/lib/workspaceAccess";
+import { workspaceCardCopy, type WorkspaceViewPhase } from "@/lib/workspaceAccess";
 import { welcomeReadyCopy } from "@/lib/welcomePath";
 
-type Status = { phase?: WorkspacePhase; loginUrl?: string | null };
+type Status = { phase?: WorkspaceViewPhase; loginUrl?: string | null };
 
 /**
- * Polls this site for the buyer's own workspace. The card says the account is
- * ready only after provision succeeded and a dedicated login URL came back.
+ * Polls this site for the signed-in owner's workspace. The login button is
+ * rendered only when the response includes that owner's login URL.
  */
 export function AccountReady({
   sessionId,
@@ -17,10 +17,10 @@ export function AccountReady({
   initialLoginUrl = null,
 }: {
   sessionId: string;
-  initialPhase?: WorkspacePhase;
+  initialPhase?: WorkspaceViewPhase;
   initialLoginUrl?: string | null;
 }) {
-  const [phase, setPhase] = useState<WorkspacePhase>(initialPhase);
+  const [phase, setPhase] = useState<WorkspaceViewPhase>(initialPhase);
   const [loginUrl, setLoginUrl] = useState<string | null>(initialPhase === "ready" ? initialLoginUrl : null);
 
   useEffect(() => {
@@ -34,10 +34,11 @@ export function AccountReady({
           cache: "no-store",
         });
         const data = (await res.json()) as Status;
-        if (!stopped && (data.phase === "ready" || data.phase === "failed" || data.phase === "not_eligible")) {
+        if (stopped) return;
+        if (data.phase === "ready" || data.phase === "pending" || data.phase === "ended" || data.phase === "sign_in") {
           setPhase(data.phase);
           setLoginUrl(data.phase === "ready" && typeof data.loginUrl === "string" ? data.loginUrl : null);
-          if (data.phase !== "ready" || typeof data.loginUrl === "string") return;
+          if (data.phase !== "pending") return;
         }
       } catch {
         /* keep waiting */
@@ -50,7 +51,7 @@ export function AccountReady({
     };
   }, [sessionId]);
 
-  const displayPhase: WorkspacePhase = phase === "ready" && loginUrl ? "ready" : phase === "ready" ? "pending" : phase;
+  const displayPhase: WorkspaceViewPhase = phase === "ready" && loginUrl ? "ready" : phase === "ready" ? "pending" : phase;
   const copy = workspaceCardCopy(displayPhase);
 
   return (

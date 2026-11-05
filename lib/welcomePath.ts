@@ -30,6 +30,8 @@ export const welcomeReadyCopy = {
   pendingHeading: "Your workspace is being prepared.",
   failedHeading: "Your workspace is not ready.",
   failedNote: "We could not finish a private workspace. We will not send you to a shared one.",
+  signInGateHeading: "Sign in to open your workspace.",
+  signInGateNote: "Sign in with the email on this checkout. Then open this page again.",
   toolHeading: "Your tool purchase is confirmed.",
   toolBody: "This purchase is for one finished result. It does not open a private workspace.",
   unconfirmedHeading: "We could not confirm that checkout.",

@@ -7,16 +7,15 @@ import { IntakeForm } from "@/app/(marketing)/ai-employees/welcome/IntakeForm";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
-import { resolvePlan } from "@/lib/checkoutPlans";
 import {
   dayOneDeliverablesFor,
   kickoffBookingUrl,
   welcomeEmail,
 } from "@/lib/onboardingDelivery";
-import { stripeServer } from "@/lib/stripeServer";
 import { isWorkspaceToolId } from "@/lib/toolWorkspace";
-import { welcomeDecision, type WelcomeDecision } from "@/lib/workspaceAccess";
-import { statusForSession, welcomeCheckoutFromLedger, workspaceLedger } from "@/lib/workspaceProvision";
+import { type WorkspaceView } from "@/lib/workspaceAccess";
+import { openConfiguredStore, ownerWorkspaceView } from "@/lib/workspaceProvision";
+import { readClerkPrincipal } from "@/lib/workspaceOwner";
 import { isManagedWelcome, welcomeReadyCopy } from "@/lib/welcomePath";
 
 export const metadata: Metadata = {
@@ -25,53 +24,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type Confirmed = {
-  planName: string;
-  planId: string;
-  email: string;
-  kind: string;
-  paid: boolean;
-  livemode: boolean;
-};
-
-/** Confirms the Checkout Session with Stripe. Returns null when it cannot be read. */
-async function confirmSession(sessionId: string): Promise<Confirmed | null> {
-  if (!sessionId) return null;
-  const stripe = stripeServer();
-  if (!stripe) return null;
-  try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    if (session.status !== "complete") return null;
-    const metadata = (session.metadata ?? {}) as Record<string, unknown>;
-    const planId = typeof metadata.plan === "string" ? metadata.plan : "";
-    const kind = typeof metadata.kind === "string" ? metadata.kind : "";
-    const plan = resolvePlan(planId);
-    const email = session.customer_details?.email ?? session.customer_email ?? "";
-    return {
-      planName: plan?.name ?? "",
-      planId,
-      email: email ?? "",
-      kind,
-      paid: session.payment_status === "paid",
-      livemode: session.livemode,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function headingFor(
-  decision: WelcomeDecision,
-  managed: boolean,
-  phase: "pending" | "ready" | "failed" | "not_eligible" | null,
-): string {
-  if (decision === "bare") return welcomeReadyCopy.welcomeHeading;
-  if (decision === "unconfirmed") return welcomeReadyCopy.unconfirmedHeading;
-  if (decision === "unpaid") return welcomeReadyCopy.unpaidHeading;
-  if (decision === "tool") return welcomeReadyCopy.toolHeading;
-  if (decision === "refused") return welcomeReadyCopy.refusedHeading;
-  if (phase === "ready") return welcomeReadyCopy.accountReadyHeading;
-  if (phase === "failed") return welcomeReadyCopy.failedHeading;
+function headingFor(view: WorkspaceView | null, managed: boolean): string {
+  if (!view) return welcomeReadyCopy.welcomeHeading;
+  if (view.phase === "unconfirmed") return welcomeReadyCopy.unconfirmedHeading;
+  if (view.phase === "not_eligible" && isWorkspaceToolId(view.planId)) return welcomeReadyCopy.toolHeading;
+  if (view.phase === "not_eligible") return welcomeReadyCopy.refusedHeading;
+  if (view.phase === "sign_in") return welcomeReadyCopy.signInGateHeading;
+  if (view.phase === "ready") return welcomeReadyCopy.accountReadyHeading;
+  if (view.phase === "ended") return welcomeReadyCopy.failedHeading;
   if (managed) return "Thank you. Your Genesis setup is underway.";
   return welcomeReadyCopy.pendingHeading;
 }
@@ -87,37 +47,32 @@ export default async function WelcomePage({
 }) {
   const params = await searchParams;
   const sessionId = typeof params.session_id === "string" ? params.session_id : "";
-  const recorded = sessionId ? welcomeCheckoutFromLedger(workspaceLedger, sessionId) : null;
-  const confirmed = recorded
-    ? { ...recorded, email: "" }
-    : await confirmSession(sessionId);
-  const managed = confirmed ? isManagedWelcome(confirmed.planId, confirmed.kind) && confirmed.paid : false;
-  const decision: WelcomeDecision = !sessionId
-    ? "bare"
-    : !confirmed
-      ? "unconfirmed"
-      : welcomeDecision({
-          confirmed: true,
-          paid: confirmed.paid,
-          planId: confirmed.planId,
-          kind: confirmed.kind,
-        });
-  const published = decision === "workspace" ? statusForSession(workspaceLedger, sessionId) : null;
-  const bookingUrl = kickoffBookingUrl();
-  const deliverables = confirmed && managed ? dayOneDeliverablesFor(confirmed.planId) : null;
-  const heading = headingFor(decision, managed, published?.phase ?? null);
-  const toolHref =
-    decision === "tool" && confirmed && isWorkspaceToolId(confirmed.planId)
-      ? `/workspace/${confirmed.planId}`
+  const store = sessionId ? openConfiguredStore() : null;
+  const principal = sessionId ? await readClerkPrincipal() : null;
+  const view = store
+    ? await ownerWorkspaceView({
+        store,
+        sessionId,
+        principal,
+        fetchImpl: principal ? fetch : undefined,
+      })
+    : sessionId
+      ? { phase: "unconfirmed" as const, loginUrl: null, planId: "", planName: "", paid: false }
       : null;
-
+  store?.close();
+  const managed = Boolean(
+    view &&
+      (view.phase === "pending" || view.phase === "ready" || view.phase === "ended") &&
+      isManagedWelcome(view.planId, ""),
+  );
+  const bookingUrl = kickoffBookingUrl();
+  const deliverables = view && managed ? dayOneDeliverablesFor(view.planId) : null;
+  const heading = headingFor(view, managed);
+  const toolHref = view?.phase === "not_eligible" && isWorkspaceToolId(view.planId) ? `/workspace/${view.planId}` : null;
   const planLine =
-    confirmed && decision !== "unpaid" && decision !== "refused" && decision !== "tool"
-      ? `${confirmed.planName ? `You chose the ${confirmed.planName} plan.` : "Your plan is confirmed."}${
-          confirmed.email ? ` A confirmation is on its way to ${confirmed.email}.` : ""
-        }`
+    view && view.phase !== "sign_in" && view.phase !== "unconfirmed" && view.phase !== "not_eligible" && view.planName
+      ? `You chose the ${view.planName} plan.`
       : "";
-
   return (
     <>
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+72px)] pb-24 text-center text-ivory md:pb-32">
@@ -142,13 +97,23 @@ export default async function WelcomePage({
             </p>
           ) : null}
 
-          {decision === "workspace" ? (
+          {view?.phase === "pending" || view?.phase === "ready" || view?.phase === "ended" ? (
             <AccountReady
               sessionId={sessionId}
-              initialPhase={published?.phase ?? "pending"}
-              initialLoginUrl={published?.loginUrl ?? null}
+              initialPhase={view.phase}
+              initialLoginUrl={view.loginUrl}
             />
-          ) : decision === "tool" ? (
+          ) : view?.phase === "sign_in" ? (
+            <>
+              <SignInCard heading={welcomeReadyCopy.signInGateHeading} note={welcomeReadyCopy.signInGateNote} />
+              <p className="mx-auto mt-6">
+                <Link href="/workspace/account?mode=login" className="border-b border-ivory/40 text-ivory">
+                  Sign in
+                </Link>
+              </p>
+              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
+            </>
+          ) : view?.phase === "not_eligible" && toolHref ? (
             <>
               <p className="mx-auto mt-6 max-w-[46ch] text-[1.02rem] leading-relaxed text-ivory/74">
                 {welcomeReadyCopy.toolBody}
@@ -162,7 +127,7 @@ export default async function WelcomePage({
               ) : null}
               <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
             </>
-          ) : decision === "bare" ? (
+          ) : !view ? (
             <>
               <SignInCard heading={welcomeReadyCopy.signInHeading} note={welcomeReadyCopy.bareNote} />
               <p className="mx-auto mt-6 max-w-[46ch] text-[0.98rem] leading-relaxed text-ivory/74">

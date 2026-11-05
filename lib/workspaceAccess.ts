@@ -1,57 +1,45 @@
 /*
- * Who may receive a private workspace, and which login link is safe to show.
- * Tool purchases stay on the tool they bought. The shared pod is never a
- * buyer login. No path aliases: tests import this file directly under Node.
+ * Who may see a workspace login. The existing status route is
+ * GET {pod}/ws-status?session_id= and it returns { ready, login_url }.
+ * A Checkout Session id by itself is not permission to receive that login.
+ * The shared pod host can still host a tenant. Only the bare shared entry,
+ * the URL this site used for every visitor, is refused.
  */
 
 import { aiEmployeePlans } from "./aiEmployees.ts";
 import { FUNDING_LINE } from "./legal.ts";
 import { isManagedPlanId } from "./offers.ts";
 import { isWorkspaceToolId } from "./toolWorkspace.ts";
-import { welcomeReadyCopy } from "./welcomePath.ts";
-
-/** The one shared workspace. A buyer login must never use this host. */
-export const SHARED_WORKSPACE_HOST = "pod.genesisaisolutions.cloud";
+import { POD_URL, welcomeReadyCopy } from "./welcomePath.ts";
+import type { CheckoutRow } from "./workspaceStore.ts";
 
 export type CheckoutClass = "workspace" | "tool" | "refused";
 
-export type WorkspacePhase = "pending" | "ready" | "failed" | "not_eligible";
+export type OwnerPrincipal = {
+  userId: string;
+  email: string;
+};
 
-export type WorkspaceReason =
-  | "unknown_session"
-  | "unpaid"
-  | "tool"
-  | "unknown_plan"
-  | "awaiting_provision"
-  | "provision_failed"
-  | "unsafe_login"
-  | "ready"
-  | "live_deferred"
-  | "subscription_ended";
+export type WorkspaceViewPhase = "unconfirmed" | "sign_in" | "pending" | "ready" | "ended" | "not_eligible";
 
-export type PublicWorkspaceStatus = {
-  phase: WorkspacePhase;
+export type WorkspaceView = {
+  phase: WorkspaceViewPhase;
   loginUrl: string | null;
-  reason: WorkspaceReason;
+  planId: string;
+  planName: string;
+  paid: boolean;
 };
 
 export function isAiEmployeePlanId(value: string): boolean {
   return aiEmployeePlans.some((plan) => plan.id === value);
 }
 
-/**
- * Paid workspace subscriptions are the managed plans and the AI Employees
- * plans already sold on this site. A one time tool is never a workspace.
- * An empty or unknown plan is refused so we do not invent an entitlement.
- */
+/** Existing paid subscriptions. A one time tool is never a workspace. */
 export function classifyCheckout(planId: string, kind: string): CheckoutClass {
   const toolId = isWorkspaceToolId(planId);
   const managedId = isManagedPlanId(planId);
   const employeeId = isAiEmployeePlanId(planId);
-
-  if (kind === "tool") {
-    return toolId && !managedId && !employeeId ? "tool" : "refused";
-  }
+  if (kind === "tool") return toolId && !managedId && !employeeId ? "tool" : "refused";
   if (toolId) return "tool";
   if (kind === "managed") return managedId ? "workspace" : "refused";
   if (managedId || employeeId) return "workspace";
@@ -63,10 +51,35 @@ export function isPaidCheckout(status: string, paymentStatus: string): boolean {
 }
 
 /**
- * Accept only an https login for a host that is not the shared pod.
- * Localhost and credentialed URLs are rejected.
+ * Rollout gate. Unset or off does not call the status route.
+ * `test` allows paid test mode. `live` allows paid test and paid live.
  */
-export function safeWorkspaceLogin(value: unknown): string | null {
+export function workspaceRollout(env: Record<string, string | undefined> = process.env): "off" | "test" | "live" {
+  const value = env.GENESIS_WORKSPACE_ROLLOUT?.trim().toLowerCase() ?? "";
+  if (value === "live" || value === "test") return value;
+  return "off";
+}
+
+export function rolloutAllows(livemode: boolean, env: Record<string, string | undefined> = process.env): boolean {
+  const gate = workspaceRollout(env);
+  if (gate === "live") return true;
+  if (gate === "test") return !livemode;
+  return false;
+}
+
+/** Existing workspace status route. Tests pass their own URL. */
+export function workspaceStatusUrl(env: Record<string, string | undefined> = process.env): string {
+  const configured = env.GENESIS_WORKSPACE_STATUS_URL?.trim() ?? "";
+  if (configured) return configured;
+  return `${POD_URL}/ws-status`;
+}
+
+/**
+ * Accept the login the existing status route returned, including one on the
+ * shared pod host. Refuse the bare shared entry this site previously gave
+ * to every visitor.
+ */
+export function tenantLoginUrl(value: unknown, sharedRoot = POD_URL): string | null {
   if (typeof value !== "string" || !value.trim()) return null;
   let url: URL;
   try {
@@ -76,83 +89,75 @@ export function safeWorkspaceLogin(value: unknown): string | null {
   }
   if (url.protocol !== "https:") return null;
   if (url.username || url.password) return null;
-  if (url.hostname === SHARED_WORKSPACE_HOST) return null;
-  if (url.hostname === "localhost" || url.hostname === "127.0.0.1") return null;
+  let shared: URL;
+  try {
+    shared = new URL(sharedRoot);
+  } catch {
+    return url.toString();
+  }
+  const barePath = url.pathname === "" || url.pathname === "/";
+  if (url.origin === shared.origin && barePath && !url.search && !url.hash) return null;
   return url.toString();
 }
 
-export function publicWorkspaceStatus(record: {
-  phase: WorkspacePhase;
-  loginUrl: string | null;
-  reason: WorkspaceReason;
-  livemode: boolean;
-} | null): PublicWorkspaceStatus {
-  if (!record) {
-    return { phase: "pending", loginUrl: null, reason: "unknown_session" };
-  }
-  if (record.livemode) {
-    return { phase: "pending", loginUrl: null, reason: "live_deferred" };
-  }
-  if (record.phase === "ready") {
-    const loginUrl = safeWorkspaceLogin(record.loginUrl);
-    if (!loginUrl) {
-      return { phase: "failed", loginUrl: null, reason: "unsafe_login" };
-    }
-    return { phase: "ready", loginUrl, reason: "ready" };
-  }
-  if (record.phase === "not_eligible") {
-    return { phase: "not_eligible", loginUrl: null, reason: record.reason };
-  }
-  if (record.phase === "failed") {
-    return { phase: "failed", loginUrl: null, reason: record.reason };
-  }
-  return { phase: "pending", loginUrl: null, reason: record.reason };
+export function ownerMatches(row: Pick<CheckoutRow, "customerEmail" | "ownerUserId">, principal: OwnerPrincipal | null): boolean {
+  if (!principal) return false;
+  const email = principal.email.trim().toLowerCase();
+  const ownerEmail = row.customerEmail.trim().toLowerCase();
+  const userId = principal.userId.trim();
+  const ownerId = row.ownerUserId.trim();
+  if (ownerId && userId && ownerId === userId) return true;
+  if (ownerEmail && email && ownerEmail === email) return true;
+  return false;
 }
 
-export type WelcomeDecision = "bare" | "unconfirmed" | "unpaid" | "tool" | "workspace" | "refused";
+export type StatusBody = { ready?: unknown; login_url?: unknown };
 
-export function welcomeDecision(input: {
-  confirmed: boolean;
-  paid: boolean;
-  planId: string;
-  kind: string;
-}): WelcomeDecision {
-  if (!input.confirmed) return "unconfirmed";
-  if (!input.paid) return "unpaid";
-  const checkoutClass = classifyCheckout(input.planId, input.kind);
-  if (checkoutClass === "tool") return "tool";
-  if (checkoutClass === "workspace") return "workspace";
-  return "refused";
+/** Reads the committed { ready, login_url } status. Does not create a workspace. */
+export async function readExistingWorkspaceStatus(
+  sessionId: string,
+  options: { statusUrl: string; fetchImpl: typeof fetch },
+): Promise<{ ready: boolean; loginUrl: string | null }> {
+  const url = new URL(options.statusUrl);
+  url.searchParams.set("session_id", sessionId);
+  const response = await options.fetchImpl(url, { method: "GET", cache: "no-store" });
+  if (!response.ok) return { ready: false, loginUrl: null };
+  let data: unknown;
+  try {
+    data = await response.json();
+  } catch {
+    return { ready: false, loginUrl: null };
+  }
+  if (!data || typeof data !== "object") return { ready: false, loginUrl: null };
+  const body = data as StatusBody;
+  if (body.ready !== true) return { ready: false, loginUrl: null };
+  return { ready: true, loginUrl: tenantLoginUrl(body.login_url) };
 }
 
-/** Visitor copy for the workspace card. Ready is only the provisioned state. */
-export function workspaceCardCopy(phase: WorkspacePhase): {
-  heading: string;
-  note: string;
-  showSignIn: boolean;
-} {
-  if (phase === "ready") {
-    return { heading: welcomeReadyCopy.accountReadyHeading, note: "", showSignIn: true };
-  }
-  if (phase === "failed") {
-    return {
-      heading: welcomeReadyCopy.failedHeading,
-      note: welcomeReadyCopy.failedNote,
-      showSignIn: false,
-    };
-  }
-  if (phase === "not_eligible") {
-    return {
-      heading: welcomeReadyCopy.toolHeading,
-      note: welcomeReadyCopy.toolBody,
-      showSignIn: false,
-    };
-  }
+export function viewWithoutLogin(phase: WorkspaceViewPhase, row?: CheckoutRow | null): WorkspaceView {
   return {
-    heading: welcomeReadyCopy.pendingHeading,
-    note: welcomeReadyCopy.workspaceNote,
-    showSignIn: false,
+    phase,
+    loginUrl: null,
+    planId: row?.planId ?? "",
+    planName: "",
+    paid: row?.paid ?? false,
   };
 }
 
 export const workspaceDisclaimer = FUNDING_LINE;
+
+export function workspaceCardCopy(phase: WorkspaceViewPhase): { heading: string; note: string; showSignIn: boolean } {
+  if (phase === "ready") {
+    return { heading: welcomeReadyCopy.accountReadyHeading, note: "", showSignIn: true };
+  }
+  if (phase === "ended") {
+    return { heading: welcomeReadyCopy.failedHeading, note: welcomeReadyCopy.failedNote, showSignIn: false };
+  }
+  if (phase === "sign_in") {
+    return { heading: welcomeReadyCopy.signInGateHeading, note: welcomeReadyCopy.signInGateNote, showSignIn: false };
+  }
+  if (phase === "not_eligible") {
+    return { heading: welcomeReadyCopy.toolHeading, note: welcomeReadyCopy.toolBody, showSignIn: false };
+  }
+  return { heading: welcomeReadyCopy.pendingHeading, note: welcomeReadyCopy.workspaceNote, showSignIn: false };
+}
