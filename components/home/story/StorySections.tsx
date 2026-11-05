@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
@@ -8,40 +9,13 @@ import {
   aiEmployeePlans,
   aiEmployeesEnterprise,
 } from "@/lib/aiEmployees";
+import { editions } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
 
 const problems = [
   { title: "Missed calls", body: "The phone rings during a job or after hours, and that caller rarely calls back." },
   { title: "Slow follow up", body: "The first business to answer usually wins. Tomorrow morning is often too late." },
   { title: "Scattered tools", body: "CRM, inbox, texts, spreadsheets and calendar never talk, so the next step falls through." },
-];
-
-const editions = [
-  {
-    no: "01",
-    name: "Genesis Lending",
-    body: "For loan officers and capital matchers. Every inquiry gets a fast first reply, document requests are tracked, and files never stall quietly.",
-    points: ["Instant first reply", "Document follow up", "File status in one view"],
-    note: FUNDING_LINE,
-  },
-  {
-    no: "02",
-    name: "Genesis Real Estate Pros",
-    body: "For agents, investors and teams. Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current.",
-    points: ["Same day lead response", "Showings booked", "Live deal board"],
-  },
-  {
-    no: "03",
-    name: "Genesis Business",
-    body: "For any service business: contractors, clinics, law offices, home services and agencies. Calls answered, quotes followed up, appointments confirmed.",
-    points: ["Calls answered", "Quotes followed up", "Appointments confirmed"],
-  },
-  {
-    no: "04",
-    name: "Genesis Enterprise",
-    body: "For multi location operations. Your systems connected, custom workflows, access controls and a managed build that keeps running.",
-    points: ["Custom workflows", "Systems connected", "Managed every month"],
-  },
 ];
 
 const team = aiEmployeePersonas.filter((p) => p.id !== "ava");
@@ -106,11 +80,13 @@ export function StoryOpening() {
         <ul className="grid gap-4 md:grid-cols-2">
           {editions.map((e) => (
             <Card as="li" key={e.name}>
-              <Eyebrow className="text-gold">Edition {e.no}</Eyebrow>
-              <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em]">{e.name}</p>
-              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{e.body}</p>
-              <Points items={e.points} className="mt-5" />
-              {e.note ? <p className="mt-5 border-t border-line-light pt-4 text-[0.8rem] text-muted-dark">{e.note}</p> : null}
+              <Link href={e.href} className="group block">
+                <Eyebrow className="text-gold">Edition {e.no}</Eyebrow>
+                <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{e.name}</p>
+                <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{e.body}</p>
+                <Points items={e.points} className="mt-5" />
+                <p className="mt-5 border-t border-line-light pt-4 text-[0.8rem] text-muted-dark">{e.disclaimer}</p>
+              </Link>
             </Card>
           ))}
         </ul>

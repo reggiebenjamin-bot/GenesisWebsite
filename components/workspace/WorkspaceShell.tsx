@@ -9,6 +9,7 @@ import { ExampleWalkthrough } from "./ExampleWalkthrough";
 import { AccountControls } from "./AccountControls";
 import { ProductCard } from "./ProductCard";
 import { getWorkspaceTool, workspaceTools, type WorkspaceToolId } from "@/lib/toolWorkspace";
+import { softwareDisclaimer } from "@/lib/aiEmployees";
 import styles from "./WorkspaceApp.module.css";
 
 function CatalogHeader({ productPage = false }: { productPage?: boolean }) {
@@ -46,6 +47,7 @@ export function WorkspaceHome() {
           ))}
         </nav>
         <p className={styles.catalogFootnote}>No account needed to browse or prepare your brief.</p>
+        <p className={styles.catalogFootnote}>{softwareDisclaimer}</p>
       </div>
     </div>
   );
@@ -79,6 +81,7 @@ export function WorkspaceShell({ toolId }: { toolId: WorkspaceToolId }) {
             {toolId === "capital-advisor" ? <CapitalAdvisorWorkspace /> : null}
           </div>
         </section>
+        <p className={styles.catalogFootnote}>{softwareDisclaimer}</p>
       </div>
     </div>
   );
