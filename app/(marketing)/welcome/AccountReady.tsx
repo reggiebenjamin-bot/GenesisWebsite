@@ -2,20 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { SignInCard } from "./SignInCard";
-import { POD_URL, welcomeReadyCopy } from "@/lib/welcomePath";
+import { workspaceCardCopy, type WorkspacePhase } from "@/lib/workspaceAccess";
+import { welcomeReadyCopy } from "@/lib/welcomePath";
 
-const STATUS_URL = `${POD_URL}/ws-status`;
-
-type Status = { ready: boolean; login_url?: string };
+type Status = { phase?: WorkspacePhase; loginUrl?: string | null };
 
 /**
- * The ready path account card. It shows the sign in card right away, with the
- * login link defaulting to the Genesis pod, then upgrades the link if the
- * workspace status returns a ready login_url for this checkout.
+ * Polls this site for the buyer's own workspace. The card says the account is
+ * ready only after provision succeeded and a dedicated login URL came back.
  */
-export function AccountReady({ sessionId }: { sessionId: string }) {
-  const [loginUrl, setLoginUrl] = useState<string | null>(null);
-  const [ready, setReady] = useState(false);
+export function AccountReady({
+  sessionId,
+  initialPhase = "pending",
+  initialLoginUrl = null,
+}: {
+  sessionId: string;
+  initialPhase?: WorkspacePhase;
+  initialLoginUrl?: string | null;
+}) {
+  const [phase, setPhase] = useState<WorkspacePhase>(initialPhase);
+  const [loginUrl, setLoginUrl] = useState<string | null>(initialPhase === "ready" ? initialLoginUrl : null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -24,12 +30,14 @@ export function AccountReady({ sessionId }: { sessionId: string }) {
     const check = async () => {
       tries += 1;
       try {
-        const res = await fetch(`${STATUS_URL}?session_id=${encodeURIComponent(sessionId)}`, { cache: "no-store" });
+        const res = await fetch(`/api/workspace/status?session_id=${encodeURIComponent(sessionId)}`, {
+          cache: "no-store",
+        });
         const data = (await res.json()) as Status;
-        if (!stopped && data.ready) {
-          setReady(true);
-          if (data.login_url) setLoginUrl(data.login_url);
-          return;
+        if (!stopped && (data.phase === "ready" || data.phase === "failed" || data.phase === "not_eligible")) {
+          setPhase(data.phase);
+          setLoginUrl(data.phase === "ready" && typeof data.loginUrl === "string" ? data.loginUrl : null);
+          if (data.phase !== "ready" || typeof data.loginUrl === "string") return;
         }
       } catch {
         /* keep waiting */
@@ -42,10 +50,18 @@ export function AccountReady({ sessionId }: { sessionId: string }) {
     };
   }, [sessionId]);
 
+  const displayPhase: WorkspacePhase = phase === "ready" && loginUrl ? "ready" : phase === "ready" ? "pending" : phase;
+  const copy = workspaceCardCopy(displayPhase);
+
   return (
-    <SignInCard
-      href={loginUrl ?? POD_URL}
-      note={ready ? undefined : welcomeReadyCopy.workspaceNote}
-    />
+    <>
+      <SignInCard
+        href={copy.showSignIn && loginUrl ? loginUrl : undefined}
+        heading={copy.heading}
+        note={copy.note || undefined}
+        body={displayPhase === "ready" ? welcomeReadyCopy.body : undefined}
+      />
+      <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{welcomeReadyCopy.disclaimer}</p>
+    </>
   );
 }
