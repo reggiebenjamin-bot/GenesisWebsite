@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { AccountReady } from "./AccountReady";
 import { IntakeForm } from "@/app/(marketing)/ai-employees/welcome/IntakeForm";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
@@ -78,6 +79,9 @@ export default async function WelcomePage({
                 : "Your plan is confirmed."}
               {confirmed.email ? ` A confirmation is on its way to ${confirmed.email}.` : ""}
             </p>
+          ) : null}
+          {confirmed ? (
+            <AccountReady sessionId={sessionId} />
           ) : (
             <p className="mx-auto mt-6 max-w-[46ch] text-[1.08rem] leading-relaxed text-ivory/74">
               Thank you for your order. If you have a question about it, reach us from the{" "}
