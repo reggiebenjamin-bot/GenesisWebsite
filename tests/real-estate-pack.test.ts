@@ -35,17 +35,17 @@ test("the prices and setup fees are the configured numbers", () => {
   assert.equal(team.setupLabel, "plus $1,500 setup");
 });
 
-test("each tier calls to action with the right onboarding URL", () => {
+test("each tier calls to action with the right checkout URL", () => {
   for (const tier of realEstatePack.tiers) {
-    assert.equal(tier.cta, "Request onboarding");
+    assert.equal(tier.cta, "Start checkout");
   }
   assert.equal(
     realEstatePack.tiers[0].href,
-    "https://genesisaisolutions.cloud/packs/real_estate/signup?tier=Agent",
+    "https://genesisaisolutions.cloud/packs/real_estate/checkout?tier=Agent",
   );
   assert.equal(
     realEstatePack.tiers[1].href,
-    "https://genesisaisolutions.cloud/packs/real_estate/signup?tier=Team",
+    "https://genesisaisolutions.cloud/packs/real_estate/checkout?tier=Team",
   );
 });
 
