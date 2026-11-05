@@ -7,6 +7,7 @@ import {
   setupPriceId,
 } from "@/lib/aiEmployeesCheckout";
 import { stripeServer } from "@/lib/stripeServer";
+import { checkoutOwnerId } from "@/lib/workspaceOwner";
 
 function isPlan(value: string): value is CheckoutPlanId {
   return aiEmployeePlans.some((plan) => plan.id === value);
@@ -46,11 +47,13 @@ export async function POST(request: Request) {
   const origin = new URL(request.url).origin;
 
   try {
+    const ownerId = await checkoutOwnerId();
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: checkoutLineItems(price, setupPriceId(plan)),
       metadata: { plan },
       subscription_data: { metadata: { plan } },
+      ...(ownerId ? { client_reference_id: ownerId } : {}),
       success_url: `${origin}/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/ai-employees?checkout=closed`,
       integration_identifier: AI_EMPLOYEES_CHECKOUT_INTEGRATION_ID,
