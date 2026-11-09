@@ -86,7 +86,9 @@ export function memoryStore(row: CheckoutRow | null): WorkspaceStore {
 export async function stripeBackedStore(stripe: Stripe | null, sessionId: string): Promise<WorkspaceStore> {
   if (!stripe || !/^cs_(test|live)_[A-Za-z0-9_]+$/.test(sessionId)) return memoryStore(null);
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, { expand: ["subscription"] });
+    // No expand: the site key may not read subscriptions. The pod stops
+    // advertising login_url when the subscription ends.
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
     return memoryStore(rowFromSession(session as unknown as Record<string, unknown>));
   } catch {
     return memoryStore(null);
