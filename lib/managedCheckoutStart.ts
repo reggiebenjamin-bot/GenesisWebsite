@@ -3,6 +3,7 @@ import { isLinkPreviewAgent, planFromLink } from "@/lib/checkoutLink";
 import {
   MANAGED_CHECKOUT_INTEGRATION_ID,
   checkoutLineItems,
+  companyNameField,
   monthlyPriceId,
   setupPriceId,
 } from "@/lib/managedCheckout";
@@ -31,6 +32,7 @@ export async function startManagedCheckout(request: Request, plan: string) {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: checkoutLineItems(monthlyPriceId(plan), setupPriceId(plan)),
+      custom_fields: companyNameField(),
       metadata: { plan, kind: "managed" },
       subscription_data: { metadata: { plan, kind: "managed" } },
       ...(ownerId ? { client_reference_id: ownerId } : {}),

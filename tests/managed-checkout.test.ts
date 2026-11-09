@@ -87,3 +87,13 @@ test("plan ids are guarded and resolve to a name across catalogs", () => {
   assert.deepEqual(resolvePlan("duo"), { id: "duo", name: "Duo", kind: "ai-employees" });
   assert.equal(resolvePlan("unknown"), null);
 });
+
+test("managed checkout asks an optional company name that the provisioner reads", async () => {
+  const { companyNameField } = await import("../lib/managedCheckout.ts");
+  const [field] = companyNameField();
+  assert.equal(field.key, "company");
+  assert.equal(field.type, "text");
+  assert.equal(field.optional, true);
+  assert.equal(field.label.custom, "Company name");
+  assert.equal(companyNameField().length, 1);
+});
