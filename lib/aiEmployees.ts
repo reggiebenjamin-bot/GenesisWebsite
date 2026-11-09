@@ -78,7 +78,7 @@ export const aiEmployeesPricing = {
   eyebrow: "Pricing",
   title: "Choose your level.",
   summary:
-    "Genesis plans are Level 01, Level 02, and Level 03 on the pricing page, where you check out. Done For You sits under Enterprise.",
+    "Genesis plans are Level 01, Level 02, and Level 03 on the pricing page, where you check out. Done For You is scoped on a call under Enterprise.",
   planAction: "Choose this level",
 } as const;
 
@@ -148,9 +148,17 @@ export const aiEmployeePlans: readonly AiEmployeePlan[] = [
   },
 ];
 
+/*
+ * Price fields stay for webhook and historical resolution only. Public pages
+ * must not show them. Done For You is offered on /enterprise with no price:
+ * "Done For You, scoped on a call".
+ */
 export const aiEmployeesEnterprise = {
   eyebrow: "Enterprise",
   name: "Done For You",
+  /** Public title. No price. */
+  publicTitle: "Done For You, scoped on a call",
+  /** Kept for webhooks and tests. Never render on marketing pages. */
   priceLine: "$15,000 setup plus $2,500 a month.",
   setupDisplay: "$15,000",
   setupUsd: 15000,
@@ -181,9 +189,9 @@ export const aiEmployeesExpert = {
 export const aiEmployeesCta = {
   eyebrow: "Next step",
   title: "Put an AI employee on the pipeline.",
-  line: "Choose a level on the pricing page, or ask Genesis to set the employees up for you.",
+  line: "Choose a level on the pricing page, or ask about Done For You on the Enterprise page.",
   plansAction: "See the plans",
-  enterpriseAction: "Request Done For You",
+  enterpriseAction: "Done For You",
 } as const;
 
 export const aiEmployeesHome = {

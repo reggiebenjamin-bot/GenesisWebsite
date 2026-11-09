@@ -42,6 +42,7 @@ export const assessmentSteps: readonly Step[] = [
           "Lender",
           "Investor / Acquisitions",
           "Developer",
+          "Service business / trades (HVAC and more)",
           "Other",
         ),
       },

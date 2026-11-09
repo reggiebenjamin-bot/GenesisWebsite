@@ -6,7 +6,6 @@ import { Eyebrow } from "@/components/ui/Section";
 import {
   aiEmployeePersonas,
   aiEmployeesCta,
-  aiEmployeesEnterprise,
   aiEmployeesExpert,
   aiEmployeesHero,
   aiEmployeesPricing,
@@ -17,7 +16,6 @@ import {
   softwareDisclaimer,
 } from "@/lib/aiEmployees";
 import { managedPlans } from "@/lib/offers";
-import { EnterpriseInquiryForm } from "./EnterpriseInquiryForm";
 import { StatusNotice } from "./StatusNotice";
 
 const goldButton =
@@ -167,25 +165,6 @@ export function AiEmployeesPage() {
           ))}
         </ol>
 
-        <div id="enterprise" className="mt-5 scroll-mt-28 rounded-[6px] border border-gold/40 bg-paper p-[clamp(22px,3vw,40px)] text-ink">
-          <div className="grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-            <div className="text-center lg:text-left">
-              <p className="font-display text-[0.69rem] tracking-[0.18em] text-gold-dark uppercase">
-                {aiEmployeesEnterprise.eyebrow}
-              </p>
-              <h3 className="mt-4 font-light text-[clamp(2rem,3.4vw,3rem)] leading-none tracking-[-0.04em]">
-                {aiEmployeesEnterprise.name}
-              </h3>
-              <p className="mt-5 font-light text-[clamp(1.6rem,2.4vw,2.1rem)] leading-snug tracking-[-0.03em] text-gold-dark">
-                {aiEmployeesEnterprise.priceLine}
-              </p>
-              <p className="mt-4 text-[0.98rem] leading-relaxed text-muted-dark">
-                {aiEmployeesEnterprise.summary}
-              </p>
-            </div>
-            <EnterpriseInquiryForm copy={aiEmployeesEnterprise} />
-          </div>
-        </div>
       </Sheet>
 
       <Sheet surface="paper" id="expert" aria-labelledby="expert-title" className="site-section">
@@ -225,9 +204,9 @@ export function AiEmployeesPage() {
             <a className={goldButton} href="#plans">
               <span>{aiEmployeesCta.plansAction}</span>
             </a>
-            <a className={goldButton} href="#enterprise">
+            <Link className={goldButton} href="/enterprise">
               <span>{aiEmployeesCta.enterpriseAction}</span>
-            </a>
+            </Link>
           </div>
           <p className="mx-auto mt-9 max-w-[56ch] text-[0.84rem] text-muted-light">{softwareDisclaimer}</p>
         </div>

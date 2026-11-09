@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { infrastructureCatalog } from "@/lib/products";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
+import { managedPlans } from "@/lib/offers";
 
 const WEBHOOK_URL =
   process.env.GENESIS_CONSULTATION_WEBHOOK_URL ||
@@ -9,7 +9,12 @@ const WEBHOOK_URL =
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const allowedPlans = new Set<string>([
   "",
-  ...infrastructureCatalog.plans.map((plan) => plan.slug),
+  "done-for-you",
+  ...managedPlans.map((plan) => plan.id),
+  // Legacy infrastructure slugs still accepted if an old link sends them.
+  "foundation",
+  "growth",
+  "custom-infrastructure",
 ]);
 const allowedRoles = new Set([
   "Owner",
@@ -23,7 +28,9 @@ const allowedOperationTypes = new Set([
   "Brokerage",
   "Private Lending",
   "Acquisitions / Builder",
+  "Service business / trades",
   "Other Property-Driven",
+  "Other",
 ]);
 
 export async function POST(request: Request) {

@@ -83,7 +83,7 @@ export const seoPages: readonly SeoPage[] = [
     title: { absolute: `Genesis AI | ${genesisPositioning.category}` },
     description: genesisPositioning.summary,
     label: "Home",
-    image: socialImage("home", "Genesis AI — AI infrastructure for real estate professionals"),
+    image: socialImage("home", "Genesis AI — AI infrastructure for growing businesses"),
     lastModified: SEO_PASS,
     changeFrequency: "weekly",
     priority: 1,

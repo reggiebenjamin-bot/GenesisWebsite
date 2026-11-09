@@ -121,7 +121,7 @@ test("the organization record carries what search engines need to recognise Gene
   assert.equal(organization.name, "Genesis AI");
   assert.equal(organization.url, siteUrl);
   assert.ok(organization.logo.url.endsWith(".png"));
-  assert.ok(organization.description.startsWith("AI Infrastructure for Real Estate Professionals"));
+  assert.ok(organization.description.startsWith("AI Infrastructure for Growing Businesses"));
   assert.ok(organization.sameAs.every((url) => url.startsWith("https://")));
 });
 

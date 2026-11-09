@@ -137,7 +137,7 @@ test("the person record ties Reginald Benjamin to Genesis", () => {
   const offers = aiEmployeesServiceSchema().hasOfferCatalog.itemListElement;
   assert.deepEqual(
     offers.map((offer) => offer.price),
-    [750, 1750, 4500, 2500],
+    [750, 1750, 4500],
   );
   assert.equal(seoPage("/ai-employees").label, "AI Employees");
 });

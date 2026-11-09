@@ -119,14 +119,14 @@ export function offerPathHomeHref(path: OfferPathId): `/#${OfferPathId}` {
 }
 
 export const genesisPositioning = {
-  category: "AI Infrastructure for Real Estate Professionals",
+  category: "AI Infrastructure for Growing Businesses",
   /** The core belief, and the Custom Infrastructure hero's headline. */
   belief: "Your business should get smarter as it grows.",
   summary:
-    "Genesis helps real estate businesses deploy AI-powered operating infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.",
+    "Genesis helps operators and real estate teams deploy AI powered infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.",
   /** The brand in one sentence: the footer, and the organization record. */
   brandDescription:
-    "Genesis builds AI infrastructure for real estate professionals by connecting business systems, workflows, communication, deal flow, data, automation, and operational intelligence.",
+    "Genesis builds AI infrastructure for operators and real estate professionals by connecting business systems, workflows, communication, deal flow, data, automation, and operational intelligence.",
   domains: [
     "Communication",
     "Sales",
@@ -168,7 +168,7 @@ export const pathHeroes: Readonly<
     title: "Your business should get smarter",
     accent: "as it grows.",
     summary:
-      "Genesis maps how work moves through your real estate business, connects the systems, data, communication, and workflows behind it, and builds managed infrastructure so more volume does not automatically mean more manual coordination.",
+      "Genesis maps how work moves through your business, connects the systems, data, communication, and workflows behind it, and builds managed infrastructure so more volume does not automatically mean more manual coordination.",
   },
 };
 

@@ -4,10 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
-import {
-  infrastructureCatalog,
-  isInfrastructurePlanSlug,
-} from "@/lib/products";
+import { managedPlans } from "@/lib/offers";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -21,9 +18,13 @@ export function ConsultationForm({
 }: {
   initialPlan?: string;
 }) {
+  const allowedPlanValues = useMemo(
+    () => new Set(["", "done-for-you", ...managedPlans.map((plan) => plan.id)]),
+    [],
+  );
   const normalizedPlan = useMemo(
-    () => (isInfrastructurePlanSlug(initialPlan) ? initialPlan : ""),
-    [initialPlan],
+    () => (allowedPlanValues.has(initialPlan) ? initialPlan : ""),
+    [allowedPlanValues, initialPlan],
   );
 
   const [status, setStatus] = useState<FormStatus>("idle");
@@ -228,22 +229,23 @@ export function ConsultationForm({
             <option value="Brokerage">Brokerage</option>
             <option value="Private Lending">Private lending</option>
             <option value="Acquisitions / Builder">Acquisitions / builder</option>
+            <option value="Service business / trades">Service business / trades</option>
             <option value="Other Property-Driven">Other property-driven</option>
+            <option value="Other">Other</option>
           </select>
         </label>
       </div>
 
       <label className={field}>
-        Infrastructure starting point
+        Where are you starting?
         <select name="plan" defaultValue={normalizedPlan} className={control}>
           <option value="">Not sure yet</option>
-          {infrastructureCatalog.plans.map((plan) => (
-            <option key={plan.key} value={plan.slug}>
-                {plan.price.kind === "starting_at"
-                  ? `${plan.name} — Starting at ${plan.price.display}`
-                  : plan.name}
+          {managedPlans.map((plan) => (
+            <option key={plan.id} value={plan.id}>
+              {`Level ${plan.step} ${plan.name}, ${plan.priceDisplay} a month ${plan.setupLine}`}
             </option>
           ))}
+          <option value="done-for-you">Done For You, scoped on a call</option>
         </select>
       </label>
 

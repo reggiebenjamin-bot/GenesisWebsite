@@ -60,7 +60,7 @@ export const editions: readonly Edition[] = [
     points: ["Same day lead response", "Showings booked", "Live deal board"],
     ctas: [
       { label: "See Real Estate Pros pricing", href: "/packs/real_estate/pricing" },
-      { label: "Start checkout", href: realEstatePack.tiers[0].href },
+      { label: "Start Real Estate Pros checkout", href: realEstatePack.tiers[0].href },
     ],
     disclaimer: FUNDING_LINE,
   },
@@ -73,7 +73,7 @@ export const editions: readonly Edition[] = [
     body: "For any service business: contractors, clinics, law offices, home services and agencies. Calls answered, quotes followed up, appointments confirmed.",
     points: ["Calls answered", "Quotes followed up", "Appointments confirmed"],
     ctas: [
-      { label: "See AI Employees", href: "/ai-employees" },
+      { label: "See pricing", href: "/pricing#custom-infrastructure" },
       { label: "Talk to us", href: "/contact" },
     ],
     disclaimer: FUNDING_LINE,

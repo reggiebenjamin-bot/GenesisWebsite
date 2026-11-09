@@ -33,7 +33,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Genesis AI | AI Infrastructure for Real Estate Professionals",
+    default: "Genesis AI | AI Infrastructure for Growing Businesses",
     template: "%s | Genesis AI",
   },
   description: genesisPositioning.summary,
@@ -63,20 +63,20 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Genesis AI",
     url: "/",
-    title: "Genesis AI | AI Infrastructure for Real Estate Professionals",
+    title: "Genesis AI | AI Infrastructure for Growing Businesses",
     description: genesisPositioning.summary,
     images: [
       {
         url: "/images/social/og-home-1920x1080.png",
         width: 1920,
         height: 1080,
-        alt: "Genesis AI — AI infrastructure for real estate professionals",
+        alt: "Genesis AI — AI infrastructure for growing businesses",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Genesis AI | AI Infrastructure for Real Estate Professionals",
+    title: "Genesis AI | AI Infrastructure for Growing Businesses",
     description:
       "Genesis Tools for specific tasks, and Genesis Managed AI across the business.",
     images: ["/images/social/og-home-1920x1080.png"],

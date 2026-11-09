@@ -1,5 +1,4 @@
 import {
-  aiEmployeesEnterprise,
   aiEmployeesExpert,
   aiEmployeesPricing,
   expertPhone,
@@ -248,28 +247,6 @@ export function aiEmployeesServiceSchema() {
       name: "Genesis AI Employees plans",
       itemListElement: [
         ...managedPlans.map((plan) => monthly(plan.monthlyPriceUsd, `Level ${plan.step} ${plan.name}`, plan.summary)),
-        {
-          "@type": "Offer",
-          name: aiEmployeesEnterprise.name,
-          description: aiEmployeesEnterprise.priceLine,
-          url: `${url}#enterprise`,
-          price: aiEmployeesEnterprise.monthlyPriceUsd,
-          priceCurrency: "USD",
-          priceSpecification: [
-            {
-              "@type": "UnitPriceSpecification",
-              price: aiEmployeesEnterprise.setupUsd,
-              priceCurrency: "USD",
-              unitText: aiEmployeesEnterprise.setupUnit,
-            },
-            {
-              "@type": "UnitPriceSpecification",
-              price: aiEmployeesEnterprise.monthlyPriceUsd,
-              priceCurrency: "USD",
-              unitText: "per month",
-            },
-          ],
-        },
       ],
     },
   };

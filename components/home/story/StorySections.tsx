@@ -6,7 +6,6 @@ import { Eyebrow } from "@/components/ui/Section";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import {
   aiEmployeePersonas,
-  aiEmployeesEnterprise,
 } from "@/lib/aiEmployees";
 import { managedPlans } from "@/lib/offers";
 import { editions } from "@/lib/editions";
@@ -130,7 +129,7 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: the Genesis Managed AI levels from lib/offers, plus Done For You. */
+/** Chapter six: the Genesis Managed AI levels from lib/offers. */
 export function StoryOffers() {
   return (
     <Sheet surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
@@ -139,9 +138,9 @@ export function StoryOffers() {
         eyebrow="Chapter six. Build your team"
         title="Choose your level."
         titleId="story-offers-title"
-        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Monthly plans with a one time setup. Done For You sits under Enterprise.</p>}
+        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Monthly plans with a one time setup. Done For You is scoped on a call under Enterprise.</p>}
       />
-      <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <ul className="grid gap-4 md:grid-cols-3">
         {managedPlans.map((plan) => (
           <Card as="li" key={plan.id} className={plan.id === "managed-4500" ? "ring-1 ring-gold" : undefined}>
             <Eyebrow className="text-gold">Level {plan.step}</Eyebrow>
@@ -152,13 +151,6 @@ export function StoryOffers() {
             <div className="mt-6"><Button href="/pricing#custom-infrastructure" variant="outline">Choose Level {plan.step}</Button></div>
           </Card>
         ))}
-        <Card as="li">
-          <Eyebrow className="text-gold">{aiEmployeesEnterprise.name}</Eyebrow>
-          <p className="mt-4 text-[2.6rem] font-light leading-none tracking-[-0.04em]">{aiEmployeesEnterprise.monthlyDisplay}</p>
-          <p className="mt-2 text-[0.85rem] text-muted-dark">{aiEmployeesEnterprise.cadence}, plus {aiEmployeesEnterprise.setupDisplay} setup</p>
-          <p className="mt-4 text-[0.95rem] leading-relaxed">{aiEmployeesEnterprise.summary}</p>
-          <div className="mt-6"><Button href="/ai-employees#enterprise" variant="outline">Request Done For You</Button></div>
-        </Card>
       </ul>
     </Sheet>
   );
