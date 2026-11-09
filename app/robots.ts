@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteUrl, indexable } from "@/lib/site";
 
 /* Never for crawlers: the form endpoint and the framework's internals. */
-const PRIVATE = ["/api/"];
+const PRIVATE = ["/api/", "/start/"];
 
 /*
  * Search and answer engines Genesis wants to be found in, named explicitly so
