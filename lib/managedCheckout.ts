@@ -4,6 +4,23 @@ import { checkoutLineItems } from "./aiEmployeesCheckout.ts";
 export { checkoutLineItems };
 
 /**
+ * Optional Company name box on the Stripe Checkout page. Key "company" is what
+ * the workspace provisioner reads to name the buyer's workspace; a blank box
+ * falls back to the buyer's mailbox name.
+ */
+export function companyNameField() {
+  return [
+    {
+      key: "company",
+      label: { type: "custom" as const, custom: "Company name" },
+      type: "text" as const,
+      optional: true,
+      text: { maximum_length: 80 },
+    },
+  ];
+}
+
+/**
  * Stripe Checkout for the three Genesis Managed AI plans, built the same way as
  * the AI Employees checkout: a monthly recurring Price plus a one-time setup
  * Price on the same subscription Checkout Session.
