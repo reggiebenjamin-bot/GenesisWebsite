@@ -6,9 +6,9 @@ import { Eyebrow } from "@/components/ui/Section";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import {
   aiEmployeePersonas,
-  aiEmployeePlans,
   aiEmployeesEnterprise,
 } from "@/lib/aiEmployees";
+import { managedPlans } from "@/lib/offers";
 import { editions } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
 
@@ -130,26 +130,26 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: the AI employee plans from lib/aiEmployees, plus Done For You. */
+/** Chapter six: the Genesis Managed AI levels from lib/offers, plus Done For You. */
 export function StoryOffers() {
   return (
     <Sheet surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
       <SectionIntro
         layout="split"
         eyebrow="Chapter six. Build your team"
-        title="Hire one employee or the whole fleet."
+        title="Choose your level."
         titleId="story-offers-title"
         aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Monthly plans with a one time setup. Done For You sits under Enterprise.</p>}
       />
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {aiEmployeePlans.map((plan) => (
-          <Card as="li" key={plan.id} className={plan.id === "fleet" ? "ring-1 ring-gold" : undefined}>
-            <Eyebrow className="text-gold">{plan.name}</Eyebrow>
+        {managedPlans.map((plan) => (
+          <Card as="li" key={plan.id} className={plan.id === "managed-4500" ? "ring-1 ring-gold" : undefined}>
+            <Eyebrow className="text-gold">Level {plan.step}</Eyebrow>
             <p className="mt-4 text-[2.6rem] font-light leading-none tracking-[-0.04em]">{plan.priceDisplay}</p>
-            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.cadence}, {plan.setupLine}</p>
-            <p className="mt-4 text-[0.95rem] leading-relaxed">{plan.summary}</p>
-            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.detail}</p>
-            <div className="mt-6"><Button href="/ai-employees#plans" variant="outline">{plan.action}</Button></div>
+            <p className="mt-2 text-[0.85rem] text-muted-dark">a month, {plan.setupLine}</p>
+            <p className="mt-4 text-[0.95rem] leading-relaxed">{plan.name}</p>
+            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.summary}</p>
+            <div className="mt-6"><Button href="/pricing#custom-infrastructure" variant="outline">Choose Level {plan.step}</Button></div>
           </Card>
         ))}
         <Card as="li">

@@ -1,4 +1,4 @@
-import { aiEmployeePlans, aiEmployeesHero } from "./aiEmployees.ts";
+import { aiEmployeesHero } from "./aiEmployees.ts";
 import { genesisPositioning, genesisTools, managedPlans, type ToolId } from "./offers.ts";
 import { blogPosts } from "./blog.ts";
 import { siteUrl } from "./site.ts";
@@ -148,10 +148,10 @@ export const seoPages: readonly SeoPage[] = [
   {
     path: "/ai-employees",
     title: "AI Employees for Your Pipeline",
-    description: `${aiEmployeesHero.title} Meet Hawk, Susan, Darius, and Ava. Plans at ${aiEmployeePlans
+    description: `${aiEmployeesHero.title} Meet Hawk, Susan, Darius, and Ava. Plans at ${managedPlans
       .slice(0, -1)
       .map((plan) => plan.priceDisplay)
-      .join(", ")}, and ${aiEmployeePlans.at(-1)?.priceDisplay} a month.`,
+      .join(", ")}, and ${managedPlans.at(-1)?.priceDisplay} a month.`,
     label: "AI Employees",
     image: null,
     lastModified: "2026-11-03",

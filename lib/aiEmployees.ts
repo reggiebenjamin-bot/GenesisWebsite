@@ -76,12 +76,20 @@ export const aiEmployeePersonas: readonly AiEmployeePersona[] = [
 
 export const aiEmployeesPricing = {
   eyebrow: "Pricing",
-  title: "Three plans, and Done For You.",
+  title: "Choose your level.",
   summary:
-    "Single and Duo are the employees you choose. Full Fleet is Hawk, Susan, and Darius. Done For You sits under Enterprise.",
+    "Genesis plans are Level 01, Level 02, and Level 03 on the pricing page, where you check out. Done For You sits under Enterprise.",
+  planAction: "Choose this level",
 } as const;
 
 export type CheckoutPlanId = "single" | "duo" | "fleet";
+
+/*
+ * Retired Nov 9 2026: the Single, Duo, and Full Fleet plans are no longer sold
+ * or shown. The data stays so existing subscribers still resolve by plan id on
+ * the welcome page, purchase alerts, and the Stripe webhook. New buyers check
+ * out at the Genesis Managed AI levels on /pricing.
+ */
 
 export type AiEmployeePlan = {
   id: CheckoutPlanId;
@@ -173,7 +181,7 @@ export const aiEmployeesExpert = {
 export const aiEmployeesCta = {
   eyebrow: "Next step",
   title: "Put an AI employee on the pipeline.",
-  line: "Choose a plan, or ask Genesis to set the employees up for you.",
+  line: "Choose a level on the pricing page, or ask Genesis to set the employees up for you.",
   plansAction: "See the plans",
   enterpriseAction: "Request Done For You",
 } as const;
@@ -209,7 +217,6 @@ const copyRoots = [
   aiEmployeesTeam,
   aiEmployeePersonas,
   aiEmployeesPricing,
-  aiEmployeePlans,
   aiEmployeesEnterprise,
   aiEmployeesExpert,
   aiEmployeesCta,

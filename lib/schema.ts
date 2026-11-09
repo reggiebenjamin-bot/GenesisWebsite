@@ -1,5 +1,4 @@
 import {
-  aiEmployeePlans,
   aiEmployeesEnterprise,
   aiEmployeesExpert,
   aiEmployeesPricing,
@@ -248,7 +247,7 @@ export function aiEmployeesServiceSchema() {
       "@type": "OfferCatalog",
       name: "Genesis AI Employees plans",
       itemListElement: [
-        ...aiEmployeePlans.map((plan) => monthly(plan.monthlyPriceUsd, plan.name, plan.summary)),
+        ...managedPlans.map((plan) => monthly(plan.monthlyPriceUsd, `Level ${plan.step} ${plan.name}`, plan.summary)),
         {
           "@type": "Offer",
           name: aiEmployeesEnterprise.name,

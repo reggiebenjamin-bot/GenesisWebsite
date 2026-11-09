@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { Suspense } from "react";
 import { Card, Sheet } from "@/components/ui/Blocks";
-import { SubmitButton } from "@/components/ui/Button";
+import Link from "next/link";
 import { Eyebrow } from "@/components/ui/Section";
 import {
   aiEmployeePersonas,
-  aiEmployeePlans,
   aiEmployeesCta,
   aiEmployeesEnterprise,
   aiEmployeesExpert,
@@ -17,6 +16,7 @@ import {
   inquiryMessages,
   softwareDisclaimer,
 } from "@/lib/aiEmployees";
+import { managedPlans } from "@/lib/offers";
 import { EnterpriseInquiryForm } from "./EnterpriseInquiryForm";
 import { StatusNotice } from "./StatusNotice";
 
@@ -148,22 +148,21 @@ export function AiEmployeesPage() {
           onDark
         />
         <ol className="grid gap-4 lg:grid-cols-3">
-          {aiEmployeePlans.map((plan) => (
+          {managedPlans.map((plan) => (
             <Card as="li" key={plan.id} tone="dark" className="flex h-full flex-col text-center">
-              <h3 className="font-light text-[clamp(1.6rem,2vw,2rem)] tracking-[-0.03em]">{plan.name}</h3>
+              <p className="font-display text-[0.66rem] tracking-[0.16em] text-gold-light uppercase">Level {plan.step}</p>
+              <h3 className="mt-3 font-light text-[clamp(1.6rem,2vw,2rem)] tracking-[-0.03em]">{plan.name}</h3>
               <p className="mt-6 font-light text-[clamp(2.6rem,4vw,3.4rem)] leading-none tracking-[-0.05em] text-gold-light tabular-nums">
                 {plan.priceDisplay}
               </p>
-              <p className="mt-2 text-[0.85rem] text-ivory/60">{plan.cadence}</p>
+              <p className="mt-2 text-[0.85rem] text-ivory/60">a month</p>
               <p className="mt-1 text-[0.85rem] text-ivory/60">{plan.setupLine}</p>
               <p className="mt-6 text-[0.98rem] leading-relaxed text-ivory/80">{plan.summary}</p>
-              <p className="mt-3 text-[0.9rem] leading-relaxed text-ivory/60">{plan.detail}</p>
-              <form action="/api/ai-employees/checkout" method="POST" className="mt-auto pt-8">
-                <input type="hidden" name="plan" value={plan.id} />
-                <SubmitButton variant="secondary" className="w-full">
-                  {plan.action}
-                </SubmitButton>
-              </form>
+              <div className="mt-auto pt-8">
+                <Link href="/pricing#custom-infrastructure" className={`${goldButton} w-full`}>
+                  <span>{aiEmployeesPricing.planAction}</span>
+                </Link>
+              </div>
             </Card>
           ))}
         </ol>

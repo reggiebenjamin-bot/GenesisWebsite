@@ -13,8 +13,8 @@ const TIERS = ["", styles.tierTwo, styles.tierThree];
  * The three Genesis Managed AI plans as three equal cards in the site's
  * earlier pricing look — dark surface, faint grid, a gold edge travelling
  * round — carrying the level, the price, what Genesis does there, two points,
- * and the one action that applies: every level enters the infrastructure
- * assessment rather than a checkout.
+ * and the one action that applies: every level opens the pricing page, where
+ * the level checks out.
  */
 export function PlanCards() {
   return (
@@ -69,11 +69,11 @@ export function PlanCards() {
               </ul>
 
               <Link
-                href="/assessment"
-                aria-label={`Assess my business for the ${plan.priceDisplay} level`}
+                href="/pricing#custom-infrastructure"
+                aria-label={`Choose Level ${plan.step} at ${plan.priceDisplay} a month`}
                 className={styles.cta}
               >
-                Assess My Business
+                Choose Level {plan.step}
                 <span aria-hidden="true">↗</span>
               </Link>
             </article>
