@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { stripeWebhookSecret } from "@/lib/aiEmployeesCheckout";
-import { sendPurchaseAlert } from "@/lib/purchaseAlert";
-import { acceptWorkspaceWebhook, openConfiguredStore } from "@/lib/workspaceProvision";
+import { stripeEventsHandled, stripeWebhookSecret, subscriptionReference } from "@/lib/aiEmployeesCheckout";
+import type Stripe from "stripe";
+import { alertFromSession, sendPurchaseAlert } from "@/lib/purchaseAlert";
+import { acceptWorkspaceWebhook, openConfiguredStore, readSignedEvent } from "@/lib/workspaceProvision";
 
 export const runtime = "nodejs";
 
@@ -16,7 +17,29 @@ export async function POST(request: Request) {
   }
   const store = openConfiguredStore();
   if (!store) {
-    return NextResponse.json({ error: "Workspace state is not configured" }, { status: 503 });
+    // No durable disk (Vercel). Verify and alert as before; Stripe stays the
+    // payment record and the VPS provisioner reads paid sessions from Stripe.
+    let event: Stripe.Event;
+    try {
+      event = readSignedEvent(await request.text(), request.headers.get("stripe-signature"), secret);
+    } catch {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    }
+    const object = (event.data.object ?? {}) as unknown as Record<string, unknown>;
+    if ((stripeEventsHandled as readonly string[]).includes(event.type)) {
+      console.info(
+        JSON.stringify({
+          source: "ai-employees-stripe",
+          type: event.type,
+          id: event.id,
+          subscription: subscriptionReference(event.type, object),
+        }),
+      );
+    }
+    if (event.type === "checkout.session.completed") {
+      await sendPurchaseAlert(alertFromSession(object, !event.livemode));
+    }
+    return NextResponse.json({ received: true });
   }
 
   try {

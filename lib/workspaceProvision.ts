@@ -131,6 +131,8 @@ export async function ownerWorkspaceView(input: {
   store: WorkspaceStore;
   sessionId: string;
   principal: OwnerPrincipal | null;
+  /** Only when the site has no sign in of its own. See siteHasOwnSignIn. */
+  sessionHolderIsOwner?: boolean;
   env?: Record<string, string | undefined>;
   fetchImpl?: typeof fetch;
 }): Promise<WorkspaceView> {
@@ -142,7 +144,7 @@ export async function ownerWorkspaceView(input: {
     return { ...viewWithoutLogin("not_eligible", row), planName: resolvePlan(row.planId)?.name ?? "" };
   }
   if (!row.paid) return viewWithoutLogin("unconfirmed", row);
-  if (!ownerMatches(row, input.principal)) return viewWithoutLogin("sign_in", row);
+  if (!input.sessionHolderIsOwner && !ownerMatches(row, input.principal)) return viewWithoutLogin("sign_in", row);
   if (row.phase === "ended") return viewWithoutLogin("ended", row);
 
   const env = input.env ?? process.env;

@@ -14,8 +14,7 @@ import {
 } from "@/lib/onboardingDelivery";
 import { isWorkspaceToolId } from "@/lib/toolWorkspace";
 import { type WorkspaceView } from "@/lib/workspaceAccess";
-import { openConfiguredStore, ownerWorkspaceView } from "@/lib/workspaceProvision";
-import { readClerkPrincipal } from "@/lib/workspaceOwner";
+import { welcomeWorkspaceView } from "@/lib/welcomeView";
 import { isManagedWelcome, welcomeReadyCopy } from "@/lib/welcomePath";
 
 export const metadata: Metadata = {
@@ -47,19 +46,7 @@ export default async function WelcomePage({
 }) {
   const params = await searchParams;
   const sessionId = typeof params.session_id === "string" ? params.session_id : "";
-  const store = sessionId ? openConfiguredStore() : null;
-  const principal = sessionId ? await readClerkPrincipal() : null;
-  const view = store
-    ? await ownerWorkspaceView({
-        store,
-        sessionId,
-        principal,
-        fetchImpl: principal ? fetch : undefined,
-      })
-    : sessionId
-      ? { phase: "unconfirmed" as const, loginUrl: null, planId: "", planName: "", paid: false }
-      : null;
-  store?.close();
+  const view = sessionId ? await welcomeWorkspaceView(sessionId) : null;
   const managed = Boolean(
     view &&
       (view.phase === "pending" || view.phase === "ready" || view.phase === "ended") &&

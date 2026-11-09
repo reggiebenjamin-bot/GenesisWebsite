@@ -100,6 +100,18 @@ export function tenantLoginUrl(value: unknown, sharedRoot = POD_URL): string | n
   return url.toString();
 }
 
+/**
+ * True when this site has its own Clerk sign in. geai.us on Vercel does not.
+ * Without it there is no principal to compare, so the holder of the Checkout
+ * Session id (the browser Stripe redirected to /welcome) is treated as the
+ * owner. That holder can already read the same login from the public pod
+ * GET /ws-status?session_id=, and Clerk membership on the pod is what actually
+ * guards the workspace, so this does not widen access.
+ */
+export function siteHasOwnSignIn(env: Record<string, string | undefined> = process.env): boolean {
+  return Boolean(env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim() && env.CLERK_SECRET_KEY?.trim());
+}
+
 export function ownerMatches(row: Pick<CheckoutRow, "customerEmail" | "ownerUserId">, principal: OwnerPrincipal | null): boolean {
   if (!principal) return false;
   const email = principal.email.trim().toLowerCase();
