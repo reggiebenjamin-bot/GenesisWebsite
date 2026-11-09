@@ -7,14 +7,16 @@ import { IntakeForm } from "@/app/(marketing)/ai-employees/welcome/IntakeForm";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
-import { resolvePlan } from "@/lib/checkoutPlans";
 import {
   dayOneDeliverablesFor,
   kickoffBookingUrl,
   welcomeEmail,
 } from "@/lib/onboardingDelivery";
-import { stripeServer } from "@/lib/stripeServer";
-import { isManagedWelcome, POD_URL, welcomeReadyCopy } from "@/lib/welcomePath";
+import { isWorkspaceToolId } from "@/lib/toolWorkspace";
+import { type WorkspaceView } from "@/lib/workspaceAccess";
+import { openConfiguredStore, ownerWorkspaceView } from "@/lib/workspaceProvision";
+import { readClerkPrincipal } from "@/lib/workspaceOwner";
+import { isManagedWelcome, welcomeReadyCopy } from "@/lib/welcomePath";
 
 export const metadata: Metadata = {
   title: "Welcome to Genesis",
@@ -22,25 +24,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type Confirmed = { planName: string; planId: string; email: string; kind: string };
-
-/** Confirms the Checkout Session with Stripe. Returns null when it cannot be read. */
-async function confirmSession(sessionId: string): Promise<Confirmed | null> {
-  if (!sessionId) return null;
-  const stripe = stripeServer();
-  if (!stripe) return null;
-  try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    if (session.status !== "complete") return null;
-    const metadata = (session.metadata ?? {}) as Record<string, unknown>;
-    const planId = typeof metadata.plan === "string" ? metadata.plan : "";
-    const kind = typeof metadata.kind === "string" ? metadata.kind : "";
-    const plan = resolvePlan(planId);
-    const email = session.customer_details?.email ?? session.customer_email ?? "";
-    return { planName: plan?.name ?? "", planId, email: email ?? "", kind };
-  } catch {
-    return null;
-  }
+function headingFor(view: WorkspaceView | null, managed: boolean): string {
+  if (!view) return welcomeReadyCopy.welcomeHeading;
+  if (view.phase === "unconfirmed") return welcomeReadyCopy.unconfirmedHeading;
+  if (view.phase === "not_eligible" && isWorkspaceToolId(view.planId)) return welcomeReadyCopy.toolHeading;
+  if (view.phase === "not_eligible") return welcomeReadyCopy.refusedHeading;
+  if (view.phase === "sign_in") return welcomeReadyCopy.signInGateHeading;
+  if (view.phase === "ready") return welcomeReadyCopy.accountReadyHeading;
+  if (view.phase === "ended") return welcomeReadyCopy.failedHeading;
+  if (managed) return "Thank you. Your Genesis setup is underway.";
+  return welcomeReadyCopy.pendingHeading;
 }
 
 /* Dark button with a gold outline, matching the brand's secondary action. */
@@ -54,23 +47,32 @@ export default async function WelcomePage({
 }) {
   const params = await searchParams;
   const sessionId = typeof params.session_id === "string" ? params.session_id : "";
-  const confirmed = await confirmSession(sessionId);
-  const managed = confirmed ? isManagedWelcome(confirmed.planId, confirmed.kind) : false;
+  const store = sessionId ? openConfiguredStore() : null;
+  const principal = sessionId ? await readClerkPrincipal() : null;
+  const view = store
+    ? await ownerWorkspaceView({
+        store,
+        sessionId,
+        principal,
+        fetchImpl: principal ? fetch : undefined,
+      })
+    : sessionId
+      ? { phase: "unconfirmed" as const, loginUrl: null, planId: "", planName: "", paid: false }
+      : null;
+  store?.close();
+  const managed = Boolean(
+    view &&
+      (view.phase === "pending" || view.phase === "ready" || view.phase === "ended") &&
+      isManagedWelcome(view.planId, ""),
+  );
   const bookingUrl = kickoffBookingUrl();
-  const deliverables = confirmed && managed ? dayOneDeliverablesFor(confirmed.planId) : null;
-
-  const heading = managed
-    ? "Thank you. Your Genesis setup is underway."
-    : confirmed
-      ? welcomeReadyCopy.accountReadyHeading
-      : welcomeReadyCopy.welcomeHeading;
-
-  const planLine = confirmed
-    ? `${confirmed.planName ? `You chose the ${confirmed.planName} plan.` : "Your plan is confirmed."}${
-        confirmed.email ? ` A confirmation is on its way to ${confirmed.email}.` : ""
-      }`
-    : "";
-
+  const deliverables = view && managed ? dayOneDeliverablesFor(view.planId) : null;
+  const heading = headingFor(view, managed);
+  const toolHref = view?.phase === "not_eligible" && isWorkspaceToolId(view.planId) ? `/workspace/${view.planId}` : null;
+  const planLine =
+    view && view.phase !== "sign_in" && view.phase !== "unconfirmed" && view.phase !== "not_eligible" && view.planName
+      ? `You chose the ${view.planName} plan.`
+      : "";
   return (
     <>
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+72px)] pb-24 text-center text-ivory md:pb-32">
@@ -89,24 +91,45 @@ export default async function WelcomePage({
             {heading}
           </h1>
 
-          {confirmed ? (
+          {planLine ? (
             <p className="mx-auto mt-6 max-w-[46ch] text-[1.08rem] leading-relaxed text-ivory/74">
               {planLine}
             </p>
           ) : null}
 
-          {managed ? (
-            <AccountReady sessionId={sessionId} />
-          ) : confirmed ? (
+          {view?.phase === "pending" || view?.phase === "ready" || view?.phase === "ended" ? (
+            <AccountReady
+              sessionId={sessionId}
+              initialPhase={view.phase}
+              initialLoginUrl={view.loginUrl}
+            />
+          ) : view?.phase === "sign_in" ? (
             <>
-              <AccountReady sessionId={sessionId} />
-              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">
-                {softwareDisclaimer}
+              <SignInCard heading={welcomeReadyCopy.signInGateHeading} note={welcomeReadyCopy.signInGateNote} />
+              <p className="mx-auto mt-6">
+                <Link href="/workspace/account?mode=login" className="border-b border-ivory/40 text-ivory">
+                  Sign in
+                </Link>
               </p>
+              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
             </>
-          ) : (
+          ) : view?.phase === "not_eligible" && toolHref ? (
             <>
-              <SignInCard href={POD_URL} heading={welcomeReadyCopy.signInHeading} />
+              <p className="mx-auto mt-6 max-w-[46ch] text-[1.02rem] leading-relaxed text-ivory/74">
+                {welcomeReadyCopy.toolBody}
+              </p>
+              {toolHref ? (
+                <p className="mx-auto mt-6">
+                  <Link href={toolHref} className="border-b border-ivory/40 text-ivory">
+                    Open your tool
+                  </Link>
+                </p>
+              ) : null}
+              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
+            </>
+          ) : !view ? (
+            <>
+              <SignInCard heading={welcomeReadyCopy.signInHeading} note={welcomeReadyCopy.bareNote} />
               <p className="mx-auto mt-6 max-w-[46ch] text-[0.98rem] leading-relaxed text-ivory/74">
                 Have a question about an order? Reach us from the{" "}
                 <Link href="/contact" className="border-b border-ivory/40 text-ivory">
@@ -114,10 +137,10 @@ export default async function WelcomePage({
                 </Link>
                 .
               </p>
-              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">
-                {softwareDisclaimer}
-              </p>
+              <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
             </>
+          ) : (
+            <p className="mx-auto mt-8 max-w-[56ch] text-[0.84rem] text-ivory/60">{softwareDisclaimer}</p>
           )}
         </div>
       </section>

@@ -7,6 +7,7 @@ import {
   setupPriceId,
 } from "@/lib/managedCheckout";
 import { stripeServer } from "@/lib/stripeServer";
+import { checkoutOwnerId } from "@/lib/workspaceOwner";
 
 async function readPlan(request: Request): Promise<string> {
   const contentType = request.headers.get("content-type") ?? "";
@@ -42,11 +43,13 @@ export async function POST(request: Request) {
   const origin = new URL(request.url).origin;
 
   try {
+    const ownerId = await checkoutOwnerId();
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: checkoutLineItems(monthlyPriceId(plan), setupPriceId(plan)),
       metadata: { plan, kind: "managed" },
       subscription_data: { metadata: { plan, kind: "managed" } },
+      ...(ownerId ? { client_reference_id: ownerId } : {}),
       success_url: `${origin}/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/pricing?checkout=closed#custom-infrastructure`,
       integration_identifier: MANAGED_CHECKOUT_INTEGRATION_ID,
