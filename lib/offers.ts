@@ -88,8 +88,9 @@ export const offerPathByPage: Readonly<Record<string, OfferPathId>> = {
   "/solutions": "custom-infrastructure",
 };
 
-/** Pages that show both paths and switch between them in place. */
-export const offerPathSwitchPages: readonly string[] = ["/", "/pricing"];
+/** Pages that show both paths and switch between them in place. The pricing page
+    shows the Levels first and the tools below, so it has no switch. */
+export const offerPathSwitchPages: readonly string[] = ["/"];
 
 export type OfferPathPageKind =
   | { kind: "switch" }
