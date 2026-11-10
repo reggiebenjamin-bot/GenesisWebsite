@@ -23,7 +23,7 @@ const wordCount = (text: string) => text.trim().split(/\s+/).length;
 
 test("the navigation toggle switches in place only where both paths are shown", () => {
   assert.deepEqual(offerPathPageKind("/"), { kind: "switch" });
-  assert.deepEqual(offerPathPageKind("/pricing"), { kind: "switch" });
+  assert.deepEqual(offerPathPageKind("/pricing"), { kind: "neutral" });
   assert.deepEqual(offerPathPageKind("/tools"), { kind: "page", path: "agent" });
   assert.deepEqual(offerPathPageKind("/tools/capital-advisor"), { kind: "page", path: "agent" });
   assert.deepEqual(offerPathPageKind("/workspace/deal-packager"), { kind: "page", path: "agent" });
