@@ -28,6 +28,11 @@ export function crmChoice(value: unknown): CrmChoice | "" {
   return hit ? hit.value : "";
 }
 
+/** The assessment form offers labels. Accept a stored key too, and return the label. */
+export function crmAnswer(value: unknown): string {
+  return crmLabel(crmChoice(value));
+}
+
 export function crmLabel(choice: CrmChoice | ""): string {
   return crmOptions.find((option) => option.value === choice)?.label ?? "";
 }

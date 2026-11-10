@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { assessmentQuestions } from "@/lib/assessment";
-import { NEEDS_GHL_TAG, crmChoice, needsGhl } from "@/lib/crm";
+import { NEEDS_GHL_TAG, crmAnswer, crmChoice, needsGhl } from "@/lib/crm";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 /*
@@ -53,6 +53,14 @@ export async function POST(request: Request) {
       if (question.kind === "text") {
         const text = asString(raw).slice(0, 2000);
         if (text) answers[question.id] = text;
+        continue;
+      }
+
+      /* The CRM answer arrives as a label from the form, or as a key (ghl,
+         other, none) from another client. Both normalise to the label. */
+      if (question.id === "crm") {
+        const label = crmAnswer(Array.isArray(raw) ? raw[0] : raw);
+        if (label) answers.crm = label;
         continue;
       }
 
