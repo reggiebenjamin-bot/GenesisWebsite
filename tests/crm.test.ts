@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { crmChoice, crmFromSession, needsGhl } from "../lib/crm.ts";
+import { crmAnswer, crmChoice, crmFromSession, needsGhl } from "../lib/crm.ts";
 import { tagSubscriptionWithCrm } from "../lib/crmTag.ts";
 import { assessmentQuestions } from "../lib/assessment.ts";
 
@@ -74,4 +74,13 @@ test("the tag skips tools, missing answers and Stripe errors", async () => {
   assert.equal(stripe.calls.length, 0);
   const broken = { subscriptions: { update: async () => { throw new Error("denied"); } } };
   assert.equal(await tagSubscriptionWithCrm(broken as never, sale("none")), false);
+});
+
+test("crmAnswer turns a key or a label into the label the form offers", () => {
+  assert.equal(crmAnswer("none"), "None");
+  assert.equal(crmAnswer("None"), "None");
+  assert.equal(crmAnswer("other"), "Another CRM");
+  assert.equal(crmAnswer("ghl"), "GoHighLevel");
+  assert.equal(crmAnswer("Salesforce"), "");
+  assert.equal(crmAnswer(undefined), "");
 });
