@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { assessmentQuestions } from "@/lib/assessment";
 import { NEEDS_GHL_TAG, crmChoice, needsGhl } from "@/lib/crm";
@@ -11,6 +12,8 @@ import { mirrorToGenesis } from "@/lib/genesis-lead";
  */
 
 const WEBHOOK_URL = process.env.GENESIS_ASSESSMENT_WEBHOOK_URL;
+/* The shared secret the intake endpoint checks, sent as a header. */
+const INTAKE_SECRET = process.env.GENESIS_INTAKE_SECRET;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -78,18 +81,23 @@ export async function POST(request: Request) {
       );
     }
 
-    await mirrorToGenesis(
-      {
-        name: `${firstName} ${lastName}`,
-        phone: asString(data.phone),
-        email,
-        want: "other",
-      },
-      "geai.us:assessment",
-    );
+    /* Obvious test identities (example.com) are stored and alerted by the
+       intake endpoint but are not mirrored as a Genesis lead. */
+    if (!/@example\.(com|org|net)$/i.test(email)) {
+      await mirrorToGenesis(
+        {
+          name: `${firstName} ${lastName}`,
+          phone: asString(data.phone),
+          email,
+          want: "other",
+        },
+        "geai.us:assessment",
+      );
+    }
 
-    const outbound = new FormData();
+    const outbound: Record<string, string> = {};
     Object.entries({
+      assessment_id: randomUUID(),
       ...answers,
       first_name: firstName,
       last_name: lastName,
@@ -115,12 +123,16 @@ export async function POST(request: Request) {
       fbclid: asString(data.fbclid),
       submitted_at: new Date().toISOString(),
     }).forEach(([key, value]) => {
-      if (value) outbound.append(key, value);
+      if (value) outbound[key] = value;
     });
 
     const webhookResponse = await fetch(WEBHOOK_URL, {
       method: "POST",
-      body: outbound,
+      headers: {
+        "Content-Type": "application/json",
+        ...(INTAKE_SECRET ? { "X-Genesis-Intake-Secret": INTAKE_SECRET } : {}),
+      },
+      body: JSON.stringify(outbound),
       cache: "no-store",
     });
 
