@@ -74,3 +74,24 @@ test("send never throws and reports failures", async () => {
   assert.equal(await sendPurchaseAlert(alertFromSession(session), "https://x.test", ok), true);
   assert.match(sent, /cs_test_123/);
 });
+
+test("a CRM answer of another CRM or none tags the sale Needs GHL on the card", () => {
+  const withCrm = (value: string) => ({
+    ...session,
+    metadata: { plan: "managed-750", kind: "managed" },
+    custom_fields: [
+      { key: "company", type: "text", text: { value: "Proof Homes" } },
+      { key: "crm", type: "dropdown", dropdown: { value } },
+    ],
+  });
+  const other = alertFromSession(withCrm("other"));
+  assert.equal(other.crm, "Another CRM");
+  assert.equal(other.needsGhl, true);
+  assert.match(JSON.stringify(purchaseAlertCard(other)), /Needs GHL/);
+  assert.equal(alertFromSession(withCrm("none")).needsGhl, true);
+
+  const ghl = alertFromSession(withCrm("ghl"));
+  assert.equal(ghl.crm, "GoHighLevel");
+  assert.equal(ghl.needsGhl, false);
+  assert.doesNotMatch(JSON.stringify(purchaseAlertCard(ghl)), /Needs GHL/);
+});

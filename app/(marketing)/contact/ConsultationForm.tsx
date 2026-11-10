@@ -242,7 +242,7 @@ export function ConsultationForm({
           <option value="">Not sure yet</option>
           {managedPlans.map((plan) => (
             <option key={plan.id} value={plan.id}>
-              {`Level ${plan.step} ${plan.name}, ${plan.priceDisplay} a month ${plan.setupLine}`}
+              {`Level ${plan.step} ${plan.name}, ${plan.userLimit}, ${plan.priceDisplay} a month ${plan.setupLine}`}
             </option>
           ))}
           <option value="done-for-you">Done For You, scoped on a call</option>

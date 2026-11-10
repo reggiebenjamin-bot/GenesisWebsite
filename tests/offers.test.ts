@@ -134,9 +134,19 @@ test("Genesis Managed AI carries the reviewed monthly plans in ascending order",
   );
 });
 
+test("each level states its user limit: 1, up to 5, unlimited", () => {
+  assert.deepEqual(
+    managedPlans.map((plan) => [plan.id, plan.userLimit, plan.includedUsers]),
+    [
+      ["managed-750", "1 user", 1],
+      ["managed-1750", "Up to 5 users", 5],
+      ["managed-4500", "Unlimited users", null],
+    ],
+  );
+});
+
 test("undefined plan entitlements stay null until a plan matrix is approved", () => {
   for (const plan of managedPlans) {
-    assert.equal(plan.includedUsers, null);
     assert.equal(plan.additionalUserPriceUsd, null);
     assert.equal(plan.includedAiAgents, null);
     assert.equal(plan.connectedAccounts, null);

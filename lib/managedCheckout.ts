@@ -1,5 +1,6 @@
 import type { ManagedPlanId } from "./offers.ts";
 import { checkoutLineItems } from "./aiEmployeesCheckout.ts";
+import { crmCheckoutField } from "./crm.ts";
 
 export { checkoutLineItems };
 
@@ -18,6 +19,14 @@ export function companyNameField() {
       text: { maximum_length: 80 },
     },
   ];
+}
+
+/**
+ * Custom fields on the managed Checkout page: the optional Company name, then
+ * the required CRM question. Stripe allows three custom fields; two are used.
+ */
+export function managedCheckoutFields() {
+  return [...companyNameField(), crmCheckoutField()];
 }
 
 /**

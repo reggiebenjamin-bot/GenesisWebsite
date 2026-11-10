@@ -97,3 +97,30 @@ test("managed checkout asks an optional company name that the provisioner reads"
   assert.equal(field.label.custom, "Company name");
   assert.equal(companyNameField().length, 1);
 });
+
+test("managed checkout asks a required CRM dropdown after the company name", async () => {
+  const { managedCheckoutFields } = await import("../lib/managedCheckout.ts");
+  const fields = managedCheckoutFields();
+  assert.equal(fields.length, 2);
+  assert.ok(fields.length <= 3, "Stripe allows at most three custom fields");
+  assert.equal(fields[0].key, "company");
+  const crm = fields[1] as {
+    key: string;
+    type: string;
+    optional: boolean;
+    label: { custom: string };
+    dropdown: { options: { label: string; value: string }[] };
+  };
+  assert.equal(crm.key, "crm");
+  assert.equal(crm.type, "dropdown");
+  assert.equal(crm.optional, false);
+  assert.equal(crm.label.custom, "What CRM do you use today?");
+  assert.deepEqual(
+    crm.dropdown.options.map((option) => [option.value, option.label]),
+    [
+      ["ghl", "GoHighLevel"],
+      ["other", "Another CRM"],
+      ["none", "None"],
+    ],
+  );
+});

@@ -1,5 +1,5 @@
 /*
- * The Genesis Lending page: its copy, its two calls to action, and the shared
+ * The Genesis Lending page: its copy, its two calls to action (the assessment, then Lending Edition pricing), and the shared
  * funding line in one place. The page and its tests read from here, so the
  * visitor copy and the CTA URLs cannot drift. Genesis sells software; this
  * file carries no funding, placement or lending language.
@@ -9,7 +9,7 @@ import { FUNDING_LINE } from "./legal.ts";
 
 export type LendingCta = {
   label: string;
-  /** The external destination on the signup app. */
+  /** An internal route on geai.us. */
   href: string;
 };
 
@@ -25,12 +25,12 @@ export const lendingPage = {
   ],
   ctas: {
     primary: {
-      label: "See Lending pricing",
-      href: "https://genesisaisolutions.cloud/packs/lending/pricing",
+      label: "Assess my business",
+      href: "/assessment",
     },
     secondary: {
-      label: "Start Lending signup",
-      href: "https://genesisaisolutions.cloud/packs/lending/signup",
+      label: "See Lending Edition pricing",
+      href: "/packs/lending/pricing",
     },
   },
   disclaimer: FUNDING_LINE,

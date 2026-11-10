@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { editions, editionByPath } from "../lib/editions.ts";
 import { FUNDING_LINE } from "../lib/legal.ts";
-import { realEstatePack } from "../lib/realEstatePack.ts";
 
 /* The three dash characters that must never appear in visitor copy. */
 const DASHES = ["-", "–", "—"];
@@ -37,19 +36,22 @@ test("every edition has three benefit points and the shared funding disclaimer",
   }
 });
 
-test("Lending keeps its own page and the other three carry calls to action", () => {
-  assert.equal(editionByPath("/lending")?.ctas.length, 0);
+test("every edition points to the assessment, then to its pricing", () => {
+  for (const edition of editions) {
+    assert.equal(edition.ctas[0]?.href, "/assessment", `${edition.name} first CTA`);
+    assert.ok(edition.ctas.length >= 2, `${edition.name} CTAs`);
+  }
+  assert.equal(editionByPath("/lending")!.ctas[1].href, "/packs/lending/pricing");
+  assert.equal(editionByPath("/real-estate")!.ctas[1].href, "/packs/real_estate/pricing");
   assert.ok(editionByPath("/real-estate")!.ctas.length > 0);
   assert.ok(editionByPath("/business")!.ctas.length > 0);
   assert.ok(editionByPath("/enterprise")!.ctas.length > 0);
 });
 
-test("CTA URLs are existing internal routes or existing real estate pack URLs", () => {
-  const packUrls = realEstatePack.tiers.map((tier) => String(tier.href));
+test("CTA URLs are internal routes only", () => {
   for (const edition of editions) {
     for (const cta of edition.ctas) {
-      const ok = cta.href.startsWith("/") || packUrls.includes(cta.href);
-      assert.ok(ok, `${edition.name} CTA points at an unexpected URL: ${cta.href}`);
+      assert.ok(cta.href.startsWith("/"), `${edition.name} CTA points at an external URL: ${cta.href}`);
     }
   }
 });

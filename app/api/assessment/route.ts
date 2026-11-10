@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { assessmentQuestions } from "@/lib/assessment";
+import { NEEDS_GHL_TAG, crmChoice, needsGhl } from "@/lib/crm";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
 
 /*
@@ -59,11 +60,16 @@ export async function POST(request: Request) {
       if (values.length) answers[question.id] = values.join(", ");
     }
 
+    /* The CRM answer, stored as a key too, and the Needs GHL tag for a lead
+       who uses another CRM or none. */
+    const crm = crmChoice(answers.crm);
+    const tagged = needsGhl(crm);
+
     /* Local review should exercise the complete form without sending a real
        lead. Production fails closed until its dedicated destination exists. */
     if (!WEBHOOK_URL) {
       if (process.env.NODE_ENV !== "production") {
-        return NextResponse.json({ ok: true, preview: true });
+        return NextResponse.json({ ok: true, preview: true, crm, needsGhl: tagged });
       }
 
       return NextResponse.json(
@@ -92,6 +98,9 @@ export async function POST(request: Request) {
       phone: asString(data.phone),
       company: asString(data.company),
       assessment_result_categories: asString(data.assessment_result_categories),
+      crm_choice: crm,
+      needs_ghl: tagged ? "true" : "",
+      tags: tagged ? NEEDS_GHL_TAG : "",
       assessment_completed: "true",
       consultation_requested: data.consultation_requested ? "true" : "false",
       source: "Genesis Infrastructure Assessment",

@@ -613,6 +613,8 @@ export type ManagedPlan = {
    * null field.
    */
   includedUsers: number | null;
+  /** The user limit as it reads on the site: 1 user, up to 5 users, unlimited users. */
+  userLimit: string;
   additionalUserPriceUsd: number | null;
   includedAiAgents: readonly string[] | null;
   connectedAccounts: readonly string[] | null;
@@ -623,7 +625,6 @@ export type ManagedPlan = {
 };
 
 const undefinedEntitlements = {
-  includedUsers: null,
   additionalUserPriceUsd: null,
   includedAiAgents: null,
   connectedAccounts: null,
@@ -636,6 +637,8 @@ const undefinedEntitlements = {
 export const managedPlans: readonly ManagedPlan[] = [
   {
     id: "managed-750",
+    includedUsers: 1,
+    userLimit: "1 user",
     step: "01",
     name: "Business Recover",
     monthlyPriceUsd: 750,
@@ -654,6 +657,8 @@ export const managedPlans: readonly ManagedPlan[] = [
   },
   {
     id: "managed-1750",
+    includedUsers: 5,
+    userLimit: "Up to 5 users",
     step: "02",
     name: "Business Grow",
     monthlyPriceUsd: 1750,
@@ -672,6 +677,8 @@ export const managedPlans: readonly ManagedPlan[] = [
   },
   {
     id: "managed-4500",
+    includedUsers: null,
+    userLimit: "Unlimited users",
     step: "03",
     name: "Business Operate",
     monthlyPriceUsd: 4500,

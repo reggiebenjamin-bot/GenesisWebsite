@@ -147,6 +147,7 @@ export function StoryOffers() {
             <p className="mt-4 text-[2.6rem] font-light leading-none tracking-[-0.04em]">{plan.priceDisplay}</p>
             <p className="mt-2 text-[0.85rem] text-muted-dark">a month, {plan.setupLine}</p>
             <p className="mt-4 text-[0.95rem] leading-relaxed">{plan.name}</p>
+            <p className="mt-2 text-[0.85rem] font-bold">{plan.userLimit}</p>
             <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.summary}</p>
             <div className="mt-6"><Button href="/pricing#custom-infrastructure" variant="outline">Choose Level {plan.step}</Button></div>
           </Card>
