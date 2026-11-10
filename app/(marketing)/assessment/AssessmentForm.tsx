@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
@@ -15,6 +16,7 @@ import {
   type Step,
 } from "@/lib/assessment";
 import { contact } from "@/lib/content";
+import { pricingPathForPersona } from "@/lib/editionPlans";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "error" | "done";
@@ -250,7 +252,16 @@ export function AssessmentForm() {
     }
   }
 
-  if (status === "done") return <Results findings={findings} resultRef={resultRef} />;
+  if (status === "done") {
+    const persona = typeof answers.persona === "string" ? answers.persona : undefined;
+    return (
+      <Results
+        findings={findings}
+        resultRef={resultRef}
+        pricingHref={pricingPathForPersona(persona)}
+      />
+    );
+  }
 
   return (
     <Card className="mx-auto max-w-[56rem]">
@@ -418,9 +429,11 @@ export function AssessmentForm() {
 function Results({
   findings,
   resultRef,
+  pricingHref,
 }: {
   findings: readonly { id: string; title: string; body: string }[];
   resultRef: React.RefObject<HTMLDivElement | null>;
+  pricingHref: string;
 }) {
   const { results } = assessmentCopy;
 
@@ -460,13 +473,19 @@ function Results({
         <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
           {results.ctaBody}
         </p>
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <ConsultationButton
             href="/contact"
             onClick={() => track("infrastructure_review_cta_clicked", { from: "assessment_results" })}
           >
             {results.ctaPrimary}
           </ConsultationButton>
+          <Link
+            href={pricingHref}
+            className="inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:border-ivory"
+          >
+            See pricing
+          </Link>
         </div>
       </Card>
     </div>

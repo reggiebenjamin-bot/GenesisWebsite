@@ -6,14 +6,14 @@
  *
  * Lending keeps its own page (app/(marketing)/lending) and its own CTAs in
  * lib/lendingPage.ts. The other three editions build their pages from the
- * landing fields below. CTA URLs are existing destinations only; no checkout
- * or price URL is invented here.
+ * landing fields below. CTA URLs are internal routes only: every edition
+ * points to the assessment, then to its pricing page.
  *
  * No path aliases in this file: tests import it directly under Node.
  */
 
 import { FUNDING_LINE } from "./legal.ts";
-import { realEstatePack } from "./realEstatePack.ts";
+import { editionPricing } from "./editionPlans.ts";
 
 export type EditionCta = {
   label: string;
@@ -33,7 +33,7 @@ export type Edition = {
   /** The homepage card body and the landing page lede. */
   body: string;
   points: readonly [string, string, string];
-  /** The landing page calls to action. Empty for editions with their own page. */
+  /** The landing page calls to action. */
   ctas: readonly EditionCta[];
   disclaimer: string;
 };
@@ -47,7 +47,10 @@ export const editions: readonly Edition[] = [
     headline: "Software that helps lending teams move faster on every borrower inquiry.",
     body: "For loan officers and capital matchers. Every inquiry gets a fast first reply, document requests are tracked, and files never stall quietly.",
     points: ["Instant first reply", "Document follow up", "File status in one view"],
-    ctas: [],
+    ctas: [
+      { label: "Assess my business", href: "/assessment" },
+      { label: "See Lending Edition pricing", href: editionPricing.lending.pricingPath },
+    ],
     disclaimer: FUNDING_LINE,
   },
   {
@@ -59,8 +62,8 @@ export const editions: readonly Edition[] = [
     body: "For agents, investors and teams. Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current.",
     points: ["Same day lead response", "Showings booked", "Live deal board"],
     ctas: [
-      { label: "See Real Estate Pros pricing", href: "/packs/real_estate/pricing" },
-      { label: "Start Real Estate Pros checkout", href: realEstatePack.tiers[0].href },
+      { label: "Assess my business", href: "/assessment" },
+      { label: "See Real Estate Edition pricing", href: editionPricing.real_estate.pricingPath },
     ],
     disclaimer: FUNDING_LINE,
   },
@@ -73,6 +76,7 @@ export const editions: readonly Edition[] = [
     body: "For any service business: contractors, clinics, law offices, home services and agencies. Calls answered, quotes followed up, appointments confirmed.",
     points: ["Calls answered", "Quotes followed up", "Appointments confirmed"],
     ctas: [
+      { label: "Assess my business", href: "/assessment" },
       { label: "See pricing", href: "/pricing#custom-infrastructure" },
       { label: "Talk to us", href: "/contact" },
     ],
@@ -87,8 +91,9 @@ export const editions: readonly Edition[] = [
     body: "For multi location operations. Your systems connected, custom workflows, access controls and a managed build that keeps running.",
     points: ["Custom workflows", "Systems connected", "Managed every month"],
     ctas: [
-      { label: "Talk to us", href: "/contact" },
+      { label: "Assess my business", href: "/assessment" },
       { label: "See pricing", href: "/pricing" },
+      { label: "Talk to us", href: "/contact" },
     ],
     disclaimer: FUNDING_LINE,
   },

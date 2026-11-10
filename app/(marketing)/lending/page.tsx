@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { EditionLevels } from "@/components/offers/EditionLevels";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { lendingPage } from "@/lib/lendingPage";
@@ -81,12 +83,16 @@ export default function LendingPage() {
         </ul>
 
         <div className="mx-auto mt-12 flex max-w-[34rem] flex-col gap-3 sm:flex-row sm:justify-center">
-          <a className={primaryCta} href={lendingPage.ctas.primary.href}>
+          <Link className={primaryCta} href={lendingPage.ctas.primary.href}>
             {lendingPage.ctas.primary.label}
-          </a>
-          <a className={secondaryCta} href={lendingPage.ctas.secondary.href}>
+          </Link>
+          <Link className={secondaryCta} href={lendingPage.ctas.secondary.href}>
             {lendingPage.ctas.secondary.label}
-          </a>
+          </Link>
+        </div>
+
+        <div className="mt-16">
+          <EditionLevels edition="lending" />
         </div>
 
         <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">

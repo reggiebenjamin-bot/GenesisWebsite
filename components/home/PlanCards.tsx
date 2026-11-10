@@ -53,6 +53,7 @@ export function PlanCards() {
               <span aria-hidden="true" className={styles.divider} />
 
               <p className={styles.ladder}>{plan.ladder}</p>
+              <p className={styles.users}>{plan.userLimit}</p>
               <p className={styles.summary}>{plan.summary}</p>
 
               <ul className={styles.points}>

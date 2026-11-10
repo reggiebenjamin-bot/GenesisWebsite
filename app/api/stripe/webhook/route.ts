@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { stripeEventsHandled, stripeWebhookSecret, subscriptionReference } from "@/lib/aiEmployeesCheckout";
 import type Stripe from "stripe";
+import { tagSubscriptionWithCrm } from "@/lib/crmTag";
 import { alertFromSession, sendPurchaseAlert } from "@/lib/purchaseAlert";
+import { stripeServer } from "@/lib/stripeServer";
 import { acceptWorkspaceWebhook, openConfiguredStore, readSignedEvent } from "@/lib/workspaceProvision";
 
 export const runtime = "nodejs";
@@ -37,6 +39,7 @@ export async function POST(request: Request) {
       );
     }
     if (event.type === "checkout.session.completed") {
+      await tagSubscriptionWithCrm(stripeServer(), object);
       await sendPurchaseAlert(alertFromSession(object, !event.livemode));
     }
     return NextResponse.json({ received: true });

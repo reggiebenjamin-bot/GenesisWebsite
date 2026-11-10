@@ -44,7 +44,14 @@ function CtaLink({
  * disclaimer. The copy comes from lib/editions so it stays in sync with the
  * homepage edition cards.
  */
-export function EditionLanding({ edition }: { edition: Edition }) {
+export function EditionLanding({
+  edition,
+  children,
+}: {
+  edition: Edition;
+  /** Extra content under the calls to action, such as the edition Levels. */
+  children?: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd data={graph(breadcrumbSchema(edition.href))} />
@@ -89,7 +96,7 @@ export function EditionLanding({ edition }: { edition: Edition }) {
         </ul>
 
         {edition.ctas.length ? (
-          <div className="mx-auto mt-12 flex max-w-[34rem] flex-col gap-3 sm:flex-row sm:justify-center">
+          <div className="mx-auto mt-12 flex max-w-[46rem] flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             {edition.ctas.map((cta, index) => (
               <CtaLink key={cta.href} href={cta.href} className={index === 0 ? primaryCta : secondaryCta}>
                 {cta.label}
@@ -97,6 +104,8 @@ export function EditionLanding({ edition }: { edition: Edition }) {
             ))}
           </div>
         ) : null}
+
+        {children ? <div className="mt-16">{children}</div> : null}
 
         <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
           {edition.disclaimer}

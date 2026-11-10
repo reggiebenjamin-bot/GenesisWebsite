@@ -12,8 +12,8 @@ const TIER_EDGES = [
 ] as const;
 
 /**
- * The three managed levels read across as well as down: five aligned rows —
- * the price, what Genesis does, the deployment, the automation, and the call
+ * The three managed levels read across as well as down: six aligned rows —
+ * the price, what Genesis does, the users, the deployment, the automation, and the call
  * to action — held level with each other by subgrid, so the cards stay the
  * same size and only the answers differ. Where subgrid is unavailable the
  * cards simply size themselves, which reads the same on one column.
@@ -31,9 +31,9 @@ export function ManagedComparison({
 }) {
   const Heading = headingLevel;
   const olRows = checkout
-    ? "md:[grid-template-rows:repeat(5,auto)]"
-    : "md:[grid-template-rows:repeat(4,auto)]";
-  const cardSpan = checkout ? "md:row-span-5" : "md:row-span-4";
+    ? "md:[grid-template-rows:repeat(6,auto)]"
+    : "md:[grid-template-rows:repeat(5,auto)]";
+  const cardSpan = checkout ? "md:row-span-6" : "md:row-span-5";
 
   return (
     <div>
@@ -70,6 +70,7 @@ export function ManagedComparison({
               <p className="mt-2 text-[0.9rem] leading-relaxed text-muted-dark">{plan.fit}</p>
             </div>
 
+            <Detail label="Users" value={plan.userLimit} />
             <Detail label="Deployment" value={plan.scope} />
             <Detail label="Automation" value={plan.automationLevel} />
 

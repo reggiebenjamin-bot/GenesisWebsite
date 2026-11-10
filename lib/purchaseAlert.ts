@@ -1,4 +1,5 @@
 import { purchaseProductName } from "./checkoutPlans.ts";
+import { NEEDS_GHL_TAG, crmFromSession, crmLabel, needsGhl } from "./crm.ts";
 
 /** Purchase alert posted to the Genesis Sales Teams channel. */
 export type PurchaseAlert = {
@@ -11,6 +12,10 @@ export type PurchaseAlert = {
   customerEmail: string;
   sessionId: string;
   test?: boolean;
+  /** The buyer's CRM answer, when the checkout asked it. */
+  crm?: string;
+  /** True when the buyer uses another CRM or none, so the sale is tagged Needs GHL. */
+  needsGhl?: boolean;
 };
 
 type SessionLike = Record<string, unknown>;
@@ -29,6 +34,7 @@ export function alertFromSession(session: SessionLike, test = false): PurchaseAl
   const metadata = (session.metadata ?? {}) as Record<string, unknown>;
   const details = (session.customer_details ?? {}) as Record<string, unknown>;
   const planId = typeof metadata.plan === "string" ? metadata.plan.trim() : "";
+  const crm = crmFromSession(session);
   return {
     plan: text(metadata.plan),
     product: purchaseProductName(planId),
@@ -37,6 +43,7 @@ export function alertFromSession(session: SessionLike, test = false): PurchaseAl
     customerEmail: text(details.email ?? session.customer_email),
     sessionId: text(session.id),
     test,
+    ...(crm ? { crm: crmLabel(crm), needsGhl: needsGhl(crm) } : {}),
   };
 }
 
@@ -62,6 +69,8 @@ export function purchaseAlertCard(alert: PurchaseAlert) {
                 { title: "Customer", value: alert.customerName },
                 { title: "Email", value: alert.customerEmail },
                 { title: "Session", value: alert.sessionId },
+                ...(alert.crm ? [{ title: "CRM", value: alert.crm }] : []),
+                ...(alert.needsGhl ? [{ title: "Tag", value: NEEDS_GHL_TAG }] : []),
               ],
             },
             {

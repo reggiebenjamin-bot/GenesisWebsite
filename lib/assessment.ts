@@ -9,6 +9,8 @@
  * no measurement behind a questionnaire that would justify a number.
  */
 
+import { CRM_QUESTION, crmOptions } from "./crm.ts";
+
 export type Choice = { value: string; label: string };
 
 export type Question =
@@ -113,6 +115,12 @@ export const assessmentSteps: readonly Step[] = [
           "Project management",
           "Other",
         ),
+      },
+      {
+        id: "crm",
+        kind: "single",
+        label: CRM_QUESTION,
+        options: choices(...crmOptions.map((option) => option.label)),
       },
       {
         id: "manual_transfer_frequency",

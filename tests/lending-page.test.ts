@@ -18,18 +18,12 @@ function strings(value: unknown, path = "lendingPage"): { path: string; text: st
   return [];
 }
 
-test("the two CTAs point at the lending pricing and signup pages", () => {
-  assert.equal(lendingPage.ctas.primary.label, "See Lending pricing");
-  assert.equal(
-    lendingPage.ctas.primary.href,
-    "https://genesisaisolutions.cloud/packs/lending/pricing",
-  );
+test("the two CTAs point at the assessment, then Lending Edition pricing", () => {
+  assert.equal(lendingPage.ctas.primary.label, "Assess my business");
+  assert.equal(lendingPage.ctas.primary.href, "/assessment");
 
-  assert.equal(lendingPage.ctas.secondary.label, "Start Lending signup");
-  assert.equal(
-    lendingPage.ctas.secondary.href,
-    "https://genesisaisolutions.cloud/packs/lending/signup",
-  );
+  assert.equal(lendingPage.ctas.secondary.label, "See Lending Edition pricing");
+  assert.equal(lendingPage.ctas.secondary.href, "/packs/lending/pricing");
 });
 
 test("the disclaimer is the shared funding line", () => {
@@ -42,7 +36,7 @@ test("there are three benefit bullets", () => {
 
 test("no copy string contains a dash or emoji, only the URLs may", () => {
   for (const { path, text } of strings(lendingPage)) {
-    const isUrl = text.startsWith("http://") || text.startsWith("https://");
+    const isUrl = text.startsWith("http://") || text.startsWith("https://") || text.startsWith("/");
     if (isUrl) continue;
     for (const dash of DASHES) {
       assert.equal(text.includes(dash), false, `${path} contains "${dash}": ${text}`);
