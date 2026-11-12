@@ -8,7 +8,7 @@ import { Eyebrow } from "@/components/ui/Section";
 import { pricingFaqs } from "@/lib/content";
 import { FUNDING_LINE } from "@/lib/legal";
 import { pageMetadata } from "@/lib/metadata";
-import { breadcrumbSchema, graph, managedServiceSchema, softwareApplicationSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqPageSchema, graph, managedServiceSchema, softwareApplicationSchema } from "@/lib/schema";
 import {
   genesisTools,
   managedOverview,
@@ -96,7 +96,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <JsonLd data={graph(managedServiceSchema(), ...genesisTools.map(softwareApplicationSchema), breadcrumbSchema("/pricing"))} />
+      <JsonLd data={graph(managedServiceSchema(), ...genesisTools.map(softwareApplicationSchema), faqPageSchema(pricingFaqs, "/pricing"), breadcrumbSchema("/pricing"))} />
 
       <section className="border-b border-line-light bg-paper pt-[calc(var(--header-height)+42px)] pb-[42px] text-ink md:pt-[calc(var(--header-height)+56px)] md:pb-[52px]">
         <div className="shell max-w-[960px]">

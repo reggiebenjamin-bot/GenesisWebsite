@@ -203,6 +203,17 @@ export const seoPages: readonly SeoPage[] = [
     priority: 0.6,
   },
   {
+    path: "/lending",
+    title: "Software for Lending Teams",
+    description:
+      "Genesis is software for lending teams. Brokers and lender desks capture, qualify and follow up with borrower inquiries faster, so no inquiry sits waiting.",
+    label: "Lending",
+    image: null,
+    lastModified: "2026-11-12",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/real-estate",
     title: "Software for Real Estate Pros",
     description:

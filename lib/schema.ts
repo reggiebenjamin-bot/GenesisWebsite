@@ -252,6 +252,58 @@ export function aiEmployeesServiceSchema() {
   };
 }
 
+/** The questions and answers printed on a page, as FAQPage structured data. */
+export function faqPageSchema(
+  items: readonly { question: string; answer: string }[],
+  path: string,
+) {
+  return {
+    "@type": "FAQPage",
+    "@id": `${absoluteUrl(path)}#faq`,
+    url: absoluteUrl(path),
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+/** Genesis itself, distinct from the three one-time tools. */
+export function genesisSoftwareSchema() {
+  const url = siteUrl;
+
+  return {
+    "@type": "SoftwareApplication",
+    "@id": `${url}/#software`,
+    name: "Genesis",
+    alternateName: "Genesis AI",
+    url,
+    description: genesisPositioning.brandDescription,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    provider: organizationRef,
+    publisher: organizationRef,
+    offers: managedPlans.map((plan) => ({
+      "@type": "Offer",
+      name: `${managedOverview.product}, Level ${plan.step}`,
+      description: `${plan.ladder} ${plan.scope}`,
+      url: absoluteUrl("/pricing"),
+      price: plan.monthlyPriceUsd,
+      priceCurrency: "USD",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: plan.monthlyPriceUsd,
+        priceCurrency: "USD",
+        unitText: "per month",
+      },
+    })),
+  };
+}
+
 /** A page's nodes wrapped as one graph. */
 export function graph(...nodes: object[]) {
   return { "@context": "https://schema.org", "@graph": nodes };
