@@ -2,35 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { lendingPage } from "@/lib/lendingPage";
-import { absoluteUrl } from "@/lib/seo";
-import { indexable } from "@/lib/site";
+import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, graph } from "@/lib/schema";
 
-const PATH = "/lending";
-
-const description =
-  "Genesis is software for lending teams. Brokers and lender desks capture, qualify and follow up with borrower inquiries faster, so no inquiry sits waiting.";
-
-export const metadata: Metadata = {
-  title: "Software for Lending Teams",
-  description,
-  alternates: indexable ? { canonical: absoluteUrl(PATH) } : undefined,
-  openGraph: {
-    title: "Software for Lending Teams | Genesis AI",
-    description,
-    type: "website",
-    siteName: "Genesis AI",
-    locale: "en_US",
-    url: absoluteUrl(PATH),
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Software for Lending Teams | Genesis AI",
-    description,
-  },
-};
+export const metadata: Metadata = pageMetadata("/lending");
 
 /* Dark button with a gold outline, for the primary call to action. */
 const primaryCta =
@@ -43,6 +22,8 @@ const secondaryCta =
 export default function LendingPage() {
   return (
     <>
+      <JsonLd data={graph(breadcrumbSchema("/lending"))} />
+
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+72px)] pb-24 text-center text-ivory md:pb-32">
         <div className="shell max-w-[920px]">
           <Image

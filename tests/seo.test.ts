@@ -5,6 +5,8 @@ import {
   aboutPageSchema,
   aiEmployeesServiceSchema,
   breadcrumbSchema,
+  faqPageSchema,
+  genesisSoftwareSchema,
   managedServiceSchema,
   organizationSchema,
   reginaldBenjaminSchema,
@@ -13,6 +15,7 @@ import {
   toolsCollectionSchema,
   websiteSchema,
 } from "../lib/schema.ts";
+import { faqs, pricingFaqs } from "../lib/content.ts";
 import { absoluteUrl, breadcrumbTrail, fullTitle, seoPages, toolSeo } from "../lib/seo.ts";
 import { canonicalOrigin, siteUrl } from "../lib/site.ts";
 import { toolPages } from "../lib/toolPages.ts";
@@ -45,6 +48,7 @@ test("the page that moved stays out, and every tool has its own page", () => {
   const paths = seoPages.map((page) => page.path);
   assert.ok(!paths.includes("/mini"), "/mini redirects, so it must not be listed");
   assert.ok(paths.includes("/assessment"), "the infrastructure assessment must be indexable");
+  assert.ok(paths.includes("/lending"), "the Lending edition page must be in the sitemap");
   for (const tool of genesisTools) {
     assert.ok(paths.includes(`/tools/${tool.id}`), `${tool.name} has no page`);
   }
@@ -93,6 +97,8 @@ test("structured data never claims ratings or reviews Genesis does not have", ()
     aboutPageSchema(),
     reginaldBenjaminSchema(),
     aiEmployeesServiceSchema(),
+    genesisSoftwareSchema(),
+    faqPageSchema(pricingFaqs, "/pricing"),
     ...genesisTools.map(softwareApplicationSchema),
   ];
   const keys = new Set(all.flatMap(keysOf));
@@ -154,4 +160,38 @@ test("tool search snippets stay aligned with the live catalog and shared prices"
   const searchCopy = seoPages.map((page) => `${fullTitle(page)} ${page.description}`).join(" ");
   assert.doesNotMatch(searchCopy, /Funding Ready|Deal Desk/);
   assert.doesNotMatch(toolSeo["capital-advisor"].description, /compar(?:e|ing|ison).*scenarios?/i);
+});
+
+test("the Genesis software record uses the live Levels prices", () => {
+  const software = genesisSoftwareSchema();
+  assert.equal(software["@type"], "SoftwareApplication");
+  assert.equal(software.name, "Genesis");
+  assert.deepEqual(
+    software.offers.map((offer) => offer.price),
+    managedPlans.map((plan) => plan.monthlyPriceUsd),
+  );
+  assert.deepEqual(
+    software.offers.map((offer) => offer.price),
+    [750, 1750, 4500],
+  );
+});
+
+test("FAQ structured data repeats the questions printed on the page", () => {
+  const homeQuestions = faqPageSchema(
+    [
+      ...new Map(
+        faqs
+          .filter((faq) => faq.paths.includes("agent") || faq.paths.includes("custom-infrastructure"))
+          .map((faq) => [faq.question, faq] as const),
+      ).values(),
+    ],
+    "/",
+  );
+  assert.equal(homeQuestions["@type"], "FAQPage");
+  assert.ok(homeQuestions.mainEntity.length >= 6);
+  assert.ok(homeQuestions.mainEntity.some((item) => item.name === "What is Genesis?"));
+
+  const pricing = faqPageSchema(pricingFaqs, "/pricing");
+  assert.equal(pricing.mainEntity.length, pricingFaqs.length);
+  assert.equal(pricing.mainEntity[0]?.name, pricingFaqs[0].question);
 });

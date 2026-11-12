@@ -11,8 +11,17 @@ import {
   StoryTeamDay,
 } from "@/components/home/story/StorySections";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { faqs } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
-import { graph, organizationSchema, websiteSchema } from "@/lib/schema";
+import { faqPageSchema, genesisSoftwareSchema, graph, organizationSchema, websiteSchema } from "@/lib/schema";
+
+const homeFaqs = [
+  ...new Map(
+    faqs
+      .filter((faq) => faq.paths.includes("agent") || faq.paths.includes("custom-infrastructure"))
+      .map((faq) => [faq.question, faq] as const),
+  ).values(),
+];
 
 export const metadata: Metadata = pageMetadata("/");
 
@@ -24,7 +33,14 @@ export const metadata: Metadata = pageMetadata("/");
 export default function Home() {
   return (
     <>
-      <JsonLd data={graph(organizationSchema(), websiteSchema())} />
+      <JsonLd
+        data={graph(
+          organizationSchema(),
+          websiteSchema(),
+          genesisSoftwareSchema(),
+          faqPageSchema(homeFaqs, "/"),
+        )}
+      />
 
       <HawkHero />
 
