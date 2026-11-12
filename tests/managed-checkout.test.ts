@@ -37,7 +37,7 @@ test("checkout resolves the live monthly and setup prices and honors overrides",
 
   assert.equal(setupPriceId("managed-750", {}), "price_1UXrITFvlby2Ilp1Bv4gpd6F");
   assert.equal(setupPriceId("managed-1750", {}), "price_1UXrIVFvlby2Ilp1aaxnnH3A");
-  assert.equal(setupPriceId("managed-4500", {}), "price_1UXrIRFvlby2Ilp1IZUIRx4p");
+  assert.equal(setupPriceId("managed-4500", {}), "price_1UayZpFvlby2Ilp1lXDcDJUu");
 
   for (const plan of managedPlans) {
     assert.match(monthlyPriceId(plan.id, {}), /^price_/);
