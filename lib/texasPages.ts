@@ -1,4 +1,5 @@
 import { FUNDING_LINE } from "./legal.ts";
+import { texasServiceLandings } from "./texasServicePages.ts";
 
 /** A public Texas or city landing page. Visitor copy has no dashes or emoji. */
 export type TexasLanding = {
@@ -16,6 +17,8 @@ export type TexasLanding = {
   faqs: readonly { question: string; answer: string }[];
   /** The Levels edition to show, if this page should print the plan cards. */
   edition?: "real_estate" | "lending";
+  /** Print the three Levels with price and setup, linking to /pricing. */
+  pricing?: boolean;
   disclaimer: string;
 };
 
@@ -65,7 +68,7 @@ export const texasLandings: readonly TexasLanding[] = [
       { label: "Start a consultation", href: "/assessment" },
       { label: "See pricing", href: "/pricing" },
     ],
-    related: [...USE_CASES, ...CITIES],
+    related: [{ label: "Texas service businesses", href: "/texas/service-businesses" }, ...USE_CASES, ...CITIES],
     faqs: [WHAT_IS, COST, FUNDING],
     disclaimer: FUNDING_LINE,
   },
@@ -239,7 +242,7 @@ export const texasLandings: readonly TexasLanding[] = [
 ];
 
 export function texasLanding(path: string): TexasLanding {
-  const page = texasLandings.find((candidate) => candidate.path === path);
+  const page = [...texasLandings, ...texasServiceLandings].find((candidate) => candidate.path === path);
   if (!page) throw new Error(`No Texas landing page for ${path}`);
   return page;
 }
