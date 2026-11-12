@@ -12,7 +12,7 @@ const edition = editionPricing.real_estate;
 const PATH = edition.pricingPath;
 
 const description =
-  "Genesis captures and routes every buyer and seller lead the moment it lands. See the Real Estate Edition of Level 01, Level 02 and Level 03, from 1 user to unlimited users.";
+  "Genesis captures and routes every buyer and seller lead the moment it lands. See the Real Estate Edition of Level 01, Level 02 and Level 03, from 1 user to 25 users.";
 
 export const metadata: Metadata = {
   title: "Real Estate Edition Pricing",

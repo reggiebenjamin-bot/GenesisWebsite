@@ -22,7 +22,7 @@ test("each managed plan names its approved one-time setup fee", () => {
     [
       ["Business Recover", 500, "plus $500 setup"],
       ["Business Grow", 1500, "plus $1,500 setup"],
-      ["Business Operate", 5000, "plus $5,000 setup"],
+      ["Business Operate", 10000, "plus $10,000 setup"],
     ],
   );
   for (const plan of managedPlans) {

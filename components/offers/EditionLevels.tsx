@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { editionLevels, editionPricing, type EditionKey } from "@/lib/editionPlans";
@@ -51,6 +52,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
               Users
             </p>
             <p className="mt-2 text-[0.92rem] leading-snug">{plan.userLimit}</p>
+            <UserLimitNote plan={plan} className="text-muted-dark" />
           </div>
 
           <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">

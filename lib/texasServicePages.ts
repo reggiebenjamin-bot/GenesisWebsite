@@ -16,7 +16,7 @@ const HUB = "/texas/service-businesses";
 const COST = {
   question: "What do the plans cost?",
   answer:
-    "Levels are $750, $1,750 and $4,500 a month, each with a one time setup fee of $500, $1,500 and $5,000. See the pricing page for what each Level covers.",
+    "Levels are $750, $1,750 and $4,500 a month, each with a one time setup fee of $500, $1,500 and $10,000. See the pricing page for what each Level covers.",
 };
 
 const APPROVAL = {

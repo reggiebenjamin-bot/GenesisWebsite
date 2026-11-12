@@ -1,3 +1,4 @@
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Image from "next/image";
 import { Suspense } from "react";
 import { Card, Sheet } from "@/components/ui/Blocks";
@@ -156,6 +157,7 @@ export function AiEmployeesPage() {
               <p className="mt-2 text-[0.85rem] text-ivory/60">a month</p>
               <p className="mt-1 text-[0.85rem] text-ivory/60">{plan.setupLine}</p>
               <p className="mt-3 text-[0.85rem] text-gold-light">{plan.userLimit}</p>
+              <UserLimitNote plan={plan} className="text-ivory/70" />
               <p className="mt-6 text-[0.98rem] leading-relaxed text-ivory/80">{plan.summary}</p>
               <div className="mt-auto pt-8">
                 <Link href="/pricing#custom-infrastructure" className={`${goldButton} w-full`}>

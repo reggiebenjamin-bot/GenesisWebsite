@@ -65,7 +65,11 @@ export const monthlyPriceDefaults: Record<ManagedPlanId, string> = {
   "managed-4500": "price_1UXBvjFvlby2Ilp1ZuBKAq3K",
 };
 
-/** Approved one-time setup Prices (Nov 3 2026): $500, $1,500, $5,000. */
+/**
+ * One-time setup Prices approved Nov 3 2026: $500, $1,500, $5,000. The site now
+ * shows $10,000 for Level 03 (Nov 12 2026), so the Level 03 setup Price ID must
+ * be replaced with a $10,000 Stripe Price, here or in STRIPE_PRICE_MANAGED_4500_SETUP.
+ */
 export const setupPriceDefaults: Record<ManagedPlanId, string> = {
   "managed-750": "price_1UXrITFvlby2Ilp1Bv4gpd6F",
   "managed-1750": "price_1UXrIVFvlby2Ilp1aaxnnH3A",
