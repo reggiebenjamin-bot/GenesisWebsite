@@ -3,6 +3,7 @@ import { genesisPositioning, genesisTools, managedPlans, type ToolId } from "./o
 import { blogPosts } from "./blog.ts";
 import { siteUrl } from "./site.ts";
 import { texasLandings } from "./texasPages.ts";
+import { texasServiceLandings } from "./texasServicePages.ts";
 
 /*
  * The one list of pages search engines should know about. The sitemap, every
@@ -304,6 +305,19 @@ export const seoPages: readonly SeoPage[] = [
       lastModified: "2026-11-12",
       changeFrequency: "monthly",
       priority: page.path === "/texas" ? 0.8 : 0.7,
+    }),
+  ),
+  ...texasServiceLandings.map(
+    (page): SeoPage => ({
+      path: page.path,
+      title: page.title,
+      description: page.description,
+      label: page.label,
+      parent: page.parent,
+      image: null,
+      lastModified: "2026-11-12",
+      changeFrequency: "monthly",
+      priority: page.path === "/texas/service-businesses" ? 0.8 : 0.7,
     }),
   ),
 ];

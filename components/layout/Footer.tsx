@@ -47,7 +47,7 @@ export function Footer() {
         <div>
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
-            {[...pathPages, ...editionPages, { label: "Texas", href: "/texas" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
+            {[...pathPages, ...editionPages, { label: "Texas", href: "/texas" }, { label: "Texas service businesses", href: "/texas/service-businesses" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>

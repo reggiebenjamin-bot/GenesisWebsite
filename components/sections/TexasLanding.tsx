@@ -3,8 +3,9 @@ import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqList } from "@/components/ui/FaqList";
-import { Sheet } from "@/components/ui/Blocks";
+import { Card, Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
+import { managedPlans } from "@/lib/offers";
 import { breadcrumbSchema, faqPageSchema, graph } from "@/lib/schema";
 import type { TexasLanding } from "@/lib/texasPages";
 
@@ -77,6 +78,39 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
         {page.edition ? (
           <div className="mt-16">
             <EditionLevels edition={page.edition} />
+          </div>
+        ) : null}
+
+        {page.pricing ? (
+          <div className="mt-16">
+            <h2 className="text-center text-[1.35rem] font-light tracking-[-0.02em]">
+              Plans
+            </h2>
+            <ol className="mx-auto mt-6 grid max-w-[72rem] gap-4 md:grid-cols-3">
+              {managedPlans.map((plan) => (
+                <Card key={plan.id} as="li" className="flex h-full flex-col">
+                  <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+                    Level {plan.step}
+                  </p>
+                  <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
+                    {plan.name}
+                  </h3>
+                  <p className="mt-4 flex items-baseline gap-1.5">
+                    <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
+                      {plan.priceDisplay}
+                    </span>
+                    <span className="text-[0.9rem] text-muted-dark">per month</span>
+                  </p>
+                  <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+                  <p className="mt-5 text-[0.92rem] leading-snug">{plan.userLimit}</p>
+                </Card>
+              ))}
+            </ol>
+            <p className="mt-6 text-center">
+              <Link href="/pricing" className={relatedLink}>
+                See what each Level covers
+              </Link>
+            </p>
           </div>
         ) : null}
 
