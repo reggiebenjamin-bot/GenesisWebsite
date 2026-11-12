@@ -17,7 +17,14 @@ const beats = [
  */
 export function HawkInAction() {
   return (
-    <Sheet surface="ink" aria-labelledby="hawk-in-action-title" className="site-section pt-[clamp(40px,5vw,72px)]!">
+    <Sheet surface="ink" aria-labelledby="hawk-in-action-title" className={[
+        "site-section pt-[clamp(40px,5vw,72px)]!",
+        /* Phones only: the hero keeps a tall empty margin below its buttons, so pull this section up
+           into it by about half the screen height, and let its top 72px fade in from transparent so
+           no edge shows. Wider screens are not affected. */
+        "max-sm:-mt-[calc(50svh-200px)]!",
+        "max-sm:bg-transparent! max-sm:bg-[linear-gradient(to_bottom,transparent,var(--color-ink)_72px)]!",
+      ].join(" ")}>
       <SectionIntro
         layout="center"
         eyebrow="See Hawk in action"
