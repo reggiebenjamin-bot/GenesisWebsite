@@ -75,6 +75,29 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
           ))}
         </div>
 
+        {page.capabilities ? (
+          <div className="mt-16">
+            <h2 className="text-center text-[1.35rem] font-light tracking-[-0.02em]">
+              What Genesis handles
+            </h2>
+            <ul className="mx-auto mt-6 grid max-w-[72rem] gap-4 md:grid-cols-3">
+              {page.capabilities.map((item) => (
+                <Card key={item.title} as="li" className="flex h-full flex-col">
+                  <h3 className="text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-[0.95rem] leading-snug text-muted-dark">{item.body}</p>
+                </Card>
+              ))}
+            </ul>
+            {page.custom ? (
+              <p className="mx-auto mt-6 max-w-[56ch] text-center text-[0.98rem] leading-snug">
+                {page.custom}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
         {page.edition ? (
           <div className="mt-16">
             <EditionLevels edition={page.edition} />

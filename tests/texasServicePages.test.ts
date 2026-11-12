@@ -96,3 +96,18 @@ test("no service landing copy string contains a dash, emoji or a number claim, o
     }
   }
 });
+
+test("every service landing offers missed call text back, Google review requests and custom workflows", () => {
+  for (const page of texasServiceLandings) {
+    const titles = (page.capabilities ?? []).map((item) => item.title);
+    assert.ok(titles.includes("Missed call text back"), `${page.path} lacks missed call text back`);
+    assert.ok(titles.includes("Google review requests"), `${page.path} lacks Google review requests`);
+    assert.ok(/custom workflows/i.test(page.custom ?? ""), `${page.path} lacks the custom workflow line`);
+    const questions = page.faqs.map((faq) => faq.question);
+    assert.ok(questions.includes("Does Genesis text back a missed call?"), `${page.path} faq missed call`);
+    assert.ok(questions.includes("Can Genesis ask my customers for Google reviews?"), `${page.path} faq reviews`);
+    assert.ok(questions.includes("Can Genesis build something specific to how we work?"), `${page.path} faq custom`);
+    const blob = JSON.stringify(page);
+    assert.equal(/\b(WRL|Wind River|appraisal|lending|lender)\b/i.test(blob), false, `${page.path} names a banned business`);
+  }
+});

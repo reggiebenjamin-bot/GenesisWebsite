@@ -19,6 +19,10 @@ export type TexasLanding = {
   edition?: "real_estate" | "lending";
   /** Print the three Levels with price and setup, linking to /pricing. */
   pricing?: boolean;
+  /** Capability blocks printed under the points. */
+  capabilities?: readonly { title: string; body: string }[];
+  /** A closing line under the capabilities. */
+  custom?: string;
   disclaimer: string;
 };
 
