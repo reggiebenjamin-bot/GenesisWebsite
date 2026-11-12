@@ -25,7 +25,9 @@ export type AnalyticsEvent =
   | "managed_plan_selected"
   | "tools_pricing_viewed"
   | "tools_plan_selected"
-  | "one_time_tool_selected";
+  | "one_time_tool_selected"
+  /* Homepage film */
+  | "hawk_demo_played";
 
 type Props = Record<string, string | number | boolean>;
 
