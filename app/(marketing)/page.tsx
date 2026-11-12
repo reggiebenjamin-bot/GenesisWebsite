@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AiEmployeesHomeSection } from "@/components/ai-employees/AiEmployeesHomeSection";
 import { HawkHero } from "@/components/home/HawkHero";
+import { HawkInAction } from "@/components/home/HawkInAction";
 import { AgentSections, CustomInfrastructureSections } from "@/components/home/PathSections";
 import {
   StoryClose,
@@ -26,6 +27,8 @@ export default function Home() {
       <JsonLd data={graph(organizationSchema(), websiteSchema())} />
 
       <HawkHero />
+
+      <HawkInAction />
 
       <StoryOpening />
       <AiEmployeesHomeSection />
