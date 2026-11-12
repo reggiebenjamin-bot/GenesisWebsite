@@ -1,3 +1,4 @@
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Link from "next/link";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
@@ -148,6 +149,7 @@ export function StoryOffers() {
             <p className="mt-2 text-[0.85rem] text-muted-dark">a month, {plan.setupLine}</p>
             <p className="mt-4 text-[0.95rem] leading-relaxed">{plan.name}</p>
             <p className="mt-2 text-[0.85rem] font-bold">{plan.userLimit}</p>
+            <UserLimitNote plan={plan} className="text-muted-dark" />
             <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.summary}</p>
             <div className="mt-6"><Button href="/pricing#custom-infrastructure" variant="outline">Choose Level {plan.step}</Button></div>
           </Card>

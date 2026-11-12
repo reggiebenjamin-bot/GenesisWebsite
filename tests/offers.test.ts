@@ -134,13 +134,13 @@ test("Genesis Managed AI carries the reviewed monthly plans in ascending order",
   );
 });
 
-test("each level states its user limit: 1, up to 5, unlimited", () => {
+test("each level states its user limit: 1, up to 5, up to 25", () => {
   assert.deepEqual(
     managedPlans.map((plan) => [plan.id, plan.userLimit, plan.includedUsers]),
     [
       ["managed-750", "1 user", 1],
       ["managed-1750", "Up to 5 users", 5],
-      ["managed-4500", "Unlimited users", null],
+      ["managed-4500", "Up to 25 users", 25],
     ],
   );
 });
@@ -201,5 +201,19 @@ test("navigation dropdowns describe a destination in a few words", () => {
         `${item.label}: "${item.description}" is too long for a menu`,
       );
     }
+  }
+});
+
+test("Level 03 is capped at 25 users and points larger teams to Enterprise", () => {
+  const level3 = managedPlans[2];
+  assert.equal(level3.userLimit, "Up to 25 users");
+  assert.equal(level3.includedUsers, 25);
+  assert.equal(level3.enterpriseNote, "More than 25 users? Genesis Enterprise");
+  assert.equal(managedPlans[0].enterpriseNote, null);
+  assert.equal(managedPlans[1].enterpriseNote, null);
+  assert.deepEqual(managedPlans.map((plan) => plan.priceDisplay), ["$750", "$1,750", "$4,500"]);
+  for (const plan of managedPlans) {
+    assert.equal(/unlimited/i.test(`${plan.userLimit} ${plan.enterpriseNote ?? ""}`), false);
+    for (const dash of ["-", "–", "—"]) assert.equal((plan.enterpriseNote ?? "").includes(dash), false);
   }
 });

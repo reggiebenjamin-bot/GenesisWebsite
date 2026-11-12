@@ -1,3 +1,4 @@
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Link from "next/link";
 import { SectionIntro } from "@/components/ui/Blocks";
 import { TextLink } from "@/components/ui/Button";
@@ -54,6 +55,7 @@ export function PlanCards() {
 
               <p className={styles.ladder}>{plan.ladder}</p>
               <p className={styles.users}>{plan.userLimit}</p>
+              <UserLimitNote plan={plan} className="text-ivory/70" />
               <p className={styles.summary}>{plan.summary}</p>
 
               <ul className={styles.points}>

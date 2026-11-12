@@ -1,4 +1,5 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { managedOverview, managedPlans } from "@/lib/offers";
@@ -70,7 +71,7 @@ export function ManagedComparison({
               <p className="mt-2 text-[0.9rem] leading-relaxed text-muted-dark">{plan.fit}</p>
             </div>
 
-            <Detail label="Users" value={plan.userLimit} />
+            <Detail label="Users" value={plan.userLimit} note={<UserLimitNote plan={plan} className="text-muted-dark" />} />
             <Detail label="Deployment" value={plan.scope} />
             <Detail label="Automation" value={plan.automationLevel} />
 
@@ -97,13 +98,14 @@ export function ManagedComparison({
   );
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Detail({ label, value, note }: { label: string; value: string; note?: ReactNode }) {
   return (
     <div className="border-t border-line-light pt-4">
       <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
         {label}
       </p>
       <p className="mt-2 text-[0.92rem] leading-snug">{value}</p>
+      {note}
     </div>
   );
 }

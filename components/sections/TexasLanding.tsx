@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqList } from "@/components/ui/FaqList";
 import { Card, Sheet } from "@/components/ui/Blocks";
@@ -126,6 +127,7 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
                   </p>
                   <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
                   <p className="mt-5 text-[0.92rem] leading-snug">{plan.userLimit}</p>
+                  <UserLimitNote plan={plan} className="text-muted-dark" />
                 </Card>
               ))}
             </ol>

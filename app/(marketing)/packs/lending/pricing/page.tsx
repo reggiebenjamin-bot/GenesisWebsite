@@ -12,7 +12,7 @@ const edition = editionPricing.lending;
 const PATH = edition.pricingPath;
 
 const description =
-  "Genesis is software for lending teams. See the Lending Edition of Level 01, Level 02 and Level 03, from 1 user to unlimited users.";
+  "Genesis is software for lending teams. See the Lending Edition of Level 01, Level 02 and Level 03, from 1 user to 25 users.";
 
 export const metadata: Metadata = {
   title: "Lending Edition Pricing",

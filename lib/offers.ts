@@ -614,8 +614,10 @@ export type ManagedPlan = {
    * null field.
    */
   includedUsers: number | null;
-  /** The user limit as it reads on the site: 1 user, up to 5 users, unlimited users. */
+  /** The user limit as it reads on the site: 1 user, up to 5 users, up to 25 users. */
   userLimit: string;
+  /** Where larger teams go, shown under the user limit. Null when the Level has no cap note. */
+  enterpriseNote: string | null;
   additionalUserPriceUsd: number | null;
   includedAiAgents: readonly string[] | null;
   connectedAccounts: readonly string[] | null;
@@ -640,6 +642,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     id: "managed-750",
     includedUsers: 1,
     userLimit: "1 user",
+    enterpriseNote: null,
     step: "01",
     name: "Business Recover",
     monthlyPriceUsd: 750,
@@ -660,6 +663,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     id: "managed-1750",
     includedUsers: 5,
     userLimit: "Up to 5 users",
+    enterpriseNote: null,
     step: "02",
     name: "Business Grow",
     monthlyPriceUsd: 1750,
@@ -678,15 +682,16 @@ export const managedPlans: readonly ManagedPlan[] = [
   },
   {
     id: "managed-4500",
-    includedUsers: null,
-    userLimit: "Unlimited users",
+    includedUsers: 25,
+    userLimit: "Up to 25 users",
+    enterpriseNote: "More than 25 users? Genesis Enterprise",
     step: "03",
     name: "Business Operate",
     monthlyPriceUsd: 4500,
     priceDisplay: "$4,500",
-    setupUsd: 5000,
-    setupDisplay: "$5,000",
-    setupLine: "plus $5,000 setup",
+    setupUsd: 10000,
+    setupDisplay: "$10,000",
+    setupLine: "plus $10,000 setup",
     scope: "Advanced business-wide AI infrastructure and automation.",
     ladder: "Genesis helps orchestrate the operation.",
     automationLevel:

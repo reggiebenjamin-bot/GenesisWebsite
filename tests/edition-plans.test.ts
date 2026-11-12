@@ -20,7 +20,7 @@ test("both editions show the three Levels at the same price, setup and user limi
     [
       ["$750", "plus $500 setup", "1 user"],
       ["$1,750", "plus $1,500 setup", "Up to 5 users"],
-      ["$4,500", "plus $5,000 setup", "Unlimited users"],
+      ["$4,500", "plus $10,000 setup", "Up to 25 users"],
     ],
   );
 });
