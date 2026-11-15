@@ -12,22 +12,15 @@ import { breadcrumbSchema, graph } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata("/how-it-works");
 
-const [toolsPath, managedPath] = offerPaths;
+const managedPath = offerPaths.find((path) => path.id === "custom-infrastructure");
 
-/** The two ways to use Genesis: the scope determines the product. */
+/** Managed AI is the public offer. The level follows the scope of the operation. */
 const ways = [
   {
-    eyebrow: toolsPath.product,
-    quote: toolsPath.distinction,
-    body: "Bring Genesis a defined problem: analyze an opportunity, organize a financing request, or work through an active transaction.",
-    action: { label: "Explore Genesis Tools", href: "/tools" },
-    tone: "light",
-  },
-  {
-    eyebrow: managedPath.product,
-    quote: managedPath.distinction,
+    eyebrow: managedPath?.product ?? "Genesis Managed AI",
+    quote: managedPath?.distinction ?? "Help my business operate this way.",
     body: "Genesis maps and connects the systems, data, workflows, communication, automation, and AI capabilities behind the broader operation.",
-    action: { label: "Explore Custom Infrastructure", href: "/solutions" },
+    action: { label: "See the levels", href: "/pricing" },
     tone: "inverse",
   },
 ] as const;
@@ -68,7 +61,7 @@ export default function HowItWorksPage() {
       />
 
       <Sheet surface="paper" aria-labelledby="ways-title" className="site-section">
-        <SectionIntro title="The scope determines the product." titleId="ways-title" />
+        <SectionIntro title="Managed AI follows the operation." titleId="ways-title" />
 
         <ul className="grid gap-4 md:grid-cols-2">
           {ways.map((way) => (

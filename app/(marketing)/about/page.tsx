@@ -8,21 +8,18 @@ import { contact } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
 import {
   genesisPositioning,
-  genesisTools,
   managedOverview,
   offerPaths,
-  toolsOverview,
 } from "@/lib/offers";
 import { aboutPageSchema, breadcrumbSchema, graph, organizationSchema } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata("/about");
 
-const toolNames = genesisTools.map((tool) => tool.name).join(", ");
-const [toolsPath, managedPath] = offerPaths;
+const managedPath = offerPaths.find((path) => path.id === "custom-infrastructure");
 
 /*
  * The source of truth about the company, in one place: what Genesis is, who
- * it is for, how the offers relate, and what it is not. Every answer restates
+ * it is for, how Managed AI works, and what it is not. Every answer restates
  * something the site already says elsewhere.
  */
 const companyFacts = [
@@ -33,22 +30,13 @@ const companyFacts = [
       "Real estate agents and teams, brokerages, lenders, investors, acquisition teams, and development operators.",
   },
   {
-    label: toolsOverview.product,
-    value: `${toolsOverview.summary} ${toolNames}. “${toolsPath.distinction}”`,
-  },
-  {
     label: managedOverview.product,
-    value: `${managedOverview.summary} “${managedPath.distinction}”`,
-  },
-  {
-    label: "How the tools relate",
-    value:
-      "Deal Architect evaluates an opportunity. Deal Packager turns deal facts and evidence into a professional package. Capital Advisor reviews financing assumptions and capital readiness. Each product has its own focused page and works independently.",
+    value: `${managedOverview.summary} “${managedPath?.distinction ?? ""}”`,
   },
   {
     label: "What it is not",
     value:
-      "Not a guarantee of financing, approval, or rates. Not AI doing the deal math: figures come from deterministic formulas. Not a smaller version of a managed plan: the tools and Managed AI solve different scopes of problems.",
+      "Not a guarantee of financing, approval, or rates. Decisions that need professional or regulated judgment stay with the people responsible for them.",
   },
   { label: "Contact", value: `${contact.email} · ${contact.phoneDisplay}` },
 ];

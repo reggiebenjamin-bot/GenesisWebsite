@@ -64,12 +64,14 @@ test("each path opens the homepage with its own title; Custom Infrastructure lea
   assert.equal(title("agent"), "Solve a specific business problem with Genesis.");
 });
 
-test("each homepage path asks its own questions, and both ask how the offers differ", () => {
-  for (const path of offerPaths) {
-    const questions = faqs.filter((faq) => faq.paths.includes(path.id));
-    assert.ok(questions.length >= 3, `${path.label} needs its own questions`);
-    assert.ok(questions.some((faq) => faq.question.startsWith("What is the difference")));
-  }
+test("homepage questions describe Managed AI and do not contrast a tools catalog", () => {
+  const questions = faqs.filter((faq) => faq.paths.includes("custom-infrastructure"));
+  assert.ok(questions.length >= 3, "Managed AI needs its own questions");
+  const text = questions.map((faq) => `${faq.question} ${faq.answer}`).join(" ");
+  assert.equal(text.includes("Genesis Tools"), false);
+  assert.equal(text.includes("Deal Architect"), false);
+  assert.equal(text.includes("Deal Packager"), false);
+  assert.equal(text.includes("Capital Advisor"), false);
 });
 
 test("the Agent path is first and selected by default", () => {

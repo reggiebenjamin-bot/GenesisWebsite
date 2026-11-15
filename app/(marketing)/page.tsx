@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AiEmployeesHomeSection } from "@/components/ai-employees/AiEmployeesHomeSection";
 import { HawkHero } from "@/components/home/HawkHero";
 import { HawkInAction } from "@/components/home/HawkInAction";
-import { AgentSections, CustomInfrastructureSections } from "@/components/home/PathSections";
+import { CustomInfrastructureSections } from "@/components/home/PathSections";
 import {
   StoryClose,
   StoryHowItWorks,
@@ -26,9 +26,9 @@ const homeFaqs = [
 export const metadata: Metadata = pageMetadata("/");
 
 /**
- * The homepage tells the Genesis story beneath the unchanged Hawk hero:
- * the problem, why Genesis exists, Genesis OS and its editions, the team,
- * how it runs, the plans, then each path's existing sections and the close.
+ * The homepage tells the Genesis story beneath the Hawk hero: the problem,
+ * why Genesis exists, Genesis OS and its editions, the team, how it runs,
+ * the plans, Managed AI, and the close.
  */
 export default function Home() {
   return (
@@ -52,18 +52,8 @@ export default function Home() {
       <StoryHowItWorks />
       <StoryOffers />
 
-      <div data-offer-panel="agent">
-        <AgentSections />
-      </div>
-
-      <div data-offer-panel="custom-infrastructure">
-        <CustomInfrastructureSections />
-      </div>
-
-      {/* The custom-infrastructure path keeps its own closing band. */}
-      <div data-offer-panel="agent">
-        <StoryClose />
-      </div>
+      <CustomInfrastructureSections />
+      <StoryClose />
     </>
   );
 }

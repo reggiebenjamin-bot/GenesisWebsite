@@ -2,7 +2,7 @@ import Link from "next/link";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
 import { contact, navigation, navigationLinks } from "@/lib/content";
 import { editions } from "@/lib/editions";
-import { genesisPositioning, genesisTools, offerPaths } from "@/lib/offers";
+import { genesisPositioning, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
 const columnLabel =
@@ -10,12 +10,10 @@ const columnLabel =
 const columnLink =
   "text-[0.92rem] text-ivory/72 transition-colors duration-200 hover:text-gold-light";
 
-/* The page dedicated to each path, by the name of its offer. The toggle's
-   labels lead to each path's homepage instead. */
-const pathPages = offerPaths.map((path) => ({ label: path.product, href: path.href }));
-
-/* Each tool's own page, linked from every page of the site. */
-const toolPages = genesisTools.map((tool) => ({ label: tool.name, href: `/tools/${tool.id}` }));
+/* Managed AI, linked from every page. */
+const pathPages = offerPaths
+  .filter((path) => path.id === "custom-infrastructure")
+  .map((path) => ({ label: path.product, href: path.href }));
 
 /* The Genesis OS editions, each with its own landing page. */
 const editionPages = editions.map((edition) => ({
@@ -33,7 +31,7 @@ const bottomLinks = [
 export function Footer() {
   return (
     <footer className="border-t border-line-dark bg-ink pt-20 pb-6 text-ivory">
-      <div className="shell grid gap-x-[clamp(32px,5vw,80px)] gap-y-12 pb-[70px] sm:grid-cols-2 lg:grid-cols-[1.8fr_repeat(4,1fr)]">
+      <div className="shell grid gap-x-[clamp(32px,5vw,80px)] gap-y-12 pb-[70px] sm:grid-cols-2 lg:grid-cols-[1.8fr_repeat(3,1fr)]">
         <div className="max-lg:col-span-full">
           <Logo light />
           <p className="mt-6 font-display text-[0.66rem] leading-[1.5] tracking-[0.16em] text-gold uppercase">
@@ -48,17 +46,6 @@ export function Footer() {
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
             {[...pathPages, ...editionPages, { label: "Texas", href: "/texas" }, { label: "Texas service businesses", href: "/texas/service-businesses" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
-              <Link key={item.href} href={item.href} className={columnLink}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className={columnLabel}>Tools</p>
-          <div className="mt-5 grid gap-3">
-            {toolPages.map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>
@@ -104,7 +91,7 @@ export function Footer() {
       <div className="shell border-t border-line-dark pt-6 text-[0.8rem] text-ivory/62">
         <div className="flex justify-between gap-6 max-md:flex-col">
           <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
-          <p>Tools help you do the task. Managed AI helps your business operate.</p>
+          <p>Managed AI helps your business operate.</p>
         </div>
         <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2">
           {bottomLinks.map((item) => (

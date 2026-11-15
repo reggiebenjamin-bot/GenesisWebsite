@@ -14,12 +14,6 @@ const nextConfig: NextConfig = {
     qualities: [75, 92],
   },
   /*
-   * The tools lived at /mini before they had pages of their own. A permanent
-   * redirect keeps every old link and bookmark working and tells search
-   * engines /tools is the page now. The two renamed product routes also keep
-   * existing links working while the catalog moves to its canonical names.
-   */
-  /*
    * Live class sales page and thank-you page are static files in
    * public/classes. These rewrites serve each folder's index.html at its
    * clean path. Scoped to the class paths only.
@@ -33,18 +27,11 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      { source: "/mini", destination: "/tools", permanent: true },
-      { source: "/mini/:path*", destination: "/tools", permanent: true },
-      {
-        source: "/tools/funding-ready",
-        destination: "/tools/deal-packager",
-        permanent: true,
-      },
-      {
-        source: "/tools/deal-desk",
-        destination: "/tools/capital-advisor",
-        permanent: true,
-      },
+      /* Public tool pages are retired. 301 tells search engines the move is permanent. */
+      { source: "/mini", destination: "/pricing", statusCode: 301 },
+      { source: "/mini/:path*", destination: "/pricing", statusCode: 301 },
+      { source: "/tools", destination: "/pricing", statusCode: 301 },
+      { source: "/tools/:path*", destination: "/pricing", statusCode: 301 },
     ];
   },
 };

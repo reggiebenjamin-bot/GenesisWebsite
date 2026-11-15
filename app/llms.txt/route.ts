@@ -1,4 +1,4 @@
-import { genesisPositioning, offerPaths } from "@/lib/offers";
+import { genesisPositioning } from "@/lib/offers";
 import { absoluteUrl, seoPage } from "@/lib/seo";
 
 /*
@@ -15,23 +15,16 @@ const link = (path: string) => {
 };
 
 export function GET() {
-  const [tools, managed] = offerPaths;
+  const managed = seoPage("/solutions");
 
   const text = [
     "# Genesis AI",
     "",
     `> ${genesisPositioning.category}. ${genesisPositioning.summary}`,
     "",
-    `Genesis offers two things. ${tools.product}: focused, self serve AI applications ("${tools.distinction}"). ${managed.product}: AI operating across the business ("${managed.distinction}").`,
+    `${managed.label} connects systems, data, workflows, communication, and AI across the business. Plans are listed on the pricing page.`,
     "",
-    `## ${tools.product}`,
-    "",
-    link("/tools"),
-    link("/tools/deal-architect"),
-    link("/tools/deal-packager"),
-    link("/tools/capital-advisor"),
-    "",
-    `## ${managed.product}`,
+    `## ${managed.label}`,
     "",
     link("/solutions"),
     link("/assessment"),

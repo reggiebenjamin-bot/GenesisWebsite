@@ -78,7 +78,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Genesis AI | AI Infrastructure for Growing Businesses",
     description:
-      "Genesis Tools for specific tasks, and Genesis Managed AI across the business.",
+      "Genesis Managed AI across communication, sales, deal flow, and the workflows that run the business.",
     images: ["/images/social/og-home-1920x1080.png"],
   },
   ...(Object.keys(verification).length ? { verification } : {}),

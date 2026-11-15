@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { Card } from "@/components/ui/Blocks";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
@@ -97,28 +95,6 @@ export default async function ContactPage({
           <ConsultationForm initialPlan={plan} />
         </div>
 
-        {/* For a visitor whose problem is one task, not the operation. */}
-        <Card
-          tone="inverse"
-          className="mt-[clamp(56px,7vw,96px)] flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div className="max-w-[56ch]">
-            <h2 className="text-[clamp(1.3rem,2vw,1.6rem)] leading-snug tracking-[-0.02em]">
-              Only need help with one task?
-            </h2>
-            <p className="mt-2 text-[0.95rem] leading-relaxed text-ivory/65">
-              If you want to analyze a deal, prepare a financing package, or work through an active
-              transaction yourself, start with Genesis Tools instead.
-            </p>
-          </div>
-          <Link
-            href="/tools"
-            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-[6px] border border-gold-light/70 px-5 text-[0.88rem] font-bold text-ivory transition-colors duration-200 hover:bg-ivory hover:text-ink"
-          >
-            Explore Genesis Tools
-            <span aria-hidden="true">→</span>
-          </Link>
-        </Card>
       </Section>
     </>
   );

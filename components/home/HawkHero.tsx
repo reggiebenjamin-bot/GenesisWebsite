@@ -1,10 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { preconnect } from "react-dom";
-import { PathToggle } from "@/components/offers/PathToggle";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
-import { contact } from "@/lib/content";
-import { genesisPositioning, type OfferPathId, pathHeroes, TOOLS_INTEREST_SUBJECT } from "@/lib/offers";
+import { genesisPositioning, type OfferPathId, pathHeroes } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { HawkAscii } from "./HawkAscii";
 import { HAWK_IMAGE_ORIGIN, HAWK_IMAGE_SRC } from "./hawkAsset";
@@ -15,24 +13,11 @@ const secondaryAction =
   "secondary-action inline-flex min-h-[53px] items-center justify-center px-6 max-sm:w-full";
 
 /**
- * The opening: one title per path, over the same hawk. Both are
- * server-rendered and CSS shows the chosen path's, so the right title is
- * there from first paint and switching never reloads the hawk.
- *
- * The hawk fills the frame behind the centred copy, with a scrim under the
- * copy so the text stays readable. Each path has its own eyebrow, title and
- * line: Custom Infrastructure leads with the belief and the consultation;
- * Agent's lead to the tools page and the tools enquiry, as that page's do.
- *
- * The hero is the page's [data-offer-region]: choosing a path once it has
- * scrolled away brings the reader back up to the new title.
+ * The opening, over the hawk. The hawk fills the frame behind the centred
+ * copy, with a scrim under the copy so the text stays readable.
  */
 export function HawkHero() {
   preconnect(HAWK_IMAGE_ORIGIN, { crossOrigin: "anonymous" });
-
-  const toolsInterestHref = `mailto:${contact.email}?subject=${encodeURIComponent(
-    TOOLS_INTEREST_SUBJECT,
-  )}`;
 
   return (
     <section
@@ -49,18 +34,6 @@ export function HawkHero() {
             path's title below is the visible heading for that path; there are
             two of them in the HTML, so they cannot both be the H1. */}
         <h1 className="sr-only">Genesis AI: {genesisPositioning.category}</h1>
-
-        {/* A phone's bar has no room for the toggle, so it opens the hero there. */}
-        <PathToggle variant="hero" className={styles.toggle} />
-
-        <HeroCopy path="agent">
-          <ConsultationButton href="/tools" className="max-sm:w-full">
-            Explore Genesis Tools
-          </ConsultationButton>
-          <a href={toolsInterestHref} className={secondaryAction}>
-            <span>Ask About Tools</span>
-          </a>
-        </HeroCopy>
 
         <HeroCopy path="custom-infrastructure">
           <ConsultationButton href="/assessment" className="max-sm:w-full">
@@ -79,7 +52,7 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
   const hero = pathHeroes[path];
 
   return (
-    <div data-offer-panel={path} className={styles.copy}>
+    <div className={styles.copy}>
       <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
         {hero.eyebrow}
       </p>

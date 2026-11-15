@@ -222,8 +222,6 @@ export const toolFaqs = [
   },
 ] as const;
 
-const [, doesDealArchitectInvent, doesDealPackagerInvent, doesCapitalAdvisorApprove] = toolFaqs;
-
 /** Homepage questions, by the path that asks them. */
 export const faqs: readonly Faq[] = [
   {
@@ -232,15 +230,6 @@ export const faqs: readonly Faq[] = [
       "Genesis is AI infrastructure for real estate professionals. It connects business systems, workflows, communication, data, automation, and AI capabilities around the way the operation actually works.",
     paths: ["agent", "custom-infrastructure"],
   },
-  {
-    question: "What is the difference between Genesis Tools and Genesis Managed AI?",
-    answer:
-      "Genesis Tools help you complete a defined task yourself. Genesis Managed AI works across the business by connecting and managing the infrastructure behind multiple workflows.",
-    paths: ["agent", "custom-infrastructure"],
-  },
-  { ...doesDealArchitectInvent, paths: ["agent"] },
-  { ...doesDealPackagerInvent, paths: ["agent"] },
-  { ...doesCapitalAdvisorApprove, paths: ["agent"] },
   {
     question: "Is Genesis another CRM?",
     answer:
@@ -275,20 +264,6 @@ export const faqs: readonly Faq[] = [
 
 /** The pricing page's questions. */
 export const pricingFaqs = [
-  {
-    question: "Why aren't Genesis Tools priced like the managed plans?",
-    answer:
-      "Because they solve different problems. A Genesis Tool helps you complete a specific task yourself. A managed deployment makes Genesis part of how the business operates.",
-  },
-  {
-    question: "Are any Genesis Tools recurring subscriptions?",
-    answer:
-      "No. Deal Architect is purchased per analysis, Deal Packager per package, and Capital Advisor per capital plan. You can view examples and prepare a brief without an account. An account is only needed to keep progress beyond your local guest draft.",
-  },
-  {
-    question: "Does purchasing a Genesis Tool include Managed AI?",
-    answer: "No. Self serve access and managed infrastructure are separate scopes.",
-  },
   {
     question: "What changes between the managed levels?",
     answer:

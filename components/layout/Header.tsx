@@ -12,11 +12,10 @@ import {
   type PointerEvent,
   type RefObject,
 } from "react";
-import { OFFER_PATH_ANNOUNCER_ID, setOfferPath, useOfferPath } from "@/components/offers/offerPathState";
-import { PathToggle } from "@/components/offers/PathToggle";
+import { setOfferPath } from "@/components/offers/offerPathState";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { isNavGroup, navigation, type NavGroup } from "@/lib/content";
-import { genesisTools, offerPathByPage, offerPathFromHash } from "@/lib/offers";
+import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import styles from "./Header.module.css";
 import { Logo } from "./Logo";
@@ -44,7 +43,6 @@ function isCurrent(pathname: string, href: string) {
  */
 export function Header() {
   const pathname = usePathname();
-  const activePath = useOfferPath();
   const [scrolled, setScrolled] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -59,14 +57,8 @@ export function Header() {
     setMenuOpen(false);
   }
 
-  // Product marketing pages keep their direct example link. Catalog entry
-  // pages use a single account destination where visitors choose their flow.
-  const toolSlug = pathname.startsWith("/tools/") ? pathname.slice("/tools/".length) : null;
-  const selectedTool = genesisTools.find((tool) => tool.id === toolSlug);
-  const toolsPath = pathname === "/tools" ||
-    ((pathname === "/" || pathname === "/pricing") && activePath === "agent");
-  const primaryHref = selectedTool?.workspaceHref ?? "/assessment";
-  const primaryLabel = selectedTool ? "View Product Example" : "Assess My Business";
+  const primaryHref = "/assessment";
+  const primaryLabel = "Assess My Business";
 
   // The homepage opens on a dark hero, so the bar can start transparent there.
   const overDarkHero = pathname === "/";
@@ -164,8 +156,6 @@ export function Header() {
         </div>
 
         <div className={styles.actions}>
-          <PathToggle className={styles.barToggle} />
-
           <nav ref={nav} aria-label="Primary navigation" className={styles.nav}>
             <ul className={styles.navList}>
               {navigation.map((entry) => (
@@ -191,15 +181,9 @@ export function Header() {
             </ul>
           </nav>
 
-          {toolsPath ? (
-            <div className={styles.accountActions}>
-              <Link href="/workspace/account" className={styles.accountLink}>Sign in / up</Link>
-            </div>
-          ) : (
-            <ConsultationButton href={primaryHref} compact className={styles.cta}>
-              {primaryLabel}
-            </ConsultationButton>
-          )}
+          <ConsultationButton href={primaryHref} compact className={styles.cta}>
+            {primaryLabel}
+          </ConsultationButton>
 
           <button
             ref={menuButton}
@@ -220,15 +204,11 @@ export function Header() {
         </div>
       </div>
 
-      {/* Announces a path change made from the toggle, for screen readers. */}
-      <p id={OFFER_PATH_ANNOUNCER_ID} className="sr-only" aria-live="polite" />
-
       {menuOpen ? (
         <MobileMenu
           pathname={pathname}
           primaryHref={primaryHref}
           primaryLabel={primaryLabel}
-          showAccountLink={toolsPath}
           onClose={() => setMenuOpen(false)}
           returnFocus={menuButton}
         />
@@ -418,14 +398,12 @@ function MobileMenu({
   pathname,
   primaryHref,
   primaryLabel,
-  showAccountLink,
   onClose,
   returnFocus,
 }: {
   pathname: string;
   primaryHref: string;
   primaryLabel: string;
-  showAccountLink: boolean;
   onClose: () => void;
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
@@ -499,11 +477,6 @@ function MobileMenu({
       </div>
 
       <nav aria-label="Primary navigation" className={styles.sheetBody}>
-        <div className={styles.sheetGroup}>
-          <p className={styles.sheetGroupLabel}>Choose a path</p>
-          <PathToggle variant="sheet" onChoose={onClose} />
-        </div>
-
         {navigation.map((entry) =>
           isNavGroup(entry) ? (
             <div key={entry.label} className={styles.sheetGroup}>
@@ -558,15 +531,9 @@ function MobileMenu({
       </nav>
 
       <div className={styles.sheetFooter}>
-        {showAccountLink ? (
-          <Link href="/workspace/account" className={cn(styles.accountLink, styles.sheetAccountLink)} onClick={onClose}>
-            Sign in / up
-          </Link>
-        ) : (
-          <ConsultationButton href={primaryHref} className="w-full" onClick={onClose}>
-            {primaryLabel}
-          </ConsultationButton>
-        )}
+        <ConsultationButton href={primaryHref} className="w-full" onClick={onClose}>
+          {primaryLabel}
+        </ConsultationButton>
       </div>
     </div>
   );

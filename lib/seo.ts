@@ -49,9 +49,6 @@ const socialImage = (name: string, alt: string): SeoImage => ({
   height: 1080,
 });
 
-const toolPrices = genesisTools
-  .map((tool) => `${tool.name} ${tool.price.display} per ${tool.price.unit}`)
-  .join(", ");
 const planPrices = managedPlans.map((plan) => plan.priceDisplay).join(", ");
 
 function toolPricePhrase(id: ToolId): string {
@@ -86,34 +83,10 @@ export const seoPages: readonly SeoPage[] = [
     description: genesisPositioning.summary,
     label: "Home",
     image: socialImage("home", "Genesis AI — AI infrastructure for growing businesses"),
-    lastModified: SEO_PASS,
+    lastModified: "2026-11-15",
     changeFrequency: "weekly",
     priority: 1,
   },
-  {
-    path: "/tools",
-    title: "Genesis Tools: Focused AI Tools for Real Estate",
-    description:
-      "Deal Architect, Deal Packager, and Capital Advisor help real estate professionals evaluate, present, and finance a deal with one-time pricing.",
-    label: "Genesis Tools",
-    image: null,
-    lastModified: SEO_PASS,
-    changeFrequency: "monthly",
-    priority: 0.9,
-  },
-  ...genesisTools.map(
-    (tool): SeoPage => ({
-      path: `/tools/${tool.id}`,
-      title: toolSeo[tool.id].title,
-      description: toolSeo[tool.id].description,
-      label: tool.name,
-      parent: "/tools",
-      image: null,
-      lastModified: SEO_PASS,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    }),
-  ),
   {
     path: "/solutions",
     title: "Managed AI Infrastructure for Real Estate",
@@ -139,11 +112,11 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/pricing",
-    title: "Pricing: Genesis Tools and Managed AI Plans",
-    description: `${toolPrices}. Genesis Managed AI plans at ${planPrices} per month.`,
+    title: "Pricing: Managed AI Plans",
+    description: `Genesis Managed AI plans for real estate businesses are ${planPrices} per month.`,
     label: "Pricing",
-    image: socialImage("pricing", "Genesis AI pricing — Genesis Tools and Genesis Managed AI plans"),
-    lastModified: SEO_PASS,
+    image: socialImage("pricing", "Genesis AI pricing: Managed AI plans"),
+    lastModified: "2026-11-15",
     changeFrequency: "monthly",
     priority: 0.9,
   },
@@ -186,7 +159,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/about",
     title: { absolute: "About Genesis AI: AI Infrastructure for Real Estate" },
     description:
-      "Genesis AI builds AI infrastructure for real estate professionals: self serve Genesis Tools for specific tasks, and consultation-led Genesis Managed AI.",
+      "Genesis AI builds managed AI infrastructure for real estate professionals and supports the operation as it grows.",
     label: "About",
     image: socialImage("about", "About Genesis AI: the principles behind Genesis"),
     lastModified: "2026-11-15",

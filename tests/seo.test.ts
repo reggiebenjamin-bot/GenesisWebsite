@@ -12,7 +12,6 @@ import {
   reginaldBenjaminSchema,
   priceNumber,
   softwareApplicationSchema,
-  toolsCollectionSchema,
   websiteSchema,
 } from "../lib/schema.ts";
 import { faqs, pricingFaqs } from "../lib/content.ts";
@@ -44,13 +43,14 @@ test("every indexable page has one path, one title and one description of its ow
   }
 });
 
-test("the page that moved stays out, and every tool has its own page", () => {
+test("retired tool pages stay out of the sitemap", () => {
   const paths = seoPages.map((page) => page.path);
   assert.ok(!paths.includes("/mini"), "/mini redirects, so it must not be listed");
+  assert.ok(!paths.includes("/tools"), "/tools redirects, so it must not be listed");
   assert.ok(paths.includes("/assessment"), "the infrastructure assessment must be indexable");
   assert.ok(paths.includes("/lending"), "the Lending edition page must be in the sitemap");
   for (const tool of genesisTools) {
-    assert.ok(paths.includes(`/tools/${tool.id}`), `${tool.name} has no page`);
+    assert.ok(!paths.includes(`/tools/${tool.id}`), `${tool.name} redirects and must not be listed`);
   }
 });
 
@@ -74,8 +74,8 @@ test("every breadcrumb trail starts at home and ends at the page", () => {
     list.itemListElement.forEach((item, index) => assert.equal(item.position, index + 1));
   }
   assert.deepEqual(
-    breadcrumbTrail("/tools/capital-advisor").map((page) => page.label),
-    ["Home", "Genesis Tools", "Capital Advisor"],
+    breadcrumbTrail("/pricing").map((page) => page.label),
+    ["Home", "Pricing"],
   );
 });
 
@@ -92,7 +92,6 @@ test("structured data never claims ratings or reviews Genesis does not have", ()
   const all = [
     organizationSchema(),
     websiteSchema(),
-    toolsCollectionSchema(),
     managedServiceSchema(),
     aboutPageSchema(),
     reginaldBenjaminSchema(),

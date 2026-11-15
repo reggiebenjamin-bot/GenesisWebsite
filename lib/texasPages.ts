@@ -27,8 +27,7 @@ export type TexasLanding = {
 };
 
 const PLANS = "Levels are $750, $1,750 and $4,500 a month.";
-const COST_ANSWER =
-  "Levels are $750, $1,750 and $4,500 a month. Genesis Tools are one time: Deal Architect is $49 per analysis, Deal Packager is $99 per package and Capital Advisor is $79 per capital plan.";
+const COST_ANSWER = PLANS;
 const WHAT_IS = {
   question: "What is Genesis?",
   answer:
