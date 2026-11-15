@@ -65,7 +65,7 @@ export const navigation: NavEntry[] = [
   {
     label: "Company",
     items: [
-      { label: "About", href: "/about", description: "Team and principles." },
+      { label: "About", href: "/about", description: "Our principles." },
       { label: "Results", href: "/results", description: "The proof standard." },
       { label: "Contact", href: "/contact", description: "Book a consultation." },
     ],

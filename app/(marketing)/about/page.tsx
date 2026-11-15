@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
-import Image from "next/image";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { PageIntro } from "@/components/ui/Section";
@@ -18,19 +17,13 @@ import { aboutPageSchema, breadcrumbSchema, graph, organizationSchema } from "@/
 
 export const metadata: Metadata = pageMetadata("/about");
 
-/* Both portraits are square and already framed, so the card shows them whole. */
-const teamMembers = [
-  { name: "Reggie", role: "Founder", image: "/images/team/reggie.webp" },
-  { name: "Graham", role: "Head of Operations", image: "/images/team/graham.webp" },
-] as const;
-
 const toolNames = genesisTools.map((tool) => tool.name).join(", ");
 const [toolsPath, managedPath] = offerPaths;
 
 /*
  * The source of truth about the company, in one place: what Genesis is, who
- * it is for, who runs it, how the offers relate, and what it is not. Every
- * answer restates something the site already says elsewhere.
+ * it is for, how the offers relate, and what it is not. Every answer restates
+ * something the site already says elsewhere.
  */
 const companyFacts = [
   { label: "What it is", value: genesisPositioning.brandDescription },
@@ -39,7 +32,6 @@ const companyFacts = [
     value:
       "Real estate agents and teams, brokerages, lenders, investors, acquisition teams, and development operators.",
   },
-  { label: "Who runs it", value: "Reginald Benjamin, Founder, and Graham, Head of Operations." },
   {
     label: toolsOverview.product,
     value: `${toolsOverview.summary} ${toolNames}. “${toolsPath.distinction}”`,
@@ -161,35 +153,6 @@ export default function AboutPage() {
               </h3>
               <p className="mt-3 text-[0.94rem] leading-relaxed text-muted-dark">{principle.body}</p>
             </Card>
-          ))}
-        </ul>
-      </Sheet>
-
-      <Sheet surface="paper" aria-labelledby="team-title" className="site-section">
-        <SectionIntro eyebrow="Leadership" title="The people building Genesis." titleId="team-title" />
-
-        <ul className="grid gap-5 sm:grid-cols-2 lg:max-w-[820px]">
-          {teamMembers.map((member) => (
-            <li key={member.name}>
-              <article className="h-full overflow-hidden rounded-[6px] border border-line-light bg-white/70 shadow-[0_18px_44px_rgb(8_9_14/0.06)]">
-                <div className="relative aspect-square overflow-hidden bg-ink">
-                  <Image
-                    src={member.image}
-                    alt={`${member.name}, ${member.role} at Genesis AI`}
-                    fill
-                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
-                    unoptimized
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-[clamp(22px,2.4vw,32px)]">
-                  <h3 className="text-[clamp(1.6rem,2.2vw,2rem)] leading-[1.05] tracking-[-0.03em]">
-                    {member.name}
-                  </h3>
-                  <p className="mt-2 text-[0.95rem] text-muted-dark">{member.role}</p>
-                </div>
-              </article>
-            </li>
           ))}
         </ul>
       </Sheet>

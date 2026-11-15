@@ -188,8 +188,8 @@ export const seoPages: readonly SeoPage[] = [
     description:
       "Genesis AI builds AI infrastructure for real estate professionals: self serve Genesis Tools for specific tasks, and consultation-led Genesis Managed AI.",
     label: "About",
-    image: socialImage("about", "About Genesis AI — the team and principles behind Genesis"),
-    lastModified: SEO_PASS,
+    image: socialImage("about", "About Genesis AI: the principles behind Genesis"),
+    lastModified: "2026-11-15",
     changeFrequency: "monthly",
     priority: 0.7,
   },

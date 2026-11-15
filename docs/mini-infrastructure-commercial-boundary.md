@@ -184,7 +184,7 @@ Future dashboard and API names are listed in
 `lib/commerce/environment.ts`. They are names only; this scaffold does not read
 secrets or enable the integrations.
 
-## Decisions requiring Graham/Reggie approval
+## Decisions requiring Reginald approval
 
 1. Public product name and first Mini customer niche.
 2. Trial, invite-only beta, or permanent free-plan policy.
