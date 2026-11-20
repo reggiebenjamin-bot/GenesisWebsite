@@ -99,6 +99,32 @@ export const editions: readonly Edition[] = [
   },
 ] as const;
 
+/*
+ * Edition 05, Genesis Ministry, for churches of roughly 100 to 1,000 people.
+ *
+ * Exported on its own rather than added to `editions`, so the homepage keeps
+ * its four edition cards and the footer and the /ministry page link to it
+ * directly. The owner can add it to the `editions` list later to give it a
+ * homepage card; nothing else needs to change.
+ *
+ * Software for churches, not funding: it carries its own disclaimer instead
+ * of FUNDING_LINE. The rest of the page copy lives in lib/ministryPage.ts.
+ */
+export const ministryEdition: Edition = {
+  no: "05",
+  href: "/ministry",
+  name: "Genesis Ministry",
+  eyebrow: "Genesis Ministry",
+  headline: "Welcome every guest. Care for every person.",
+  body: "Software for churches of about 100 to 1,000 people. A website in your own look, Hope to answer questions on it, and a platform that makes sure no first time guest falls through the cracks.",
+  points: ["Every guest followed up", "Prayer kept with your pastors", "A person approves every message"],
+  ctas: [
+    { label: "Book a Consultation", href: "/contact?topic=ministry" },
+    { label: "Take the Guided Demo", href: "/ministry-demo/platform/index.html?tour=1" },
+  ],
+  disclaimer: "Genesis is software. It supports your pastors and care teams and never replaces them.",
+};
+
 export function editionByPath(path: string): Edition | undefined {
   return editions.find((edition) => edition.href === path);
 }

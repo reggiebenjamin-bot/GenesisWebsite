@@ -222,6 +222,17 @@ export const seoPages: readonly SeoPage[] = [
     priority: 0.7,
   },
   {
+    path: "/ministry",
+    title: "Church Websites and Care Software",
+    description:
+      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. People approve every step.",
+    label: "Ministry",
+    image: null,
+    lastModified: "2026-11-19",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
     path: "/privacy",
     title: "Privacy Policy Draft",
     description:
