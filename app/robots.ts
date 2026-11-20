@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 import { siteUrl, indexable } from "@/lib/site";
 
-/* Never for crawlers: the form endpoint and the framework's internals. */
-const PRIVATE = ["/api/", "/start/"];
+/* Never for crawlers: the form endpoint and the framework's internals, and the
+   Genesis Ministry demo copies, which show made up churches and must not be
+   indexed as real ones (each demo page also carries its own noindex). */
+const PRIVATE = ["/api/", "/start/", "/ministry-demo/"];
 
 /*
  * Search and answer engines Genesis wants to be found in, named explicitly so

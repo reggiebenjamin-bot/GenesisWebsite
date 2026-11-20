@@ -113,6 +113,55 @@ not the public Genesis Tools catalog. The future auth, billing, entitlement,
 and dashboard boundary is documented in
 [docs/mini-infrastructure-commercial-boundary.md](docs/mini-infrastructure-commercial-boundary.md).
 
+## Genesis Ministry (Edition 05)
+
+`/ministry` is the church edition: software for churches of about 100 to
+1,000 people. Its edition record is `ministryEdition` in `lib/editions.ts`,
+exported on its own so the homepage keeps four edition cards; add it to the
+`editions` list to give it a homepage card. Every other visitor string, the
+four website looks, the draft levels and the questions live in
+`lib/ministryPage.ts`, and `tests/ministry-edition.test.ts` checks them (no
+dashes, no emojis, no prices). The levels (Welcome, Connect, Shepherd,
+Enterprise) are a draft for the owner to confirm, and show "Pricing set with
+Genesis" until real prices are approved.
+
+**Films.** The page plays these files from `public/video/ministry/` once they
+exist. Until then each frame shows a placeholder drawn from the diagram kit,
+never a broken player. The page checks for each file when it is built, so
+adding a file and rebuilding is all it takes.
+
+| File | Where it plays |
+|---|---|
+| `demo-landscape.mp4`, `demo-landscape.jpg` (poster), `demo-landscape.en.vtt` (captions) | The hero. Plays with controls when the reader presses play. |
+| `loop-front-office.mp4`, `loop-front-office.jpg` | Front office row. Silent loop. |
+| `loop-back-office.mp4`, `loop-back-office.jpg` | Back office row. Silent loop. |
+| `loop-member-app.mp4`, `loop-member-app.jpg` | Member app row. Silent loop. |
+
+Use 16:9 landscape files. The loops are muted, play only while on screen,
+have a pause button, and are replaced by their poster for readers who prefer
+reduced motion.
+
+**Demo previews.** The four looks, the gallery and the clickable platform are
+static pages served from `public/ministry-demo/`. Copy them in from the
+Genesis Ministry working folder with:
+
+```bash
+node scripts/sync-ministry-demo.mjs "C:/path/to/genesis-ministry"
+```
+
+The source can also come from `MINISTRY_DEMO_SOURCE`. The script replaces
+`public/ministry-demo/`, copies `index.html`, `shared/`, `platform/` and each
+`templates/<slug>/` (leaving out `shots/mobile/` and every Markdown file), adds
+`<meta name="robots" content="noindex">` to any page without it, and lists any
+local file a page points at that was not copied. `robots.txt` also disallows
+`/ministry-demo/`. Review `git status` before committing the copy. The four
+look cards on `/ministry` use first screen crops of each template's desktop
+screenshot, saved in `public/images/ministry/`.
+
+The "Book a Consultation" and "Request a Website Check" links carry a
+`?topic=` the contact page recognizes, so the consultation form opens with a
+starting note. Only the topics listed in `lib/ministryPage.ts` are accepted.
+
 ## Search launch checklist
 
 `npm run build` also checks rendered public-page titles, descriptions,
