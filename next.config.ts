@@ -25,6 +25,19 @@ const nextConfig: NextConfig = {
       { source: "/classes/ai-employees/thank-you", destination: "/classes/ai-employees/thank-you/index.html" },
     ];
   },
+  /*
+   * The Genesis Ministry demo copies (public/ministry-demo/) show made up
+   * churches. Each page there also carries a robots noindex meta, and
+   * robots.txt leaves the folder crawlable so both can be read (app/robots.ts).
+   */
+  async headers() {
+    return [
+      {
+        source: "/ministry-demo/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       /* Public tool pages are retired. 301 tells search engines the move is permanent. */
