@@ -3,9 +3,13 @@ import test from "node:test";
 import { editions, ministryEdition } from "../lib/editions.ts";
 import { FUNDING_LINE } from "../lib/legal.ts";
 import {
+  MINISTRY_OPERATION_TYPE,
   ministryConsultationNote,
   ministryConsultationNotes,
+  ministryContact,
   ministryDemo,
+  ministryDemoAction,
+  ministryDemoFile,
   ministryFaq,
   ministryHero,
   ministryLevels,
@@ -13,6 +17,7 @@ import {
   ministryMedia,
   ministryPlatform,
   ministryProcess,
+  ministryWalkthrough,
 } from "../lib/ministryPage.ts";
 import * as ministryPage from "../lib/ministryPage.ts";
 import { fullTitle, seoPage } from "../lib/seo.ts";
@@ -100,20 +105,57 @@ test("the platform rows have their silent loops and the demo has captions", () =
     const media = ministryMedia[row.id];
     assert.match(media.video, /^\/video\/ministry\/loop-[a-z-]+\.mp4$/);
     assert.equal(media.poster, media.video.replace(/\.mp4$/, ".jpg"));
+    assert.ok(row.stillAlt.length > 40, `${row.id} needs alt text for its poster`);
   }
+  assert.ok(ministryHero.stillAlt.length > 40, "the hero poster needs alt text");
   assert.match(ministryMedia.demo.captions, /\.vtt$/);
 });
+
+/** The starting note a /contact link opens with. */
+const noteFor = (href: string) => ministryConsultationNote(new URL(href, "https://x.test").searchParams.get("topic"));
 
 test("the draft levels show no prices and each books a consultation", () => {
   assert.deepEqual(
     ministryLevels.levels.map((level) => level.name),
-    ["Welcome", "Connect", "Shepherd", "Enterprise"],
+    ["Welcome", "Connect", "Shepherd"],
+  );
+  assert.deepEqual(
+    ministryLevels.levels.map((level) => level.step),
+    ["01", "02", "03"],
   );
   assert.equal(ministryLevels.priceLine, "Pricing set with Genesis");
-  for (const level of ministryLevels.levels) {
-    assert.equal(level.action.label, "Book a Consultation");
-    assert.ok(level.action.href.startsWith("/contact?topic=ministry"), level.action.href);
-    assert.ok(ministryConsultationNote(new URL(level.action.href, "https://x.test").searchParams.get("topic")));
+  for (const action of [...ministryLevels.levels.map((level) => level.action), ministryLevels.enterprise.action]) {
+    assert.equal(action.label, "Book a Consultation");
+    assert.ok(action.href.startsWith("/contact?topic=ministry"), action.href);
+    assert.ok(noteFor(action.href), `${action.href} opens with no starting note`);
+  }
+  assert.equal(ministryLevels.enterprise.name, "Enterprise");
+  assert.match(ministryLevels.enterprise.line, /campus/);
+});
+
+test("the guided demo is linked only once its files are published", () => {
+  assert.equal(ministryDemoFile(ministryDemo.tour), "/ministry-demo/platform/index.html");
+  assert.equal(ministryDemoFile("/ministry-demo/index.html#looks"), "/ministry-demo/index.html");
+
+  const published = ministryDemoAction((path) => path === "/ministry-demo/platform/index.html");
+  assert.deepEqual(published, { label: "Take the Guided Demo", href: ministryDemo.tour, isDemo: true });
+
+  const notYet = ministryDemoAction(() => false);
+  assert.equal(notYet.isDemo, false);
+  assert.equal(notYet.href, ministryWalkthrough.href);
+  assert.ok(!notYet.href.startsWith("/ministry-demo/"));
+  assert.ok(noteFor(notYet.href), "the walkthrough request opens with a starting note");
+});
+
+test("a church reaches a church version of the consultation form", () => {
+  const { form } = ministryContact;
+  assert.equal(form.company, "Church Name");
+  assert.deepEqual([...form.roles], ["Senior pastor", "Church staff", "Volunteer"]);
+  assert.equal(MINISTRY_OPERATION_TYPE, "Church");
+  assert.match(ministryContact.intro.description[0], /church/);
+  /* Every Ministry topic link on the page opens the church version. */
+  for (const topic of Object.keys(ministryConsultationNotes)) {
+    assert.ok(ministryConsultationNote(topic), topic);
   }
 });
 

@@ -125,7 +125,7 @@
     outline-color: var(--color-ink);
   }
 
-  :where(.bg-paper, .bg-ivory) :where(.bg-ink, .bg-navy) :focus-visible {
+  :where(.bg-paper, .bg-ivory) :where(.bg-ink, .bg-ink-soft, .bg-navy) :focus-visible {
     outline-color: var(--color-gold-light);
   }
 

@@ -30,8 +30,10 @@ type Shared = {
   src: string | null;
   /** The poster image, or null when it is not in public/ yet. */
   poster: string | null;
-  /** What the film shows, for screen readers. */
+  /** What the film shows, for screen readers. Read only while the film is there. */
   label: string;
+  /** What the poster image shows, read when the poster stands in for a missing film. */
+  stillAlt: string;
   /** Drawn in the frame when there is no poster image yet. */
   placeholder: ReactNode;
   /** Image sizes hint for the poster. */
@@ -59,15 +61,35 @@ export type MinistryVideoProps = FeatureProps | LoopProps;
 const frame =
   "relative isolate aspect-video w-full overflow-hidden rounded-[6px] border border-line-dark bg-ink-soft";
 
+/* The controls sit on dark film even inside a light section, so the focus
+   ring stays gold rather than taking the light surface's ink ring. */
 const controlButton =
-  "inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[6px] border border-ivory/30 bg-ink/70 px-4 text-[0.8rem] font-bold tracking-[0.025em] text-ivory backdrop-blur-sm transition-colors duration-200 hover:border-gold-light hover:text-gold-light";
+  "inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[6px] border border-ivory/30 bg-ink/70 px-4 text-[0.8rem] font-bold tracking-[0.025em] text-ivory backdrop-blur-sm transition-colors duration-200 hover:border-gold-light hover:text-gold-light focus-visible:outline-gold-light";
 
-function Still({ poster, placeholder, sizes, eager }: Pick<Shared, "poster" | "placeholder" | "sizes" | "eager">) {
-  if (!poster) return <div className="absolute inset-0">{placeholder}</div>;
+/**
+ * The frame's still: the poster image, or the drawn placeholder until there
+ * is one. The placeholder is decoration and is hidden from screen readers;
+ * the poster is described by `alt`, which is empty when a film plays over it
+ * or is described on its own.
+ */
+function Still({
+  poster,
+  placeholder,
+  sizes,
+  eager,
+  alt,
+}: Pick<Shared, "poster" | "placeholder" | "sizes" | "eager"> & { alt: string }) {
+  if (!poster) {
+    return (
+      <div aria-hidden="true" className="absolute inset-0">
+        {placeholder}
+      </div>
+    );
+  }
   return (
     <Image
       src={poster}
-      alt=""
+      alt={alt}
       fill
       sizes={sizes}
       loading={eager ? "eager" : "lazy"}
@@ -98,9 +120,22 @@ function PauseGlyph() {
  * reader presses play; only then does the film load, with the browser's own
  * controls and captions. Nothing plays on its own, so the frame is the same
  * for readers who prefer less motion. Without a film yet, the frame offers
- * the guided demo instead of a play button that leads nowhere.
+ * the guided demo (or, until it is published, a walkthrough request)
+ * instead of a play button that leads nowhere.
  */
-function FeatureVideo({ src, poster, captions, label, placeholder, sizes, eager, playLabel, fallback, className }: FeatureProps) {
+function FeatureVideo({
+  src,
+  poster,
+  captions,
+  label,
+  stillAlt,
+  placeholder,
+  sizes,
+  eager,
+  playLabel,
+  fallback,
+  className,
+}: FeatureProps) {
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -133,7 +168,7 @@ function FeatureVideo({ src, poster, captions, label, placeholder, sizes, eager,
           </video>
         ) : (
           <>
-            <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} />
+            <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} alt={available ? "" : stillAlt} />
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgb(8_9_14/0.55))]"
@@ -155,7 +190,8 @@ function FeatureVideo({ src, poster, captions, label, placeholder, sizes, eager,
           </>
         )}
       </div>
-      <figcaption className="sr-only">{label}</figcaption>
+      {/* Describe the film only when there is one to play. */}
+      {available ? <figcaption className="sr-only">{label}</figcaption> : null}
     </figure>
   );
 }
@@ -166,7 +202,7 @@ function FeatureVideo({ src, poster, captions, label, placeholder, sizes, eager,
  * less motion: they see the poster. Until the film exists, or if it fails to
  * load, the frame keeps the poster or the drawn placeholder.
  */
-function LoopVideo({ src, poster, label, placeholder, sizes, eager, className }: LoopProps) {
+function LoopVideo({ src, poster, label, stillAlt, placeholder, sizes, eager, className }: LoopProps) {
   const reduced = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -198,7 +234,7 @@ function LoopVideo({ src, poster, label, placeholder, sizes, eager, className }:
 
   return (
     <div className={cn(frame, className)}>
-      <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} />
+      <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} alt={playing ? "" : stillAlt} />
       {playing ? (
         <>
           <video
@@ -223,9 +259,7 @@ function LoopVideo({ src, poster, label, placeholder, sizes, eager, className }:
             <span className="sr-only">{paused ? "Play the film" : "Pause the film"}</span>
           </button>
         </>
-      ) : (
-        <p className="sr-only">{label}</p>
-      )}
+      ) : null}
     </div>
   );
 }

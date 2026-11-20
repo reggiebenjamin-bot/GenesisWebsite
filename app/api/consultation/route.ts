@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
+import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
 
 const WEBHOOK_URL =
@@ -21,6 +22,8 @@ const allowedRoles = new Set([
   "Principal",
   "Broker-Owner",
   "Founder",
+  // The church roles the form offers on a Genesis Ministry link.
+  ...ministryContact.form.roles,
   "Other",
 ]);
 const allowedTeamSizes = new Set(["Just me", "2–4", "5–50", "50+"]);
@@ -30,6 +33,8 @@ const allowedOperationTypes = new Set([
   "Acquisitions / Builder",
   "Service business / trades",
   "Other Property-Driven",
+  // Sent by the church version of the form.
+  MINISTRY_OPERATION_TYPE,
   "Other",
 ]);
 

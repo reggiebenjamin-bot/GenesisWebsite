@@ -119,11 +119,12 @@ and dashboard boundary is documented in
 1,000 people. Its edition record is `ministryEdition` in `lib/editions.ts`,
 exported on its own so the homepage keeps four edition cards; add it to the
 `editions` list to give it a homepage card. Every other visitor string, the
-four website looks, the draft levels and the questions live in
-`lib/ministryPage.ts`, and `tests/ministry-edition.test.ts` checks them (no
-dashes, no emojis, no prices). The levels (Welcome, Connect, Shepherd,
-Enterprise) are a draft for the owner to confirm, and show "Pricing set with
-Genesis" until real prices are approved.
+four website looks, the draft levels, the questions and the church version of
+the contact page live in `lib/ministryPage.ts`, and
+`tests/ministry-edition.test.ts` checks them (no dashes, no emojis, no
+prices). The levels (Welcome, Connect and Shepherd as cards, Enterprise as the
+line under them) are a draft for the owner to confirm, and show "Pricing set
+with Genesis" until real prices are approved.
 
 **Films.** The page plays these files from `public/video/ministry/` once they
 exist. Until then each frame shows a placeholder drawn from the diagram kit,
@@ -139,7 +140,12 @@ adding a file and rebuilding is all it takes.
 
 Use 16:9 landscape files. The loops are muted, play only while on screen,
 have a pause button, and are replaced by their poster for readers who prefer
-reduced motion.
+reduced motion. A poster can arrive before its film: it then stands in for the
+film and is described by the `stillAlt` text beside it in
+`lib/ministryPage.ts` (written for stills of the Today view, the care inbox
+and the member app home screen), so update that text if a poster shows
+something else. While the hero has neither a film nor a poster, its frame is
+hidden on phones, where the drawn placeholder is too small to read.
 
 **Demo previews.** The four looks, the gallery and the clickable platform are
 static pages served from `public/ministry-demo/`. Copy them in from the
@@ -149,18 +155,43 @@ Genesis Ministry working folder with:
 node scripts/sync-ministry-demo.mjs "C:/path/to/genesis-ministry"
 ```
 
-The source can also come from `MINISTRY_DEMO_SOURCE`. The script replaces
-`public/ministry-demo/`, copies `index.html`, `shared/`, `platform/` and each
-`templates/<slug>/` (leaving out `shots/mobile/` and every Markdown file), adds
-`<meta name="robots" content="noindex">` to any page without it, and lists any
-local file a page points at that was not copied. `robots.txt` also disallows
-`/ministry-demo/`. Review `git status` before committing the copy. The four
-look cards on `/ministry` use first screen crops of each template's desktop
-screenshot, saved in `public/images/ministry/`.
+The source is that argument or `MINISTRY_DEMO_SOURCE`; there is no default.
+The script:
 
-The "Book a Consultation" and "Request a Website Check" links carry a
-`?topic=` the contact page recognizes, so the consultation form opens with a
-starting note. Only the topics listed in `lib/ministryPage.ts` are accepted.
+- writes the four look card screenshots, `public/images/ministry/look-<slug>.jpg`,
+  as the first 1440 by 900 of each look's `shots/desktop/home-01.jpg`, so the
+  cards always match the previews they open. `--looks-only` does just this.
+- replaces `public/ministry-demo/` with `index.html`, `shared/`, `platform/` and
+  each `templates/<slug>/`, leaving out every Markdown file, the `*.mjs` build
+  tools, and every screenshot except the `shots/desktop/home-01.jpg` and
+  `shots/mobile/home-01.jpg` the gallery shows.
+- leaves out `platform/sales-*`, the Genesis Growth Desk (Genesis's own tool
+  for finding and serving churches), unless you pass `--with-growth-desk`. The
+  platform hub links to it, so those links are reported as not copied until
+  the owner decides whether to publish it.
+- adds `<meta name="robots" content="noindex">` to any page without it, and
+  lists any local file a page points at that was not copied.
+
+Review `git status` before committing the copy. Until the copy is committed,
+`/ministry` links to none of it: each preview is linked only once its file is
+in `public/` (checked at build time), the demo buttons read "Request a
+Walkthrough" and open the contact form, and the look cards are not links.
+`npm run build` (`scripts/check-seo.ts`) fails if a rendered page links into
+`/ministry-demo/` at a file that is not there.
+
+The demo copies stay out of search through their own noindex meta and an
+`X-Robots-Tag: noindex, nofollow` header (`next.config.ts`). `robots.txt`
+deliberately does not block `/ministry-demo/`: a crawler blocked there would
+never see the noindex.
+
+**Contact.** The "Book a Consultation", "Request a Walkthrough" and "Request a
+Website Check" links carry a `?topic=` the contact page recognizes. A known
+Ministry topic opens the church version of `/contact`: a starting note in the
+notes field, church labels and roles (`Senior pastor`, `Church staff`,
+`Volunteer`), the operation type sent as `Church`, and no plan select, since
+the business plans carry prices. `app/api/consultation/route.ts` accepts those
+values. Only the topics listed in `lib/ministryPage.ts` are recognized. On
+`/ministry` the header button also books the church consultation.
 
 ## Search launch checklist
 

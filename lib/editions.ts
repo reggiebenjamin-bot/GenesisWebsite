@@ -116,7 +116,7 @@ export const ministryEdition: Edition = {
   name: "Genesis Ministry",
   eyebrow: "Genesis Ministry",
   headline: "Welcome every guest. Care for every person.",
-  body: "Software for churches of about 100 to 1,000 people. A website in your own look, Hope to answer questions on it, and a platform that makes sure no first time guest falls through the cracks.",
+  body: "Software for churches of about 100 to 1,000 people: a website in your own look, Hope, the assistant that answers guests on it, and a platform where no first time guest falls through the cracks.",
   points: ["Every guest followed up", "Prayer kept with your pastors", "A person approves every message"],
   ctas: [
     { label: "Book a Consultation", href: "/contact?topic=ministry" },
