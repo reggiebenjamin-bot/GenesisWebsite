@@ -20,13 +20,39 @@ export type MinistryLink = { label: string; href: string };
 /** The consultation route, with a topic the contact form turns into a starting note. */
 const consult = (topic: string) => `/contact?topic=${topic}`;
 
-/** The clickable previews, served as static files from public/ministry-demo/. */
+/**
+ * The clickable previews, served as static files from public/ministry-demo/
+ * (copied in by scripts/sync-ministry-demo.mjs). The page links to each one
+ * only once its file is there: see ministryDemoAction below.
+ */
 export const ministryDemo = {
   gallery: "/ministry-demo/index.html",
   platform: "/ministry-demo/platform/index.html",
   tour: "/ministry-demo/platform/index.html?tour=1",
   template: (slug: string) => `/ministry-demo/templates/${slug}/index.html`,
 } as const;
+
+/** The file in public/ behind a demo link: the link without its query or hash. */
+export function ministryDemoFile(href: string): string {
+  return href.split(/[?#]/)[0];
+}
+
+/** Until the guided demo is published, its buttons ask for a walkthrough with a person instead. */
+export const ministryWalkthrough = {
+  label: "Request a Walkthrough",
+  href: consult("ministry-demo"),
+} as const;
+
+/**
+ * The guided demo button: the demo itself once its files are in public/, and
+ * a walkthrough request until then, so the page never links to a missing
+ * page. `hasFile` answers whether a path exists under public/.
+ */
+export function ministryDemoAction(hasFile: (path: string) => boolean): MinistryLink & { isDemo: boolean } {
+  return hasFile(ministryDemoFile(ministryDemo.tour))
+    ? { label: "Take the Guided Demo", href: ministryDemo.tour, isDemo: true }
+    : { ...ministryWalkthrough, isDemo: false };
+}
 
 /*
  * Where each film lives in public/. None of these files exist yet: the page
@@ -65,6 +91,9 @@ export const ministryHero = {
   secondary: { label: "Take the Guided Demo", href: ministryDemo.tour },
   filmLabel:
     "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
+  /** Describes the poster image when it is shown without the film. Keep it true to the still. */
+  stillAlt:
+    "The Genesis Ministry Today view for a made up sample church: first time guests to welcome, care to follow up and the week ahead.",
   filmPlay: "Play the guided film",
   filmNote: "Sample church and sample people shown.",
 } as const;
@@ -130,7 +159,9 @@ export const ministryLooks = {
   eyebrow: "Four looks",
   title: "Pick the look that sounds like your church.",
   aside:
-    "Each look is a complete church website built to the same standard underneath. Open one and look around. Each is shown with a made up sample church.",
+    "Each look is a complete church website built to the same standard underneath, shown here with a made up sample church.",
+  /** Added to the aside once the previews are published and the cards open them. */
+  asideOpen: "Open one and look around.",
   gallery: { label: "See all four side by side", href: ministryDemo.gallery },
   items: [
     {
@@ -155,7 +186,7 @@ export const ministryLooks = {
       forChurches: "Established congregations with history",
       sampleChurch: "Calder Hill Chapel",
       image: "/images/ministry/look-classic-timeless.jpg",
-      alt: "The Classic and Timeless look: a forest green home page with serif type and a white steepled church framed in an arched window.",
+      alt: "The Classic and Timeless look: a forest green home page with serif type and a brick church with a white steeple, framed in an arch.",
     },
     {
       slug: "warm-community",
@@ -163,7 +194,7 @@ export const ministryLooks = {
       forChurches: "Family and neighborhood churches",
       sampleChurch: "Goldenrod Commons Church",
       image: "/images/ministry/look-warm-community.jpg",
-      alt: "The Warm Community look: a cream home page with rounded type, a yellow Plan Your Visit button and friends sharing coffee.",
+      alt: "The Warm Community look: a cream home page with rounded type, a yellow Plan Your Visit button and a family laughing together by an outdoor table under string lights.",
     },
   ] satisfies readonly MinistryLook[],
 } as const;
@@ -176,6 +207,8 @@ export type MinistryPlatformRow = {
   points: readonly string[];
   /** Describes the silent loop for screen readers. */
   filmLabel: string;
+  /** Describes the poster image when it is shown without the loop. Keep it true to the still. */
+  stillAlt: string;
 };
 
 /*
@@ -195,15 +228,19 @@ export const ministryPlatform = {
       points: ["One guest pipeline", "The Today view", "Welcome notes drafted for approval"],
       filmLabel:
         "Silent looping film of the front office with sample data: a new guest arrives in the pipeline and a welcome note waits for a person to approve it.",
+      stillAlt:
+        "The Today view for a made up sample church, with first time guests to welcome and next steps waiting for a person.",
     },
     {
       id: "backOffice",
       eyebrow: "Back office",
       title: "One record per person. Care that stays private.",
       body: "Prayer requests and messages arrive in a shared care inbox for the people who should see them. Each person has one page, and an access record shows who opened it.",
-      points: ["Shared care inbox", "Person pages and an access record", "Spiritual gifts and reports for pastors"],
+      points: ["Shared care inbox", "Person pages and an access record", "Gifts and reports, with a church wide view for pastors"],
       filmLabel:
         "Silent looping film of the back office with sample data: a prayer request reaches the care inbox and a pastor opens one person's page.",
+      stillAlt:
+        "The shared care inbox for a made up sample church, with prayer requests and messages for the pastors and prayer team.",
     },
     {
       id: "memberApp",
@@ -213,6 +250,8 @@ export const ministryPlatform = {
       points: ["What is coming up", "Messages to staff", "Prayer requests, kept private"],
       filmLabel:
         "Silent looping film of the member app with sample data: a member opens the app, sees the week ahead and sends a prayer request.",
+      stillAlt:
+        "The member app home screen on a phone for a made up sample church, with the week ahead and a way to send a prayer request.",
     },
   ] satisfies readonly MinistryPlatformRow[],
 } as const;
@@ -253,9 +292,9 @@ export const ministryProtection = {
 } as const;
 
 export type MinistryLevel = {
-  id: "welcome" | "connect" | "shepherd" | "enterprise";
-  /** "01" to "03", or null for Enterprise, which is scoped on a call. */
-  step: string | null;
+  id: "welcome" | "connect" | "shepherd";
+  /** "01" to "03". */
+  step: string;
   name: string;
   summary: string;
   bullets: readonly string[];
@@ -266,7 +305,10 @@ export type MinistryLevel = {
  * DRAFT LEVELS. The names (Welcome, Connect, Shepherd, Enterprise), what each
  * includes, and the decision to show no prices are a draft for the owner to
  * confirm. Prices are deliberately absent: every card reads "Pricing set with
- * Genesis" until the owner approves real numbers.
+ * Genesis" until the owner approves real numbers. Enterprise, for more than
+ * one campus, is a line under the three cards rather than a fourth card, the
+ * way Genesis Enterprise sits under the edition levels: most churches of 100
+ * to 1,000 people meet on one campus.
  */
 export const ministryLevels = {
   eyebrow: "Choose your level",
@@ -300,21 +342,19 @@ export const ministryLevels = {
         "Everything in Level 02",
         "Person pages",
         "Access record",
-        "Spiritual gifts and the pastor's picture",
+        "Spiritual gifts, with a church wide view for pastors",
         "Reports",
         "Team roles",
       ],
       action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
     },
-    {
-      id: "enterprise",
-      step: null,
-      name: "Enterprise",
-      summary: "For churches with more than one campus.",
-      bullets: ["Everything in Level 03", "Multi campus setup", "Scoped with you on a call"],
-      action: { label: "Book a Consultation", href: consult("ministry-enterprise") },
-    },
   ] satisfies readonly MinistryLevel[],
+  /** Draft: Enterprise is everything in Level 03, across more than one campus. */
+  enterprise: {
+    name: "Enterprise",
+    line: "More than one campus? Enterprise is scoped with you on a call.",
+    action: { label: "Book a Consultation", href: consult("ministry-enterprise") },
+  },
   footnote: "Customization beyond the template is quoted separately.",
 } as const;
 
@@ -417,6 +457,54 @@ export const ministryClose = {
 } as const;
 
 /*
+ * The contact page and consultation form, as a church sees them. A link with
+ * a known Ministry topic (below) opens /contact in this version: church
+ * words, church roles, and no business plans or prices.
+ */
+export const ministryContact = {
+  intro: {
+    eyebrow: "Genesis Ministry",
+    title: "Start with a conversation about your church.",
+    description: [
+      "Tell us about your church and how guests find you today.",
+      "The first conversation is free. We listen first, then suggest the look and the level that fit.",
+    ],
+  },
+  aside: {
+    eyebrow: "The consultation",
+    title: "We listen first.",
+    body: "A Genesis Ministry consultation is a free conversation about how your church welcomes guests and cares for people today, and where Genesis could help.",
+    areasLead: "We may talk about:",
+    areas: [
+      "Your website",
+      "First time guests",
+      "Follow up",
+      "Prayer and care",
+      "Hope on your website",
+      "A member app",
+      "Social media",
+      "Tools you already use",
+    ],
+    closingLead: "Not everything needs to change.",
+    closing: "We look at what to keep, what to link to, and where Genesis could carry more of the work.",
+  },
+  form: {
+    title: "A few details about your church.",
+    lede: "This helps us prepare for the call. You do not need anything technical for the first conversation.",
+    company: "Church Name",
+    roles: ["Senior pastor", "Church staff", "Volunteer"],
+    teamSize: "Staff Size",
+    notes: "What would you like help with?",
+    notesPlaceholder: "Tell us about your church, your website address and what you would like help with first.",
+    success:
+      "Genesis will reach out to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a level before anything is proposed in writing.",
+  },
+} as const;
+
+/** The operation type a church's consultation is sent with. */
+export const MINISTRY_OPERATION_TYPE = "Church";
+
+/*
  * The starting note the contact form fills in for each Ministry topic, so a
  * church that clicks "Book a Consultation" or "Request a Website Check" does
  * not have to explain what it came for. Only these topics are recognized; any
@@ -424,6 +512,7 @@ export const ministryClose = {
  */
 export const ministryConsultationNotes: Readonly<Record<string, string>> = {
   ministry: "Genesis Ministry for our church. ",
+  "ministry-demo": "A walkthrough of the Genesis Ministry demo. ",
   "ministry-welcome": "Genesis Ministry, Level 01 Welcome. ",
   "ministry-connect": "Genesis Ministry, Level 02 Connect. ",
   "ministry-shepherd": "Genesis Ministry, Level 03 Shepherd. ",

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { MinistryLevels } from "@/components/offers/MinistryLevels";
@@ -10,6 +11,7 @@ import { Eyebrow } from "@/components/ui/Section";
 import {
   ministryClose,
   ministryDemo,
+  ministryDemoAction,
   ministryFaq,
   ministryHero,
   ministryLevels,
@@ -20,6 +22,7 @@ import {
   ministryProcess,
   ministryProtection,
   ministryWebsiteCheck,
+  type MinistryLink,
 } from "@/lib/ministryPage";
 import { cn } from "@/lib/utils";
 import { BackOfficePoster, DemoPoster, FrontOfficePoster, MemberAppPoster } from "./MinistryPosters";
@@ -33,29 +36,46 @@ import { publicAsset } from "./publicAsset";
  * and plain language make it unmistakably the church edition.
  */
 
-/* The demo previews are static files, not app routes: plain anchors, so the
-   router never tries to prefetch them. */
-const demoAction =
+/*
+ * The demo previews are static files in public/ministry-demo/, copied in by
+ * scripts/sync-ministry-demo.mjs. The page is prerendered, so each check runs
+ * at build time: a preview is linked only once its file is there, and until
+ * then the demo buttons ask for a walkthrough and the look cards are not
+ * links. Nothing on the page points at a missing file.
+ */
+const hasFile = (path: string) => publicAsset(path) !== null;
+
+/** The guided demo when it is published, or a walkthrough request until then. */
+const demoAction = () => ministryDemoAction(hasFile);
+
+const demoActionDark =
   "secondary-action inline-flex min-h-[52px] items-center justify-center gap-3 px-6";
 
 /* The same action on a light surface: the site's outline button. */
 const demoActionLight =
   "inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[6px] border border-ink/30 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory";
 
-function DemoLink({
-  href,
-  children,
-  light = false,
-}: {
-  href: string;
-  children: ReactNode;
-  light?: boolean;
-}) {
-  return (
-    <a href={href} className={light ? demoActionLight : demoAction}>
-      <span>{children}</span>
+/**
+ * The guided demo button. The demo is a static page, not an app route, so it
+ * gets a plain anchor and the router never tries to prefetch it; the
+ * walkthrough request is an app route and gets a Link.
+ */
+function DemoLink({ action, light = false }: { action: MinistryLink & { isDemo: boolean }; light?: boolean }) {
+  const className = light ? demoActionLight : demoActionDark;
+  const content = (
+    <>
+      <span>{action.label}</span>
       {light ? <span aria-hidden="true">&#8599;</span> : null}
+    </>
+  );
+  return action.isDemo ? (
+    <a href={action.href} className={className}>
+      {content}
     </a>
+  ) : (
+    <Link href={action.href} className={className}>
+      {content}
+    </Link>
   );
 }
 
@@ -88,6 +108,8 @@ function Headline({ text, accent }: { text: string; accent: string }) {
 export function MinistryHero() {
   const media = ministryMedia.demo;
   const film = publicAsset(media.video);
+  const poster = publicAsset(media.poster);
+  const secondary = demoAction();
   return (
     <section
       aria-labelledby="ministry-title"
@@ -127,21 +149,24 @@ export function MinistryHero() {
           </p>
           <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <ConsultationButton href={ministryHero.primary.href}>{ministryHero.primary.label}</ConsultationButton>
-            <DemoLink href={ministryHero.secondary.href}>{ministryHero.secondary.label}</DemoLink>
+            <DemoLink action={secondary} />
           </div>
         </div>
 
-        {/* No scroll reveal here: the frame is part of the first screen. */}
-        <div className="mx-auto mt-[clamp(48px,6vw,80px)] max-w-[68rem]">
+        {/* No scroll reveal here: the frame is part of the first screen. On a
+            phone, a drawn placeholder is too small to read, so the frame waits
+            there for a real poster or film. */}
+        <div className={cn("mx-auto mt-[clamp(48px,6vw,80px)] max-w-[68rem]", !film && !poster && "max-sm:hidden")}>
           <div className="rounded-[10px] border border-line-dark bg-ink-soft/60 p-1.5 shadow-[0_40px_100px_rgb(0_0_0/0.5)] sm:p-2">
             <MinistryVideo
               mode="feature"
               src={film}
-              poster={publicAsset(media.poster)}
+              poster={poster}
               captions={publicAsset(media.captions)}
               label={ministryHero.filmLabel}
+              stillAlt={ministryHero.stillAlt}
               playLabel={ministryHero.filmPlay}
-              fallback={ministryHero.secondary}
+              fallback={secondary}
               placeholder={<DemoPoster />}
               sizes="(min-width: 1120px) 1088px, 100vw"
               eager
@@ -196,7 +221,6 @@ export function MinistryPackage() {
   return (
     <Sheet surface="paper" rise aria-labelledby="ministry-package-title" className="site-section">
       <SectionIntro
-        layout="split"
         eyebrow={ministryPackage.eyebrow}
         title={ministryPackage.title}
         titleId="ministry-package-title"
@@ -206,7 +230,7 @@ export function MinistryPackage() {
         <Card as="li" className="grid gap-8 md:col-span-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
           <div>
             <p className="font-display text-[0.69rem] tracking-[0.16em] text-gold-dark">{website.no}</p>
-            <h3 className="mt-3 text-[clamp(1.6rem,2.4vw,2.1rem)] font-light leading-[1.08] tracking-[-0.035em]">
+            <h3 className="mt-3 text-[clamp(1.6rem,2.4vw,2.1rem)] font-light leading-[1.08] tracking-[-0.035em] text-balance">
               {website.title}
             </h3>
             <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{website.body}</p>
@@ -253,58 +277,80 @@ export function MinistryPackage() {
 
 /* ── 3. the four looks ───────────────────────────────────────────────── */
 
+/** One look: its first screen, its name and who it suits. */
+function LookCardBody({ look, index, linked }: { look: (typeof ministryLooks.items)[number]; index: number; linked: boolean }) {
+  return (
+    <>
+      <div className="overflow-hidden rounded-[4px] border border-line-dark">
+        <Image
+          src={look.image}
+          /* Inside a link, the link's own name says what it opens. */
+          alt={linked ? "" : look.alt}
+          width={1440}
+          height={900}
+          sizes="(min-width: 1280px) 600px, (min-width: 768px) 46vw, 92vw"
+          className="block h-auto w-full transition-transform duration-700 ease-editorial group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+        />
+      </div>
+      <div className="flex flex-1 flex-wrap items-end justify-between gap-x-6 gap-y-3 px-2 pt-5 pb-2">
+        <div>
+          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
+            Look {String(index + 1).padStart(2, "0")}
+          </p>
+          <h3 className="mt-2 text-[clamp(1.5rem,2.2vw,1.9rem)] font-light leading-none tracking-[-0.035em] text-ivory">
+            {look.name}
+          </h3>
+          <p className="mt-2 text-[0.92rem] text-muted-light">{look.forChurches}</p>
+        </div>
+        {linked ? (
+          <span className="inline-flex min-h-11 items-center gap-2 text-[0.84rem] font-bold text-ivory transition-colors duration-200 group-hover:text-gold-light">
+            Open the preview
+            <span aria-hidden="true">&#8599;</span>
+          </span>
+        ) : null}
+      </div>
+    </>
+  );
+}
+
 export function MinistryLooks() {
+  const galleryReady = hasFile(ministryLooks.gallery.href);
+  const linked = ministryLooks.items.map((look) => hasFile(ministryDemo.template(look.slug)));
+  const aside = linked.some(Boolean) ? `${ministryLooks.aside} ${ministryLooks.asideOpen}` : ministryLooks.aside;
   return (
     <Sheet surface="ink" rise aria-labelledby="ministry-looks-title" className="site-section">
       <SectionIntro
-        layout="split"
         eyebrow={ministryLooks.eyebrow}
         title={ministryLooks.title}
         titleId="ministry-looks-title"
-        aside={<p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-light">{ministryLooks.aside}</p>}
+        aside={<p className="max-w-[52ch] text-[0.95rem] leading-relaxed text-muted-light">{aside}</p>}
       />
       <ul className="grid gap-4 md:grid-cols-2">
         {ministryLooks.items.map((look, index) => (
           <li key={look.slug}>
             <Reveal delay={(index % 2) * 0.08} className="h-full">
-              <a
-                href={ministryDemo.template(look.slug)}
-                className="group flex h-full flex-col rounded-[6px] border border-line-dark bg-ink-soft p-3 transition-colors duration-300 hover:border-gold/60 sm:p-4"
-              >
-                <div className="overflow-hidden rounded-[4px] border border-line-dark">
-                  <Image
-                    src={look.image}
-                    alt={look.alt}
-                    width={1440}
-                    height={900}
-                    sizes="(min-width: 1280px) 600px, (min-width: 768px) 46vw, 92vw"
-                    className="block h-auto w-full transition-transform duration-700 ease-editorial group-hover:scale-[1.025] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                  />
+              {linked[index] ? (
+                <a
+                  href={ministryDemo.template(look.slug)}
+                  aria-label={`Open the ${look.name} preview, shown as ${look.sampleChurch}, a made up church`}
+                  className="group flex h-full flex-col rounded-[6px] border border-line-dark bg-ink-soft p-3 transition-colors duration-300 hover:border-gold/60 sm:p-4"
+                >
+                  <LookCardBody look={look} index={index} linked />
+                </a>
+              ) : (
+                <div className="flex h-full flex-col rounded-[6px] border border-line-dark bg-ink-soft p-3 sm:p-4">
+                  <LookCardBody look={look} index={index} linked={false} />
                 </div>
-                <div className="flex flex-1 flex-wrap items-end justify-between gap-x-6 gap-y-3 px-2 pt-5 pb-2">
-                  <div>
-                    <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
-                      Look {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <h3 className="mt-2 text-[clamp(1.5rem,2.2vw,1.9rem)] font-light leading-none tracking-[-0.035em] text-ivory">
-                      {look.name}
-                    </h3>
-                    <p className="mt-2 text-[0.92rem] text-muted-light">{look.forChurches}</p>
-                  </div>
-                  <span className="inline-flex min-h-11 items-center gap-2 text-[0.84rem] font-bold text-ivory transition-colors duration-200 group-hover:text-gold-light">
-                    Open the preview
-                    <span aria-hidden="true">&#8599;</span>
-                    <span className="sr-only">of {look.name}, shown as {look.sampleChurch}, a made up church</span>
-                  </span>
-                </div>
-              </a>
+              )}
             </Reveal>
           </li>
         ))}
       </ul>
-      <div className="mt-10 flex justify-center">
-        <InkTextLink href={ministryLooks.gallery.href}>{ministryLooks.gallery.label}</InkTextLink>
-      </div>
+      {galleryReady ? (
+        <div className="mt-10 flex justify-center">
+          <InkTextLink href={ministryLooks.gallery.href}>{ministryLooks.gallery.label}</InkTextLink>
+        </div>
+      ) : null}
     </Sheet>
   );
 }
@@ -318,6 +364,7 @@ const posters = {
 } as const;
 
 export function MinistryPlatform() {
+  const demo = demoAction();
   return (
     <Sheet surface="ivory" rise aria-labelledby="ministry-platform-title" className="site-section">
       <SectionIntro
@@ -344,7 +391,9 @@ export function MinistryPlatform() {
             >
               <div className={cn(index % 2 === 1 && "lg:order-last")}>
                 <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold-dark uppercase">
-                  <span className="text-ink/35">{String(index + 1).padStart(2, "0")}</span>
+                  <span aria-hidden="true" className="text-muted-dark">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                   <span className="mx-3 inline-block h-px w-6 translate-y-[-3px] bg-gold" aria-hidden="true" />
                   {row.eyebrow}
                 </p>
@@ -364,6 +413,7 @@ export function MinistryPlatform() {
                     src={publicAsset(media.video)}
                     poster={publicAsset(media.poster)}
                     label={row.filmLabel}
+                    stillAlt={row.stillAlt}
                     placeholder={posters[row.id]}
                     sizes="(min-width: 1024px) 720px, 92vw"
                   />
@@ -374,9 +424,7 @@ export function MinistryPlatform() {
         })}
       </div>
       <div className="mt-[clamp(56px,7vw,88px)] flex justify-center">
-        <DemoLink href={ministryHero.secondary.href} light>
-          {ministryHero.secondary.label}
-        </DemoLink>
+        <DemoLink action={demo} light />
       </div>
     </Sheet>
   );
@@ -539,6 +587,7 @@ export function MinistryCheckAndFaq() {
 /* ── 10. the close ───────────────────────────────────────────────────── */
 
 export function MinistryClose() {
+  const secondary = demoAction();
   return (
     <ClosingBand
       eyebrow={ministryClose.eyebrow}
@@ -548,7 +597,7 @@ export function MinistryClose() {
         /* Stacked to one width on phones, side by side from there up. */
         <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
           <ConsultationButton href={ministryClose.primary.href}>{ministryClose.primary.label}</ConsultationButton>
-          <DemoLink href={ministryClose.secondary.href}>{ministryClose.secondary.label}</DemoLink>
+          <DemoLink action={secondary} />
         </div>
       }
       footnote={<p>{ministryClose.footnote}</p>}

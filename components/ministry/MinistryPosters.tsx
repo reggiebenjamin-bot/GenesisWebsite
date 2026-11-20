@@ -66,7 +66,7 @@ function Poster({ label, children }: { label: string; children: ReactNode }) {
  */
 export function DemoPoster() {
   return (
-    <Poster label="Genesis Ministry / Guided film">
+    <Poster label="Genesis Ministry / Guided demo">
       <RadialHub
         className={styles.hub}
         coreIcon={Church}

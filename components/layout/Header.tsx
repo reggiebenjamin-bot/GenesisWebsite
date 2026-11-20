@@ -57,8 +57,11 @@ export function Header() {
     setMenuOpen(false);
   }
 
-  const primaryHref = "/assessment";
-  const primaryLabel = "Assess My Business";
+  // A church reading Genesis Ministry is not assessing a business: on that
+  // page the header books the church consultation the page itself offers.
+  const ministry = pathname === "/ministry";
+  const primaryHref = ministry ? "/contact?topic=ministry" : "/assessment";
+  const primaryLabel = ministry ? "Book a Consultation" : "Assess My Business";
 
   // The homepage opens on a dark hero, so the bar can start transparent there.
   const overDarkHero = pathname === "/";
