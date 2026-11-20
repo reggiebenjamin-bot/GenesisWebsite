@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
+import { ministryConsultationNote } from "@/lib/ministryPage";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, graph } from "@/lib/schema";
 import { ConsultationForm } from "./ConsultationForm";
@@ -28,6 +29,9 @@ export default async function ContactPage({
 }: PageProps<"/contact">) {
   const params = await searchParams;
   const plan = typeof params.plan === "string" ? params.plan : "";
+  /* A known Ministry topic (such as the free Church Website Check) starts the
+     notes field with what the visitor came for. Unknown topics are ignored. */
+  const note = ministryConsultationNote(params.topic);
 
   return (
     <>
@@ -92,7 +96,7 @@ export default async function ContactPage({
             </div>
           </aside>
 
-          <ConsultationForm initialPlan={plan} />
+          <ConsultationForm initialPlan={plan} initialNote={note} />
         </div>
 
       </Section>

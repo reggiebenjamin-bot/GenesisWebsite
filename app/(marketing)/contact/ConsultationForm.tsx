@@ -15,8 +15,11 @@ const control =
 
 export function ConsultationForm({
   initialPlan = "",
+  initialNote = "",
 }: {
   initialPlan?: string;
+  /** A starting note for the notes field, from a known topic link. */
+  initialNote?: string;
 }) {
   const allowedPlanValues = useMemo(
     () => new Set(["", "done-for-you", ...managedPlans.map((plan) => plan.id)]),
@@ -254,6 +257,7 @@ export function ConsultationForm({
         <textarea
           name="notes"
           rows={4}
+          defaultValue={initialNote}
           placeholder="Describe the current email, Microsoft 365, CRM, document, follow-up, or administrative setup, and the manual handoff creating the most drag…"
           className={`${control} py-4`}
         />
