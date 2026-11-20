@@ -1,0 +1,80 @@
+/* A stand-in poster: ink, a warm pool of light, a faint gold grid that fades
+   toward the edges, a quiet window bar, and the drawing centred under it. */
+
+.poster {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 58% 64% at 50% 56%, rgb(201 165 94 / 0.11), transparent 72%),
+    var(--color-ink-soft, #0d111a);
+}
+
+.poster::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgb(201 165 94 / 0.07) 1px, transparent 1px),
+    linear-gradient(rgb(201 165 94 / 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000, transparent 78%);
+  content: "";
+  pointer-events: none;
+}
+
+.bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 14px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--color-line-dark, rgb(244 239 232 / 0.14));
+  background: rgb(8 9 14 / 0.35);
+}
+
+.dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgb(244 239 232 / 0.22);
+}
+
+.dots span:last-child {
+  background: rgb(242 216 149 / 0.75);
+}
+
+.label {
+  overflow: hidden;
+  font-family: var(--font-display, ui-monospace, monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgb(244 239 232 / 0.55);
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  padding: 3% 5%;
+}
+
+.scene,
+.hub {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

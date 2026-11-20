@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
 import { contact, navigation, navigationLinks } from "@/lib/content";
-import { editions } from "@/lib/editions";
+import { editions, ministryEdition } from "@/lib/editions";
 import { genesisPositioning, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
@@ -15,8 +15,9 @@ const pathPages = offerPaths
   .filter((path) => path.id === "custom-infrastructure")
   .map((path) => ({ label: path.product, href: path.href }));
 
-/* The Genesis OS editions, each with its own landing page. */
-const editionPages = editions.map((edition) => ({
+/* The Genesis OS editions, each with its own landing page. Ministry is not on
+   the homepage yet, so the footer is how every page links to it. */
+const editionPages = [...editions, ministryEdition].map((edition) => ({
   label: edition.name.replace(/^Genesis /, ""),
   href: edition.href,
 }));

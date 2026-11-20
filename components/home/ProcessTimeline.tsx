@@ -2,22 +2,38 @@ import { Disclosure, SectionIntro } from "@/components/ui/Blocks";
 import { processSteps } from "@/lib/content";
 import styles from "./ProcessTimeline.module.css";
 
+export type TimelineStep = {
+  number: string;
+  title: string;
+  summary: string;
+  description: string;
+};
+
 /**
  * The managed engagement as a timeline: big step numbers and short labels
  * along a dotted rail with a pulse running through it. What each step
  * involves waits behind a disclosure. For an ink sheet.
+ *
+ * The heading and steps default to the managed engagement; an edition page
+ * (Ministry) can pass its own words for the same five stages.
  */
-export function ProcessTimeline({ titleId = "process-title" }: { titleId?: string } = {}) {
+export function ProcessTimeline({
+  titleId = "process-title",
+  eyebrow = "How it runs",
+  title = "Start with the operation. Build from what is actually there.",
+  steps = processSteps,
+}: {
+  titleId?: string;
+  eyebrow?: string;
+  title?: string;
+  steps?: readonly TimelineStep[];
+} = {}) {
   return (
     <div>
-      <SectionIntro
-        eyebrow="How it runs"
-        title="Start with the operation. Build from what is actually there."
-        titleId={titleId}
-      />
+      <SectionIntro eyebrow={eyebrow} title={title} titleId={titleId} />
 
       <ol className={styles.timeline}>
-        {processSteps.map((step) => (
+        {steps.map((step) => (
           <li key={step.number} className={styles.stage}>
             <span aria-hidden="true" className={styles.node} />
             <p className="font-display text-[clamp(2rem,3vw,2.6rem)] leading-none text-gold">
@@ -33,7 +49,7 @@ export function ProcessTimeline({ titleId = "process-title" }: { titleId?: strin
 
       <Disclosure summary="What happens at each step" className="mt-12">
         <ol className="grid gap-3">
-          {processSteps.map((step) => (
+          {steps.map((step) => (
             <li key={step.number}>
               <span className="text-ivory">{step.title}.</span> {step.description}
             </li>
