@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Static Genesis Ministry previews copied in by scripts/sync-ministry-demo.mjs.
+    "public/ministry-demo/**",
   ]),
 ]);
 
