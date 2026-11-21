@@ -17,6 +17,7 @@ import {
   softwareDisclaimer,
 } from "@/lib/aiEmployees";
 import { managedPlans } from "@/lib/offers";
+import { LeadWorkflowSection } from "./LeadWorkflowSection";
 import { StatusNotice } from "./StatusNotice";
 
 const goldButton =
@@ -136,6 +137,10 @@ export function AiEmployeesPage() {
             </Card>
           ))}
         </ul>
+      </Sheet>
+
+      <Sheet surface="ink" rise id="lead-workflow" aria-labelledby="lead-workflow-title">
+        <LeadWorkflowSection onDark />
       </Sheet>
 
       <Sheet surface="ink" rise id="plans" aria-labelledby="plans-title" className="site-section">
