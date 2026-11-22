@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#08090e">
+<title>Genesis Ministry · Edition 05 · Design preview</title>
+<meta name="description" content="Edition 05 of Genesis OS for churches: the website, the front office, the back office and the member app, with draft levels and the rules that protect people.">
+<script>(function(){try{var p=new URLSearchParams(location.search);if(p.get("tour")==="1"){var c=p.get("church")||sessionStorage.getItem("gm.church")||"bright-modern";var pl=p.get("plan")||"3";if(!/^[a-z-]+$/.test(c))c="bright-modern";if(!/^[123]$/.test(pl))pl="3";location.replace("church-today.html?tour=1&church="+c+"&plan="+pl);}}catch(e){}})();</script>
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#faf7f2":"#08090e";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/satoshi-300.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="story/story.css">
+<style>
+/* The front door. Page-only arrangement, prefix none needed: these blocks only live here. */
+.hero { position: relative; overflow: hidden; background: var(--bg); color: var(--fg); padding: clamp(56px, 7vw, 96px) 0 clamp(96px, 10vw, 136px); }
+.hero-glow { position: absolute; inset: 0 0 auto; height: 780px; pointer-events: none; background: radial-gradient(ellipse 62% 58% at 50% 0%, rgb(201 165 94 / 0.17), transparent 72%); }
+.hero > .shell { position: relative; }
+.hero-copy { max-width: 920px; margin: 0 auto; text-align: center; }
+.hero-mark { width: 84px; height: 84px; margin: 0 auto; }
+.hero-alt { margin-top: 18px; }
+.hero-rule { width: 64px; height: 1px; margin: 24px auto 0; background: var(--gold); }
+.hero .eyebrow { margin-top: 30px; }
+.hero h1 { max-width: 16ch; margin: 20px auto 0; font-weight: 300; font-size: clamp(2.7rem, 6vw, 5.4rem); line-height: 1.02; letter-spacing: -0.045em; text-wrap: balance; }
+.lede { max-width: 56ch; margin: 24px auto 0; font-size: 1.08rem; line-height: 1.65; color: var(--fg-2); }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 14px; margin-top: 36px; }
+
+.tenant { max-width: 68rem; margin: clamp(48px, 6vw, 72px) auto 0; }
+.tenant-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; margin-bottom: 14px; }
+.tenant-head p:last-child { font-size: 0.88rem; color: var(--muted); }
+.tenant-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.tenant-option {
+  display: flex; align-items: center; gap: 12px; min-height: 68px; padding: 12px 14px; text-align: left; cursor: pointer;
+  border-radius: 6px; border: 1px solid var(--card-line); background: var(--card); color: var(--fg);
+  transition: border-color .2s, box-shadow .2s, background-color .2s;
+}
+.tenant-option:hover { border-color: rgb(201 165 94 / 0.6); }
+.tenant-option[aria-checked="true"] { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 12px 30px rgb(201 165 94 / 0.14); }
+.t-mark { flex: none; width: 36px; height: 36px; border-radius: 8px; overflow: hidden; }
+.t-mark svg { width: 36px; height: 36px; }
+.t-text { min-width: 0; display: grid; gap: 2px; }
+.t-text b { font-weight: 500; font-size: 0.95rem; line-height: 1.25; }
+.t-text small { font-size: 0.78rem; line-height: 1.3; color: var(--muted); }
+.t-check { margin-left: auto; flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--card-line); display: grid; place-items: center; }
+.tenant-option[aria-checked="true"] .t-check { border-color: var(--gold); background: var(--gold); }
+.tenant-option[aria-checked="true"] .t-check::after { content: ""; width: 8px; height: 4px; margin-top: -2px; border: solid var(--ink); border-width: 0 0 2px 2px; transform: rotate(-45deg); }
+
+.hero-frame { max-width: 68rem; margin: 22px auto 0; }
+.hero-frame .frame-wrap { padding: 6px; border-radius: 10px; border: 1px solid var(--card-line); background: var(--frame); box-shadow: 0 40px 100px rgb(0 0 0 / 0.45); }
+:root[data-theme="light"] .hero-frame .frame-wrap { box-shadow: 0 30px 70px rgb(8 9 14 / 0.16); }
+.hero-frame figcaption { margin-top: 14px; text-align: center; font-size: 0.8rem; color: var(--muted); }
+
+.door-group + .door-group { margin-top: clamp(48px, 6vw, 72px); }
+.group-label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.group-label .eyebrow { flex: none; }
+.group-label span:last-child { font-size: 0.95rem; color: var(--muted); }
+.doors { display: grid; gap: 16px; }
+.doors-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.doors-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.door { display: flex; flex-direction: column; padding: 12px; }
+.door-shot { display: block; border-radius: 6px; text-decoration: none; }
+.door-shot .frame { transition: border-color .3s; }
+.door-shot:hover .frame { border-color: var(--gold); }
+.door-shot img { transition: transform .7s var(--ease); }
+.door-shot:hover img { transform: scale(1.02); }
+.door-body { display: flex; flex: 1; flex-direction: column; padding: 18px 10px 6px; }
+.door-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.door h3 { margin-top: 10px; font-weight: 300; font-size: clamp(1.6rem, 2.3vw, 2rem); line-height: 1.04; letter-spacing: -0.035em; }
+.door h3 a { text-decoration: none; }
+.door h3 a:hover { color: var(--accent); }
+.door-line { margin-top: 10px; max-width: 54ch; font-size: 0.95rem; line-height: 1.55; color: var(--muted); }
+.door-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.door-foot { margin-top: auto; padding-top: 18px; }
+.looks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; aspect-ratio: 16 / 10; padding: 4px; background: #0d0e10; }
+.looks-grid img { width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: top; border-radius: 2px; outline: 2px solid transparent; outline-offset: -2px; transition: outline-color .3s; }
+.looks-grid img.is-current { outline-color: var(--gold-light); }
+.journey-thumb img { object-position: center top; }
+
+.rules-wrap { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 48px 80px; }
+.rules-side { position: sticky; top: calc(var(--strip-h) + var(--header-h) + 40px); align-self: start; }
+.rules-side .intro { margin-bottom: 0; }
+.rules-side .note { margin-top: 22px; max-width: 42ch; font-size: 0.95rem; line-height: 1.65; color: var(--muted); }
+.crisis-label { margin-top: 40px; }
+.crisis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 28rem; margin-top: 16px; }
+.crisis li { border-radius: 6px; border: 1px solid var(--line); background: var(--card); padding: 20px; }
+.crisis b { display: block; font-weight: 300; font-size: clamp(2.2rem, 3.4vw, 2.8rem); line-height: 1; letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.crisis span { display: block; margin-top: 12px; font-size: 0.86rem; line-height: 1.35; color: var(--muted); }
+.rules { border-bottom: 1px solid var(--line); counter-reset: none; }
+.rules li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0 16px; padding: 26px 0; border-top: 1px solid var(--line); }
+.rules .n { font-family: var(--font-mono); font-size: clamp(1.6rem, 2.4vw, 2.1rem); line-height: 1; color: var(--eyebrow); }
+.rules h3 { font-weight: 500; font-size: clamp(1.12rem, 1.6vw, 1.32rem); line-height: 1.3; letter-spacing: -0.015em; }
+.rules p { margin-top: 8px; max-width: 54ch; font-size: 0.95rem; line-height: 1.6; color: var(--muted); }
+.rules .text-link { margin-top: 6px; min-height: 40px; font-size: 0.86rem; }
+.rules .who { display: inline-block; margin-left: 6px; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--eyebrow); vertical-align: 2px; }
+
+.levels-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.levels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.level { display: flex; flex-direction: column; overflow: hidden; }
+.level::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--tier-edge), transparent); }
+.level .eyebrow { font-size: 0.62rem; letter-spacing: 0.16em; }
+.level h3 { margin-top: 12px; font-weight: 300; font-size: clamp(1.9rem, 2.6vw, 2.4rem); line-height: 1; letter-spacing: -0.04em; }
+.level .sum { margin-top: 12px; font-size: 0.95rem; line-height: 1.45; color: var(--muted); }
+.level .price { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.level ul { display: grid; gap: 12px; margin-top: 18px; padding-top: 20px; border-top: 1px solid var(--line); }
+.level li { position: relative; padding-left: 24px; font-size: 0.95rem; line-height: 1.38; color: var(--fg-2); }
+.level li::before { content: "+"; position: absolute; left: 2px; top: 0; color: var(--eyebrow); }
+.level .act { margin-top: auto; padding-top: 30px; }
+.level .act .btn { width: 100%; }
+.level .act small { display: block; margin-top: 10px; font-size: 0.8rem; line-height: 1.4; color: var(--muted); text-align: center; }
+.levels-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 22px; margin-top: 32px; text-align: center; font-size: 0.88rem; color: var(--muted); }
+
+@media (max-width: 1180px) {
+  .tenant-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .doors-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .doors-3 > :last-child { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; align-items: start; }
+  .doors-3 > :last-child .door-body { padding-top: 6px; height: 100%; }
+  .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1023px) {
+  .rules-wrap { grid-template-columns: 1fr; }
+  .rules-side { position: static; }
+}
+@media (max-width: 760px) {
+  .doors-2, .doors-3 { grid-template-columns: 1fr; }
+  .doors-3 > :last-child { grid-column: auto; display: flex; }
+  .doors-3 > :last-child .door-body { padding-top: 18px; }
+  .levels { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .tenant-options { grid-template-columns: 1fr; }
+  .tenant-option { min-height: 60px; }
+  .rules li { grid-template-columns: 3.1rem minmax(0, 1fr); }
+  .door { padding: 8px; }
+  .door-body { padding: 16px 8px 6px; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="preview-strip" role="note">Design preview. Sample data shown.</div>
+<header class="site-header">
+  <div class="shell">
+    <a class="brand" href="index.html" aria-label="Genesis Ministry front door">
+      <img src="story/genesis-logo.svg" alt="" width="37" height="37">
+      <span class="brand-word" aria-hidden="true"><b>enesis</b><i>AI</i></span>
+      <span class="brand-edition">Edition 05 · Ministry</span>
+    </a>
+    <nav class="site-nav" aria-label="Front door">
+      <a href="#doors">Doors</a>
+      <a href="#rules">Protecting People</a>
+      <a href="#levels">Levels</a>
+      <a href="journey.html">The Journey</a>
+      <a href="../index.html">The Templates</a>
+    </nav>
+    <div class="header-actions">
+      <button type="button" class="icon-btn theme-toggle" data-story-theme aria-label="Switch to light theme" title="Light theme">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      </button>
+      <button type="button" class="icon-btn menu-toggle" data-story-menu aria-expanded="false" aria-controls="story-menu" aria-label="Open menu"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span></button>
+      <a class="btn btn-primary btn-compact" data-carry href="church-today.html?tour=1&amp;plan=3">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="story-menu" hidden>
+  <div class="shell">
+    <a href="#doors">Doors <span aria-hidden="true">&#8599;</span></a>
+    <a href="#rules">Protecting People <span aria-hidden="true">&#8599;</span></a>
+    <a href="#levels">Levels <span aria-hidden="true">&#8599;</span></a>
+    <a href="journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>
+    <a href="../index.html">The Templates <span aria-hidden="true">&#8599;</span></a>
+    <a class="btn btn-primary" data-carry href="church-today.html?tour=1&amp;plan=3">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
+  </div>
+</div>
+
+<main id="main">
+  <section class="hero s-ink" aria-labelledby="hub-title">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="shell">
+      <div class="hero-copy">
+        <img class="hero-mark" src="story/genesis-logo-gradient.svg" alt="" width="84" height="84">
+        <div class="hero-rule" aria-hidden="true"></div>
+        <p class="eyebrow">Genesis OS<span class="sep" aria-hidden="true">/</span>For churches</p>
+        <h1 id="hub-title">Edition 05: <span class="accent">Genesis Ministry</span></h1>
+        <p class="lede">Software for churches of about 100 to 1,000 people: a website in your own look, <span data-an>Hope</span> to answer guests, and a platform that makes sure nobody falls through the cracks.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" data-carry href="church-today.html?tour=1&amp;plan=3">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
+          <a class="btn btn-secondary" href="journey.html"><span>See the Journey</span></a>
+        </div>
+      </div>
+
+      <div class="tenant">
+        <div class="tenant-head">
+          <p class="eyebrow" id="tenant-label">Show the demo as</p>
+          <p>Four made up churches, one in each look. Your choice carries through every screen.</p>
+        </div>
+        <div class="tenant-options" role="radiogroup" aria-labelledby="tenant-label">
+          <button type="button" class="tenant-option" role="radio" aria-checked="true" data-tenant="bright-modern">
+            <span class="t-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#1F4FFF"/><path d="M11 0h6.5v26H31v6.5H11z" fill="#fff"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#E4ECFF"/></svg></span>
+            <span class="t-text"><b>Lightwell Church</b><small>Raleigh, NC · Bright and Modern</small></span>
+            <span class="t-check" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="tenant-option" role="radio" aria-checked="false" data-tenant="bold-dark">
+            <span class="t-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="3" fill="#14110E"/><g transform="translate(7.2 4) scale(.8)"><path d="M16 1.5c3.6 4.3 6 7.6 6 11.2 0 3.4-2.7 6-6 6s-6-2.6-6-6c0-3.6 2.4-6.9 6-11.2z" fill="#FF9A1F"/><rect x="8" y="21" width="16" height="3" fill="#F4EEE4"/><rect x="13.5" y="24" width="5" height="11" fill="#F4EEE4"/><rect x="6" y="35" width="20" height="4" fill="#F4EEE4"/></g></svg></span>
+            <span class="t-text"><b>Lampstand Church</b><small>Columbus, OH · Bold and Dark</small></span>
+            <span class="t-check" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="tenant-option" role="radio" aria-checked="false" data-tenant="classic-timeless">
+            <span class="t-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="3" fill="#1F3D2F"/><g transform="translate(7.6 3.9) scale(.62)" fill="none"><path d="M2 51V20a18 18 0 0 1 36 0v31" stroke="#FCF9F1" stroke-width="2.6"/><path d="M7 51V21a13 13 0 0 1 26 0v30" stroke="#FCF9F1" stroke-width="1.3"/><path d="M20 11v24M14.5 18h11" stroke="#D2B574" stroke-width="2.6" stroke-linecap="square"/><path d="M7 51v-8c4-4.6 8.4-6.8 13-6.8s9 2.2 13 6.8v8z" fill="#FCF9F1"/></g></svg></span>
+            <span class="t-text"><b>Calder Hill Chapel</b><small>Richmond, VA · Classic and Timeless</small></span>
+            <span class="t-check" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="tenant-option" role="radio" aria-checked="false" data-tenant="warm-community">
+            <span class="t-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FFFBF3"/><circle cx="24" cy="24" r="20" fill="#FFC83A"/><path d="M16.5 38.5V27a7.5 7.5 0 0 1 15 0v11.5z" fill="#3A2618"/><rect x="13" y="37.6" width="22" height="3" rx="1.5" fill="#3A2618"/><path d="M28.6 20.2c.6-5 4.6-8 9.6-7.4-.5 4.8-4.5 8-9.6 7.4z" fill="#3B7A37"/></svg></span>
+            <span class="t-text"><b>Goldenrod Commons</b><small>Des Moines, IA · Warm Community</small></span>
+            <span class="t-check" aria-hidden="true"></span>
+          </button>
+        </div>
+        <p class="sr-only" id="tenant-live" aria-live="polite"></p>
+      </div>
+
+      <figure class="hero-frame">
+        <div class="frame-wrap">
+          <a class="frame" data-carry href="church-today.html" style="display:block">
+            <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><em>Ministry OS · Today · <span data-church="name">Lightwell Church</span></em></div>
+            <img src="shared/previews/today-bright-modern.jpg" data-src-pattern="shared/previews/today-{slug}.jpg" data-alt-pattern="The Today screen at {name}, as {pastor} sees it: the briefing, the next move and the week's numbers." alt="The Today screen at Lightwell Church, as Pastor Theo sees it: the briefing, the next move and the week's numbers." width="1152" height="720" fetchpriority="high">
+          </a>
+        </div>
+        <figcaption>Today at <span data-church="name">Lightwell Church</span>, as <span data-church="leadPastor">Pastor Theo</span> sees it. Sample data shown.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sheet rise s-paper" id="doors" aria-labelledby="doors-title">
+    <div class="shell">
+      <div class="intro split">
+        <div>
+          <p class="eyebrow">Five doors</p>
+          <h2 id="doors-title">Walk into every part of Genesis Ministry.</h2>
+        </div>
+        <p class="aside">Each door opens the real screens with sample data. The church you chose above, and its level, carry through every screen.</p>
+      </div>
+
+      <div class="door-group">
+        <p class="group-label"><span class="eyebrow">For each church</span><span>The platform, in Genesis OS, with the church as the tenant</span></p>
+        <ul class="doors doors-3">
+          <li class="card door">
+            <a class="door-shot" data-carry href="church-guests.html?view=board" tabindex="-1" aria-hidden="true">
+              <div class="frame"><div class="frame-bar"><span></span><span></span><span></span><em>Ministry OS · Guests</em></div><img src="shared/previews/door-front.jpg" alt="" width="864" height="540" loading="lazy"></div>
+            </a>
+            <div class="door-body">
+              <div class="door-top"><p class="eyebrow">Door 01 · Front office</p><span class="badge">Level 02 and up</span></div>
+              <h3><a data-carry href="church-guests.html">Front Office</a></h3>
+              <p class="door-line">Every first time guest in one pipeline, New to Serving, each with an owner, a next step and a due date. Welcome notes wait for a person to approve them.</p>
+              <ul class="door-links" aria-label="Front office screens">
+                <li><a class="chip-link" data-carry href="church-today.html">Today</a></li>
+                <li><a class="chip-link" data-carry href="church-guests.html?view=board">By Stage</a></li>
+                <li><a class="chip-link" data-carry href="church-guest.html?id=g-01#draft">One Guest</a></li>
+                <li><a class="chip-link" data-carry href="church-guests-report.html">Guest Report</a></li>
+              </ul>
+              <div class="door-foot"><a class="text-link" data-carry href="church-guests.html">Open the Front Office <span aria-hidden="true">&#8599;</span></a></div>
+            </div>
+          </li>
+          <li class="card door">
+            <a class="door-shot" data-carry href="church-care.html?id=pr-01" tabindex="-1" aria-hidden="true">
+              <div class="frame"><div class="frame-bar"><span></span><span></span><span></span><em>Ministry OS · Care</em></div><img src="shared/previews/door-back.jpg" alt="" width="864" height="540" loading="lazy"></div>
+            </a>
+            <div class="door-body">
+              <div class="door-top"><p class="eyebrow">Door 02 · Back office</p><span class="badge">Level 02, more at 03</span></div>
+              <h3><a data-carry href="church-care.html">Back Office</a></h3>
+              <p class="door-line">Shepherding: a shared care inbox for prayer and messages, one page per person, a record of who opened what, and the gifts picture and reports for pastors.</p>
+              <ul class="door-links" aria-label="Back office screens">
+                <li><a class="chip-link" data-carry href="church-person.html?id=p-sarah">One Person</a></li>
+                <li><a class="chip-link" data-carry href="church-access.html">Access Record</a></li>
+                <li><a class="chip-link" data-carry href="church-gifts.html">Gifts</a></li>
+                <li><a class="chip-link" data-carry href="church-reports.html">Reports</a></li>
+                <li><a class="chip-link" data-carry href="church-team.html">Team Roles</a></li>
+              </ul>
+              <div class="door-foot"><a class="text-link" data-carry href="church-care.html">Open the Back Office <span aria-hidden="true">&#8599;</span></a></div>
+            </div>
+          </li>
+          <li class="card door">
+            <a class="door-shot" data-carry href="member-home.html" tabindex="-1" aria-hidden="true">
+              <div class="frame"><div class="frame-bar"><span></span><span></span><span></span><em>Member app · <span data-church="short">Lightwell</span></em></div><img src="shared/previews/member-bright-modern.jpg" data-src-pattern="shared/previews/member-{slug}.jpg" alt="" width="864" height="540" loading="lazy"></div>
+            </a>
+            <div class="door-body">
+              <div class="door-top"><p class="eyebrow">Door 03 · Member app</p><span class="badge">Level 02 and up</span></div>
+              <h3><a data-carry href="member-home.html">Member App</a></h3>
+              <p class="door-line">What members see on their phones, in <span data-church="name">Lightwell Church</span>'s own brand: home, prayer with history, messages, Give and the spiritual gifts conversation.</p>
+              <ul class="door-links" aria-label="Member app screens">
+                <li><a class="chip-link" data-carry href="member-signin.html">Sign In</a></li>
+                <li><a class="chip-link" data-carry href="member-prayer.html">Prayer</a></li>
+                <li><a class="chip-link" data-carry href="member-messages.html">Messages</a></li>
+                <li><a class="chip-link" data-carry href="member-give.html">Give</a></li>
+                <li><a class="chip-link" data-carry href="member-gifts.html">Gifts</a></li>
+              </ul>
+              <div class="door-foot"><a class="text-link" data-carry href="member-home.html">Open the Member App <span aria-hidden="true">&#8599;</span></a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="door-group">
+        <p class="group-label"><span class="eyebrow">The whole picture</span><span>How it fits together, and the websites a church starts with</span></p>
+        <ul class="doors doors-2">
+          <li class="card door">
+            <a class="door-shot journey-thumb" href="journey.html" tabindex="-1" aria-hidden="true">
+              <div class="frame"><div class="frame-bar"><span></span><span></span><span></span><em>The journey</em></div><img src="shared/previews/door-journey.jpg" alt="" width="864" height="540" loading="lazy"></div>
+            </a>
+            <div class="door-body">
+              <div class="door-top"><p class="eyebrow">Door 04 · The journey</p><span class="badge">Five diagrams</span></div>
+              <h3><a href="journey.html">The Journey</a></h3>
+              <p class="door-line">Five pictures of how it works: one Sunday guest end to end, finding a church through launch, who sees what, what <span data-an>Hope</span> does and does not do, and what each level adds.</p>
+              <ul class="door-links" aria-label="Journey chapters">
+                <li><a class="chip-link" href="journey.html#guest">One Sunday Guest</a></li>
+                <li><a class="chip-link" href="journey.html#launch">Finding to Launch</a></li>
+                <li><a class="chip-link" href="journey.html#privacy">Who Sees What</a></li>
+                <li><a class="chip-link" href="journey.html#ai">What the AI Does</a></li>
+                <li><a class="chip-link" href="journey.html#levels">Each Level</a></li>
+              </ul>
+              <div class="door-foot"><a class="text-link" href="journey.html">See the Journey <span aria-hidden="true">&#8599;</span></a></div>
+            </div>
+          </li>
+          <li class="card door">
+            <a class="door-shot" href="../index.html" tabindex="-1" aria-hidden="true">
+              <div class="frame"><div class="frame-bar"><span></span><span></span><span></span><em>Four looks</em></div>
+                <div class="looks-grid">
+                  <img src="shared/previews/look-bright-modern.jpg" data-slug-current="bright-modern" class="is-current" alt="" width="576" height="360" loading="lazy">
+                  <img src="shared/previews/look-bold-dark.jpg" data-slug-current="bold-dark" alt="" width="576" height="360" loading="lazy">
+                  <img src="shared/previews/look-classic-timeless.jpg" data-slug-current="classic-timeless" alt="" width="576" height="360" loading="lazy">
+                  <img src="shared/previews/look-warm-community.jpg" data-slug-current="warm-community" alt="" width="576" height="360" loading="lazy">
+                </div>
+              </div>
+            </a>
+            <div class="door-body">
+              <div class="door-top"><p class="eyebrow">Door 05 · The templates</p><span class="badge">Every level</span></div>
+              <h3><a href="../index.html">The Templates</a></h3>
+              <p class="door-line">Four church website looks, each with a brand board, a social marketing plan and <span data-an>Hope</span> on the site. Every church starts here, at every level.</p>
+              <ul class="door-links" aria-label="Template pages">
+                <li><a class="chip-link" href="../templates/bright-modern/index.html" data-site="../templates/{slug}/index.html"><span><span data-church="short">Lightwell</span> Website</span></a></li>
+                <li><a class="chip-link" href="../templates/bright-modern/brand-board.html" data-site="../templates/{slug}/brand-board.html">Brand Board</a></li>
+                <li><a class="chip-link" href="../templates/bright-modern/social-plan.html" data-site="../templates/{slug}/social-plan.html">Social Plan</a></li>
+              </ul>
+              <div class="door-foot"><a class="text-link" href="../index.html">See All Four Looks <span aria-hidden="true">&#8599;</span></a></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet rise s-ink" id="rules" aria-labelledby="rules-title">
+    <div class="shell rules-wrap">
+      <div class="rules-side">
+        <div class="intro">
+          <p class="eyebrow">Protecting people</p>
+          <h2 id="rules-title">Care comes with rules. Here they are, in plain words.</h2>
+        </div>
+        <p class="note">Every rule is built into the screens, not added later. Each one links to the place you can see it working.</p>
+        <p class="eyebrow crisis-label">Always in a crisis reply</p>
+        <ul class="crisis">
+          <li><b>988</b><span>Call or text the Suicide and Crisis Lifeline</span></li>
+          <li><b>911</b><span>Call for an emergency</span></li>
+        </ul>
+        <p class="note">If someone writes in crisis, <span data-an>Hope</span> does not improvise. It shows a reply written by people, and the pastor on call is alerted with no private words.</p>
+      </div>
+      <ol class="rules">
+        <li><span class="n" aria-hidden="true">01</span><div><h3>Prayer stays with your pastors and prayer team.</h3><p>Only they can open a prayer request. Each one shows a lock and the names of who can see it.</p><a class="text-link" data-carry href="church-care.html?view=prayer">See It in Care <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">02</span><div><h3>Alert emails carry no private words.<span class="who">From Level 02</span></h3><p>A new request sends an email that says only "New request. Sign in to read." A member's reply notice says only "You have a reply." At Level 01, prayer forms go by email only to the pastors' address.</p><a class="text-link" data-carry href="church-care.html?id=pr-01">See an Alert <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">03</span><div><h3>A record of who opened what.<span class="who">From Level 02</span></h3><p>Every open, reply, change and archive is recorded, and nobody can edit it. Role changes are emailed to the lead pastor. Shepherd adds the Access Record screen to search and export it.</p><a class="text-link" data-carry href="church-access.html">See the Access Record <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">04</span><div><h3>Archive, never delete.</h3><p>Prayer, threads and pastor notes are archived, so nothing is lost by accident. A person can still ask for a copy or for removal.</p><a class="text-link" data-carry href="church-care.html?view=archived">See Archived Care <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">05</span><div><h3>Member accounts are for adults.</h3><p>Each person confirms they are 18 or older when they first sign in, with a code sent by email. Members only ever see their own things.</p><a class="text-link" data-carry href="member-signin.html?step=adult">See the Sign In <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">06</span><div><h3>The gifts picture protects small numbers.</h3><p>The church chart stays hidden until 25 people finish. Small counts show as "fewer than 5." Names appear only for people who said yes.</p><a class="text-link" data-carry href="church-gifts.html">See the Gifts Picture <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">07</span><div><h3>A gifts score is plain arithmetic.</h3><p>The same answers always give the same result. <span data-an>Hope</span> never sets or changes a score.</p><a class="text-link" data-carry href="member-gifts-result.html">See a Result <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">08</span><div><h3>A person approves every message.</h3><p><span data-an>Hope</span> drafts welcome notes and everyday replies, labels them and waits. It never sends on its own, and it never drafts a reply to prayer or a personal message.</p><a class="text-link" data-carry href="church-guests.html?view=drafts">See Drafts Waiting <span aria-hidden="true">&#8599;</span></a></div></li>
+        <li><span class="n" aria-hidden="true">09</span><div><h3>Guests hear from you by email first.</h3><p>Guest follow up goes by email. Texting stays off unless the church turns it on.</p><a class="text-link" data-carry href="church-guest.html?id=g-01">See a Guest <span aria-hidden="true">&#8599;</span></a></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sheet rise s-paper" id="levels" aria-labelledby="levels-title">
+    <div class="shell">
+      <div class="intro split">
+        <div>
+          <div class="levels-head"><p class="eyebrow">Choose your level</p><span class="badge">Draft levels</span></div>
+          <h2 id="levels-title">Start where your church is.</h2>
+        </div>
+        <p class="aside">Every level includes the website, the brand board, the social plan and <span data-an>Hope</span>. Each Demo This Level button opens Today at that level, with the tour running.</p>
+      </div>
+      <ol class="levels">
+        <li class="card level" style="--tier-edge: rgb(201 165 94 / 0.3)">
+          <p class="eyebrow">Level 01</p>
+          <h3>Welcome</h3>
+          <p class="sum">A website people can find and use, with <span data-an>Hope</span> answering questions and every form arriving by email.</p>
+          <p class="price">Pricing set with Genesis</p>
+          <ul>
+            <li>The website in one of four looks</li>
+            <li>The brand board</li>
+            <li>The social marketing plan</li>
+            <li><span data-an>Hope</span> on the website</li>
+            <li>Plan a Visit and prayer forms delivered by email</li>
+            <li>Newsletter sign up</li>
+          </ul>
+          <div class="act"><a class="btn btn-outline" data-carry href="church-today.html?plan=1&amp;tour=1" aria-label="Demo This Level: Level 01 Welcome">Demo This Level</a></div>
+        </li>
+        <li class="card level" style="--tier-edge: rgb(201 165 94 / 0.55)">
+          <p class="eyebrow">Level 02</p>
+          <h3>Connect</h3>
+          <p class="sum">Everything in Welcome, plus a front office for guests and a member app, so nobody falls through the cracks.</p>
+          <p class="price">Pricing set with Genesis</p>
+          <ul>
+            <li>Everything in Welcome</li>
+            <li>The Today view</li>
+            <li>The Front Office guest pipeline</li>
+            <li>The member app: sign in, home, prayer with history, messages, Give</li>
+            <li>The care inbox for prayer and messages, with every open recorded</li>
+            <li>Team roles, with the prayer team named</li>
+            <li><span data-an>Hope</span> drafts that wait for approval</li>
+          </ul>
+          <div class="act"><a class="btn btn-gold" data-carry href="church-today.html?plan=2&amp;tour=1" aria-label="Demo This Level: Level 02 Connect">Demo This Level</a></div>
+        </li>
+        <li class="card level" style="--tier-edge: rgb(201 165 94 / 0.8)">
+          <p class="eyebrow">Level 03</p>
+          <h3>Shepherd</h3>
+          <p class="sum">Everything in Connect, plus one page per person, the spiritual gifts picture and reports for pastors.</p>
+          <p class="price">Pricing set with Genesis</p>
+          <ul>
+            <li>Everything in Connect</li>
+            <li>Person pages and the Access Record screen</li>
+            <li>The spiritual gifts conversation and the pastor's gifts picture</li>
+            <li>Reports</li>
+            <li>Custom roles and named gift viewers</li>
+            <li>More staff seats</li>
+          </ul>
+          <div class="act"><a class="btn btn-outline" data-carry href="church-today.html?plan=3&amp;tour=1" aria-label="Demo This Level: Level 03 Shepherd">Demo This Level</a></div>
+        </li>
+        <li class="card level inverse" style="--tier-edge: rgb(201 165 94 / 0.95)">
+          <p class="eyebrow">Scoped on a call</p>
+          <h3>Enterprise</h3>
+          <p class="sum">For churches with more than one campus. Everything in Shepherd, scoped with you on a call.</p>
+          <p class="price">Pricing set with Genesis</p>
+          <ul>
+            <li>Everything in Shepherd</li>
+            <li>More than one campus</li>
+            <li>Scoped on a call</li>
+          </ul>
+          <div class="act"><a class="btn btn-outline" data-carry href="church-today.html?plan=3&amp;tour=1" aria-label="See Level 03, the base of Enterprise">See Level 03</a><small>Campuses are scoped on a call.</small></div>
+        </li>
+      </ol>
+      <div class="levels-foot">
+        <p>Draft levels, to be confirmed. Customization beyond the template is available for an additional cost.</p>
+        <a class="text-link" data-carry href="journey.html#levels">Compare Levels <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet rise s-ink close-band" aria-labelledby="close-title">
+    <div class="shell">
+      <p class="eyebrow">The guided demo</p>
+      <h2 id="close-title">Walk through one Sunday, start to finish.</h2>
+      <p class="line">Start on Today as <span data-church="leadPastor">Pastor Theo</span> at <span data-church="name">Lightwell Church</span>. The tour points out each part as you go, and every screen keeps the sample data.</p>
+      <div class="actions">
+        <a class="btn btn-primary" data-carry href="church-today.html?tour=1&amp;plan=3">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
+        <a class="btn btn-secondary" href="journey.html"><span>See the Journey</span></a>
+      </div>
+      <p class="foot">Genesis is software. It supports your pastors and care teams and never replaces them. Every church, person and number in this preview is made up.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="shell">
+    <a class="brand" href="index.html" aria-label="Genesis Ministry front door"><img src="story/genesis-logo.svg" alt="" width="37" height="37"><span class="brand-word" aria-hidden="true"><b>enesis</b><i>AI</i></span></a>
+    <nav aria-label="Footer">
+      <a data-carry href="church-today.html?tour=1&amp;plan=3">Guided Demo</a>
+      <a href="journey.html">The Journey</a>
+      <a href="../index.html">The Templates</a>
+      <a data-carry href="journey.html#levels">Compare Levels</a>
+    </nav>
+    <p>Edition 05, Genesis Ministry. Design preview. Sample data shown.</p>
+  </div>
+</footer>
+
+<script src="shared/data.js"></script>
+<script src="story/story.js"></script>
+<script src="shared/demo.js"></script>
+</body>
+</html>

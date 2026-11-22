@@ -1,0 +1,679 @@
+/* Copied from the Genesis OS repo (v2/refine/system.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* ==========================================================================
+   The visual system
+   Graham's specification, 2026-09-17. It began as a light-mode sheet and was
+   opened up to both themes on his instruction: "they aren't too different
+   dashboards, you just apply the colors differently". So this file is in two
+   halves.
+
+   1. SHAPE, which both themes share: the type scale, the page width, one card
+      radius and padding, the numbers row as columns rather than boxes, the one
+      panel at the top of a screen, underline tabs, the record layout, the
+      inbox, the two picture cards and the Ask Hawk button.
+   2. COLOUR, which each theme answers in its own values: light exactly as
+      specified (#f6f4ef page, #fffefa cards, #c29a5c gold with #795520 as gold
+      type, #244d42 for emphasis, #18352f buttons, one #111f25 panel), dark in
+      its own near-black and gold.
+
+   It loads after refine/light.css, so where the two disagree this one wins.
+   Nothing here changes a word of copy, a number, or what any control does.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. SHAPE
+   ========================================================================== */
+
+/* ---- type ---------------------------------------------------------------
+   One family; weight and size carry the hierarchy. Numbers are tabular
+   everywhere so a column of them lines up and a changing figure does not
+   shift the words beside it. */
+.v2-eyebrow,.v2-page-eyebrow{
+  font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--v2-eyebrow);font-weight:700;
+}
+.v2-page-title,.v2-page-head h1{
+  font-size:clamp(30px,3.3vw,45px);font-weight:500;letter-spacing:-.055em;line-height:1.05;color:var(--v2-text);
+}
+.v2-section-head h2,.v2-card h2{font-size:23px;font-weight:500;letter-spacing:-.035em}
+.v2-section-head p,.v2-page-head p{font-size:13px;line-height:1.7;color:var(--v2-fine)}
+.v2-note,.v2-muted-copy,.v2-fine{font-size:11.5px;line-height:1.7;color:var(--v2-fine)}
+.v2-kpi b,.v2-pulse-item b,.v2-stat b,.v2-money-figure b,
+.v2-viz-big,.v2-table td{font-variant-numeric:tabular-nums}
+
+/* ---- layout -------------------------------------------------------------
+   Wider page, more room between sections, one radius for every card. */
+.v2-page{max-width:1500px;margin-inline:auto}
+.v2-page>*+*{margin-top:26px}
+.v2-card{
+  background:var(--v2-surface);border:1px solid var(--v2-hairline);border-radius:18px;padding:26px;
+  box-shadow:var(--v2-card-shadow);
+}
+/* Never a card inside a card: the inner one keeps its spacing and loses its
+   frame, so a panel reads as one thing. */
+.v2-card .v2-card{border:0;border-radius:0;padding:0;background:none;box-shadow:none}
+.v2-section+.v2-section{margin-top:26px}
+
+/* ---- the numbers row ----------------------------------------------------
+   Not cards. Four columns on the page itself, divided by hairlines, with one
+   rule under the row. The label is small and grey, the number is the size,
+   and the caption sits under it in grey. */
+.v2-pulse{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:0;
+  border:0;border-bottom:1px solid var(--v2-kpi-rule);border-radius:0;background:none;box-shadow:none;
+}
+.v2-pulse-item{padding:4px 26px 20px;border-right:1px solid var(--v2-kpi-line);border-bottom:0}
+.v2-pulse-item:first-child{padding-left:0}
+.v2-pulse-item:last-child{border-right:0}
+.v2-pulse-item small{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--v2-text-2)}
+.v2-pulse-item b{
+  display:block;margin-top:9px;font-size:clamp(22px,2.2vw,30px);font-weight:500;letter-spacing:-.03em;
+  color:var(--v2-text);
+}
+.v2-pulse-item span{display:block;margin-top:5px;font-size:11.5px;line-height:1.6;color:var(--v2-fine)}
+@media (max-width:900px){
+  .v2-pulse{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}
+  .v2-pulse-item{padding-inline:18px}
+  .v2-pulse-item:nth-child(odd){padding-left:0}
+  .v2-pulse-item:nth-child(2n){border-right:0}
+}
+
+/* Reports' numbers follow the same rule as Today's. */
+.v2-report-metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;
+  border:0;border-bottom:1px solid var(--v2-kpi-rule);border-radius:0;background:none;box-shadow:none;padding:0;
+}
+.v2-report-metric{
+  padding:4px 26px 20px;border:0;border-right:1px solid var(--v2-kpi-line);border-radius:0;background:none;box-shadow:none;
+}
+.v2-report-metric:first-child{padding-left:0}
+.v2-report-metric:last-child{border-right:0}
+.v2-report-metric small{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--v2-text-2)}
+.v2-report-metric b,.v2-report-metric strong{
+  font-size:clamp(22px,2.2vw,30px);font-weight:500;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+}
+
+/* ---- the one panel a screen ---------------------------------------------
+   Exactly one: the thing that matters most, with its number. It is the deep
+   panel in both themes; only its edge differs. */
+.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear{
+  background:var(--v2-panel);border:1px solid var(--v2-panel-edge);border-radius:22px;padding:28px;
+  box-shadow:var(--v2-panel-shadow);
+}
+/* The gold rule down its left, thick enough to read as part of the card. */
+.v2-next-move::after,.v2-report-diagnostic::after,.v2-outreach-next::after,
+.v2-deal-recommended::after,.v2-deal-clear::after{width:5px;top:14px;bottom:14px;border-radius:0 4px 4px 0}
+/* Text, Email and Open lead sit on the panel itself: an outline and the words,
+   so the only filled things on it are the call and Ask Hawk. */
+.v2-next-move .v2-button-quiet{background:transparent;border-color:rgba(255,255,255,.22)}
+.v2-next-move .v2-button-quiet:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.32);color:#fff9ef}
+
+/* ---- tabs: an underline, not a pill ------------------------------------- */
+.v2-view-tabs{border-bottom:1px solid var(--v2-hairline);gap:6px}
+.v2-view-tabs button{border-radius:0;background:none;color:var(--v2-text-2);font-weight:600;border-bottom:2px solid transparent}
+.v2-view-tabs button:hover{background:none;color:var(--v2-text)}
+.v2-view-tabs button[aria-selected="true"]{background:none;color:var(--v2-tab-on);border-bottom-color:var(--v2-tab-rule)}
+
+/* ---- badges: a soft tint, its own text colour, a faint border -----------
+   A chip, not a pill. Three things Graham has now asked for more than once:
+   room on all four sides (3px by 7px put the words against the edge), a radius
+   that reads as a chip rather than a lozenge, and a label that stays on one
+   line. "Needs you" wrapping to two lines inside a 999px pill was the worst of
+   it: the second line ran straight into the curve. The chip keeps its own
+   width in a flex row and whatever sits beside it gives way instead. */
+.v2-badge{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  flex:0 0 auto;min-height:26px;padding:5px 12px;border-radius:8px;
+  font-weight:600;line-height:1.4;white-space:nowrap;
+}
+
+/* ---- Ask Hawk -----------------------------------------------------------
+   Graham picked the gradient rim over the gradient fill (2026-09-17): on the
+   deep panel the filled button floated off it, so here the gradient is the
+   outline and the card shows through. The light travels once around that
+   outline on a slow loop; nothing pulses, and it stops entirely for anyone who
+   asked for less motion. The panel is dark in both themes, so this is the same
+   button in both. The gold fill elsewhere (the intake drawer's own Ask Hawk)
+   keeps its shape and loses only the halo. */
+@property --v2-rim{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes v2-rim-travel{to{--v2-rim:360deg}}
+.v2-button-premium{box-shadow:inset 0 1px 0 rgba(255,248,225,.5),inset 0 -1px 0 rgba(60,40,10,.2)}
+.v2-next-move .v2-button-premium{
+  position:relative;isolation:isolate;border-color:transparent;box-shadow:none;
+  background:rgba(255,255,255,.03);color:#f1d898;
+}
+.v2-next-move .v2-button-premium::before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;padding:1.75px;
+  background:conic-gradient(from var(--v2-rim),
+    rgba(138,106,54,.55) 0deg,#e6c98f 60deg,rgba(138,106,54,.55) 150deg,
+    rgba(138,106,54,.55) 210deg,#e6c98f 300deg,rgba(138,106,54,.55) 360deg);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;animation:v2-rim-travel 7s linear infinite;pointer-events:none;
+}
+.v2-next-move .v2-button-premium:hover{background:rgba(255,255,255,.07);color:#f6e6b8}
+.v2-next-move .v2-button-premium .v2-icon{color:#debf88}
+@media (prefers-reduced-motion:reduce){ .v2-next-move .v2-button-premium::before{animation:none} }
+
+/* ---- the two picture cards ---------------------------------------------
+   One says where the work comes from, the other how it ends. Both are drawn
+   from the person's own records. */
+.v2-viz-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;margin-top:26px}
+@media (max-width:1000px){ .v2-viz-pair{grid-template-columns:minmax(0,1fr)} }
+.v2-viz-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.v2-viz-head h2{margin:6px 0 0}
+.v2-viz-icon{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;
+  background:var(--v2-accent-soft);color:var(--v2-accent-text)}
+.v2-viz-icon svg{width:17px;height:17px}
+.v2-viz-donut{display:flex;align-items:center;gap:24px}
+.v2-viz-ring{position:relative;flex:none;width:148px;height:148px}
+.v2-viz-ring svg{width:148px;height:148px;transform:rotate(-90deg)}
+.v2-viz-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.v2-viz-center b{display:block;font-size:30px;font-weight:500;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.v2-viz-center small{display:block;margin-top:2px;max-width:92px;color:var(--v2-fine);font-size:11px;line-height:1.35}
+.v2-viz-legend{min-width:0;flex:1}
+.v2-viz-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.v2-viz-table th{padding:0 0 7px;color:var(--v2-fine);font-size:10.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;text-align:right}
+.v2-viz-table th:first-child{text-align:left}
+.v2-viz-table td{padding:7px 0;border-top:1px solid var(--v2-hairline);text-align:right;font-variant-numeric:tabular-nums}
+.v2-viz-table td:first-child{text-align:left}
+.v2-viz-dot{display:inline-block;width:9px;height:9px;margin-right:8px;border-radius:50%;vertical-align:baseline}
+.v2-viz-big{display:block;font-size:59px;font-weight:500;letter-spacing:-.05em;line-height:1;color:var(--v2-emphasis)}
+.v2-viz-since{margin:8px 0 20px;color:var(--v2-fine);font-size:12px;line-height:1.6}
+.v2-viz-seg{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--v2-surface-3)}
+.v2-viz-seg i{display:block;height:100%}
+.v2-viz-counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.v2-viz-count{display:grid;gap:3px}
+.v2-viz-count small{display:flex;align-items:center;gap:7px;color:var(--v2-fine);font-size:11px}
+.v2-viz-count b{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.v2-viz-empty{margin:0;color:var(--v2-fine);font-size:12.5px;line-height:1.7}
+
+/* ---- deal rows: four columns and no sideways scroll --------------------- */
+.v2-deal-why{font-size:13px;color:var(--v2-text-2)}
+.v2-deal-why.is-calm{color:var(--v2-fine)}
+.v2-deal-why.is-late{color:var(--v2-late);font-weight:600}
+.v2-deal-owner-cell{font-size:13px;color:var(--v2-text-2)}
+.v2-deal-table{min-width:0}
+.v2-deal-table th:nth-child(1),.v2-deal-table td:nth-child(1){width:auto}
+.v2-deal-table th:nth-child(2),.v2-deal-table td:nth-child(2){width:150px}
+.v2-deal-table th:nth-child(3),.v2-deal-table td:nth-child(3){width:26%}
+.v2-deal-table th:nth-child(4),.v2-deal-table td:nth-child(4){width:150px}
+.v2-deal-table th:nth-child(n+5),.v2-deal-table td:nth-child(n+5){display:none}
+.v2-stage-card small{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.v2-stage-card small i{font-style:normal;color:var(--v2-fine)}
+.v2-mobile-deal-why{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* ---- the pipeline rows on Today ----------------------------------------
+   Name, bar, count, read left to right and grouped, instead of the label at
+   one edge and the number at the other. */
+.v2-agent-pipe,.v2-agent-week{margin-top:26px}
+.v2-pipe-row{grid-template-columns:minmax(84px,132px) minmax(160px,420px) 46px 84px;justify-content:start;
+  column-gap:16px;padding:11px 0}
+.v2-pipe-card.is-counts-only .v2-pipe-row{grid-template-columns:minmax(84px,132px) minmax(160px,420px) 46px}
+.v2-pipe-name{font-size:13px;color:var(--v2-text-2)}
+.v2-rec-layout{align-items:start}
+
+/* ---- settings: a line of explanation takes the rows' inset -------------- */
+.v2-set-panel>p,.v2-chore-note{padding:14px 16px 0;margin:0 0 4px}
+.v2-set-panel>p+*{border-top:1px solid var(--v2-line)}
+
+/* ---- the follow-up inbox ------------------------------------------------
+   The queue on the left, the conversation you picked on the right, so working
+   through follow-ups is one click each instead of open, act, close. Under
+   1180px the panel goes back to being the drawer. */
+.v2-inbox{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.v2-inbox-detail{display:none;padding:0;overflow:hidden;align-self:start;position:sticky;top:12px}
+.v2-inbox-empty{display:grid;place-items:center;min-height:180px;padding:24px;color:var(--v2-muted);font-size:13px}
+@media (min-width:1180px){
+  .v2-inbox{grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:20px;align-items:start}
+  .v2-inbox-detail{display:block}
+  .v2-inbox-detail .v2-drawer-head{padding:20px 22px 0}
+  .v2-inbox-detail .v2-drawer-body{padding:0 22px 22px}
+  .v2-inbox-detail .v2-drawer-recommendation{margin:16px 0 0}
+  .v2-inbox-list .v2-outreach-row.is-open{border-color:var(--v2-accent);box-shadow:inset 0 0 0 1px var(--v2-accent)}
+}
+
+/* Today's short version of that inbox: what is due now, each row opening the
+   record it belongs to. */
+.v2-week-inbox{display:grid;gap:2px;margin-top:16px;padding-top:14px;border-top:1px solid var(--v2-line)}
+.v2-week-inbox>b{margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--v2-text-2)}
+.v2-week-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 16px;gap:12px;align-items:center;
+  padding:9px 10px;margin:0 -10px;border-radius:var(--v2-radius-sm);color:inherit;text-decoration:none;font-size:13px}
+.v2-week-item:hover{background:var(--v2-hover)}
+.v2-week-item:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+.v2-week-item-who{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-week-item-why{color:var(--v2-muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-week-item-go{color:var(--v2-accent-text);text-align:right}
+
+/* ---- the reply-layout preview page (/v2/hawk-preview) ------------------
+   Not in the navigation, and every example on it is invented. */
+.v2-preview-card{display:grid;gap:14px}
+.v2-preview-reply{margin:0;font-size:14px;line-height:1.65;white-space:pre-line}
+.v2-preview-payload{margin-top:10px}
+.v2-preview-payload summary{color:var(--v2-muted);font-size:12px;cursor:pointer}
+.v2-preview-payload pre{margin:10px 0 0;padding:14px 16px;border:1px solid var(--v2-line);border-radius:12px;
+  background:var(--v2-surface-2);color:var(--v2-text-2);font-size:11.5px;line-height:1.6;overflow:auto}
+.v2-preview-card .v2-hawk-reply{width:100%;margin:0;padding:0}
+
+/* ==========================================================================
+   2. COLOUR
+   ========================================================================== */
+
+[data-theme="light"]{
+  /* Page and card, exactly as specified. */
+  --v2-bg:#f6f4ef;
+  --v2-rail:#f1efe8;
+  --v2-surface:#fffefa;
+  --v2-surface-2:#faf8f3;
+  --v2-surface-3:#f3f0e9;
+  --v2-disabled-surface:#efece5;
+  --v2-border:#e2ded5;
+  --v2-line:#e2ded5;
+  --v2-border-strong:#c9c1b2;
+
+  --v2-text:#222326;
+  --v2-text-2:#686761;
+  --v2-text-3:#5c5b56;
+  --v2-muted:#686761;
+
+  /* Gold is for borders and small marks; gold as type is the readable one. */
+  --v2-accent:#c29a5c;
+  --v2-accent-rgb:194,154,92;
+  --v2-accent-hover:#b0874a;
+  --v2-accent-strong:#795520;
+  --v2-accent-soft:rgba(194,154,92,.15);
+  --v2-accent-border:rgba(194,154,92,.32);
+  --v2-accent-text:#795520;
+  --v2-marker:#795520;
+  --v2-focus:#795520;
+  --v2-selection:rgba(194,154,92,.24);
+
+  /* The roles the shapes above ask for. */
+  --v2-emphasis:#244d42;
+  --v2-green-button:#18352f;
+  --v2-green-button-hover:#254b40;
+  --v2-eyebrow:#75654b;
+  --v2-fine:#5c5b56;
+  --v2-hairline:#e2dfd6;
+  --v2-kpi-line:#e5e3db;
+  --v2-kpi-rule:#dddcd4;
+  --v2-card-shadow:0 6px 24px rgba(36,57,46,.04);
+  --v2-panel:#111f25;
+  --v2-panel-edge:transparent;
+  --v2-panel-shadow:0 10px 30px rgba(17,31,37,.08);
+  --v2-tab-on:#234332;
+  --v2-tab-rule:#355f49;
+  --v2-late:#991b1b;
+}
+
+[data-theme="dark"]{
+  /* The same system in dark's own values: near-black paper, one lifted panel,
+     gold for emphasis where light uses deep green. */
+  --v2-emphasis:#8fdcb0;
+  --v2-eyebrow:#a4977f;
+  --v2-fine:#93938c;
+  --v2-hairline:rgba(255,255,255,.08);
+  --v2-kpi-line:rgba(255,255,255,.07);
+  --v2-kpi-rule:rgba(255,255,255,.12);
+  --v2-card-shadow:0 6px 24px rgba(0,0,0,.28);
+  --v2-panel:#111f25;
+  --v2-panel-edge:rgba(255,255,255,.07);
+  --v2-panel-shadow:0 10px 30px rgba(0,0,0,.35);
+  --v2-tab-on:#f5f3ef;
+  --v2-tab-rule:#c9a157;
+  --v2-late:#ee8a8e;
+}
+
+/* ---- status, stage and priority ----------------------------------------
+   The same seven tones in both themes: a soft tint of the colour, its own
+   text, a faint border. Light takes the dark text; dark takes the bright. */
+/* The operator's voice in the voice band: a cool green against Hawk's gold, so
+   whose turn it is reads at a glance. Brighter in dark, to sit on the panel. */
+[data-theme="light"]{ --v2-voice-user:#2f7d67; }
+[data-theme="dark"]{ --v2-voice-user:#6fcaa9; }
+
+[data-theme="light"] .v2-badge{background:rgba(100,116,139,.1);color:#475569;border:1px solid rgba(100,116,139,.22)}
+[data-theme="light"] .v2-badge-info,
+[data-theme="light"] .v2-badge-new{background:rgba(59,130,246,.1);color:#1d4ed8;border-color:rgba(59,130,246,.22)}
+[data-theme="light"] .v2-badge-positive,
+[data-theme="light"] .v2-badge-success,
+[data-theme="light"] .v2-badge-won{background:rgba(34,197,94,.1);color:#166534;border-color:rgba(34,197,94,.22)}
+[data-theme="light"] .v2-badge-warning,
+[data-theme="light"] .v2-badge-soon{background:rgba(245,158,11,.1);color:#92400e;border-color:rgba(245,158,11,.22)}
+[data-theme="light"] .v2-badge-danger,
+[data-theme="light"] .v2-badge-overdue{background:rgba(239,68,68,.1);color:#991b1b;border-color:rgba(239,68,68,.22)}
+[data-theme="light"] .v2-badge-cyan,
+[data-theme="light"] .v2-badge-active{background:rgba(6,182,212,.1);color:#0e7490;border-color:rgba(6,182,212,.22)}
+[data-theme="light"] .v2-badge-priority,
+[data-theme="light"] .v2-badge-gold{background:rgba(194,154,92,.15);color:#795520;border-color:rgba(194,154,92,.32)}
+[data-theme="light"] .v2-badge-neutral,
+[data-theme="light"] .v2-badge-muted{background:rgba(100,116,139,.1);color:#475569;border-color:rgba(100,116,139,.22)}
+
+[data-theme="dark"] .v2-badge{background:rgba(148,163,184,.14);color:#c9cdd4;border:1px solid rgba(148,163,184,.26)}
+[data-theme="dark"] .v2-badge-info,
+[data-theme="dark"] .v2-badge-new{background:rgba(110,168,220,.16);color:#8dbbe6;border-color:rgba(110,168,220,.3)}
+[data-theme="dark"] .v2-badge-positive,
+[data-theme="dark"] .v2-badge-success,
+[data-theme="dark"] .v2-badge-won{background:rgba(85,197,138,.16);color:#8fdcb0;border-color:rgba(85,197,138,.3)}
+[data-theme="dark"] .v2-badge-warning,
+[data-theme="dark"] .v2-badge-soon{background:rgba(232,149,90,.16);color:#f0b98d;border-color:rgba(232,149,90,.3)}
+[data-theme="dark"] .v2-badge-danger,
+[data-theme="dark"] .v2-badge-overdue{background:rgba(227,108,113,.16);color:#f2a3a6;border-color:rgba(227,108,113,.3)}
+[data-theme="dark"] .v2-badge-cyan,
+[data-theme="dark"] .v2-badge-active{background:rgba(45,182,201,.16);color:#7fd4e0;border-color:rgba(45,182,201,.3)}
+[data-theme="dark"] .v2-badge-priority,
+[data-theme="dark"] .v2-badge-gold{background:rgba(212,181,121,.16);color:#f1d898;border-color:rgba(212,181,121,.32)}
+[data-theme="dark"] .v2-badge-neutral,
+[data-theme="dark"] .v2-badge-muted{background:rgba(148,163,184,.14);color:#c9cdd4;border-color:rgba(148,163,184,.26)}
+
+/* Inside the one panel the tints have nothing to sit on, so a badge there
+   keeps its colour in the text and a faint wash behind it. Both themes. */
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide,.v2-sidebar) .v2-badge{
+  background:rgba(255,255,255,.07);color:#d8d4cb;border-color:rgba(255,255,255,.14);
+}
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-priority,
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-gold{
+  background:rgba(212,181,121,.16);color:#f1d898;border-color:rgba(212,181,121,.32)}
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-positive,
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-success{
+  background:rgba(85,197,138,.16);color:#8fdcb0;border-color:rgba(85,197,138,.3)}
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-warning,
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-soon{
+  background:rgba(232,149,90,.16);color:#f0b98d;border-color:rgba(232,149,90,.3)}
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-danger,
+:is(.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-guide) .v2-badge-overdue{
+  background:rgba(227,108,113,.16);color:#f2a3a6;border-color:rgba(227,108,113,.3)}
+
+/* ---- buttons ------------------------------------------------------------
+   Light's main button is Capital Desk's deep green. Dark keeps the gold it has
+   always had: the same role, its own colour. */
+[data-theme="light"] .v2-button-primary{
+  border-color:var(--v2-green-button);background:var(--v2-green-button);color:#fff;
+  box-shadow:0 5px 14px rgba(21,57,43,.07);
+}
+[data-theme="light"] .v2-button-primary:hover:not(:disabled){
+  border-color:var(--v2-green-button-hover);background:var(--v2-green-button-hover);color:#fff;
+}
+[data-theme="light"] .v2-sidebar-action{border-color:#c29a5c;background:#c29a5c;color:#1b170e}
+[data-theme="light"] .v2-sidebar-action:hover{background:#b0874a;border-color:#b0874a}
+
+/* Phone layout for Source concentration and Conversion quality.
+ * Added 2026-11-11. Roll back by removing this block and restoring
+ * the refine-system.css?v=chips-2 link in v2/index.html. */
+@media (max-width:480px){
+  /* Source concentration: donut above the table, table uses the full card. */
+  .v2-viz-donut{flex-direction:column;align-items:center;gap:16px}
+  .v2-viz-legend,.v2-viz-table{width:100%;min-width:0}
+  .v2-viz-table th,.v2-viz-table td{padding:8px 8px;vertical-align:top}
+  .v2-viz-table th{letter-spacing:.06em}
+  .v2-viz-table th:first-child{padding-left:0;text-align:left;white-space:normal}
+  .v2-viz-table th:last-child,.v2-viz-table td:last-child{padding-right:0}
+  .v2-viz-table th:not(:first-child),
+  .v2-viz-table td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%;padding-left:10px}
+
+  /* Source names wrap under a colored dot that stays on the first line. */
+  .v2-viz-table td:first-child{position:relative;padding-left:17px;text-align:left;white-space:normal;overflow-wrap:anywhere}
+  .v2-viz-table td:first-child .v2-viz-dot{position:absolute;left:0;top:.55em;margin-right:0}
+
+  /* Conversion quality: a 2x2 legend, count under its label, nothing clipped. */
+  .v2-viz-counts{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;margin-top:16px}
+  .v2-viz-count{min-width:0;align-content:start}
+  .v2-viz-count small{align-items:flex-start;line-height:1.3}
+  .v2-viz-count b{display:block;margin-top:2px;line-height:1.2}
+
+  /* Pipeline rows: columns shrink instead of running off. */
+  .v2-pipe-row{grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto auto;column-gap:8px}
+  .v2-pipe-card.is-counts-only .v2-pipe-row{grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto}
+
+  /* Other dashboard card tables stay inside the card; scroll inside only if needed. */
+  .v2-card .v2-table-scroll,.v2-card .v2-source-table,.v2-card .v2-cost-table{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .v2-card table{max-width:100%}
+
+  /* Hawk and the bottom nav never cover card content, including when a card is scrolled into view. */
+  .v2-main,.v2-main.v2-main{padding-bottom:calc(160px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(160px + env(safe-area-inset-bottom))}
+  .v2-card,.v2-section{scroll-margin-bottom:calc(160px + env(safe-area-inset-bottom))}
+}
+
+
+/* ---- ui-10: case card, contrast, 44px targets, calmer Today -------------- */
+/* Gold rule must sit in padding, never over the title. overflow:hidden was
+   clipping the first letters on a 17px mobile pad. */
+.v2-card.v2-next-move,.v2-next-move{
+  overflow:visible;
+  padding-left:26px;
+}
+.v2-next-move::after{
+  left:0;width:5px;top:14px;bottom:14px;
+}
+
+/* Supporting copy was 11px muted (#8b8b90), short of AA on the card. */
+.v2-next-why,.v2-next-reason{
+  color:var(--v2-text-2);
+  font-size:13px;
+  line-height:1.5;
+}
+.v2-next-reason{color:var(--v2-text)}
+
+.v2-button-link{
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+  color:var(--v2-text);
+  text-decoration:underline;
+  text-underline-offset:3px;
+  min-height:44px;
+}
+.v2-button-link:hover:not(:disabled){
+  background:rgba(255,255,255,.06);
+  border-color:transparent;
+  color:#fff9ef;
+}
+
+.v2-next-details{margin-top:6px}
+.v2-next-details>summary{
+  display:inline-flex;align-items:center;
+  min-height:44px;padding:0 2px;
+  cursor:pointer;color:var(--v2-accent-strong);
+  font-size:13px;font-weight:700;
+  list-style:none;
+}
+.v2-next-details>summary::-webkit-details-marker,
+.v2-next-details>summary::marker{display:none;content:""}
+.v2-next-details>p{
+  margin:0 0 8px;color:var(--v2-text-2);font-size:13px;line-height:1.55;
+}
+
+/* Primary actions and list rows meet a 44px tap target. Chips stay compact. */
+.v2-main .v2-button,
+.v2-nav a,.v2-nav button,
+.v2-mobile-lead-row,.v2-mobile-deal-row{
+  min-height:44px;
+}
+
+/* One briefing leads; operating detail stays folded until asked for. */
+.v2-today-page{display:flex;flex-direction:column;gap:16px}
+.v2-today-page>.v2-page-head{margin-bottom:4px}
+.v2-executive-brief{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px 20px;
+}
+.v2-executive-brief .v2-fact small{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--v2-text-2);
+}
+.v2-executive-brief .v2-fact b{
+  display:block;margin-top:6px;font-size:20px;line-height:1.2;color:var(--v2-text);
+  overflow-wrap:anywhere;
+}
+.v2-owner-first-look p{margin:8px 0 0;color:var(--v2-text);font-size:14px;line-height:1.45}
+.v2-today-operations{
+  margin:8px 0 0;padding:0 20px 12px;
+  border:1px solid var(--v2-border);border-radius:22px;
+  background:var(--v2-surface);
+}
+.v2-today-operations>summary{
+  display:flex;align-items:center;min-height:44px;
+  cursor:pointer;font-weight:700;color:var(--v2-text);
+  list-style:none;
+}
+.v2-today-operations>summary::-webkit-details-marker,
+.v2-today-operations>summary::marker{display:none;content:""}
+.v2-today-operations>summary::after{content:" Show";font-weight:600;color:var(--v2-accent-strong);margin-left:8px}
+.v2-today-operations[open]>summary::after{content:" Hide"}
+
+/* Titles wrap instead of overflowing the card. */
+.v2-card h2,.v2-card h3,.v2-page-head h1{overflow-wrap:anywhere}
+
+@media (max-width:860px){
+  .v2-card.v2-next-move,.v2-next-move{
+    grid-template-columns:1fr;
+    padding:20px 18px 20px 24px;
+    overflow:visible;
+  }
+  /* One column so the primary CTA stands alone; the link sits under it. */
+  .v2-next-actions{
+    display:flex;flex-direction:column;align-items:stretch;
+    min-width:0;gap:8px;
+  }
+  .v2-next-actions .v2-button,
+  .v2-next-actions .v2-button-link{
+    width:100%;min-height:44px;
+  }
+  .v2-executive-brief{grid-template-columns:1fr}
+}
+
+
+/* ---- ui-10 extras: fixture badge, record layout, deals flyout ---- */
+.v2-deal-bridges>div{
+  max-width:calc(100vw - 24px);
+  width:min(236px,calc(100vw - 24px));
+  box-sizing:border-box;
+  overflow-x:hidden;
+}
+.v2-deal-bridges-label{overflow-wrap:anywhere}
+.v2-nav a,.v2-account,.v2-genesis-trigger,.v2-skip-link{min-height:44px}
+@media (max-width:860px){
+  .v2-fixture-badge{
+    top:calc(58px + env(safe-area-inset-top));
+    bottom:auto;
+    left:12px;
+  }
+  .v2-full-layout{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .v2-main,.v2-main.v2-main{padding-bottom:calc(180px + env(safe-area-inset-bottom));scroll-padding-bottom:calc(180px + env(safe-area-inset-bottom))}
+}
+
+/* Keep the deal-systems menu inside the phone viewport. */
+@media (max-width:860px){
+  .v2-deal-bridges>div{left:auto;right:0;width:min(236px,calc(100vw - 24px));max-width:calc(100vw - 24px)}
+}
+.v2-sidebar-action{min-height:44px}
+
+/* ---- ui-10 pass 2: 44px chrome, reserved sample banner, clearer states ---- */
+.v2-command-trigger,
+.v2-view-tabs button,
+.v2-view-picker .v2-select,
+.v2-account,
+.v2-mobile-account,
+#v2-mobile-account,
+.v2-mobile-top .v2-icon-button,
+.v2-mobile-top a.v2-brand,
+.v2-brand,
+.v2-sidebar-action,
+.v2-mobile-account-menu a,
+.v2-mobile-account-menu button,
+.v2-account-menu a,
+.v2-account-menu button,
+.v2-input,
+.v2-select,
+.v2-up-next a,
+.v2-attention-row,
+.v2-today-up a{
+  min-height:44px;
+}
+.v2-mobile-top .v2-icon-button,
+.v2-mobile-account,
+#v2-mobile-account{
+  width:44px;min-width:44px;height:44px;
+}
+.v2-mobile-top .v2-avatar,
+.v2-mobile-account .v2-avatar{
+  width:28px;height:28px;flex-basis:28px;
+}
+.v2-command-trigger{min-height:44px}
+@media (min-width:861px){
+  .v2-command-trigger{width:auto}
+}
+@media (max-width:860px){
+  .v2-command-trigger{width:44px;min-width:44px;height:44px}
+  .v2-view-tabs{min-height:44px}
+}
+
+/* Sample data lives in a reserved 44px strip at the top of the viewport.
+   The shell is pushed down by the same amount, so the chip never covers work. */
+.v2-fixture-badge{
+  position:fixed;
+  top:0;left:0;right:0;bottom:auto;
+  width:100%;height:44px;min-height:44px;
+  margin:0;border-radius:0;transform:none;
+  justify-content:center;
+  z-index:500;
+  box-sizing:border-box;
+}
+body.v2-showing-sample .v2-shell{
+  height:calc(100dvh - 44px);
+  margin-top:44px;
+}
+
+/* Empty, loading, and error: readable type, AA contrast, one clear action. */
+.v2-state{min-height:200px;padding:32px 24px;text-align:center}
+.v2-state-title,.v2-state h2{color:var(--v2-text);font-size:22px;line-height:1.25;margin:0}
+.v2-state p{color:var(--v2-text-2);font-size:14px;line-height:1.5;margin:10px 0 18px}
+.v2-state .v2-button{min-height:44px}
+.v2-state-error{border-color:rgba(var(--v2-danger-rgb),.4)}
+.v2-state-loading,.v2-loading{padding:28px 8px 8px}
+.v2-loading-label{color:var(--v2-text);font-size:16px;font-weight:600}
+.v2-loading-hint{margin:4px 0 12px;color:var(--v2-text-2);font-size:14px;line-height:1.45}
+/* ---- ui-10 pass 2b: win specificity on leftover chrome ---- */
+.v2-toolbar .v2-button,
+.v2-toolbar .v2-input,
+.v2-toolbar .v2-select,
+.v2-input,
+.v2-select,
+.v2-nselect,
+.v2-icon-button,
+.v2-workspace-rail a,
+.v2-workspace-rail button,
+.v2-week-item,
+.v2-row-link,
+.v2-briefing a,
+.v2-week-inbox a,
+.v2-executive-brief a,
+.v2-deal-bridges a,
+.v2-mobile-top a,
+.v2-mobile-top .v2-icon-button,
+.v2-mobile-top .v2-avatar,
+#v2-mobile-account{
+  min-height:44px !important;
+}
+.v2-icon-button,
+.v2-workspace-rail .v2-icon-button{
+  width:44px;min-width:44px;
+}
+.v2-row-link,
+.v2-briefing a,
+.v2-week-inbox a,
+.v2-executive-brief a,
+.v2-mobile-top a{
+  display:inline-flex;align-items:center;
+}
+.v2-week-item{align-items:center}
+
+.v2-section-head a,
+.v2-deal-row-link{
+  min-height:44px !important;
+  display:inline-flex;
+  align-items:center;
+}

@@ -1,0 +1,293 @@
+/* Copied from the Genesis OS repo (v2/refine/light.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* ==========================================================================
+   The light look, after PLG Capital Desk
+   On 2026-09-17 Graham chose the style of the owner old Capital Desk for
+   Genesis: warm ivory pages with near-white cards, a dark green-black sidebar,
+   deep teal cards for the one thing that matters on a screen, gold fills and a
+   bronze gold for text. Light is everyone's default (the theme boot in
+   index.html) and dark stays a choice in Settings.
+
+   This sheet loads last, so it retunes the light theme without rewriting the
+   reasoning in styles.css. Every rule is scoped to [data-theme="light"]; the
+   dark theme is untouched.
+   ========================================================================== */
+
+[data-theme="light"]{
+  /* Pages and cards, Capital Desk's own values. A lighter variant was tried on
+     2026-09-17 and retired the same day: the specification in refine/system.css
+     is the one palette now, and these match it so the two cannot drift. */
+  --v2-bg:#f6f4ef;
+  --v2-rail:#f1efe8;
+  --v2-surface:#fffefa;
+  --v2-surface-2:#faf8f3;
+  --v2-surface-3:#f3f0e9;
+  --v2-disabled-surface:#efece5;
+  --v2-border:#e2ded5;
+  --v2-line:#e2ded5;
+  --v2-border-strong:#c9c1b2;
+
+  /* Text. Capital Desk's labels are a green grey (#6c746e); this is that hue a
+     step darker, so muted still clears 4.5:1 (4.7 on the page, 4.6 on surface-3). */
+  --v2-text:#222326;
+  --v2-text-2:#686761;
+  --v2-text-3:#5c5b56;
+  --v2-muted:#686761;
+
+  /* Gold. The fill is the sample's softer gold with ink on it (7.2:1). Gold as
+     text is its bronze, 6.0:1 on the page, which is what links and accents use. */
+  --v2-accent:#c29a5c;
+  --v2-accent-rgb:194,154,92;
+  --v2-accent-hover:#b0874a;
+  --v2-accent-strong:#795520;
+  --v2-accent-soft:rgba(194,154,92,.15);
+  --v2-accent-border:rgba(194,154,92,.32);
+  --v2-accent-text:#795520;
+  --v2-marker:#795520;
+  --v2-focus:#795520;
+  --v2-selection:rgba(194,154,92,.24);
+  --v2-assist-glow:rgba(121,85,32,.18);
+
+  /* A later :root block in styles.css redeclares these two with dark values
+     and wins on source order, so light floating panels carried black shadows. */
+  --v2-shadow-float:0 14px 38px rgba(43,38,31,.13),0 1px 0 rgba(255,255,255,.55) inset;
+  --v2-shadow-overlay:-14px 0 42px rgba(43,38,31,.14),0 1px 0 rgba(255,255,255,.55) inset;
+}
+
+/* Dark regions inside the light look: the sidebar, and the card that says what
+   matters on a screen. Redeclaring the dark tokens on the element makes
+   everything inside it (links, badges, buttons, menus) draw the dark way, with
+   no second set of component rules to keep in step. */
+[data-theme="light"] .v2-sidebar,
+[data-theme="light"] .v2-guide,
+[data-theme="light"] .v2-next-move,
+[data-theme="light"] .v2-report-diagnostic,
+[data-theme="light"] .v2-outreach-next,
+[data-theme="light"] .v2-deal-recommended,
+[data-theme="light"] .v2-deal-clear{
+  color-scheme:dark;
+  /* The ground tokens too: keys, focus rings and insets inside draw with them. */
+  --v2-bg:#111814;
+  --v2-sidebar:#141b17;
+  --v2-rail:#18201c;
+  --v2-text:#f5f3ef;
+  --v2-text-2:#d2cdc3;
+  --v2-text-3:#a6a399;
+  --v2-muted:#a6a399;
+  --v2-line:rgba(255,255,255,.1);
+  --v2-border:rgba(255,255,255,.1);
+  --v2-border-strong:rgba(255,255,255,.2);
+  --v2-surface:#1d2723;
+  --v2-surface-2:#222d29;
+  --v2-surface-3:#28342f;
+  --v2-disabled-surface:#1b221f;
+  --v2-disabled-text:#6f746f;
+  --v2-hover:rgba(255,255,255,.05);
+  --v2-active:rgba(255,255,255,.08);
+  --v2-selection:rgba(212,181,121,.22);
+  --v2-accent:#c9a157;
+  --v2-accent-rgb:201,161,87;
+  --v2-accent-hover:#d9ba78;
+  --v2-accent-strong:#e6c98f;
+  --v2-accent-soft:rgba(212,181,121,.13);
+  --v2-accent-border:rgba(207,183,132,.42);
+  --v2-accent-text:#f1d898;
+  --v2-marker:#f1d898;
+  --v2-marker-edge:#c9a157;
+  --v2-on-accent:#1b170e;
+  --v2-focus:#f1d898;
+  --v2-control-border:#6a6d76;
+  --v2-control-border-hover:#82858d;
+  --v2-positive:#6fcf9a;
+  --v2-positive-soft:rgba(85,197,138,.14);
+  --v2-positive-rgb:85,197,138;
+  --v2-warning:#eba36f;
+  --v2-warning-soft:rgba(232,149,90,.14);
+  --v2-warning-rgb:232,149,90;
+  --v2-danger:#ee8a8e;
+  --v2-danger-soft:rgba(227,108,113,.14);
+  --v2-danger-rgb:227,108,113;
+  --v2-info:#8dbbe6;
+  --v2-info-soft:rgba(110,168,220,.14);
+  --v2-info-rgb:110,168,220;
+  --v2-ink-rgb:0,0,0;
+  --v2-scrollbar:#34413b;
+  --v2-scrollbar-hover:#46554e;
+  --v2-shadow-sm:0 0 0 .5px rgba(255,255,255,.05),0 1px 2px rgba(0,0,0,.18),inset 0 .5px 0 rgba(255,255,255,.05);
+  --v2-shadow-md:0 0 0 .5px rgba(255,255,255,.05),0 4px 16px rgba(0,0,0,.2),0 12px 40px rgba(0,0,0,.35),inset 0 .5px 0 rgba(255,255,255,.06);
+  color:var(--v2-text);
+}
+
+/* Capital Desk's sidebar: green-black with a faint diagonal lift, a shade
+   lighter to sit with the lighter page. */
+[data-theme="light"] .v2-sidebar{
+  background:linear-gradient(155deg,#212a26 0%,#161e1a 38%,#141a17 100%);
+  border-right-color:transparent;
+  box-shadow:none;
+}
+/* Capital Desk's sidebar colors, copied from its desk-sidebar.css: sage greys
+   for items and labels, a pale gold on hover, and a gold wash for the page you
+   are on. */
+[data-theme="light"] .v2-sidebar{color:#f6f3ec;border-right:1px solid rgba(255,255,255,.05)}
+[data-theme="light"] .v2-sidebar .v2-nav-label{color:#9faca0}
+[data-theme="light"] .v2-sidebar .v2-nav-group:not(:first-child){border-top-color:rgba(255,255,255,.07)}
+[data-theme="light"] .v2-sidebar .v2-nav a{color:#c6cfc7}
+[data-theme="light"] .v2-sidebar .v2-nav a>.v2-icon,
+[data-theme="light"] .v2-sidebar .v2-nav a svg{color:#a7b3a8}
+[data-theme="light"] .v2-sidebar .v2-nav a:hover{color:#fff9ef;background:rgba(255,255,255,.027);border-color:transparent;box-shadow:none}
+[data-theme="light"] .v2-sidebar .v2-nav a:hover>.v2-icon,
+[data-theme="light"] .v2-sidebar .v2-nav a:hover svg{color:#e0c48f}
+[data-theme="light"] .v2-sidebar .v2-nav a[aria-current="page"]{
+  color:#f3e5c6;
+  background:linear-gradient(100deg,rgba(212,181,121,.11),rgba(212,181,121,.03));
+  box-shadow:inset 0 0 0 1px rgba(207,183,132,.14);
+}
+[data-theme="light"] .v2-sidebar .v2-nav a[aria-current="page"] svg{color:#e0c48f}
+[data-theme="light"] .v2-sidebar .v2-nav a::before{background:#d9b77b}
+[data-theme="light"] .v2-sidebar .v2-command-trigger,
+[data-theme="light"] .v2-sidebar .v2-sidebar-toggle{color:#aeb8af;border-color:rgba(255,255,255,.06);background:rgba(255,255,255,.012)}
+[data-theme="light"] .v2-sidebar .v2-command-trigger:hover,
+[data-theme="light"] .v2-sidebar .v2-sidebar-toggle:hover{color:#fff8ea;border-color:rgba(255,255,255,.09);background:rgba(255,255,255,.035)}
+[data-theme="light"] .v2-sidebar .v2-brand small{color:#aeb7ae}
+[data-theme="light"] .v2-sidebar .v2-sidebar-foot{border-top-color:rgba(255,255,255,.05)}
+[data-theme="light"] .v2-sidebar .v2-account-copy b{color:#e0e6dc}
+[data-theme="light"] .v2-sidebar .v2-account-copy small{color:#99a799}
+
+/* Capital Desk's main buttons: deep green with white text (its "Drop a deal",
+   "New borrower link" and "Add lender"). Inside the dark regions they stay gold,
+   as Capital Desk's gold reads on its dark cards. */
+[data-theme="light"] .v2-button-primary{
+  border-color:#18352f;background:#18352f;color:#fff;
+  box-shadow:0 5px 14px rgba(21,57,43,.07);
+}
+[data-theme="light"] .v2-button-primary:hover:not(:disabled){
+  border-color:#254b40;background:#254b40;color:#fff;
+  box-shadow:0 7px 16px rgba(21,57,43,.1);
+}
+[data-theme="light"] :is(.v2-sidebar,.v2-guide,.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-fr-preview) .v2-button-primary{
+  border-color:var(--v2-accent);background:var(--v2-accent);color:var(--v2-on-accent);
+  box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 5px 13px rgba(var(--v2-accent-rgb),.16);
+}
+[data-theme="light"] :is(.v2-sidebar,.v2-guide,.v2-next-move,.v2-report-diagnostic,.v2-outreach-next,.v2-deal-recommended,.v2-deal-clear,.v2-fr-preview) .v2-button-primary:hover:not(:disabled){
+  border-color:var(--v2-accent-strong);background:var(--v2-accent-hover);color:var(--v2-on-accent);
+}
+
+/* The tour's spotlight. The dark theme's dim, over ivory, turned the page a
+   muddy grey; here it is a light veil, and the gold ring carries the focus. */
+[data-theme="light"] .v2-guide-ring{
+  box-shadow:0 0 0 9999px rgba(43,38,31,.1),
+             0 0 0 2px #c29a5c,
+             0 0 0 7px rgba(194,154,92,.28);
+}
+
+/* The one dark panel on a screen. Capital Desk's deep teal, as specified. */
+[data-theme="light"] .v2-next-move,
+[data-theme="light"] .v2-report-diagnostic,
+[data-theme="light"] .v2-outreach-next,
+[data-theme="light"] .v2-deal-recommended,
+[data-theme="light"] .v2-deal-clear{
+  background:#111f25;
+  border-color:transparent;
+  box-shadow:0 12px 26px rgba(29,39,44,.07);
+}
+
+/* ==========================================================================
+   Shadows in light
+   Graham: "shadows globally are a little harsh for light mode" (2026-09-17).
+   A shadow written for a near-black page has to be heavy to be seen at all;
+   the same value over ivory reads as a smudge under the card. These are the
+   rules a sweep of every screen found still carrying dark-theme weight, and
+   they are retuned to Capital Desk's range: warm ink at 6 to 14 per cent,
+   never pure black, with the blur doing the lifting instead of the opacity.
+   Grouped by how far off the page a thing sits, so the depths stay ordered:
+   a menu cannot end up heavier than the panel it opens over.
+   ========================================================================== */
+
+/* Resting on the page: a control that floats over content, and hover lifts. */
+[data-theme="light"] .v2-genesis-opener,
+[data-theme="light"] .v2-rail-restore{
+  box-shadow:0 6px 16px rgba(43,38,31,.1),0 1px 3px rgba(43,38,31,.06);
+}
+[data-theme="light"] .v2-content-vertical:hover,
+[data-theme="light"] .v2-stage-card:hover,
+[data-theme="light"] .v2-ea-row:hover{
+  box-shadow:0 6px 18px rgba(43,38,31,.1);
+}
+
+/* Opened over the page: menus and the toasts that stack above them. */
+[data-theme="light"] .v2-account-menu,
+[data-theme="light"] .v2-mobile-account-menu,
+[data-theme="light"] .v2-toast{
+  box-shadow:0 12px 30px rgba(43,38,31,.12);
+}
+[data-theme="light"] .v2-mobile-nav{
+  box-shadow:0 -2px 18px rgba(43,38,31,.08);
+}
+
+/* Taking the screen: dialogs, and the panels that slide in beside it. */
+[data-theme="light"] .v2-command-dialog,
+[data-theme="light"] .v2-compose{
+  box-shadow:0 20px 48px rgba(43,38,31,.14);
+}
+[data-theme="light"] .v2-settings-panel{
+  box-shadow:-14px 0 42px rgba(43,38,31,.13);
+}
+/* Hawk's panel carries no shadow at all in light: Graham picked it that way
+   from the samples. A hairline and a near-white ground are the whole edge. */
+[data-theme="light"] .v2-genesis-panel{
+  background:#fcfbf8;
+  border-color:var(--v2-border);
+  box-shadow:none;
+}
+[data-theme="light"] .v2-history-drawer{
+  box-shadow:0 0 36px rgba(43,38,31,.12);
+}
+/* The tour's tooltip is a dark card on ivory, so its shadow is the card's own
+   ink rather than the page's. */
+[data-theme="light"] .v2-guide{
+  box-shadow:0 14px 34px rgba(17,31,37,.14);
+}
+[data-theme="light"] .v2-focus-ring{
+  box-shadow:0 0 0 3px rgba(var(--v2-accent-rgb),.18),0 14px 40px rgba(43,38,31,.14);
+}
+
+/* Setup's pictures. The screenshot's black drop was written for a dark intake
+   and is the heaviest thing on an ivory page. */
+[data-theme="light"] .v2-fr-visual-screen img{
+  box-shadow:0 18px 40px rgba(43,38,31,.12);
+}
+[data-theme="light"] .v2-fr-visual-photo img{
+  box-shadow:0 18px 40px rgba(43,38,31,.1);
+}
+
+/* Hawk stays a dark, on-brand surface even when the rest of the app is light.
+   Ivory and pale gold briefing type was written for a near-black panel; on
+   ivory it drops well below 4.5:1, and the gold core washes out to beige. */
+[data-theme="light"] .v2-genesis-panel,
+[data-theme="light"] .v2-genesis-page-body{
+  color-scheme:dark;
+  background:#0d0e10;
+  border-color:rgba(201,161,87,.28);
+  color:#f4efe8;
+  --v2-bg:#0d0e10;
+  --v2-sidebar:#14151a;
+  --v2-rail:#14151a;
+  --v2-text:#f4efe8;
+  --v2-text-2:#ece8df;
+  --v2-text-3:#c9c4b8;
+  --v2-muted:#c9c4b8;
+  --v2-line:rgba(255,255,255,.1);
+  --v2-border:rgba(201,161,87,.28);
+  --v2-border-strong:rgba(201,161,87,.4);
+  --v2-surface:#16171b;
+  --v2-surface-2:#1a1b1f;
+  --v2-surface-3:#22232a;
+  --v2-accent:#c9a157;
+  --v2-accent-rgb:201,161,87;
+  --v2-accent-hover:#d9ba78;
+  --v2-accent-strong:#e6c98f;
+  --v2-accent-text:#f1d898;
+  --v2-marker:#f1d898;
+  --v2-focus:#f1d898;
+  --v2-on-accent:#1b170e;
+}

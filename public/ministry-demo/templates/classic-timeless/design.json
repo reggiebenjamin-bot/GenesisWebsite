@@ -1,0 +1,260 @@
+{
+  "template": {
+    "slug": "classic-timeless",
+    "name": "Classic & Timeless",
+    "audience": "Established congregations with history, a building people love and a multi-generational family",
+    "summary": "A heritage look that still feels current: parchment grounds, deep forest green, brass hairlines and a small burgundy accent, set in Newsreader with a flared humanist sans for reading. Photos sit in ivory mats or inside an arched chapel window."
+  },
+  "church": {
+    "name": "Calder Hill Chapel",
+    "fictional": true,
+    "nameCheck": "Web search on 2026-11-19 for \"Calder Hill Chapel\" Richmond Virginia found no church by that name.",
+    "city": "Richmond",
+    "state": "Virginia",
+    "stateCode": "VA",
+    "streetAddress": "1418 Calder Hill Road",
+    "postalCode": "23221",
+    "addressNote": "Calder Hill Road is a made-up street.",
+    "phone": "(804) 555-0142",
+    "email": "calderhill@example.org",
+    "founded": 1891,
+    "sundayTimes": [
+      {
+        "time": "9:00 AM",
+        "style": "Hymns, organ and a quiet start"
+      },
+      {
+        "time": "11:00 AM",
+        "style": "Choir, band and children's classes"
+      }
+    ],
+    "pastors": [
+      "Samuel",
+      "Ruth"
+    ],
+    "pastorsNote": "Lead pastors, a married couple, first names only. Samuel preaches most Sundays; Ruth leads care and prayer.",
+    "tagline": "Deep roots, open doors.",
+    "heroHeadline": {
+      "line1": "Deep roots,",
+      "line2": "open {word}.",
+      "rotatingWords": [
+        "doors",
+        "table",
+        "arms"
+      ]
+    },
+    "missionLine": "To know Christ, to love Richmond, and to keep the door open for whoever comes next.",
+    "announcement": "The bell tower is being restored. Help us ring it again by Easter.",
+    "latestMessage": {
+      "title": "Lift up your eyes",
+      "series": "Songs for the Road, week 4",
+      "scripture": "Psalm 121",
+      "speaker": "Pastor Ruth",
+      "date": "2026-11-15"
+    },
+    "ministries": [
+      "Calder Kids",
+      "Youth and Young Adults",
+      "Mended (healing and recovery)",
+      "Serving Teams"
+    ]
+  },
+  "palette": [
+    {
+      "name": "Forest",
+      "hex": "#1F3D2F",
+      "role": "Main color: headlines, primary buttons, hero, numbered columns band",
+      "carriesText": "Ivory #FCF9F1",
+      "contrast": "11.30:1"
+    },
+    {
+      "name": "Deep Forest",
+      "hex": "#152A20",
+      "role": "Footer, preview bar, photo scrims, video dialog",
+      "carriesText": "Brass Light #D2B574",
+      "contrast": "7.66:1"
+    },
+    {
+      "name": "Parchment",
+      "hex": "#F5EFE2",
+      "role": "Page ground",
+      "carriesText": "Ink #24221D",
+      "contrast": "13.87:1"
+    },
+    {
+      "name": "Vellum",
+      "hex": "#EBE2CE",
+      "role": "Alternate bands, announcement bar, outline button hover panel",
+      "carriesText": "Forest #1F3D2F",
+      "contrast": "9.23:1"
+    },
+    {
+      "name": "Ivory",
+      "hex": "#FCF9F1",
+      "role": "Photo mats, cards, form fields, text on forest",
+      "carriesText": "Forest #1F3D2F",
+      "contrast": "11.30:1"
+    },
+    {
+      "name": "Brass",
+      "hex": "#A8843F",
+      "role": "Hairlines, ornaments, stars, diamonds. Decorative only, never body text",
+      "carriesText": "none (decorative; 3.04:1 on parchment)",
+      "contrast": "3.04:1"
+    },
+    {
+      "name": "Brass Light",
+      "hex": "#D2B574",
+      "role": "Labels and accents on forest, hero primary button",
+      "carriesText": "Deep Forest #152A20",
+      "contrast": "7.66:1"
+    },
+    {
+      "name": "Brass Deep",
+      "hex": "#7A5D24",
+      "role": "Small meta text and numerals on paper",
+      "carriesText": "used as text on Parchment",
+      "contrast": "5.36:1 on Parchment, 4.77:1 on Vellum"
+    },
+    {
+      "name": "Burgundy",
+      "hex": "#7A2532",
+      "role": "Small accent: labels, one italic word per headline, play buttons, links",
+      "carriesText": "Ivory #FCF9F1",
+      "contrast": "9.33:1 (as text on Parchment 8.57:1)"
+    },
+    {
+      "name": "Ink",
+      "hex": "#24221D",
+      "role": "Body text on light grounds",
+      "carriesText": "used as text on Parchment",
+      "contrast": "13.87:1"
+    },
+    {
+      "name": "Stone",
+      "hex": "#5B564B",
+      "role": "Secondary text, captions",
+      "carriesText": "used as text on Parchment and Vellum",
+      "contrast": "6.37:1 on Parchment, 5.67:1 on Vellum"
+    },
+    {
+      "name": "Linen",
+      "hex": "#E9E2D0",
+      "role": "Body text on forest",
+      "carriesText": "used as text on Forest",
+      "contrast": "9.20:1 on Forest, 11.74:1 on Deep Forest"
+    },
+    {
+      "name": "Sage Grey",
+      "hex": "#C5C9B8",
+      "role": "Secondary text on forest",
+      "carriesText": "used as text on Forest",
+      "contrast": "7.03:1 on Forest, 8.98:1 on Deep Forest"
+    }
+  ],
+  "contrastMethod": "WCAG 2.x relative luminance formula, recomputed with a Node script during the design review on 2026-11-19; every body text pair is at least 4.5:1. Hover panel check: Sage Grey on Moss 4.98:1, Ivory on Moss 8.01:1.",
+  "fonts": {
+    "display": {
+      "family": "Newsreader",
+      "use": "Headlines, labels in small capitals, quotes, the wordmark",
+      "weights": [
+        300,
+        400,
+        500,
+        600
+      ],
+      "italic": true,
+      "opticalSizes": "6 to 72 (font-optical-sizing auto)"
+    },
+    "body": {
+      "family": "Commissioner",
+      "use": "Body, buttons, navigation, forms",
+      "weights": [
+        400,
+        500,
+        600
+      ],
+      "axes": "FLAR (flare) set to 100 for flared, chiselled stroke endings"
+    },
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Commissioner:FLAR,wght@0..100,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap",
+    "scale": {
+      "display": "46 to 112px / 0.98",
+      "title": "40 to 76px / 1.03",
+      "heading": "32 to 50px / 1.06",
+      "cardTitle": "26 to 32px",
+      "lead": "18 to 21px / 1.6",
+      "body": "18px desktop, 17px phone / 1.65",
+      "label": "13px Newsreader 500 capitals, +0.2em tracking"
+    },
+    "avoided": [
+      "Cormorant Garamond",
+      "Montserrat",
+      "Inter",
+      "Playfair Display"
+    ]
+  },
+  "shapes": {
+    "radius": "2px on buttons, fields and tags; square photos and cards; full semicircle for the arch",
+    "rules": "Fine double rules (two 1px lines with a 1px gap) under the header, on outline buttons, above pull quotes and before labels; single 1px hairlines between rows",
+    "ornament": "One small fleuron (diamond between curls) used at most twice a page: mission section and footer",
+    "arch": "A round-topped chapel window frames the hero photo, story posts and the logo mark, always with a brass double outline and a sill line",
+    "buttons": "Primary filled (forest on paper, brass light on forest); outline buttons wear the 3px double rule; paired buttons share one width"
+  },
+  "motion": {
+    "character": "Slow and settled, like turning a heavy page. Nothing bounces; everything eases in and stays.",
+    "reveal": "Sections rise 22px and fade in as they enter view. JS adds reveal-init only after the observer is ready; reveal-in shows them.",
+    "stepColumns": "The four numbered columns rise one by one (0.14s apart); a brass rule draws across each, then settles to a short mark. On hover a moss panel wipes up, the title turns italic and the numeral steps forward.",
+    "cards": "The three photo cards rise in sequence; on hover the print lifts 4px, the photo eases in 4 percent and the title turns burgundy italic.",
+    "primaryButtons": "A soft ivory sheen crosses once when the button first comes into view and again on hover.",
+    "heroWord": "doors, table, arms: each word leaves upward before the next rises in, so two words never overlap.",
+    "heroPhoto": "A 30 second slow zoom inside the arch, alternating.",
+    "announcement": "The burgundy play button sends out one gentle ring every 2.6 seconds.",
+    "statementBand": "The chapel interior drifts slightly slower than the page.",
+    "photoStrip": "Mounted prints drift left in a 70 second loop and pause on hover or focus.",
+    "reviews": "Cross-fade every 6.2 seconds, paused on hover and focus.",
+    "reducedMotion": "All animation and transitions stop; the strip becomes a plain horizontal scroller; nothing starts hidden."
+  },
+  "photoTreatment": {
+    "grade": "Warm, natural color with a slight warm lift in the shadows; no filters, no black and white, no cool blue grades",
+    "framing": "Ivory mats (8 to 10px) with a hairline border and an italic caption, like prints in a family album; the hero sits inside the arch",
+    "subjects": "Adults of every age, groups over portraits, real moments: greeting, singing, praying, eating together",
+    "count": 14,
+    "credits": "photos/CREDITS.md",
+    "retouching": "Overhead wires removed from the sky and the portico columns of the hero exterior; the baptism photo warmed to match the set and the printed graphic on the shirt removed. The concert-lit choir photo was replaced with a warm pews-and-windows photo so the set follows its own photo rules.",
+    "files": [
+      "baptism-open-water.jpg",
+      "chapel-exterior-golden-hour.jpg",
+      "chapel-interior-pews.jpg",
+      "community-supper.jpg",
+      "elders-laughing.jpg",
+      "friends-over-tea.jpg",
+      "lectern-open-bible.jpg",
+      "morning-field-mist.jpg",
+      "pastors-walking-arm-in-arm.jpg",
+      "prayer-heads-bowed.jpg",
+      "serving-potluck.jpg",
+      "bible-study-round-table.jpg",
+      "sunday-pews-window-light.jpg",
+      "welcome-embrace.jpg"
+    ]
+  },
+  "logo": {
+    "concept": "An arched chapel door drawn with two lines (the same double rule used across the site), a cross in burgundy or brass standing on a small filled hill: Calder Hill.",
+    "lockups": [
+      "Primary wordmark: mark left, Calder Hill in Newsreader 500, CHAPEL · EST. 1891 in spaced capitals below",
+      "Stacked: mark above, name centered, brass double rule, CHAPEL · RICHMOND",
+      "Seal: circular text CALDER HILL CHAPEL · RICHMOND · 1891 around the mark",
+      "Small mark: forest square with ivory arch and brass cross, for avatars and favicons"
+    ],
+    "clearSpace": "The width of the arch on every side",
+    "minimumSize": "Wordmark 140px wide on screen; mark alone 16px"
+  },
+  "files": [
+    "index.html",
+    "brand-board.html",
+    "social-plan.md",
+    "design.json",
+    "photos/",
+    "photos/CREDITS.md"
+  ]
+}

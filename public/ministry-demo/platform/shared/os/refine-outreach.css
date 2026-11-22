@@ -1,0 +1,234 @@
+/* Copied from the Genesis OS repo (v2/refine/outreach.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: outreach.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ---- One rhythm down the page ---------------------------------------------
+ * Blocks were spaced by whichever element happened to carry a margin, so a
+ * drafts card could sit flush on the hero and a toolbar's hairline could run
+ * into a card's rounded corner. Every block on an Outreach page now sits the
+ * same distance from the one above it, and the components give up their own
+ * trailing margins. The Inbox filter row stays tight to the list it filters. */
+.v2-outreach-page>*+*{margin-top:18px}
+.v2-outreach-page>.v2-outreach-pulse,.v2-outreach-page>.v2-outreach-next,
+.v2-outreach-page>.v2-outreach-toolbar,.v2-outreach-page>.v2-bridge-intro,
+.v2-outreach-page>.v2-inbox-toolbar{margin-bottom:0}
+.v2-outreach-page>.v2-inbox-toolbar+*{margin-top:12px}
+
+/* The filters are two self-contained selects; they need no rules of their own
+ * to separate them from the tiles above and the hero below. */
+.v2-outreach-page>.v2-outreach-toolbar{padding:0;border:0}
+
+/* Below 1024px the view picker drew a hairline and left the gap to the next
+ * block, which had none, so the line touched every view's first card and
+ * doubled with the Campaigns intro's own top rule. The shared rhythm is the
+ * separator now. */
+.v2-outreach-page>.v2-outreach-picker{padding-bottom:0;border-bottom:0}
+
+/* ---- Serif moments -------------------------------------------------------
+ * The component rules set these elements' size and a 600 weight at a higher
+ * specificity than the role classes, so the roles are restated here. */
+.v2-outreach-next h2.v2-serif-headline{margin:6px 0 2px;font-size:24px;font-weight:500}
+.v2-outreach-next h2+.v2-next-meta{margin-top:10px}
+.v2-outreach-pulse-item b.v2-serif-number{font-size:30px;font-weight:500;line-height:1.05;font-variant-numeric:lining-nums tabular-nums}
+.v2-call-person h2.v2-serif-headline{font-size:28px;font-weight:500}
+.v2-bridge-intro h2.v2-serif-card{font-size:22px;font-weight:500}
+.v2-outreach-drawer .v2-drawer-title h2.v2-serif-card{font-size:22px;font-weight:500}
+
+/* ---- Stat tiles ----------------------------------------------------------
+ * Warm-lead counts use the pulse tile, so the page has one stat style. Inside
+ * their card they drop the tile frame, which would otherwise draw a second
+ * border just inside the card's own. Two counts, two columns. */
+.v2-outreach-warm .v2-outreach-warm-counts{grid-template-columns:repeat(2,minmax(0,1fr));border:0;border-radius:0;background:none}
+.v2-outreach-warm .v2-outreach-warm-counts .v2-outreach-pulse-item{padding:2px 16px 2px 0}
+.v2-outreach-warm .v2-outreach-warm-counts .v2-outreach-pulse-item+.v2-outreach-pulse-item{padding-left:16px}
+.v2-outreach-page .v2-outreach-pulse-item span{font-size:10.5px}
+
+/* Section counts ("3 items", "1 of 3") read as quiet metadata, like every
+ * other count in the app, instead of full-white body text. */
+.v2-outreach-page .v2-section-head>span{color:var(--v2-muted);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ---- Leaving V2 ------------------------------------------------------------ */
+.v2-classic-link .v2-icon{width:13px;height:13px;opacity:.72}
+.v2-bridge-status{display:flex;align-items:center;gap:10px}
+.v2-bridge-status .v2-icon{width:14px;height:14px;color:var(--v2-muted)}
+
+/* ---- Selection is the gold -----------------------------------------------
+ * The chosen filter, the open conversation and the person on the call screen
+ * are the selections on these views, and they wore the same grey as hover.
+ * They take the accent tint and the brick edge: a straight bar held clear of
+ * the row's ends, because the first and last rows touch their list's rounded
+ * corners and an edge drawn the full height bent around the curve. Avatars,
+ * score chips and the unread dot mark nothing selected, so they go neutral. */
+.v2-outreach-page .v2-segments button[aria-pressed="true"]{background:var(--v2-accent-soft);color:var(--v2-text);box-shadow:inset 0 0 0 1px var(--v2-accent-border)}
+.v2-outreach-page .v2-thread-row.is-active,
+.v2-outreach-page .v2-call-queue>button[aria-current="true"]{position:relative;background:var(--v2-accent-soft);box-shadow:none}
+.v2-outreach-page .v2-thread-row.is-active::after,
+.v2-outreach-page .v2-call-queue>button[aria-current="true"]::after{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--v2-accent);pointer-events:none}
+.v2-outreach-page .v2-thread-meta i{background:var(--v2-text-2)}
+.v2-outreach-page .v2-thread-row .v2-avatar{background:var(--v2-surface-3)!important;color:var(--v2-text-2)!important}
+.v2-outreach-page .v2-thread-row .v2-avatar .v2-icon{width:13px;height:13px}
+.v2-outreach-page .v2-call-queue em{background:var(--v2-surface-3);color:var(--v2-text-2)!important}
+.v2-outreach-page .v2-call-queue>button:disabled{opacity:.6}
+
+/* ---- Focus on edge-to-edge rows --------------------------------------------
+ * These rows fill lists that clip their overflow, so the global outset ring
+ * lost its sides. The ring is drawn inside the row instead. */
+#v2-main .v2-outreach-row:focus-visible,#v2-main .v2-thread-row:focus-visible,
+#v2-main .v2-bridge-row:focus-visible,#v2-main .v2-call-queue>button:focus-visible{box-shadow:inset 0 0 0 2px var(--v2-focus)!important}
+#v2-thread-title:focus{outline:none}
+#v2-thread-title:focus-visible{box-shadow:none!important;text-decoration:underline;text-decoration-color:var(--v2-focus);text-underline-offset:4px}
+
+/* ---- Readable small text ---------------------------------------------------
+ * Reassurance lines, timestamps and drawer labels were 8.5 to 10.5px on the
+ * dark ground. Uppercase labels hold at 10.5px, everything else at 11px or
+ * more. */
+.v2-outreach-page .v2-muted-copy{font-size:12px;line-height:1.5}
+.v2-outreach-page .v2-state-inline{font-size:12px}
+.v2-outreach-page .v2-message small{font-size:11px}
+.v2-outreach-page .v2-thread-row small{font-size:11.5px}
+.v2-outreach-page .v2-thread-compose>p{font-size:11.5px}
+.v2-outreach-page .v2-compact-field>span,.v2-outreach-page .v2-call-outcomes legend,
+.v2-outreach-page .v2-call-queue small,.v2-outreach-page .v2-call-status small{font-size:11px}
+.v2-outreach-page .v2-note-status{font-size:12px}
+.v2-outreach-drawer .v2-drawer-recommendation small{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.v2-outreach-drawer .v2-quick-context dt{font-size:10.5px;letter-spacing:.06em}
+.v2-outreach-drawer .v2-quick-context dd{font-size:12.5px}
+.v2-outreach-drawer .v2-drawer-promotion span{font-size:12px}
+.v2-outreach-drawer .v2-note-status{font-size:12px}
+
+/* ---- Quick View drawer ------------------------------------------------------
+ * The last At a glance row drew its hairline straight onto the rounded top of
+ * the outcome card. Rows keep their dividers between each other only, and the
+ * drawer body spaces its three blocks evenly. */
+.v2-outreach-drawer .v2-drawer-body{display:grid;gap:16px;align-content:start}
+.v2-outreach-drawer .v2-quick-context dl>div:last-child{border-bottom:0}
+.v2-outreach-drawer .v2-drawer-promotion{margin-top:0}
+
+/* ---- Cards never nest a second card -----------------------------------------
+ * A conversation that fails to load puts the shared error card inside the
+ * already-framed inbox; it keeps its message and button and loses the frame. */
+.v2-thread-pane>.v2-state{min-height:0;height:100%;border:0;border-radius:0;background:none;box-shadow:none}
+.v2-outreach-inline-error{color:var(--v2-text-2)}
+.v2-outreach-inline-error b{color:var(--v2-text)}
+.v2-call-note{margin:12px 0 0}
+.v2-thread-opted-out p{margin:0;color:var(--v2-text-2);font-size:12px}
+
+/* ---- A due pill and its owner -----------------------------------------------
+ * In Up next the due pill stretched across its whole column, and the owner
+ * under it started at the pill's outer edge. The pill is sized to its words and
+ * the owner lines up with those words: past the pill's 1px border and 7px side
+ * padding on the left, and on a phone, where the column is right-aligned, on
+ * the right. */
+.v2-outreach-meta{justify-items:start}
+.v2-outreach-meta>.v2-badge+small{padding-left:8px}
+@media (max-width:860px){
+  .v2-outreach-meta{justify-items:end}
+  .v2-outreach-meta>.v2-badge+small{padding-left:0;padding-right:8px}
+}
+
+/* ---- Touch widths ------------------------------------------------------------
+ * At 860px and below the inbox and call screen used heights computed from a
+ * guess at the chrome above them (100dvh minus 255px or 240px), which put Send
+ * reply and Call under the fixed bottom navigation and gave the page two
+ * scrollbars. They now size to their content inside the one page scroll, and
+ * the reply box stays pinned at the bottom of the scroll area, which the page's
+ * own bottom padding already holds clear of the navigation, while a
+ * conversation is longer than the screen. */
+@media (max-width:860px){
+  /* Three short counts fit one row; wrapping the third under the first two
+     orphaned it across the full width and pushed the hero further down. */
+  .v2-outreach-page>.v2-outreach-pulse{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v2-outreach-page>.v2-outreach-pulse .v2-outreach-pulse-item:nth-child(2){border-right:1px solid var(--v2-border)}
+  .v2-outreach-page>.v2-outreach-pulse .v2-outreach-pulse-item:nth-child(3){grid-column:auto;border-top:0}
+  .v2-outreach-page>.v2-outreach-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .v2-outreach-page .v2-inbox-shell{height:auto;min-height:0;overflow:visible}
+  .v2-outreach-page .v2-inbox-shell .v2-thread-list{height:auto;overflow:hidden;border-radius:inherit}
+  .v2-outreach-page .v2-inbox-shell.has-thread .v2-thread-pane{height:auto}
+  .v2-outreach-page .v2-thread-messages{overflow:visible}
+  .v2-outreach-page .v2-thread-compose{position:sticky;bottom:0;z-index:2;border-radius:0 0 var(--v2-radius-md) var(--v2-radius-md)}
+  .v2-outreach-page .v2-call-work{min-height:0}
+  .v2-outreach-page .v2-segments button{min-height:44px;padding-inline:14px}
+  /* The shared compact-field rule held these selects at 36px, under every
+     other touch control on the page. */
+  .v2-outreach-page .v2-compact-field .v2-select{min-height:44px}
+  .v2-outreach-next h2.v2-serif-headline{font-size:21px}
+  .v2-outreach-pulse-item b.v2-serif-number{font-size:28px}
+  .v2-call-person h2.v2-serif-headline{font-size:24px}
+  .v2-outreach-warm .v2-outreach-warm-counts .v2-outreach-pulse-item:nth-child(2){border-right:0}
+}
+
+/* ===== Automations ========================================================
+ * Follow-ups that show what they earn (automations.js). Six results sit in
+ * the pulse strip; Hawk's suggestions are cards; the list is a table whose
+ * row opens the exact steps and messages beside the results. The interview
+ * reads as Hawk asking and you answering, one question at a time. */
+.v2-outreach-page>#v2-automations-host{display:grid;gap:18px;min-width:0}
+.v2-auto-pulse{grid-template-columns:repeat(6,minmax(0,1fr));margin-bottom:0}
+.v2-auto-pulse .v2-outreach-pulse-item:last-child{border-right:0}
+.v2-auto-section{display:grid;gap:10px;min-width:0}
+.v2-auto-section>.v2-section-head{margin:0}
+.v2-auto-section>.v2-section-head h2{margin:0;font-size:15px;font-weight:700}
+.v2-auto-section>.v2-section-head p{margin:3px 0 0;color:var(--v2-muted);font-size:12px}
+.v2-auto-suggestions{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.v2-auto-suggestion{display:grid;align-content:start;gap:8px;padding:16px;border-left:3px solid var(--v2-accent)}
+.v2-auto-suggestion b.v2-serif-card{font-size:19px}
+.v2-auto-suggestion p{margin:0;color:var(--v2-text-2);font-size:12.5px;line-height:1.5}
+.v2-auto-suggestion .v2-button{justify-self:start;margin-top:4px}
+
+.v2-auto-table{min-width:760px}
+.v2-auto-table th:first-child{width:34%}
+.v2-auto-table th{font-size:11px}
+.v2-auto-table th.is-number,.v2-auto-table td.is-number{text-align:right;font-variant-numeric:tabular-nums}
+.v2-auto-table td{font-size:13px}
+.v2-auto-table td.is-number{color:var(--v2-text)}
+.v2-auto-table .v2-badge{font-size:11px;white-space:nowrap}
+.v2-auto-open{display:grid;justify-items:start;gap:5px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.v2-auto-open b{color:var(--v2-text);font-size:13px}
+.v2-auto-open:hover b{text-decoration:underline;text-underline-offset:3px}
+.v2-auto-open:focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px;border-radius:4px}
+.v2-auto-row.is-open>td{border-bottom-color:transparent;background:var(--v2-surface-2)}
+.v2-auto-detail-row>td{height:auto;padding:0 14px 16px;background:var(--v2-surface-2)}
+.v2-auto-detail{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,1fr);gap:18px;padding-top:4px}
+.v2-auto-detail-side{display:grid;align-content:start;gap:8px}
+.v2-auto-detail-side p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5;white-space:normal}
+.v2-auto-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.v2-auto-note{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+
+.v2-auto-steps{display:grid;gap:0;margin:8px 0 0;padding:0;list-style:none;counter-reset:auto-step}
+.v2-auto-steps>li{position:relative;display:grid;gap:6px;padding:0 0 14px 22px;white-space:normal}
+.v2-auto-steps>li::before{content:"";position:absolute;top:5px;left:3px;width:9px;height:9px;border:2px solid var(--v2-accent);border-radius:50%;background:var(--v2-surface)}
+.v2-auto-steps>li::after{content:"";position:absolute;top:18px;bottom:0;left:7px;width:1px;background:var(--v2-border)}
+.v2-auto-steps>li:last-child::after{display:none}
+.v2-auto-step-head{display:flex;align-items:baseline;gap:10px}
+.v2-auto-step-head b{color:var(--v2-text);font-size:13px}
+.v2-auto-step-head span{color:var(--v2-muted);font-size:12px}
+.v2-auto-copy,.v2-auto-subject{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.55;white-space:pre-wrap}
+.v2-auto-subject{color:var(--v2-text);font-weight:600}
+
+.v2-auto-interview{display:grid;gap:14px;padding:18px 20px 20px;border-left:3px solid var(--v2-accent)}
+.v2-auto-interview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v2-auto-interview-head h2.v2-serif-card{margin:4px 0 0;font-size:22px}
+.v2-auto-thread{display:grid;gap:10px}
+.v2-auto-bubble{max-width:min(620px,100%);margin:0;padding:10px 14px;border:1px solid var(--v2-border);border-radius:14px 14px 14px 4px;background:var(--v2-surface-2);color:var(--v2-text);font-size:13.5px;line-height:1.5;justify-self:start;text-align:left}
+.v2-auto-bubble.is-you{border-color:rgba(var(--v2-accent-rgb),.35);border-radius:14px 14px 4px 14px;background:var(--v2-accent-soft);color:var(--v2-text);font:inherit;font-size:13px;font-weight:600;justify-self:end;cursor:pointer}
+.v2-auto-bubble.is-you:hover{border-color:rgba(var(--v2-accent-rgb),.6)}
+.v2-auto-bubble.is-you:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px}
+.v2-auto-options{display:flex;flex-wrap:wrap;gap:8px}
+.v2-auto-options .v2-button{border-radius:999px}
+.v2-auto-draft{display:grid;gap:12px;padding-top:4px}
+.v2-auto-draft .v2-field>span{font-size:11px}
+.v2-auto-draft .v2-auto-steps .v2-textarea{min-height:0;font-size:13px;line-height:1.5}
+.v2-auto-brain{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0;color:var(--v2-muted);font-size:12px}
+
+@media(max-width:1279px){.v2-auto-pulse{grid-template-columns:repeat(3,minmax(0,1fr))}.v2-auto-pulse .v2-outreach-pulse-item:nth-child(3){border-right:0}.v2-auto-pulse .v2-outreach-pulse-item:nth-child(-n+3){border-bottom:1px solid var(--v2-border)}}
+@media(max-width:860px){
+  .v2-auto-pulse{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-auto-pulse .v2-outreach-pulse-item{border-bottom:1px solid var(--v2-border)}
+  .v2-auto-pulse .v2-outreach-pulse-item:nth-child(3){border-right:1px solid var(--v2-border)}
+  .v2-auto-pulse .v2-outreach-pulse-item:nth-child(2n){border-right:0}
+  .v2-auto-detail{grid-template-columns:1fr}
+  .v2-auto-interview{padding:16px}
+  .v2-auto-options .v2-button{min-height:44px}
+}

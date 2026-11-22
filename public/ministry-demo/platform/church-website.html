@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Website · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the website package every level starts with. The website with Hope on it, the brand board, the social plan, and the Plan a Visit and prayer emails as the church receives them. Sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Website package only. Prefix: ws-. Real v2- classes do the work; these only arrange them. */
+  .ws-site{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start}
+  .ws-site-copy{display:grid;gap:14px;align-content:start}
+  .ws-site-copy h2{margin:0}
+  .ws-site-copy p{margin:0}
+  .ws-phone{justify-self:center;width:340px;height:640px;padding:10px;border-radius:40px;background:#050506;box-shadow:0 0 0 1px var(--v2-border-strong),0 18px 40px rgba(0,0,0,.35)}
+  .ws-phone iframe{display:block;width:100%;height:100%;border:0;border-radius:30px;background:#fff}
+  .ws-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .ws-kit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .ws-kit .v2-card{display:flex;flex-direction:column;gap:10px}
+  .ws-kit .v2-card p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.6}
+  .ws-kit .v2-card .v2-button{align-self:flex-start;margin-top:auto}
+  .ws-mails{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+  .ws-mails .v2-card{display:grid;gap:12px}
+  .ws-mails h2{margin:0}
+  .ws-mails .v2-quick-context dd{white-space:pre-line}
+  #ws-visit>*+*,#ws-prayer>*+*{margin-top:12px}
+  .ws-level{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface-2);color:var(--v2-text-2);font-size:12.5px;line-height:1.6}
+  .ws-level svg{flex:none;margin-top:2px;color:var(--v2-info)}
+  .ws-level.is-warn svg{color:var(--v2-warning)}
+  @media (max-width:1180px){.ws-site{grid-template-columns:minmax(0,1fr)}.ws-mails{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:640px){.ws-kit{grid-template-columns:minmax(0,1fr)}.ws-phone{width:100%;max-width:340px;height:560px}}
+</style>
+</head>
+<body data-side="church" data-page="website" data-title="Website">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page ws-page" id="ws-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow" id="ws-eyebrow">Website</div>
+        <h1 id="ws-title">Your website package</h1>
+        <p id="ws-sub">What every level starts with.</p>
+      </div>
+      <div class="v2-page-actions" id="ws-actions"></div>
+    </header>
+
+    <section class="v2-pulse v2-deal-pulse" aria-label="The website this week" id="ws-pulse"></section>
+
+    <section class="v2-card" aria-labelledby="ws-site-title" data-tour="website.site">
+      <div class="ws-site">
+        <div class="ws-site-copy">
+          <div class="v2-eyebrow" id="ws-look">The look</div>
+          <h2 id="ws-site-title">The website, live in its look</h2>
+          <p class="v2-muted-copy" id="ws-site-copy"></p>
+          <ul class="gm-checks" id="ws-site-points"></ul>
+          <div class="ws-actions" id="ws-site-actions"></div>
+        </div>
+        <div class="ws-phone"><iframe id="ws-frame" title="The church website on a phone" loading="lazy"></iframe></div>
+      </div>
+    </section>
+
+    <div class="ws-kit" data-tour="website.kit">
+      <section class="v2-card" aria-labelledby="ws-brand-title"><div class="v2-eyebrow">Brand board</div><h2 id="ws-brand-title">So every post looks like your church</h2><p id="ws-brand-copy"></p><a class="v2-button" id="ws-brand-link" href="#">Open the Brand Board</a></section>
+      <section class="v2-card" aria-labelledby="ws-social-title"><div class="v2-eyebrow">Social marketing plan</div><h2 id="ws-social-title">One Sunday, a week of posts</h2><p>One message turned into a week of posts, with sample captions, the best times to post and what to measure.</p><a class="v2-button" id="ws-social-link" href="#">Open the Social Plan</a></section>
+    </div>
+
+    <section class="v2-section" aria-labelledby="ws-mails-title">
+      <div class="v2-section-head"><div><h2 id="ws-mails-title">The forms, as your team receives them</h2><p id="ws-mails-sub"></p></div></div>
+      <div class="ws-mails">
+        <section class="v2-card" aria-labelledby="ws-visit-title" data-tour="website.visit"><div class="v2-eyebrow">Plan a Visit</div><h2 id="ws-visit-title">A Plan a Visit email</h2><div id="ws-visit"></div></section>
+        <section class="v2-card" aria-labelledby="ws-prayer-title" data-tour="website.prayer"><div class="v2-eyebrow">Prayer form</div><h2 id="ws-prayer-title">A prayer form email</h2><div id="ws-prayer"></div></section>
+      </div>
+    </section>
+
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var $ = function (id) { return document.getElementById(id); };
+  var connect = GM.isIncluded("guests");
+  var maya = GM.person("p-maya"), sarah = GM.person("p-sarah");
+
+  $("ws-eyebrow").textContent = "Website · " + c.short;
+  $("ws-sub").textContent = "Every level starts here: the website in the " + c.look + " look with " + HOPE + " on it, a brand board, a social plan, and forms that reach the right person.";
+  $("ws-actions").innerHTML = '<a class="v2-button v2-button-primary" href="' + esc(c.site) + '">' + ic("website") + "Open the Website</a>";
+
+  function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
+  $("ws-pulse").innerHTML =
+    pulse(HOPE + " conversations", "38", "On the website this week") +
+    pulse("Plan a Visit forms", "4", connect ? "Each one became a guest with an owner" : "Sent to " + c.email) +
+    pulse("Newsletter sign-ups", "6", "Added to the church's list");
+
+  /* ---------- The site ---------- */
+  $("ws-look").textContent = c.look + " look";
+  $("ws-site-copy").textContent = c.name + "'s site, filled with its own story, photos and colors, and built for phones first. " + HOPE + " answers questions on every page, from facts the church approved.";
+  $("ws-site-points").innerHTML = [
+    "Service times, the address and parking on the first screen",
+    HOPE + " answers times, kids, parking and next steps, day and night",
+    "Anything personal goes to a real person, and crisis words get 988 and 911 right away",
+    "Plan a Visit, prayer and newsletter forms on every look"
+  ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
+  $("ws-site-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("external") + "Open Full Size</a>" +
+    '<button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What does each level include?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>";
+  $("ws-frame").setAttribute("src", c.site);
+
+  $("ws-brand-copy").textContent = "Logo, colors, type and voice for " + c.short + ", so a volunteer can make a slide or a post that looks right the first time.";
+  $("ws-brand-link").setAttribute("href", c.brandBoard);
+  $("ws-social-link").setAttribute("href", c.socialPlan);
+
+  /* ---------- The two emails ---------- */
+  function mail(rows) { return '<div class="v2-quick-context"><dl>' + rows.map(function (r) { return "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("") + "</dl></div>"; }
+  function note(text, warn) { return '<p class="ws-level' + (warn ? " is-warn" : "") + '">' + ic(warn ? "alert" : "info") + "<span>" + esc(text) + "</span></p>"; }
+  $("ws-mails-sub").textContent = connect
+    ? "From Level 02 a form becomes a guest or a locked care item, and the email carries no private words."
+    : "At Level 01 every form arrives by email, to the address the church chose.";
+
+  if (connect) {
+    $("ws-visit").innerHTML = mail([["From", c.name + " website"], ["To", "Nadia K., Connections Lead"], ["Subject", "A new guest to welcome"], ["It says", "Maya T. planned a visit for Sunday. Sign in to see the details and the welcome note " + HOPE + " drafted."]]) +
+      note("The form landed in Guests as New, with Nadia K. as the owner and a welcome note due today.") +
+      '<div class="ws-actions"><a class="v2-button" href="church-guest.html?id=g-01">' + ic("guests") + "Open Maya's Guest Record</a></div>";
+    $("ws-prayer").innerHTML = mail([["From", c.name], ["To", "Pastors and the prayer team"], ["Subject", "New prayer request"], ["It says", "New request. Sign in to read."]]) +
+      note("The words stay in the locked care inbox, for pastors and the prayer team. No name, no topic and no words travel by email.") +
+      '<div class="ws-actions"><a class="v2-button" href="church-care.html?view=prayer">' + ic("care") + "Open Prayer in Care</a></div>";
+  } else {
+    $("ws-visit").innerHTML = mail([["From", c.name + " website"], ["To", c.email], ["Subject", "Plan a Visit: " + maya.name + ", Sunday"], ["It says", "Name: " + maya.name + "\nEmail: " + maya.email + "\nComing: Sunday, second gathering\nWith: her husband and two kids, ages 4 and 7\nQuestion: where do the kids check in?"]]) +
+      note("At Level 01 someone on the team reads this inbox and replies by hand. Connect turns it into a guest with an owner, a next step and a welcome note waiting for approval.");
+    $("ws-prayer").innerHTML = mail([["From", c.name + " website"], ["To", "The pastors' address only"], ["Subject", "Prayer request from " + sarah.name], ["It says", D.prayer[0].text]]) +
+      note("At Level 01 the prayer words are in this email, sent only to the pastors' address. Connect keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.", true) +
+      '<div class="ws-actions"><a class="v2-button v2-button-primary" href="' + esc(GM.sameWith("plan", "2")) + '">Preview Level 02</a><a class="v2-button v2-button-quiet" href="index.html#levels">Compare Levels</a></div>';
+    $("ws-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("website") + "Open the Website</a>";
+  }
+  GM.carryLinks();
+
+  GM.hope.setBriefing({
+    line: GM.greeting() + ", {name}. " + c.short + "'s website is live in the " + c.look + " look. 38 people asked me questions on it this week, and 4 planned a visit.",
+    chips: [{ label: "Open the Website", href: c.site, primary: true }, { label: "Open the Brand Board", href: c.brandBoard }, { label: "What Does Each Level Include?", ask: "What does each level include?" }]
+  });
+
+  GM.setTour([
+    { target: '[data-tour="website.site"]', title: "The website, live in its look", text: "Built for phones first, with {assistant.name} answering questions." },
+    { target: '[data-tour="website.kit"]', title: "Brand board and social plan", text: "So every post looks like the church." },
+    { target: '[data-tour="website.visit"]', title: "A Plan a Visit email", text: "As the team receives it." },
+    { target: '[data-tour="website.prayer"]', title: "A prayer form email", text: "Honest about where the words travel." }
+  ]);
+});
+</script>
+</body>
+</html>

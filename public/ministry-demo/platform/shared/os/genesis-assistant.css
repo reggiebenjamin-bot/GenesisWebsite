@@ -1,0 +1,2311 @@
+/* Copied from the Genesis OS repo: the stylesheet v2/genesis-assistant.js builds at runtime
+   (its CSS constant, __ns.HAWK_CSS and the avatar and dictation blocks) and adopts into the
+   assistant's shadow root. shared/app.js adopts it into the Hope dock the same way.
+   Refresh with node tools/sync-os.mjs <repo>. */
+/* ==========================================================================
+   upstream "Aria" AI Assistant Chat - rebuilt stylesheet
+   --------------------------------------------------------------------------
+   Token values, shadows, radii, easing curves and keyframes below were
+   recovered verbatim from the saved page's stylesheets:
+     business-assistant-bm-app/…/8734.chunk.min.css   (chat + messages + input)
+     ai-assistants-hub-app/…/4073.chunk.min.css       (cloud background)
+     giza-web/1.3704.0/app.min.css                    (side panel shell)
+   Obfuscated class names have been replaced with semantic ones. The mapping
+   is documented in RECOVERED-LOGIC.md.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+
+.gx-root {
+  /* WDS primitives (subset actually referenced by the widget) */
+  --wds-space-100: 4px;
+  --wds-space-200: 8px;
+  --wds-space-300: 12px;
+  --wds-space-400: 16px;
+  --wds-space-500: 20px;
+  --wds-space-600: 24px;
+
+  --wds-space-padding-vertical-xx-tiny: var(--wds-space-100);
+  --wds-space-padding-vertical-x-tiny: var(--wds-space-200);
+  --wds-space-padding-vertical-tiny: var(--wds-space-300);
+  --wds-space-padding-horizontal-x-tiny: var(--wds-space-200);
+  --wds-space-padding-horizontal-tiny: var(--wds-space-300);
+  --wds-space-padding-horizontal-small: var(--wds-space-400);
+
+  --wds-border-radius-200: 4px;
+  --wds-border-radius-400: 8px;
+  --wds-border-radius-600: 12px;
+  --wds-border-radius-full: 1000px;
+
+  --wds-color-white: #fff;
+  --wds-color-black-400: #767574;
+  --wds-color-black-550: #dedede;
+  --wds-color-black-600: #e8e7e7;
+  --wds-color-black-750: #f8f6f6;
+  --wds-color-text-placeholder: var(--wds-color-black-400);
+  --wds-color-fill-surface-sunken: var(--wds-color-black-750);
+  --wds-color-border-standard-tertiary: var(--wds-color-black-600);
+  --wds-color-D10: #16182c;
+
+  --wds-font-family-default: Madefor, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* AAC = "AI Assistant Chat" - the widget's own namespace */
+  --aac-space-sp0: 0px;
+  --aac-space-sp1: 2px;
+  --aac-space-sp2: 4px;
+  --aac-space-sp3: 8px;
+  --aac-space-sp4: 10px;
+  --aac-space-sp5: 12px;
+  --aac-space-sp6: 16px;
+  --aac-space-sp7: 20px;
+  --aac-space-sp8: 24px;
+  --aac-space-sp9: 28px;
+  --aac-space-sp10: 32px;
+  --aac-space-sp11: 48px;
+
+  --aac-z-index-background: 0;
+  --aac-z-index-content: 1;
+  --aac-z-index-scroll-button: 2;
+  --aac-z-index-input-box: 3;
+  --aac-z-index-history: 4;
+  --aac-z-index-debug-overlay: 5;
+  --aac-z-index-modal-backdrop: 6;
+  --aac-z-index-modal: 7;
+
+  --aac-chat-content-max-width: 688px;
+  --aac-chat-content-padding-horizontal-start: var(--aac-space-sp9);
+  --aac-chat-content-padding-horizontal-end: var(--aac-space-sp7);
+  --aac-chat-padding-vertical-start: 0;
+  --aac-chat-padding-vertical-end: var(--aac-space-sp8);
+  --aac-chat-padding-horizontal-start: 0;
+  --aac-chat-padding-horizontal-end: 0;
+
+  --aac-control-panel-max-width: 720px;
+  --aac-control-panel-padding-horizontal-start: var(--aac-space-sp7);
+  --aac-control-panel-padding-horizontal-end: var(--aac-space-sp7);
+
+  --aac-header-max-width: 100%;
+  --aac-header-padding-horizontal-start: var(--aac-space-sp5);
+  --aac-header-padding-horizontal-end: var(--aac-space-sp5);
+
+  --aac-input-padding-vertical-start: var(--aac-space-sp3);
+  --aac-input-padding-vertical-end: var(--aac-input-padding-vertical-start);
+  --aac-input-padding-horizontal-start: var(--aac-space-sp5);
+  --aac-input-padding-horizontal-end: var(--aac-space-sp3);
+  --aac-input-border-radius: var(--wds-border-radius-400);
+  --aac-input-box-border-radius: var(--wds-border-radius-600);
+  --aac-input-box-border-width: 1.5px;
+
+  --aac-assistant-message-widget-max-width: 420px;
+
+  --aac-welcome-screen-max-width: 420px;
+  --aac-welcome-screen-padding-horizontal-start: calc(var(--aac-space-sp7) + var(--aac-space-sp6));
+  --aac-welcome-screen-padding-horizontal-end: calc(var(--aac-space-sp7) + var(--aac-space-sp6));
+}
+
+/* Light colour scheme (the scheme captured in the snapshot) */
+[data-color-scheme="light"] {
+  --aac-custom-color-1: #3f4ace;
+  --aac-custom-color-2: #315fff;
+  --aac-custom-color-3: #c4f1fe;
+
+  --aac-user-message-background: #fff;
+  --aac-user-message-box-shadow:
+    -15px 37px 24px 0 rgba(0, 0, 0, .08),
+     -7px 17px 18px 0 rgba(0, 0, 0, .1),
+     -2px  4px 10px 0 rgba(0, 0, 0, .12);
+
+  --aac-assistant-message-widget-background: hsla(0, 0%, 100%, .4);
+  --aac-assistant-message-widget-border-color: transparent;
+  --aac-assistant-message-widget-box-shadow: 2px 2px 25px 0 rgba(0, 0, 0, .08);
+
+  --aac-input-background: #fff;
+  --aac-input-box-background: hsla(0, 0%, 100%, .5);
+  --aac-input-box-border-color: linear-gradient(250deg, #9db9ff -3.73%, #fff 16.93%, #fff 83.6%, #9db9ff 101.7%);
+  --aac-input-box-box-shadow:
+     0 14px 18px -20px hsla(0, 0%, 50%, .05),
+     0 22px 32px  -6px hsla(0, 0%, 50%, .09),
+     1px 8px 17px   0  hsla(0, 0%, 50%, .1);
+  --aac-input-box-shadow:
+    inset 1px 1px 3px 0 transparent,
+    -18px 18px 18px 0 rgba(16, 21, 133, .03),
+     -6px  6px 18px 0 rgba(16, 21, 133, .07);
+  --aac-input-box-shadow-active:
+    inset 1px 1px 3px 0 transparent,
+    -24px 24px 24px 0 rgba(16, 21, 133, .03),
+     -6px  6px 18px 0 rgba(16, 21, 133, .07);
+
+  --aac-actions-menu-background: hsla(0, 0%, 100%, .99);
+  --aac-actions-menu-border-color: transparent;
+  --aac-actions-menu-box-shadow: 2px 2px 25px 0 rgba(0, 0, 0, .08);
+
+  --aac-secondary-text-color: #383838;
+  --aac-markdown-link-color: var(--aac-custom-color-1);
+  --aac-markdown-link-color-hover: var(--aac-custom-color-2);
+  --aac-divider-color: var(--wds-color-black-550);
+}
+
+/* Dark scheme - values also present in the original bundle */
+[data-color-scheme="dark"] {
+  --aac-custom-color-1: #82b0ff;
+  --aac-custom-color-2: #b1ccff;
+  --aac-custom-color-3: #d2d2d4;
+
+  --aac-user-message-background: #363637;
+  --aac-user-message-box-shadow:
+    -15px 37px 24px 0 hsla(0, 0%, 57%, .03),
+     -7px 17px 18px 0 hsla(0, 0%, 57%, .04),
+     -2px  4px 10px 0 hsla(0, 0%, 57%, .05);
+
+  --aac-assistant-message-widget-background: rgba(44, 45, 46, .6);
+  --aac-assistant-message-widget-border-color: #363637;
+  --aac-assistant-message-widget-box-shadow: 2px 2px 25px 0 rgba(0, 0, 0, .08);
+
+  --aac-input-background: #212122;
+  --aac-input-box-background: rgba(61, 63, 69, .5);
+  --aac-input-box-border-color: linear-gradient(250deg, #82b0ff -3.73%, hsla(0, 0%, 100%, .212) 16.93%, hsla(0, 0%, 100%, .212) 83.6%, #82b0ff 101.7%);
+  --aac-input-box-box-shadow:
+     0 14px 18px -20px rgba(0, 0, 0, .15),
+     0 22px 32px  -6px rgba(0, 0, 0, .2),
+     1px 8px 17px   0  rgba(0, 0, 0, .25);
+  --aac-input-box-shadow:
+    inset 1px 1px 3px 0 #151414,
+    -18px 18px 18px 0 transparent,
+     -6px  6px 18px 0 transparent;
+  --aac-input-box-shadow-active:
+    inset 1px 1px 3px 0 #151414,
+    -24px 24px 24px 0 transparent,
+     -6px  6px 18px 0 transparent;
+
+  --aac-actions-menu-background: rgba(44, 45, 46, .99);
+  --aac-actions-menu-border-color: #363637;
+
+  --aac-secondary-text-color: #d2d2d4;
+  --aac-divider-color: #3a3a3b;
+
+  --wds-color-white: #1c1c1d;
+  --wds-color-text-placeholder: #8b8b8c;
+  --aac-input-text-color: #ededee;
+
+  /* Shell chrome. INFERRED - only the light scheme was captured, so these are
+     picked to sit consistently with the recovered dark chat tokens. */
+  --aria-shell-bg: #1c1c1d;
+  --aria-chrome-bg: #2c2d30;
+  --aria-chrome-text: #ededee;
+  --aria-confirm-bg: rgba(44, 45, 46, .75);
+  --aria-chat-surface-bg: #1a1b1e;
+}
+
+[data-color-scheme="light"] {
+  --aria-shell-bg: #fff;
+  --aria-chrome-bg: #eceff3;
+  --aria-chrome-text: #131720;
+  --aria-confirm-bg: hsla(0, 0%, 100%, .75);
+  --aria-chat-surface-bg: #eceff3;
+}
+
+/* Applied for one frame while the colour scheme or brand flips.
+   .aria-tab and .aria-actions-row carry the recovered `transition:
+   background-color .05s` for hover feedback, and .icon-btn transitions both
+   background and colour. Without this, a theme swap cross-fades the whole
+   panel chrome instead of switching cleanly. */
+.aria-shell.is-theme-switching,
+.aria-shell.is-theme-switching * {
+  transition: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Side-panel shell  (giza-web: .rk_swA / .CGSaoi / .eob4l6)
+   -------------------------------------------------------------------------- */
+
+.aria-panel {
+  --ai-assistant-resize-duration: .3s;
+  --ai-assistant-panel-width: 324px;
+
+  position: relative;
+  flex-shrink: 0;
+  height: 100%;
+  width: var(--ai-assistant-panel-width);
+  background-color: #fff;
+  box-shadow: -3px 6px 6px 0 rgba(0, 6, 36, .039);
+  transition: width var(--ai-assistant-resize-duration) ease-out;
+  z-index: 6000;
+  overflow: visible;
+}
+
+/* Collapsed state - the panel animates its own width to 0 */
+.aria-panel[data-open="false"] { width: 0; }
+.aria-panel[data-resizing="true"] { transition: none; }
+
+.aria-panel__body {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: var(--ai-assistant-panel-width);
+  min-width: var(--ai-assistant-panel-width);
+  overflow: hidden;
+  transition: width var(--ai-assistant-resize-duration) ease-out;
+}
+
+.aria-resize-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 12px;
+  cursor: ew-resize;
+  z-index: 10;
+}
+.aria-resize-handle::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background-color: var(--wds-color-white, #fff);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.aria-resize-handle:hover::before,
+.aria-resize-handle:active::before { opacity: 1; }
+
+.aria-resize-handle__grip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--wds-color-D10);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease;
+}
+.aria-resize-handle__grip svg { width: 24px; height: 24px; }
+.aria-resize-handle:hover .aria-resize-handle__grip,
+.aria-resize-handle:active .aria-resize-handle__grip { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   3. Header  (agent tab strip + actions row)
+   -------------------------------------------------------------------------- */
+
+.aria-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Chat background, so the 12px strip left of the header band shows it. */
+  background-color: var(--aria-chat-surface-bg, #eceff3);
+  font-family: var(--wds-font-family-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------------------
+   Assistant header band
+   --------------------------------------------------------------------------
+   NOT a tab. One continuous header surface that starts 12px inside the panel's
+   left edge and runs off the right edge uninterrupted. The only shaped corner
+   is the lower-left, which curves 12px into the chat background - that plus the
+   exposed 12px strip on the left is the recessed corner.
+
+   No right edge, no bottom-right curve, no outline, no shadow, no card border.
+   The previous fixed-width `.aria-tab` tile and its notch wedges are deleted,
+   not restyled.
+   -------------------------------------------------------------------------- */
+
+.aria-header-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 46px;
+  margin-left: 12px;                 /* the recessed strip */
+  padding: 0 12px 0 10px;            /* mark sits 10px inside the band start */
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  background-color: var(--aria-shell-bg, #fff);
+  border-radius: 0 0 0 12px;         /* lower-left only */
+  border: 0;
+  box-shadow: none;
+}
+
+/* The mark is bare: no tile, no circle, no badge, no hit-state box. */
+.aria-header-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  cursor: pointer;
+  flex: none;
+}
+.aria-header-mark:focus { outline: none; }
+.aria-header-mark:focus-visible { outline: 2px solid var(--g-focus, #3899ec); outline-offset: 3px; }
+.aria-header-mark__glyph { position: relative; width: 28px; height: 28px; flex: none; }
+
+.aria-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* 11px below the cap; left padding matches the cap's inner content edge so
+     the label starts on the same vertical as the mark. */
+  /* ~12px beneath the band; left edge aligned to where the band begins. */
+  padding: 10px 12px 8px 12px;
+  background-color: transparent;
+  box-sizing: border-box;
+  transition: background-color .05s;
+  flex-shrink: 0;
+}
+.aria-actions-row__title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+  color: var(--aria-chrome-text, #131720);
+}
+.aria-actions-row__group { display: flex; gap: 6px; }
+
+/* --------------------------------------------------------------------------
+   4. Icon buttons  (WDS IconButton / CloseButton, tertiary dark)
+   -------------------------------------------------------------------------- */
+
+/* WDS button values, resolved through the token chain rather than eyeballed:
+     fill standard primary  = blue-100  #2f5dff
+       hover                = blue-50   #1c3fe5
+       active               = blue-0    #0f2ccf
+     disabled fill          = black-700 #f0efef, label black-500 #a8a6a5
+     tertiary dark fill     = rgba(0,0,0,.05) hover / .1 active
+     focus ring             = 0 0 0 3px blue-300 #acbeff
+     Under newColorsBranding (the branding class present in the capture)
+     --wds-button-border-radius-* resolves to --wds-border-radius-full, so
+     icon buttons are circular and solid buttons are pills. Sizes come from
+     the space scale: tiny 24, small 30, medium 38. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--aria-chrome-text, #131720);
+  border-radius: var(--wds-border-radius-full);
+  cursor: pointer;
+  transition: background-color .1s ease, color .1s ease, opacity .1s ease;
+}
+.icon-btn:hover  { background-color: rgba(0, 0, 0, .05); }
+.icon-btn:active { background-color: rgba(0, 0, 0, .1); }
+[data-color-scheme="dark"] .icon-btn:hover  { background-color: hsla(0, 0%, 100%, .05); }
+[data-color-scheme="dark"] .icon-btn:active { background-color: hsla(0, 0%, 100%, .1); }
+.icon-btn:disabled { color: #a8a6a5; cursor: default; background: transparent; }
+.icon-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #acbeff; }
+.icon-btn--tiny   { width: 24px; height: 24px; }
+.icon-btn--small  { width: 30px; height: 30px; }
+.icon-btn--medium { width: 38px; height: 38px; }
+.icon-btn--primary {
+  background-color: #2f5dff;
+  color: #fff;
+}
+.icon-btn--primary:hover  { background-color: #1c3fe5; }
+.icon-btn--primary:active { background-color: #0f2ccf; }
+.icon-btn--primary:disabled { background-color: #f0efef; color: #a8a6a5; }
+
+.text-btn {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: #2f5dff;
+  text-align: left;
+  cursor: pointer;
+}
+.text-btn:hover { color: #1c3fe5; text-decoration: none; }
+.text-btn:active { color: #0f2ccf; }
+.text-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #acbeff; border-radius: 2px; }
+.text-btn:disabled { color: #a8a6a5; cursor: default; }
+
+.btn {
+  border: 0;
+  border-radius: var(--wds-border-radius-full);
+  padding: 0 18px;
+  height: 30px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #2f5dff;
+  color: #fff;
+  cursor: pointer;
+}
+.btn:hover  { background-color: #1c3fe5; }
+.btn:active { background-color: #0f2ccf; }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px #acbeff; }
+
+/* --------------------------------------------------------------------------
+   5. Chat surface + animated cloud background
+   -------------------------------------------------------------------------- */
+
+.aria-chat-wrapper {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background-color: var(--aria-chat-surface-bg, #eceff3);
+  overflow: hidden;
+}
+
+.cloud-bg {
+  --cloud-bg-color: 61, 120, 255;
+  --bg-color: var(--aria-chat-surface-bg, #eceff3);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-color);
+  overflow: hidden;
+  z-index: var(--aac-z-index-background);
+  pointer-events: none;
+
+  /* The clouds respond to their OWN width, not the viewport. Recovered. */
+  container-name: background;
+  container-type: inline-size;
+}
+.cloud-bg__near,
+.cloud-bg__far {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 400px;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.cloud-bg__blur {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  filter: blur(90px);
+}
+.cloud-bg__fill {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--cloud-bg-color), .1);
+
+  /* SUBSTITUTION. The original is clip-path: url(#cloud-center-clip) - an SVG
+     clipPath injected by the runtime chunk, which is not in the archive, so
+     the actual cloud silhouette is unrecoverable. A circle stands in. */
+  border-radius: 50%;
+}
+/* The second, fainter cloud. */
+.cloud-bg__near .cloud-bg__fill { background: rgba(var(--cloud-bg-color), .03); }
+
+/* Both entrance animations and the cloud geometry are container-conditional.
+   Below 470px the clouds are rotated and offset off-centre and BOTH pop;
+   above it the far cloud blooms slowly and sits square. Recovered verbatim. */
+@container background (max-width: 470px) {
+  .cloud-bg__far,
+  .cloud-bg__near { animation: cloud-pop 1.5s ease-in-out forwards; }
+  .cloud-bg__far .cloud-bg__fill {
+    background: rgba(var(--cloud-bg-color), .07);
+    transform: translateX(-82%) translateY(19%) scale(1.6) rotate(84deg);
+  }
+  .cloud-bg__near .cloud-bg__fill {
+    transform: translateX(61%) translateY(70%) scale(1.6) rotate(533deg);
+  }
+}
+@container background (min-width: 470px) {
+  .cloud-bg__far { animation: cloud-bloom 3s ease-in-out forwards; }
+  .cloud-bg__far .cloud-bg__fill { background: rgba(var(--cloud-bg-color), .1); }
+}
+
+@keyframes cloud-pop {
+  80% { transform: scale(1.3); }
+  to  { opacity: 1; transform: scale(1); }
+}
+@keyframes cloud-bloom {
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   6. Chat column
+   -------------------------------------------------------------------------- */
+
+.aria-chat {
+  container-name: chat;
+  container-type: inline-size;
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  overflow: clip;
+  z-index: var(--aac-z-index-content);
+}
+
+.aria-chat__inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  box-sizing: border-box;
+  padding:
+    var(--aac-chat-padding-vertical-start)
+    var(--aac-chat-padding-horizontal-end)
+    var(--aac-chat-padding-vertical-end)
+    var(--aac-chat-padding-horizontal-start);
+}
+
+.aria-scroll {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Recovered top/bottom fade mask. The right-hand 12px strip stays opaque
+     so the scrollbar is never faded out. */
+  --scroll-fade-bottom-hidden: 12px;
+  -webkit-mask-image:
+    linear-gradient(to bottom,
+      transparent, transparent 0,
+      #000 calc(0px + var(--aac-space-sp7)),
+      #000 calc(100% - (calc(var(--aac-space-sp11) * 2 / 2) + var(--scroll-fade-bottom-hidden))),
+      transparent calc(100% - var(--scroll-fade-bottom-hidden)), transparent),
+    linear-gradient(to bottom, #000, #000);
+          mask-image:
+    linear-gradient(to bottom,
+      transparent, transparent 0,
+      #000 calc(0px + var(--aac-space-sp7)),
+      #000 calc(100% - (calc(var(--aac-space-sp11) * 2 / 2) + var(--scroll-fade-bottom-hidden))),
+      transparent calc(100% - var(--scroll-fade-bottom-hidden)), transparent),
+    linear-gradient(to bottom, #000, #000);
+  -webkit-mask-position: left center, right center;
+          mask-position: left center, right center;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+          mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-size: calc(100% - 12px) 100%, 12px 100%;
+          mask-size: calc(100% - 12px) 100%, 12px 100%;
+
+  scrollbar-width: thin;
+  scrollbar-color: #a8caff transparent;
+}
+.aria-scroll::-webkit-scrollbar { width: 12px; }
+.aria-scroll::-webkit-scrollbar-track { background: transparent; }
+.aria-scroll::-webkit-scrollbar-thumb {
+  background-color: #a8caff;
+  background-clip: content-box;
+  border: 4px solid transparent;
+  border-radius: var(--wds-border-radius-full);
+}
+.aria-scroll::-webkit-scrollbar-thumb:active { background-color: #116dff; }
+
+.aria-thread {
+  box-sizing: content-box;
+  margin: 0 auto;
+  width: min(
+    100% - var(--aac-chat-content-padding-horizontal-start) - var(--aac-chat-content-padding-horizontal-end),
+    var(--aac-chat-content-max-width)
+  );
+  padding-left: var(--aac-chat-content-padding-horizontal-start);
+  padding-right: var(--aac-chat-content-padding-horizontal-end);
+  padding-top: var(--aac-space-sp7);
+  padding-bottom: calc(var(--aac-space-sp11) * 2);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--aac-space-sp5);
+  transition: opacity .3s;
+}
+
+/* --------------------------------------------------------------------------
+   7. Messages
+   -------------------------------------------------------------------------- */
+
+.msg { position: relative; display: flex; flex-direction: column;
+       gap: var(--wds-space-padding-vertical-tiny); width: 100%; }
+
+/* - user - */
+.msg-user__row {
+  position: relative;
+  display: flex;
+  align-self: flex-end;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  width: 95%;
+  flex-direction: column;
+  will-change: opacity, transform;
+  animation: msg-user-in .5s cubic-bezier(.215, .61, .355, 1) forwards;
+}
+@keyframes msg-user-in {
+  0%  { opacity: 0; transform: translateY(3em); }
+  to  { opacity: 1; transform: translateY(0); }
+}
+
+.msg-user__bubble {
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: var(--wds-space-padding-vertical-x-tiny);
+  width: fit-content;
+  padding: var(--wds-space-padding-vertical-tiny) var(--wds-space-padding-horizontal-tiny);
+  background: var(--aac-user-message-background);
+  border-radius: var(--wds-border-radius-600);
+  box-shadow: var(--aac-user-message-box-shadow);
+  word-break: break-word;
+}
+
+/* - assistant - */
+.msg-assistant {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 96%;
+  will-change: opacity, transform;
+  animation: msg-assistant-in .5s both;
+}
+@keyframes msg-assistant-in {
+  0% { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* max-width steps with the chat container: 96% → 92% → 72%. Recovered.
+   These must come AFTER the base rule - a container query adds no
+   specificity, so source order decides. */
+@container chat (min-width: 380px) { .msg-assistant { max-width: 92%; } }
+@container chat (min-width: 640px) { .msg-assistant { max-width: 72%; } }
+.msg-assistant__stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aac-space-sp6);
+}
+
+/* Rich-text body shared by both roles */
+.rt { display: flex; flex-direction: column; gap: var(--aac-space-sp6); }
+.rt p { margin: 0; font-size: 14px; line-height: 20px; color: #131720; }
+.rt a { color: var(--aac-markdown-link-color); text-decoration: none; }
+.rt a:hover { color: var(--aac-markdown-link-color-hover); text-decoration: underline; }
+.rt ul, .rt ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 20px; }
+.rt code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  background: rgba(0, 0, 0, .05);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+[data-color-scheme="dark"] .rt p,
+[data-color-scheme="dark"] .rt ul,
+[data-color-scheme="dark"] .rt ol { color: #ededee; }
+
+/* - per-message hover action rail - */
+.msg-actions-slot { margin-top: var(--wds-space-padding-vertical-x-tiny); }
+.msg-actions {
+  width: 100%;
+  transition: .15s cubic-bezier(.455, .03, .515, .955);
+  transition-property: opacity, transform;
+  will-change: opacity, transform;
+}
+.msg-actions--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-15%);
+}
+.msg-actions__group {
+  display: flex;
+  align-items: center;
+  gap: var(--wds-space-200);
+}
+.msg-actions__group--end { justify-content: flex-end; }
+.msg-actions .icon-btn { margin: 0 -3px; }
+
+.msg-assistant__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--wds-space-padding-vertical-x-tiny);
+}
+
+/* Scroll-anchor spacer: reserves enough height below the newest exchange that
+   the user's last message can be scrolled to the top of the viewport. */
+.msg-group--anchored {
+  min-height: calc(
+    var(--scroll-container-height, 0px)
+    - var(--last-user-message-visible-height, 0px)
+    - var(--aac-space-sp7)
+    - calc(var(--aac-space-sp11) * 2)
+    - var(--wds-space-padding-vertical-tiny)
+  );
+}
+
+/* --------------------------------------------------------------------------
+   8. Inline widget card  (SINGLE_SELECT_BUTTON_WIDGET et al.)
+   -------------------------------------------------------------------------- */
+
+.aac-widget {
+  flex: 1;
+  max-width: var(--aac-assistant-message-widget-max-width);
+  padding: var(--wds-space-padding-horizontal-small);
+  background: var(--aac-assistant-message-widget-background);
+  border: 1px solid var(--aac-assistant-message-widget-border-color);
+  border-radius: var(--wds-border-radius-600);
+  box-shadow: var(--aac-assistant-message-widget-box-shadow);
+  animation: widget-in .5s;
+}
+@keyframes widget-in { 0% { opacity: 0; } }
+
+.aac-widget__options { display: flex; flex-direction: column; }
+.aac-widget__option { display: flex; flex-direction: column; }
+.aac-widget__option .text-btn { color: #131720; font-weight: 400; }
+.aac-widget__option .text-btn:hover { color: #116dff; }
+[data-color-scheme="dark"] .aac-widget__option .text-btn { color: #ededee; }
+.aac-widget__divider {
+  height: 1px;
+  width: 100%;
+  margin: var(--wds-space-300) 0;
+  background-color: var(--aac-divider-color);
+}
+.aac-widget--answered .text-btn { pointer-events: none; }
+.aac-widget--answered .text-btn:not([data-chosen]) { color: #a2a09f; }
+.aac-widget--answered .text-btn[data-chosen] { color: #116dff; font-weight: 700; }
+
+/* Unknown widget type fallback */
+.aac-widget__unknown {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--aac-secondary-text-color);
+}
+.aac-widget__unknown pre {
+  margin: 8px 0 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, .04);
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 11px;
+}
+
+/* --------------------------------------------------------------------------
+   9. Control panel (confirmation bar + composer + footer)
+   -------------------------------------------------------------------------- */
+
+.aria-control-panel {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin-top: auto;
+  width: 100%;
+  z-index: var(--aac-z-index-content);
+}
+.aria-control-panel__inner {
+  position: relative;
+  box-sizing: content-box;
+  margin: 0 auto;
+  width: min(
+    100% - var(--aac-control-panel-padding-horizontal-start) - var(--aac-control-panel-padding-horizontal-end),
+    var(--aac-control-panel-max-width)
+  );
+  padding-left: var(--aac-control-panel-padding-horizontal-start);
+  padding-right: var(--aac-control-panel-padding-horizontal-end);
+}
+
+/* Human-in-the-loop approval strip, sits above the composer */
+.aria-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--wds-space-padding-horizontal-x-tiny);
+  min-height: 58px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  background: var(--aria-confirm-bg, hsla(0, 0%, 100%, .75));
+  backdrop-filter: blur(20px);
+  border-radius: var(--wds-border-radius-600);
+  box-shadow: var(--aac-assistant-message-widget-box-shadow);
+  animation: msg-assistant-in .3s both;
+}
+.aria-confirm[hidden] { display: none; }
+.aria-confirm__label { font-size: 14px; font-weight: 700; color: var(--aria-chrome-text, #131720); white-space: nowrap; }
+.aria-confirm__text  { flex: 1; font-size: 14px; color: var(--aria-chrome-text, #131720); }
+.aria-confirm__actions { display: flex; align-items: center; gap: 12px; }
+
+/* - composer - */
+.composer-shell { animation: composer-fade 833ms cubic-bezier(.54, .2, .26, 1) both; }
+.composer-lift  { animation: composer-lift 833ms cubic-bezier(.3, .5, 0, 1) both; }
+.composer-scale {
+  transform-origin: bottom center;
+  animation:
+    composer-fade   133ms cubic-bezier(.54, .2, .26, 1) both,
+    composer-scaleY 333ms cubic-bezier(.17, .17, 0, 1) both;
+}
+@keyframes composer-fade   { 0% { opacity: 0; }              to { opacity: 1; } }
+@keyframes composer-scaleY { 0% { transform: scaleY(.8); }   to { transform: scaleY(1); } }
+@keyframes composer-lift   { 0% { transform: translateY(30px); } to { transform: translateY(0); } }
+
+/* --------------------------------------------------------------------------
+   Composer - two-row layout.
+
+   DELIBERATE DEVIATION from the recovered stylesheet. The captured upstream rule
+   was `padding: 0 12px 12px` on the frame - no top padding - which in this
+   reconstruction let the input field sit on top of the gradient ring and mask
+   its upper edge, so the focus border read as two disconnected brackets.
+   The upstream screenshot shows the field fully inset on all four sides, so the
+   structure below follows the screenshot rather than that one declaration.
+
+   Height budget (~108px):
+     12 padding-top + 40 input row + 12 gap + 32 control row + 12 padding-bottom
+
+   No negative margins, no clipping, no absolute positioning and no hiding of
+   any part of the border: the ring is simply never overlapped.
+   -------------------------------------------------------------------------- */
+
+.composer {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: var(--aac-input-box-border-radius);
+  box-shadow: var(--aac-input-box-box-shadow);
+
+  --composer-pad: 12px;
+  --composer-input-row: 40px;
+  --composer-row-gap: 12px;
+  --composer-control-row: 32px;
+}
+
+/* Gradient 1.5px border painted with a mask-composite ring */
+.composer__frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--composer-pad);
+  background: var(--aac-input-box-background);
+  backdrop-filter: blur(20px);
+  border-radius: inherit;
+  z-index: 1;
+}
+.composer__frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  padding: var(--aac-input-box-border-width);
+  background: var(--aac-input-box-border-color);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+.composer__stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--composer-row-gap);
+}
+
+/* Row 1 - the text field, fully inset from the frame on every side. */
+.composer__field {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--composer-input-row);
+  background: var(--aac-input-background);
+  border-radius: var(--aac-input-border-radius);
+  box-shadow: var(--aac-input-box-shadow);
+  transition: box-shadow .2s ease;
+}
+.composer__field:hover,
+.composer__field:focus-within { box-shadow: var(--aac-input-box-shadow-active); }
+
+.composer__inputwrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--composer-input-row);
+  padding: 10px var(--aac-input-padding-horizontal-start);
+  --max-input-height: 210px;
+}
+.composer__input {
+  display: block;
+  width: 100%;
+  border: 0;
+  outline: none;
+  resize: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: #131720;
+  min-height: 20px;
+  max-height: var(--max-input-height);
+  overflow-y: auto;
+  word-break: break-word;
+}
+.composer__input::placeholder {
+  color: var(--wds-color-text-placeholder);
+  opacity: 1;
+}
+[data-color-scheme="dark"] .composer__input { color: var(--aac-input-text-color); }
+
+/* Row 2 - controls. Order: add · tools · flexible space · mic · send/stop. */
+.composer__toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  min-height: var(--composer-control-row);
+  gap: var(--wds-space-200);
+  justify-content: space-between;
+  transition: opacity .5s cubic-bezier(.3, .5, 0, 1) .15s;
+}
+.composer__toolbar-left {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--wds-space-100);
+}
+.composer__toolbar-right {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: var(--wds-space-100);
+}
+/* Every control sits on the same optical centre line. */
+.composer__toolbar .icon-btn { flex: none; align-self: center; }
+
+/* Narrow panels keep the controls at full size - the row scrolls its spare
+   space away rather than the buttons shrinking. */
+@container chat (max-width: 300px) {
+  .composer { --composer-pad: 10px; }
+}
+
+
+.aria-footer {
+  margin: 0 auto;
+  padding-top: var(--wds-space-padding-vertical-tiny);
+  text-align: center;
+}
+.aria-footer span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--aac-secondary-text-color);
+  opacity: .8;
+}
+
+/* --------------------------------------------------------------------------
+   10. Aria avatar  (verbatim from the snapshot's inline <style>)
+   -------------------------------------------------------------------------- */
+
+.avatar-container {
+  position: relative; width: 28px; height: 28px; overflow: hidden;
+  --avatar-face-color: #000;
+  --avatar-eyes-color: #fff;
+}
+.mouth-layer svg polyline { stroke: var(--avatar-eyes-color); }
+.avatar-layer {
+  position: absolute; top: 0; left: 0;
+  will-change: transform, opacity;
+  transform-origin: 0 0;
+  box-sizing: border-box;
+}
+.mouth-layer { width: 62px;  height: 32px;  background: transparent; }
+.eye-layer   { width: 24px;  height: 42px;  background: var(--avatar-eyes-color); border-radius: 20px; }
+.face-layer  { width: 234px; height: 234px; background: var(--avatar-face-color); border-radius: 50%; }
+
+@keyframes kf_awake_L02 {
+  0%      { transform: matrix(0.1,0,0,0.1,15.6,15.404);  opacity: 1; }
+  0.385%  { transform: matrix(0.1,0,0,0.1,14.529,13.581); opacity: 0; }
+  1.538%, 100% { transform: matrix(0.1,0,0,0.1,13.6,12); opacity: 0; }
+}
+@keyframes kf_awake_L03 {
+  0%      { transform: matrix(0.1,0,0,0.1,9.4,15.404);   opacity: 1; }
+  0.385%  { transform: matrix(0.1,0,0,0.1,8.329,13.581); opacity: 0; }
+  1.538%, 100% { transform: matrix(0.1,0,0,0.1,7.4,12);  opacity: 0; }
+}
+@keyframes kf_awake_L04 {
+  0%      { transform: matrix(0.1,0,0,0.1,15.352,13.312); opacity: 0; }
+  0.385%  { transform: matrix(0.1,0,0,0.1,14.281,11.489); opacity: 1; }
+  1.538%, 100% { transform: matrix(0.1,0,0,0.1,13.352,9.908); opacity: 1; }
+}
+@keyframes kf_awake_L05 {
+  0%      { transform: matrix(0.1,0,0,0.1,10.252,13.312); opacity: 0; }
+  0.385%  { transform: matrix(0.1,0,0,0.1,9.181,11.489);  opacity: 1; }
+  1.538%, 100% { transform: matrix(0.1,0,0,0.1,8.252,9.908); opacity: 1; }
+}
+@keyframes kf_awake_L06 {
+  0%, 100% { transform: translate(-104.844px,-104.781px) scale(0.1) rotate(0); opacity: 1; }
+}
+
+@keyframes kf_asleep_L02 {
+  0%, 5%  { transform: matrix(0.1,0,0,0.1,13.6,12);       opacity: 0; }
+  6.346%  { transform: matrix(0.1,0,0,0.1,12.6,10.8);     opacity: 0; }
+  7.5%    { transform: matrix(0.1,0,0,0.1,14.886,14.308); opacity: 1; }
+  8.846%, 100% { transform: matrix(0.1,0,0,0.1,15.6,15.404); opacity: 1; }
+}
+@keyframes kf_asleep_L03 {
+  0%, 5%  { transform: matrix(0.1,0,0,0.1,7.4,12);        opacity: 0; }
+  6.346%  { transform: matrix(0.1,0,0,0.1,6.4,10.8);      opacity: 0; }
+  7.5%    { transform: matrix(0.1,0,0,0.1,8.686,14.308);  opacity: 1; }
+  8.846%, 100% { transform: matrix(0.1,0,0,0.1,9.4,15.404); opacity: 1; }
+}
+@keyframes kf_asleep_L04 {
+  0%, 5%  { transform: matrix(0.1,0,0,0.1,13.352,9.908);  opacity: 1; }
+  6.346%  { transform: matrix(0.1,0,0,0.1,12.352,8.708);  opacity: 1; }
+  7.5%    { transform: matrix(0.1,0,0,0.1,14.638,12.216); opacity: 0; }
+  8.846%, 100% { transform: matrix(0.1,0,0,0.1,15.352,13.312); opacity: 0; }
+}
+@keyframes kf_asleep_L05 {
+  0%, 5%  { transform: matrix(0.1,0,0,0.1,8.252,9.908);   opacity: 1; }
+  6.346%  { transform: matrix(0.1,0,0,0.1,7.252,8.708);   opacity: 1; }
+  7.5%    { transform: matrix(0.1,0,0,0.1,9.538,12.216);  opacity: 0; }
+  8.846%, 100% { transform: matrix(0.1,0,0,0.1,10.252,13.312); opacity: 0; }
+}
+@keyframes kf_asleep_L06 {
+  0%, 100% { transform: translate(-104.844px,-104.781px) scale(0.1) rotate(0); opacity: 1; }
+}
+
+.avatar-awake .layer-L02, .avatar-asleep .layer-L02 { transform-origin: 0 0; z-index: 5; animation: 20.8s linear both; }
+.avatar-awake .layer-L03, .avatar-asleep .layer-L03 { transform-origin: 0 0; z-index: 4; animation: 20.8s linear both; }
+.avatar-awake .layer-L04, .avatar-asleep .layer-L04 { transform-origin: 0 0; z-index: 3; animation: 20.8s linear both; }
+.avatar-awake .layer-L05, .avatar-asleep .layer-L05 { transform-origin: 0 0; z-index: 2; animation: 20.8s linear both; }
+.avatar-awake .layer-L06, .avatar-asleep .layer-L06 { transform-origin: 116.844px 116.781px; z-index: 1; animation: 20.8s linear both; }
+
+.avatar-awake .layer-L02 { animation-name: kf_awake_L02; }
+.avatar-awake .layer-L03 { animation-name: kf_awake_L03; }
+.avatar-awake .layer-L04 { animation-name: kf_awake_L04; }
+.avatar-awake .layer-L05 { animation-name: kf_awake_L05; }
+.avatar-awake .layer-L06 { animation-name: kf_awake_L06; }
+
+.avatar-asleep .layer-L02 { animation-name: kf_asleep_L02; }
+.avatar-asleep .layer-L03 { animation-name: kf_asleep_L03; }
+.avatar-asleep .layer-L04 { animation-name: kf_asleep_L04; }
+.avatar-asleep .layer-L05 { animation-name: kf_asleep_L05; }
+.avatar-asleep .layer-L06 { animation-name: kf_asleep_L06; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. The travelling avatar  [live]
+   --------------------------------------------------------------------------
+   One persistent element for every avatar state. It is never destroyed and
+   re-created - it flies between anchors, so motion is continuous and velocity
+   carries across transitions.
+
+   Motion is driven from JS (a spring integrated on rAF), not from CSS
+   transitions, because the observed easing is an exponential follow with
+   tau ~ 0.11s - a long asymptotic settle no cubic-bezier reproduces.
+   Only the presentational bits live here.
+   -------------------------------------------------------------------------- */
+
+.aria-avatar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--aria-avatar-size, 28px);
+  height: var(--aria-avatar-size, 28px);
+  margin-top: calc(var(--aria-avatar-size, 28px) / -2);
+  margin-left: calc(var(--aria-avatar-size, 28px) / -2);
+  pointer-events: none;
+  z-index: var(--aac-z-index-content);
+  will-change: transform;
+  contain: layout style;
+}
+.aria-avatar[hidden] { display: none; }
+
+/* Face ⇄ dot. Scaled rather than resized so the swap is continuous. */
+.aria-avatar__scaler {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* Interaction layer. The only hit-testable part of the avatar - the root stays
+   pointer-events:none so the mark never swallows clicks meant for the chat.
+   Owns the hover/press squish, which is why the loop never writes here. */
+.aria-avatar__hit {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: 50% 65%;        /* squashes toward its footing, not its middle */
+  transition: transform .34s cubic-bezier(.34, 1.56, .64, 1);
+  will-change: transform;
+}
+.aria-avatar__hit:hover  { transform: scale(1.05, .94); }
+.aria-avatar__hit:active {
+  transform: scale(1.11, .87);
+  transition-duration: .09s;        /* press is immediate; the release springs */
+  transition-timing-function: ease-out;
+}
+
+/* The blob carries the velocity stretch, so nothing inside it may be text. */
+.aria-avatar__blob {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--aria-avatar-fill, #000);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Eyes sit outside the stretching blob so they never smear. */
+.aria-avatar__eyes {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  will-change: opacity;
+}
+.aria-avatar__eye {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  will-change: transform;
+}
+
+[data-color-scheme="dark"] .aria-avatar,
+[data-brand] .aria-avatar { --aria-avatar-fill: var(--aria-avatar-rest-color, #000); }
+
+/* --------------------------------------------------------------------------
+   12. Welcome screen  [live]
+   -------------------------------------------------------------------------- */
+
+.aria-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: content-box;
+  margin: 0 auto;
+  width: min(
+    100% - var(--aac-welcome-screen-padding-horizontal-start) - var(--aac-welcome-screen-padding-horizontal-end),
+    var(--aac-welcome-screen-max-width)
+  );
+  padding-left: var(--aac-welcome-screen-padding-horizontal-start);
+  padding-right: var(--aac-welcome-screen-padding-horizontal-end);
+  /* The thread's horizontal padding is asymmetric, so `margin: 0 auto` lands
+     this block a few px right of the panel's true centre. Correct by half the
+     difference, derived from the tokens rather than hardcoded, so the greeting
+     and the mark share one centre line at every width.
+
+     Offset via `left`, NOT `transform` - the entrance animation on this element
+     animates transform and would overwrite it. */
+  position: relative;
+  left: calc(
+    (var(--aac-chat-content-padding-horizontal-end) -
+     var(--aac-chat-content-padding-horizontal-start)) / 2
+  );
+  animation: msg-assistant-in .4s both;
+}
+
+/* Reserves the space the travelling avatar parks in - the avatar itself is
+   not a child, it flies here. */
+.aria-welcome__slot {
+  width: var(--aria-avatar-size, 28px);
+  height: var(--aria-avatar-size, 28px);
+  flex: none;
+}
+
+.aria-welcome__greeting {
+  margin: var(--aac-space-sp5) 0 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--aac-markdown-link-color);
+}
+.aria-welcome__label {
+  margin: var(--aac-space-sp7) 0 var(--aac-space-sp3);
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--aac-secondary-text-color);
+  opacity: .75;
+}
+.aria-welcome__suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wds-space-200);
+  width: 100%;
+}
+.aria-suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--wds-space-200);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: var(--wds-border-radius-400);
+  background: var(--aac-tag-box-background, #f7f7f7);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 18px;
+  color: var(--aria-chrome-text, #131720);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color .12s ease;
+}
+.aria-suggestion:hover { background: var(--aac-tag-background-hover, #fff); }
+.aria-suggestion:focus-visible { outline: none; box-shadow: 0 0 0 3px #acbeff; }
+.aria-suggestion__icon { flex: none; color: var(--aac-markdown-link-color); display: inline-flex; }
+
+[data-color-scheme="dark"] .aria-suggestion { background: rgba(255, 255, 255, .05); }
+[data-color-scheme="dark"] .aria-suggestion:hover { background: rgba(255, 255, 255, .08); }
+
+@media (prefers-reduced-motion: reduce) {
+  .aria-avatar { transition: opacity .12s linear; }
+}
+
+/* Streaming / stop control: dark rounded square with the waveform.  [live] */
+.icon-btn--stop {
+  background-color: var(--aria-stop-fill, #131720);
+  color: var(--aria-stop-text, #fff);
+  border-radius: var(--wds-border-radius-400);
+}
+.icon-btn--stop:hover  { background-color: var(--aria-stop-fill-hover, #2b2e36); }
+.icon-btn--stop:active { background-color: var(--aria-stop-fill-hover, #42454c); }
+
+[data-color-scheme="dark"] {
+  --aria-stop-fill: #f5f3ef;
+  --aria-stop-fill-hover: #ffffff;
+  --aria-stop-text: #131720;
+}
+
+
+/* --------------------------------------------------------------------------
+   13. Expressions
+   --------------------------------------------------------------------------
+   Built entirely from the two eye bars - no mouth, no extra elements. Each eye
+   owns its own transform (pointer tracking lives on the container), so left and
+   right can differ, which is what makes anything other than symmetry possible.
+   -------------------------------------------------------------------------- */
+
+.aria-avatar__eye {
+  transform-origin: 50% 50%;
+  transition: transform .22s cubic-bezier(.2, .8, .3, 1), opacity .2s ease;
+}
+
+/* still - the resting default; bars at full height. */
+.aria-avatar[data-expression="still"] .aria-avatar__eye { transform: none; }
+
+/* listening - taller and a touch narrower: attentive, leaning in. */
+.aria-avatar[data-expression="listening"] .aria-avatar__eye { transform: scale(.92, 1.16); }
+
+/* thinking - lidded and cast slightly aside, as if looking past you. */
+.aria-avatar[data-expression="thinking"] .aria-avatar__eye {
+  transform: translateX(1px) scaleY(.62);
+}
+
+/* success - a squint. Short bars read unmistakably as pleased. */
+.aria-avatar[data-expression="success"] .aria-avatar__eye { transform: scaleY(.34); }
+
+/* error - the two bars tilt toward each other into a frown. Asymmetry is the
+   whole trick; it is the only expression here that is not mirror-symmetric in
+   shape, and it is why the eyes needed independent transforms. */
+.aria-avatar[data-expression="error"] .aria-avatar__eye:first-child {
+  transform: rotate(19deg) scaleY(.82);
+}
+.aria-avatar[data-expression="error"] .aria-avatar__eye:last-child {
+  transform: rotate(-19deg) scaleY(.82);
+}
+
+/* asleep - flattened to slits. */
+.aria-avatar[data-expression="asleep"] .aria-avatar__eye {
+  transform: scaleY(.16);
+  opacity: .75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aria-avatar__hit,
+  .aria-avatar__eye { transition-duration: .001ms; }
+}
+
+/* Page surface: the panel is the whole column, centred, and its resize handle
+   is meaningless there. Dock behaviour is untouched. */
+.aria-panel[data-surface="page"] {
+  margin: 0 auto;
+  box-shadow: none;
+}
+.aria-panel[data-surface="page"] .aria-resize-handle { display: none; }
+
+/* ==========================================================================
+   Genesis Signal - character styles
+   --------------------------------------------------------------------------
+   Colour comes from Genesis tokens only. No neon, no glassmorphism, no
+   permanent animation: everything here is either static or driven by an
+   explicit state change.
+   ========================================================================== */
+
+.gsig {
+  --gsig-gold:        var(--g-accent, #c9a157);
+  --gsig-hl-top:      var(--g-focus, #f1d898);
+  --gsig-hl-bottom:   #9d7a3f;
+  --gsig-ivory:       #f4f6fe;
+  --gsig-tile:        var(--g-surface-elevated, #1d1e22);
+  --gsig-tile-edge:   var(--g-border, #303238);
+
+  position: absolute;
+  inset: 0;
+  perspective: 320px;
+}
+
+.gsig__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.gsig__wrap {
+  transform-origin: 512px 512px;
+  transform-style: preserve-3d;
+  transition: transform .18s ease-out;
+}
+
+/* --- tile ---------------------------------------------------------------- */
+.gsig__tile {
+  fill: var(--gsig-tile);
+  stroke: var(--gsig-tile-edge);
+  stroke-width: 10;
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+
+/* --- the mark ------------------------------------------------------------ */
+.gsig__mark {
+  opacity: 1;
+  transition: opacity .22s ease;
+}
+.gsig__arm { fill: var(--gsig-gold); }
+
+/* --- redraw outline ------------------------------------------------------ */
+.gsig__trace { opacity: 0; transition: opacity .18s ease; }
+.gsig__tracepath {
+  fill: none;
+  stroke: var(--gsig-gold);
+  /* User units, NOT non-scaling-stroke: the viewBox is 1080 wide but the glyph
+     renders at 16-64px, so a screen-space stroke turns the redraw into a blob. */
+  stroke-width: 40;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* --- spark --------------------------------------------------------------- */
+.gsig__spark {
+  fill: var(--gsig-hl-top);
+  opacity: 0;
+  transform-origin: 512px 512px;
+  transform: scale(.55);
+  transition: opacity .16s ease, transform .22s cubic-bezier(.2, .8, .3, 1);
+}
+
+/* --- presence marker ----------------------------------------------------- */
+.gsig__marker {
+  fill: var(--gsig-gold);
+  opacity: 0;
+  transform-origin: 512px 512px;
+  transform: scaleY(.4);
+  transition: opacity .2s ease, transform .28s cubic-bezier(.2, .8, .3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   State switches. Exactly one presentation is visible at a time.
+   -------------------------------------------------------------------------- */
+
+/* Welcome / complete - the full mark, no ground. */
+.gsig[data-mode="mark"] .gsig__mark  { opacity: 1; }
+
+/* Idle - the mark seated on its tile. */
+.gsig[data-mode="tile"] .gsig__tile  { opacity: 1; }
+.gsig[data-mode="tile"] .gsig__mark  { opacity: 1; }
+
+/* Submitted - fold to a single directional shard. */
+.gsig[data-mode="spark"] .gsig__mark  { opacity: 0; }
+.gsig[data-mode="spark"] .gsig__spark { opacity: 1; transform: scale(1); }
+
+/* Thinking - the outline redraws; the filled mark steps back but does not
+   vanish, so the glyph never becomes an anonymous dot. */
+.gsig[data-mode="thinking"] .gsig__mark  { opacity: .14; }
+.gsig[data-mode="thinking"] .gsig__trace { opacity: 1; }
+
+/* Responding - a quiet vertical presence marker. */
+.gsig[data-mode="marker"] .gsig__mark   { opacity: 0; }
+.gsig[data-mode="marker"] .gsig__marker { opacity: 1; transform: scaleY(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .gsig__wrap,
+  .gsig__spark,
+  .gsig__marker,
+  .gsig__tile,
+  .gsig__mark,
+  .gsig__trace { transition-duration: .001ms; }
+}
+
+/* ==========================================================================
+   Genesis V2 - brand theme layer
+   --------------------------------------------------------------------------
+   Loads AFTER aria.css and overrides token values only. The recovered
+   stylesheet is left untouched, so the layout, spacing, easing curves and
+   keyframes documented in RECOVERED-LOGIC.md still hold exactly.
+
+   Applied by setting BOTH attributes on .aria-shell:
+       data-color-scheme="dark"  data-brand="genesis"
+
+   The dark scheme is kept underneath because a handful of descendant rules
+   in aria.css key off it; this file re-specifies every token it needs.
+   ========================================================================== */
+
+[data-color-scheme="dark"][data-brand="genesis"] {
+
+  /* ---- raw palette ---------------------------------------------------- */
+  --g-canvas:            #0d0e10;  /* near-black charcoal   */
+  --g-sidebar:           #111214;  /* slightly lifted       */
+  --g-surface:           #18191d;  /* primary surface       */
+  --g-surface-elevated:  #1d1e22;  /* elevated surface      */
+  --g-surface-strong:    #23252a;  /* stronger surface      */
+  --g-border:            #303238;
+  --g-border-strong:     #444750;
+  --g-text:              #f5f3ef;  /* warm off-white        */
+  --g-text-secondary:    #c2c0bc;
+  --g-text-muted:        #85858a;
+  --g-accent:            #c9a157;  /* muted antique gold    */
+  --g-accent-hover:      #d9ba78;
+  --g-focus:             #f1d898;
+  --g-positive:          #55c58a;
+  --g-warning:           #e9b75c;
+  --g-danger:            #e36c71;
+
+  /* Madefor is upstream-proprietary and will not resolve outside their CDN. */
+  --wds-font-family-default:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* ---- shell chrome ---------------------------------------------------- */
+  --aria-shell-bg:          var(--g-surface);
+  --aria-chrome-bg:         var(--g-canvas);
+  --aria-chrome-text:       var(--g-text);
+  --aria-chat-surface-bg:   var(--g-canvas);
+  --aria-confirm-bg:        rgba(29, 30, 34, .85);
+
+  /* Stop control reads as a light square on the charcoal canvas. */
+  --aria-stop-fill:         var(--g-text);
+  --aria-stop-fill-hover:   #ffffff;
+  --aria-stop-text:         var(--g-canvas);
+
+  /* ---- accents --------------------------------------------------------- */
+  --aac-custom-color-1: var(--g-accent);
+  --aac-custom-color-2: var(--g-accent-hover);
+  --aac-custom-color-3: var(--g-focus);
+  --aac-markdown-link-color:       var(--g-accent);
+  --aac-markdown-link-color-hover: var(--g-accent-hover);
+
+  /* ---- messages -------------------------------------------------------- */
+  --aac-user-message-background: var(--g-surface-elevated);
+  --aac-user-message-box-shadow:
+    -15px 37px 24px 0 rgba(0, 0, 0, .28),
+     -7px 17px 18px 0 rgba(0, 0, 0, .32),
+     -2px  4px 10px 0 rgba(0, 0, 0, .38);
+
+  --aac-assistant-message-widget-background: rgba(29, 30, 34, .6);
+  --aac-assistant-message-widget-border-color: var(--g-border);
+  --aac-assistant-message-widget-box-shadow: 2px 2px 25px 0 rgba(0, 0, 0, .35);
+
+  --aac-secondary-text-color: var(--g-text-secondary);
+  --aac-divider-color:        var(--g-border);
+
+  --aac-actions-menu-background:   rgba(29, 30, 34, .99);
+  --aac-actions-menu-border-color: var(--g-border);
+  --aac-actions-menu-box-shadow:   2px 2px 25px 0 rgba(0, 0, 0, .35);
+
+  /* ---- composer -------------------------------------------------------- */
+  --aac-input-background:  var(--g-surface);
+  --aac-input-text-color:  var(--g-text);
+  --aac-input-box-background: rgba(24, 25, 29, .5);
+
+  /* Gold picked up at both ends of the ring, muted border through the middle */
+  --aac-input-box-border-color: linear-gradient(
+    250deg,
+    var(--g-accent) -3.73%,
+    rgba(68, 71, 80, .55) 16.93%,
+    rgba(68, 71, 80, .55) 83.6%,
+    var(--g-accent) 101.7%
+  );
+  --aac-input-box-compact-border-color: linear-gradient(
+    40deg,
+    var(--g-accent) -3.73%,
+    rgba(68, 71, 80, .55) 16.93%,
+    rgba(68, 71, 80, .55) 83.6%,
+    var(--g-accent) 101.7%
+  );
+
+  --aac-input-box-box-shadow:
+     0 14px 18px -20px rgba(0, 0, 0, .5),
+     0 22px 32px  -6px rgba(0, 0, 0, .45),
+     1px 8px 17px   0  rgba(0, 0, 0, .4);
+  --aac-input-box-shadow:
+    inset 1px 1px 3px 0 rgba(0, 0, 0, .5),
+    -18px 18px 18px 0 transparent,
+     -6px  6px 18px 0 transparent;
+  --aac-input-box-shadow-active:
+    inset 1px 1px 3px 0 rgba(0, 0, 0, .55),
+    -24px 24px 24px 0 rgba(201, 161, 87, .05),
+     -6px  6px 18px 0 rgba(201, 161, 87, .07);
+
+  --wds-color-text-placeholder: var(--g-text-muted);
+  --wds-color-white: var(--g-surface);
+  /* Suggestion chips fall back to a neutral #f7f7f7, which reads cool and
+     slightly grey beside the warm canvas. */
+  --aac-tag-box-background: var(--g-surface-elevated);
+}
+
+/* --------------------------------------------------------------------------
+   Component overrides - anything aria.css hard-codes to a upstream blue or a
+   light-scheme neutral.
+   -------------------------------------------------------------------------- */
+
+/* Panel edge: a hairline border reads better than a drop shadow on charcoal */
+[data-brand="genesis"] .aria-panel,
+.aria-panel:has([data-brand="genesis"]) {
+  box-shadow: -1px 0 0 0 var(--g-border, #303238);
+}
+
+[data-brand="genesis"] .aria-resize-handle::before { background-color: var(--g-accent); }
+[data-brand="genesis"] .aria-resize-handle__grip   { color: var(--g-text-secondary); }
+
+/* Body copy */
+[data-brand="genesis"] .rt p,
+[data-brand="genesis"] .rt ul,
+[data-brand="genesis"] .rt ol { color: var(--g-text); }
+[data-brand="genesis"] .rt code {
+  background: rgba(255, 255, 255, .06);
+  color: var(--g-text-secondary);
+}
+
+/* Icon buttons */
+[data-brand="genesis"] .icon-btn:hover  { background-color: rgba(255, 255, 255, .06); }
+[data-brand="genesis"] .icon-btn:active { background-color: rgba(255, 255, 255, .1); }
+/* WDS focus is a 3px ring, not an outline - recolour it rather than the outline */
+[data-brand="genesis"] .icon-btn:focus-visible,
+[data-brand="genesis"] .text-btn:focus-visible,
+[data-brand="genesis"] .btn:focus-visible {
+  box-shadow: 0 0 0 3px var(--g-focus);
+}
+[data-brand="genesis"] .aria-tab:focus-visible::after { border-color: var(--g-focus); }
+[data-brand="genesis"] .icon-btn--primary {
+  background-color: var(--g-accent);
+  color: var(--g-canvas);
+}
+[data-brand="genesis"] .icon-btn--primary:hover  { background-color: var(--g-accent-hover); }
+[data-brand="genesis"] .icon-btn--primary:active { background-color: var(--g-focus); }
+[data-brand="genesis"] .icon-btn--primary:disabled {
+  background-color: rgba(255, 255, 255, .05);
+  color: var(--g-text-muted);
+}
+
+/* Text + solid buttons */
+[data-brand="genesis"] .text-btn        { color: var(--g-accent); }
+[data-brand="genesis"] .text-btn:hover  { color: var(--g-accent-hover); }
+[data-brand="genesis"] .text-btn:disabled { color: var(--g-text-muted); }
+[data-brand="genesis"] .btn {
+  background-color: var(--g-accent);
+  color: var(--g-canvas);
+  font-weight: 600;
+}
+[data-brand="genesis"] .btn:hover { background-color: var(--g-accent-hover); }
+
+/* Widget option list */
+[data-brand="genesis"] .aac-widget__option .text-btn { color: var(--g-text); }
+[data-brand="genesis"] .aac-widget__option .text-btn:hover { color: var(--g-accent); }
+[data-brand="genesis"] .aac-widget--answered .text-btn:not([data-chosen]) { color: var(--g-text-muted); }
+[data-brand="genesis"] .aac-widget--answered .text-btn[data-chosen] { color: var(--g-accent); }
+
+/* Ambient background glow - gold instead of upstream blue */
+[data-brand="genesis"] .cloud-bg { --cloud-bg-color: 201, 161, 87; }
+
+/* Scrollbar */
+[data-brand="genesis"] .aria-scroll { scrollbar-color: var(--g-border-strong) transparent; }
+[data-brand="genesis"] .aria-scroll::-webkit-scrollbar-thumb { background-color: var(--g-border-strong); }
+[data-brand="genesis"] .aria-scroll::-webkit-scrollbar-thumb:active { background-color: var(--g-accent); }
+
+/* Approval strip */
+[data-brand="genesis"] .aria-confirm { border: 1px solid var(--g-border); }
+[data-brand="genesis"] .aria-confirm__label { color: var(--g-accent); }
+[data-brand="genesis"] .aria-confirm__text  { color: var(--g-text); }
+
+/* Header tab avatar. Gold face here is a deliberate Genesis adaptation for the
+   28px tab mark only - it sits on the chrome, not in the conversation.
+   The TRAVELLING avatar is left at the observed upstream behaviour: black at rest,
+   rgb(85,125,255) in flight. Overriding that would contradict the recording,
+   so it is not themed unless a brief explicitly calls for it. */
+[data-brand="genesis"] .avatar-container {
+  --avatar-face-color: #c9a157;
+  --avatar-eyes-color: #0d0e10;
+}
+[data-brand="genesis"] .mouth-layer svg polyline { stroke: #0d0e10; }
+
+/* ==========================================================================
+   Genesis identity layer
+   ========================================================================== */
+
+/* --- 1. Thinking status ---------------------------------------------------
+   A broad, soft highlight travels through the letterforms. The sentence never
+   moves, fades, or scales - only the fill position animates. */
+
+.genesis-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Indent past the gutter lane the Signal parks in, so the character and the
+     status dot never occupy the same spot. Matches the assistant rule inset. */
+  padding: 2px 0 4px 20px;
+  animation: genesis-status-in .28s ease both;
+}
+@keyframes genesis-status-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Separate from the text: it breathes, it does not shimmer.
+
+   This is the whole of Genesis's presence while an answer is being prepared --
+   the travelling character folds away for the duration -- so the breath now
+   carries a restrained warm glow. Restrained is the operative word: the glow
+   is a shadow on a 6px dot, not a halo. */
+.genesis-status__dot {
+  width: 6px; height: 6px; flex: none;
+  border-radius: 50%;
+  background: var(--g-accent, #c9a157);
+  animation: genesis-status-breathe 2.4s ease-in-out infinite;
+}
+@keyframes genesis-status-breathe {
+  0%, 100% { opacity: .55; transform: scale(.9);
+             box-shadow: 0 0 0 0 rgba(201, 161, 87, 0); }
+  50%      { opacity: 1;   transform: scale(1);
+             box-shadow: 0 0 7px 1px rgba(201, 161, 87, .38); }
+}
+
+/* Thinking resolving into the answer. The dot brightens once and pulls to the
+   right -- the direction the reply arrives from -- and the row goes with it,
+   so the two states are one movement rather than a swap. */
+.genesis-status.is-resolving { animation: genesis-status-out .26s ease-in forwards; }
+.genesis-status.is-resolving .genesis-status__dot {
+  animation: genesis-status-emit .26s ease-in forwards;
+}
+@keyframes genesis-status-out {
+  to { opacity: 0; transform: translateY(-2px); }
+}
+@keyframes genesis-status-emit {
+  0%   { opacity: 1; transform: scale(1) translateX(0);
+         box-shadow: 0 0 7px 1px rgba(201, 161, 87, .38); }
+  55%  { opacity: 1; transform: scale(1.25) translateX(4px);
+         box-shadow: 0 0 12px 2px rgba(201, 161, 87, .5); }
+  100% { opacity: 0; transform: scale(.7) translateX(11px);
+         box-shadow: 0 0 0 0 rgba(201, 161, 87, 0); }
+}
+
+/* The character IS the circle while it waits. goTo('parked','dot') flies it
+   to the thread gutter and scales it to dotPx; this only gives the circle it
+   has become a slow breath, so a long wait still looks alive. The scale is
+   owned by the motion loop, so nothing here touches transform. */
+.aria-avatar.is-thinking .aria-avatar__blob {
+  animation: genesis-orb-breathe 2.4s ease-in-out infinite;
+}
+@keyframes genesis-orb-breathe {
+  0%, 100% { box-shadow:
+    0 0 0 1px rgba(201, 161, 87, .18),
+    0 0 8px 0 rgba(201, 161, 87, .24),
+    0 2px 12px 0 rgba(201, 161, 87, .14); }
+  50%      { box-shadow:
+    0 0 0 1px rgba(201, 161, 87, .34),
+    0 0 16px 2px rgba(201, 161, 87, .46),
+    0 2px 18px 0 rgba(201, 161, 87, .24); }
+}
+
+/* The circle beside the sentence was the duplicate: the character is already
+   parked there in dot form. The element stays -- the row's structure and its
+   role="status" are not ours to reshape -- and simply draws nothing. */
+.genesis-status__dot {
+  display: none;
+}
+
+.genesis-thinking-status {
+  font-size: 12.5px;
+  line-height: 17px;
+  letter-spacing: .01em;
+  color: transparent;
+  /* A narrow bright band on a dimmed base, rather than a broad wash. The tight
+     10% highlight is what makes it read as light crossing the letterforms
+     instead of the whole sentence pulsing. */
+  background: linear-gradient(
+    to right,
+    #9f9f9f 0%,
+    #ffffff 10%,
+    #868686 20%
+  );
+  /* The source recipe travelled a fixed 180px, which lands differently on
+     "Working through it" than on "Pulling the numbers together". Sizing the
+     gradient relative to the text keeps the sweep identical on every phrase. */
+  background-size: 250% 100%;
+  background-position: 100% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: genesis-thinking-shine 3s linear infinite;
+  animation-fill-mode: forwards;
+  transition: opacity .2s ease;
+}
+.genesis-thinking-status.is-swapping { opacity: 0; }
+
+/* Sweeps through the first 60%, then rests. That pause is the whole point:
+   a continuously travelling highlight reads as a loading bar, and something
+   that never stops moving reads as stuck. Resting between passes reads as
+   considering. */
+@keyframes genesis-thinking-shine {
+  0%   { background-position: 100% 50%; }
+  60%  { background-position: -60% 50%; }
+  100% { background-position: -60% 50%; }
+}
+
+/* --- 2. Message treatment -------------------------------------------------
+   The user speaks in a contained card; Genesis answers in the page, marked by
+   a gold rule rather than wrapped in another bubble. */
+
+[data-brand="genesis"] .msg-user__bubble {
+  border-radius: 10px 10px 4px 10px;
+  border: 1px solid var(--g-border);
+}
+[data-brand="genesis"] .msg-assistant__stack {
+  padding-left: 14px;
+  border-left: 2px solid rgba(201, 161, 87, .38);
+}
+[data-brand="genesis"] .aac-widget {
+  border-radius: 10px;
+  background: rgba(29, 30, 34, .72);
+}
+
+/* --- 3. Background --------------------------------------------------------
+   One barely-there diagonal wash from existing tokens. Static: no drift, no
+   pulse, nothing competing with the Signal. */
+
+[data-brand="genesis"] .aria-chat-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(160deg, rgba(201, 161, 87, .05) 0%, rgba(201, 161, 87, 0) 42%),
+    linear-gradient(0deg, rgba(13, 14, 16, .55) 0%, rgba(13, 14, 16, 0) 30%);
+}
+
+/* --- 4. Stop control ------------------------------------------------------
+   Not upstream's waveform square. A gold-ringed disc holding a solid stop mark,
+   which is the same silhouette family as the Signal's tile. */
+
+[data-brand="genesis"] .icon-btn--stop {
+  background-color: transparent;
+  color: var(--g-accent);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--g-accent);
+}
+[data-brand="genesis"] .icon-btn--stop:hover {
+  background-color: rgba(201, 161, 87, .12);
+  color: var(--g-accent-hover);
+  box-shadow: inset 0 0 0 1.5px var(--g-accent-hover);
+}
+[data-brand="genesis"] .icon-btn--stop:active {
+  background-color: rgba(201, 161, 87, .2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .genesis-thinking-status {
+    animation: none;
+    color: #9f9f9f;
+    -webkit-text-fill-color: currentColor;
+  }
+  .genesis-status__dot { animation: none; box-shadow: none; }
+  /* No trail to wait for; stopStatus() removes the row immediately instead. */
+  .genesis-status.is-resolving,
+  .genesis-status.is-resolving .genesis-status__dot { animation: none; }
+  .aria-avatar.is-thinking .aria-avatar__blob { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Travelling mark - Genesis
+   --------------------------------------------------------------------------
+   Gold accent with an internal gradient and a restrained glow. The fill itself
+   is set inline from the motion loop (it changes with speed), so it is passed
+   in as `avatarRestFill` / `avatarMovingFill`; only the glow and the eyes are
+   styled here, where inline styles cannot overwrite them.
+   -------------------------------------------------------------------------- */
+
+[data-brand="genesis"] .aria-avatar__blob {
+  box-shadow:
+    0 0 0 1px rgba(201, 161, 87, .18),
+    0 0 10px 0 rgba(201, 161, 87, .28),
+    0 2px 14px 0 rgba(201, 161, 87, .16);
+}
+
+/* Eyes read as the canvas punched through the mark. */
+[data-brand="genesis"] .aria-avatar__eye {
+  background: var(--g-canvas);
+}
+
+/* Eyes: chamfered vertical bars rather than the recovered circles. All four
+   corners cut at 45deg, chamfer ~29% of the width to match the reference
+   proportions. Kept in the theme layer so aria.css stays as recovered. */
+[data-brand="genesis"] .aria-avatar__eye {
+  width: 5px;
+  height: 13px;
+  border-radius: 0;
+  background: var(--g-canvas);
+  clip-path: polygon(
+    1.5px 0,
+    calc(100% - 1.5px) 0,
+    100% 1.5px,
+    100% calc(100% - 1.5px),
+    calc(100% - 1.5px) 100%,
+    1.5px 100%,
+    0 calc(100% - 1.5px),
+    0 1.5px
+  );
+}
+[data-brand="genesis"] .aria-avatar__eyes { gap: 5px; }
+
+/* Breathing room above the conversation. Set on the thread's own padding, NOT
+   on the --aac-space-sp7 token, because that token is also a term in the
+   scroll-anchor min-height calc. Overriding the padding alone leaves the token
+   intact; the anchored spacer then over-reserves by the difference, so the
+   extra is subtracted back below to keep message anchoring exact. */
+[data-brand="genesis"] .aria-thread { padding-top: 40px; }
+
+[data-brand="genesis"] .msg-group--anchored {
+  min-height: calc(
+    var(--scroll-container-height, 0px)
+    - var(--last-user-message-visible-height, 0px)
+    - var(--aac-space-sp7)
+    - 20px                                   /* the added thread padding */
+    - calc(var(--aac-space-sp11) * 2)
+    - var(--wds-space-padding-vertical-tiny)
+  );
+}
+
+/* Expression tints. Only error and success shift colour; everything else stays
+   gold so the mark does not turn into a status light. */
+[data-brand="genesis"] .aria-avatar[data-expression="error"] .aria-avatar__blob {
+  background: radial-gradient(circle at 32% 27%, #f0a3a6 0%, #e36c71 55%, #a24246 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(227, 108, 113, .2),
+    0 0 10px 0 rgba(227, 108, 113, .3),
+    0 2px 14px 0 rgba(227, 108, 113, .18);
+}
+[data-brand="genesis"] .aria-avatar[data-expression="success"] .aria-avatar__blob {
+  box-shadow:
+    0 0 0 1px rgba(241, 216, 152, .3),
+    0 0 14px 0 rgba(241, 216, 152, .4),
+    0 2px 18px 0 rgba(201, 161, 87, .22);
+}
+[data-brand="genesis"] .aria-avatar__blob { transition: background .25s ease, box-shadow .25s ease; }
+
+/* ==========================================================================
+   Genesis - light
+   The brand layer above is dark-only, so the coworker stayed a black panel
+   inside a stone page. Nearly everything downstream derives from --g-*, so
+   overriding that base carries most of the widget; what follows it are the
+   handful of values that were written as literals and would otherwise stay
+   dark - overlays, message shadows, the composer wash.
+
+   Same rule as the shell: gold is a fill, never type.
+   ========================================================================== */
+
+[data-brand="genesis"][data-color-scheme="light"] {
+  /* The lighter light look Graham picked on 2026-09-17: the panel is a neutral
+     near-white rather than a beige, so it reads as paper beside the page. */
+  --g-canvas: #fbfaf7;
+  --g-sidebar: #f4f2ec;
+  --g-surface: #ffffff;
+  --g-surface-elevated: #fbfaf7;
+  --g-surface-strong: #f4f2ec;
+  --g-border: #ece8e1;
+  --g-border-strong: #d3cdc1;
+  --g-text: #1b1917;
+  --g-text-secondary: #4a453d;
+  --g-text-muted: #645e56;
+  --g-accent: #c9a157;          /* fill strength, unchanged from dark */
+  --g-accent-hover: #b8913f;
+  --g-focus: #a07d2c;           /* 3.65:1 - a focus ring has to be visible */
+  --g-positive: #1f7a4d;
+  --g-warning: #8a6212;
+  --g-danger: #b03a3f;
+
+  /* Literals that do not derive from --g-*. On a light panel a black scrim
+     reads as grime, so these become warm and much lighter. */
+  --aria-confirm-bg: rgba(246, 243, 237, .92);
+  --aria-stop-fill-hover: #1b1917;
+  --aac-user-message-box-shadow:
+    -6px 12px 18px 0 rgba(43, 38, 31, .06),
+    -2px  5px 10px 0 rgba(43, 38, 31, .05);
+  --aac-assistant-message-widget-background: rgba(251, 249, 245, .7);
+  --aac-assistant-message-widget-box-shadow: 2px 2px 18px 0 rgba(43, 38, 31, .07);
+  --aac-actions-menu-background: rgba(251, 249, 245, .99);
+  --aac-actions-menu-box-shadow: 2px 2px 20px 0 rgba(43, 38, 31, .10);
+  /* The composer, in the light look (2026-09-17). The recovered ring is a
+     gradient with gold at the corners and grey along the middle: on a dark
+     panel that reads as light catching an edge, but on ivory it reads as a
+     patchy gold outline. Here it is one warm line, the width Capital Desk
+     uses, and gold arrives only on focus (the rule after this block). */
+  --aac-input-box-background: #fffefa;
+  --aac-input-box-border-width: 1px;
+  --aac-input-box-border-color: linear-gradient(#e2ded5, #e2ded5);
+  --aac-input-box-compact-border-color: linear-gradient(#e2ded5, #e2ded5);
+  --aac-input-box-box-shadow:
+    0 10px 16px -18px rgba(43, 38, 31, .12),
+    0 16px 26px  -8px rgba(43, 38, 31, .10);
+  /* The field sits inside the frame with no fill and no inset of its own: two
+     nearly identical warm boxes, one inside the other, is the double outline
+     Graham flagged. The frame is the only edge. */
+  --aac-input-box-shadow: none;
+  --aac-input-box-shadow-active: none;
+
+  /* aria.css ships its own [data-color-scheme="light"] block with upstream's stock
+     palette, and for the DERIVED tokens it was beating the brand layer -- the
+     greeting came out upstream blue (#3f4ace) and the chat surface a cool grey.
+     Re-declaring the mappings at this higher specificity is what actually
+     rebrands light mode; overriding only --g-* leaves the derived set behind. */
+  --aria-shell-bg: var(--g-surface);
+  --aria-chrome-bg: var(--g-canvas);
+  --aria-chrome-text: var(--g-text);
+  --aria-chat-surface-bg: var(--g-canvas);
+  --aria-stop-fill: var(--g-text);
+  --aria-stop-text: var(--g-surface);
+  --aac-custom-color-1: var(--g-accent);
+  --aac-custom-color-2: var(--g-accent-hover);
+  --aac-custom-color-3: var(--g-focus);
+  /* Links and the greeting take this. Gold as type is 2.29:1 on the panel, so
+     it resolves to the deeper line gold, not the fill gold. */
+  --aac-markdown-link-color: #7a5d28;
+  --aac-markdown-link-color-hover: #59431c;
+  --aac-user-message-background: var(--g-surface-elevated);
+  --aac-assistant-message-widget-border-color: var(--g-border);
+  --aac-secondary-text-color: var(--g-text-secondary);
+  --aac-divider-color: var(--g-border);
+  --aac-actions-menu-border-color: var(--g-border);
+  --aac-input-background: var(--g-surface);
+  --aac-input-text-color: var(--g-text);
+  --wds-color-text-placeholder: var(--g-text-muted);
+  --wds-color-white: var(--g-surface);
+}
+
+/* The background wash is a dark gradient bottom-up; on stone it would smear. */
+[data-brand="genesis"][data-color-scheme="light"] .aria-chat-wrapper::after {
+  background:
+    linear-gradient(160deg, rgba(201, 161, 87, .07) 0%, rgba(201, 161, 87, 0) 42%),
+    linear-gradient(0deg, rgba(243, 240, 234, .6) 0%, rgba(243, 240, 234, 0) 30%);
+}
+
+/* The thinking shine is a pale band on a dimmed base - correct on black, and
+   invisible on stone. Inverted: the base darkens and the highlight is the
+   canvas showing through, so the sweep still reads as light crossing type. */
+[data-brand="genesis"][data-color-scheme="light"] .genesis-thinking-status {
+  background: linear-gradient(to right, #6d675f 0%, #cfc7b8 10%, #57524b 20%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* The mark's glow is a halo on black. On stone it becomes a contact shadow. */
+[data-brand="genesis"][data-color-scheme="light"] .aria-avatar__blob {
+  box-shadow:
+    0 0 0 1px rgba(160, 125, 44, .28),
+    0 2px 8px 0 rgba(43, 38, 31, .12),
+    0 6px 18px 0 rgba(43, 38, 31, .10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-brand="genesis"][data-color-scheme="light"] .genesis-thinking-status {
+    animation: none;
+    color: #57524b;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* The eyes read as the canvas punched through the mark, which works while the
+   canvas is near-black. On stone that logic inverts them to pale slots on a
+   gold face and the mark loses its expression, so in light they stay ink --
+   the same value that sits on every other gold fill (7.42:1 against it). */
+[data-brand="genesis"][data-color-scheme="light"] .aria-avatar__eye {
+  background: #1b170e;
+}
+
+/* The composer keeps one edge in light. The field draws no fill and no inset
+   of its own, so the frame is the only box on screen, and the line turns gold
+   only while you are typing in it. */
+[data-brand="genesis"][data-color-scheme="light"] .composer__field,
+[data-brand="genesis"][data-color-scheme="light"] .composer__field:hover,
+[data-brand="genesis"][data-color-scheme="light"] .composer__field:focus-within {
+  background: transparent;
+  box-shadow: none;
+}
+[data-brand="genesis"][data-color-scheme="light"] .composer:focus-within .composer__frame::before {
+  background: linear-gradient(#c29a5c, #c29a5c);
+}
+
+/* The three questions to start with. The recovered chip is a cool grey box,
+   which on a warm near-white panel reads as a smudge rather than a card; here
+   each one is the panel's own card colour on a warm hairline, and the gold is
+   kept to the little mark at the front (Graham, 2026-09-17). */
+[data-brand="genesis"][data-color-scheme="light"] .aria-suggestion {
+  background: #fffefa;
+  border: 1px solid #e2ded5;
+  box-shadow: 0 1px 2px rgba(43, 38, 31, .04);
+  color: #222326;
+}
+[data-brand="genesis"][data-color-scheme="light"] .aria-suggestion:hover {
+  background: #faf8f3;
+  border-color: rgba(194, 154, 92, .5);
+}
+[data-brand="genesis"][data-color-scheme="light"] .aria-suggestion__icon {
+  color: #c29a5c;
+}
+/* One gold thing at a time: the greeting is ink, the line under it grey. */
+[data-brand="genesis"][data-color-scheme="light"] .aria-welcome__greeting {
+  color: #222326;
+}
+[data-brand="genesis"][data-color-scheme="light"] .aria-welcome__label {
+  color: #686761;
+}
+
+
+/* The mascot palette, lifted from hawk-states.html. One set: the bird is
+   the same bird in both themes, only the surface behind it changes. */
+.ghawk-avatar {
+  /* --- mascot palette, lifted straight from the source SVG --- */
+  --brown:#b98551;  --brown-dk:#825430;  --crest:#926138;
+  --cream:#f5e6cb;  --stripe:#5d3e26;
+  --beak:#626162;   --beak-dk:#414141;
+  --cere:#f5cf87;   --cere-dk:#ebbe6d;   --nostril:#4d3521;
+  --pupil:#37271b;  --iris:#dda74b;      --glint:#f8f7f5;
+  /* --- state accents --- */
+  --gold:#dda74b;   --red:#d0453c;       --green:#5c8f4f;
+  --mouth:#472c23;  --tongue:#a4574f;
+  /* --- page --- */
+}
+
+/* ═══════════════════ THE HAWK ═══════════════════ */
+
+.ghawk{
+  display:block; width:100%; height:auto; overflow:visible;
+  /* per-state knobs - overridden in the state table further down */
+  --tilt:0deg;      /* head rotation            */
+  --gx:0px; --gy:0px;  /* gaze offset           */
+  --dilate:1;       /* pupil scale             */
+  --brow:0deg; --brow-y:0px;
+  --lid:0;          /* upper lid, 0-1          */
+  --lid-lo:0;       /* lower lid, 0-1          */
+  --jaw:0deg;       /* beak opening, 0-13deg   */
+  --float-dur:5.4s;
+  --talk-speed:1200ms; /* lower = faster speech */
+}
+.ghawk *{ transform-box:view-box; }
+
+.ghawk .tilt{
+  transform-origin:520px 880px;
+  transform:rotate(var(--tilt));
+  transition:transform .55s cubic-bezier(.33,1.25,.5,1);
+}
+.ghawk .float{
+  transform-origin:520px 880px;
+  animation:float var(--float-dur) ease-in-out infinite;
+}
+.ghawk .react{ transform-origin:520px 880px; }
+
+/* ── eye ── */
+.ghawk .gaze{ transition:transform .5s cubic-bezier(.3,1.2,.5,1); transform:translate(var(--gx),var(--gy)); }
+.ghawk .drift{ transition:transform 1.1s cubic-bezier(.4,0,.3,1); }
+.ghawk .pupil{
+  transform-origin:568px 386px;
+  transform:scale(var(--dilate));
+  transition:transform .45s cubic-bezier(.3,1.3,.5,1);
+}
+.ghawk .brow{
+  transform-origin:448px 305px;
+  transform:rotate(var(--brow)) translateY(var(--brow-y));
+  transition:transform .38s cubic-bezier(.34,1.4,.5,1);
+}
+.ghawk .lid-up{ transform-origin:545px 250px; transform:scaleY(var(--lid)); transition:transform .22s ease; }
+.ghawk .lid-lo{ transform-origin:545px 490px; transform:scaleY(var(--lid-lo)); transition:transform .3s cubic-bezier(.34,1.4,.5,1); }
+.ghawk.blink .lid-up{ animation:blink 180ms ease-in-out; }
+
+/* ── beak ── */
+.ghawk .jaw{
+  transform-origin:622px 484px;
+  transform:rotate(var(--jaw));
+  transition:transform .2s cubic-bezier(.3,1.3,.5,1);
+}
+
+/* ── badges (the ? ! ✓ etc.) ── */
+.ghawk .badge{ opacity:0; pointer-events:none; transform-box:view-box; }
+.ghawk .badge > *{ transform-box:view-box; }
+
+/* ═══════ STATE TABLE ═══════
+   Each block = one mood. Add a new state by copying a block. */
+
+/* IDLE - the resting face */
+.ghawk[data-state="idle"]{ --tilt:0deg; --float-dur:5.4s; }
+
+/* LISTENING - leans in, eye opens a touch, sound arcs pulse */
+.ghawk[data-state="listening"]{
+  --tilt:-5deg; --gx:7px; --gy:-3px; --dilate:1.06; --brow:-3deg; --float-dur:3.6s;
+}
+.ghawk[data-state="listening"] .b-listen{ opacity:1; }
+.ghawk[data-state="listening"] .b-listen .w1{ animation:wave 1.5s ease-out infinite; }
+.ghawk[data-state="listening"] .b-listen .w2{ animation:wave 1.5s ease-out .18s infinite; }
+.ghawk[data-state="listening"] .b-listen .w3{ animation:wave 1.5s ease-out .36s infinite; }
+
+/* THINKING - looks up and away, brow knits, thought dots rise */
+.ghawk[data-state="thinking"]{
+  --tilt:5deg; --dilate:.96; --brow:4deg; --float-dur:6.8s;
+}
+.ghawk[data-state="thinking"] .gaze{ animation:ponder 4.6s ease-in-out infinite; }
+.ghawk[data-state="thinking"] .b-think{ opacity:1; }
+.ghawk[data-state="thinking"] .b-think .t1{ animation:rise 2.4s ease-out infinite; }
+.ghawk[data-state="thinking"] .b-think .t2{ animation:rise 2.4s ease-out .3s infinite; }
+.ghawk[data-state="thinking"] .b-think .t3{ animation:rise 2.4s ease-out .6s infinite; }
+
+/* SPEAKING - beak works, head bobs on the beat, dashes fire */
+.ghawk[data-state="speaking"]{ --tilt:-1deg; --gx:2px; --float-dur:3.4s; }
+.ghawk[data-state="speaking"]:not(.manual-mouth) .jaw{ animation:talk var(--talk-speed) ease-in-out infinite; }
+.ghawk[data-state="speaking"] .float{ animation:talk-bob var(--talk-speed) ease-in-out infinite; }
+.ghawk[data-state="speaking"] .b-speak{ opacity:1; }
+.ghawk[data-state="speaking"] .b-speak .d1{ animation:dash var(--talk-speed) ease-out infinite; }
+.ghawk[data-state="speaking"] .b-speak .d2{ animation:dash var(--talk-speed) ease-out .1s infinite; }
+.ghawk[data-state="speaking"] .b-speak .d3{ animation:dash var(--talk-speed) ease-out .2s infinite; }
+
+/* CURIOUS - the head tilt, wide eye, question mark */
+.ghawk[data-state="curious"]{
+  --tilt:-12deg; --gx:9px; --gy:3px; --dilate:1.14;
+  --brow:-8deg; --brow-y:-8px; --jaw:3deg; --float-dur:4.4s;
+}
+.ghawk[data-state="curious"] .b-curious{ opacity:1; animation:pop .45s cubic-bezier(.3,1.7,.5,1) both; }
+.ghawk[data-state="curious"] .b-curious .q-mark{ animation:hover-q 2.1s ease-in-out .45s infinite; }
+
+/* WORKING - eye scans, ring spins */
+.ghawk[data-state="working"]{ --tilt:-2deg; --brow:1deg; --float-dur:4.2s; }
+.ghawk[data-state="working"] .gaze{ animation:scan 2.6s cubic-bezier(.5,0,.5,1) infinite; }
+.ghawk[data-state="working"] .b-work{ opacity:1; }
+.ghawk[data-state="working"] .b-work .spin{ animation:spin 1.15s linear infinite; }
+
+/* SUCCESS - happy squint, quick double nod, check pops in */
+.ghawk[data-state="success"]{
+  --lid-lo:.62; --brow:-5deg; --brow-y:-6px; --dilate:1.02; --jaw:5deg; --float-dur:4s;
+}
+.ghawk[data-state="success"] .react{ animation:nod 820ms cubic-bezier(.35,1.2,.4,1); }
+.ghawk[data-state="success"] .b-success{ opacity:1; animation:pop .5s cubic-bezier(.25,1.8,.45,1) both; }
+
+/* ERROR - brow slams down, pupil pins, head shakes */
+.ghawk[data-state="error"]{
+  --tilt:3deg; --gx:4px; --gy:4px; --dilate:.86; --brow:12deg; --lid:.14; --float-dur:3s;
+}
+.ghawk[data-state="error"] .react{ animation:shake 520ms cubic-bezier(.36,.07,.19,.97); }
+.ghawk[data-state="error"] .b-error{ opacity:1; animation:pop .4s cubic-bezier(.3,1.7,.5,1) both; }
+.ghawk[data-state="error"] .b-error .err-rays{ animation:flash 1.1s ease-out .25s infinite; }
+
+/* SLEEPING - eyes shut, slow deep breathing */
+.ghawk[data-state="sleeping"]{ --tilt:6deg; --lid:1; --float-dur:7.5s; }
+.ghawk[data-state="sleeping"] .lid-crease{ opacity:1; transition:opacity .3s .15s; }
+
+/* ═══════ KEYFRAMES ═══════ */
+@keyframes float{ 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-8px) scale(1.007)} }
+@keyframes blink{ 0%{transform:scaleY(var(--lid))} 45%{transform:scaleY(1)} 55%{transform:scaleY(1)} 100%{transform:scaleY(var(--lid))} }
+@keyframes talk{        /* ~4 syllables per loop - unevenly spaced so it doesn't tick */
+  0%{transform:rotate(1deg)}   10%{transform:rotate(11deg)} 24%{transform:rotate(2deg)}
+  37%{transform:rotate(9deg)}  52%{transform:rotate(3deg)}  66%{transform:rotate(12deg)}
+  80%{transform:rotate(2deg)}  91%{transform:rotate(7deg)}  100%{transform:rotate(1deg)}
+}
+@keyframes talk-bob{ 0%,100%{transform:translateY(0)} 10%{transform:translateY(3px)} 37%{transform:translateY(2px)} 66%{transform:translateY(3px)} 91%{transform:translateY(2px)} }
+@keyframes ponder{ 0%,100%{transform:translate(-6px,-13px)} 40%{transform:translate(-13px,-8px)} 70%{transform:translate(-2px,-14px)} }
+@keyframes scan{ 0%,100%{transform:translate(-11px,0)} 50%{transform:translate(12px,1px)} }
+@keyframes nod{ 0%,100%{transform:rotate(0)} 22%{transform:rotate(7deg)} 46%{transform:rotate(-2deg)} 68%{transform:rotate(4deg)} }
+@keyframes shake{ 0%,100%{transform:translateX(0)} 15%{transform:translateX(-16px)} 32%{transform:translateX(13px)} 52%{transform:translateX(-9px)} 74%{transform:translateX(5px)} }
+@keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+@keyframes pop{ 0%{opacity:0;transform:scale(.4) translateY(14px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes hover-q{ 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-14px) rotate(4deg)} }
+@keyframes rise{ 0%{opacity:0;transform:translateY(16px) scale(.6)} 30%{opacity:1;transform:translateY(0) scale(1)} 75%{opacity:1} 100%{opacity:0;transform:translateY(-14px) scale(1.05)} }
+@keyframes wave{ 0%{opacity:0;transform:translateX(-10px) scaleX(.7)} 35%{opacity:1} 100%{opacity:0;transform:translateX(8px) scaleX(1)} }
+@keyframes dash{ 0%,100%{opacity:.35;transform:translateX(0)} 25%{opacity:1;transform:translateX(7px)} }
+@keyframes flash{ 0%,100%{opacity:.25} 20%{opacity:1} }
+
+.ghawk .b-curious .q-mark{ transform-origin:900px 300px; }
+.ghawk .b-work .spin{ transform-origin:898px 290px; }
+.ghawk .b-listen path{ transform-origin:920px 480px; }
+
+@media (prefers-reduced-motion:reduce){
+  .ghawk *, .ghawk{ animation:none !important; transition-duration:.01ms !important; }
+}
+
+/* ---- the hawk as the avatar ---------------------------------------------
+   Two shapes sharing one box. The head is what the assistant wears at rest and
+   while it talks; the roundel is what it becomes while it is away fetching an
+   answer. They crossfade rather than swap, so the change reads as one object
+   folding up, which is the point of flying the avatar down to the message
+   instead of drawing a second spinner beside it. */
+.ghawk-avatar { position: absolute; inset: 0; }
+.ghawk-motion { position: absolute; inset: 0; will-change: transform; }
+.ghawk-avatar .ghawk,
+.ghawk-avatar .ghawk-dot {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
+}
+.ghawk-avatar .ghawk { transition: opacity .2s ease, transform .3s cubic-bezier(.34,1.4,.5,1); }
+.ghawk-avatar .ghawk-dot {
+  opacity: 0; transform: scale(.55);
+  transition: opacity .2s ease, transform .3s cubic-bezier(.34,1.4,.5,1);
+}
+.ghawk-avatar[data-shape="dot"] .ghawk { opacity: 0; transform: scale(.62); }
+.ghawk-avatar[data-shape="dot"] .ghawk-dot {
+  opacity: 1; transform: scale(1);
+  animation: ghawk-roundel 2.3s ease-in-out infinite;
+}
+@keyframes ghawk-roundel { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+  .ghawk-avatar[data-shape="dot"] .ghawk-dot { animation: none; }
+}
+
+.aria-chat-wrapper[data-avatar-character] .aria-avatar {
+  transition: opacity .18s linear;
+}
+.aria-chat-wrapper[data-avatar-character] .aria-avatar[data-away="1"] {
+  opacity: .32;
+}
+
+.icon-btn--speak[aria-pressed="true"] {
+  color: var(--g-accent, #c9a157);
+  box-shadow: 0 0 0 1px var(--g-accent, #c9a157) inset;
+}
+.composer__speech-status {
+  min-height: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--g-text-muted, #8b8b8c);
+}
+.composer__speech-status:empty { display: none; }

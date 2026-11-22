@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Care · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the shared care inbox for prayer and messages on the Genesis OS shell. An owner on every thread, waiting on us first, Hope drafts for everyday questions only, and alerts that carry no private words. Sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Care only. Prefix: cr-. The page is the Genesis OS Outreach Inbox (thread list and
+     thread pane); these rules only arrange it and the two cards under it. */
+  .cr-page .v2-thread-row small .gm-icon{width:12px;height:12px;margin:-2px 4px 0 0}
+  .cr-page .v2-thread-row .v2-avatar .gm-icon{width:14px;height:14px}
+  .cr-page .v2-thread-meta .v2-badge{white-space:nowrap}
+  .cr-see{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 16px;padding:12px 15px;border-bottom:1px solid var(--v2-border)}
+  .cr-see-copy{flex:1 1 260px;min-width:0;display:grid;gap:6px;justify-items:start}
+  .cr-see-copy p{margin:0;color:var(--v2-text-2);font-size:12px;line-height:1.55}
+  .cr-see-ctl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px}
+  .cr-see-ctl .v2-compact-field .v2-select{min-width:190px}
+  .cr-page .v2-thread-messages>.v2-state-inline{display:flex;gap:8px;align-items:flex-start;margin:0 0 12px;line-height:1.5}
+  .cr-page .v2-thread-messages>.v2-state-inline .gm-icon{width:14px;height:14px;margin-top:1px}
+  .cr-page .v2-thread-messages>.v2-drawer-recommendation{margin:0 0 16px}
+  .cr-page .v2-drawer-recommendation .v2-rec-checks{margin-top:10px}
+  .cr-hope{margin:4px 0 4px}
+  .cr-hope>p{margin:0 0 8px}
+  .cr-send{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .cr-pair{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px;align-items:start}
+  .cr-pair>.v2-card>p.v2-muted-copy{margin:4px 0 14px}
+  .cr-mails{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+  .cr-page .v2-drawer-recommendation>small{text-transform:uppercase;letter-spacing:.1em}
+  .cr-crisis-log{margin:0 0 14px;gap:0}
+  .cr-crisis-log+.v2-rec-checks{margin:0 0 16px}
+  .cr-ok{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .cr-foot-link{margin:14px 0 0}
+  /* The open conversation grows with its words, so the composer never sits over the last entry.
+     The list keeps its own scroll beside it. */
+  @media (min-width:861px){
+    .cr-page .v2-inbox-shell{height:auto;min-height:520px;align-items:stretch}
+    .cr-page .v2-inbox-shell>.v2-thread-list{contain:size;overflow-y:auto}
+    .cr-page .v2-thread-pane{min-height:520px}
+    .cr-page .v2-thread-messages{flex:1 0 auto;overflow:visible}
+  }
+  body.v2-genesis-open .cr-page .v2-thread-pane-head{grid-template-columns:minmax(0,1fr)}
+  body.v2-genesis-open .cr-page .v2-thread-pane-head>div:last-child{flex-wrap:wrap}
+  .cr-minor ol{margin:10px 0 0;padding-left:20px;display:grid;gap:8px;color:var(--v2-text);font-size:13px;line-height:1.6}
+  .cr-minor p{margin:0}
+  @media (min-width:861px) and (max-width:1279px){.cr-page .v2-thread-pane-head{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:1279px){
+    .cr-page .v2-thread-compose>div{grid-template-columns:minmax(0,1fr)}
+  }
+  @media (max-width:1180px){.cr-pair{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:640px){.cr-mails{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:860px){
+    .cr-page:not(.is-reading) #cr-context{display:none}
+    .cr-see-ctl{width:100%}
+    .cr-see-ctl .v2-compact-field{flex:1 1 200px}
+    .cr-send{justify-content:stretch}
+    .cr-send .v2-button{flex:1 1 auto}
+    .cr-page .v2-inbox-toolbar{flex-wrap:wrap}
+    .cr-page .v2-inbox-toolbar>.v2-segments{flex:1 1 100%}
+    .cr-page .v2-inbox-toolbar>.v2-segments button{flex:1 1 0;white-space:nowrap}
+  }
+</style>
+</head>
+<body data-side="church" data-page="care" data-title="Care">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page v2-outreach-page v2-outreach-inbox-page cr-page" id="cr-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow" id="cr-eyebrow">Care</div>
+        <h1 id="cr-title">Waiting on Us</h1>
+        <p id="cr-sub">Prayer and messages in one shared inbox.</p>
+      </div>
+      <div class="v2-page-actions" id="cr-actions">
+        <button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What is waiting on us in care?" id="cr-ask">Ask <span data-gm-text="assistant.name">Hope</span></button>
+        <a class="v2-button v2-button-quiet" href="church-access.html" id="cr-access">Access Record</a>
+      </div>
+    </header>
+
+    <!-- On phones the second-level column becomes this picker, as in Genesis OS -->
+    <label class="v2-view-picker v2-deal-view-picker"><span>View</span><select class="v2-select v2-nselect" id="cr-view" aria-label="Care view"></select></label>
+
+    <div class="v2-outreach-pulse" role="group" aria-label="What is waiting on us" id="cr-pulse" data-tour="care.pulse"></div>
+
+    <div class="v2-inbox-toolbar" data-tour="care.roles">
+      <div class="v2-segments" role="group" aria-label="See what each role sees" id="cr-roles">
+        <button type="button" data-role="pastor" aria-pressed="true">Pastor</button>
+        <button type="button" data-role="prayer" aria-pressed="false">Prayer Team</button>
+        <button type="button" data-role="staff" aria-pressed="false">Staff</button>
+      </div>
+      <span id="cr-seen" aria-live="polite"></span>
+    </div>
+
+    <!-- The real inbox: conversations on the left, the open one on the right -->
+    <section class="v2-inbox-shell" id="cr-shell" aria-label="Care inbox">
+      <div class="v2-thread-list" role="group" aria-label="Care conversations" id="cr-list" data-tour="care.waiting"></div>
+      <div class="v2-thread-pane" id="cr-pane" data-tour="care.thread"></div>
+    </section>
+
+    <!-- What the emails said and who opened it, for the open conversation -->
+    <div class="cr-pair" id="cr-context"></div>
+
+    <section class="v2-card cr-minor" aria-labelledby="cr-minor-title" data-tour="care.minor">
+      <h2 id="cr-minor-title">If someone under 18 writes in</h2>
+      <p class="v2-muted-copy">Member accounts are for adults. When a young person reaches the care inbox anyway, staff follow the same steps every time.</p>
+      <ol>
+        <li>Stop the private thread. Do not continue a one to one conversation with a minor.</li>
+        <li>Bring in a parent or guardian, and tell the young person you are doing it.</li>
+        <li>Follow your church's child protection policy, and report when the law requires it.</li>
+        <li>Close the account kindly, and archive the thread. Nothing is deleted.</li>
+      </ol>
+    </section>
+
+    <section class="v2-section" aria-labelledby="cr-protect-title" data-tour="care.protect">
+      <div class="v2-section-head"><div><h2 id="cr-protect-title">How care is protected</h2><p id="cr-protect-sub">On for every church that keeps care in the workspace, from Level 02.</p></div></div>
+      <div class="v2-card"><ul class="gm-protect-list" id="cr-protect"></ul></div>
+    </section>
+
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+
+  /* ---------- Extra sample data for this page (same shapes as GM_DATA.access) ----------
+     Who opened, replied and was alerted, per care item. No private words, ever.
+     The same entries appear on the access record and the person page. */
+  var EXTRA_ACCESS = [
+    { at: "2026-11-19T10:12", who: "s-care",  action: "Opened",  what: "Person page for Sarah N.", where: "People", item: "p-sarah" },
+    { at: "2026-11-19T10:05", who: "s-imani", action: "Opened",  what: "Thread with Abigail R.", where: "Care inbox", item: "t-01" },
+    { at: "2026-11-19T07:20", who: "system",  action: "Alerted", what: "Imani W., by email: New message. Sign in to read.", where: "Care inbox", item: "t-01" },
+    { at: "2026-11-18T23:05", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care inbox", item: "pr-08" },
+    { at: "2026-11-18T19:02", who: "s-care",  action: "Opened",  what: "Prayer request from Caleb E.", where: "Care inbox", item: "pr-04" },
+    { at: "2026-11-18T18:30", who: "system",  action: "Alerted", what: "Pastors, by email: New request. Sign in to read.", where: "Care inbox", item: "pr-04" },
+    { at: "2026-11-18T12:40", who: "s-care",  action: "Replied", what: "Thread with Sarah N.", where: "Care inbox", item: "t-06" },
+    { at: "2026-11-18T09:30", who: "s-lead",  action: "Opened",  what: "Thread with Lucia P.", where: "Care inbox", item: "t-03" },
+    { at: "2026-11-18T08:45", who: "system",  action: "Alerted", what: "Pastors, by email: New message. Sign in to read.", where: "Care inbox", item: "t-03" },
+    { at: "2026-11-18T08:20", who: "s-owen",  action: "Opened",  what: "Prayer request from Sarah N.", where: "Care inbox", item: "pr-01" },
+    { at: "2026-11-18T07:55", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care inbox", item: "pr-01" },
+    { at: "2026-11-17T16:05", who: "s-sofia", action: "Replied", what: "Prayer request from Wyatt F.", where: "Care inbox", item: "pr-02" },
+    { at: "2026-11-17T09:40", who: "s-jun",   action: "Opened",  what: "Thread with Kwame A.", where: "Care inbox", item: "t-02" },
+    { at: "2026-11-16T14:12", who: "s-care",  action: "Replied", what: "Prayer request from Fatima A.", where: "Care inbox", item: "pr-03" },
+    { at: "2026-11-13T09:00", who: "s-lead",  action: "Ended access", what: "Tobias E. stepped down from the prayer team. Access ended the same day. Emailed to the lead pastor.", where: "Team roles" }
+  ];
+  /* Which care item each shared access entry belongs to (matched by time and person). */
+  var ACCESS_ITEM = { "2026-11-19T09:41|s-lead": "pr-01", "2026-11-19T09:15|s-owen": "pr-08", "2026-11-19T08:10|s-nadia": "t-05", "2026-11-18T09:00|s-care": "pr-07", "2026-11-17T21:31|s-care": "pr-07", "2026-11-17T21:12|system": "pr-07", "2026-11-16T15:40|s-imani": "t-04", "2026-11-12T08:40|s-owen": "pr-06" };
+  /* The next step after the one urgent request. */
+  var CRISIS_NEXT = { at: "2026-11-23T10:00", text: "Next check-in call, Monday morning", owner: "s-care" };
+
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var $ = function (id) { return document.getElementById(id); };
+  var peopleIncluded = GM.isIncluded("people"), accessIncluded = GM.isIncluded("access"), hopeIncluded = GM.isIncluded("genesis");
+  var VIEWS = { waiting: "Waiting on Us", prayer: "Prayer", messages: "Messages", archived: "Archived" };
+  var view = VIEWS[ctx.params.get("view")] ? ctx.params.get("view") : "waiting";
+  var ROLES = {
+    pastor: { label: "Pastor", viewer: "s-lead", can: function () { return true; } },
+    prayer: { label: "Prayer Team", viewer: "s-owen", can: function (it) { return it.type === "prayer" && it.visibility === "prayer"; } },
+    staff:  { label: "Staff", viewer: "s-imani", can: function (it) { return it.type === "thread" && it.kind === "everyday"; } }
+  };
+  var state = { role: "pastor", current: null, pinned: null, reading: false };
+
+  /* ---------- One list of care items: prayer and threads together ---------- */
+  var items = [];
+  D.prayer.forEach(function (p) {
+    var last = p.received;
+    (p.replies || []).forEach(function (r) { if (r.at > last) last = r.at; });
+    items.push({ id: p.id, type: "prayer", kind: "prayer", personId: p.personId, since: p.received, last: last, owner: p.owner,
+      visibility: p.visibility, label: p.topic, status: p.status, waiting: !!p.waitingOnUs, crisis: !!p.crisis, archived: false, src: p, local: [] });
+  });
+  D.threads.forEach(function (t) {
+    var msgs = t.messages || [], last = msgs.length ? msgs[msgs.length - 1].at : t.started, lastMember = t.started;
+    msgs.forEach(function (m) { if (m.from === "member") lastMember = m.at; });
+    items.push({ id: t.id, type: "thread", kind: t.kind, personId: t.personId, since: lastMember, last: last, owner: t.owner,
+      visibility: t.kind === "private" ? "pastors" : "staff", label: t.subject, status: t.status, waiting: t.status === "waiting-on-us",
+      archived: t.status === "archived", draft: t.draft, src: t, local: [] });
+  });
+  function byId(id) { for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i]; return null; }
+  var accessAll = D.access.map(function (a) { var o = {}; for (var k in a) o[k] = a[k]; o.item = ACCESS_ITEM[a.at + "|" + a.who] || null; return o; }).concat(EXTRA_ACCESS);
+
+  /* ---------- Small helpers ---------- */
+  function hoursSince(s) { return (GM.now - GM.parseDate(s)) / 3600000; }
+  function shortWhen(s) {
+    var d = GM.parseDate(s), diff = Math.round((new Date(GM.now.getFullYear(), GM.now.getMonth(), GM.now.getDate()) - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 86400000);
+    return diff === 0 ? fmt.time(s) : diff === 1 ? "Yesterday" : diff < 7 ? fmt.weekday(s) : fmt.date(s);
+  }
+  function pastorsLine() { return c.leadPastor + " and " + c.carePastor; }
+  function names(roleKey) { return D.staff.filter(function (s) { return s.roleKey === roleKey; }).map(function (s) { return s.name; }); }
+  function joinNames(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function lockFor(it) { return it.type === "prayer" ? GM.lock(it.visibility) : it.visibility === "pastors" ? GM.lock("pastors") : GM.lock("staff", "Staff and pastors"); }
+  function draftWaiting(it) { return !!(it.draft && hopeIncluded && GM.draftStatus(it.draft) === "waiting"); }
+  function canSee(it) { return ROLES[state.role].can(it); }
+  function roleViewer() { return GM.staff(ROLES[state.role].viewer); }
+  function l3() { return '<em class="gm-nav-lock" title="Included in Level 03"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>L03</em><span class="sr-only">, included in Level 03</span>'; }
+  function statusBadge(it) {
+    if (it.archived) return GM.pill("Archived", "neutral");
+    if (it.crisis) return GM.pill("Cared For", "positive");
+    if (it.waiting) return GM.pill(fmt.waiting(it.since).replace("Waiting ", ""), hoursSince(it.since) >= 24 ? "warning" : "neutral");
+    var map = { praying: ["Praying", "info"], replied: ["Replied", "positive"], "following-up": ["Following Up", "info"], "waiting-on-them": ["Their Turn", "neutral"], closed: ["Closed", "neutral"], "replied-now": ["Replied", "positive"] };
+    var m = map[it.status] || [it.status, "neutral"];
+    return GM.pill(m[0], m[1]);
+  }
+  function kindLine(it) { return it.crisis ? "Urgent request" : it.type === "prayer" ? "Prayer request" : it.kind === "private" ? "Private message" : "Everyday question"; }
+
+  /* ---------- Views: the rail decides which conversations show ---------- */
+  var TEST = {
+    waiting: function (it) { return it.waiting && !it.archived; },
+    prayer: function (it) { return it.type === "prayer" && !it.archived; },
+    messages: function (it) { return it.type === "thread" && !it.archived; },
+    archived: function (it) { return it.archived; }
+  };
+  function sortItems(list) {
+    return list.slice().sort(function (a, b) {
+      if (a.waiting !== b.waiting) return a.waiting ? -1 : 1;
+      if (a.waiting) return GM.parseDate(a.since) - GM.parseDate(b.since);
+      return GM.parseDate(b.last) - GM.parseDate(a.last);
+    });
+  }
+  function visibleList() {
+    var list = sortItems(items.filter(TEST[view]).filter(canSee));
+    /* The open conversation stays in the list while it is open, as the Genesis OS inbox does. */
+    var pin = state.pinned && byId(state.pinned);
+    if (pin && canSee(pin) && list.indexOf(pin) < 0) list.unshift(pin);
+    return list;
+  }
+
+  /* ---------- Head, picker, numbers ---------- */
+  $("cr-title").textContent = VIEWS[view];
+  $("cr-ask").textContent = "Ask " + HOPE;
+  if (!accessIncluded) $("cr-access").insertAdjacentHTML("beforeend", l3());
+  $("cr-view").innerHTML = Object.keys(VIEWS).map(function (k) { return '<option value="' + k + '"' + (k === view ? " selected" : "") + ">" + esc(VIEWS[k]) + "</option>"; }).join("");
+  $("cr-view").addEventListener("change", function () { GM.go(this.value === "waiting" ? "church-care.html" : "church-care.html?view=" + this.value); });
+
+  function waitingNow() { return items.filter(function (it) { return it.waiting && !it.archived; }).sort(function (a, b) { return GM.parseDate(a.since) - GM.parseDate(b.since); }); }
+  function paintHead() {
+    var w = waitingNow(), oldest = w.length ? fmt.waiting(w[0].since).replace("Waiting ", "") : "";
+    var n = { prayer: items.filter(TEST.prayer).length, messages: items.filter(TEST.messages).length, archived: items.filter(TEST.archived).length };
+    $("cr-sub").textContent = {
+      waiting: w.length ? w.length + (w.length === 1 ? " conversation is" : " conversations are") + " waiting on us. The oldest has waited " + oldest + "." : "Nothing is waiting on us. Every conversation has a reply.",
+      prayer: n.prayer + " prayer requests. Only pastors and the prayer team can open them.",
+      messages: n.messages + " message threads, everyday questions and private ones, each with an owner.",
+      archived: n.archived === 1 ? "1 conversation is archived. Archived, never deleted." : n.archived + " conversations are archived. Archived, never deleted."
+    }[view];
+    var over = w.filter(function (it) { return hoursSince(it.since) >= 24; }).length;
+    var med = D.metrics.medianReplyHours[D.metrics.medianReplyHours.length - 1];
+    $("cr-pulse").innerHTML =
+      pulse("Waiting", w.length, oldest ? "Oldest has waited " + oldest : "Every thread has a reply") +
+      pulse("Past a day", over, "Over our one-day goal") +
+      pulse("First reply", med + "h", "Median last week. Goal: within a day");
+  }
+  function pulse(label, value, note) { return '<div class="v2-outreach-pulse-item"><span>' + esc(label) + '</span><b class="v2-serif-number">' + esc(value) + '</b><small data-detail-min="standard">' + esc(note) + "</small></div>"; }
+
+  /* ---------- The thread list ---------- */
+  function rowHTML(it) {
+    var p = GM.person(it.personId), owner = GM.staff(it.owner), cur = it.id === state.current && (state.reading || !phoneNow());
+    var avatar = it.crisis ? GM.icon("shield") : esc(p.initials);
+    var line2 = it.type === "thread" && it.kind === "everyday"
+      ? esc(it.src.messages[it.src.messages.length - 1].from === "member" ? "" : "You: ") + esc(it.src.messages[it.src.messages.length - 1].text)
+      : GM.icon("lock") + esc(it.crisis ? "Urgent request, handled with care" : kindLine(it) + ": " + it.label);
+    return '<button class="v2-thread-row' + (cur ? " is-active" : "") + '" type="button" data-id="' + esc(it.id) + '"' + (cur ? ' aria-current="true"' : "") + ">" +
+      '<span class="v2-avatar" aria-hidden="true">' + avatar + "</span>" +
+      "<span><b>" + esc(p.name) + "</b><small>" + line2 + "</small><small>" + esc(it.type === "prayer" ? "Prayer" : "Message") + " · " + esc(owner.name) + " owns it</small></span>" +
+      '<span class="v2-thread-meta"><small>' + esc(shortWhen(it.last)) + "</small>" + statusBadge(it) + (draftWaiting(it) ? GM.pill("Draft Ready", "gold") : "") + "</span></button>";
+  }
+  function paintList() {
+    var list = visibleList();
+    var empty = { waiting: "Nothing is waiting on us. Every conversation has a reply.", prayer: "No prayer requests this role can open.", messages: "No message threads this role can open.", archived: "Nothing is archived. Archived conversations stay on the person's page." }[view];
+    $("cr-list").innerHTML = list.length ? list.map(rowHTML).join("") : '<div class="v2-thread-empty"><div><b>All clear</b><p>' + esc(empty) + "</p></div></div>";
+    var hidden = items.filter(function (it) { return TEST[view](it) && !canSee(it); }).length;
+    var rv = roleViewer(), seen = "Seen as " + rv.name + (/[.]$/.test(rv.name) ? " " : ". ");
+    $("cr-seen").textContent = state.role === "pastor"
+      ? seen + "Pastors see every conversation."
+      : seen + (hidden ? GM.fmt.plural(hidden, "conversation") + " hidden from this role." : "Nothing here is hidden from this role.");
+  }
+
+  /* ---------- The open conversation ---------- */
+  function whoCanSee(it) {
+    var first = GM.person(it.personId).first;
+    if (it.crisis) return "Who can see this: " + pastorsLine() + " only. Urgent requests are always pastors only.";
+    if (it.type === "prayer" && it.visibility === "prayer") return "Who can see this: " + pastorsLine() + ", and the prayer team (" + joinNames(names("prayer")) + "). Staff and website admins cannot open it.";
+    if (it.type === "prayer") return "Who can see this: " + pastorsLine() + " only. " + first + " chose pastors only, so it cannot be widened.";
+    if (it.kind === "private") return "Who can see this: " + pastorsLine() + " only. Private threads never go to staff, the prayer team or " + HOPE + ".";
+    return "Who can see this: pastors and staff (" + joinNames(names("staff")) + "). The prayer team and website admins do not see messages.";
+  }
+  function ownerChoices(it) {
+    if (it.visibility === "prayer") return ["s-lead", "s-care", "s-owen", "s-sofia"];
+    if (it.visibility === "pastors") return ["s-lead", "s-care"];
+    return ["s-lead", "s-care", "s-nadia", "s-imani", "s-hector", "s-jun"];
+  }
+  function alertText(it) { return it.crisis ? "Urgent request. Sign in to read." : it.type === "prayer" ? "New request. Sign in to read." : "New message. Sign in to read."; }
+  function alertTo(it) {
+    if (it.crisis) return c.carePastor + ", pastor on call";
+    if (it.type === "prayer") return it.visibility === "prayer" ? "Pastors and the prayer team" : pastorsLine();
+    return it.kind === "private" ? pastorsLine() : GM.staff(it.owner).name;
+  }
+  function entries(it) {
+    var p = GM.person(it.personId), out = [];
+    if (it.type === "prayer") {
+      var pr = it.src;
+      out.push({ k: "in", at: pr.received, text: pr.text, meta: it.visibility === "pastors" ? "Sent as pastors only" : "From the member app" });
+      if (!it.crisis) out.push({ k: "sys", icon: "mail", text: "Alert sent to " + (it.visibility === "prayer" ? "pastors and the prayer team" : pastorsLine()) + ": " + alertText(it) });
+      (pr.replies || []).forEach(function (r) {
+        if (r.from === "member") out.push({ k: "in", at: r.at, text: r.text, meta: p.name });
+        else out.push({ k: "out", at: r.at, text: r.text, meta: GM.staff(r.from).name });
+      });
+    } else {
+      it.src.messages.forEach(function (m, i) {
+        if (m.from === "member") out.push({ k: "in", at: m.at, text: m.text, meta: p.name });
+        else out.push({ k: "out", at: m.at, text: m.text, meta: GM.staff(m.from).name });
+        if (i === 0) out.push({ k: "sys", icon: "mail", text: "Alert sent to " + alertTo(it) + ": " + alertText(it) });
+      });
+    }
+    out = out.concat(it.local);
+    var withNotices = [];
+    out.forEach(function (e, i) {
+      withNotices.push(e);
+      var next = out[i + 1];
+      if (e.k === "out" && !e.note && (!next || next.k !== "out")) withNotices.push({ k: "sys", icon: "mail", text: p.first + (e.preview ? " would be emailed" : " was emailed") + ": You have a reply. Sign in to read." });
+    });
+    return withNotices;
+  }
+  function messagesHTML(it) {
+    return entries(it).map(function (e) {
+      if (e.k === "sys") return '<div class="v2-state-inline">' + GM.icon(e.icon || "info") + "<span>" + esc(e.text) + "</span></div>";
+      if (e.note) return '<div class="v2-message is-out"><span>' + esc(e.text) + "</span><small>" + GM.lock("pastors", "Pastor note, pastors only") + " " + esc(e.meta) + "</small></div>";
+      return '<div class="v2-message ' + (e.k === "out" ? "is-out" : "is-in") + '"><span>' + esc(e.text) + "</span><small>" + esc(e.meta) + " · " + esc(e.at ? fmt.when(e.at) : "just now") + (e.preview ? " · Preview only, not sent" : "") + "</small></div>";
+    }).join("");
+  }
+  function crisisHTML(it) {
+    var p = GM.person(it.personId), log = it.src.crisisLog || [];
+    return '<div class="v2-drawer-recommendation"><small>Handled with care</small><b>' + esc(p.first) + " was given 988 and 911 the moment he wrote.</b>" +
+      '<span class="v2-recommendation-reason">' + esc(c.carePastor) + ", on call, got an email and a phone notification with no private words. " + esc(HOPE) + " never drafts here, and nothing about this request appears in any summary or chart.</span></div>" +
+      '<div class="v2-rec-activity cr-crisis-log" aria-label="What happened">' + log.map(function (l) {
+        return '<div class="v2-activity-row">' + esc(l.text.replace("The pastor on call was", c.carePastor + ", on call, was").replace("The pastor on call", c.carePastor)) + "<small>" + esc(fmt.when(l.at)) + "</small></div>";
+      }).join("") + "</div>" +
+      '<ol class="v2-rec-checks"><li class="is-now"><span class="v2-rec-tick" aria-hidden="true"></span><span>' + esc(CRISIS_NEXT.text) + "<small>" + esc(fmt.when(CRISIS_NEXT.at) + ", " + GM.staff(CRISIS_NEXT.owner).name) + "</small></span></li></ol>";
+  }
+  function hopeHTML(it) {
+    if (it.type === "thread" && it.kind === "everyday" && it.draft && hopeIncluded) {
+      return '<div class="cr-hope" data-tour="care.genesis"><p class="v2-muted-copy">' + esc(HOPE) + " drafted a reply because this is an everyday question about the building. A person approves it or writes their own.</p>" + GM.draft(it.draft) + "</div>";
+    }
+    if (it.type === "thread" && it.kind === "everyday") {
+      return '<div class="v2-state-inline" data-tour="care.genesis">' + GM.icon("genesis") + "<span>" + esc(HOPE) + " can draft replies to everyday questions like this one, and each one waits for approval. No draft is waiting here, so a person writes it.</span></div>";
+    }
+    return '<div class="v2-state-inline" data-tour="care.genesis">' + GM.icon("genesis") + "<span><b>A person writes every word here.</b> " + esc(HOPE) + " never drafts a reply to prayer or a personal message. It only tells you how long something has waited.</span></div>";
+  }
+  function paintPane() {
+    var it = byId(state.current), pane = $("cr-pane");
+    if (!it) {
+      pane.innerHTML = '<div class="v2-thread-empty"><div><b>Pick a conversation</b><p>Pick a prayer request or a message on the left and it opens here. Opening it is written to the access record.</p></div></div>';
+      $("cr-context").innerHTML = "";
+      return;
+    }
+    var p = GM.person(it.personId), rv = roleViewer();
+    var back = '<button class="v2-button v2-button-quiet v2-thread-back" type="button" data-cr="back">' + ic("back") + "Care</button>";
+    if (!canSee(it)) {
+      var why = state.role === "prayer"
+        ? (it.type === "thread" ? "Messages are for pastors and staff. The prayer team sees prayer requests and nothing more." : p.first + " chose pastors only, so the prayer team cannot open it.")
+        : (it.type === "prayer" ? "Prayer is for pastors and the prayer team. Staff never see prayer requests." : "Private threads are for pastors only.");
+      pane.innerHTML = '<div class="v2-thread-pane-head">' + back + "<div><h2 id=\"cr-thread-title\" tabindex=\"-1\">" + esc(rv.name) + " cannot open this</h2><p>" + esc(kindLine(it)) + "</p></div><div></div></div>" +
+        '<div class="v2-thread-empty"><div>' + lockFor(it) + "<p>" + esc(why) + " If someone tried, it would be blocked and written to the access record.</p>" +
+        '<button class="v2-button" type="button" data-cr="role-pastor">See It as a Pastor</button></div></div>';
+      $("cr-context").innerHTML = "";
+      return;
+    }
+    var received = it.type === "prayer" ? it.src.received : it.src.started;
+    var sub = kindLine(it) + (it.crisis ? "" : " · " + it.label) + " · " + (it.type === "prayer" ? "received " : "started ") + fmt.when(received);
+    var personBtn = '<a class="v2-button v2-button-quiet" href="church-person.html?id=' + esc(p.id) + '">Open Person' + (peopleIncluded ? "" : l3()) + "</a>";
+    var archiveBtn = it.archived
+      ? '<button class="v2-button v2-button-quiet" type="button" data-cr="restore">' + ic("history") + "Restore</button>"
+      : '<button class="v2-button v2-button-quiet" type="button" data-cr="archive">' + ic("archive") + "Archive</button>";
+    var head = '<div class="v2-thread-pane-head">' + back + '<div><h2 id="cr-thread-title" tabindex="-1">' + esc(p.name) + "</h2><p>" + esc(sub) + "</p></div><div>" + personBtn + archiveBtn + "</div></div>";
+
+    var ownerSel = '<label class="v2-compact-field"><span>Owner</span><select class="v2-select v2-nselect" id="cr-owner">' +
+      ownerChoices(it).map(function (id) { var s = GM.staff(id); return '<option value="' + id + '"' + (id === it.owner ? " selected" : "") + ">" + esc(s.name + ", " + s.role) + "</option>"; }).join("") + "</select></label>";
+    var narrow = it.type === "prayer" && it.visibility === "prayer" && state.role === "pastor" ? '<button class="v2-button v2-button-quiet" type="button" data-cr="narrow">' + ic("lock") + "Make Pastors Only</button>" : "";
+    var see = '<div class="cr-see" data-tour="care.visibility"><div class="cr-see-copy">' + lockFor(it) + "<p>" + esc(whoCanSee(it)) + '</p></div><div class="cr-see-ctl">' + ownerSel + narrow + "</div></div>";
+
+    var draftUp = draftWaiting(it);
+    var compose = '<form class="v2-thread-compose" id="cr-compose" data-tour="care.reply" novalidate><label for="cr-reply">' + esc((it.crisis ? "Write to " : "Reply to ") + p.first + ", as " + rv.name) + "</label>" +
+      '<div><textarea class="v2-textarea" id="cr-reply" rows="2" placeholder="' + esc(it.type === "prayer" ? "Write a short, personal reply." : "Write a reply.") + '"></textarea>' +
+      '<span class="cr-send">' + (state.role === "pastor" ? '<button class="v2-button v2-button-quiet" type="button" data-cr="note">' + ic("note") + "Add Pastor Note</button>" : "") +
+      '<button class="v2-button' + (draftUp ? "" : " v2-button-primary") + '" type="submit">' + ic("send") + "Send Reply</button></span></div>" +
+      '<p id="cr-status" role="status">' + esc(p.first) + " gets an email that says only: You have a reply. Sign in to read. Your words stay here.</p></form>";
+
+    pane.innerHTML = head + see + '<div class="v2-thread-messages" id="cr-messages" aria-live="polite" aria-label="Conversation, oldest first">' +
+      (it.crisis ? crisisHTML(it) : "") + messagesHTML(it) + hopeHTML(it) + "</div>" + compose;
+    GM.paintDrafts(pane);
+    paintContext(it);
+    /* Open at the latest words, or at the draft when one waits. */
+    var box = $("cr-messages"), msgs = box.querySelectorAll(".v2-message"), lastMsg = msgs[msgs.length - 1];
+    if (it.crisis) { box.scrollTop = 0; }
+    else if (draftUp || !lastMsg) box.scrollTop = box.scrollHeight;
+    else box.scrollTop += lastMsg.getBoundingClientRect().top - box.getBoundingClientRect().top - 16;
+  }
+  function phoneNow() { return window.matchMedia("(max-width:860px)").matches; }
+
+  /* ---------- Under the inbox: the emails and who opened it ---------- */
+  function mailHTML(label, to, subject, says) {
+    return '<section class="v2-quick-context" aria-label="' + esc(label) + '"><h3>' + esc(label) + "</h3><dl>" +
+      "<div><dt>From</dt><dd>" + esc(c.name) + "</dd></div><div><dt>To</dt><dd>" + esc(to) + "</dd></div><div><dt>Subject</dt><dd>" + esc(subject) + "</dd></div><div><dt>It says</dt><dd>" + esc(says) + "</dd></div></dl></section>";
+  }
+  function paintContext(it) {
+    var p = GM.person(it.personId), rv = roleViewer();
+    var mails = '<section class="v2-card" aria-labelledby="cr-mail-title" data-tour="care.alert"><h2 id="cr-mail-title">What the emails said</h2><p class="v2-muted-copy">No name, no topic and no words leave this inbox. A shared family email gives nothing away.</p><div class="cr-mails">' +
+      mailHTML(it.crisis ? "Alert to the pastor on call" : "Alert to the team", alertTo(it), it.crisis ? "Urgent request" : it.type === "prayer" ? "New prayer request" : "New message", alertText(it)) +
+      mailHTML("Notice to " + p.first + " after a reply", p.name, "You have a reply from " + c.short, "You have a reply. Sign in to read.") + "</div>" +
+      '<div class="cr-ok">' + GM.pill("No Name", "positive") + GM.pill("No Topic", "positive") + GM.pill("No Private Words", "positive") + "</div></section>";
+    var opens = accessAll.filter(function (a) { return a.item === it.id; }).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at); });
+    var rows = '<div class="v2-activity-row"><b>' + esc(rv.name) + "</b> opened it. Written to the access record.<small>Just now</small></div>" + opens.map(function (a) {
+      var w = GM.who(a.who);
+      var line = a.who === "system" ? "<b>Automatic alert</b> sent: " + esc(a.what.replace(/^.*?by email: /, "").replace(/^Pastor on call, by email and phone notification, with no private words$/, "Urgent request. Sign in to read. By email and a phone notification.")) : "<b>" + esc(w.name) + "</b> " + esc(a.action.toLowerCase()) + (a.action === "Opened" ? " it." : a.action === "Replied" ? " in the thread." : ".");
+      return '<div class="v2-activity-row">' + line + "<small>" + esc(fmt.when(a.at)) + "</small></div>";
+    }).join("");
+    var who = '<section class="v2-card" aria-labelledby="cr-open-title" data-tour="care.opened"><h2 id="cr-open-title">Who opened this</h2><p class="v2-muted-copy">' + (accessIncluded ? "Every open, reply and archive is recorded. Nobody can edit it, not even a pastor." : "Every open is recorded. Shepherd adds the Access Record screen to search and export it.") + "</p>" +
+      '<div class="v2-rec-activity">' + rows + "</div>" +
+      '<p class="cr-foot-link"><a class="gm-link" href="church-access.html">Open the Access Record</a>' + (accessIncluded ? "" : " " + l3()) + "</p></section>";
+    $("cr-context").innerHTML = mails + who;
+  }
+
+  /* ---------- Select, read, go back ---------- */
+  function setReading(on) {
+    state.reading = on;
+    $("cr-shell").classList.toggle("has-thread", on);
+    $("cr-page").classList.toggle("is-reading", on);
+  }
+  function select(id, opts) {
+    opts = opts || {};
+    state.current = id; state.pinned = id;
+    paintList(); paintPane();
+    if (opts.push) {
+      try { history.replaceState(null, "", GM.url("church-care.html?" + (view === "waiting" ? "" : "view=" + view + "&") + "id=" + encodeURIComponent(id))); } catch (e) {}
+      setReading(true);
+      if (window.matchMedia("(max-width:860px)").matches) { $("v2-main").scrollTop = 0; var h = $("cr-thread-title"); if (h) h.focus({ preventScroll: true }); }
+    }
+  }
+  function setRole(r) {
+    state.role = r;
+    document.querySelectorAll("#cr-roles [data-role]").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-role") === r ? "true" : "false"); });
+    paintList(); paintPane();
+    if (r !== "pastor") GM.toast("Showing what " + roleViewer().name + " (" + ROLES[r].label.toLowerCase() + ") would see. Preview only.");
+  }
+
+  $("cr-list").addEventListener("click", function (e) { var b = e.target.closest("[data-id]"); if (b) select(b.getAttribute("data-id"), { push: true }); });
+  $("cr-roles").addEventListener("click", function (e) { var b = e.target.closest("[data-role]"); if (b) setRole(b.getAttribute("data-role")); });
+  $("cr-pane").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-cr]"); if (!b) return;
+    var it = byId(state.current), act = b.getAttribute("data-cr");
+    if (act === "back") {
+      setReading(false);
+      try { history.replaceState(null, "", GM.url(view === "waiting" ? "church-care.html" : "church-care.html?view=" + view)); } catch (err) {}
+      var row = document.querySelector('#cr-list [data-id="' + state.current + '"]'); if (row) row.focus();
+      return;
+    }
+    if (act === "role-pastor") { setRole("pastor"); return; }
+    if (!it) return;
+    var first = GM.person(it.personId).first;
+    if (act === "archive") { it.archived = true; it.waiting = false; paintHead(); paintList(); paintPane(); GM.toast("Archived, not deleted. It stays on " + first + "'s page and in the access record."); }
+    else if (act === "restore") { it.archived = false; paintHead(); paintList(); paintPane(); GM.toast("Restored to the inbox. Written to the access record."); }
+    else if (act === "narrow") { it.visibility = "pastors"; paintList(); paintPane(); GM.toast("Now pastors only. The prayer team no longer sees it. Written to the access record."); }
+    else if (act === "note") {
+      var ta = $("cr-reply");
+      if (!ta.value.trim()) { ta.focus(); GM.toast("Write the note first. Pastor notes are seen by pastors only."); return; }
+      it.local.push({ k: "out", note: true, at: GM_DATA.now, text: ta.value.trim(), meta: roleViewer().name + ", just now" });
+      paintPane(); GM.toast("Pastor note saved to this thread. Only pastors see it. Preview only.");
+    }
+  });
+  $("cr-pane").addEventListener("submit", function (e) {
+    if (e.target.id !== "cr-compose") return;
+    e.preventDefault();
+    var it = byId(state.current), ta = $("cr-reply");
+    if (!ta.value.trim()) { ta.focus(); GM.toast("Write a reply first."); return; }
+    it.local.push({ k: "out", at: GM_DATA.now, text: ta.value.trim(), meta: roleViewer().name, preview: true });
+    if (it.waiting) { it.waiting = false; it.status = "replied-now"; }
+    paintHead(); paintList(); paintPane();
+    GM.toast("This is a preview, so nothing was sent.");
+  });
+  $("cr-pane").addEventListener("change", function (e) {
+    if (e.target.id !== "cr-owner") return;
+    var it = byId(state.current); it.owner = e.target.value;
+    paintList();
+    GM.toast("Owner is now " + GM.staff(it.owner).name + ". Written to the access record. Preview only.");
+  });
+  document.addEventListener("gm:draft", function () { paintList(); var it = byId(state.current); var btn = document.querySelector('#cr-compose [type="submit"]'); if (it && btn) btn.classList.toggle("v2-button-primary", !draftWaiting(it)); });
+
+  /* ---------- Protections ---------- */
+  var rules = [
+    ["Prayer stays private", "Only pastors and the prayer team can open prayer. Staff never can."],
+    ["Alerts carry no words", "Emails say \"New request. Sign in to read.\" and nothing more."],
+    ["A person writes prayer replies", HOPE + " drafts everyday answers only, and each one waits for approval."],
+    ["Archive, not delete", "Nothing pastoral is erased by accident. It stays on the person's page."],
+    accessIncluded ? ["A record of who looked", "Every open, reply and archive is written to the access record."] : ["Every open is recorded", "Every open, reply and archive is recorded. Shepherd adds the Access Record screen."]
+  ];
+  $("cr-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("");
+
+  /* ---------- Start ---------- */
+  var startId = ctx.params.get("id");
+  var hadId = !!(startId && byId(startId));
+  paintHead();
+  if (hadId) { select(startId); setReading(true); }
+  else {
+    var first = visibleList()[0];
+    state.current = first ? first.id : null;
+    paintList(); paintPane();
+  }
+
+  var w = waitingNow(), oldest = w[0];
+  GM.hope.setBriefing({
+    line: GM.greeting() + ", {name}. " + w.length + " care conversations are waiting on us" + (oldest ? ". The oldest has waited " + fmt.waiting(oldest.since).replace("Waiting ", "") : "") + ".",
+    chips: [
+      { label: "Open the Oldest", action: function () { GM.hope.close(); if (oldest) select(oldest.id, { push: true }); }, primary: true },
+      { label: "What Is Waiting?", ask: "What is waiting on us in care?" },
+      { label: "Who Can See Prayer?", ask: "Who can see prayer requests?" }
+    ]
+  });
+  GM.hope.addAnswers([
+    { match: /who can see|privacy|private|lock/i, answer: "Prayer opens for pastors and the prayer team only. Private threads are pastors only. Staff see everyday messages. Website admins cannot read pastoral content, and every open is written to the access record." },
+    { match: /archive|delete/i, answer: "Care is archived, never deleted. An archived conversation stays on the person's page and in the access record, and a pastor can restore it." }
+  ]);
+
+  GM.setTour([
+    { target: '[data-tour="shell.views"]', title: "One inbox, four ways in", text: "Waiting on Us, Prayer, Messages and Archived. The same conversations, sorted for the job in front of you." },
+    { target: '[data-tour="care.waiting"]', title: "Waiting on us, oldest first", text: "Prayer and messages share one inbox. Each conversation shows how long it has waited and who owns it. Prayer and private threads never show a preview." },
+    { target: '[data-tour="care.visibility"]', title: "Who can see it, on every conversation", text: "A lock and a plain sentence say exactly who can open this. Owners come only from people allowed to see it, and Archive replaces delete." },
+    { target: '[data-tour="care.genesis"]', title: "{assistant.name} knows its place", text: "{assistant.name} drafts everyday answers only, labelled and waiting for approval. It never drafts a reply to prayer or a personal message." },
+    { target: '[data-tour="care.alert"]', title: "Emails carry no private words", text: "The team gets \"New request. Sign in to read.\" The person gets \"You have a reply.\" A shared family inbox never gives anything away." },
+    { target: '[data-tour="care.roles"]', title: "See what each role sees", text: "Switch to the prayer team or staff. Prayer disappears for staff, messages disappear for the prayer team, and the system enforces it." },
+    { target: '[data-tour="care.opened"]', title: "A record of who looked", text: "Every open, reply and archive is written down, and nobody can edit it." }
+  ]);
+});
+</script>
+</body>
+</html>

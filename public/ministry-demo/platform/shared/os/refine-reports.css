@@ -1,0 +1,274 @@
+/* Copied from the Genesis OS repo (v2/refine/reports.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: reports.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ---- Where you are ---------------------------------------------------------
+ * The dashboards are underline tabs from 1024px and the shared native picker
+ * below that, the same split every workspace with views follows. The tab row
+ * or the picker owns the hairline under it, so the control bar drops its own
+ * top border rather than doubling it, and the 14px under that line is its. */
+.v2-report-tabs button small{margin-left:6px;color:var(--v2-muted);font-size:11px;font-weight:500}
+.v2-report-tabs button:disabled{cursor:not-allowed;color:var(--v2-disabled-text)}
+@media(max-width:1023px){.v2-report-tabs{display:none}}
+
+.v2-report-page .v2-report-controlbar{margin:0 0 14px;padding:14px 0;border-top:0}
+@media(min-width:1181px){.v2-report-page .v2-report-controlbar{align-items:flex-end}.v2-report-asof{flex:1 1 auto;min-width:0}.v2-report-page .v2-report-scope{flex-wrap:nowrap}}
+.v2-report-controlbar .v2-report-scope-copy,.v2-report-asof{min-height:42px;display:flex;align-items:center;margin:0}
+.v2-report-asof{flex-wrap:wrap;gap:4px 18px;color:var(--v2-text-2);font-size:12px;font-variant-numeric:tabular-nums}
+.v2-report-asof b{margin-right:5px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-report-controlbar .v2-report-scope-copy{color:var(--v2-muted);font-size:12px}
+/* A dashboard without filters keeps its one line of scope and Refresh on a
+   single row at every width. */
+.v2-report-page .v2-report-controlbar-plain{flex-direction:row;align-items:center;justify-content:space-between;gap:12px}
+@media(max-width:1180px){.v2-report-controlbar .v2-report-scope-copy,.v2-report-asof{align-self:stretch}.v2-report-controlbar-plain .v2-report-scope-copy{align-self:center}}
+.v2-report-filters{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.v2-report-filter-toggle{display:none}
+.v2-report-filter-toggle[aria-expanded="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft)}
+.v2-report-filter-count{min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px;border-radius:999px;background:var(--v2-accent-soft);color:var(--v2-text);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.v2-report-scope label>span{font-size:11px;letter-spacing:.08em}
+
+#v2-report-body>:first-child{margin-top:0}
+
+/* A basis tag names what a card is measured over when the filters above do
+ * not reach it. Quiet by design: it explains, it is not a control. */
+.v2-report-body .v2-section-head{align-items:flex-start}
+.v2-report-head-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.v2-report-basis{min-height:22px;display:inline-flex;align-items:center;padding:2px 9px;border:1px solid var(--v2-border);border-radius:999px;color:var(--v2-muted);font-size:11px;font-weight:500;white-space:nowrap}
+.v2-report-quiet{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+.v2-report-none{color:var(--v2-muted);font-style:normal}
+.v2-report-body .v2-section-head p,.v2-report-count,.v2-report-unavailable{font-size:12px}
+
+/* ---- One container language ----------------------------------------------
+ * Every report block is a 16px card. The weekly brief and the lifetime bands
+ * were borderless hairline strips beside rounded cards; they become cards
+ * with inner hairlines, the recipe the unit-economics grid already uses. */
+.v2-report-metrics,.v2-report-diagnostic,.v2-report-learning,.v2-report-source-list{border-radius:var(--v2-radius-lg)}
+
+.v2-report-brief-card{margin-top:14px;padding:17px 18px}
+.v2-report-brief-card .v2-report-brief{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;margin-top:13px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-border);overflow:hidden}
+.v2-report-brief-card .v2-report-brief article{padding:14px;border:0;background:var(--v2-surface)}
+.v2-report-brief-card .v2-report-brief p{font-size:12px}
+.v2-report-brief-card .v2-report-brief h3{font-size:13px;font-weight:500}
+
+.v2-report-page .v2-report-support{gap:1px;margin-top:14px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-lg);background:var(--v2-border);overflow:hidden}
+.v2-report-page .v2-report-support>article{padding:16px 18px;background:var(--v2-surface)}
+.v2-report-page .v2-report-dimensions-head{margin:0;padding:16px 18px 6px;background:var(--v2-surface)}
+.v2-report-support dt{font-size:12px}
+.v2-report-support dd{font-size:13px;font-variant-numeric:tabular-nums}
+
+/* An empty section is one card. ctx.emptyState() always draws its own bordered
+ * card, so inside a report card it gives up that chrome and sits under the
+ * title as a sentence and a next step. */
+#v2-main .v2-report-page .v2-card>.v2-card.v2-state{min-height:0;margin-top:10px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;place-items:start;text-align:left}
+#v2-main .v2-report-page .v2-card>.v2-card.v2-state p{margin:4px 0 12px;font-size:12px}
+
+/* ---- Numbers ---------------------------------------------------------------
+ * One caption recipe for every stat label, and figures that line up. The
+ * number that is the point of its tile takes the serif numeral; dense grids,
+ * tables and the flow stay in the sans with tabular figures. */
+.v2-report-metric small,.v2-report-unit-summary small,.v2-report-unit small,.v2-report-brief-card .v2-report-brief small,
+.v2-report-cohort-grid small,.v2-flow-stage small,.v2-report-learning small,
+.v2-report-record>span:not(.v2-report-record-identity)>small{color:var(--v2-muted);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-report-metric b.v2-serif-number,.v2-report-diagnostic-count b.v2-serif-number{font-size:30px;font-weight:500;line-height:1.05;font-variant-numeric:lining-nums tabular-nums}
+.v2-report-metric b.is-unavailable{font-size:14px;font-weight:500}
+.v2-report-metric span,.v2-report-unit-summary span,.v2-report-unit span{font-size:11px;line-height:1.4}
+.v2-report-diagnostic h2.v2-serif-headline{margin:6px 0 4px;font-size:24px;font-weight:500}
+.v2-report-diagnostic-count span{font-size:12px}
+.v2-report-composition span{font-size:11px}
+.v2-flow-stage b,.v2-report-brief-card .v2-report-brief article>b,.v2-report-support dd{font-variant-numeric:tabular-nums}
+.v2-flow-stage em{font-size:11px}
+.v2-report-flow .v2-flow-gap b{font-size:12px}
+.v2-report-flow .v2-flow-gap span{font-size:11px;line-height:1.35}
+.v2-report-acq-note,.v2-report-acq-head small,.v2-report-cohort-head small,.v2-report-cohort-grid em,
+.v2-report-composition-row small,.v2-report-source-list small,.v2-report-record-list small,
+.v2-report-market small,.v2-report-mobile-rows dt,.v2-report-legend,.v2-report-provenance,.v2-report-cohort-caption{font-size:11px}
+.v2-report-tag{font-size:10px}
+.v2-report-record small,.v2-report-record em{font-size:11px}
+.v2-report-page .v2-report-no-link{font-size:11px!important}
+.v2-report-drill>footer{font-size:12px;font-variant-numeric:tabular-nums}
+
+/* ---- Tables ----------------------------------------------------------------
+ * A row header names its row, so it reads as data, not as an uppercase column
+ * label. These report tables are read, not opened: no pointer, no hover lift. */
+.v2-report-page .v2-table thead th{font-size:11px}
+.v2-report-page .v2-table tbody th{height:55px;padding:8px 11px;color:var(--v2-text);font-size:12px;font-weight:500;letter-spacing:0;text-align:left;text-transform:none;vertical-align:middle}
+.v2-report-page .v2-table td{font-size:12px;font-variant-numeric:tabular-nums}
+.v2-report-page .v2-table-static tbody tr{cursor:default}
+.v2-report-page .v2-table-static tbody tr:hover{background:none;box-shadow:none}
+
+/* ---- Selection is gold -----------------------------------------------------
+ * The flow gap whose records are open and the pressed record-state segment
+ * are selections, so they take the accent; hover stays grey. A gap with no
+ * stalled records is not a control at all. */
+.v2-report-flow .v2-flow-gap button{border-color:var(--v2-border)}
+.v2-flow-gap button[aria-current="true"],.v2-report-segments button[aria-pressed="true"],.v2-report-flow .v2-flow-gap button[aria-current="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft);color:var(--v2-text)}
+.v2-flow-gap.is-empty>span{width:100%;display:grid;gap:2px;padding:7px;border:1px solid transparent;color:var(--v2-muted);text-align:center}
+.v2-flow-gap.is-empty b{font-weight:500}
+.v2-report-segments button{font-size:12px}
+
+/* Market rows never jump: the shared row hover, no lift. */
+a.v2-report-market:hover,a.v2-report-market:focus-visible{background:var(--v2-hover);transform:none}
+
+/* ---- Channel Performance ---------------------------------------------------
+ * Six outcome tiles share the metric strip. Seams are drawn for a three-column
+ * grid only where it is three columns; the phone stack uses the single
+ * bottom seam styles.css already gives it. */
+@media(min-width:601px){
+  .v2-report-outcomes>.v2-report-metric:nth-child(3n){border-right:0}
+  .v2-report-outcomes>.v2-report-metric:nth-child(n+4){border-top:1px solid var(--v2-border)}
+}
+/* Opens were drawn in the border colour at 1.9:1. The secondary text token
+ * clears 3:1 against the card without adding a second hue. */
+.v2-report-trend-opens{background:var(--v2-text-2)}
+.v2-report-trend-day small{font-size:11px}
+
+/* ---- Lender Intel ----------------------------------------------------------
+ * Lenders are rounded cards in their own grid, not cells of the hairline band
+ * built for borderless articles, which showed grey bands behind each card. */
+.v2-lender-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+.v2-report-lender .v2-report-unit b{font-size:15px}
+.v2-lender-grid>.v2-card{margin-top:0;padding:17px 18px}
+.v2-lender-grid .v2-section-head h3{margin:0}
+.v2-report-lender .v2-report-quiet{margin-top:12px}
+.v2-lender-form .v2-report-quiet{margin:-4px 0 0}
+
+/* ---- Responsive ------------------------------------------------------------ */
+@media(min-width:861px) and (max-width:1180px){
+  .v2-report-brief-card .v2-report-brief{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v2-report-brief-card .v2-report-brief article:nth-child(3n+2):last-child{grid-column:span 2}
+  .v2-report-brief-card .v2-report-brief article:nth-child(3n+1):last-child{grid-column:1/-1}
+}
+@media(max-width:1180px){
+  .v2-flow-gap.is-empty>span{grid-template-columns:auto minmax(0,1fr);gap:8px;text-align:left}
+  .v2-report-flow .v2-flow-gap button{column-gap:8px}
+}
+/* A tablet keeps three short numbers in a row. The phone breakpoints used to
+ * start at 860px and stacked them one per line on a 729px column. */
+@media(min-width:601px){
+  .v2-report-unit-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:601px) and (max-width:860px){
+  .v2-report-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v2-report-metric{border-right:1px solid var(--v2-border);border-bottom:0}
+  .v2-report-metric:last-child,.v2-report-outcomes>.v2-report-metric:nth-child(3n){border-right:0}
+  .v2-report-brief-card .v2-report-brief{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-report-brief-card .v2-report-brief article:nth-child(2n+1):last-child{grid-column:1/-1}
+}
+@media(max-width:860px){
+  .v2-report-page .v2-report-controlbar{padding:12px 0}
+  .v2-report-controlbar .v2-report-scope-copy,.v2-report-asof{min-height:0}
+  /* The four scope selects fold behind one Filters button; Refresh sits
+     beside it and the open panel drops below as a two-column grid. */
+  .v2-report-page .v2-report-scope{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+  .v2-report-filter-toggle{display:inline-flex}
+  .v2-report-page .v2-report-filters{display:none;order:3;flex-basis:100%;grid-template-columns:1fr 1fr;gap:8px}
+  .v2-report-page .v2-report-scope.is-open .v2-report-filters{display:grid}
+  .v2-report-page .v2-report-scope>.v2-report-refresh{margin-left:auto}
+  .v2-report-metric b.v2-serif-number,.v2-report-diagnostic-count b.v2-serif-number{font-size:28px}
+  .v2-report-diagnostic h2.v2-serif-headline{font-size:21px}
+  .v2-report-body .v2-section-head{flex-wrap:wrap}
+  .v2-report-head-meta{justify-content:flex-start}
+  .v2-report-brief-card{padding:14px}
+  .v2-report-page .v2-report-support{display:grid;grid-template-columns:1fr;border:1px solid var(--v2-border);background:var(--v2-border)}
+  .v2-report-page .v2-report-support>article{padding:14px;border-top:0}
+  .v2-report-page .v2-report-dimensions-head{padding:14px 14px 4px}
+  .v2-report-trend-month{display:none}
+  /* Uppercase captions are wider than the 75px label column they inherit. */
+  .v2-report-record>span:nth-child(n+2){grid-template-columns:118px minmax(0,1fr)}
+  .v2-lender-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .v2-report-brief-card .v2-report-brief{grid-template-columns:1fr}
+}
+
+/* ---- Lead map (v2/map.js) --------------------------------------------------
+ * The map was ported with a light theme: a white SVG ground, dark grid lines,
+ * white marker rims and hex tones. It now draws on Genesis surfaces with the
+ * tier tokens map.js names. The Leaflet tile URL is pinned by the release
+ * gate, so its light tiles are toned down to the obsidian ground here. */
+.v2-map-svg{background:radial-gradient(circle at 46% 43%,rgba(var(--v2-accent-rgb),.08),transparent 48%),var(--v2-surface-2)}
+.v2-map-grid{stroke:var(--v2-chart-grid)}
+.v2-map-point{stroke:var(--v2-surface);fill:var(--v2-muted)}
+.v2-map-point.is-high{fill:var(--v2-chart-4)}
+.v2-map-point.is-warm{fill:var(--v2-accent)}
+.v2-map-point.is-other{fill:var(--v2-muted)}
+.v2-map-point:hover,.v2-map-point:focus{filter:drop-shadow(0 0 5px rgba(var(--v2-accent-rgb),.45))}
+.v2-map-legend{color:var(--v2-muted);font-size:11px}
+.v2-map-legend i.is-high{background:var(--v2-chart-4)}
+.v2-map-legend i.is-warm{background:var(--v2-accent)}
+.v2-map-legend i.is-other{background:var(--v2-muted)}
+.v2-map-head p,.v2-map-foot{color:var(--v2-muted)}
+.v2-map-foot{font-size:11px}
+.v2-leaflet-map{background:var(--v2-surface-2)}
+.v2-leaflet-map .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.78) contrast(.92) saturate(.45)}
+.v2-leaflet-dot{border-color:var(--v2-surface);color:var(--v2-on-accent)}
+.v2-leaflet-dot b{font-weight:700}
+
+/* ===== Deal Sources and Costs =============================================
+ * report-insights.js. The funnel reads left to right, each step saying what
+ * share of the step before it made it; missed winners sit above the tables
+ * because they are the part to act on. Costs lead with the budget. */
+.v2-report-page[data-dashboard="sources"] .v2-report-body,.v2-report-page[data-dashboard="costs"] .v2-report-body{display:grid;gap:16px;min-width:0}
+.v2-source-window{max-width:240px}
+.v2-source-window>span{font-size:11px}
+.v2-source-funnel{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-source-step{display:grid;gap:3px;padding:13px 15px;border-right:1px solid var(--v2-border)}
+.v2-source-step:last-child{border-right:0}
+.v2-source-step span{color:var(--v2-label);font-size:11px;font-weight:700;letter-spacing:var(--v2-caption-track);text-transform:uppercase}
+.v2-source-step b.v2-serif-number{font-size:28px;font-weight:500;line-height:1.05;font-variant-numeric:lining-nums tabular-nums}
+.v2-source-step small{color:var(--v2-muted);font-size:12px}
+.v2-source-step.is-money b{color:var(--v2-accent-text)}
+.v2-source-missed{display:grid;gap:10px}
+.v2-source-missed h2{margin:0;font-size:15px;font-weight:700}
+.v2-source-missed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-source-missed-grid>article{display:grid;align-content:start;gap:6px;min-width:0;padding:15px 16px}
+.v2-source-missed-grid>article.has-items{border-left:3px solid var(--v2-accent)}
+.v2-source-missed-grid>article>span{color:var(--v2-text);font-size:13px;font-weight:600}
+.v2-source-missed-grid>article b.v2-serif-number{font-size:26px;font-weight:500}
+.v2-source-missed-grid>article p{margin:0;color:var(--v2-text-2);font-size:12.5px;line-height:1.5}
+.v2-source-missed-list{display:grid;gap:4px;margin:6px 0 0;padding:0;list-style:none}
+.v2-source-missed-list{min-width:0}
+.v2-source-missed-list li{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0;padding-top:6px;border-top:1px solid var(--v2-border);font-size:12.5px}
+.v2-source-missed-list a{min-width:0;overflow:hidden;color:var(--v2-text);text-overflow:ellipsis;white-space:nowrap}
+.v2-source-missed-list a:hover{text-decoration:underline;text-underline-offset:3px}
+.v2-source-missed-list span{flex:none;color:var(--v2-muted);font-size:12px}
+.v2-source-table table,.v2-cost-table table{min-width:760px}
+.v2-source-table thead th:first-child,.v2-cost-table thead th:first-child{width:22%}
+.v2-source-table th,.v2-cost-table th{font-size:11px}
+.v2-source-table td,.v2-cost-table td{height:auto;padding-top:10px;padding-bottom:10px;font-size:13px}
+.v2-source-table :is(th,td).is-number,.v2-cost-table :is(th,td).is-number{text-align:right;font-variant-numeric:tabular-nums}
+.v2-source-table tbody th[scope="row"],.v2-cost-table tbody th[scope="row"],.v2-cost-table tfoot th{height:auto;color:var(--v2-text);font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;white-space:normal}
+.v2-source-table .v2-table-meta b,.v2-cost-table .v2-table-meta b{color:var(--v2-text)}
+.v2-cost-table tbody th[scope="row"]{display:grid;gap:2px}
+.v2-cost-table tbody th[scope="row"] span{color:var(--v2-muted);font-size:11.5px;font-weight:500}
+.v2-cost-table tbody th[scope="row"] small{justify-self:start;padding:1px 6px;border:1px solid var(--v2-border);border-radius:999px;color:var(--v2-muted);font-size:10.5px;font-weight:600}
+.v2-cost-table td small{display:block;color:var(--v2-muted);font-size:11px}
+.v2-cost-table tfoot :is(th,td){border-top:1px solid var(--v2-border-strong)}
+.v2-cost-muted{color:var(--v2-muted)}
+.v2-cost-budget{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:16px 18px;border-left:3px solid var(--v2-border-strong)}
+.v2-cost-budget.is-positive{border-left-color:var(--v2-positive)}
+.v2-cost-budget.is-warning{border-left-color:var(--v2-warning)}
+.v2-cost-budget.is-danger{border-left-color:var(--v2-danger)}
+.v2-cost-budget b.v2-serif-card{display:block;margin:4px 0;font-size:20px}
+.v2-cost-budget p{margin:2px 0 0;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-cost-budget-form{display:flex;align-items:flex-end;gap:8px}
+.v2-cost-budget-form .v2-field>span{font-size:11px}
+.v2-cost-budget-form .v2-input{width:150px}
+.v2-cost-months{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-cost-month{display:grid;gap:2px;padding:12px 14px;border-right:1px solid var(--v2-border)}
+.v2-cost-month:last-child{border-right:0}
+.v2-cost-month span{color:var(--v2-label);font-size:11px;font-weight:700;letter-spacing:var(--v2-caption-track);text-transform:uppercase}
+.v2-cost-month b.v2-serif-number{font-size:24px;font-weight:500;font-variant-numeric:lining-nums tabular-nums}
+.v2-cost-month small{color:var(--v2-muted);font-size:12px}
+.v2-report-footnote{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+@media(max-width:1023px){.v2-source-missed-grid{grid-template-columns:1fr}}
+@media(max-width:860px){
+  .v2-cost-budget{flex-direction:column;align-items:stretch}
+  .v2-cost-budget-form .v2-input{width:100%}
+  .v2-source-funnel,.v2-cost-months{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-source-step,.v2-cost-month{border-bottom:1px solid var(--v2-border)}
+  .v2-source-step:nth-child(2n),.v2-cost-month:nth-child(2n){border-right:0}
+  .v2-source-window{max-width:none}
+}

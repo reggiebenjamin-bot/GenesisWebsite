@@ -1,0 +1,147 @@
+/* Copied from the Genesis OS repo (v2/refine/shell.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: shell.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* --- sidebar -----------------------------------------------------------------
+ * The nav takes the height the column has, so the account block sits on the
+ * bottom edge. The spacer that was meant to do this lived inside a block box
+ * and pushed nothing, leaving the account rule floating mid-column. */
+.v2-nav{flex:1 1 auto}
+
+/* Groups are separated by their labels and the space above them. The border
+ * each group also drew made five hairlines of three lengths in one column. */
+.v2-nav-group:not(:first-child){padding-top:0;border-top:0}
+
+/* The unread count belongs wherever the Hawk label is visible: the full-width
+ * sidebar and the phone drawer. Only the 72px icon rail has no room for it. */
+@media (max-width:860px),(min-width:1280px){
+  body:not(.v2-sidebar-expanded) .v2-nav-badge:not([hidden]){display:grid}
+}
+
+/* --- account menus -------------------------------------------------------------
+ * Anchored to the foot it opens from, so it clears the trigger instead of
+ * overlapping its top edge. The compact rail keeps its side placement. */
+@media (max-width:860px),(min-width:1280px){
+  .v2-sidebar-foot .v2-account-menu{bottom:calc(100% + 6px)}
+}
+@media (min-width:861px) and (max-width:1279px){
+  body.v2-sidebar-expanded .v2-sidebar-foot .v2-account-menu{bottom:calc(100% + 6px)}
+}
+.v2-account-menu a[aria-current="page"],.v2-mobile-account-menu a[aria-current="page"]{background:var(--v2-accent-soft);color:var(--v2-accent-strong)}
+/* Help is a place, and its way in is the closed account menu, so the trigger
+ * carries a quiet marker while you are there. */
+.v2-account.is-current{background:var(--v2-accent-soft)}
+.v2-mobile-account>.v2-avatar.is-current{box-shadow:0 0 0 2px var(--v2-accent-border)}
+/* The phone menu now carries the same items as the sidebar menu. */
+.v2-mobile-account-menu{display:grid;gap:2px}
+.v2-mobile-account-menu small{margin-bottom:8px}
+.v2-mobile-account-menu a,.v2-mobile-account-menu button{min-height:40px;display:flex;align-items:center;gap:9px;padding:0 10px;border:0;border-radius:var(--v2-radius-sm);background:transparent;color:var(--v2-text-2);font:500 13px var(--v2-font);text-align:left;text-decoration:none}
+.v2-mobile-account-menu a:hover,.v2-mobile-account-menu button:hover{border:0;background:var(--v2-surface-2);color:var(--v2-text)}
+.v2-mobile-account-menu .v2-icon{width:15px;height:15px;flex:none;opacity:.85}
+.v2-mobile-account-menu .v2-account-menu-sep{height:1px;margin:4px 6px;background:var(--v2-border)}
+.v2-account-menu [role="menuitem"]:focus-visible,.v2-mobile-account-menu [role="menuitem"]:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+
+/* --- workspace rail ------------------------------------------------------------
+ * The head names the workspace. It used to lead with the generic word "Lenses"
+ * at 15px and bury the place under it at 11px. */
+.v2-rail-title{min-width:0;overflow:hidden;color:var(--v2-text);font-size:14px;font-weight:700;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
+
+/* The way back to a hidden rail sits at the start of the page header instead
+ * of floating over the page, so hiding the rail no longer pushes the page 52px
+ * down. The rail exists from 1024px; below that the view picker does its job. */
+.v2-rail-show{flex:none;align-self:flex-start;min-height:32px;gap:7px;padding:5px 10px;font-size:12px}
+.v2-rail-show .v2-icon{width:16px;height:16px}
+.v2-page-head>.v2-rail-show+div{flex:1 1 auto;min-width:0}
+.v2-screen-head>.v2-rail-show{margin-bottom:10px}
+@media (min-width:1024px){
+  .v2-rail-collapsed .v2-main{padding-top:24px}
+}
+@media (max-width:1023px){
+  .v2-rail-show{display:none!important}
+}
+
+/* --- Hawk dock -----------------------------------------------------------------
+ * A fixed 380px dock squeezed the workspace to about 317px at 1024. It scales
+ * with the window between a 320px floor and its full width; the rail steps
+ * aside below 1440 (shell.js). */
+:root{--v2-genesis-dock:clamp(320px,34vw,380px)}
+/* Docked, the panel covers the corner the opener sits in. Hidden rather than
+ * faded, so it also leaves the tab order; the panel's own composer carries
+ * the conversation and voice while it is open. */
+@media (min-width:861px){
+  body.v2-genesis-panel-open .v2-genesis-opener{visibility:hidden}
+}
+
+/* --- Jump to -------------------------------------------------------------------- */
+.v2-command-group{padding:10px 10px 4px;color:var(--v2-label,var(--v2-muted));font-size:var(--v2-caption-size,11px);font-weight:700;letter-spacing:var(--v2-caption-track,.08em);text-transform:uppercase}
+.v2-command-results>[role="group"]:first-child>.v2-command-group{padding-top:4px}
+/* Phones have no sidebar trigger, so the top bar carries one. */
+.v2-mobile-command{position:relative}
+
+/* --- phone bottom bar ------------------------------------------------------------
+ * The fifth slot opens every other destination and, whenever the screen is one
+ * of them, carries its name and the current marker. It is a button, so it takes
+ * the link look explicitly. */
+.v2-mobile-nav .v2-mobile-more{display:grid;place-items:center;gap:1px;min-width:0;padding:0;border:0;border-radius:var(--v2-radius-sm);background:transparent;color:var(--v2-muted);font:700 11px var(--v2-font);cursor:pointer;-webkit-appearance:none;appearance:none}
+.v2-mobile-nav .v2-mobile-more span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-mobile-nav .v2-mobile-more[aria-current="page"]{background:rgba(var(--v2-accent-rgb),.13);color:var(--v2-accent-strong)}
+.v2-mobile-nav .v2-mobile-more:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+
+/* --- first run ------------------------------------------------------------------- */
+/* The journey hides the tablet chrome too: its menu opened a scrim over a
+ * sidebar that first run had already hidden. "Finish later" is the exit. */
+body.v2-firstrun .v2-mobile-top,body.v2-firstrun .v2-mobile-scrim{display:none!important}
+.v2-fr-rail-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.v2-fr-rail .v2-stepper{min-width:0}
+.v2-fr-exit{flex:none;min-height:32px;padding:5px 10px;font-size:13px}
+/* A 32px target whose text lines up with the title under it: the left edge
+ * gives back the 4px inline padding, and the top leaves 8px above the title. */
+.v2-fr-back{top:16px;left:24px;min-height:32px;padding:6px 4px;font-size:13px}
+/* The page title role, sized for a screen that holds one question. */
+.v2-fr-panel h1.v2-serif-title{font-size:clamp(28px,3.4vw,36px)}
+/* The title takes focus after every step change so a screen reader starts at
+ * the question. It is a landing point, not a control, so it draws no ring (the
+ * global [tabindex]:focus-visible ring is a box-shadow, hence both). */
+.v2-fr-panel h1[tabindex="-1"]:focus,.v2-fr-panel h1[tabindex="-1"]:focus-visible{outline:none;box-shadow:none!important}
+.v2-fr-mode-name.v2-serif-card{font-size:22px}
+/* Quiet Skip, then the one primary, at the right edge where the eye ends. */
+.v2-fr-actions{justify-content:flex-end}
+@media (max-width:860px){
+  body.v2-firstrun .v2-main{height:100dvh}
+  .v2-fr-rail-row{align-items:flex-start}
+  /* The panel's side padding drops to 16px here, so Back moves with it and the
+   * title moves down to clear it. */
+  .v2-fr-panel{padding-top:60px}
+  .v2-fr-back{top:18px;left:12px}
+}
+
+/* ===== Route changes: one quiet fade, nothing moves ========================
+ * A route used to rise 5px, then rise again when its loading state was
+ * replaced by content, while every tile, row, badge and the active nav item
+ * popped in on a spring of its own. Together that read as the screen shaking.
+ * Now the workspace container fades once as a route begins, content swaps in
+ * place, and nothing slides, blurs or bounces on arrival. */
+.v2-main.v2-page-enter{animation:v2-route-fade 180ms var(--v2-ease-out) both}
+@keyframes v2-route-fade{from{opacity:.001}to{opacity:1}}
+.v2-main.v2-page-enter>.v2-page,.v2-main.v2-page-enter>.v2-screen,.v2-main.v2-page-enter>.v2-genesis-page,
+.v2-main.v2-page-enter :is(.v2-stat-row>*,.v2-ec-card,.v2-screen>.v2-card,.v2-deal-grid>*,.v2-report-grid>*,.v2-today-grid>*,.v2-table tbody tr,.v2-attention-row,.v2-outreach-row,.v2-thread-row,.v2-toolbar,.v2-content-variant),
+.v2-main.v2-page-enter .v2-acq-card:not(.v2-attn){animation:none}
+.v2-badge,.v2-pill,.v2-nav a[aria-current="page"]{animation:none}
+@media (prefers-reduced-motion:reduce){.v2-main.v2-page-enter{animation:none}}
+
+/* ===== Phone: one Hawk button ============================================
+ * On a phone the floating Hawk button is the one way in: tap to open, hold to
+ * talk. The top bar's Ask, the menu's Ask Hawk and each page's Ask Hawk
+ * repeated it three times over. The button sits clear of the tab bar. */
+@media (max-width:860px){
+  .v2-sidebar .v2-genesis-nav,
+  .v2-main :is([data-acq-ask],[data-action="ask-leads"],[data-content-action="ask-hawk"],[data-deal-action="ask-hawk"],[data-mydeals-ask],[data-outreach-action="ask-hawk"],[data-report-action="ask-hawk"],[data-agent-action="ask-hawk"]){display:none!important}
+  .v2-genesis-opener{right:16px;bottom:calc(86px + env(safe-area-inset-bottom))}
+}
+/* Hawk's alert count sits on the button's corner, never over a word. Wider
+ * screens show the same count beside Ask Hawk in the menu. */
+.v2-genesis-opener-count{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;display:grid;place-items:center;border:2px solid var(--v2-bg);border-radius:999px;background:var(--v2-accent);color:var(--v2-on-accent);font-size:10px;font-style:normal;font-weight:700;line-height:1}
+.v2-genesis-opener-count[hidden]{display:none}
+@media (min-width:861px){.v2-genesis-opener-count{display:none!important}}

@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lightwell Church Raleigh</title>
+<meta name="description" content="Template preview: Lightwell Church, a fictional young church in downtown Raleigh, North Carolina, shown in the Genesis Ministry Bright and Modern look. Sundays at 9:00 and 10:45 AM.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   LIGHTWELL CHURCH: Bright & Modern
+   White space, heavy grotesk type, big daylight photos, one cobalt accent.
+   Shapes are crisp: 8 to 10px corners and 1px rules. Motion is quick and
+   precise, like a well-made product site, and it all stops for reduced motion.
+   ===================================================================== */
+:root{
+  --white:#FFFFFF; --cloud:#F4F7FC; --sky:#E4ECFF;
+  --cobalt:#1F4FFF; --cobalt-press:#1739CC;
+  --ink:#0B1220; --ink-2:#141C2E; --graphite:#475166; --mist:#A9B4C8;
+  --rule:#DCE2EC; --rule-strong:#C5CEDC;
+  --display:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body:"Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wrap:1280px; --gut:clamp(16px,4vw,56px);
+  --section:clamp(80px,9vw,136px); --label-gap:18px; --title-gap:20px;
+  --r:8px; --r-lg:10px;
+  --ease:cubic-bezier(.2,.8,.2,1); --ease-out:cubic-bezier(.16,1,.3,1);
+  --hdr:76px;
+}
+@media (max-width:760px){:root{--hdr:64px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--hdr) + 16px)}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--white);color:var(--ink);font:400 17px/1.6 var(--body);font-variant-numeric:lining-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body.menu-open{overflow:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);font-optical-sizing:auto;margin:0;font-weight:800;letter-spacing:-.035em;line-height:1}
+h2,h3{text-wrap:balance}
+p,blockquote{text-wrap:pretty}
+p,figure,blockquote{margin:0}
+.wrap{width:100%;max-width:calc(var(--wrap) + 2 * var(--gut));margin-inline:auto;padding-inline:var(--gut)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-80px;z-index:100;background:var(--ink);color:#fff;padding:12px 16px;border-radius:var(--r);text-decoration:none;font-weight:600}
+.skip:focus{top:12px}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+
+/* ---------- Type ---------- */
+.label{display:inline-flex;align-items:center;gap:12px;font:600 12.5px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
+.label::before{content:"";flex:none;width:22px;height:2px;background:currentColor}
+.label.on-dark{color:var(--sky)}
+.h-lg{font-size:clamp(40px,5vw,72px);line-height:.98;letter-spacing:-.03em}
+.h-md{font-size:clamp(32px,3.4vw,50px);line-height:1.02;letter-spacing:-.026em}
+.lead{font-size:19px;line-height:1.55;color:var(--graphite)}
+.muted{color:var(--graphite)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:var(--r);border:1.5px solid transparent;font:600 16px/1 var(--body);letter-spacing:-.005em;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .25s var(--ease)}
+.btn .arw{display:inline-block;transition:transform .3s var(--ease)}
+.btn:hover .arw,.btn:focus-visible .arw{transform:translateX(4px)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background-color:var(--cobalt);color:#fff;position:relative;overflow:hidden;isolation:isolate;
+  background-image:linear-gradient(110deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.42) 50%,rgba(255,255,255,0) 60%);
+  background-repeat:no-repeat;background-size:250% 100%;background-position:150% 0}
+.btn-primary:hover{background-color:var(--cobalt-press)}
+.btn-primary::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(120px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.26),rgba(255,255,255,0) 70%);opacity:0;transition:opacity .3s ease}
+.btn-primary:hover::before,.btn-primary:focus-visible::before{opacity:1}
+.btn-primary.sheen-in{animation:sheen 1.05s var(--ease) .3s 1 both}
+@keyframes sheen{from{background-position:150% 0}to{background-position:-50% 0}}
+.btn-outline{background:transparent;border-color:var(--rule-strong);color:var(--ink)}
+.btn-outline:hover{border-color:var(--ink);background:var(--cloud)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:15px}
+.btn-pair{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:12px}
+.go{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-weight:600;color:var(--cobalt);text-decoration:none;padding-bottom:3px;
+  background:linear-gradient(currentColor,currentColor) no-repeat left bottom/0 1.5px;transition:background-size .45s var(--ease)}
+.go .arw{display:inline-block;transition:transform .35s var(--ease)}
+a:hover > .go,a:focus-visible > .go,a.go:hover,a.go:focus-visible,.card:hover .go,.card:focus-visible .go{background-size:100% 1.5px}
+.card:hover .go .arw,.card:focus-visible .go .arw,a.go:hover .arw{transform:translateX(5px)}
+.tlink{color:var(--ink);font-weight:600;text-decoration:none;background:linear-gradient(var(--cobalt),var(--cobalt)) no-repeat left bottom/100% 1.5px;padding-bottom:2px;transition:color .2s ease}
+.tlink:hover{color:var(--cobalt)}
+
+/* ---------- Header ---------- */
+.site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid transparent;transition:border-color .2s ease,background-color .2s ease}
+.site-header.scrolled{border-bottom-color:var(--rule);background:rgba(255,255,255,.985)}
+.progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--cobalt);transform:scaleX(0);transform-origin:left;pointer-events:none}
+.nav{display:flex;align-items:center;gap:16px;height:var(--hdr)}
+.brand{position:relative;display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand::after{content:"";position:absolute;inset:-8px -4px}
+.brand svg{width:34px;height:34px;flex:none}
+.brand .wm{font:800 27px/1 var(--display);letter-spacing:-.045em;padding-bottom:2px}
+.preview-badge{flex:none;display:inline-flex;align-items:center;gap:7px;font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--graphite);border:1px dashed #9AA6BA;border-radius:999px;padding:6px 10px 6px 8px;white-space:nowrap}
+.preview-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--graphite)}
+.navlinks{display:flex;align-items:center;gap:2px;margin-left:auto}
+.navlinks > a,.drop-btn{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 14px;border-radius:6px;border:0;background:none;font:500 15.5px/1 var(--body);color:var(--ink);text-decoration:none;cursor:pointer;transition:background-color .15s ease}
+.navlinks > a:hover,.drop-btn:hover,.drop-btn[aria-expanded="true"],.drop:hover .drop-btn{background:var(--cloud)}
+.drop-btn svg{width:14px;height:14px;transition:transform .2s var(--ease)}
+.drop-btn[aria-expanded="true"] svg,.drop:hover .drop-btn svg{transform:rotate(180deg)}
+.drop{position:relative}
+.menu{position:absolute;left:-10px;top:100%;padding-top:10px;opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s ease,transform .2s var(--ease),visibility 0s linear .2s;z-index:5}
+.drop:hover .menu,.drop-btn[aria-expanded="true"] + .menu{opacity:1;visibility:visible;transform:none;transition:opacity .16s ease,transform .2s var(--ease),visibility 0s}
+.menu-panel{min-width:300px;background:#fff;border:1px solid var(--rule);border-radius:var(--r-lg);padding:8px;box-shadow:0 22px 44px -18px rgba(11,18,32,.22),0 2px 6px rgba(11,18,32,.05)}
+.menu-panel a{position:relative;display:block;padding:10px 36px 10px 12px;border-radius:6px;text-decoration:none;color:var(--ink);font:600 15px/1.25 var(--body)}
+.menu-panel a small{display:block;margin-top:3px;font:400 13.5px/1.35 var(--body);color:var(--graphite)}
+.menu-panel a::after{content:"\2192";position:absolute;right:12px;top:50%;transform:translate(-6px,-50%);opacity:0;color:var(--cobalt);transition:opacity .15s ease,transform .2s var(--ease)}
+.menu-panel a:hover,.menu-panel a:focus-visible{background:var(--sky)}
+.menu-panel a:hover::after,.menu-panel a:focus-visible::after{opacity:1;transform:translate(0,-50%)}
+.nav-cta{display:flex;align-items:center;gap:8px;margin-left:12px}
+.nav-cta .btn{min-height:46px;padding:0 20px;font-size:15px}
+.hamburger{display:none;width:44px;height:44px;border:1px solid var(--rule);border-radius:var(--r);background:#fff;align-items:center;justify-content:center;cursor:pointer}
+.hamburger svg{width:22px;height:22px}
+
+/* Phone menu: a full sheet under the header */
+.mmenu{position:fixed;inset:var(--hdr) 0 0 0;z-index:49;background:#fff;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;padding:8px var(--gut) calc(24px + env(safe-area-inset-bottom));opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s ease,transform .25s var(--ease),visibility 0s linear .25s}
+.mmenu.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s ease,transform .25s var(--ease),visibility 0s}
+.mlist{display:flex;flex-direction:column;border-top:1px solid var(--rule)}
+.mlist > a,.mgroup > summary{display:flex;align-items:center;justify-content:space-between;min-height:60px;border-bottom:1px solid var(--rule);font:700 24px/1 var(--display);letter-spacing:-.02em;color:var(--ink);text-decoration:none;cursor:pointer;list-style:none}
+.mgroup > summary::-webkit-details-marker{display:none}
+.mgroup > summary svg{width:20px;height:20px;transition:transform .2s var(--ease)}
+.mgroup[open] > summary svg{transform:rotate(180deg)}
+.mgroup[open] > summary{border-bottom-color:transparent}
+.msub{display:flex;flex-direction:column;padding:0 0 12px;border-bottom:1px solid var(--rule)}
+.msub a{display:flex;align-items:center;min-height:46px;padding-left:16px;border-left:2px solid var(--rule);font:500 17px/1.2 var(--body);color:var(--ink);text-decoration:none}
+.mlist .here{display:inline-flex;align-items:center;gap:8px;font:600 11.5px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt)}
+.mlist .here::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cobalt)}
+.mcta{margin-top:auto;padding-top:28px;display:grid;gap:14px}
+.mcta .btn{width:100%}
+.mtimes{display:grid;gap:4px;font-size:16px}
+.mtimes b{font-weight:600}
+.mquiet{display:flex;gap:20px;flex-wrap:wrap}
+.mquiet a,.mquiet button{background:none;border:0;padding:0;min-height:44px;display:inline-flex;align-items:center;color:var(--graphite);font-size:16px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding-left:max(var(--gut),calc((100% - var(--wrap)) / 2))}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr);gap:clamp(32px,4.5vw,72px);min-height:min(calc(100svh - var(--hdr)),880px)}
+.hero-copy{align-self:center;padding-block:40px 64px}
+.hero-title{font-size:clamp(52px,7.4vw,112px);line-height:.92;letter-spacing:-.036em;margin-top:24px}
+.hero-title .l1,.hero-title .l2{display:block}
+.rot{display:inline-grid;vertical-align:top;overflow:hidden;padding:0 .04em .16em 0;margin-bottom:-.16em}
+.rot-w{grid-area:1/1;color:var(--cobalt);opacity:0;transform:translateY(.7em)}
+.rot-w.is-on{opacity:1;transform:none;transition:opacity .35s var(--ease-out),transform .6s var(--ease-out)}
+.rot-w.is-out{opacity:0;transform:translateY(-.55em);transition:opacity .2s ease-in,transform .26s ease-in}
+.hero .lead{max-width:30em;margin-top:28px}
+.times{display:grid;grid-template-columns:auto minmax(0,1fr);margin-top:32px;border-block:1px solid var(--rule)}
+.t-item{display:flex;align-items:center;gap:14px;padding:16px 28px 16px 0;min-width:0}
+.t-item + .t-item{padding-left:28px;padding-right:0;border-left:1px solid var(--rule)}
+.t-ic{flex:none;width:38px;height:38px;border-radius:var(--r);background:var(--sky);color:var(--cobalt);display:grid;place-items:center}
+.t-ic svg{width:19px;height:19px}
+.t-k{display:block;font:600 11.5px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);margin-bottom:6px}
+.t-v{display:block;font:600 17px/1.3 var(--body);color:var(--ink)}
+.hero .btn-pair{margin-top:32px}
+.hero-media{position:relative;overflow:hidden;border-radius:var(--r-lg) 0 0 var(--r-lg);margin-block:16px 28px;min-height:520px;background:var(--cloud)}
+.hero-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transform-origin:55% 45%;animation:drift 28s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.03) translate3d(0,0,0)}to{transform:scale(1.11) translate3d(-1.6%,-1%,0)}}
+.hero-chip{position:absolute;left:24px;bottom:24px;display:grid;gap:4px;max-width:300px;background:#fff;border-radius:var(--r);padding:14px 18px 15px;box-shadow:0 18px 40px -16px rgba(11,18,32,.35)}
+.hero-chip .k{display:flex;align-items:center;gap:8px;font:600 11.5px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+.hero-chip .k::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cobalt)}
+.hero-chip b{font:700 18px/1.2 var(--display);letter-spacing:-.02em;margin-top:6px}
+.hero-chip span:last-child{font-size:14.5px;color:var(--graphite);line-height:1.4}
+
+/* ---------- Announcement ---------- */
+.announce{background:var(--sky)}
+.ab{display:flex;align-items:center;justify-content:space-between;gap:12px 32px;min-height:76px;padding-block:14px;flex-wrap:wrap}
+.ab-text{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:16.5px;color:var(--ink)}
+.ab-tag{font:700 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt);border:1.5px solid var(--cobalt);padding:5px 8px;border-radius:5px}
+.ab-text b{font-weight:600}
+.ab-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.ab-watch{display:inline-flex;align-items:center;gap:12px;min-height:44px;background:none;border:0;padding:0;cursor:pointer;font-weight:600;color:var(--ink)}
+.ab-watch .u{background:linear-gradient(var(--ink),var(--ink)) no-repeat left bottom/100% 1.5px;padding-bottom:2px}
+.ab-play{position:relative;width:36px;height:36px;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex:none}
+.ab-play svg{width:12px;height:12px;margin-left:2px;fill:#fff}
+.ab-play::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--cobalt);animation:pulse 2.4s var(--ease-out) infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(1.8);opacity:0}}
+.ab .btn-outline{border-color:rgba(11,18,32,.28)}
+.ab .btn-outline:hover{background:#fff;border-color:var(--ink)}
+
+/* ---------- Sections ---------- */
+.block{padding-block:var(--section)}
+.cloud{background:var(--cloud)}
+.into-band{padding-bottom:clamp(56px,6vw,88px)}
+.sec-head{max-width:760px}
+.sec-head h2{margin-top:var(--label-gap)}
+.sec-head .lead{margin-top:var(--title-gap)}
+
+/* Mission + pastors */
+.mission-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(40px,7vw,112px);align-items:center}
+.mission-line{font-size:clamp(34px,4.1vw,60px);line-height:1.05;letter-spacing:-.03em;font-weight:780;margin-top:var(--label-gap)}
+.hl{background:linear-gradient(var(--sky),var(--sky)) no-repeat 0 90%/100% .4em;padding-inline:.04em}
+.reveal-in .hl{animation:hl 1.1s var(--ease-out) .35s backwards}
+@keyframes hl{from{background-size:0 .4em}}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:48px;border-top:1px solid var(--rule)}
+.stat{padding:22px 20px 0 0}
+.stat + .stat{padding-left:20px;border-left:1px solid var(--rule)}
+.stat b{display:block;font:800 clamp(34px,3.4vw,48px)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:lining-nums tabular-nums}
+.stat span{display:block;margin-top:8px;font-size:15px;line-height:1.4;color:var(--graphite)}
+.pastors-photo{aspect-ratio:5/4;border-radius:var(--r-lg);overflow:hidden;background:var(--cloud)}
+.pastors-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.pastors-copy{margin-top:26px}
+.pastors-copy h3{font-size:clamp(28px,2.6vw,36px);letter-spacing:-.026em;margin-top:14px}
+.pastors-copy p:not(.label){margin-top:12px;color:var(--graphite)}
+.pastors-copy .btn{margin-top:22px}
+
+/* Next steps: cards */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:56px}
+.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s ease}
+.card:hover,.card:focus-visible{transform:translateY(-4px);box-shadow:0 26px 50px -26px rgba(11,18,32,.32);border-color:var(--rule-strong)}
+.card-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--cloud)}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.card:hover .card-img img{transform:scale(1.045)}
+.card-img::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--cobalt);transform:scaleX(0);transform-origin:left;transition:transform .55s var(--ease)}
+.card:hover .card-img::after,.card:focus-visible .card-img::after{transform:scaleX(1)}
+.card-body{display:flex;flex-direction:column;gap:10px;flex:1;padding:24px 24px 26px}
+.card h3{font-size:27px;letter-spacing:-.024em;font-weight:780}
+.card p{font-size:16.5px;color:var(--graphite)}
+.card .go{margin-top:auto;padding-top:6px}
+
+/* Next steps: four numbered columns on the cobalt band */
+.cobalt-band{background:var(--cobalt);color:#fff;padding-block:clamp(48px,6vw,88px) clamp(40px,5vw,72px)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-inline:-20px}
+.step{position:relative;display:flex;flex-direction:column;gap:10px;padding:34px 20px 28px;border-radius:var(--r);color:#fff;text-decoration:none;
+  background:linear-gradient(var(--cobalt-press),var(--cobalt-press)) no-repeat bottom/100% 0;transition:background-size .5s var(--ease)}
+.step::before{content:"";position:absolute;left:20px;right:20px;top:0;height:1px;background:rgba(255,255,255,.4)}
+.step::after{content:"";position:absolute;left:20px;right:20px;top:-1px;height:3px;background:#fff;transform:scaleX(.14);transform-origin:left;transition:transform .6s var(--ease)}
+.step .num{font:800 clamp(30px,2.6vw,40px)/1 var(--display);letter-spacing:-.02em;color:var(--sky);font-variant-numeric:lining-nums tabular-nums}
+.step h3{font-size:clamp(24px,2.1vw,30px);letter-spacing:-.024em;font-weight:780;margin-top:10px;transition:transform .45s var(--ease)}
+.step p{font-size:16px;line-height:1.55;color:var(--sky)}
+.step .go{color:#fff;margin-top:auto;padding-top:8px}
+a.step:hover,a.step:focus-visible{background-size:100% 100%}
+a.step:hover::after,a.step:focus-visible::after{transform:scaleX(1)}
+a.step:hover h3,a.step:focus-visible h3{transform:translateX(4px)}
+a.step:hover .go,a.step:focus-visible .go{background-size:100% 1.5px}
+a.step:hover .go .arw,a.step:focus-visible .go .arw{transform:translateX(5px)}
+a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* Statement band */
+.sky-band{position:relative;overflow:hidden;color:#fff;background:#0E47B0;min-height:clamp(500px,47vw,680px);display:flex;align-items:flex-end}
+.sky-bg{position:absolute;inset:-70px 0;background:url("photos/sky-single-cloud.jpg") no-repeat;background-size:150% auto;background-position:0% 84%;will-change:transform}
+.sky-band::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,22,70,0) 30%,rgba(6,22,70,.38) 100%);pointer-events:none}
+.sky-inner{position:relative;z-index:1;padding-block:clamp(56px,7vw,96px)}
+.sky-title{font-size:clamp(44px,6.6vw,104px);line-height:.94;letter-spacing:-.036em;margin-top:var(--label-gap)}
+.sky-title span{display:block}
+.sky-sub{margin-top:24px;max-width:28em;font-size:19px;line-height:1.55;color:#fff}
+
+/* Photo strip */
+.strip-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.strip-head .sec-head{max-width:1010px}
+.mq-toggle{flex:none;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px 0 12px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font:600 14.5px/1 var(--body);cursor:pointer}
+.mq-toggle:hover{border-color:var(--ink)}
+.mq-toggle svg{width:16px;height:16px}
+.marquee{--h:clamp(230px,26vw,380px);margin-top:48px;overflow:hidden}
+.mq-track{display:flex;gap:16px;width:max-content;animation:mq 80s linear infinite}
+.marquee:hover .mq-track,.marquee.paused .mq-track{animation-play-state:paused}
+.mq-item{flex:none;height:var(--h);border-radius:var(--r);overflow:hidden;background:var(--cloud)}
+.mq-item.w{aspect-ratio:3/2}
+.mq-item.t{aspect-ratio:4/5}
+.mq-item img{width:100%;height:100%;object-fit:cover}
+@keyframes mq{to{transform:translateX(calc(-50% - 8px))}}
+.aside-link{margin-top:28px;color:var(--graphite)}
+
+/* Latest message */
+.msg-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,96px);align-items:center}
+.msg-meta{margin-top:16px;font:600 14.5px/1.5 var(--body);color:var(--graphite);word-spacing:.08em}
+.msg-copy p.muted{margin-top:20px;max-width:30em}
+.msg-copy .btn{margin-top:28px}
+.player{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;border:0;border-radius:var(--r-lg);overflow:hidden;background:var(--ink);cursor:pointer}
+.player img{width:100%;height:100%;object-fit:cover;object-position:50% 70%;transition:transform 1s var(--ease)}
+.player:hover img{transform:scale(1.03)}
+.player::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,18,32,0) 55%,rgba(11,18,32,.62) 100%)}
+.play-btn{position:absolute;left:50%;top:50%;z-index:1;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 16px 36px -12px rgba(11,18,32,.45);transition:transform .35s var(--ease)}
+.play-btn svg{width:26px;height:26px;margin-left:4px;fill:var(--cobalt)}
+.player:hover .play-btn{transform:scale(1.07)}
+.p-meta{position:absolute;left:22px;right:22px;bottom:18px;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#fff;font:600 14.5px/1.2 var(--body);text-align:left}
+.p-dur{font-variant-numeric:tabular-nums;background:rgba(11,18,32,.6);padding:6px 9px;border-radius:6px;font-size:13.5px}
+
+/* Reviews */
+.rv-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,96px);align-items:start}
+.rv-note{margin-top:var(--title-gap);color:var(--graphite);font-size:15px}
+.rv-ctrl{display:flex;gap:10px;margin-top:36px}
+.rv-dot{position:relative;width:64px;height:44px;padding:0;border:0;background:none;cursor:pointer}
+.rv-dot::before,.rv-dot::after{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;border-radius:2px}
+.rv-dot::before{background:var(--rule)}
+.rv-dot::after{background:var(--cobalt);transform:scaleX(0);transform-origin:left}
+.rv-dot.on::after{transform:scaleX(1)}
+.rv.auto .rv-dot.on::after{animation:fill 6.5s linear both}
+.rv.paused .rv-dot.on::after{animation-play-state:paused}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rv-stage{display:grid;border-top:1px solid var(--rule);padding-top:36px}
+.rv-item{grid-area:1/1;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .22s ease-in,transform .26s ease-in,visibility 0s linear .26s}
+.rv-item.on{opacity:1;visibility:visible;transform:none;transition:opacity .45s ease .28s,transform .6s var(--ease-out) .28s,visibility 0s}
+.stars{display:flex;gap:4px;color:var(--cobalt)}
+.stars svg{width:20px;height:20px;fill:currentColor}
+.rv-item blockquote{margin-top:22px;font:650 clamp(26px,2.7vw,40px)/1.18 var(--display);letter-spacing:-.022em}
+.rv-item figcaption{display:flex;align-items:center;gap:14px;margin-top:28px}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--sky);color:var(--cobalt);display:grid;place-items:center;font:800 16px/1 var(--display)}
+.rv-item figcaption .who b{display:block;font-weight:600}
+.rv-item figcaption .who span{display:block;font-size:15px;color:var(--graphite)}
+
+/* Newsletter */
+.nl-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center}
+.nl-photo{aspect-ratio:5/4;border-radius:var(--r-lg);overflow:hidden;background:var(--cloud)}
+.nl-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 52%}
+.nl-copy p.muted{margin-top:var(--title-gap);max-width:30em}
+.nl-form{display:flex;gap:10px;margin-top:28px;max-width:540px}
+.nl-form input{flex:1;min-width:0;height:52px;padding:0 16px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font-size:16px}
+.nl-form input::placeholder{color:#6B7488}
+.nl-form input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
+.form-note{min-height:1.5em;margin-top:12px;font-size:15px;color:var(--cobalt);font-weight:600}
+.nl-copy .aside-link{margin-top:14px}
+
+/* ---------- Footer ---------- */
+.site-footer{position:relative;overflow:hidden;background:var(--ink);color:#fff;padding-top:clamp(64px,8vw,112px)}
+.f-top{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:48px}
+.f-big{font:800 clamp(48px,5.4vw,80px)/.96 var(--display);letter-spacing:-.036em;margin-top:20px;font-variant-numeric:lining-nums}
+.f-big span{display:block}
+.f-addr{margin-top:18px;font-size:17px;color:#fff}
+.f-note{margin-top:14px;max-width:26em;font-size:15px;color:var(--mist)}
+.f-dir{position:relative;display:inline-flex;margin-top:18px;color:#fff;font-weight:600;text-decoration:none;background:linear-gradient(var(--sky),var(--sky)) no-repeat left bottom/100% 1.5px;padding-bottom:3px}
+.f-dir .arw{margin-left:8px;transition:transform .3s var(--ease)}
+.f-dir:hover .arw{transform:translateX(4px)}
+.f-dir::before{content:"";position:absolute;inset:-8px -4px}
+.f-col h3{font:600 12.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--sky);margin:13px 0 18px}
+.f-col a,.f-col button{display:flex;align-items:center;min-height:36px;color:#E9EEF7;text-decoration:none;font-size:16px;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.f-col a:hover,.f-col button:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
+.f-social{display:flex;gap:10px;margin-top:18px}
+.f-social a{width:44px;height:44px;border:1px solid rgba(255,255,255,.22);border-radius:var(--r);display:grid;place-items:center;transition:background-color .2s ease,border-color .2s ease}
+.f-social a:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5);text-decoration:none}
+.f-social svg{width:19px;height:19px}
+.f-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;margin-top:72px;padding-block:24px;border-top:1px solid rgba(255,255,255,.14);font-size:14px;color:var(--mist)}
+.f-bottom a{position:relative;color:var(--mist);text-decoration:none}
+.f-bottom a::before{content:"";position:absolute;inset:-13px -6px}
+.f-bottom a:hover{color:#fff}
+.f-bottom .sep{margin-inline:8px;opacity:.6}
+.f-word{display:block;font:800 clamp(110px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
+
+/* ---------- Phone Sundays bar ---------- */
+.sbar{display:none}
+@media (max-width:760px){
+  .sbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);border-top:1px solid var(--rule);box-shadow:0 -12px 30px -20px rgba(11,18,32,.4);padding:10px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(115%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s linear .35s}
+  body.sb-open .sbar{transform:none;visibility:visible;transition:transform .35s var(--ease),visibility 0s}
+}
+.sb-in{display:flex;align-items:center;gap:10px}
+.sb-info{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.sb-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--cobalt)}
+.sb-info b{display:block;font-size:15px;line-height:1.2;font-weight:600}
+.sb-info span span{display:block;font-size:13px;line-height:1.3;color:var(--graphite);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-chat{flex:none;width:44px;height:44px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;display:grid;place-items:center;cursor:pointer}
+.sb-chat svg{width:20px;height:20px}
+.sbar .btn{flex:none;padding:0 14px}
+
+/* ---------- Chat ---------- */
+.chat-fab{position:fixed;right:22px;bottom:22px;z-index:45;width:58px;height:58px;border-radius:50%;border:0;background:var(--cobalt);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 14px 30px -12px rgba(11,18,32,.5);transition:transform .3s var(--ease),opacity .25s ease,background-color .2s ease}
+.chat-fab:hover{background:var(--cobalt-press);transform:translateY(-2px)}
+.chat-fab svg{width:24px;height:24px}
+body.chat-open .chat-fab{opacity:0;pointer-events:none}
+@media (max-width:760px){
+  .chat-fab{right:16px;bottom:16px;opacity:0;pointer-events:none;transform:scale(.85)}
+  body.sb-past:not(.sb-open):not(.chat-open):not(.menu-open) .chat-fab{opacity:1;pointer-events:auto;transform:none}
+}
+.chat{position:fixed;right:22px;bottom:22px;z-index:60;width:min(390px,calc(100vw - 32px));max-height:min(600px,calc(100svh - 120px));display:flex;flex-direction:column;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:0 34px 70px -24px rgba(11,18,32,.4);opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .2s ease,transform .3s var(--ease),visibility 0s linear .3s}
+.chat.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s ease,transform .3s var(--ease),visibility 0s}
+.chat-h{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 18px;border-bottom:1px solid var(--rule)}
+.chat-h svg.mk{width:30px;height:30px;flex:none}
+.chat-h b{display:block;font:700 17px/1.2 var(--display);letter-spacing:-.02em}
+.chat-h small{display:block;font-size:13px;color:var(--graphite)}
+.chat-x{margin-left:auto;width:44px;height:44px;border:0;background:none;border-radius:var(--r);display:grid;place-items:center;cursor:pointer}
+.chat-x:hover{background:var(--cloud)}
+.chat-x svg{width:20px;height:20px}
+.chat-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;background:var(--cloud)}
+.bub{max-width:85%;padding:11px 14px;border-radius:12px;font-size:15.5px;line-height:1.45}
+.bub.bot{background:#fff;border:1px solid var(--rule);border-bottom-left-radius:4px;align-self:flex-start}
+.bub.me{background:var(--cobalt);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{min-height:44px;padding:0 14px;border:1.5px solid var(--rule-strong);border-radius:999px;background:#fff;font:600 14px/1 var(--body);cursor:pointer}
+.chip:hover{border-color:var(--cobalt);color:var(--cobalt)}
+.chat-f{display:flex;gap:8px;padding:12px;border-top:1px solid var(--rule);background:#fff}
+.chat-f input{flex:1;min-width:0;height:46px;border:1.5px solid var(--rule-strong);border-radius:var(--r);padding:0 12px;font-size:16px}
+.chat-f input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 3px var(--sky)}
+.chat-f button{width:46px;height:46px;border:0;border-radius:var(--r);background:var(--cobalt);color:#fff;display:grid;place-items:center;cursor:pointer}
+.chat-f button svg{width:18px;height:18px}
+@media (max-width:760px){
+  .chat{left:0;right:0;bottom:0;width:100%;max-height:82svh;border-radius:14px 14px 0 0;border-bottom:0;transform:translateY(24px)}
+}
+
+/* ---------- Hope, the guided demo (shared/hope-demo.js) ----------
+   On the preview, Hope replaces the chat above and brings her own circle.
+   These lines give her Lightwell's crisp corners and display face, and keep
+   her circle clear of the phone Sundays bar only while that bar is showing. */
+body .hd-btn,body .hd-foot input,body .hd-foot button{border-radius:var(--r)}
+body .hd-panel,body .hd-card{border-radius:12px}
+body .hd-invite{border-radius:var(--r-lg)}
+body .hd-invite p{padding-right:22px}
+body .hd-card h3{font-family:var(--display);font-weight:780;font-size:22px;letter-spacing:-.022em}
+body .hd-launch{transition:transform .25s var(--ease),bottom .35s var(--ease),opacity .25s ease}
+body .hd-invite{transition:opacity .35s ease,transform .35s var(--ease),bottom .35s var(--ease)}
+@media (min-width:761px){body{--hd-bottom:0px}}
+@media (max-width:760px){
+  body:not(.sb-open){--hd-bottom:0px}
+  /* Like the old chat circle: on phones it waits until the hero buttons scroll away */
+  body:not(.sb-past) .hd-launch{opacity:0;visibility:hidden;pointer-events:none;transform:scale(.85)}
+}
+@media (max-width:640px){
+  body .hd-panel{border-radius:14px 14px 0 0}
+  /* The tour's Hope step (second to last dot): bring the circle back so the spotlight has something to ring, and lift the card above it */
+  html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-launch{opacity:1!important;visibility:visible!important;transform:none!important}
+  html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-card{top:84px!important;bottom:auto}
+}
+
+/* ---------- Video modal ---------- */
+.modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;background:rgba(11,18,32,.78);opacity:0;visibility:hidden;transition:opacity .2s ease,visibility 0s linear .2s}
+.modal.open{opacity:1;visibility:visible;transition:opacity .2s ease,visibility 0s}
+.modal-in{position:relative;width:min(980px,100%);background:var(--ink);border-radius:var(--r-lg);overflow:hidden}
+.modal-frame{position:relative;aspect-ratio:16/9;display:grid;place-items:center}
+.modal-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28}
+.modal-play{width:72px;height:72px;margin:0 auto 18px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.modal-play svg{width:24px;height:24px;margin-left:4px;fill:var(--cobalt)}
+.modal-msg{position:relative;text-align:center;color:#fff;padding:24px}
+.modal-msg b{display:block;font:800 clamp(22px,3vw,34px)/1.1 var(--display);letter-spacing:-.03em}
+.modal-msg > span:last-child{display:block;margin-top:10px;color:#E9EEF7}
+.modal-x{position:absolute;right:12px;top:12px;z-index:2;width:44px;height:44px;border:0;border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer}
+.modal-x svg{width:20px;height:20px}
+
+/* ---------- Scroll reveal (only after JS has set up the observer) ---------- */
+.reveal-init{opacity:0;transform:translateY(18px)}
+.reveal-in{animation:rise .8s var(--ease-out) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.stagger.reveal-init,.stagger.reveal-in{opacity:1;transform:none;animation:none}
+.stagger.reveal-init > *{opacity:0}
+.stagger.reveal-in > *{animation:rise .75s var(--ease-out) backwards}
+.stagger.reveal-in > :nth-child(2){animation-delay:.09s}
+.stagger.reveal-in > :nth-child(3){animation-delay:.18s}
+.stagger.reveal-in > :nth-child(4){animation-delay:.27s}
+.steps.reveal-in .step::after{animation:stepLine 1.2s var(--ease) backwards}
+.steps.reveal-in .step:nth-child(2)::after{animation-delay:.09s}
+.steps.reveal-in .step:nth-child(3)::after{animation-delay:.18s}
+.steps.reveal-in .step:nth-child(4)::after{animation-delay:.27s}
+@keyframes stepLine{0%{transform:scaleX(0)}55%{transform:scaleX(1)}100%{transform:scaleX(.14)}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1180px){
+  .navlinks > a,.drop-btn{padding:0 10px}
+  .preview-badge{display:none}
+}
+@media (max-width:1080px){
+  .navlinks{display:none}
+  .hamburger{display:inline-flex}
+  .nav-cta{margin-left:auto}
+  .preview-badge{display:inline-flex}
+}
+@media (max-width:980px){
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cards{gap:16px}
+  .f-top{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .f-times{grid-column:1/-1}
+}
+@media (max-width:860px){
+  .hero{padding-left:0}
+  .hero-grid{display:flex;flex-direction:column;min-height:0;gap:0}
+  .hero-media{order:-1;margin:12px var(--gut) 0;border-radius:var(--r-lg);min-height:0;height:clamp(220px,30svh,420px)}
+  .hero-media img{object-position:50% 45%}
+  .hero-chip{display:none}
+  .hero-copy{padding:24px var(--gut) 44px}
+  .hero-title{margin-top:16px}
+  .hero .lead{margin-top:16px;font-size:17px}
+  .mission-grid,.msg-grid,.rv-grid,.nl-grid{grid-template-columns:minmax(0,1fr)}
+  .pastors{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:center}
+  .pastors-copy{margin-top:0}
+  .cards{grid-template-columns:minmax(0,1fr);gap:20px}
+  .card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+  .card-img{aspect-ratio:auto;min-height:100%}
+  .card-img img{position:absolute;inset:0}
+  .rv-ctrl{margin-top:24px}
+  .msg-grid{gap:28px}
+  .msg-grid .player{order:-1}
+  .rv-grid{gap:28px}
+}
+@media (max-width:760px){
+  .nav-cta .btn{display:none}
+  .brand svg{width:30px;height:30px}
+  .brand .wm{font-size:24px}
+}
+@media (max-width:600px){
+  body{font-size:17px}
+  .times{grid-template-columns:minmax(0,1fr);border-bottom:0;margin-top:22px}
+  .t-item{padding:12px 0;border-bottom:1px solid var(--rule)}
+  .t-item + .t-item{padding-left:0;border-left:0}
+  .t-ic{width:34px;height:34px}
+  .t-k{margin-bottom:4px}
+  .btn-pair{display:grid;grid-auto-flow:row;grid-auto-columns:auto;width:100%;gap:10px}
+  .hero .btn-pair{margin-top:22px}
+  .ab{padding-block:18px;gap:14px}
+  .ab-text{display:block;line-height:1.5}
+  .ab-tag{display:inline-block;margin-right:10px;vertical-align:2px}
+  .ab-actions{width:100%;justify-content:space-between;gap:12px;flex-wrap:nowrap}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat{padding:18px 10px 0 0}
+  .stat + .stat{padding-left:12px}
+  .stat span{font-size:13.5px}
+  .pastors{grid-template-columns:minmax(0,1fr)}
+  .pastors-photo{aspect-ratio:4/3}
+  .pastors-photo img{object-position:50% 22%}
+  .card{display:flex}
+  .card-img{aspect-ratio:16/10;min-height:0}
+  .card-body{padding:20px 20px 22px}
+  .card h3{font-size:25px}
+  .steps{grid-template-columns:minmax(0,1fr);margin-inline:-14px}
+  .step{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:8px;row-gap:6px;padding:24px 14px 22px}
+  .step::before,.step::after{left:14px;right:14px}
+  .step .num{grid-row:1/span 3;padding-top:6px;font-size:16px}
+  .step h3{margin-top:0;font-size:25px}
+  .step .go{padding-top:4px}
+  .sky-band{min-height:560px;align-items:flex-end}
+  .sky-bg{background-size:auto 165%;background-position:42% 100%}
+  .sky-sub{font-size:17px}
+  .strip-head{flex-direction:column;align-items:flex-start}
+  .marquee{margin-top:32px}
+  .rv-dot{width:52px}
+  .nl-form{flex-direction:column}
+  .nl-form input{flex:none;width:100%}
+  .nl-form .btn{width:100%}
+  .play-btn{width:64px;height:64px;margin:-32px 0 0 -32px}
+  .play-btn svg{width:20px;height:20px}
+  .lede-more{display:none}
+  .hero-title{margin-top:14px}
+  .f-top{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px 24px}
+  .f-col a,.f-col button{min-height:44px}
+  .f-bottom{flex-direction:column;margin-top:48px}
+}
+@media (max-width:380px){
+  .preview-badge{font-size:9.5px;padding:5px 8px 5px 7px}
+}
+
+/* ---------- Reduced motion: everything stands still ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal-init,.stagger.reveal-init > *{opacity:1;transform:none}
+  .marquee{overflow-x:auto}
+  .mq-track [aria-hidden="true"]{display:none}
+  .mq-toggle{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Shared SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1F4FFF"/><path d="M11 0h6.5v26H31v6.5H11z" fill="#fff"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#E4ECFF"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17L20 12z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z" fill="currentColor"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.6" r="1.2" fill="currentColor"/><circle cx="12" cy="9.6" r="1.2" fill="currentColor"/><circle cx="15" cy="9.6" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 20 20"><path d="M10 1.6l2.55 5.36 5.9.72-4.35 4.06 1.13 5.84L10 14.72l-5.23 2.86 1.13-5.84L1.55 7.68l5.9-.72z"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 21v-7.5H16l.5-3h-3V8.7c0-.9.3-1.5 1.6-1.5h1.6V4.5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.1H8v3h2.5V21z" fill="currentColor"/></symbol>
+  <symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="site-header" id="hdr">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Lightwell Church, home">
+      <svg aria-hidden="true"><use href="#i-mark"/></svg>
+      <span class="wm">lightwell</span>
+    </a>
+    <span class="preview-badge" title="This is a Genesis Ministry template preview. Lightwell Church is fictional.">Template preview</span>
+    <nav class="navlinks" id="navlinks" aria-label="Main"></nav>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="#visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
+      <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobilemenu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="hb-open" d="M3 7h18M3 12h18M3 17h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="progress" id="pb" aria-hidden="true"></div>
+</header>
+
+<div class="mmenu" id="mobilemenu" aria-hidden="true" inert>
+  <nav class="mlist" id="mlist" aria-label="Site menu">
+    <a href="#top" aria-current="page">Home <span class="here">You are here</span></a>
+  </nav>
+  <div class="mcta">
+    <a class="btn btn-primary" href="#visit">Plan Your Visit</a>
+    <p class="mtimes"><b>Sundays 9:00 &amp; 10:45 AM</b><span>1218 Brightwater Ave, Raleigh</span></p>
+    <p class="mquiet"><a href="tel:+19195550142">(919) 555-0142</a><button type="button" data-open-chat>Ask a question</button></p>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- 1. HERO: big type on white, a daylight photo with a slow drift in place of film -->
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="label">Sundays in downtown Raleigh</p>
+        <h1 class="hero-title" id="hero-title">
+          <span class="sr-only">Find your people, your peace and your Sunday.</span>
+          <span aria-hidden="true">
+            <span class="l1">Find your</span>
+            <span class="l2"><span class="rot"><span class="rot-w is-on">people.</span><span class="rot-w">peace.</span><span class="rot-w">Sunday.</span></span></span>
+          </span>
+        </h1>
+        <p class="lead">Lightwell is a young church for families, friends and the honestly curious.<span class="lede-more"> Come as you are. We have been getting ready for you.</span></p>
+        <div class="times">
+          <div class="t-item"><span class="t-ic"><svg aria-hidden="true"><use href="#i-clock"/></svg></span><span><span class="t-k">Sundays</span><span class="t-v">9:00 &amp; 10:45 AM</span></span></div>
+          <div class="t-item"><span class="t-ic"><svg aria-hidden="true"><use href="#i-pin"/></svg></span><span><span class="t-k">Find us</span><span class="t-v">1218 Brightwater Ave, Raleigh</span></span></div>
+        </div>
+        <div class="btn-pair" data-sb-cover>
+          <a class="btn btn-primary" href="#visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-outline" href="https://maps.google.com/?q=Raleigh+NC" target="_blank" rel="noopener">Get Directions</a>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="photos/friends-high-five.jpg" alt="Friends sharing a high five and a laugh over cups of tea in a bright room" width="1800" height="2700" fetchpriority="high">
+        <p class="hero-chip"><span class="k">This Sunday, Nov 22</span><b>Open Doors, week 4</b><span>Coffee at 8:30. Kids check-in from 8:40.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENT: one line, a video pop-up and an outline give button -->
+  <section class="announce" aria-label="Announcement">
+    <div class="wrap ab">
+      <p class="ab-text"><span class="ab-tag">New</span><span><b>Room to Grow:</b> bright new kids rooms open this spring.</span></p>
+      <div class="ab-actions">
+        <button class="ab-watch" type="button" data-modal="Room to Grow" data-modal-sub="The campaign video plays here on the live site." data-modal-img="photos/sunday-room-chairs.jpg">
+          <span class="ab-play" aria-hidden="true"><svg><use href="#i-play"/></svg></span><span class="u">Watch the Video</span>
+        </button>
+        <a class="btn btn-outline btn-sm" href="#give" aria-label="Give to Room to Grow"><span>Give<span class="lede-more"> to Room to Grow</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. MISSION LINE with the lead pastors beside it -->
+  <section class="block" aria-labelledby="mission-title">
+    <div class="wrap mission-grid">
+      <div class="reveal">
+        <p class="label">Who we are</p>
+        <h2 class="mission-line" id="mission-title">A young church in the middle of Raleigh for people who are <span class="hl">still figuring it out.</span> So, all of us.</h2>
+        <div class="stats">
+          <div class="stat"><b>2023</b><span>Planted in downtown Raleigh</span></div>
+          <div class="stat"><b>14</b><span>Small groups across the city</span></div>
+          <div class="stat"><b>2</b><span>Sunday gatherings</span></div>
+        </div>
+      </div>
+      <div class="pastors reveal">
+        <figure class="pastors-photo"><img src="photos/pastors-portrait.jpg" alt="Pastors Theo and Priya smiling at each other" width="1800" height="2699" loading="lazy"></figure>
+        <div class="pastors-copy">
+          <p class="label">Lead pastors</p>
+          <h3>Theo and Priya</h3>
+          <p>They started Lightwell with eleven friends, a borrowed sound system and a lot of coffee. They teach as a team, raise two busy kids and would love to meet you.</p>
+          <a class="btn btn-outline" href="#about">Meet Theo and Priya</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. NEXT STEPS: three photo cards, then four numbered columns on cobalt -->
+  <section class="block cloud into-band" id="visit" aria-labelledby="next-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="label">Next steps</p>
+        <h2 class="h-lg" id="next-title">Start wherever you are</h2>
+        <p class="lead">No pressure and no sign-up sheet at the door. Here are a few easy ways in.</p>
+      </div>
+      <div class="cards stagger reveal">
+        <a class="card" href="#visit">
+          <div class="card-img"><img src="photos/family-walking-sidewalk.jpg" alt="A family walking together along a sunny sidewalk" width="1800" height="1200" loading="lazy" style="object-position:50% 40%"></div>
+          <div class="card-body"><h3>Plan Your Visit</h3><p>First time? Here is what Sunday looks like, where to park and what happens with the kids.</p><span class="go">What Sunday looks like <span class="arw" aria-hidden="true">&rarr;</span></span></div>
+        </a>
+        <a class="card" href="#about">
+          <div class="card-img"><img src="photos/small-group-bibles.jpg" alt="Two friends reading the Bible together on the grass with others around them" width="1800" height="2700" loading="lazy" style="object-position:50% 40%"></div>
+          <div class="card-body"><h3>Get to Know Us</h3><p>Nobody here has it all together, and that is sort of the point. Come meet the people and hear our story.</p><span class="go">Meet the family <span class="arw" aria-hidden="true">&rarr;</span></span></div>
+        </a>
+        <a class="card" href="#give" id="give">
+          <div class="card-img"><img src="photos/serving-donations-sorting.jpg" alt="Volunteers sorting donated food and clothes at long tables in a bright room" width="1800" height="2700" loading="lazy" style="object-position:50% 66%"></div>
+          <div class="card-body"><h3>Give</h3><p>Your giving stocks the pantry, builds the new kids rooms and keeps the coffee on for whoever walks in next.</p><span class="go">Give online <span class="arw" aria-hidden="true">&rarr;</span></span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cobalt-band" aria-label="More ways to connect">
+    <div class="wrap">
+      <div class="steps stagger reveal">
+        <a class="step" href="#start"><span class="num">01</span><h3>Start Here</h3><p>New to Lightwell? Have lunch with the pastors and hear where this church is headed.</p><span class="go">Come to lunch <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+        <a class="step" href="#groups"><span class="num">02</span><h3>Small Groups</h3><p>Ten or so people, a living room and real conversation. Groups meet all over the city.</p><span class="go">Find a group <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+        <a class="step" href="#events"><span class="num">03</span><h3>Events</h3><p>Family nights, serve days and the occasional cookout. Here is the calendar.</p><span class="go">View the calendar <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+        <a class="step" href="#prayer"><span class="num">04</span><h3>Need Prayer</h3><p>Big or small, bring it. Our prayer team reads every request and would love to pray with you.</p><span class="go">Send a request <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. STATEMENT BAND: one big sentence on a deep blue sky -->
+  <section class="sky-band" aria-labelledby="sky-title">
+    <div class="sky-bg" data-px="56" aria-hidden="true"></div>
+    <div class="wrap sky-inner reveal">
+      <p class="label on-dark">Every Sunday</p>
+      <h2 class="sky-title" id="sky-title"><span>Come as you are.</span> <span>Leave a little lighter.</span></h2>
+      <p class="sky-sub">Grace for the tired, room for the curious and a family for anyone who needs one.</p>
+    </div>
+  </section>
+
+  <!-- 5. LIFE AT LIGHTWELL: scrolling photo strip and a baptism link -->
+  <section class="block" aria-labelledby="life-title">
+    <div class="wrap">
+      <div class="strip-head">
+        <div class="sec-head reveal">
+          <p class="label">Life at Lightwell</p>
+          <h2 class="h-lg" id="life-title">What Sunday feels like</h2>
+          <p class="lead">Worship, a message you can use on Monday, good coffee and people who are glad you came.</p>
+        </div>
+        <button class="mq-toggle" type="button" aria-pressed="false" aria-controls="strip"><svg aria-hidden="true"><use href="#i-pause"/></svg><span>Pause Photos</span></button>
+      </div>
+    </div>
+    <div class="marquee" id="strip" aria-label="Photos from Sundays at Lightwell">
+      <div class="mq-track">
+        <div class="mq-item w"><img src="photos/worship-hands-raised.jpg" alt="People standing with hands raised during worship in a bright room" width="1800" height="1200" loading="lazy"></div>
+        <div class="mq-item t"><img src="photos/families-greeting-lobby.jpg" alt="Families greeting each other in a sunny lobby before the service" width="1800" height="1200" loading="lazy" style="object-position:62% 50%"></div>
+        <div class="mq-item w"><img src="photos/friends-coffee-table.jpg" alt="Four friends laughing over coffee around a low table" width="1800" height="1200" loading="lazy" style="object-position:40% 45%"></div>
+        <div class="mq-item t"><img src="photos/prayer-hands-on-shoulders.jpg" alt="Friends praying with their hands on a young man's shoulders" width="1800" height="2700" loading="lazy" style="object-position:50% 0%"></div>
+        <div class="mq-item w"><img src="photos/baptism-at-the-shore.jpg" alt="Two men standing in the sea moments before a baptism" width="1800" height="1200" loading="lazy"></div>
+        <div class="mq-item w"><img src="photos/sunday-room-chairs.jpg" alt="Rows of chairs set out in a bright room, ready for Sunday" width="1800" height="1200" loading="lazy"></div>
+        <div class="mq-item w" aria-hidden="true"><img src="photos/worship-hands-raised.jpg" alt="" width="1800" height="1200" loading="lazy"></div>
+        <div class="mq-item t" aria-hidden="true"><img src="photos/families-greeting-lobby.jpg" alt="" width="1800" height="1200" loading="lazy" style="object-position:62% 50%"></div>
+        <div class="mq-item w" aria-hidden="true"><img src="photos/friends-coffee-table.jpg" alt="" width="1800" height="1200" loading="lazy" style="object-position:40% 45%"></div>
+        <div class="mq-item t" aria-hidden="true"><img src="photos/prayer-hands-on-shoulders.jpg" alt="" width="1800" height="2700" loading="lazy" style="object-position:50% 0%"></div>
+        <div class="mq-item w" aria-hidden="true"><img src="photos/baptism-at-the-shore.jpg" alt="" width="1800" height="1200" loading="lazy"></div>
+        <div class="mq-item w" aria-hidden="true"><img src="photos/sunday-room-chairs.jpg" alt="" width="1800" height="1200" loading="lazy"></div>
+      </div>
+    </div>
+    <div class="wrap">
+      <p class="aside-link reveal">Ready to go public with your faith? Baptism Sunday is December 6. <a class="tlink" href="#baptism">Talk to us about baptism</a></p>
+    </div>
+  </section>
+
+  <!-- 6. LATEST MESSAGE -->
+  <section class="block cloud" id="message" aria-labelledby="msg-title">
+    <div class="wrap msg-grid">
+      <div class="msg-copy reveal">
+        <p class="label">Latest message</p>
+        <h2 class="h-md" id="msg-title" style="margin-top:var(--label-gap)">Room for questions</h2>
+        <p class="msg-meta">Open Doors, week 3&nbsp;&middot; Pastor Theo&nbsp;&middot; November&nbsp;15,&nbsp;2026</p>
+        <p class="muted">Catch up on Sunday in the car, on a walk or during nap time. Every message is online by Monday morning.</p>
+        <a class="btn btn-outline" href="#watch">All Messages</a>
+      </div>
+      <button class="player reveal" type="button" aria-label="Play the message Room for questions" data-modal="Room for questions" data-modal-sub="The message video plays here on the live site." data-modal-img="photos/pastor-teaching.jpg">
+        <img src="photos/pastor-teaching.jpg" alt="" width="1800" height="2250" loading="lazy">
+        <span class="play-btn" aria-hidden="true"><svg><use href="#i-play"/></svg></span>
+        <span class="p-meta" aria-hidden="true"><span>Open Doors &middot; Week 3</span><span class="p-dur">36:08</span></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 7. REVIEWS: three, rotating, with stars -->
+  <section class="block" aria-labelledby="rv-title">
+    <div class="wrap rv-grid">
+      <div class="reveal">
+        <p class="label">Kind words</p>
+        <h2 class="h-md" id="rv-title" style="margin-top:var(--label-gap)">Why people stay</h2>
+        <p class="rv-note">Sample reviews written for this template.</p>
+      </div>
+      <div class="rv reveal" aria-roledescription="carousel" aria-label="Reviews">
+        <div class="rv-stage" aria-live="polite">
+          <figure class="rv-item on">
+            <div class="stars" role="img" aria-label="5 out of 5 stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+            <blockquote>We visited once with two loud toddlers and nobody blinked. Three months later, these are our people.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">O</span><span class="who"><b>Owen T.</b><span>Five Points</span></span></figcaption>
+          </figure>
+          <figure class="rv-item" aria-hidden="true">
+            <div class="stars" role="img" aria-label="5 out of 5 stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+            <blockquote>I came with a lot of questions and nobody tried to rush me. The teaching is honest and actually useful on a Monday.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">D</span><span class="who"><b>Dana K.</b><span>Oakwood</span></span></figcaption>
+          </figure>
+          <figure class="rv-item" aria-hidden="true">
+            <div class="stars" role="img" aria-label="5 out of 5 stars"><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg><svg><use href="#i-star"/></svg></div>
+            <blockquote>The kids rooms are bright, safe and run by people who clearly love it. My daughter asks if it is Sunday yet.</blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">N</span><span class="who"><b>Nadia P.</b><span>Boylan Heights</span></span></figcaption>
+          </figure>
+        </div>
+        <div class="rv-ctrl" role="group" aria-label="Choose a review">
+          <button class="rv-dot on" type="button" aria-label="Show review 1" aria-pressed="true"></button>
+          <button class="rv-dot" type="button" aria-label="Show review 2" aria-pressed="false"></button>
+          <button class="rv-dot" type="button" aria-label="Show review 3" aria-pressed="false"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. NEWSLETTER beside a photo -->
+  <section class="block cloud" aria-labelledby="nl-title">
+    <div class="wrap nl-grid">
+      <figure class="nl-photo reveal"><img src="photos/coffee-across-the-table.jpg" alt="Two people sharing coffee across a white table" width="1800" height="2700" loading="lazy"></figure>
+      <div class="nl-copy reveal">
+        <p class="label">Stay in the loop</p>
+        <h2 class="h-md" id="nl-title" style="margin-top:var(--label-gap)">The Lightwell weekly</h2>
+        <p class="muted">One short email every Thursday. What is happening Sunday, the latest message and one simple way to serve the city.</p>
+        <form class="nl-form" novalidate>
+          <label class="sr-only" for="nl-email">Email address</label>
+          <input id="nl-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <button class="btn btn-primary" type="submit">Sign Up <span class="arw" aria-hidden="true">&rarr;</span></button>
+        </form>
+        <p class="form-note" aria-live="polite"></p>
+        <p class="aside-link">Carrying something heavy this week? <a class="tlink" href="#prayer">Send a prayer request</a>. A real person reads every one.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER: built around the service times -->
+<footer class="site-footer" data-sb-cover>
+  <div class="wrap">
+    <div class="f-top">
+      <div class="f-times">
+        <p class="label on-dark">Sundays</p>
+        <p class="f-big"><span>9:00 &amp;</span> <span>10:45 AM</span></p>
+        <p class="f-addr">1218 Brightwater Ave, Raleigh, NC 27603</p>
+        <a class="f-dir" href="https://maps.google.com/?q=Raleigh+NC" target="_blank" rel="noopener">Get directions <span class="arw" aria-hidden="true">&rarr;</span></a>
+        <p class="f-note">Kids check-in opens 20 minutes before each gathering. Free parking in the lot behind the building.</p>
+      </div>
+      <nav class="f-col" aria-label="Explore">
+        <h3>Explore</h3>
+        <a href="#visit">Plan Your Visit</a><a href="#about">Who We Are</a><a href="#beliefs">What We Believe</a><a href="#message">Watch</a><a href="#events">Events</a><a href="#give">Give</a>
+      </nav>
+      <nav class="f-col" aria-label="Connect">
+        <h3>Connect</h3>
+        <a href="#start">Start Here</a><a href="#groups">Small Groups</a><a href="#kids">Lightwell Kids</a><a href="#serve">Serve Teams</a><a href="#prayer">Prayer Requests</a>
+      </nav>
+      <div class="f-col">
+        <h3>Reach us</h3>
+        <a href="tel:+19195550142">(919) 555-0142</a><a href="#contact">Contact Us</a><button type="button" data-open-chat>Ask a question</button>
+        <div class="f-social">
+          <a href="#instagram" aria-label="Lightwell on Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg></a>
+          <a href="#facebook" aria-label="Lightwell on Facebook"><svg aria-hidden="true"><use href="#i-fb"/></svg></a>
+          <a href="#youtube" aria-label="Lightwell on YouTube"><svg aria-hidden="true"><use href="#i-yt"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>&copy; 2026 Lightwell Church, Raleigh, North Carolina</span>
+      <span>Template preview of a fictional church by Genesis&nbsp;Ministry<span class="sep">&middot;</span><a href="#privacy">Privacy</a><span class="sep">&middot;</span><a href="#staff">Staff Login</a></span>
+    </div>
+    <span class="f-word" aria-hidden="true">lightwell</span>
+  </div>
+</footer>
+
+<!-- Phone "Sundays" bar -->
+<div class="sbar" aria-hidden="true">
+  <div class="sb-in">
+    <div class="sb-info"><span class="sb-dot" aria-hidden="true"></span><span><b>Sundays</b><span>9:00 &amp; 10:45 AM</span></span></div>
+    <button class="sb-chat" type="button" aria-label="Ask a question" data-open-chat tabindex="-1"><svg aria-hidden="true"><use href="#i-chat"/></svg></button>
+    <a class="btn btn-primary btn-sm" href="#visit" tabindex="-1">Plan Your Visit</a>
+  </div>
+</div>
+
+<!-- Chat -->
+<button class="chat-fab" type="button" aria-label="Ask a question" aria-expanded="false" aria-controls="chat"><svg aria-hidden="true"><use href="#i-chat"/></svg></button>
+<div class="chat" id="chat" role="dialog" aria-labelledby="chat-title" aria-hidden="true" inert>
+  <div class="chat-h">
+    <svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg>
+    <span><b id="chat-title">Hope</b><small>Lightwell&#39;s assistant &middot; answers right away</small></span>
+    <button class="chat-x" type="button" aria-label="Close chat"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="chat-body" id="chat-body" aria-live="polite">
+    <p class="bub bot">Hi, I am Hope. I can help with Sunday times, kids, parking or anything else. What would you like to know?</p>
+    <div class="chips">
+      <button class="chip" type="button" data-q="times">Service times</button>
+      <button class="chip" type="button" data-q="kids">What about my kids?</button>
+      <button class="chip" type="button" data-q="park">Where do I park?</button>
+    </div>
+  </div>
+  <form class="chat-f" id="chat-f">
+    <label class="sr-only" for="chat-in">Type your question</label>
+    <input id="chat-in" type="text" placeholder="Ask anything" autocomplete="off">
+    <button type="submit" aria-label="Send"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
+  </form>
+</div>
+
+<!-- Video pop-up -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" inert>
+  <div class="modal-in">
+    <button class="modal-x" type="button" aria-label="Close video"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+    <div class="modal-frame">
+      <img id="modal-img" src="photos/sunday-room-chairs.jpg" alt="">
+      <p class="modal-msg"><span class="modal-play" aria-hidden="true"><svg><use href="#i-play"/></svg></span><b id="modal-title">Room to Grow</b><span id="modal-sub">The campaign video plays here on the live site.</span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  /* One list drives the desktop dropdowns and the phone menu */
+  const NAV = [
+    { label: "About", items: [["Who We Are", "How Lightwell got started.", "#about"], ["Our Values", "What we care about most.", "#values"], ["What We Believe", "The short version and the long one.", "#beliefs"]] },
+    { label: "Connect", items: [["Plan Your Visit", "Times, parking and kids.", "#visit"], ["Get Connected", "All the ways in.", "#connect"], ["Start Here", "New here? Begin with lunch.", "#start"], ["Small Groups", "Find a group near you.", "#groups"], ["Ask About Baptism", "Baptism Sunday is December 6.", "#baptism"], ["Prayer Requests", "A real person reads every one.", "#prayer"], ["Contact Us", "Call, email or send a note.", "#contact"]] },
+    { label: "Ministries", items: [["All Ministries", "Something for every age.", "#ministries"], ["Lightwell Kids", "Nursery through 5th grade.", "#kids"], ["Students and Young Adults", "Grades 6 to 12 and twentysomethings.", "#students"], ["Freedom", "Recovery and healing groups.", "#freedom"], ["Serve Teams", "Find your spot on a team.", "#serve"]] },
+    { label: "Watch", href: "#message" },
+    { label: "Events", href: "#events" },
+    { label: "Give", href: "#give" },
+  ];
+  const chev = '<svg aria-hidden="true"><use href="#i-chev"/></svg>';
+  const navEl = $("#navlinks"), mlist = $("#mlist");
+  NAV.forEach((g, i) => {
+    if (g.items) {
+      const d = document.createElement("div");
+      d.className = "drop";
+      d.innerHTML = '<button class="drop-btn" type="button" aria-expanded="false" aria-controls="dd' + i + '">' + g.label + chev + '</button><div class="menu" id="dd' + i + '"><div class="menu-panel">' +
+        g.items.map(([t, n, h]) => '<a href="' + h + '">' + t + "<small>" + n + "</small></a>").join("") + "</div></div>";
+      navEl.appendChild(d);
+      const det = document.createElement("details");
+      det.className = "mgroup";
+      det.innerHTML = "<summary>" + g.label + chev + '</summary><div class="msub">' + g.items.map(([t, , h]) => '<a href="' + h + '">' + t + "</a>").join("") + "</div>";
+      mlist.appendChild(det);
+    } else {
+      const a = document.createElement("a");
+      a.href = g.href; a.textContent = g.label;
+      navEl.appendChild(a);
+      const m = document.createElement("a");
+      m.href = g.href; m.textContent = g.label;
+      mlist.appendChild(m);
+    }
+  });
+
+  /* Desktop dropdowns: hover for mouse, click or Enter for keyboard and touch */
+  const drops = $$(".drop-btn");
+  const closeDrops = (except) => drops.forEach((b) => { if (b !== except) b.setAttribute("aria-expanded", "false"); });
+  drops.forEach((b) => b.addEventListener("click", () => {
+    const open = b.getAttribute("aria-expanded") === "true";
+    closeDrops(b);
+    b.setAttribute("aria-expanded", String(!open));
+  }));
+  document.addEventListener("click", (e) => { if (!e.target.closest(".drop")) closeDrops(); });
+
+  /* Phone menu */
+  const hb = $(".hamburger"), mm = $("#mobilemenu");
+  const hbPath = hb.querySelector("path");
+  let menuOpen = false;
+  const setMenu = (open) => {
+    menuOpen = open;
+    mm.classList.toggle("open", open);
+    mm.inert = !open;
+    mm.setAttribute("aria-hidden", String(!open));
+    hb.setAttribute("aria-expanded", String(open));
+    hb.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    hbPath.setAttribute("d", open ? "M5 5l14 14M19 5L5 19" : "M3 7h18M3 12h18M3 17h18");
+    document.body.classList.toggle("menu-open", open);
+    updateBar();
+  };
+  hb.addEventListener("click", () => setMenu(!menuOpen));
+  mm.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+
+  /* Rotating hero word: one word leaves completely before the next arrives */
+  const words = $$(".rot-w");
+  let wi = 0;
+  if (!reduce && words.length > 1) {
+    setInterval(() => {
+      if (document.hidden) return;
+      const cur = words[wi];
+      cur.classList.remove("is-on");
+      cur.classList.add("is-out");
+      wi = (wi + 1) % words.length;
+      const nxt = words[wi];
+      setTimeout(() => { cur.classList.remove("is-out"); nxt.classList.add("is-on"); }, 270);
+    }, 2600);
+  }
+
+  /* Scroll reveal: the hidden state is added only after the observer exists */
+  if (!reduce && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.remove("reveal-init"); e.target.classList.add("reveal-in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    const vh = window.innerHeight || 800;
+    $$(".reveal").forEach((el) => {
+      if (el.getBoundingClientRect().top < vh * 0.92) { el.classList.add("reveal-in"); return; }
+      io.observe(el);
+      el.classList.add("reveal-init");
+    });
+    const catchUp = () => {
+      const h = window.innerHeight || 800;
+      $$(".reveal-init").forEach((el) => {
+        if (el.getBoundingClientRect().top < h * 0.95) { el.classList.remove("reveal-init"); el.classList.add("reveal-in"); io.unobserve(el); }
+      });
+    };
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) catchUp(); });
+    window.addEventListener("scroll", () => requestAnimationFrame(catchUp), { passive: true });
+  }
+
+  /* Primary buttons: one sheen when they first come into view, and a soft light that follows the cursor */
+  if (!reduce && "IntersectionObserver" in window) {
+    const sio = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("sheen-in"); sio.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    $$(".btn-primary").forEach((b) => sio.observe(b));
+  }
+  document.addEventListener("pointermove", (e) => {
+    const t = e.target.closest && e.target.closest(".btn-primary");
+    if (!t) return;
+    const r = t.getBoundingClientRect();
+    t.style.setProperty("--mx", (e.clientX - r.left).toFixed(1) + "px");
+    t.style.setProperty("--my", (e.clientY - r.top).toFixed(1) + "px");
+  }, { passive: true });
+
+  /* Header rule, progress line, gentle parallax on the sky band */
+  const hdr = $("#hdr"), pb = $("#pb");
+  const px = reduce ? [] : $$("[data-px]");
+  let ticking = false;
+  const onScroll = () => {
+    ticking = false;
+    const y = window.scrollY;
+    hdr.classList.toggle("scrolled", y > 4);
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    pb.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ")";
+    const vh = window.innerHeight;
+    px.forEach((el) => {
+      const r = el.parentElement.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const p = (r.top + r.height / 2 - vh / 2) / vh;
+      el.style.transform = "translate3d(0," + (-p * parseFloat(el.dataset.px)).toFixed(1) + "px,0)";
+    });
+    updateBar();
+  };
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  window.addEventListener("resize", onScroll);
+
+  /* Phone Sundays bar: shows past the hero, steps aside near a matching button and at the footer */
+  const sbar = $(".sbar");
+  const sbFocusables = $$("a,button", sbar);
+  const seen = new Set();
+  let covered = false, chatOpen = false;
+  function updateBar() {
+    const past = window.scrollY > window.innerHeight * 0.75;
+    const show = past && !covered && !menuOpen && !chatOpen;
+    document.body.classList.toggle("sb-past", past);
+    document.body.classList.toggle("sb-open", show);
+    sbar.setAttribute("aria-hidden", String(!show));
+    sbFocusables.forEach((el) => el.tabIndex = show ? 0 : -1);
+  }
+  if ("IntersectionObserver" in window) {
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)));
+      covered = seen.size > 0;
+      updateBar();
+    });
+    $$("[data-sb-cover]").forEach((el) => cio.observe(el));
+  }
+
+  /* Photo strip pause */
+  const mq = $("#strip"), mqBtn = $(".mq-toggle");
+  mqBtn.addEventListener("click", () => {
+    const paused = mq.classList.toggle("paused");
+    mqBtn.setAttribute("aria-pressed", String(paused));
+    mqBtn.querySelector("span").textContent = paused ? "Play Photos" : "Pause Photos";
+    mqBtn.querySelector("use").setAttribute("href", paused ? "#i-play" : "#i-pause");
+  });
+
+  /* Reviews: rotate on a progress line, pause on hover or focus */
+  const rv = $(".rv"), items = $$(".rv-item"), dots = $$(".rv-dot");
+  let ri = 0;
+  const show = (n) => {
+    ri = (n + items.length) % items.length;
+    items.forEach((it, k) => { it.classList.toggle("on", k === ri); it.setAttribute("aria-hidden", String(k !== ri)); });
+    dots.forEach((d, k) => { d.classList.toggle("on", k === ri); d.setAttribute("aria-pressed", String(k === ri)); });
+  };
+  dots.forEach((d, k) => d.addEventListener("click", () => show(k)));
+  if (!reduce) {
+    rv.classList.add("auto");
+    dots.forEach((d) => d.addEventListener("animationend", () => { if (d.classList.contains("on")) show(ri + 1); }));
+    const pause = (on) => rv.classList.toggle("paused", on);
+    rv.addEventListener("mouseenter", () => pause(true));
+    rv.addEventListener("mouseleave", () => pause(false));
+    rv.addEventListener("focusin", () => pause(true));
+    rv.addEventListener("focusout", (e) => { if (!rv.contains(e.relatedTarget)) pause(false); });
+  }
+
+  /* Newsletter (preview only: nothing is sent) */
+  const nf = $(".nl-form"), note = $(".form-note");
+  nf.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("#nl-email").value.trim();
+    note.textContent = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Thanks. You are on the list for Thursday." : "Please enter an email address like you@example.com.";
+  });
+
+  /* Video pop-up */
+  const modal = $("#modal");
+  let lastFocus = null;
+  const openModal = (btn) => {
+    lastFocus = btn;
+    $("#modal-title").textContent = btn.dataset.modal;
+    $("#modal-sub").textContent = btn.dataset.modalSub;
+    $("#modal-img").src = btn.dataset.modalImg;
+    modal.classList.add("open"); modal.inert = false; modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    $(".modal-x").focus();
+  };
+  const closeModal = () => {
+    modal.classList.remove("open"); modal.inert = true; modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus();
+  };
+  $$("[data-modal]").forEach((b) => b.addEventListener("click", () => openModal(b)));
+  $(".modal-x").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+  /* Chat sheet */
+  const chat = $("#chat"), fab = $(".chat-fab"), body = $("#chat-body");
+  let chatReturn = null;
+  const setChat = (open, from) => {
+    chatOpen = open;
+    chat.classList.toggle("open", open);
+    chat.inert = !open;
+    chat.setAttribute("aria-hidden", String(!open));
+    fab.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("chat-open", open);
+    if (open) { chatReturn = from || fab; if (menuOpen) setMenu(false); setTimeout(() => $("#chat-in").focus(), 60); }
+    else if (chatReturn) { (chatReturn.offsetParent ? chatReturn : fab).focus(); }
+    updateBar();
+  };
+  fab.addEventListener("click", () => setChat(true, fab));
+  // When Hope (the guided demo) is on the page, every "Ask a question" button opens her instead.
+  $$("[data-open-chat]").forEach((b) => b.addEventListener("click", () => {
+    if (window.HopeDemo) { if (menuOpen) setMenu(false); window.HopeDemo.open(); return; }
+    setChat(true, b);
+  }));
+  $(".chat-x").addEventListener("click", () => setChat(false));
+  const ANSWERS = {
+    times: "We meet every Sunday at 9:00 and 10:45 AM at 1218 Brightwater Ave. Each gathering runs about 75 minutes.",
+    kids: "Lightwell Kids runs at both gatherings for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked.",
+    park: "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
+    other: "Good question. A real person from our team will follow up. You can also call (919) 555-0142.",
+  };
+  const ask = (text, key) => {
+    const me = document.createElement("p"); me.className = "bub me"; me.textContent = text; body.appendChild(me);
+    const bot = document.createElement("p"); bot.className = "bub bot"; bot.textContent = ANSWERS[key] || ANSWERS.other;
+    setTimeout(() => { body.appendChild(bot); body.scrollTop = body.scrollHeight; }, 350);
+    body.scrollTop = body.scrollHeight;
+  };
+  $$(".chip").forEach((c) => c.addEventListener("click", () => ask(c.textContent, c.dataset.q)));
+  $("#chat-f").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const inp = $("#chat-in"), v = inp.value.trim();
+    if (!v) return;
+    const k = /time|when|hour|sunday/i.test(v) ? "times" : /kid|child|baby|nursery/i.test(v) ? "kids" : /park|car|where/i.test(v) ? "park" : "other";
+    ask(v, k); inp.value = "";
+  });
+
+  /* Escape closes whatever is open */
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (modal.classList.contains("open")) return closeModal();
+    if (chatOpen) return setChat(false);
+    if (menuOpen) { setMenu(false); hb.focus(); return; }
+    const openDrop = $('.drop-btn[aria-expanded="true"]');
+    if (openDrop) { openDrop.setAttribute("aria-expanded", "false"); openDrop.focus(); }
+  });
+
+  onScroll();
+})();
+</script>
+<!-- hope-demo:start -->
+<script>window.HOPE_DEMO = {
+  "look": "Bright & Modern",
+  "church": {
+    "name": "Lightwell Church",
+    "short": "Lightwell",
+    "city": "Raleigh, North Carolina",
+    "address": "1218 Brightwater Ave",
+    "phone": "(919) 555-0142",
+    "times": "every Sunday at 9:00 and 10:45 AM",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Raleigh%2C+North+Carolina",
+    "pastors": "Theo and Priya lead Lightwell together. They started it in 2023 with eleven friends, a borrowed sound system and a lot of coffee. They teach as a team, they are raising two busy kids, and they would love to meet you after either gathering.",
+    "kids": "Yes. Lightwell Kids runs at both gatherings, for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked. The rooms are bright, safe and a lot of fun.",
+    "students": "Students in grades 6 to 12 meet during the week, and our young adults group is for twentysomethings. Both have a few big nights out each season, and both are easy to drop into.",
+    "groups": "We have 14 small groups across Raleigh. Ten or so people, a living room and real conversation. It is the fastest way to go from new face to friend.",
+    "startHere": "So glad you found us. Come on a Sunday at 9:00 or 10:45, grab a coffee from 8:30 and tell us it is your first time. When you are ready, come to Start Here, a lunch with Theo and Priya where you hear where Lightwell is headed and find your spot.",
+    "give": "You can give online in about a minute, once or every month. Your giving stocks the pantry, builds the bright new kids rooms for Room to Grow and keeps the coffee on for whoever walks in next.",
+    "watch": "Every message is online by Monday morning. The newest is Room for questions, week 3 of Open Doors, with Pastor Theo. It works great in the car, on a walk or during nap time.",
+    "prayer": "Big or small, bring it. A real person on our prayer team reads every request and would love to pray with you. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "values": "We are a young church for people who are still figuring it out. So, all of us. We care about honest questions, real friendships, grace for the tired and loving Raleigh well."
+  },
+  "brand": {
+    "accent": "#1F4FFF",
+    "accentInk": "#FFFFFF",
+    "ink": "#0B1220",
+    "surface": "#FFFFFF",
+    "surface2": "#E4ECFF",
+    "line": "#C5CEDC",
+    "font": "\"Hanken Grotesk\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "radius": "10px"
+  },
+  "selectors": {
+    "hero": "section.hero",
+    "announce": "section.announce",
+    "pastors": ".mission-grid",
+    "nextSteps": "#visit",
+    "strip": "#strip",
+    "message": "#message .msg-grid",
+    "reviews": ".rv-grid",
+    "newsletter": ".nl-grid",
+    "footer": ".site-footer"
+  },
+  "links": {
+    "brandBoard": "brand-board.html",
+    "socialPlan": "social-plan.html"
+  },
+  "removeSelectors": [
+    ".chat-fab",
+    "#chat",
+    ".sb-chat"
+  ],
+  "bottomOffset": 64
+};</script>
+<script src="../../shared/hope-demo.js" defer></script>
+<!-- hope-demo:end -->
+</body>
+</html>

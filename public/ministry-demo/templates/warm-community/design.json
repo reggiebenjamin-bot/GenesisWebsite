@@ -1,0 +1,114 @@
+{
+  "template": {
+    "slug": "warm-community",
+    "name": "Warm Community",
+    "product": "Genesis Ministry",
+    "audience": "Family and neighborhood churches",
+    "feeling": "A neighborhood porch or a family table: soft colors, rounded shapes, playful details, plain warm words.",
+    "preview_badge": "Every page carries a Template preview strip at the top and a Template preview tag in the footer."
+  },
+  "church": {
+    "name": "Goldenrod Commons Church",
+    "short_name": "Goldenrod Commons",
+    "fictional": true,
+    "name_check": "Web search on 2026-11-19 for \"Goldenrod Commons Church\" Des Moines Iowa returned no church by that name.",
+    "neighborhood": "Beaverdale",
+    "city": "Des Moines",
+    "state": "IA",
+    "street_address": "3120 Wrenfield Ave",
+    "postal_code": "50310",
+    "phone": "(515) 555-0142",
+    "email": "goldenrod@example.org",
+    "sunday_times": ["9:00 AM", "10:45 AM"],
+    "sunday_notes": "Coffee from 8:30. Kids check-in opens 15 minutes before each service.",
+    "pastors": ["Marcus", "Ellie"],
+    "pastors_line": "Lead pastors, Beaverdale neighbors since 2012, owners of one very loud beagle.",
+    "tagline": "Pull up a chair.",
+    "mission_line": "Love God, love the block, and keep the porch light on.",
+    "hero": {
+      "headline_lines": ["Pull up", "a chair."],
+      "lede": "A neighborhood church in Beaverdale with long tables and plenty of room for ___",
+      "changing_word": ["you", "families", "neighbors", "skeptics", "everyone"]
+    },
+    "statement": "The porch light is always on.",
+    "announcement": "The Porch Project is underway. A new kids wing and a bigger front porch.",
+    "newsletter": "The Porch Letter, every Thursday",
+    "latest_message": { "title": "Casseroles and courage", "series": "Love Thy Neighbor, part 2", "date": "November 15, 2026", "speaker": "Pastor Marcus", "length": "38 min" }
+  },
+  "palette": [
+    { "name": "Porch White", "hex": "#FFFBF3", "role": "Page ground", "text_color": "Cocoa Ink #3A2618", "contrast": 13.84 },
+    { "name": "Cocoa Ink", "hex": "#3A2618", "role": "Headlines, body text, outline buttons, icons", "text_color": "Porch White #FFFBF3 when used as a fill", "contrast": 13.84 },
+    { "name": "Sunflower", "hex": "#FFC83A", "role": "Accent: primary pill buttons, the next-steps band, highlights, stars, logo sun, porch awning", "text_color": "Cocoa Ink #3A2618", "contrast": 9.23 },
+    { "name": "Leaf", "hex": "#3B7A37", "role": "Chat circle, active dots, focus ring tint, icon accents", "text_color": "Porch White #FFFBF3", "contrast": 5.05 },
+    { "name": "Leaf Deep", "hex": "#2F6430", "role": "Section labels, text links, the hero changing word", "text_color": "Used as text on Porch White", "contrast": 6.81 },
+    { "name": "Sky", "hex": "#CFE7F8", "role": "Soft bands (announcement, reviews), blobs, chat replies", "text_color": "Cocoa Ink #3A2618", "contrast": 11.18 },
+    { "name": "Sage", "hex": "#DDEBD3", "role": "Soft band for the photo cards, menu hover, phone menu foot", "text_color": "Cocoa Ink #3A2618", "contrast": 11.49 },
+    { "name": "Dusk", "hex": "#1F2D4D", "role": "Footer, latest-message panel, phone Sundays bar, preview strip", "text_color": "Porch White #FFFBF3 (Sunflower #FFC83A for times and labels at 8.81)", "contrast": 13.2 },
+    { "name": "Cocoa Soft", "hex": "#6A5242", "role": "Secondary text", "text_color": "Used as text on Porch White (5.83 on Sage, 5.67 on Sky, 4.68 on Sunflower for small notes only)", "contrast": 7.02 },
+    { "name": "Dusk Soft", "hex": "#C9D1E3", "role": "Quiet text on Dusk", "text_color": "Used as text on Dusk", "contrast": 8.9 },
+    { "name": "Sunflower Deep", "hex": "#F2B01E", "role": "Primary button hover, link underline", "text_color": "Cocoa Ink #3A2618", "contrast": 7.48 },
+    { "name": "Sky Mid", "hex": "#A9D3F3", "role": "Decorative blobs and illustration fills", "text_color": "Cocoa Ink #3A2618", "contrast": 9.04 }
+  ],
+  "contrast_checks": {
+    "method": "WCAG 2.x relative luminance formula, run with a Node script",
+    "pairs": {
+      "Cocoa on Porch": 13.84, "Cocoa on Paper #FFFFFF": 14.28, "Cocoa Soft on Porch": 7.02, "Cocoa Soft on Paper": 7.25,
+      "Leaf on Porch": 5.05, "Leaf Deep on Porch": 6.81, "Leaf Deep on Paper": 7.03, "Leaf Deep on Sage": 5.66, "Leaf Deep on Sky": 5.5,
+      "Cocoa on Sunflower": 9.23, "Cocoa Soft on Sunflower": 4.68, "Cocoa on Sunflower Deep": 7.48,
+      "Cocoa on Sage": 11.49, "Cocoa Soft on Sage": 5.83, "Cocoa on Sky": 11.18, "Cocoa Soft on Sky": 5.67, "Cocoa on Sky Mid": 9.04,
+      "Porch on Dusk": 13.2, "Sunflower on Dusk": 8.81, "Dusk Soft on Dusk": 8.9, "#E6EAF2 on Dusk": 11.3, "#EEF1F7 on Dusk": 12.05,
+      "Porch on Leaf": 5.05, "Paper on Leaf": 5.22, "Placeholder #76614F on Paper": 5.84, "Placeholder #76614F on Porch": 5.66,
+      "#EEF1F7 statement body over photo, Dusk overlay at 68 percent (desktop)": 7.7,
+      "#EEF1F7 statement headline end over photo, Dusk overlay at 52 percent (large text)": 6.13
+    },
+    "rechecked": "2026-11-19, critic pass: every pair recomputed with the WCAG 2.x formula in Node; all body text pairs are 4.5 to 1 or better. On phones the statement text sits on solid Dusk (12.05).",
+    "lowest_body_text_pair": "Cocoa Soft on Sunflower 4.68, used only for small notes; all body copy on Sunflower is Cocoa at 9.23."
+  },
+  "fonts": {
+    "display": { "family": "Fredoka", "weights": [500, 600], "use": "Headlines, card titles, quotes, big service times. Tight tracking (minus 1 to 2.5 percent) at large sizes." },
+    "body": { "family": "Nunito Sans", "weights": [400, 700, 800], "use": "Body 17 px at 1.65 line height, buttons and labels in 800, lining figures." },
+    "accent": { "family": "Caveat", "weights": [600], "use": "Handwritten notes, snapshot captions and the pastors signature. Two or three times a page." },
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fredoka:wdth,wght@75..125,400..700&family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400&display=swap",
+    "scale_px": { "display": "62 to 126", "heading_large": "40 to 66", "heading_small": "32 to 46", "card_title": "22 to 29", "lead": "19 to 23", "body": 17, "label": "13, caps, 15 percent tracking, squiggle lead", "hand": "22 to 40" }
+  },
+  "shapes": {
+    "radius": { "photo_large": "34px", "card": "28px", "inner_photo": "16 to 20px", "panel": "40px", "small_card": "16 to 20px", "buttons": "999px pill", "inputs": "999px pill" },
+    "signature_corner": "One swoopy corner per photo frame (120px on the pastors and newsletter photos)",
+    "rules": "No thin hard rules. Sections use a 2px soft rule topped by a hand-drawn wave mark; the brand board uses a 2px dashed divider.",
+    "accents": ["Squiggle before every label", "Wave rule on next-step columns and numbered rows", "Scalloped Sunflower porch awning over one photo band per page", "Soft blobs behind photos (one or two per page)", "White tilted sticker labels (two per page at most)", "Caveat hand note with a drawn arrow", "Sunflower highlighter stroke behind one phrase", "Picnic gingham for social and print"],
+    "buttons": "Sunflower pill with Cocoa text and a soft inner bottom edge for the one primary action; Cocoa outline pills for the rest; Porch outline pills on Dusk."
+  },
+  "motion": {
+    "character": "Neighborly bounce: gentle spring overshoot, hand-drawn lines that draw themselves, nothing glows.",
+    "easing": { "spring": "cubic-bezier(.34,1.42,.64,1)", "ease": "cubic-bezier(.22,.61,.36,1)" },
+    "system": [
+      "Scroll reveal: sections rise 22px with a spring. JS adds reveal-init only after the observer is ready and only below the fold; reveal-in shows them. Content is visible at rest.",
+      "Next-step columns and cards rise one by one (120 ms stagger); a wave line draws across each column then settles to a short mark.",
+      "Hover: a Porch White panel wipes up behind each column; cards lift 8px and tilt under a degree; arrows slide.",
+      "Primary buttons: a sheen sweeps once when they first scroll into view and a soft light follows the cursor, inside the pill only.",
+      "Hero: the photo drifts slowly (28 s Ken Burns); the changing word leaves before the next arrives, never overlapping; the underline under chair draws in on load.",
+      "Mission highlighter draws behind porch light on scroll; the announcement play button pulses gently; the photo strip scrolls slowly with a Pause button.",
+      "prefers-reduced-motion: every animation and transition stops, reveals are visible, the strip becomes a swipeable row and the word stays still."
+    ]
+  },
+  "photo_treatment": {
+    "grade": "Warm whites, a touch of extra yellow, natural skin. Daylight, golden hour, lamps and string lights.",
+    "frames": "Rounded 28 to 34px frames, one swoopy corner on feature photos, white snapshot borders with Caveat captions in the photo strip.",
+    "subjects": "Adults mid-conversation, shared tables, coffee, porches and yards. Kids only in groups or from behind.",
+    "avoid": "Concert haze as a lead image, posed rows, single-child close-ups, cold or black and white grades, logos or other church names."
+  },
+  "logo": {
+    "concept": "An open door in the afternoon sun: a Sunflower circle holding a Cocoa arched doorway on a porch step, with one new Leaf sprouting at the top right. The doorway says come on in; the sun is the porch light; the leaf is growth.",
+    "wordmark": "goldenrod in Fredoka 600 lowercase, with COMMONS CHURCH in Nunito Sans 800 caps tracked 24 percent beneath it.",
+    "lockups": ["Primary horizontal (mark left, two-line wordmark right)", "Stacked (mark above, wordmark centered)", "Small mark alone for avatars, favicon and chat (minimum 20px; drop the leaf below that)"],
+    "reversals": { "on_dusk": "Door takes Dusk #1F2D4D, wordmark Porch White", "on_sunflower": "Sun turns Porch White, door stays Cocoa" },
+    "clear_space": "One door height on every side",
+    "build": "Inline SVG symbol with CSS custom properties (--sun, --door) so every reversal uses the same drawing"
+  },
+  "files": {
+    "homepage": "index.html",
+    "brand_board": "brand-board.html",
+    "social_plan": "social-plan.md",
+    "photos": "photos/ (14 photos, credits in photos/CREDITS.md)"
+  }
+}

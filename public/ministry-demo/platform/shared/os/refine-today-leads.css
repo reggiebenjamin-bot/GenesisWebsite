@@ -1,0 +1,98 @@
+/* Copied from the Genesis OS repo (v2/refine/today-leads.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: today-leads.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ----- Today ---------------------------------------------------------------- */
+.v2-opportunity-brief{padding:22px;background:var(--v2-surface);color:var(--v2-text)}
+.v2-opportunity-brief .v2-section-head{gap:14px;flex-wrap:wrap}
+.v2-opportunity-questions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.v2-opportunity-question{display:grid;gap:7px;min-width:0;padding:14px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);color:inherit;text-decoration:none;background:var(--v2-surface)}
+.v2-opportunity-question b{font-size:24px;line-height:1.2;overflow-wrap:anywhere}
+.v2-opportunity-question small,.v2-opportunity-question span{font-size:12px;color:var(--v2-muted)}
+.v2-opportunity-moves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-opportunity-move{display:grid;align-content:start;gap:8px;padding:16px;min-width:0;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);text-decoration:none;color:inherit;overflow-wrap:anywhere}
+.v2-opportunity-move-head{display:grid;gap:5px}
+.v2-opportunity-move p{margin:0;font-size:13px;line-height:1.5}
+.v2-opportunity-move>span:not(.v2-opportunity-move-head),.v2-opportunity-move small{font-size:12px;color:var(--v2-muted)}
+.v2-opportunity-question:hover,.v2-opportunity-move:hover{border-color:var(--v2-accent)}
+.v2-opportunity-question:focus-visible,.v2-opportunity-move:focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px}
+@media(max-width:980px){.v2-opportunity-questions{grid-template-columns:repeat(2,minmax(0,1fr))}.v2-opportunity-moves{grid-template-columns:1fr}}
+@media(max-width:480px){.v2-opportunity-brief{padding:16px}.v2-opportunity-questions{grid-template-columns:1fr}}
+/* Setup is calm information, not a warning: a hairline panel, the step, and a
+   thin gold progress rule, which is the one thing here that is in progress. */
+.v2-setup-nudge{border-color:var(--v2-border);background:var(--v2-surface)}
+.v2-setup-nudge>div{display:grid;gap:4px;min-width:0;flex:1}
+.v2-setup-nudge>div>b{font-size:var(--v2-text-data,13px);font-weight:700}
+.v2-setup-nudge>div>span{color:var(--v2-muted);font-size:var(--v2-text-meta,12px)}
+.v2-setup-progress{display:flex;align-items:center;gap:10px;margin-top:4px}
+.v2-setup-bar{position:relative;width:120px;height:3px;border-radius:3px;background:var(--v2-border);overflow:hidden}
+.v2-setup-bar>span{display:block;height:100%;border-radius:3px;background:var(--v2-accent)}
+
+/* A ranked item with no V2 destination is information, so it does not
+   pretend to be a control. */
+.v2-attention-row.is-static{cursor:default}
+.v2-attention-row.is-static:hover{background:transparent;transform:none}
+a.v2-attention-row{color:inherit;text-decoration:none}
+/* At narrow widths the next step moves under the reason instead of vanishing. */
+@media (max-width:980px){
+  .v2-attention-row .v2-row-action{display:block;grid-column:1/-1;justify-self:start;color:var(--v2-text-2)}
+}
+
+/* ----- Leads ---------------------------------------------------------------- */
+.v2-row-link{color:var(--v2-text);font-weight:700;font-size:var(--v2-text-data,13px);text-decoration:none;display:block}
+.v2-row-link:hover{text-decoration:underline;text-decoration-color:var(--v2-accent-border);text-underline-offset:3px}
+.v2-row-link:focus-visible{outline:none;box-shadow:none}
+.v2-table tbody tr:focus-within{box-shadow:inset 0 0 0 2px var(--v2-focus)}
+.v2-score.is-empty,.v2-mobile-lead-score:not(.is-hot){color:var(--v2-muted)}
+.v2-score.is-empty{font-size:11px;font-weight:500}
+.v2-full-card h3{margin:0 0 7px;font-size:12px}
+/* Record pages say where they were opened from: "Leads / Needs Attention". */
+.v2-breadcrumb{margin:0 0 10px}
+.v2-breadcrumb a{display:inline-flex;align-items:center;gap:6px;color:var(--v2-text-2);font-size:12px;font-weight:500;text-decoration:none}
+.v2-breadcrumb a:hover{color:var(--v2-text)}
+.v2-breadcrumb .v2-icon{width:14px;height:14px}
+.v2-breadcrumb-view::before{content:"/";margin:0 6px;color:var(--v2-muted)}
+
+/* ===== Premium Ask Hawk, and Text and Email beside Call ====================
+ * Hawk explaining the ranking outranks the call it justifies, so it sits at the
+ * top of the next move as a premium version of the primary: a gold rim that
+ * catches light, a barely-there gradient and a soft glow. Nothing animates. */
+.v2-button-premium{min-height:40px;padding:8px 16px;gap:8px;border:1px solid color-mix(in srgb,var(--v2-accent-strong) 70%,transparent);border-radius:var(--v2-radius-sm);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--v2-accent-strong) 55%,var(--v2-accent)) 0%,var(--v2-accent) 58%,color-mix(in srgb,var(--v2-accent) 86%,#000) 100%);
+  color:var(--v2-on-accent);font-weight:700;
+  box-shadow:inset 0 1px 0 rgba(255,248,225,.5),inset 0 -1px 0 rgba(60,40,10,.22),0 0 0 1px rgba(var(--v2-accent-rgb),.3),0 0 20px -4px rgba(var(--v2-accent-rgb),.6);
+  transition:box-shadow var(--v2-motion),background var(--v2-motion)}
+.v2-button-premium:hover{background:linear-gradient(180deg,color-mix(in srgb,var(--v2-accent-strong) 70%,var(--v2-accent)) 0%,color-mix(in srgb,var(--v2-accent-strong) 18%,var(--v2-accent)) 58%,var(--v2-accent) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,248,225,.6),inset 0 -1px 0 rgba(60,40,10,.22),0 0 0 1px rgba(var(--v2-accent-rgb),.45),0 0 28px -2px rgba(var(--v2-accent-rgb),.7)}
+.v2-button-premium .v2-icon{color:currentColor}
+.v2-button-premium:focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px}
+.v2-next-actions{min-width:220px}
+.v2-next-actions .v2-button-premium{grid-column:1/-1}
+.v2-next-contact{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.v2-next-contact:has(> :only-child){grid-template-columns:1fr}
+.v2-next-actions .v2-next-contact{grid-column:1/-1}
+.v2-page-back{margin:0 0 12px}
+
+/* The composer: one message, reviewed before it goes. */
+.v2-compose-layer{position:fixed;inset:0;z-index:480;display:grid;place-items:center;padding:20px}
+.v2-compose-layer[hidden]{display:none}
+.v2-compose-scrim{position:absolute;inset:0;border:0;background:rgba(var(--v2-ink-rgb),.55);cursor:default}
+.v2-compose{position:relative;width:min(520px,100%);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-md);background:var(--v2-surface);box-shadow:0 24px 64px var(--v2-overlay)}
+.v2-compose-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px 12px;border-bottom:1px solid var(--v2-border)}
+.v2-compose-head h2{margin:2px 0 0}
+.v2-compose-head p{margin:2px 0 0;color:var(--v2-muted);font-size:12px}
+.v2-compose-body{display:grid;gap:12px;padding:14px 18px;overflow:auto}
+.v2-compose-text{min-height:96px;resize:vertical;font:inherit;line-height:1.5}
+.v2-compose-note{margin:0;color:var(--v2-muted);font-size:12px}
+.v2-compose-error{margin:0;color:var(--v2-danger);font-size:12px}
+.v2-compose-error a{color:inherit;text-decoration:underline}
+.v2-compose-meta{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:12px}
+.v2-compose-meta dt{color:var(--v2-muted)}
+.v2-compose-meta dd{margin:0;overflow-wrap:anywhere}
+.v2-compose-preview{padding:12px 14px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-bg);font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.v2-compose-done{display:flex;align-items:center;gap:8px;margin:0;font-size:13px}
+.v2-compose-done .v2-icon{color:var(--v2-positive,var(--v2-accent))}
+.v2-compose-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--v2-border)}
+body.v2-compose-open{overflow:hidden}

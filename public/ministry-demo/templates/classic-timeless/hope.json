@@ -1,0 +1,51 @@
+{
+  "look": "Classic & Timeless",
+  "church": {
+    "name": "Calder Hill Chapel",
+    "short": "Calder Hill",
+    "city": "Richmond, Virginia",
+    "address": "1418 Calder Hill Road",
+    "phone": "(804) 555-0142",
+    "times": "every Sunday at 9:00 and 11:00 AM",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Richmond%2C+Virginia",
+    "pastors": "Samuel and Ruth have led Calder Hill since 2014. Samuel preaches most Sundays, and Ruth leads our care and prayer ministries. You will find them by the side door after either service, and they would much rather hear your story than tell their own.",
+    "kids": "Yes. Calder Kids runs during the 11:00 service, with a nursery for babies and toddlers and classes through fifth grade. Check in at the welcome table and a teacher will walk you over. Little ones are always welcome in the pews at 9:00 too.",
+    "students": "Youth group meets Wednesday nights in the parish hall, right after the church supper, for sixth through twelfth grade. Young adults gather twice a month for dinner and Bible study.",
+    "groups": "About twenty small groups meet in homes across Richmond during the week. We call them tables, because most of them start with a meal. There is also a Tuesday Bible study at the chapel. It is the surest way to go from visitor to friend.",
+    "startHere": "Welcome. Come on any Sunday, park on Calder Lane and follow the brick path to the side door. A greeter will meet you there and point you to the coffee. When you are ready, join the pastors for lunch on the first Sunday of the month to hear our story and find your place.",
+    "give": "You can give online in about a minute, once or every month, or place a gift in the plate on Sunday. This season we are also restoring the bell tower, and we hope to ring it again by Easter.",
+    "watch": "Every Sunday message is online by Monday. The latest is Lift up your eyes, from Psalm 121, with Pastor Ruth. It is week four of our fall series, Songs for the Road.",
+    "prayer": "We would be honored to pray with you. Tell us what is heavy this week, and Pastor Ruth and our prayer team will pray for you by name. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "values": "Deep roots, open doors. We hold to the historic Christian faith, we love our neighbors in Richmond, and we keep the door open for whoever comes next. Every Sunday since 1891, someone has held it."
+  },
+  "brand": {
+    "accent": "#1F3D2F",
+    "accentInk": "#FCF9F1",
+    "ink": "#1A1814",
+    "surface": "#FCF9F1",
+    "surface2": "#EBE2CE",
+    "line": "#A8843F",
+    "font": "\"Commissioner\", \"Segoe UI\", system-ui, sans-serif",
+    "radius": "4px"
+  },
+  "selectors": {
+    "hero": "section.hero",
+    "announce": "section.announce",
+    "pastors": ".split.pastors",
+    "nextSteps": "section[aria-labelledby='steps-title'] .cards",
+    "strip": ".strip",
+    "message": "#message > .wrap",
+    "reviews": ".wrap.reviews",
+    "newsletter": "section.letter > .wrap",
+    "footer": "#footer"
+  },
+  "links": {
+    "brandBoard": "brand-board.html",
+    "socialPlan": "social-plan.html"
+  },
+  "removeSelectors": [".chat-fab", "#chat", ".sbar-ask"],
+  "bottomOffset": 66,
+  "pages": {
+    "index.html": {}
+  }
+}

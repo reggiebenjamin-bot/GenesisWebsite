@@ -1,0 +1,474 @@
+/* Copied from the Genesis OS repo (v2/refine/phone.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Phone first (390px). Loaded last so these rules win on the screens
+   the owner uses from his phone: Today, Probate, the estate, and Compose.
+   Dark stays the on-brand theme. Hawk panels are not restyled here. */
+
+[data-theme="dark"]{
+  /* Body and meta text clear 4.5:1 on the card (#18191d). Borders clear 3:1. */
+  --v2-muted:#c4c2bc;
+  --v2-text-2:#e7e4de;
+  --v2-text-3:#c4c2bc;
+  --v2-label:#c4c2bc;
+  --v2-fine:#c4c2bc;
+  --v2-border:#8e919a;
+  --v2-line:#8e919a;
+  --v2-border-strong:#a7aab2;
+  --v2-hairline:rgba(255,255,255,.28);
+}
+
+/* Shared stat grid. Two equal columns on a phone, same padding, aligned
+   label / value / note, dividers only between cells. */
+.v2-stat-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:stretch;
+  margin:0 0 14px;
+  border:1px solid var(--v2-border);
+  border-radius:var(--v2-radius-md);
+  background:var(--v2-surface);
+  overflow:hidden;
+}
+.v2-stat-grid>.v2-pulse-item,
+.v2-stat-grid>.v2-stat{
+  min-width:0;
+  min-height:108px;
+  display:grid;
+  grid-template-rows:auto auto auto;
+  align-content:start;
+  gap:4px;
+  margin:0;
+  padding:12px 14px;
+  border:0;
+  border-right:1px solid var(--v2-border);
+  border-bottom:1px solid var(--v2-border);
+  background:transparent;
+}
+.v2-stat-grid>:nth-child(2n){border-right:0}
+.v2-stat-grid>:nth-last-child(-n+2){border-bottom:0}
+.v2-stat-grid>:last-child:nth-child(odd){border-right:0;border-bottom:0}
+.v2-stat-grid small,
+.v2-stat-grid .v2-stat-label{
+  display:block;
+  margin:0;
+  color:var(--v2-label);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.04em;
+  line-height:1.25;
+  text-transform:uppercase;
+  white-space:normal;
+  overflow:hidden;
+  max-height:2.5em;
+}
+.v2-stat-grid b,
+.v2-stat-grid .v2-serif-number{
+  display:block;
+  margin:0;
+  color:var(--v2-text);
+  font-size:22px;
+  font-weight:500;
+  line-height:1.15;
+  letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;
+}
+.v2-stat-grid span,
+.v2-stat-grid .v2-stat-note{
+  color:var(--v2-text-2);
+  font-size:12px;
+  font-weight:500;
+  line-height:1.35;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+/* One button system on the screens this pass touches. */
+.v2-today-page .v2-button,
+.v2-probate-page .v2-button,
+.v2-content-page .v2-button,
+.v2-opportunity-brief .v2-button{
+  min-height:44px;
+  padding:10px 14px;
+  border:1px solid var(--v2-border-strong);
+  border-radius:10px;
+  background:transparent;
+  color:var(--v2-text);
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+  text-decoration:none;
+}
+.v2-today-page .v2-button-primary,
+.v2-probate-page .v2-button-primary,
+.v2-content-page .v2-button-primary,
+.v2-opportunity-brief .v2-button-primary{
+  border-color:var(--v2-accent);
+  background:var(--v2-accent);
+  color:var(--v2-on-accent);
+}
+.v2-today-page .v2-button-primary:hover,
+.v2-probate-page .v2-button-primary:hover,
+.v2-content-page .v2-button-primary:hover{
+  border-color:var(--v2-accent-hover);
+  background:var(--v2-accent-hover);
+  color:var(--v2-on-accent);
+}
+.v2-today-page .v2-icon-button,
+.v2-probate-page .v2-icon-button,
+.v2-content-page .v2-icon-button{
+  width:44px;
+  min-width:44px;
+  padding:0;
+}
+.v2-action-pair,
+.v2-today-lead-controls .v2-next-actions,
+.v2-probate-push .v2-drawer-actions,
+.v2-ea-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+  min-width:0;
+}
+.v2-action-pair>.v2-button,
+.v2-action-pair>.v2-button-primary,
+.v2-action-pair>.v2-button-quiet,
+.v2-today-lead-controls .v2-next-actions>.v2-button,
+.v2-probate-push .v2-drawer-actions>.v2-button,
+.v2-ea-actions>.v2-button{
+  width:100%;
+  min-width:0;
+  grid-column:auto;
+}
+.v2-action-pair>.v2-button:last-child:nth-child(odd){grid-column:1 / -1}
+
+.v2-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:26px;
+  padding:4px 10px;
+  border:1px solid var(--v2-border-strong);
+  border-radius:999px;
+  background:var(--v2-surface-2);
+  color:var(--v2-text);
+  font-size:12px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:0;
+  text-transform:none;
+  white-space:nowrap;
+}
+.v2-loop-list{list-style:none;margin:0;padding:4px 0;display:grid;gap:0}
+.v2-loop-list li{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  min-height:44px;
+  padding:8px 14px;
+  border-top:1px solid var(--v2-border);
+}
+.v2-loop-list li:first-child{border-top:0}
+.v2-loop-list b{font-size:14px;font-weight:700}
+
+.v2-today-fold{
+  margin-top:14px;
+  border:1px solid var(--v2-border);
+  border-radius:12px;
+  background:var(--v2-surface);
+}
+.v2-today-fold>summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:44px;
+  padding:10px 14px;
+  cursor:pointer;
+  list-style:none;
+  color:var(--v2-text);
+  font-size:15px;
+  font-weight:700;
+}
+.v2-today-fold>summary::-webkit-details-marker,
+.v2-today-fold>summary::marker{display:none;content:""}
+.v2-today-fold>summary::after{
+  content:"";
+  flex:none;
+  width:10px;
+  height:10px;
+  margin-left:8px;
+  border-right:2px solid var(--v2-accent-strong);
+  border-bottom:2px solid var(--v2-accent-strong);
+  transform:translateY(-3px) rotate(45deg);
+}
+.v2-today-fold[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.v2-today-fold>summary small{
+  color:var(--v2-text-2);
+  font-size:12px;
+  font-weight:500;
+  text-align:right;
+}
+.v2-today-fold>summary span{flex:1 1 auto;min-width:0}
+.v2-today-fold>.v2-card,
+.v2-today-fold>.v2-viz-pair,
+.v2-today-fold>.v2-button{margin:0 12px 12px}
+/* A closed fold is only its summary. Hidden rows must not keep min-height,
+   and an empty Today slot must not add a flex gap. */
+.v2-today-fold:not([open]) > :not(summary){
+  display:none;
+  height:0;
+  min-height:0;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+}
+.v2-today-fold:not([open])::details-content{
+  display:none;
+  height:0;
+  min-height:0;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  content-visibility:hidden;
+}
+.v2-today-fold[open]::details-content{
+  display:block;
+  height:auto;
+  overflow:visible;
+  content-visibility:visible;
+}
+.v2-page.v2-today-page > *{margin-top:0;margin-bottom:0}
+.v2-today-page > [data-agent-slot] > :first-child{margin-top:0}
+.v2-today-page > [data-opportunity-brief-slot]:empty,
+.v2-today-page > [data-owner-today-top]:empty,
+.v2-today-page > [data-agent-slot]:empty,
+.v2-today-page > [data-owner-today-ops]:empty{display:none}
+
+.v2-section-head{align-items:center}
+.v2-today-page .v2-section-head>a,
+.v2-probate-page .v2-section-head>a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  margin-left:auto;
+  padding:0 12px;
+  border:1px solid var(--v2-border-strong);
+  border-radius:10px;
+  color:var(--v2-text);
+  font-size:14px;
+  font-weight:700;
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.v2-opportunity-move .v2-meta-pills{display:flex;flex-wrap:wrap;gap:6px}
+
+@media (max-width:860px){
+  .v2-pulse.v2-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-pulse.v2-stat-grid>.v2-pulse-item{
+    grid-column:auto;
+    border-top:0;
+    border-right:1px solid var(--v2-border);
+  }
+  .v2-pulse.v2-stat-grid>.v2-pulse-item:nth-child(2n){border-right:0}
+  .v2-pulse.v2-stat-grid>.v2-pulse-item:nth-child(n+3){border-top:0;border-bottom:1px solid var(--v2-border)}
+
+  .v2-today-page,
+  .v2-probate-page,
+  .v2-content-page{max-width:100%;overflow-x:clip}
+  /* The scroll area ends above the Hawk button, so the button never covers the work. */
+  .v2-main{
+    height:calc(100dvh - 58px - 136px)!important;
+    padding-bottom:12px!important;
+  }
+  .v2-genesis-fab{bottom:calc(78px + env(safe-area-inset-bottom))}
+
+  .v2-phone-sticky{
+    margin-top:8px;
+    padding:8px;
+    border:1px solid var(--v2-border);
+    border-radius:12px;
+    background:var(--v2-surface);
+  }
+  /* Probate and Compose can stick. Today review stays in the page so it
+     cannot sit on the revenue card or commercial proposals. */
+  .v2-phone-sticky:not(.v2-today-lead-controls){
+    position:sticky;
+    bottom:calc(86px + env(safe-area-inset-bottom));
+    z-index:30;
+  }
+  .v2-today-lead-controls{
+    position:static;
+    z-index:auto;
+  }
+  .v2-today-page>.v2-today-lead-controls{order:1}
+
+  .v2-today-page .v2-week-days{
+    display:grid;
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    gap:4px;
+    overflow:hidden;
+  }
+  .v2-today-page .v2-week-day{padding:8px 2px;min-width:0}
+  .v2-today-page .v2-week-day small{letter-spacing:0;font-size:9px}
+  .v2-today-page .v2-week-day em{display:none}
+
+  .v2-viz-donut{flex-direction:column;align-items:stretch;gap:12px}
+  .v2-viz-ring{width:112px;height:112px;margin:0 auto}
+  .v2-viz-table{display:block;width:100%;min-width:0}
+  .v2-viz-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .v2-viz-table tbody{display:grid}
+  .v2-viz-table tr{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:2px 12px;
+    align-items:center;
+    padding:10px 0;
+    border-top:1px solid var(--v2-border);
+  }
+  .v2-viz-table td{display:block;border:0;padding:0;text-align:left;white-space:normal}
+  .v2-viz-table td.v2-viz-num{grid-column:2;grid-row:1;text-align:right;font-variant-numeric:tabular-nums}
+  .v2-viz-table td.v2-viz-value{grid-column:2;grid-row:2;text-align:right;color:var(--v2-text-2);font-size:12px}
+  .v2-viz-table td.v2-viz-share,.v2-viz-table th.v2-viz-share{display:none}
+  .v2-viz-counts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .v2-viz-count{display:grid;grid-template-rows:20px 28px;align-items:end;min-width:0}
+  .v2-viz-count small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v2-viz-count b{line-height:28px}
+
+  .v2-ea-row{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+  .v2-ea-top{display:flex;align-items:flex-start;gap:8px;min-width:0}
+  .v2-ea-top b{white-space:normal;overflow-wrap:anywhere}
+  .v2-ea-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .v2-ea-actions .v2-button{width:100%}
+
+  .v2-probate-toolbar{display:grid;grid-template-columns:1fr;align-items:stretch;gap:10px}
+  .v2-probate-toolbar .v2-field,
+  .v2-probate-toolbar .v2-select,
+  .v2-probate-page .v2-input,
+  .v2-content-page .v2-input,
+  .v2-content-page .v2-select,
+  .v2-content-page .v2-textarea{width:100%;min-width:0;min-height:44px;font-size:16px}
+  .v2-probate-page .v2-check{min-height:44px;display:flex;align-items:center;gap:8px}
+  .v2-content-verticals{grid-template-columns:1fr}
+  .v2-content-vertical{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-rows:auto auto;
+    align-items:center;
+    gap:2px 8px;
+    min-height:64px;
+    padding:10px 12px;
+  }
+  .v2-content-vertical b{grid-column:1;grid-row:1;font-size:15px}
+  .v2-content-sender{grid-column:1;grid-row:2;color:var(--v2-text-2);font-size:12px}
+  .v2-content-tags{grid-column:2;grid-row:1 / span 2;justify-content:flex-end;margin:0}
+  .v2-content-vertical[aria-checked="true"]{
+    border-color:var(--v2-accent);
+    box-shadow:inset 0 0 0 1px var(--v2-accent);
+    background:var(--v2-accent-soft);
+    color:var(--v2-text);
+  }
+  .v2-step-title{
+    margin:0;
+    color:var(--v2-text);
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  .v2-content-page .v2-stepper li{
+    font-size:12px;
+    letter-spacing:0;
+    text-transform:none;
+    min-height:44px;
+  }
+  .v2-heir-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .v2-heir-card{min-width:0}
+  .v2-content-variant pre,.v2-viz-table{overflow-x:hidden;max-width:100%}
+  .v2-channel,.v2-chip{min-height:44px}
+  .v2-channel-list,.v2-hawk-hero,.v2-channels-layout{max-width:100%;overflow-x:hidden}
+  .v2-hawk-hero-actions .v2-button{min-height:44px}
+}
+
+/* Heir cards: equal action pills, matching status chips, tappable numbers.
+   These follow the phone button rules so a long label stays the same size. */
+.v2-heir-head .v2-badge,
+.v2-heir-head .v2-pill{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:26px;
+  height:26px;
+  margin:0;
+  padding:0 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  line-height:1;
+  letter-spacing:0;
+  white-space:nowrap;
+}
+.v2-probate-page .v2-heir-desk-buttons,
+.v2-heir-desk-buttons{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+}
+.v2-probate-page .v2-heir-desk-buttons .v2-heir-call,
+.v2-heir-desk-buttons .v2-heir-call{grid-column:1 / -1}
+.v2-probate-page .v2-heir-desk-buttons .v2-button,
+.v2-heir-desk-buttons .v2-button{
+  width:100%;
+  min-width:0;
+  min-height:44px;
+  height:44px;
+  box-sizing:border-box;
+  padding:0 10px;
+  font-size:13px;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.v2-heir-desk-buttons .v2-button-quiet{
+  border-color:var(--v2-border-strong);
+  background:transparent;
+  color:var(--v2-text);
+}
+.v2-heir-desk-buttons .v2-button-primary{
+  border-color:var(--v2-accent);
+  background:var(--v2-accent);
+  color:var(--v2-on-accent);
+}
+.v2-heir-meta{align-items:center}
+.v2-heir-meta .v2-heir-touch{flex:1 0 100%}
+.v2-heir-meta .v2-heir-line{
+  display:flex;
+  align-items:center;
+  min-height:44px;
+  overflow:visible;
+  text-overflow:clip;
+  white-space:normal;
+}
+a.v2-heir-phone{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  color:var(--v2-accent-strong);
+  font-weight:700;
+  font-size:15px;
+  font-variant-numeric:tabular-nums;
+  line-height:1.2;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+@container heir (max-width:240px){
+  .v2-probate-page .v2-heir-desk-buttons,
+  .v2-heir-desk-buttons{grid-template-columns:minmax(0,1fr)}
+  .v2-probate-page .v2-heir-desk-buttons .v2-heir-call,
+  .v2-heir-desk-buttons .v2-heir-call{grid-column:auto}
+}
