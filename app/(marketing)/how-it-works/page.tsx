@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { LeadWorkflowSection } from "@/components/ai-employees/LeadWorkflowSection";
 import { EngagementPath } from "@/components/sections/EngagementPath";
 import { ProcessStages } from "@/components/sections/ProcessStages";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
@@ -87,6 +88,10 @@ export default function HowItWorksPage() {
             </Card>
           ))}
         </ul>
+      </Sheet>
+
+      <Sheet surface="ink" rise id="lead-workflow" aria-labelledby="lead-workflow-title">
+        <LeadWorkflowSection onDark titleId="lead-workflow-title" />
       </Sheet>
 
       <Sheet surface="ink" rise aria-labelledby="path-title" className="site-section">
