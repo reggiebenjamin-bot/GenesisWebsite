@@ -45,6 +45,19 @@ const nextConfig: NextConfig = {
       { source: "/mini/:path*", destination: "/pricing", statusCode: 301 },
       { source: "/tools", destination: "/pricing", statusCode: 301 },
       { source: "/tools/:path*", destination: "/pricing", statusCode: 301 },
+      /*
+       * The Genesis Ministry demo is static files whose links are relative,
+       * so a folder address (typed, or trimmed from a shared link) is sent to
+       * the folder's index.html rather than served in place, where those links
+       * would resolve one folder too high. Temporary: the demo may move.
+       */
+      { source: "/ministry-demo", destination: "/ministry-demo/index.html", permanent: false },
+      { source: "/ministry-demo/platform", destination: "/ministry-demo/platform/index.html", permanent: false },
+      {
+        source: "/ministry-demo/templates/:look(bright-modern|bold-dark|classic-timeless|warm-community)",
+        destination: "/ministry-demo/templates/:look/index.html",
+        permanent: false,
+      },
     ];
   },
 };

@@ -13,6 +13,7 @@ type FormStatus = "idle" | "submitting" | "success" | "error";
 export type ConsultationAudience = "business" | "church";
 
 const churchForm = ministryContact.form;
+const checkForm = ministryContact.websiteCheck.form;
 
 const field =
   "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
@@ -23,6 +24,7 @@ export function ConsultationForm({
   initialPlan = "",
   initialNote = "",
   audience = "business",
+  websiteCheck = false,
 }: {
   initialPlan?: string;
   /** A starting note for the notes field, from a known topic link. */
@@ -34,8 +36,14 @@ export function ConsultationForm({
    * Genesis on a call.
    */
   audience?: ConsultationAudience;
+  /**
+   * The free Church Website Check (church audience only): the form asks for
+   * the church's website first, and its title, button and notes say so.
+   */
+  websiteCheck?: boolean;
 }) {
   const church = audience === "church";
+  const check = church && websiteCheck;
   const allowedPlanValues = useMemo(
     () => new Set(["", "done-for-you", ...managedPlans.map((plan) => plan.id)]),
     [],
@@ -80,17 +88,26 @@ export function ConsultationForm({
       return;
     }
 
-    const payload = {
+    const payload: Record<string, FormDataEntryValue> = {
       ...Object.fromEntries(new FormData(form).entries()),
       ...context.current,
     };
+    /* The Website Check's address also leads the notes, so whoever reads the
+       request sees it first, whatever the receiving system does with extra fields. */
+    const site = typeof payload.church_website === "string" ? payload.church_website.trim() : "";
+    if (site) payload.notes = `Church website: ${site}\n${payload.notes ?? ""}`.trim();
 
     /* Composed before the request so a network failure still leaves the
        visitor with a way to reach us that carries their answers. */
-    const subject = church ? "Genesis Ministry consultation" : "Genesis Infrastructure consultation";
+    const subject = check
+      ? "Church Website Check"
+      : church
+        ? "Genesis Ministry consultation"
+        : "Genesis Infrastructure consultation";
     const fallbackBody = [
       `${subject} request`,
       "",
+      ...(site ? [`Church Website: ${site}`] : []),
       `Name: ${payload.name ?? ""}`,
       `Email: ${payload.email ?? ""}`,
       `Phone: ${payload.phone ?? ""}`,
@@ -142,7 +159,9 @@ export function ConsultationForm({
           Thanks, we have it. Here is what happens next.
         </h2>
         <p className="mt-5 text-muted-dark">
-          {church
+          {check
+            ? checkForm.success
+            : church
             ? churchForm.success
             : "Genesis will reach out to confirm a time. The call is a working conversation about the operation, priorities, and existing tools. If it looks like a fit, we will recommend a specific starting point before anything is proposed in writing."}{" "}
           For immediate assistance, email{" "}
@@ -164,16 +183,36 @@ export function ConsultationForm({
       className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
       <div className="border-b border-line-light pb-5">
-        <Eyebrow>Consultation request</Eyebrow>
+        <Eyebrow>{check ? checkForm.eyebrow : "Consultation request"}</Eyebrow>
         <h2 className="mt-3 text-[clamp(1.45rem,2.4vw,2rem)]">
-          {church ? churchForm.title : "Tell us about the operation."}
+          {check ? checkForm.title : church ? churchForm.title : "Tell us about the operation."}
         </h2>
         <p className="mt-3 text-[0.9rem] text-muted-dark">
-          {church
+          {check
+            ? checkForm.lede
+            : church
             ? churchForm.lede
             : "Give us enough context to understand the business and the workflow you want to improve. Detailed technical documentation is not required for the first conversation."}
         </p>
       </div>
+
+      {check ? (
+        /* Not named "website": that name is the honeypot below. */
+        <label className={field}>
+          {checkForm.website} <span aria-hidden="true">*</span>
+          <input
+            name="church_website"
+            type="text"
+            inputMode="url"
+            autoComplete="url"
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder={checkForm.websitePlaceholder}
+            required
+            className={control}
+          />
+        </label>
+      ) : null}
 
       <label className={field}>
         Full Name <span aria-hidden="true">*</span>
@@ -243,10 +282,20 @@ export function ConsultationForm({
           {church ? churchForm.teamSize : "Team Size"} <span aria-hidden="true">*</span>
           <select name="monthly_leads" defaultValue="" required className={control}>
             <option value="" disabled>Select</option>
-            <option value="Just me">Just me</option>
-            <option value="2–4">2–4</option>
-            <option value="5–50">5–50</option>
-            <option value="50+">50+</option>
+            {church ? (
+              churchForm.staffSizes.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))
+            ) : (
+              <>
+                <option value="Just me">Just me</option>
+                <option value="2–4">2–4</option>
+                <option value="5–50">5–50</option>
+                <option value="50+">50+</option>
+              </>
+            )}
           </select>
         </label>
         {church ? (
@@ -327,19 +376,31 @@ export function ConsultationForm({
         variant="secondary"
         disabled={status === "submitting"}
       >
-        {status === "submitting" ? "Sending request…" : "Book a Consultation"}
+        {status === "submitting"
+          ? "Sending request…"
+          : check
+            ? checkForm.submit
+            : church
+              ? churchForm.submit
+              : "Book a Consultation"}
       </SubmitButton>
 
       <div className="grid gap-2 text-[0.8rem] text-muted-dark">
-        <p>
-          Your inquiry starts a fit conversation. It does not create a managed
-          account, finalize implementation scope, or commit either party to a
-          deployment.
-        </p>
-        <p>
-          Genesis uses these details only to evaluate fit, prepare for the call,
-          and follow up about the request.
-        </p>
+        {church ? (
+          (check ? checkForm.footnotes : churchForm.footnotes).map((line) => <p key={line}>{line}</p>)
+        ) : (
+          <>
+            <p>
+              Your inquiry starts a fit conversation. It does not create a managed
+              account, finalize implementation scope, or commit either party to a
+              deployment.
+            </p>
+            <p>
+              Genesis uses these details only to evaluate fit, prepare for the call,
+              and follow up about the request.
+            </p>
+          </>
+        )}
       </div>
     </form>
   );

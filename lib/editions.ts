@@ -117,10 +117,10 @@ export const ministryEdition: Edition = {
   eyebrow: "Genesis Ministry",
   headline: "Welcome every guest. Care for every person.",
   body: "Software for churches of about 100 to 1,000 people: a website in your own look, Hope, the assistant that answers guests on it, and a platform where no first time guest falls through the cracks.",
-  points: ["Every guest followed up", "Prayer kept with your pastors", "A person approves every message"],
+  points: ["Every guest followed up", "Prayer kept with your pastors", "A person approves every draft"],
   ctas: [
     { label: "Book a Consultation", href: "/contact?topic=ministry" },
-    { label: "Take the Guided Demo", href: "/ministry-demo/platform/index.html?tour=1" },
+    { label: "Take the Guided Demo", href: "/ministry-demo/platform/index.html?tour=1&church=bold-dark" },
   ],
   disclaimer: "Genesis is software. It supports your pastors and care teams and never replaces them.",
 };

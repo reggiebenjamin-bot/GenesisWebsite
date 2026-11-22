@@ -28,7 +28,9 @@ const consult = (topic: string) => `/contact?topic=${topic}`;
 export const ministryDemo = {
   gallery: "/ministry-demo/index.html",
   platform: "/ministry-demo/platform/index.html",
-  tour: "/ministry-demo/platform/index.html?tour=1",
+  /* Starts as Lampstand Church, the sample church in the stills on /ministry. Its
+     account is at Level 03, the level the demo opens at, so no level note shows. */
+  tour: "/ministry-demo/platform/index.html?tour=1&church=bold-dark",
   template: (slug: string) => `/ministry-demo/templates/${slug}/index.html`,
 } as const;
 
@@ -63,25 +65,32 @@ export function ministryDemoAction(hasFile: (path: string) => boolean): Ministry
  * The posters are stills from the public demo (public/ministry-demo/), with
  * Lampstand Church, a made up sample church: Today at Level 03 in the light
  * theme, the Guests view, the care inbox, and the member app home screen in a
- * phone. Each stillAlt below describes its still; update both together.
+ * phone. Each also has a phone still (posterPhone): the same screen as a
+ * phone shows it, 390 by 520 at three times the pixels, scrolled to the part
+ * the alt text names, so its words stay readable in a phone sized frame.
+ * Each stillAlt below is true of both stills; update them together.
  */
 export const ministryMedia = {
   demo: {
     video: "/video/ministry/demo-landscape.mp4",
     poster: "/video/ministry/demo-landscape.jpg",
+    posterPhone: "/video/ministry/demo-landscape-phone.jpg",
     captions: "/video/ministry/demo-landscape.en.vtt",
   },
   frontOffice: {
     video: "/video/ministry/loop-front-office.mp4",
     poster: "/video/ministry/loop-front-office.jpg",
+    posterPhone: "/video/ministry/loop-front-office-phone.jpg",
   },
   backOffice: {
     video: "/video/ministry/loop-back-office.mp4",
     poster: "/video/ministry/loop-back-office.jpg",
+    posterPhone: "/video/ministry/loop-back-office-phone.jpg",
   },
   memberApp: {
     video: "/video/ministry/loop-member-app.mp4",
     poster: "/video/ministry/loop-member-app.jpg",
+    posterPhone: "/video/ministry/loop-member-app-phone.jpg",
   },
 } as const;
 
@@ -98,7 +107,7 @@ export const ministryHero = {
     "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
   /** Describes the poster image when it is shown without the film. Keep it true to the still. */
   stillAlt:
-    "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing counts 4 new guests, 6 care items waiting and 4 drafts to approve, and the next move is a welcome note for a first time guest, Maya T.",
+    "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing counts 4 new guests, 6 care items waiting and 4 drafts to approve, and the next move is Maya T., a first time guest visiting on Sunday.",
   filmPlay: "Play the guided film",
   filmNote: "Sample church and sample people shown.",
 } as const;
@@ -245,7 +254,7 @@ export const ministryPlatform = {
       filmLabel:
         "Silent looping film of the back office with sample data: a prayer request reaches the care inbox and a pastor opens one person's page.",
       stillAlt:
-        "The shared care inbox for Lampstand Church, a made up sample church. Six conversations wait on the team, oldest first. Prayer requests show only a topic behind a lock, and an everyday question about joining the setup team is open beside them.",
+        "The shared care inbox for Lampstand Church, a made up sample church. Six conversations wait on the team, oldest first. Prayer requests show only a topic behind a lock, beside everyday messages like Kwame A.'s question about serving.",
     },
     {
       id: "memberApp",
@@ -256,7 +265,7 @@ export const ministryPlatform = {
       filmLabel:
         "Silent looping film of the member app with sample data: a member opens the app, sees the week ahead and sends a prayer request.",
       stillAlt:
-        "The member app home screen for Lampstand Church, a made up sample church, on a phone. Sarah sees a reply from her pastor, buttons to ask for prayer, send a message or talk about serving, and this week's sermon notes.",
+        "The member app home screen for Lampstand Church, a made up sample church, on a phone. Sarah sees a reply from her pastor and buttons to ask for prayer, send a message or talk about serving.",
     },
   ] satisfies readonly MinistryPlatformRow[],
 } as const;
@@ -267,11 +276,11 @@ export const ministryProtection = {
   rules: [
     {
       title: "Prayer stays with your pastors and prayer team.",
-      body: "Only your pastors and the prayer team you choose can see prayer requests. Nobody else.",
+      body: "Only your pastors and the prayer team you choose can see prayer requests. Nobody else in your church can open them.",
     },
     {
-      title: "A person approves before anything goes out.",
-      body: "Genesis AI drafts and summarizes. It never sends a message, a post or a reply on its own. Someone on your team reads it first.",
+      title: "A person approves every draft.",
+      body: "Genesis AI drafts welcome notes, replies and posts, and none of them goes out until someone on your team approves it. Only two things are sent without a person: Hope's answers from your approved facts, and the fixed crisis reply.",
     },
     {
       title: "Hope answers only from your approved facts.",
@@ -327,7 +336,14 @@ export const ministryLevels = {
       step: "01",
       name: "Welcome",
       summary: "Everything a guest sees first.",
-      bullets: ["Website in one of four looks", "Brand board", "Social marketing plan", "Hope on your website"],
+      bullets: [
+        "Website in one of four looks",
+        "Brand board",
+        "Social marketing plan",
+        "Hope on your website",
+        "Plan a Visit and prayer forms by email",
+        "Newsletter sign up",
+      ],
       action: { label: "Book a Consultation", href: consult("ministry-welcome") },
     },
     {
@@ -335,7 +351,15 @@ export const ministryLevels = {
       step: "02",
       name: "Connect",
       summary: "Every guest followed up.",
-      bullets: ["Everything in Level 01", "The Today view", "Guest pipeline", "Member app", "Care inbox"],
+      bullets: [
+        "Everything in Level 01",
+        "The Today view",
+        "Guest pipeline",
+        "Member app",
+        "Care inbox",
+        "Team roles, with your prayer team named",
+        "Hope drafts that wait for approval",
+      ],
       action: { label: "Book a Consultation", href: consult("ministry-connect") },
     },
     {
@@ -349,7 +373,8 @@ export const ministryLevels = {
         "Access record",
         "Spiritual gifts, with a church wide view for pastors",
         "Reports",
-        "Team roles",
+        "Custom roles and named gift viewers",
+        "More staff seats",
       ],
       action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
     },
@@ -417,7 +442,7 @@ export const ministryWebsiteCheck = {
     "How it reads on a phone",
   ],
   action: { label: "Request a Website Check", href: consult("church-website-check") },
-  note: "Add your church's website address in the notes field and we will take it from there.",
+  note: "The form asks for your website address first. That is all we need to start.",
 } as const;
 
 export const ministryFaq = {
@@ -437,12 +462,12 @@ export const ministryFaq = {
     {
       question: "What does the AI do, and what does it not do?",
       answer:
-        "Genesis AI drafts and summarizes: a welcome note for a first time guest, a summary of the week's care, a suggested next step. It always waits for a person to approve. It does not send on its own, it does not counsel, and it does not answer prayer. Anyone in crisis gets a fixed reply written by people, with 988 and 911.",
+        "Genesis AI drafts and summarizes: a welcome note for a first time guest, a summary of the week's care, a suggested next step. Every draft waits for a person to approve it. On your website, Hope answers visitors on its own, but only from the facts your church approved. It does not counsel, and it does not answer prayer. Anyone in crisis gets a fixed reply written by people, with 988 and 911.",
     },
     {
       question: "Can we use our own photos?",
       answer:
-        "Yes, and we hope you will. The previews use licensed stock photos so you can see each look. Your website is built with your own photos, your own words and your own times.",
+        "Yes, and we hope you will. The previews use free stock photos so you can see each look. Your website is built with your own photos, your own words and your own times.",
     },
     {
       question: "What does customization cost?",
@@ -499,10 +524,54 @@ export const ministryContact = {
     company: "Church Name",
     roles: ["Senior pastor", "Church staff", "Volunteer"],
     teamSize: "Staff Size",
+    /** Church staff sizes, paid and volunteer. app/api/consultation accepts these too. */
+    staffSizes: ["1 or 2", "3 to 5", "6 to 15", "16 or more"],
     notes: "What would you like help with?",
     notesPlaceholder: "Tell us about your church, your website address and what you would like help with first.",
+    submit: "Book a Consultation",
+    footnotes: [
+      "Your request starts a conversation. It does not sign your church up for anything or commit you to a level.",
+      "Genesis uses these details only to prepare for the call and to follow up about your request.",
+    ],
     success:
       "Genesis will reach out to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a level before anything is proposed in writing.",
+  },
+  /*
+   * The free Church Website Check (the church-website-check topic): the same
+   * church form, with its own words and the website address asked for first.
+   */
+  websiteCheck: {
+    intro: {
+      eyebrow: "Free Church Website Check",
+      title: "Request your free Church Website Check.",
+      description: [
+        "Send us your church's website. We look at it the way a first time guest does, on a phone.",
+        "Then we send you a short, plain note on what to fix first. It is free, and there is no obligation.",
+      ],
+    },
+    aside: {
+      eyebrow: "The Website Check",
+      title: "A short note on what to fix first.",
+      body: "A person at Genesis opens your website on a phone, the way a first time guest would, and writes down what helps and what gets in the way.",
+      areasLead: "We look at:",
+      areas: ministryWebsiteCheck.checks,
+      closingLead: "No obligation.",
+      closing: "The note is yours to keep. If you would like help after that, we can talk.",
+    },
+    form: {
+      eyebrow: "Website Check request",
+      title: "Where should we send your Website Check?",
+      lede: "Your website address first, then a few details so we know who to write to.",
+      website: "Church Website",
+      websitePlaceholder: "yourchurch.org",
+      submit: "Request My Website Check",
+      footnotes: [
+        "The Website Check is free. It does not sign your church up for anything.",
+        "Genesis uses these details only to send your Website Check and to follow up about it.",
+      ],
+      success:
+        "A person at Genesis will look at your website on a phone, the way a first time guest does, and send you a short note on what to fix first. If you would like to talk after that, just reply to the note.",
+    },
   },
 } as const;
 
@@ -522,11 +591,21 @@ export const ministryConsultationNotes: Readonly<Record<string, string>> = {
   "ministry-connect": "Genesis Ministry, Level 02 Connect. ",
   "ministry-shepherd": "Genesis Ministry, Level 03 Shepherd. ",
   "ministry-enterprise": "Genesis Ministry, Enterprise for more than one campus. ",
-  "church-website-check": "Free Church Website Check. Our website address: ",
+  "church-website-check": "Free Church Website Check. ",
 };
 
 export function ministryConsultationNote(topic: unknown): string {
   return typeof topic === "string" && Object.hasOwn(ministryConsultationNotes, topic)
     ? ministryConsultationNotes[topic]
     : "";
+}
+
+/** Whether a /contact topic opens the church version of the page. */
+export function isMinistryTopic(topic: unknown): boolean {
+  return ministryConsultationNote(topic) !== "";
+}
+
+/** Whether a /contact topic opens the free Church Website Check version of it. */
+export function isWebsiteCheckTopic(topic: unknown): boolean {
+  return topic === "church-website-check";
 }
