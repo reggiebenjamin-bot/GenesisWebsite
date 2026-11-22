@@ -172,7 +172,7 @@ export const seoPages: readonly SeoPage[] = [
     description:
       "Book a no-cost Genesis consultation to review your current systems, the manual work creating the most drag, and the right scope and next step.",
     label: "Contact",
-    image: socialImage("contact", "Contact Genesis AI — book a consultation for your operation"),
+    image: socialImage("contact", "Contact Genesis AI: book a consultation"),
     lastModified: REBUILD,
     changeFrequency: "yearly",
     priority: 0.6,
@@ -225,7 +225,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/ministry",
     title: "Church Websites and Care Software",
     description:
-      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. People approve every step.",
+      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. A person approves every draft.",
     label: "Ministry",
     image: null,
     lastModified: "2026-11-19",

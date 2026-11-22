@@ -26,7 +26,14 @@ const allowedRoles = new Set([
   ...ministryContact.form.roles,
   "Other",
 ]);
-const allowedTeamSizes = new Set(["Just me", "2–4", "5–50", "50+"]);
+const allowedTeamSizes = new Set([
+  "Just me",
+  "2–4",
+  "5–50",
+  "50+",
+  // The church staff sizes the form offers on a Genesis Ministry link.
+  ...ministryContact.form.staffSizes,
+]);
 const allowedOperationTypes = new Set([
   "Brokerage",
   "Private Lending",

@@ -155,6 +155,15 @@ phone on a calm ivory background. Each still keeps the demo's "Design preview.
 Sample data shown." line. `tests/ministry-edition.test.ts` checks that each
 poster is there at 1920 by 1080.
 
+Each poster also has a phone still, `<name>-phone.jpg` (1170 by 1560, the
+same screen at 390 by 520 on a phone at three times the pixels, scrolled to
+the part its alt text names). While a frame has no film, phones get that still
+in a 3:4 frame through a `<picture>` built with `getImageProps`, because the
+16:9 still shrunk to a phone's width is too small to read. Each `stillAlt`
+describes what both stills show. Until the hero film exists, its Take the
+Guided Demo button sits under the frame, never on the still, and the "Sample
+church and sample people shown." note shows under any poster or film.
+
 **Demo previews.** The four looks, the gallery and the clickable platform are
 static pages served from `public/ministry-demo/`. Copy them in from the
 Genesis Ministry working folder with:
@@ -170,11 +179,13 @@ The source belongs to another team and is only read. The script:
   as the first 1440 by 900 of each look's `shots/desktop/home-01.jpg`, so the
   cards always match the previews they open. `--looks-only` does just this.
 - copies what the source's `platform/DESIGN.md` (section 12, "Uploading the
-  preview") lists: the gallery `index.html` and its three pictures,
-  `shared/hope-demo.js`, `platform/` without `DESIGN.md`, and each
-  `templates/<slug>/` without its `shots/` (except the
-  `shots/desktop/home-01.jpg` and `shots/mobile/home-01.jpg` the gallery shows)
-  and without the `*.mjs` build tools.
+  preview") lists: the gallery `index.html`, `shared/hope-demo.js`,
+  `platform/` without `DESIGN.md`, and each `templates/<slug>/` without its
+  `shots/` (except the `shots/desktop/home-01.jpg` and
+  `shots/mobile/home-01.jpg` the gallery shows) and without the `*.mjs`
+  build tools. The gallery's three loose pictures (`early-look.jpg`,
+  `four-looks.jpg`, `geai-ministry-page.jpg`) stay out: nothing links to
+  them, and one is a screenshot of an old `/ministry`.
 - makes the public copy. The Growth Desk (`platform/sales-*`, Genesis's own
   tool for finding and selling to churches, and the two hub pictures of it)
   stays out, by the owner's decision. `scripts/ministry-demo-public.mjs` then
@@ -182,19 +193,45 @@ The source belongs to another team and is only read. The script:
   points at it: the hub's Growth Desk doors and links, the Growth Desk entries
   in the account menu and Jump To, and the tours and demo path stops on its
   screens go, Compare Levels opens the levels on the hub (or, from the hub, the
-  journey), and the guided demo starts at Today. Each edit must find its text
+  journey), and the guided demo starts at Today. The journey's chapter on how
+  Genesis finds a church goes too (the journey has four chapters), with Hope's
+  "How Does Genesis Find Churches?" answer and the Growth Desk's own sample
+  data in `platform/shared/data.js` (prospects, outreach, the suppression
+  list, the pipeline). Other edits make the demo point back to Genesis: "Book a
+  Consultation" (`/contact?topic=ministry`) in the hub, journey and gallery
+  headers, menus, closing bands and footers, in the church workspace's account
+  menu, in Hope's price and consultation answers, and on the last card of the
+  guided demo. Each card of the guided demo also says which screen of how many
+  it is, Hope on the four sample sites answers a price question with "Pricing is
+  set with Genesis", and the light theme draws the Genesis mark in ink. Each edit must find its text
   exactly, so a change in the source stops the sync with the edit's name
   instead of leaving a link behind. The script prints every file left out and
   every edit made.
 - adds `<meta name="robots" content="noindex">` to any page without it.
 - builds the copy in a temporary folder and replaces `public/ministry-demo/`
   only when it passes its checks: no file names a `sales-*` page or the words
-  "Growth Desk", every local link in a page, stylesheet or platform script
+  "Growth Desk", and none outside the copied Genesis OS design system
+  (`platform/shared/os/`) says "acquisition", "sales desk", "suppression" or
+  "prospect"; the only link to the rest of geai.us is `/contact?topic=ministry`;
+  every local link in a page, stylesheet or platform script
   resolves to a copied file, and every script compiles. Otherwise it stops and
   leaves the old copy as it was.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.
+
+The source folder is a git repository another team keeps editing. Publish a
+reviewed commit, not work in progress: export it into an empty folder and sync
+from there. The committed copy was made from the source's commit `432d5cd`:
+
+```bash
+git -C "C:/path/to/genesis-ministry" archive 432d5cd | tar -x -C /tmp/gm-432d5cd
+node scripts/sync-ministry-demo.mjs /tmp/gm-432d5cd
+```
+
+A folder address such as `/ministry-demo/` or `/ministry-demo/platform/`
+redirects (307) to its `index.html` (`next.config.ts`), because the demo's
+links are relative and would break if the folder were served in place.
 
 `tests/ministry-demo-public.test.ts` tests the edits and checks the committed
 copy the same way: no Growth Desk, no dead local link, every page noindex, and
@@ -224,8 +261,18 @@ Ministry topic opens the church version of `/contact`: a starting note in the
 notes field, church labels and roles (`Senior pastor`, `Church staff`,
 `Volunteer`), the operation type sent as `Church`, and no plan select, since
 the business plans carry prices. `app/api/consultation/route.ts` accepts those
-values. Only the topics listed in `lib/ministryPage.ts` are recognized. On
-`/ministry` the header button also books the church consultation.
+values, and the church staff sizes (`1 or 2` to `16 or more`). Only the
+topics listed in `lib/ministryPage.ts` are recognized. `church-website-check`
+opens the free Church Website Check version: its own title and words, the
+church's website asked for first (sent as `church_website` and at the top of
+the notes), the form before the explanation on phones, and a "Request My
+Website Check" button. On `/ministry` the header button books the church
+consultation; on the church version of `/contact` it reads "See Genesis
+Ministry". On both, the header's Pricing (the business plans, with prices)
+becomes Levels, `/ministry#levels`, and `/pricing` tells churches that
+Ministry pricing is set on a call. The sections above `#levels` on
+`/ministry` skip the site's `content-visibility` shortcut so that link lands
+on the levels.
 
 ## Search launch checklist
 

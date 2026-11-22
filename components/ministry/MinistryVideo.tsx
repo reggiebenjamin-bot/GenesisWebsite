@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,12 @@ type Shared = {
   src: string | null;
   /** The poster image, or null when it is not in public/ yet. */
   poster: string | null;
+  /**
+   * The poster as a phone shows it (3:4), or null. While there is no film,
+   * phones get this still in a 3:4 frame instead of the 16:9 one shrunk to
+   * the width of the phone, where its words would be too small to read.
+   */
+  posterPhone?: string | null;
   /** What the film shows, for screen readers. Read only while the film is there. */
   label: string;
   /** What the poster image shows, read when the poster stands in for a missing film. */
@@ -49,8 +55,6 @@ type FeatureProps = Shared & {
   captions?: string | null;
   /** The button that starts the film. */
   playLabel: string;
-  /** Where the frame leads while the film is not available. */
-  fallback: { label: string; href: string };
 };
 
 type LoopProps = Shared & { mode: "loop" };
@@ -60,6 +64,10 @@ export type MinistryVideoProps = FeatureProps | LoopProps;
 /* The shared frame: a fixed 16:9 box, so nothing shifts when a film arrives. */
 const frame =
   "relative isolate aspect-video w-full overflow-hidden rounded-[6px] border border-line-dark bg-ink-soft";
+
+/* Phones, as Tailwind's max-sm variant reads them. The phone still and its 3:4 frame go together. */
+const PHONE = "(max-width: 639px)";
+const phoneFrame = "max-sm:aspect-[3/4]";
 
 /* The controls sit on dark film even inside a light section, so the focus
    ring stays gold rather than taking the light surface's ink ring. */
@@ -74,16 +82,37 @@ const controlButton =
  */
 function Still({
   poster,
+  posterPhone,
   placeholder,
   sizes,
   eager,
   alt,
-}: Pick<Shared, "poster" | "placeholder" | "sizes" | "eager"> & { alt: string }) {
+}: Pick<Shared, "poster" | "posterPhone" | "placeholder" | "sizes" | "eager"> & { alt: string }) {
   if (!poster) {
     return (
       <div aria-hidden="true" className="absolute inset-0">
         {placeholder}
       </div>
+    );
+  }
+  if (posterPhone) {
+    /* Art direction, as the next/image docs show it: getImageProps gives each still its own
+       optimized srcSet, and the picture element picks the phone one on phones. */
+    const common = {
+      alt,
+      fill: true,
+      loading: eager ? "eager" : "lazy",
+      fetchPriority: eager ? "high" : undefined,
+    } as const;
+    const {
+      props: { srcSet: phoneSrcSet },
+    } = getImageProps({ ...common, src: posterPhone, sizes: "100vw" });
+    const { props } = getImageProps({ ...common, src: poster, sizes });
+    return (
+      <picture>
+        <source media={PHONE} srcSet={phoneSrcSet} sizes="100vw" />
+        <img {...props} alt={alt} className="object-cover" />
+      </picture>
     );
   }
   return (
@@ -119,13 +148,15 @@ function PauseGlyph() {
  * The large film on the Ministry page. The poster holds the frame until the
  * reader presses play; only then does the film load, with the browser's own
  * controls and captions. Nothing plays on its own, so the frame is the same
- * for readers who prefer less motion. Without a film yet, the frame offers
- * the guided demo (or, until it is published, a walkthrough request)
- * instead of a play button that leads nowhere.
+ * for readers who prefer less motion. Without a film yet, the frame shows
+ * only the poster: no play button that leads nowhere, and no button laid
+ * over the still, where it would read as part of the screenshot. The page
+ * puts its own action under the frame.
  */
 function FeatureVideo({
   src,
   poster,
+  posterPhone,
   captions,
   label,
   stillAlt,
@@ -133,7 +164,6 @@ function FeatureVideo({
   sizes,
   eager,
   playLabel,
-  fallback,
   className,
 }: FeatureProps) {
   const [playing, setPlaying] = useState(false);
@@ -147,7 +177,7 @@ function FeatureVideo({
 
   return (
     <figure className={cn("m-0", className)}>
-      <div className={frame}>
+      <div className={cn(frame, !available && posterPhone && phoneFrame)}>
         {playing && available ? (
           <video
             ref={videoRef}
@@ -168,25 +198,26 @@ function FeatureVideo({
           </video>
         ) : (
           <>
-            <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} alt={available ? "" : stillAlt} />
+            <Still
+              poster={poster}
+              posterPhone={available ? null : posterPhone}
+              placeholder={placeholder}
+              sizes={sizes}
+              eager={eager}
+              alt={available ? "" : stillAlt}
+            />
             <div
               aria-hidden="true"
               className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgb(8_9_14/0.55))]"
             />
-            <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:p-6">
-              {available ? (
+            {available ? (
+              <div className="absolute inset-x-0 bottom-0 flex justify-center p-4 sm:p-6">
                 <button type="button" onClick={() => setPlaying(true)} className={controlButton}>
                   <PlayGlyph />
                   {playLabel}
                 </button>
-              ) : (
-                /* Phones already have the same action right above the frame. */
-                <a href={fallback.href} className={cn(controlButton, "max-sm:hidden")}>
-                  {fallback.label}
-                  <span aria-hidden="true">&#8599;</span>
-                </a>
-              )}
-            </div>
+              </div>
+            ) : null}
           </>
         )}
       </div>
@@ -202,7 +233,7 @@ function FeatureVideo({
  * less motion: they see the poster. Until the film exists, or if it fails to
  * load, the frame keeps the poster or the drawn placeholder.
  */
-function LoopVideo({ src, poster, label, stillAlt, placeholder, sizes, eager, className }: LoopProps) {
+function LoopVideo({ src, poster, posterPhone, label, stillAlt, placeholder, sizes, eager, className }: LoopProps) {
   const reduced = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -233,8 +264,15 @@ function LoopVideo({ src, poster, label, stillAlt, placeholder, sizes, eager, cl
   }, [paused]);
 
   return (
-    <div className={cn(frame, className)}>
-      <Still poster={poster} placeholder={placeholder} sizes={sizes} eager={eager} alt={playing ? "" : stillAlt} />
+    <div className={cn(frame, !src && posterPhone && phoneFrame, className)}>
+      <Still
+        poster={poster}
+        posterPhone={src ? null : posterPhone}
+        placeholder={placeholder}
+        sizes={sizes}
+        eager={eager}
+        alt={playing ? "" : stillAlt}
+      />
       {playing ? (
         <>
           <video

@@ -6,6 +6,8 @@ import { editions, ministryEdition } from "../lib/editions.ts";
 import { FUNDING_LINE } from "../lib/legal.ts";
 import {
   MINISTRY_OPERATION_TYPE,
+  isMinistryTopic,
+  isWebsiteCheckTopic,
   ministryConsultationNote,
   ministryConsultationNotes,
   ministryContact,
@@ -19,7 +21,9 @@ import {
   ministryMedia,
   ministryPlatform,
   ministryProcess,
+  ministryProtection,
   ministryWalkthrough,
+  ministryWebsiteCheck,
 } from "../lib/ministryPage.ts";
 import * as ministryPage from "../lib/ministryPage.ts";
 import { fullTitle, seoPage } from "../lib/seo.ts";
@@ -72,7 +76,8 @@ test("the hero books a consultation, then opens the guided demo", () => {
   assert.equal(ministryHero.primary.label, "Book a Consultation");
   assert.match(ministryHero.primary.href, /^\/contact\b/);
   assert.equal(ministryHero.secondary.label, "Take the Guided Demo");
-  assert.equal(ministryHero.secondary.href, "/ministry-demo/platform/index.html?tour=1");
+  /* The guided demo starts as Lampstand Church, the sample church in the stills. */
+  assert.equal(ministryHero.secondary.href, "/ministry-demo/platform/index.html?tour=1&church=bold-dark");
   assert.deepEqual(
     ministryEdition.ctas.map((cta) => cta.href),
     [ministryHero.primary.href, ministryHero.secondary.href],
@@ -222,5 +227,71 @@ test("no copy string has a dash, an emoji or a price", () => {
     }
     assert.equal(EMOJI.test(text), false, `${path} contains an emoji: ${text}`);
     assert.equal(PRICE.test(text), false, `${path} reads like a price: ${text}`);
+  }
+});
+
+test("the levels match the demo: team roles in Connect, custom roles in Shepherd", () => {
+  const [welcome, connect, shepherd] = ministryLevels.levels.map((level) => level.bullets.join(" | "));
+  assert.match(welcome, /Plan a Visit and prayer forms by email/);
+  assert.match(welcome, /Newsletter sign up/);
+  assert.match(connect, /Team roles/);
+  assert.match(connect, /Hope drafts that wait for approval/);
+  assert.match(shepherd, /Custom roles and named gift viewers/);
+  assert.doesNotMatch(shepherd, /Team roles/);
+
+  /* The demo hub and Hope's levels answer say the same. */
+  const demo = join(process.cwd(), "public", "ministry-demo", "platform");
+  if (!existsSync(demo)) return;
+  const hub = readFileSync(join(demo, "index.html"), "utf8");
+  const connectCard = hub.slice(hub.indexOf("<h3>Connect</h3>"), hub.indexOf("<h3>Shepherd</h3>"));
+  assert.match(connectCard, /Team roles, with the prayer team named/);
+  const hope = readFileSync(join(demo, "shared", "demo.js"), "utf8");
+  assert.match(hope, /Level 02, Connect: [^"]*team roles/);
+  assert.doesNotMatch(hope, /Level 03, Shepherd: [^"]*team roles/);
+});
+
+test("the protection rules do not promise more than the product does", () => {
+  const [prayer, approval] = ministryProtection.rules;
+  assert.doesNotMatch(prayer.body, /Nobody else\.$/);
+  assert.match(prayer.body, /in your church/);
+  /* Hope answers on the website and the crisis reply goes out on its own; the rule says so. */
+  assert.match(approval.body, /Hope's answers/);
+  assert.match(approval.body, /crisis reply/);
+  assert.doesNotMatch(ministryEdition.points.join(" "), /every message/);
+});
+
+test("the Website Check opens its own version of the contact page", () => {
+  assert.ok(isWebsiteCheckTopic("church-website-check"));
+  assert.ok(!isWebsiteCheckTopic("ministry"));
+  assert.ok(isMinistryTopic("church-website-check") && isMinistryTopic("ministry-demo"));
+  assert.ok(!isMinistryTopic("pricing") && !isMinistryTopic(undefined));
+  assert.equal(noteFor(ministryWebsiteCheck.action.href), "Free Church Website Check. ");
+
+  const check = ministryContact.websiteCheck;
+  assert.match(check.intro.title, /Website Check/);
+  assert.equal(check.form.submit, "Request My Website Check");
+  assert.equal(check.form.website, "Church Website");
+  assert.deepEqual([...check.aside.areas], [...ministryWebsiteCheck.checks]);
+  assert.doesNotMatch(ministryWebsiteCheck.note, /notes field/);
+});
+
+test("a church picks a church staff size, and the consultation route accepts it", () => {
+  const sizes = [...ministryContact.form.staffSizes];
+  assert.deepEqual(sizes, ["1 or 2", "3 to 5", "6 to 15", "16 or more"]);
+  const route = readFileSync(join(process.cwd(), "app", "api", "consultation", "route.ts"), "utf8");
+  assert.match(route, /\.\.\.ministryContact\.form\.staffSizes/);
+  const form = readFileSync(join(process.cwd(), "app", "(marketing)", "contact", "ConsultationForm.tsx"), "utf8");
+  assert.match(form, /churchForm\.staffSizes\.map/);
+  /* The Website Check's address field is not named "website": that is the route's honeypot. */
+  assert.match(form, /name="church_website"/);
+  assert.match(route, /if \(data\.website\)/);
+});
+
+test("each film also has a 3:4 phone still, 1170 by 1560", () => {
+  for (const [id, media] of Object.entries(ministryMedia)) {
+    assert.equal(media.posterPhone, media.poster.replace(/\.jpg$/, "-phone.jpg"), id);
+    const file = join(process.cwd(), "public", media.posterPhone);
+    assert.ok(existsSync(file), `${id}: ${media.posterPhone} is missing`);
+    assert.deepEqual(jpegSize(readFileSync(file)), { width: 1170, height: 1560 }, `${id}: ${media.posterPhone}`);
   }
 });

@@ -109,6 +109,7 @@ export function MinistryHero() {
   const media = ministryMedia.demo;
   const film = publicAsset(media.video);
   const poster = publicAsset(media.poster);
+  const posterPhone = publicAsset(media.posterPhone);
   const secondary = demoAction();
   return (
     <section
@@ -162,17 +163,25 @@ export function MinistryHero() {
               mode="feature"
               src={film}
               poster={poster}
+              posterPhone={posterPhone}
               captions={publicAsset(media.captions)}
               label={ministryHero.filmLabel}
               stillAlt={ministryHero.stillAlt}
               playLabel={ministryHero.filmPlay}
-              fallback={secondary}
               placeholder={<DemoPoster />}
               sizes="(min-width: 1120px) 1088px, 100vw"
               eager
             />
           </div>
-          {film ? (
+          {/* Until the film exists, the frame's action sits under it rather than on the still.
+              Phones have the same action right above the frame. */}
+          {film ? null : (
+            <div className="mt-6 flex justify-center max-sm:hidden">
+              <DemoLink action={secondary} />
+            </div>
+          )}
+          {/* Said under the frame too, because on a phone the still's own sample strip is too small to read. */}
+          {film || poster ? (
             <p className="mt-4 text-center text-[0.78rem] text-muted-light/80">{ministryHero.filmNote}</p>
           ) : null}
         </div>
@@ -219,7 +228,10 @@ export function MinistryPackage() {
   const middle = rest.slice(0, -1);
 
   return (
-    <Sheet surface="paper" rise aria-labelledby="ministry-package-title" className="site-section">
+    /* No site-section here or in the next three sections: content-visibility would size them by
+       estimate until they near the screen, and a link to /ministry#levels, below them, would land
+       short. */
+    <Sheet surface="paper" rise aria-labelledby="ministry-package-title">
       <SectionIntro
         eyebrow={ministryPackage.eyebrow}
         title={ministryPackage.title}
@@ -318,7 +330,7 @@ export function MinistryLooks() {
   const linked = ministryLooks.items.map((look) => hasFile(ministryDemo.template(look.slug)));
   const aside = linked.some(Boolean) ? `${ministryLooks.aside} ${ministryLooks.asideOpen}` : ministryLooks.aside;
   return (
-    <Sheet surface="ink" rise aria-labelledby="ministry-looks-title" className="site-section">
+    <Sheet surface="ink" rise aria-labelledby="ministry-looks-title">
       <SectionIntro
         eyebrow={ministryLooks.eyebrow}
         title={ministryLooks.title}
@@ -366,7 +378,7 @@ const posters = {
 export function MinistryPlatform() {
   const demo = demoAction();
   return (
-    <Sheet surface="ivory" rise aria-labelledby="ministry-platform-title" className="site-section">
+    <Sheet surface="ivory" rise aria-labelledby="ministry-platform-title">
       <SectionIntro
         layout="center"
         eyebrow={ministryPlatform.eyebrow}
@@ -412,6 +424,7 @@ export function MinistryPlatform() {
                     mode="loop"
                     src={publicAsset(media.video)}
                     poster={publicAsset(media.poster)}
+                    posterPhone={publicAsset(media.posterPhone)}
                     label={row.filmLabel}
                     stillAlt={row.stillAlt}
                     placeholder={posters[row.id]}
@@ -434,7 +447,7 @@ export function MinistryPlatform() {
 
 export function MinistryProtection() {
   return (
-    <Sheet surface="ink" rise aria-labelledby="ministry-protection-title" className="site-section">
+    <Sheet surface="ink" rise aria-labelledby="ministry-protection-title">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
         <div className="lg:sticky lg:top-[calc(var(--header-height)+48px)] lg:self-start">
           <SectionIntro
@@ -492,7 +505,7 @@ export function MinistryProtection() {
 
 export function MinistryLevelsSection() {
   return (
-    <Sheet surface="paper" rise aria-labelledby="ministry-levels-title" className="site-section">
+    <Sheet id="levels" surface="paper" rise aria-labelledby="ministry-levels-title" className="site-section">
       <SectionIntro
         layout="split"
         eyebrow={ministryLevels.eyebrow}

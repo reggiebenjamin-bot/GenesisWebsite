@@ -55,6 +55,12 @@ export default function PricingPage() {
               across the business. Choose the level that matches the scope of the operation.
             </p>
           </div>
+          {/* These are the business plans. Genesis Ministry, for churches, uses its own levels
+              and is priced with Genesis on a call, so a church is pointed there before any number. */}
+          <p className="mt-6 flex max-w-[58ch] flex-wrap items-center gap-x-3 gap-y-1 text-[0.95rem] text-muted-dark">
+            <span>For churches: Genesis Ministry pricing is set with Genesis on a call.</span>
+            <TextLink href="/ministry#levels">See the Ministry Levels</TextLink>
+          </p>
         </div>
       </section>
 

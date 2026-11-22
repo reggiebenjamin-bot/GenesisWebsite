@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
+  Suspense,
   useEffect,
   useId,
   useRef,
@@ -10,11 +11,13 @@ import {
   type FocusEvent,
   type KeyboardEvent,
   type PointerEvent,
+  type ReactNode,
   type RefObject,
 } from "react";
 import { setOfferPath } from "@/components/offers/offerPathState";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
-import { isNavGroup, navigation, type NavGroup } from "@/lib/content";
+import { isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
+import { isMinistryTopic } from "@/lib/ministryPage";
 import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import styles from "./Header.module.css";
@@ -27,6 +30,57 @@ const BAR_BEFORE = 8;
 
 function isCurrent(pathname: string, href: string) {
   return href.split("#")[0] === pathname;
+}
+
+/**
+ * Where a church is reading: the Genesis Ministry page, or the church version
+ * of /contact (opened by a Ministry topic link). Null everywhere else.
+ */
+type ChurchPage = "ministry" | "contact" | null;
+
+function churchPageFor(pathname: string, topic: string | null): ChurchPage {
+  if (pathname === "/ministry") return "ministry";
+  if (pathname === "/contact" && isMinistryTopic(topic)) return "contact";
+  return null;
+}
+
+/**
+ * Renders its children for the church page being read. The topic comes from
+ * the URL, so the part that reads it sits in its own Suspense boundary: a
+ * prerendered page ships the fallback, worked out from the path alone, and
+ * the church version of /contact, which renders per request, gets it from
+ * the server.
+ */
+function ForChurchPage({ pathname, children }: { pathname: string; children: (church: ChurchPage) => ReactNode }) {
+  return (
+    <Suspense fallback={children(churchPageFor(pathname, null))}>
+      <ChurchPageFromUrl pathname={pathname}>{children}</ChurchPageFromUrl>
+    </Suspense>
+  );
+}
+
+function ChurchPageFromUrl({ pathname, children }: { pathname: string; children: (church: ChurchPage) => ReactNode }) {
+  const topic = useSearchParams().get("topic");
+  return children(churchPageFor(pathname, topic));
+}
+
+/*
+ * A church is not assessing a business and has no business plans to price.
+ * On the Ministry page the header books the church consultation the page
+ * offers; on the church version of /contact it leads back to Genesis
+ * Ministry. On both, Pricing (the business plans) becomes Levels, the
+ * Ministry levels, which are priced with Genesis on a call.
+ */
+function primaryFor(church: ChurchPage) {
+  if (church === "ministry") return { href: "/contact?topic=ministry", label: "Book a Consultation" };
+  if (church === "contact") return { href: "/ministry", label: "See Genesis Ministry" };
+  return { href: "/assessment", label: "Assess My Business" };
+}
+
+const CHURCH_LEVELS: NavLink = { label: "Levels", href: "/ministry#levels" };
+
+function entryFor(entry: NavLink, church: ChurchPage): NavLink {
+  return church && entry.href === "/pricing" ? CHURCH_LEVELS : entry;
 }
 
 /**
@@ -56,12 +110,6 @@ export function Header() {
     setOpenGroup(null);
     setMenuOpen(false);
   }
-
-  // A church reading Genesis Ministry is not assessing a business: on that
-  // page the header books the church consultation the page itself offers.
-  const ministry = pathname === "/ministry";
-  const primaryHref = ministry ? "/contact?topic=ministry" : "/assessment";
-  const primaryLabel = ministry ? "Book a Consultation" : "Assess My Business";
 
   // The homepage opens on a dark hero, so the bar can start transparent there.
   const overDarkHero = pathname === "/";
@@ -171,22 +219,36 @@ export function Header() {
                       onOpenChange={(open) => setOpenGroup(open ? entry.label : null)}
                     />
                   ) : (
-                    <Link
-                      href={entry.href}
-                      aria-current={isCurrent(pathname, entry.href) ? "page" : undefined}
-                      className={styles.link}
-                    >
-                      {entry.label}
-                    </Link>
+                    <ForChurchPage pathname={pathname}>
+                      {(church) => {
+                        const link = entryFor(entry, church);
+                        return (
+                          <Link
+                            href={link.href}
+                            aria-current={link === entry && isCurrent(pathname, link.href) ? "page" : undefined}
+                            className={styles.link}
+                          >
+                            {link.label}
+                          </Link>
+                        );
+                      }}
+                    </ForChurchPage>
                   )}
                 </li>
               ))}
             </ul>
           </nav>
 
-          <ConsultationButton href={primaryHref} compact className={styles.cta}>
-            {primaryLabel}
-          </ConsultationButton>
+          <ForChurchPage pathname={pathname}>
+            {(church) => {
+              const primary = primaryFor(church);
+              return (
+                <ConsultationButton href={primary.href} compact className={styles.cta}>
+                  {primary.label}
+                </ConsultationButton>
+              );
+            }}
+          </ForChurchPage>
 
           <button
             ref={menuButton}
@@ -208,13 +270,16 @@ export function Header() {
       </div>
 
       {menuOpen ? (
-        <MobileMenu
-          pathname={pathname}
-          primaryHref={primaryHref}
-          primaryLabel={primaryLabel}
-          onClose={() => setMenuOpen(false)}
-          returnFocus={menuButton}
-        />
+        <ForChurchPage pathname={pathname}>
+          {(church) => (
+            <MobileMenu
+              pathname={pathname}
+              church={church}
+              onClose={() => setMenuOpen(false)}
+              returnFocus={menuButton}
+            />
+          )}
+        </ForChurchPage>
       ) : null}
     </header>
   );
@@ -399,17 +464,16 @@ function NavDropdown({
 
 function MobileMenu({
   pathname,
-  primaryHref,
-  primaryLabel,
+  church,
   onClose,
   returnFocus,
 }: {
   pathname: string;
-  primaryHref: string;
-  primaryLabel: string;
+  church: ChurchPage;
   onClose: () => void;
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
+  const primary = primaryFor(church);
   const sheet = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const labelId = useId();
@@ -518,12 +582,12 @@ function MobileMenu({
           ) : (
             <div key={entry.label} className={styles.sheetGroup}>
               <Link
-                href={entry.href}
-                aria-current={isCurrent(pathname, entry.href) ? "page" : undefined}
+                href={entryFor(entry, church).href}
+                aria-current={entryFor(entry, church) === entry && isCurrent(pathname, entry.href) ? "page" : undefined}
                 className={styles.sheetLink}
                 onClick={onClose}
               >
-                <span className={styles.sheetLinkLabel}>{entry.label}</span>
+                <span className={styles.sheetLinkLabel}>{entryFor(entry, church).label}</span>
                 <span aria-hidden="true" className={styles.sheetArrow}>
                   →
                 </span>
@@ -534,8 +598,8 @@ function MobileMenu({
       </nav>
 
       <div className={styles.sheetFooter}>
-        <ConsultationButton href={primaryHref} className="w-full" onClick={onClose}>
-          {primaryLabel}
+        <ConsultationButton href={primary.href} className="w-full" onClick={onClose}>
+          {primary.label}
         </ConsultationButton>
       </div>
     </div>
