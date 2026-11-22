@@ -52,4 +52,7 @@ test("the component picks the gold file by ground", () => {
   assert.match(component, /light: "\/brand\/mark-gold-on-light\.svg"/);
   const logo = readFileSync(join(root, "components/layout/Logo.tsx"), "utf8");
   assert.match(logo, /ground=\{light \? "dark" : "light"\}/);
+  // The G sits in the old 37px box with padding, not margin, so the box and its
+  // baseline match the old square file and the footer tagline does not move.
+  assert.match(logo, /className="h-\[37px\] w-auto pt-\[5px\] pr-\[3\.75px\] pb-2 pl-\[3px\]"/);
 });

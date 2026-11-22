@@ -39,12 +39,14 @@ export function Logo({
         light ? "text-ivory" : "text-ink",
       )}
     >
-      {/* 24px tall. The margins put the G where the old 37px square file did. */}
+      {/* A 24px G inside the old 37px box. The space is padding, not margin,
+          so the box and its baseline match the old square file and the text
+          after the logo (footer tagline, menu sheet) stays where it was. */}
       <GenesisMark
         ground={light ? "dark" : "light"}
         loading="eager"
         fetchPriority="high"
-        className="mt-[5px] mr-[3.5px] mb-2 ml-[3px] h-6 w-auto"
+        className="h-[37px] w-auto pt-[5px] pr-[3.75px] pb-2 pl-[3px]"
       />
       {wordmark ? (
         <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
