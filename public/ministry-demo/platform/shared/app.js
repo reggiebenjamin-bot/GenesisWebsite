@@ -168,7 +168,6 @@
   GM.thread = function (id) { return byId(D.threads, id); };
   GM.prayerRequest = function (id) { return byId(D.prayer, id); };
   GM.draftById = function (id) { return byId(D.drafts.concat(D.genesisDrafts), id); };
-  GM.prospect = function (id) { return byId(D.acquisition.prospects, id); };
   GM.deal = function (id) { return byId(D.sales.deals, id); };
   GM.gift = function (key) { for (var i = 0; i < D.gifts.list.length; i++) if (D.gifts.list[i].key === key) return D.gifts.list[i]; return null; };
   GM.churchBySlug = function (slug) { for (var i = 0; i < D.churches.length; i++) if (D.churches[i].slug === slug) return D.churches[i]; return null; };
@@ -302,7 +301,6 @@
     website: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/>',
     brand: '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><circle cx="12" cy="16" r="3"/>',
     find: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
-    prospects: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
     report: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3.5V5h6V3.5"/><path d="m9 13 2 2 4-4"/>',
     accounts: '<path d="M4 7h16v12H4zM8 7V4h8v3M4 12h16"/>',
     onboarding: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="m3.5 6 1.5 1.5L7.5 5M3.5 12l1.5 1.5 2.5-2.5M3.5 18l1.5 1.5 2.5-2.5"/>',
@@ -372,7 +370,7 @@
     opts = opts || {};
     if (typeof d === "string") d = GM.draftById(d);
     if (!d) return "";
-    var to = GM.who(d.to) || (d.prospect ? { name: GM.prospect(d.prospect).name } : null);
+    var to = GM.who(d.to);
     var meta = [];
     if (to) meta.push("To " + esc(to.name) + (d.channel ? " by " + esc(d.channel.toLowerCase()) : ""));
     if (!opts.hideWhy && d.why) meta.push("Why: " + esc(d.why));
@@ -529,7 +527,8 @@
       more: [
         { key: "member-app", label: "Member App", href: "member-home.html", icon: "device", hint: "What members see on their phones" },
         { key: "website", label: "Church Website", hrefFn: function () { return GM.church.site; }, icon: "website", hint: "The website in its chosen look" },
-        { key: "levels", label: "Compare Levels", href: "index.html#levels", icon: "levels", hint: "Welcome, Connect, Shepherd, Enterprise" }
+        { key: "levels", label: "Compare Levels", href: "index.html#levels", icon: "levels", hint: "Welcome, Connect, Shepherd, Enterprise" },
+        { key: "consult", label: "Book a Consultation", href: "/contact?topic=ministry", icon: "call", hint: "A free conversation with Genesis about your church" }
       ]
     },
     member: [
@@ -889,8 +888,7 @@
       fields = '<label class="v2-field"><span>Church name</span><input class="v2-input" name="name" autocomplete="off" required></label>' +
         '<label class="v2-field"><span>City and state</span><input class="v2-input" name="city" autocomplete="off" placeholder="Springfield, MO"></label>' +
         '<label class="v2-field"><span>Website</span><input class="v2-input" name="site" type="url" autocomplete="off" placeholder="https://"></label>' +
-        '<label class="v2-field"><span>How they came to us</span><select class="v2-select v2-nselect" name="source">' + opt(["Referral from a church we serve", "They reached out", "Conference", "Church Website Check request"]) + "</select></label>" +
-        '<p class="gm-drawer-note">Public church contact details only. Outreach is email only, every email waits for approval and carries an unsubscribe line.</p>';
+        '<label class="v2-field"><span>How they came to us</span><select class="v2-select v2-nselect" name="source">' + opt(["Referral from a church we serve", "They reached out", "Conference", "Church Website Check request"]) + "</select></label>";
     }
     layer.innerHTML = '<button class="v2-drawer-scrim" type="button" data-gm-action="close-drawer" aria-label="Close"></button>' +
       '<aside class="v2-drawer" role="dialog" aria-modal="true" aria-labelledby="gm-drawer-title"><header class="v2-drawer-head"><div class="v2-drawer-title"><div><div class="v2-eyebrow">' + esc(eyebrow) + '</div><h2 id="gm-drawer-title">' + esc(title) + "</h2><p>" + esc(sub) + '</p></div><button class="v2-button v2-icon-button v2-button-quiet" type="button" data-gm-action="close-drawer" aria-label="Close">' + vIcon("close") + "</button></div></header>" +
@@ -972,24 +970,7 @@
       { match: /hope|assistant|ai\b/i, answer: "On your website I answer from facts your team approved: times, kids, next steps, giving. In this workspace I draft welcome notes and summaries, and a person approves everything. I never draft a reply to prayer or a personal message, and I never set a gifts score." }
     ];
   }
-  function genesisAnswers() {
-    return [
-      { match: /summar|this week|week\b|brief/i, answer: function () { return D.genesisSummaries[0].body; } },
-      { match: /prospect|first|work|which/i, answer: function () {
-        var list = D.acquisition.prospects.filter(function (p) { return ["new", "drafted", "checking", "replied"].indexOf(p.status) >= 0; }).sort(function (a, b) { return b.fit - a.fit; }).slice(0, 3);
-        return "Start with these three. " + list.map(function (p) { return p.name + " (fit " + p.fit + "): " + p.whyNow; }).join(" ");
-      } },
-      { match: /follow|due|next step|overdue/i, answer: function () {
-        var list = D.sales.deals.filter(function (d) { return d.due; }).sort(function (a, b) { return GM.parseDate(a.due) - GM.parseDate(b.due); }).slice(0, 4);
-        return "The next steps due, soonest first: " + list.map(function (d) { var o = GM.team(d.owner); return d.name + ", " + d.next.toLowerCase() + " (" + GM.fmt.due(d.due).text.toLowerCase() + (o ? ", " + o.name : "") + ")"; }).join("; ") + ".";
-      } },
-      { match: /demo|church|account|stage|where/i, answer: function () {
-        return D.sales.deals.filter(function (d) { return d.demo; }).map(function (d) { return d.name + ": " + GM.stage(d.stage).label + ", " + d.next.toLowerCase() + "."; }).join(" ");
-      } },
-      { match: /draft|approv|email|outreach/i, answer: function () { var d = GM.waitingDrafts("genesis"); return d.length + " outreach drafts are waiting for approval. Outreach is email only, every email carries an unsubscribe line, and the suppression list is checked before anything goes out."; } },
-      { match: /price|cost|pricing|level|plan/i, answer: "Welcome, Connect, Shepherd and Enterprise. Levels are a draft until the owner confirms them. " + D.pricingLine + ". Customization beyond the template is available for an additional cost." }
-    ];
-  }
+  function genesisAnswers() { return []; }
   /* extraAnswers: a page's own (checked first). baseAnswers: the guided demo's product answers
      (shared/demo.js), checked before the built-in ones and answered at every level. */
   var extraAnswers = [], baseAnswers = [];
@@ -1007,7 +988,7 @@
     var list = extraAnswers.concat(baseAnswers, GM.side === "genesis" ? genesisAnswers() : churchAnswers());
     for (var i = 0; i < list.length; i++) if (list[i].match.test(text)) { var a = list[i].answer; return typeof a === "function" ? a(text) : a; }
     return GM.side === "genesis"
-      ? "I can help with this week's summary, which prospects to work first, where each church account stands and the outreach drafts waiting. In this preview I answer from the sample data."
+      ? "In this preview I answer from the sample data."
       : "I can help with this week's summary, follow-ups due, care waiting on us and drafts waiting for approval. In this preview I answer from the sample data, in counts and owners only.";
   }
 

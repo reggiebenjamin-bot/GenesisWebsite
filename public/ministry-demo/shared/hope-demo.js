@@ -147,7 +147,7 @@
     ".hd-card p{margin:0 0 14px}",
     ".hd-card .hd-cnote{font-size:13px;line-height:1.5;opacity:.8;margin:-6px 0 14px}",
     ".hd-card .bar{display:flex;align-items:center;justify-content:space-between;gap:10px}",
-    ".hd-card .hd-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}",
+    ".hd-card .hd-next,.hd-end{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}.hd-end{margin-top:8px}",
     ".hd-dots{display:flex;gap:6px}.hd-dots i{width:7px;height:7px;border-radius:50%;background:var(--hd-line)}.hd-dots i.on{background:var(--hd-accent);width:18px;border-radius:4px}",
     ".hd-skip{background:none;border:0;color:inherit;opacity:.65;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px}",
     ".hd-skip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;opacity:1}",
@@ -265,10 +265,11 @@
     pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service times", key: "times" }] },
     values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I am new here", key: "newhere" }] },
     /* questions a church leader asks about the product */
-    package: { t: "Every Genesis Ministry church gets four things: a website in one of four looks (this one is " + LOOK + "), a brand board, a social marketing plan, and " + AN + ", an assistant like me trained on your church's own facts. Depending on your plan, you also get the back office, where your team cares for people: prayer, messages and spiritual gifts in one place.", c: [{ label: "What is the back office?", key: "backoffice", cta: true }, { label: "Can we customize it?", key: "custom" }, { label: "See the brand board", href: LINKS.brandBoard }, { label: "See the social plan", href: LINKS.socialPlan }] },
-    custom: { t: "Yes. Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "How does " + AN + " work?", key: "hope" }, { label: "Take the tour", key: "tour", cta: true }] },
+    package: { t: "Every Genesis Ministry church gets four things: a website in one of four looks (this one is " + LOOK + "), a brand board, a social marketing plan, and " + AN + ", an assistant like me trained on your church's own facts. Depending on your level, you also get the back office, where your team cares for people: prayer, messages and spiritual gifts in one place.", c: [{ label: "What is the back office?", key: "backoffice", cta: true }, { label: "Can we customize it?", key: "custom" }, { label: "See the brand board", href: LINKS.brandBoard }, { label: "See the social plan", href: LINKS.socialPlan }] },
+    custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "How does " + AN + " work?", key: "hope" }, { label: "Take the tour", key: "tour", cta: true }] },
+    price: { t: "Pricing is set with Genesis, on a call, once we understand your church. This preview never shows a price. Customization beyond the template is available for an additional cost.", c: [{ label: "Book a Consultation", href: "/contact?topic=ministry", go: true, cta: true }, { label: "What do we get?", key: "package" }] },
     hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, next steps, giving. " + AN + " hands prayer requests and personal questions to a real person, and gives crisis numbers right away when someone is hurting. " + AN + " never makes things up.", c: [{ label: "What do we get?", key: "package" }, { label: "Take the tour", key: "tour", cta: true }] },
-    backoffice: { t: "The back office comes with it depending on your plan. Each person gets one private record: prayer requests with a history, message threads with your staff, and a spiritual gifts conversation. Your staff get one shared inbox and follow up reminders, and your pastor sees a picture of the gifts across the whole church.", c: [{ label: "What do we get?", key: "package" }, { label: "Can we customize it?", key: "custom" }] },
+    backoffice: { t: "The back office comes with it depending on your level. Each person gets one private record: prayer requests with a history, message threads with your staff, and a spiritual gifts conversation. Your staff get one shared inbox and follow up reminders, and your pastor sees a picture of the gifts across the whole church.", c: [{ label: "What do we get?", key: "package" }, { label: "Can we customize it?", key: "custom" }] },
     menu: null,
   };
   if (AN === "Hope") A.hope.t = "On your live site, Hope answers questions day and night from facts your team approves: times, kids, next steps, giving. She hands prayer requests and personal questions to a real person, and she gives crisis numbers right away when someone is hurting. She never makes things up.";
@@ -284,7 +285,8 @@
   // Most specific first. Patterns allow plurals and word stems. A page's own rules come first.
   var MATCH = (CFG.match || []).map(function (m) { return Array.isArray(m) ? m : [m.match || m.re, m.key]; }).filter(function (m) { return m[0] && m[0].test; }).concat([
     [/\b(tours?|demos?|walk ?through|show me)\b/i, "tour"],
-    [/\b(prices?|costs?|pricing|custom\w*|change|edit|colou?rs?|logos?|fonts?)\b/i, "custom"],
+    [/\b(prices?|pricing|costs?|fees?)\b|\bhow much (does|is|will|would) (it|this|genesis|the (template|website|site|platform))\b/i, "price"],
+    [/\b(custom\w*|change|edit|colou?rs?|logos?|fonts?)\b/i, "custom"],
     [/\b(packages?|includ\w*|offers?|brand ?boards?|social|marketing|templates?|what do (we|i) get)\b/i, "package"],
     [/\b(hope|chat ?bots?|assistants?|ai)\b/i, "hope"],
     [/\b(back ?office|crm|spiritual gifts?|gifts? (assessment|test|conversation)|care (inbox|team)|staff inbox|care)\b/i, "backoffice"],
@@ -453,7 +455,7 @@
         { label: "Take the tour again", key: "tour" },
       ];
       if (NEXT && NEXT.href) chips = [{ label: NEXT.label || "Continue the Demo", href: nextHref(), go: true, cta: true }].concat(chips.map(function (c) { var o = {}; for (var k in c) o[k] = c[k]; o.cta = false; return o; }));
-      say(fin.text || ("That is the tour. Every Genesis Ministry church gets this website in its own content and photos, plus a brand board, a social marketing plan, and me. Depending on your plan, the back office comes too. Customization beyond the template is available for an additional cost.") + (NEXT && NEXT.note ? "\n\n" + NEXT.note : ""), chips);
+      say(fin.text || ("That is the tour. Every Genesis Ministry church gets this website in its own content and photos, plus a brand board, a social marketing plan, and me. Depending on your level, the back office comes too. Customization beyond the template is available for an additional cost.") + (NEXT && NEXT.note ? "\n\n" + NEXT.note : ""), chips);
     } else if (returnTo && returnTo.focus && document.contains(returnTo) && returnTo !== document.body) {
       try { returnTo.focus({ preventScroll: true }); } catch (e) {}
     } else if (launch) launch.focus();
@@ -542,6 +544,7 @@
       var a = el("a", "hd-btn hd-next"); a.href = nh; a.setAttribute("data-hd-focus", "");
       a.appendChild(document.createTextNode(NEXT.label || "Continue the Demo")); a.insertAdjacentHTML("beforeend", ICON_ARROW);
       card.appendChild(a);
+      if (CFG.endLink) { var ea = el("a", "hd-btn ghost hd-end"); ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; card.appendChild(ea); }
     } else nx.setAttribute("data-hd-focus", "");
     skip.addEventListener("click", function () { endTour(false); });
     bk.addEventListener("click", back); nx.addEventListener("click", next);
@@ -560,13 +563,14 @@
       '<div class="v2-guide-foot"><span class="v2-guide-count"></span>' +
       (i > 0 ? '<button class="v2-button v2-button-quiet" type="button" data-guide="back">Back</button>' : "") +
       '<button class="v2-button' + (last && nh ? "" : " v2-button-primary") + ' v2-guide-next" type="button" data-guide="next"' + (last && nh ? "" : " data-hd-focus") + ">" + (last ? "Finish" : "Next") + "</button></div>" +
-      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "");
+      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a>' + (CFG.endLink ? '<a class="v2-button hd-g-end"></a>' : "") + "</div>" : "");
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + (title ? " · " + title : "");
     card.querySelector(".v2-guide-title").textContent = s.h;
     card.querySelector(".v2-guide-say").textContent = s.p;
     if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
     card.querySelector(".v2-guide-count").textContent = (i + 1) + " of " + STEPS.length;
     if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
+    var ea = card.querySelector(".hd-g-end"); if (ea) { ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; }
     card.onclick = function (e) {
       var b = e.target.closest("[data-guide]"); if (!b) return;
       var act = b.getAttribute("data-guide");

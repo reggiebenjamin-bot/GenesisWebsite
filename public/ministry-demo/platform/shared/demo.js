@@ -29,12 +29,18 @@
   /* The guide's name on Genesis screens and the story pages. Rename it here.
      The assistant stays GM.assistant.name (shared/app.js), or STORY.assistant on the story pages. */
   var GUIDE = "Genesis";
+  /* The church consultation on geai.us: on the last card of the guided demo, and from Hope. */
+  var CONTACT = "/contact?topic=ministry";
+  var CONTACT_LINK = { label: "Book a Consultation", href: CONTACT };
+  var CONTACT_CHIP = { label: "Book a Consultation", href: CONTACT, go: true, cta: true };
+  /* The guided demo ends when the next stop is the overview, the one stop with no tour. */
+  function endOfDemo(nx) { return !!(nx && nx.tour === false); }
   var AN = GM ? GM.assistant.name : STORY.assistant;
 
   /* ------------------------------------------------------------------ scripted answers */
   var LEVELS_TEXT = "Level 01, Welcome: the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. " +
-    "Level 02, Connect: everything in Welcome, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval. " +
-    "Level 03, Shepherd: everything in Connect, plus person pages, the access record, the spiritual gifts picture, reports, team roles and more staff seats. " +
+    "Level 02, Connect: everything in Welcome, plus Today, the guest pipeline, the member app, the care inbox, team roles with the prayer team named, and drafts that wait for approval. " +
+    "Level 03, Shepherd: everything in Connect, plus person pages, the access record, the spiritual gifts picture, reports, custom roles, named gift viewers and more staff seats. " +
     "Enterprise is for more than one campus, scoped on a call. The levels are a draft, and pricing is set with Genesis.";
   var ANSWERS = {
     platform: "Genesis Ministry is the church edition of Genesis OS. Every church gets a website in one of four looks, a brand board, a social marketing plan and " + AN + " on its website. Connect adds a front office for first-time guests, a care inbox and a member app. Shepherd adds a page for each person, the spiritual gifts picture and reports. A person approves everything that goes out.",
@@ -51,10 +57,10 @@
     launch: "About 55 days from signing to live, in the sample. Content and photos come first, then the brand board, the site build, the facts " + AN + " may use, your privacy page, roles and a staff walkthrough.",
     training: "Yes. Your staff get a walkthrough at launch, then a monthly check-in with Genesis. Every screen also has a short guided tour, like this one.",
     staffaccess: "No, not in the ordinary course. Genesis signs in to your workspace only when you open a support session, and that session is recorded where you can see it. An honest limit: the engineers who run the database could technically reach it. The rule, the record and our support policy are the promise.",
-    texting: "Texting is off. Guest follow-up goes by email unless the church turns texting on, and Genesis never texts a church it is reaching out to.",
+    texting: "Texting is off. Guest follow-up goes by email unless the church turns texting on.",
     custom: "Each of the four looks is filled with the church's own content, photos, colors and logo. Customization beyond the template is available for an additional cost.",
     levels: LEVELS_TEXT,
-    outreach: "From public information only: a church's own website, its public Google listing, public directories and public staff contact pages. Genesis keeps public church contacts only. Every email is a draft a person approves, every email has an unsubscribe line, the suppression list is checked before every send, and there is no texting.",
+    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation. Pricing is set on that call, once we understand your church.",
     price: "Pricing is set with Genesis, on a call. This preview never shows a price or a dollar amount, and the levels are a draft. Customization beyond the template is available for an additional cost."
   };
   var RULES = [
@@ -71,7 +77,7 @@
     [/who (can |will |gets to )?(see|sees|read|reads|open)|private|confidential|prayer team see|see (the |my |our )?prayer/i, "prayer"],
     [/sign ?in|log ?in|password|6 digit|sign up|members? need/i, "signin"],
     [/\btext(s|ing)?\b|\bsms\b/i, "texting"],
-    [/how (do|does|will) (you|genesis|we) (find|contact|reach|choose|pick)|where do (the )?(churches|prospects|leads) come|public information|cold (email|call|outreach)|unsubscribe|suppression/i, "outreach"],
+    [/\b(talk|speak) (to|with) (someone|somebody|a person|a human|genesis)|\b(contact|reach|call|email) (genesis|you|someone|a person)\b|\bbook (a |the )?(call|consultation|meeting)\b|\bconsultation\b|\bget started\b/i, "contact"],
     [/\b(prices?|pricing|costs?|how much|fees?|dollars?|afford|budget)\b|\$/i, "price"],
     [/custom\w*|our own (look|design|colou?rs|logo|fonts?)|redesign|change the (look|design)/i, "custom"],
     [/\b(levels?|tiers?|includ\w*|packages?|welcome level|connect level|shepherd level|enterprise)\b|what do (we|i) get|(which|what) plans?\b/i, "levels"],
@@ -213,6 +219,14 @@
     var href = hrefOf(to);
     if (/^church-|^member-/.test(href)) href = GM.url(href);
     return { label: (to.key === "index" ? "" : "Next: ") + to.label, href: href, tour: to.tour !== false, note: skipNote(hop.skipped, to) };
+  }
+
+  /* Where this screen sits on the guided demo path at this level, for the card's eyebrow:
+     "Screen 3 of 12 · ". Empty for a screen off the path. */
+  function screenOf() {
+    var stops = PATH.filter(function (e) { return e.key !== "index" && open(e); });
+    for (var i = 0; i < stops.length; i++) if (stops[i].key === KEY) return "Screen " + (i + 1) + " of " + stops.length + " · ";
+    return "";
   }
 
   /* ------------------------------------------------------------------ shared targets */
@@ -498,7 +512,7 @@
       }
       /* The Hope circle shows on wide screens; on phones Hope lives in the stage bar. */
       var sel = Array.isArray(s.sel) && s.sel[0] === ".hd-launch" ? (window.innerWidth > 520 ? ".hd-launch" : s.sel.slice(1)) : s.sel;
-      out.push({ sel: sel, h: fill(s.h), p: fill(s.p), note: s.note ? fill(s.note) : "", k: MEMBER ? AN + " · " + fill(t.title) : undefined, before: s.before, place: s.place });
+      out.push({ sel: sel, h: fill(s.h), p: fill(s.p), note: s.note ? fill(s.note) : "", k: MEMBER ? AN + " · " + screenOf() + fill(t.title) : undefined, before: s.before, place: s.place });
     });
     return out;
   }
@@ -527,7 +541,7 @@
       look: c.look,
       assistantName: AN,
       guideName: AN,
-      tourTitle: tour ? fill(tour.title) : "",
+      tourTitle: tour ? screenOf() + fill(tour.title) : "",
       church: { name: c.name, short: c.short, city: c.city + ", " + c.state, phone: c.phone, times: c.times },
       brand: { accent: th.accent, accentInk: th.onAccent, accentText: th.accentInk, ink: th.text, surface: th.surface, surface2: th.surface3, line: th.lineStrong, font: th.body, radius: th.radiusLg, buttonRadius: th.btnRadius },
       greeting: "Hi, I am " + AN + ", the assistant in " + c.short + "'s member app. This is a design preview with sample data. Want a short tour of this screen, or do you have a question?",
@@ -549,8 +563,8 @@
         texting: a(ANSWERS.texting, [{ label: "What Do Members Need to Sign In?", key: "signin" }]),
         custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }, { label: "What Does Each Level Include?", key: "levels" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
-        outreach: a(ANSWERS.outreach, [{ label: "What Is Genesis Ministry?", key: "platform" }]),
-        price: a(ANSWERS.price, [{ label: "What Does Each Level Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),
+        contact: a(ANSWERS.contact, [CONTACT_CHIP, { label: "What Is Genesis Ministry?", key: "platform" }]),
+        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),
         giftsinfo: a("The gifts conversation takes about 10 minutes and saves after every tap. It gives gifts to explore, worked out by plain arithmetic, and a member's name is shared with the pastors only after a yes. It comes with " + levelOf("member-gifts").code + ".", [{ label: "How Is the AI Limited?", key: "ai" }]),
         give: a("Give opens " + c.short + "'s own giving form. Genesis never handles the payment, and the app keeps no giving history. Recurring gifts and receipts stay with the church's giving provider.", [{ label: "Does It Replace Planning Center?", key: "pco" }]),
         times: a(c.short + " gathers " + c.times + " in " + c.city + ". The church website has the address, directions and what to expect on a first Sunday.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }])
@@ -564,7 +578,8 @@
       tour: function () { return compile(tour); },
       tourIntro: "Here we go. I will walk you through this screen one part at a time. Use Next to move on, or press Escape to stop.",
       next: nx,
-      finale: { text: tour ? fill(tour.done) : "", chips: [{ label: "Take the Tour Again", key: "tour" }].concat(chipsAbout.slice(0, 2)) },
+      finale: { text: tour ? fill(tour.done) : "", chips: [{ label: "Take the Tour Again", key: "tour" }].concat(chipsAbout.slice(0, 2), endOfDemo(nx) ? [CONTACT_CHIP] : []) },
+      endLink: endOfDemo(nx) ? CONTACT_LINK : null,
       autoStartParam: "tour",
       keepParams: ["church", "plan", "from"],
       autoInvite: false,
@@ -586,10 +601,11 @@
       skin: "genesis",
       assistantName: AN,
       guideName: GUIDE,
-      tourTitle: tour ? fill(tour.title) : "",
+      tourTitle: tour ? screenOf() + fill(tour.title) : "",
       tour: function () { return compile(tour); },
       next: nx,
-      finale: { text: tour ? fill(tour.done) : "", askLabel: "Ask " + AN, links: [] },
+      finale: { text: tour ? fill(tour.done) : "", askLabel: "Ask " + AN, links: endOfDemo(nx) ? [CONTACT_LINK] : [] },
+      endLink: endOfDemo(nx) ? CONTACT_LINK : null,
       openChat: function (prompt) { GM.hope.open(prompt || ""); },
       autoStartParam: "tour",
       keepParams: ["church", "plan", "from"],
@@ -626,9 +642,8 @@
         { sel: ".close-band", h: "See it working", p: "Start the Guided Demo opens Today and walks through every screen with sample data." }
       ] },
       journey: { title: "The journey", done: "That is how Genesis Ministry works, start to finish. Now see it working, screen by screen.", steps: [
-        { sel: [".chapters", ".hero"], h: "Five chapters", p: "A guest's path, how Genesis finds and launches a church, privacy, what the AI does, and the levels." },
+        { sel: [".chapters", ".hero"], h: "Four chapters", p: "A guest's path, privacy, what the AI does, and the levels." },
         { sel: "#guest", h: "From a late night search to a place to serve", p: "Every first-time guest gets an owner, a next step and a date, from New to Serving." },
-        { sel: "#launch", h: "How Genesis finds a church", p: "Public information only, a person approves every email, and every unsubscribe is honored. Then onboarding, launch and a managed platform." },
         { sel: "#privacy", h: "One record per person", p: "Prayer for pastors and the prayer team, alerts with no private words, a record of who opened what, and archive instead of delete." },
         { sel: "#ai", h: "It drafts, then waits", p: AN + " drafts, summarizes and sorts. A person approves everything, and " + AN + " never sets a gifts score." },
         { sel: "#levels", h: "Welcome, Connect, Shepherd", p: "Each level adds to the one before, with Enterprise for more than one campus. The levels are a draft, and pricing is set with Genesis." }
@@ -657,7 +672,7 @@
         { label: "Start the Guided Demo", key: "startdemo" },
         { label: "What Is Genesis Ministry?", key: "platform" },
         { label: "Who Sees Prayer Requests?", key: "prayerwho" },
-        { label: "How Does Genesis Find Churches?", key: "outreach" },
+        { label: "Book a Consultation", href: CONTACT, go: true },
         { label: "Does It Replace Planning Center?", key: "pco" }
       ],
       answers: addMore({
@@ -671,8 +686,8 @@
         texting: a(ANSWERS.texting, more),
         custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
-        outreach: a(ANSWERS.outreach, more),
-        price: a(ANSWERS.price, [{ label: "What Does Each Level Include?", key: "levels" }])
+        contact: a(ANSWERS.contact, [CONTACT_CHIP].concat(more)),
+        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }])
       }, a, more),
       match: RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1]]; }),
       fallback: "Good question. The guided demo shows every screen with sample data, and a person at Genesis can answer the rest on a call. For now, try one of these.",

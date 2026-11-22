@@ -76,7 +76,7 @@
     },
     {
       slug: "warm-community", look: "Warm Community",
-      name: "Goldenrod Commons Church", short: "Goldenrod Commons", city: "Des Moines", state: "IA",
+      name: "Goldenrod Commons Church", short: "Goldenrod", city: "Des Moines", state: "IA",
       pastors: ["Marcus", "Ellie"], leadPastor: "Pastor Marcus", carePastor: "Pastor Ellie",
       times: "Sundays 9:00 and 10:45 AM", phone: "(515) 555-0142", email: "hello@goldenrod.example",
       size: "About 380 on a Sunday", sizeNumber: 380, founded: 2012,
@@ -446,8 +446,8 @@
   /* ================================================================== GENESIS SIDE */
 
   D.genesisTeam = [
-    { id: "g-victor", name: "Victor N.", initials: "VN", role: "Sales Lead", tone: 1 },
-    { id: "g-renee",  name: "Renee S.",  initials: "RS", role: "Acquisition Seat", tone: 2 },
+    { id: "g-victor", name: "Victor N.", initials: "VN", role: "Church Partnerships", tone: 1 },
+    { id: "g-renee",  name: "Renee S.",  initials: "RS", role: "Church Support", tone: 2 },
     { id: "g-amara",  name: "Amara O.",  initials: "AO", role: "Onboarding Lead", tone: 3 },
     { id: "g-jordan", name: "Jordan A.", initials: "JA", role: "Site Designer", tone: 5 }
   ];
@@ -460,163 +460,6 @@
     { n: "04", name: "Launch", line: "Live in the church", church: "The site goes live, staff sign in, and the first guests flow through." },
     { n: "05", name: "Managed Platform", line: "Support and improve", church: "Genesis keeps the site, Hope and the platform running and improving." }
   ];
-
-  /* ------------------------------------------------------------------ acquisition */
-  D.acquisition = {
-    rules: [
-      "Public information only: the church's own website, its public Google listing, public directories and public staff contact pages.",
-      "No personal data beyond public church contact details.",
-      "Outreach is email only. No texting of cold prospects.",
-      "Every message is a Genesis draft that waits for a person's approval.",
-      "Every email has an unsubscribe line and honors the suppression list.",
-      "A prospect clears only when it is properly worked. Then a new one is delivered."
-    ],
-    seat: { id: "g-renee", weeklyDelivery: 50, weekOf: "2026-11-16", delivered: 50, worked: 34, cleared: 31, replaced: 31, waiting: 16, checksSent: 12, replies: 2, callsBooked: 1 },
-    /* Plain arithmetic: each signal adds its points; size in range is required. */
-    signals: [
-      { key: "no-mobile",    label: "Site not built for phones",  points: 20 },
-      { key: "no-giving",    label: "No online giving",           points: 15 },
-      { key: "no-visit",     label: "No Plan a Visit form",       points: 15 },
-      { key: "times-hidden", label: "Service times hard to find", points: 10 },
-      { key: "stale",        label: "Site not updated in a year", points: 10 },
-      { key: "new-pastor",   label: "New lead pastor",            points: 15 },
-      { key: "building",     label: "Building campaign",          points: 10 },
-      { key: "new-campus",   label: "New campus",                 points: 10 },
-      { key: "size",         label: "Size of roughly 100 to 1,000", points: 5, required: true }
-    ],
-    workedStates: ["Email approved and sent, with an outcome logged", "Not a fit, with a reason", "Next step with an owner and a date", "Suppressed at the church's request"],
-    prospects: [
-      { id: "cp-01", name: "Harrow Creek Church", city: "Knoxville", state: "TN", size: 310, sizeSource: "About page says about 300 on Sundays", site: "harrowcreek.example", fit: 85, status: "drafted", delivered: "2026-11-16", owner: "g-renee",
-        signals: ["no-mobile", "no-visit", "times-hidden", "stale", "new-pastor", "size"],
-        whyNow: "A new lead pastor started in September and the website still welcomes visitors with the previous pastor's letter.",
-        evidence: [
-          { signal: "new-pastor", detail: "Staff page lists Pastor Nathan as lead pastor since September 2026.", source: "Church website, staff page", seen: "2026-11-16" },
-          { signal: "no-mobile", detail: "Home page text runs off a phone screen and the menu needs pinch zoom.", source: "Church website, home page on a phone", seen: "2026-11-16" },
-          { signal: "times-hidden", detail: "Service times sit three clicks deep, under About, then Visit, then FAQ.", source: "Church website", seen: "2026-11-16" },
-          { signal: "no-visit", detail: "No form to plan a visit. Only a general contact form.", source: "Church website, contact page", seen: "2026-11-16" },
-          { signal: "stale", detail: "Latest news post is from August 2025.", source: "Church website, news page", seen: "2026-11-16" }
-        ],
-        contact: { label: "Church office", email: "office@harrowcreek.example", phone: "(865) 555-0131", source: "Public contact page" },
-        listedPastor: "Pastor Nathan (listed on the staff page)",
-        nextStep: "Approve the first email with the Website Check offer", due: "2026-11-19" },
-      { id: "cp-02", name: "Saltbox Hill Church", city: "Lancaster", state: "PA", size: 540, sizeSource: "Public directory listing", site: "saltboxhill.example", fit: 75, status: "new", delivered: "2026-11-16", owner: "g-renee",
-        signals: ["no-giving", "building", "times-hidden", "no-visit", "size"],
-        whyNow: "A building campaign launched in October, and giving is still paper envelopes and checks.",
-        evidence: [
-          { signal: "building", detail: "Home page banner announces the Room to Grow campaign, launched October 2026.", source: "Church website, home page", seen: "2026-11-17" },
-          { signal: "no-giving", detail: "Give page lists a mailing address only.", source: "Church website, give page", seen: "2026-11-17" },
-          { signal: "times-hidden", detail: "Times are only in a PDF bulletin.", source: "Church website", seen: "2026-11-17" },
-          { signal: "no-visit", detail: "No visit form found.", source: "Church website", seen: "2026-11-17" }
-        ],
-        contact: { label: "Church office", email: "hello@saltboxhill.example", phone: "(717) 555-0188", source: "Public Google listing" },
-        nextStep: "Run the Website Check", due: "2026-11-20" },
-      { id: "cp-03", name: "Kestrel Park Church", city: "Boise", state: "ID", size: 220, sizeSource: "About page", site: "kestrelpark.example", fit: 70, status: "contacted", delivered: "2026-11-09", owner: "g-renee",
-        signals: ["no-mobile", "no-visit", "new-campus", "times-hidden", "size"],
-        whyNow: "Opening a second campus in Meridian in February, with one website for both.",
-        evidence: [
-          { signal: "new-campus", detail: "News post: Meridian campus opens February 2027.", source: "Church website, news page", seen: "2026-11-10" },
-          { signal: "no-mobile", detail: "Fixed-width layout from an older theme.", source: "Church website on a phone", seen: "2026-11-10" }
-        ],
-        contact: { label: "Church office", email: "office@kestrelpark.example", phone: "(208) 555-0119", source: "Public contact page" },
-        outcome: "First email approved and sent Nov 11. No reply yet.", nextStep: "Follow-up email waits for approval on Nov 23", due: "2026-11-23" },
-      { id: "cp-04", name: "Willowmere Fellowship", city: "Omaha", state: "NE", size: 430, sizeSource: "Public directory listing", site: "willowmere.example", fit: 65, status: "replied", delivered: "2026-11-02", owner: "g-renee",
-        signals: ["no-giving", "no-visit", "stale", "times-hidden", "size"],
-        whyNow: "The site was last updated in 2024 and the Easter page still leads the home page.",
-        evidence: [{ signal: "stale", detail: "Home page leads with Easter 2025 service times.", source: "Church website, home page", seen: "2026-11-03" }],
-        contact: { label: "Executive pastor's office", email: "xp@willowmere.example", phone: "(402) 555-0170", source: "Public staff page" },
-        outcome: "Replied Nov 14: would like the Website Check report.", nextStep: "Send the Website Check and offer a call", due: "2026-11-19", handedTo: "g-victor" },
-      { id: "cp-05", name: "Red Clay Community Church", city: "Chattanooga", state: "TN", size: 180, sizeSource: "Google listing", site: "redclay.example", fit: 60, status: "new", delivered: "2026-11-16", owner: "g-renee",
-        signals: ["no-mobile", "no-giving", "stale", "times-hidden", "size"],
-        whyNow: "Their Google listing shows service times that differ from the website.",
-        evidence: [{ signal: "times-hidden", detail: "Google listing says 10:30 AM; website says 10:00 AM.", source: "Public Google listing and church website", seen: "2026-11-17" }],
-        contact: { label: "Church office", email: "info@redclay.example", phone: "(423) 555-0102", source: "Public contact page" },
-        nextStep: "Run the Website Check", due: "2026-11-20" },
-      { id: "cp-06", name: "Larkmoor Church", city: "Springfield", state: "MO", size: 760, sizeSource: "About page", site: "larkmoor.example", fit: 55, status: "new", delivered: "2026-11-16", owner: "g-renee",
-        signals: ["no-visit", "new-pastor", "times-hidden", "size"],
-        whyNow: "A new lead pastor was announced in October.",
-        evidence: [{ signal: "new-pastor", detail: "News post welcoming Pastor Ezra, October 2026.", source: "Church website, news page", seen: "2026-11-17" }],
-        contact: { label: "Church office", email: "office@larkmoor.example", phone: "(417) 555-0155", source: "Public contact page" },
-        nextStep: "Run the Website Check", due: "2026-11-21" },
-      { id: "cp-07", name: "Juniper Street Church", city: "Spokane", state: "WA", size: 140, sizeSource: "Public directory listing", site: "juniperstreet.example", fit: 50, status: "checking", delivered: "2026-11-16", owner: "g-renee",
-        signals: ["no-mobile", "no-giving", "no-visit", "size"],
-        whyNow: "A small church with no way to give online and a site that does not work on phones.",
-        evidence: [{ signal: "no-giving", detail: "No give page.", source: "Church website", seen: "2026-11-18" }],
-        contact: { label: "Church office", email: "hello@juniperstreet.example", phone: "(509) 555-0144", source: "Public contact page" },
-        nextStep: "Finish the Website Check", due: "2026-11-19" },
-      { id: "cp-08", name: "Old Mill Commons Church", city: "Fort Wayne", state: "IN", size: 290, sizeSource: "About page", site: "oldmillcommons.example", fit: 45, status: "not-a-fit", delivered: "2026-11-09", owner: "g-renee",
-        signals: ["stale", "times-hidden", "size"],
-        whyNow: "Older site, but a new one is already in progress.",
-        evidence: [{ signal: "stale", detail: "Coming soon page for a new site, built by a volunteer.", source: "Church website", seen: "2026-11-10" }],
-        contact: { label: "Church office", email: "office@oldmillcommons.example", phone: "(260) 555-0127", source: "Public contact page" },
-        outcome: "Not a fit: a new site is being built by a volunteer. Revisit in six months.", nextStep: "None", due: null },
-      { id: "cp-09", name: "Brightford Chapel", city: "Lexington", state: "KY", size: 360, sizeSource: "Public directory listing", site: "brightford.example", fit: 40, status: "suppressed", delivered: "2026-11-02", owner: "g-renee",
-        signals: ["no-visit", "times-hidden", "size"],
-        whyNow: "No visit form.",
-        evidence: [{ signal: "no-visit", detail: "No visit form.", source: "Church website", seen: "2026-11-03" }],
-        contact: { label: "Church office", email: "office@brightford.example", phone: "(859) 555-0166", source: "Public contact page" },
-        outcome: "Unsubscribed Nov 6. On the suppression list.", nextStep: "None", due: null },
-      { id: "cp-10", name: "Riverglass Church", city: "Little Rock", state: "AR", size: 610, sizeSource: "About page", site: "riverglass.example", fit: 80, status: "booked", delivered: "2026-10-26", owner: "g-renee",
-        signals: ["no-mobile", "no-visit", "building", "stale", "times-hidden", "size"],
-        whyNow: "Building campaign plus a site that is hard to use on phones.",
-        evidence: [{ signal: "building", detail: "Capital campaign page launched September 2026.", source: "Church website", seen: "2026-10-27" }],
-        contact: { label: "Executive pastor's office", email: "xp@riverglass.example", phone: "(501) 555-0181", source: "Public staff page" },
-        outcome: "Discovery call booked for Nov 24.", nextStep: "Handed to Sales", due: "2026-11-24", handedTo: "g-victor" }
-    ],
-    /* The Website Check sample report for cp-01 (the door opener). */
-    websiteCheck: {
-      prospectId: "cp-01", runOn: "2026-11-17", overall: "Needs attention",
-      areas: [
-        { key: "phones",  label: "Works on a phone",          result: "Needs work", detail: "Text runs off the screen at phone width and the menu needs zooming. Most first-time guests look on a phone." },
-        { key: "times",   label: "Service times and address", result: "Hard to find", detail: "Times are three clicks deep. Guests expect them on the first screen." },
-        { key: "visit",   label: "Plan a Visit",              result: "Missing", detail: "There is no way to say \"I am coming Sunday\", so nobody can get ready to welcome them." },
-        { key: "giving",  label: "Online giving",             result: "Working", detail: "A giving link works, though it opens a separate site." },
-        { key: "fresh",   label: "Up to date",                result: "Out of date", detail: "The newest post is from August 2025, and the welcome letter is from the previous pastor." },
-        { key: "speed",   label: "Speed on a phone",          result: "Slow", detail: "The home page takes about 5 seconds to show on a typical phone connection." },
-        { key: "access",  label: "Easy to read",              result: "Needs work", detail: "Light gray text on white is hard to read for many people." }
-      ],
-      recommendations: ["Put service times and the address on the first screen", "Add a Plan a Visit form that tells a person to get ready", "Rebuild the site so it works on phones first", "Refresh the welcome page with the new pastor"]
-    },
-    sequence: [
-      { step: 1, day: 0, name: "The Website Check offer", note: "Opens with what already works, then offers the free report." },
-      { step: 2, day: 5, name: "A gentle follow-up", note: "One more finding and a link to see a sample site." },
-      { step: 3, day: 12, name: "The last note", note: "Says we will not write again unless they reply." }
-    ],
-    outreach: [
-      { id: "o-01", prospectId: "cp-01", step: 1, status: "waiting", createdBy: "Genesis", to: "office@harrowcreek.example",
-        subject: "A free website check for Harrow Creek",
-        body: "Hello Harrow Creek team,\n\nWelcome to Pastor Nathan. I looked at your website the way a first-time guest would. Your giving link is easy to find, and the welcome letter on your home page is warm. A few things are harder on a phone, like service times sitting three clicks deep.\n\nI put together a free Church Website Check: what already works, what we saw and a plain fix for each. Would you like me to send it?\n\nRenee S., Genesis Ministry",
-        footer: "Genesis AI, [business postal address]. You are getting this because office@harrowcreek.example is listed on your public contact page. Unsubscribe with one click, or reply \"unsubscribe\" and we will not write again." },
-      { id: "o-02", prospectId: "cp-03", step: 2, status: "waiting", createdBy: "Genesis", to: "office@kestrelpark.example", sendOn: "2026-11-23",
-        subject: "One more thought for the Meridian campus",
-        body: "Hello again,\n\nWith Meridian opening in February, one site will need to show two sets of service times clearly. Here is a sample church site that does that well on a phone.\n\nThe free Website Check is still yours if it would help.\n\nRenee S., Genesis Ministry",
-        footer: "Genesis AI, [business postal address]. You are getting this because office@kestrelpark.example is listed on your public contact page. Unsubscribe with one click, or reply \"unsubscribe\" and we will not write again." },
-      { id: "o-03", prospectId: "cp-04", step: 0, status: "waiting", createdBy: "Genesis", to: "xp@willowmere.example",
-        subject: "Your Website Check, as promised",
-        body: "Thank you for writing back. Your Website Check is attached. The two biggest wins would be service times on the first screen and a Plan a Visit form.\n\nIf it would help, Victor can walk you through it in 20 minutes. Any time next week works.\n\nRenee S., Genesis Ministry",
-        footer: "Genesis AI, [business postal address]. You are getting this because xp@willowmere.example is listed on your public staff page. Unsubscribe with one click, or reply \"unsubscribe\" and we will not write again." },
-      { id: "o-04", prospectId: "cp-03", step: 1, status: "sent", createdBy: "Genesis", approvedBy: "g-renee", sentOn: "2026-11-11", to: "office@kestrelpark.example", subject: "A free website check for Kestrel Park", outcome: "No reply yet" },
-      { id: "o-05", prospectId: "cp-04", step: 1, status: "replied", createdBy: "Genesis", approvedBy: "g-renee", sentOn: "2026-11-04", to: "xp@willowmere.example", subject: "A free website check for Willowmere", outcome: "Replied Nov 14" },
-      { id: "o-06", prospectId: "cp-09", step: 1, status: "unsubscribed", createdBy: "Genesis", approvedBy: "g-renee", sentOn: "2026-11-04", to: "office@brightford.example", subject: "A free website check for Brightford", outcome: "Unsubscribed Nov 6" }
-    ],
-    suppression: [
-      { entry: "office@brightford.example", reason: "Unsubscribed", added: "2026-11-06" },
-      { entry: "pastor@eastgatefellowship.example", reason: "Asked not to be contacted", added: "2026-10-28" },
-      { entry: "lightwell.example", reason: "Already a Genesis client (domain)", added: "2026-09-01" },
-      { entry: "lampstand.example", reason: "Already a Genesis client (domain)", added: "2026-10-22" },
-      { entry: "goldenrod.example", reason: "Already a Genesis client (domain)", added: "2026-11-12" },
-      { entry: "calderhill.example", reason: "In a conversation with Genesis (domain)", added: "2026-10-14" },
-      { entry: "office@stonecrop.example", reason: "Bounced twice", added: "2026-10-15" },
-      { entry: "info@fernway.example", reason: "Unsubscribed", added: "2026-10-09" }
-    ],
-    weekly: {
-      weeks: ["Sep 28", "Oct 5", "Oct 12", "Oct 19", "Oct 26", "Nov 2", "Nov 9", "Nov 16"],
-      delivered: [50, 50, 50, 50, 50, 50, 50, 50],
-      worked:    [38, 41, 44, 40, 46, 43, 45, 34],
-      checksSent:[9, 11, 12, 10, 14, 12, 13, 12],
-      replies:   [1, 1, 1, 1, 2, 1, 1, 2],
-      callsBooked:[0, 1, 0, 1, 1, 0, 1, 1]
-    }
-  };
 
   /* ------------------------------------------------------------------ sales */
   /* Never a dollar amount. Plans show a level, and "Pricing set with Genesis". */
@@ -634,61 +477,12 @@
       { id: "a-lampstand",  church: "bold-dark",        name: "Lampstand Church", city: "Columbus", state: "OH", stage: "onboarding", level: 3, look: "bold-dark", owner: "g-amara", signed: "2026-10-22", launchTarget: "2027-01-10", next: "Site build review with Pastor Talia", due: "2026-11-24", source: "Inbound from geai.us", demo: true },
       { id: "a-goldenrod",  church: "warm-community",   name: "Goldenrod Commons Church", city: "Des Moines", state: "IA", stage: "signed", level: 2, look: "warm-community", owner: "g-victor", signed: "2026-11-12", launchTarget: "2027-02-01", next: "Kickoff call and photo checklist", due: "2026-11-20", source: "Website Check reply", demo: true },
       { id: "a-calderhill", church: "classic-timeless", name: "Calder Hill Chapel", city: "Richmond", state: "VA", stage: "proposal", level: 3, look: "classic-timeless", owner: "g-victor", proposalSent: "2026-11-16", next: "Elder board decision", due: "2026-12-01", source: "Conference conversation", demo: true },
-      { id: "a-riverglass", prospectId: "cp-10", name: "Riverglass Church", city: "Little Rock", state: "AR", stage: "discovery", level: null, look: null, owner: "g-victor", next: "Discovery call", due: "2026-11-24", source: "Acquisition: Website Check" },
-      { id: "a-willowmere", prospectId: "cp-04", name: "Willowmere Fellowship", city: "Omaha", state: "NE", stage: "lead", level: null, look: null, owner: "g-victor", next: "Send the Website Check and offer a call", due: "2026-11-19", source: "Acquisition: reply" },
-      { id: "a-ashgrove",   name: "Ashgrove Chapel", city: "Greenville", state: "SC", stage: "demo", level: 2, look: "classic-timeless", owner: "g-victor", next: "Guided demo with the executive pastor", due: "2026-11-21", source: "Inbound from geai.us" },
-      { id: "a-mapleshade", name: "Mapleshade Bible Church", city: "Wichita", state: "KS", stage: "demo", level: 3, look: "warm-community", owner: "g-victor", next: "Second demo for the care team", due: "2026-11-25", source: "Referral" },
-      { id: "a-fernhollow", name: "Fern Hollow Church", city: "Madison", state: "WI", stage: "discovery", level: null, look: null, owner: "g-victor", next: "Discovery call", due: "2026-11-20", source: "Acquisition: Website Check" },
-      { id: "a-tidewater",  name: "Tidewater Lantern Church", city: "Norfolk", state: "VA", stage: "proposal", level: 2, look: "bright-modern", owner: "g-victor", proposalSent: "2026-11-13", next: "Follow up on the proposal", due: "2026-11-20", source: "Inbound from geai.us" },
-      { id: "a-stonebridge",name: "Stonebridge Crossing Church", city: "Charlotte", state: "NC", stage: "lead", level: null, look: null, owner: "g-victor", next: "First call", due: "2026-11-22", source: "Inbound from geai.us" },
-      { id: "a-northfold",  name: "Northfold Church", city: "Columbia", state: "MO", stage: "proposal", level: 4, look: "bold-dark", owner: "g-victor", proposalSent: "2026-11-05", next: "Enterprise scoping call for the second campus, before signing", due: "2026-11-23", source: "Referral" }
-    ],
-    onboardingSteps: [
-      { key: "content",  label: "Content and photos collected", who: "Church" },
-      { key: "brand",    label: "Brand board approved", who: "Church" },
-      { key: "social",   label: "Social plan delivered", who: "Genesis" },
-      { key: "build",    label: "Site build", who: "Genesis" },
-      { key: "hope",     label: "Hope facts approved by the church", who: "Church" },
-      { key: "privacy",  label: "Privacy page and reporting wording approved", who: "Church" },
-      { key: "connect",  label: "Giving, events and people import connected", who: "Genesis" },
-      { key: "platform", label: "Platform set up", who: "Genesis", minLevel: 2 },
-      { key: "roles",    label: "Roles and prayer team named", who: "Church", minLevel: 2 },
-      { key: "training", label: "Staff walkthrough", who: "Both", minLevel: 2 },
-      { key: "launch",   label: "Launch", who: "Both" }
-    ],
-    /* status: "done" | "current" | "waiting" (on the church) | "todo" | "skip" (not in the plan) */
-    onboarding: {
-      "a-lightwell":  { content: "done", brand: "done", social: "done", build: "done", hope: "done", privacy: "done", connect: "done", platform: "done", roles: "done", training: "done", launch: "done", launched: "2026-09-14" },
-      "a-lampstand":  { content: "done", brand: "done", social: "done", build: "current", hope: "waiting", privacy: "todo", connect: "current", platform: "todo", roles: "todo", training: "todo", launch: "todo", notes: "Hope facts are with Pastor Talia for approval." },
-      "a-goldenrod":  { content: "current", brand: "todo", social: "todo", build: "todo", hope: "todo", privacy: "todo", connect: "todo", platform: "todo", roles: "todo", training: "todo", launch: "todo", notes: "Photo checklist sent. 18 of 40 photos in." },
-      "a-kettleridge":{ content: "done", brand: "done", social: "done", build: "done", hope: "done", privacy: "waiting", connect: "done", platform: "current", roles: "done", training: "todo", launch: "todo", notes: "The privacy page and reporting wording are with the church for approval." }
-    },
-    /* Churches signed or live that the four demo accounts do not cover, so counts match monthly.signed. All fictional. */
-    extraAccounts: [
-      { id: "a-thistlebrook", name: "Thistlebrook Church", city: "Fayetteville", state: "AR", stage: "managed", level: 2, look: "warm-community", owner: "g-amara", size: 340, signed: "2026-08-11", launched: "2026-10-05", source: "Referral", next: "First monthly check-in", due: "2026-12-03" },
-      { id: "a-saltmeadow", name: "Saltmeadow Chapel", city: "Mobile", state: "AL", stage: "managed", level: 3, look: "classic-timeless", owner: "g-amara", size: 480, signed: "2026-09-02", launched: "2026-10-29", source: "Inbound from geai.us", next: "Open the gifts conversation to members", due: "2026-12-01" },
-      { id: "a-larkspur", name: "Larkspur Hill Church", city: "Boise", state: "ID", stage: "managed", level: 2, look: "bold-dark", owner: "g-amara", size: 260, signed: "2026-09-23", launched: "2026-11-16", source: "Acquisition: Website Check", next: "Two-week check-in after launch", due: "2026-11-30" },
-      { id: "a-kettleridge", name: "Kettle Ridge Church", city: "Tulsa", state: "OK", stage: "onboarding", level: 2, look: "bright-modern", owner: "g-amara", size: 390, signed: "2026-10-07", launchTarget: "2026-12-07", source: "Referral", next: "Approve the privacy page with the church office", due: "2026-11-23" }
-    ],
-    monthly: {
-      months: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
-      leads:     [6, 9, 11, 14, 17, 12],
-      discovery: [3, 5, 6, 8, 9, 7],
-      demos:     [2, 3, 4, 6, 6, 5],
-      proposals: [1, 2, 2, 4, 4, 3],
-      signed:    [0, 1, 1, 2, 2, 1]
-    },
-    sourcesThisQuarter: [{ label: "Acquisition: Website Check", value: 9 }, { label: "Inbound from geai.us", value: 8 }, { label: "Referral", value: 6 }, { label: "Conference", value: 2 }]
+    ]
   };
 
-  /* Genesis drafts on the Genesis side (outreach and sales follow-ups). */
-  D.genesisDrafts = [
-    { id: "gd-01", side: "genesis", kind: "Outreach email", outreach: "o-01", prospect: "cp-01", channel: "Email", owner: "g-renee", why: "New lead pastor, and three Website Check findings.", subject: "A free website check for Harrow Creek", body: "Hello Harrow Creek team,\n\nWelcome to Pastor Nathan. I looked at your website the way a first-time guest would. Your giving link is easy to find, and the welcome letter on your home page is warm. A few things are harder on a phone, like service times sitting three clicks deep.\n\nI put together a free Church Website Check: what already works, what we saw and a plain fix for each. Would you like me to send it?\n\nRenee S., Genesis Ministry", footer: "Genesis AI, [business postal address]. You are getting this because office@harrowcreek.example is listed on your public contact page. Unsubscribe with one click, or reply \"unsubscribe\" and we will not write again." },
-    { id: "gd-02", side: "genesis", kind: "Proposal follow-up", deal: "a-tidewater", channel: "Email", owner: "g-victor", why: "Proposal sent Nov 13, no reply in 6 days.", subject: "Questions on the Connect proposal?", body: "Hi Pastor Grant,\n\nChecking in on the Level 02 Connect proposal. Happy to walk your team through the guest pipeline again, or answer anything the board asked.\n\nVictor N., Genesis Ministry" }
-  ];
-  D.genesisSummaries = [
-    { id: "gs-week", side: "genesis", title: "This week, in counts", body: "Fifty prospects delivered on Monday; 34 worked and 31 replaced so far. Twelve Website Checks sent, two replies and one call booked. Three outreach emails wait for approval. Calder Hill's proposal is with their elder board until Dec 1." }
-  ];
+  /* The Genesis side has no drafts or summaries in the public preview. */
+  D.genesisDrafts = [];
+  D.genesisSummaries = [];
 
   window.GM_DATA = D;
 })();

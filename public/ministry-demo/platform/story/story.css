@@ -199,6 +199,8 @@ button { font: inherit; color: inherit; }
 .site-header .shell { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 100%; }
 .brand { display: inline-flex; align-items: center; min-height: 48px; text-decoration: none; color: inherit; flex: none; }
 .brand img { width: 37px; height: 37px; object-fit: contain; }
+/* Light theme: the white half of the mark would vanish on ivory. Inverting the lightness keeps the hue, so the mark reads in ink and deep gold. */
+:root[data-theme="light"] .brand img { filter: invert(1) hue-rotate(180deg); }
 .brand-word { position: relative; top: 1px; margin-left: -2px; display: flex; align-items: baseline; gap: 6px; font-family: var(--font-mono); line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }
 .brand-word b { font-size: 0.87rem; font-weight: 600; }
 .brand-word i { font-style: normal; font-size: 0.72rem; font-weight: 700; color: var(--gold-light); }
