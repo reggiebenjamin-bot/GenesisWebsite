@@ -160,7 +160,7 @@ GM.ready(function (ctx) {
         chartCard("rp-c-reply", "Hours to first reply", "Median hours from a new thread to a person's first reply, by week.", basis("Last twelve weeks"), "reports.reply") +
         chartCard("rp-c-path", "Guests to members", "Guests since December 1, by the furthest step reached.", basis("Last twelve months"), "reports.path") +
       "</div>" +
-      '<section class="v2-card" aria-labelledby="rp-protect-title" data-tour="reports.protect">' + head("rp-protect-title", "What these reports never show", "On for every church, at every level.") + '<ul class="gm-protect-list" id="rp-protect"></ul></section>' +
+      '<section class="v2-card" aria-labelledby="rp-protect-title" data-tour="reports.protect">' + head("rp-protect-title", "What these reports never show", "On for every church, on every plan.") + '<ul class="gm-protect-list" id="rp-protect"></ul></section>' +
       asOf;
   }
   function briefCard(eyebrow, value, title, text) { return "<article><small>" + esc(eyebrow) + "</small><b>" + esc(value) + "</b><h3>" + esc(title) + "</h3><p>" + esc(text) + "</p></article>"; }

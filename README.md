@@ -152,7 +152,7 @@ drawn placeholder is too small to read.
 
 The four posters are in place now: 1920 by 1080 stills from the public demo,
 with Lampstand Church, a made up sample church. `demo-landscape.jpg` is Today
-at Level 03 in the light theme with the Hope dock closed; `loop-front-office.jpg`
+on Plus in the light theme with the Hope dock closed; `loop-front-office.jpg`
 is the Guests view; `loop-back-office.jpg` is the care inbox, with prayer shown
 only as locked topics; `loop-member-app.jpg` is the member app home screen in a
 phone on a calm ivory background. Each still keeps the demo's "Design preview.
@@ -196,7 +196,7 @@ The source belongs to another team and is only read. The script:
   edits the copied pages and scripts so nothing public links to it, tours it or
   points at it: the hub's Growth Desk doors and links, the Growth Desk entries
   in the account menu and Jump To, and the tours and demo path stops on its
-  screens go, Compare Levels opens the levels on the hub (or, from the hub, the
+  screens go, Compare Plans opens the plans on the hub (or, from the hub, the
   journey), and the guided demo starts at Today. The journey's chapter on how
   Genesis finds a church goes too (the journey has four chapters), with Hope's
   "How Does Genesis Find Churches?" answer and the Growth Desk's own sample
@@ -215,7 +215,10 @@ The source belongs to another team and is only read. The script:
   file: Level 01 (Welcome) becomes Care, Level 02 (Connect) Shepherd and
   Level 03 (Shepherd) Plus, with $149, $299 and $499 a month where the demo
   said "Pricing set with Genesis", and Hope's price answer is the same
-  sentence as on `/ministry`. The renames assume the source still names the
+  sentence as on `/ministry`. Where a reader saw the word "level" ("Compare
+  Levels", "Demo This Level", "Switch the level"), the copy says "plan", and
+  "at" before a plan name reads "on the ... plan". Class names, data keys and
+  the `#levels` anchor keep the word. The renames assume the source still names the
   draft levels, and the sync stops if it does not.
 - adds `<meta name="robots" content="noindex">` to any page without it.
 - builds the copy in a temporary folder and replaces `public/ministry-demo/`
@@ -225,14 +228,15 @@ The source belongs to another team and is only read. The script:
   "prospect"; the only link to the rest of geai.us is `/contact?topic=ministry`;
   every local link in a page, stylesheet or platform script
   resolves to a copied file, every script compiles, and no page or script
-  keeps a Level 01 to 03 label, an old level name, a draft level note or
-  "pricing set with Genesis". Otherwise it stops and leaves the old copy as
+  keeps a Level 01 to 03 label, an old level name, a draft level note, the
+  word "level" where a reader sees it, or "pricing set with Genesis". Otherwise it stops and leaves the old copy as
   it was.
 
-**Re-sync needed.** The committed `public/ministry-demo/` was synced before
-the three plans, so it still shows the draft levels. The next sync gives it
-the plans; until then `tests/ministry-demo-public.test.ts` marks its check of
-the plans in the copy as todo.
+**The committed copy.** `public/ministry-demo/` is synced from genesis-ministry
+commit `432d5cd`, exported with `git archive` as described below, so it shows
+the three plans and their prices. The three desktop posters in
+`public/video/ministry/` were retaken from it, so their plan switcher reads
+Care, Shepherd and Plus.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.

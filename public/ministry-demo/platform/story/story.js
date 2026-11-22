@@ -1,5 +1,5 @@
 /* Genesis Ministry story pages: the front door, the journey and the template gallery.
-   Theme, the phone menu, the demo church and level that every platform link carries,
+   Theme, the phone menu, the demo church and plan that every platform link carries,
    the assistant's name, and the calm step highlight on the journey diagrams.
    Nothing is fetched and nothing is sent. */
 (function () {
@@ -59,11 +59,11 @@
       var v = k === "place" ? church.city + ", " + church.state : church[k];
       if (v != null) el.textContent = v;
     });
-    document.querySelectorAll("[data-plan-text]").forEach(function (el) { el.textContent = "Level 0" + plan; });
+    document.querySelectorAll("[data-plan-text]").forEach(function (el) { el.textContent = ["Care","Shepherd","Plus"][plan - 1]; });
   }
 
   /* ------------------------------------------------------------------ links and images */
-  /* Platform links carry the demo church and level, the way the app's own links do.
+  /* Platform links carry the demo church and plan, the way the app's own links do.
      A link that names its own plan keeps it. */
   function withParams(href, setPlan) {
     var hash = "", q = "", path = href;

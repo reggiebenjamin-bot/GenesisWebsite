@@ -120,7 +120,7 @@
     </section>
 
     <section class="v2-section" aria-labelledby="cr-protect-title" data-tour="care.protect">
-      <div class="v2-section-head"><div><h2 id="cr-protect-title">How care is protected</h2><p id="cr-protect-sub">On for every church that keeps care in the workspace, from Level 02.</p></div></div>
+      <div class="v2-section-head"><div><h2 id="cr-protect-title">How care is protected</h2><p id="cr-protect-sub">On for every church that keeps care in the workspace, from Shepherd.</p></div></div>
       <div class="v2-card"><ul class="gm-protect-list" id="cr-protect"></ul></div>
     </section>
 
@@ -203,7 +203,7 @@ GM.ready(function (ctx) {
   function draftWaiting(it) { return !!(it.draft && hopeIncluded && GM.draftStatus(it.draft) === "waiting"); }
   function canSee(it) { return ROLES[state.role].can(it); }
   function roleViewer() { return GM.staff(ROLES[state.role].viewer); }
-  function l3() { return '<em class="gm-nav-lock" title="Included in Level 03"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>L03</em><span class="sr-only">, included in Level 03</span>'; }
+  function l3() { return '<em class="gm-nav-lock" title="Included in Plus"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</em><span class="sr-only">, included in Plus</span>'; }
   function statusBadge(it) {
     if (it.archived) return GM.pill("Archived", "neutral");
     if (it.crisis) return GM.pill("Cared For", "positive");
@@ -424,7 +424,7 @@ GM.ready(function (ctx) {
       var line = a.who === "system" ? "<b>Automatic alert</b> sent: " + esc(a.what.replace(/^.*?by email: /, "").replace(/^Pastor on call, by email and phone notification, with no private words$/, "Urgent request. Sign in to read. By email and a phone notification.")) : "<b>" + esc(w.name) + "</b> " + esc(a.action.toLowerCase()) + (a.action === "Opened" ? " it." : a.action === "Replied" ? " in the thread." : ".");
       return '<div class="v2-activity-row">' + line + "<small>" + esc(fmt.when(a.at)) + "</small></div>";
     }).join("");
-    var who = '<section class="v2-card" aria-labelledby="cr-open-title" data-tour="care.opened"><h2 id="cr-open-title">Who opened this</h2><p class="v2-muted-copy">' + (accessIncluded ? "Every open, reply and archive is recorded. Nobody can edit it, not even a pastor." : "Every open is recorded. Shepherd adds the Access Record screen to search and export it.") + "</p>" +
+    var who = '<section class="v2-card" aria-labelledby="cr-open-title" data-tour="care.opened"><h2 id="cr-open-title">Who opened this</h2><p class="v2-muted-copy">' + (accessIncluded ? "Every open, reply and archive is recorded. Nobody can edit it, not even a pastor." : "Every open is recorded. Plus adds the Access Record screen to search and export it.") + "</p>" +
       '<div class="v2-rec-activity">' + rows + "</div>" +
       '<p class="cr-foot-link"><a class="gm-link" href="church-access.html">Open the Access Record</a>' + (accessIncluded ? "" : " " + l3()) + "</p></section>";
     $("cr-context").innerHTML = mails + who;
@@ -501,7 +501,7 @@ GM.ready(function (ctx) {
     ["Alerts carry no words", "Emails say \"New request. Sign in to read.\" and nothing more."],
     ["A person writes prayer replies", HOPE + " drafts everyday answers only, and each one waits for approval."],
     ["Archive, not delete", "Nothing pastoral is erased by accident. It stays on the person's page."],
-    accessIncluded ? ["A record of who looked", "Every open, reply and archive is written to the access record."] : ["Every open is recorded", "Every open, reply and archive is recorded. Shepherd adds the Access Record screen."]
+    accessIncluded ? ["A record of who looked", "Every open, reply and archive is written to the access record."] : ["Every open is recorded", "Every open, reply and archive is recorded. Plus adds the Access Record screen."]
   ];
   $("cr-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("");
 

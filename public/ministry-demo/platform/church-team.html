@@ -129,9 +129,9 @@ GM.ready(function (ctx) {
   var canPrayer = team.filter(function (s) { return s.caps.indexOf("pastor") >= 0 || s.caps.indexOf("prayer") >= 0; });
   var canGifts = team.filter(function (s) { return s.caps.indexOf("giftNames") >= 0; });
   var sofia = GM.staff("s-sofia");
-  /* Level 02 has the four roles and a named prayer team. Level 03 adds custom roles and named gift viewers. */
+  /* Shepherd has the four roles and a named prayer team. Plus adds custom roles and named gift viewers. */
   var shepherd = GM.isIncluded("custom-roles");
-  function l3(text) { return '<span class="tm-l3">' + (text ? '<span class="v2-deal-why is-calm">' + esc(text) + "</span>" : "") + '<em class="gm-nav-lock" title="Included in Level 03"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>L03</em><span class="sr-only">, included in Level 03</span></span>'; }
+  function l3(text) { return '<span class="tm-l3">' + (text ? '<span class="v2-deal-why is-calm">' + esc(text) + "</span>" : "") + '<em class="gm-nav-lock" title="Included in Plus"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</em><span class="sr-only">, included in Plus</span></span>'; }
   function role(k) { for (var i = 0; i < D.roles.length; i++) if (D.roles[i].key === k) return D.roles[i]; return { key: k, label: k, sees: "" }; }
   function rolePill(k) { return GM.pill(role(k).label, k === "prayer" ? "info" : k === "pastor" ? "gold" : "neutral"); }
   function yes(t) { return GM.pill(t || "Yes", "positive"); }
@@ -148,7 +148,7 @@ GM.ready(function (ctx) {
   /* ---------- The numbers ---------- */
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
   $("tm-pulse").innerHTML =
-    pulse("Staff seats in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + " (draft levels). " + (shepherd ? "Custom roles included." : "Shepherd adds custom roles and more seats.")) +
+    pulse("Staff seats in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + ". " + (shepherd ? "Custom roles included." : "Plus adds custom roles and more seats.")) +
     pulse("Can open prayer", canPrayer.length, "Two pastors and the prayer team. Nobody else.") +
     pulse("Two-step sign in", "On", "For all " + team.length + ", through church Google accounts.");
 
@@ -203,7 +203,7 @@ GM.ready(function (ctx) {
     var mobile = rows.map(function (s) {
       return '<article><div class="tm-mobile-head"><b>' + esc(s.name) + "</b>" + editButton(s) + "</div><small>" + esc(s.role) + "</small>" +
         "<dl><div><dt>Role</dt><dd>" + esc(role(s.roleKey).label) + "</dd></div><div><dt>Opens prayer</dt><dd>" + (prayer(s) ? "Yes" : "No") + "</dd></div>" +
-        "<div><dt>Gift names</dt><dd>" + (!shepherd ? "Level 03" : gifts(s) ? (s.roleKey === "pastor" ? "Yes" : "Named") : "No") + "</dd></div><div><dt>Two-step</dt><dd>On</dd></div></dl></article>";
+        "<div><dt>Gift names</dt><dd>" + (!shepherd ? "Plus" : gifts(s) ? (s.roleKey === "pastor" ? "Yes" : "Named") : "No") + "</dd></div><div><dt>Two-step</dt><dd>On</dd></div></dl></article>";
     }).join("");
     $("tm-team").innerHTML = '<div class="v2-table-meta"><span>' + (rows.length === team.length ? team.length + " people · " + churchSeats.length + " use a staff seat" : fmt.plural(rows.length, "person", "people") + " shown of " + team.length) + "</span><span>Only the lead pastor changes a role</span></div>" +
       (rows.length
@@ -259,7 +259,7 @@ GM.ready(function (ctx) {
     '<h3 class="tm-card-sub">Who can see gift names</h3>' +
     (shepherd
       ? setRows(canGifts, function (s) { return s.roleKey === "pastor" ? GM.pill("Pastor", "gold") : GM.pill("Named", "info"); }) + '<p class="v2-muted-copy">Only for people who said yes to sharing. Pastors name anyone else who may see them.</p>'
-      : '<p class="v2-muted-copy">Named gift viewers come with Level 03, Shepherd, with the spiritual gifts picture. ' + l3() + "</p>");
+      : '<p class="v2-muted-copy">Named gift viewers come with Plus, with the spiritual gifts picture. ' + l3() + "</p>");
 
   /* ---------- Sign in and safety ---------- */
   var sec = [
@@ -289,7 +289,7 @@ GM.ready(function (ctx) {
   $("tm-roles").innerHTML = D.roles.map(function (r) {
     var holders = team.filter(function (s) { return s.roleKey === r.key; });
     return '<article class="v2-level-card"><b class="v2-level-title">' + esc(r.label) + '</b><span class="v2-level-copy">' + esc(r.sees) + '</span><span class="v2-level-example"><small>Held by ' + holders.length + "</small><b>" + esc(holders.map(function (s) { return s.name; }).join(", ")) + "</b></span></article>";
-  }).join("") + '<article class="v2-level-card' + (shepherd ? "" : " is-locked") + '"><b class="v2-level-title">Custom role ' + (shepherd ? "" : l3()) + '</b><span class="v2-level-copy">' + (shepherd ? "Shaped to your church, with exactly what it needs. Example: Care Meals Coordinator sees the care meals list and nothing more." : "Shepherd adds roles shaped to your church, like a care meals coordinator, and named gift viewers.") + '</span><span class="v2-level-example"><small>' + (shepherd ? "Held by 0" : "Included in") + "</small><b>" + (shepherd ? "Ready when you need it" : "Level 03, Shepherd") + "</b></span></article>";
+  }).join("") + '<article class="v2-level-card' + (shepherd ? "" : " is-locked") + '"><b class="v2-level-title">Custom role ' + (shepherd ? "" : l3()) + '</b><span class="v2-level-copy">' + (shepherd ? "Shaped to your church, with exactly what it needs. Example: Care Meals Coordinator sees the care meals list and nothing more." : "Plus adds roles shaped to your church, like a care meals coordinator, and named gift viewers.") + '</span><span class="v2-level-example"><small>' + (shepherd ? "Held by 0" : "Included in") + "</small><b>" + (shepherd ? "Ready when you need it" : "Plus") + "</b></span></article>";
   /* y = yes, n = no, or a short note for a partial yes. Order: pastor, prayer, staff, admin. */
   var matrix = [
     ["Guests and follow-ups", ["y", "n", "y", "n"]],
@@ -306,7 +306,7 @@ GM.ready(function (ctx) {
   var cell = function (v) { return v === "y" ? yes() : v === "n" ? no() : GM.pill(v, "info"); };
   $("tm-matrix").innerHTML = '<div class="v2-table-meta"><span>What each role can open</span><span>The prayer team sees prayer and nothing more</span></div>' +
     '<div class="v2-table-scroll"><table class="v2-table v2-table-static v2-report-team-table"><caption class="sr-only">What each role can open. Pastors see the most; the prayer team sees prayer and nothing more.</caption><thead><tr><th scope="col">What it opens</th>' + D.roles.map(function (r) { return '<th scope="col">' + esc(r.label) + "</th>"; }).join("") + "</tr></thead><tbody>" +
-    matrix.map(function (m) { var lk = m[2] && !GM.isIncluded(m[2]); return "<tr><td>" + esc(m[0]) + (lk ? " " + l3() : "") + "</td>" + m[1].map(function (v) { return "<td>" + (lk ? '<span class="v2-deal-why is-calm">Level 03</span>' : cell(v)) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>" +
+    matrix.map(function (m) { var lk = m[2] && !GM.isIncluded(m[2]); return "<tr><td>" + esc(m[0]) + (lk ? " " + l3() : "") + "</td>" + m[1].map(function (v) { return "<td>" + (lk ? '<span class="v2-deal-why is-calm">Plus</span>' : cell(v)) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>" +
     '<div class="v2-report-mobile-rows">' + matrix.map(function (m) {
       var who = m[1].map(function (v, i) { return v === "y" ? D.roles[i].label : v === "n" ? null : (v === "Lead pastor" ? "Lead pastor" : D.roles[i].label + " " + v.toLowerCase()); }).filter(Boolean);
       return "<article><b>" + esc(m[0]) + "</b><small>Who can open it: " + esc(who.join(", ")) + "</small></article>";
@@ -376,7 +376,7 @@ GM.ready(function (ctx) {
   });
   GM.hope.addAnswers([
     { match: /who can (open|see|read) prayer|prayer team|open prayer/i, answer: canPrayer.map(function (s) { return s.name; }).join(", ") + " can open prayer requests. Other staff and website admins cannot, and the system enforces it. Every open is written to the access record." },
-    { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff seats are in use at " + ctx.level.code + ". Genesis Support does not use a seat. Levels are a draft. " + D.pricingLine + "." },
+    { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff seats are in use on the " + ctx.level.code + " plan. Genesis Support does not use a seat. " + D.pricingLine + "" },
     { match: /two.?step|sign in|password|login/i, answer: "Two-step sign in is on for all " + team.length + " people, through the church's Google account. There are no shared passwords. Members sign in with a 6 digit code by email, and adults only." },
     { match: /step(s|ped)? down|leave|remove|end access/i, answer: "When someone steps down, access ends that day, their open care moves to " + care.name + ", nothing they wrote is deleted, and " + lead.name + " gets a plain email. Their opens stay in the access record." },
     { match: /role|change|team/i, answer: "Only " + lead.name + " changes a role. Each change is emailed to the lead pastor with no private words and kept in the access record. " + sofia.name + "'s new Prayer Team role is waiting to be confirmed." }
@@ -385,7 +385,7 @@ GM.ready(function (ctx) {
   /* ---------- Guided tour ---------- */
   GM.setTour([
     { target: '[data-tour="shell.views"]', title: "Team Roles and the Access Record", text: "Two views of one question: who can see what, and who actually opened it." },
-    { target: '[data-tour="team.glance"]', title: "Seats and safety at a glance", text: "Seats in use against the level, who can open prayer, and two-step sign in for everyone." },
+    { target: '[data-tour="team.glance"]', title: "Seats and safety at a glance", text: "Seats in use against the plan, who can open prayer, and two-step sign in for everyone." },
     { target: '[data-tour="team.next"]', title: "A new role waits for the lead pastor", text: "Sofia R. joined the Prayer Team. The lead pastor confirms what she can see; the change was already emailed and recorded." },
     { target: '[data-tour="team.list"]', title: "One role per person", text: "Pastor, Prayer Team, Staff or Admin. Only the lead pastor changes a role." },
     { target: '[data-tour="team.prayer"]', title: "Prayer stays with the people who pray", text: "Pastors and the prayer team can open prayer. Nobody else, and the system enforces it." },

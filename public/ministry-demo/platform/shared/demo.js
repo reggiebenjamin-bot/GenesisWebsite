@@ -9,8 +9,8 @@
      GUIDE as the guide's name. Questions go to the real assistant dock (GM.hope).
    - Member screens use ../shared/hope-demo.js in the church's own brand, with the assistant
      (GM.assistant.name) as the guide and a chat circle for questions.
-   - ?plan= decides what a tour shows. A step about something outside the level becomes a short
-     step that says which level adds it, a locked screen gets a short tour of its locked state,
+   - ?plan= decides what a tour shows. A step about something outside the plan becomes a short
+     step that says which plan adds it, a locked screen gets a short tour of its locked state,
      and the path skips locked screens and says so.
 
    Copy rules: warm, plain, short sentences. No em dashes. No emojis. Buttons in Title Case. */
@@ -38,13 +38,13 @@
   var AN = GM ? GM.assistant.name : STORY.assistant;
 
   /* ------------------------------------------------------------------ scripted answers */
-  var LEVELS_TEXT = "Level 01, Welcome: the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. " +
-    "Level 02, Connect: everything in Welcome, plus Today, the guest pipeline, the member app, the care inbox, team roles with the prayer team named, and drafts that wait for approval. " +
-    "Level 03, Shepherd: everything in Connect, plus person pages, the access record, the spiritual gifts picture, reports, custom roles, named gift viewers and more staff seats. " +
-    "Enterprise is for more than one campus, scoped on a call. The levels are a draft, and pricing is set with Genesis.";
+  var LEVELS_TEXT = "Care: the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. " +
+    "Shepherd: everything in Care, plus Today, the guest pipeline, the member app, the care inbox, team roles with the prayer team named, and drafts that wait for approval. " +
+    "Plus: everything in Shepherd, plus person pages, the access record, the spiritual gifts picture, reports, custom roles, named gift viewers and more staff seats. " +
+    "Enterprise is for more than one campus, scoped on a call. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
   var ANSWERS = {
-    platform: "Genesis Ministry is the church edition of Genesis OS. Every church gets a website in one of four looks, a brand board, a social marketing plan and " + AN + " on its website. Connect adds a front office for first-time guests, a care inbox and a member app. Shepherd adds a page for each person, the spiritual gifts picture and reports. A person approves everything that goes out.",
-    prayer: "Only the pastors and the prayer team, or the pastors only when the person asks for that. Staff and website admins cannot open prayer, and the system stops them if they try. Alert emails say only: New request. Sign in to read. From Level 02 every open is recorded, and nobody can edit that record. Shepherd adds the Access Record screen to search and export it.",
+    platform: "Genesis Ministry is the church edition of Genesis OS. Every church gets a website in one of four looks, a brand board, a social marketing plan and " + AN + " on its website. Shepherd adds a front office for first-time guests, a care inbox and a member app. Plus adds a page for each person, the spiritual gifts picture and reports. A person approves everything that goes out.",
+    prayer: "Only the pastors and the prayer team, or the pastors only when the person asks for that. Staff and website admins cannot open prayer, and the system stops them if they try. Alert emails say only: New request. Sign in to read. From Shepherd every open is recorded, and nobody can edit that record. Plus adds the Access Record screen to search and export it.",
     crisis: "If a message or a prayer request sounds like someone is in danger, the person sees 988 and 911 right away, and the pastor on call gets an email and a phone notification that carry no private words. A pastor follows up and sets the next check-in. " + AN + " never handles it alone.",
     ai: AN + " drafts and summarizes, and a person approves everything before it goes out. " + AN + " answers only from facts the church approved, never writes a reply to prayer or a private message, never sets a gifts score, and only sees what the signed-in person can see.",
     pco: "No, it does not replace them. Genesis Ministry works beside Planning Center, Subsplash and your giving provider. Give opens your own giving page, and events, groups and kids check-in open the tool you already use. At onboarding we can import your people list from a Planning Center or Subsplash export, so nobody is entered twice.",
@@ -60,8 +60,8 @@
     texting: "Texting is off. Guest follow-up goes by email unless the church turns texting on.",
     custom: "Each of the four looks is filled with the church's own content, photos, colors and logo. Customization beyond the template is available for an additional cost.",
     levels: LEVELS_TEXT,
-    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation. Pricing is set on that call, once we understand your church.",
-    price: "Pricing is set with Genesis, on a call. This preview never shows a price or a dollar amount, and the levels are a draft. Customization beyond the template is available for an additional cost."
+    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation.",
+    price: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month."
   };
   var RULES = [
     [/\b(genesis|your|vendor|support) (staff|team|engineers?|employees?|people)\b.*\b(read|see|open|access)|\b(can|could|do|does) (genesis|you|your (staff|team))\b.*\b(read|see|open|access)\b.*\b(prayer|care|data|messages)/i, "staffaccess"],
@@ -120,8 +120,8 @@
 
   /* ------------------------------------------------------------------ the demo path */
   /* The church workspace, the member app, then back. */
-  /* An entry with plans: [n] is on the path only at those levels: Level 01 shows the website package
-     right after Today, and Level 02 shows Messages and Give, the parts it is sold on. */
+  /* An entry with plans: [n] is on the path only at those levels: Care shows the website package
+     right after Today, and Shepherd shows Messages and Give, the parts it is sold on. */
   var PATH_ALL = [
     { key: "church-today", label: "The Church Workspace" },
     { key: "church-website", label: "The Website, Brand Board and Social Plan", module: "website", plans: [1] },
@@ -176,7 +176,7 @@
   function pathIndex(key) { for (var i = 0; i < PATH.length; i++) if (PATH[i].key === key) return i; return -1; }
   function hrefOf(e) { return e.href || e.key.split(":")[0] + ".html"; }
   function open(e) { return !e.module || GM.isIncluded(e.module); }
-  /* Walk the path from index i, skipping screens outside the level, and say what was skipped. */
+  /* Walk the path from index i, skipping screens outside the plan, and say what was skipped. */
   function walk(i) {
     var skipped = [];
     for (; i < PATH.length; i++) {
@@ -195,7 +195,7 @@
     skipped.forEach(function (e) { if (labels.indexOf(e.label) < 0) labels.push(e.label); if (/^church-/.test(e.key)) church = true; if (/^member-/.test(e.key)) member = true; });
     var what = labels.length <= 3 ? listNames(labels) + (labels.length === 1 ? " comes" : " come")
       : "The rest of " + (church && member ? "the church workspace and the member app come" : church ? "the church workspace comes" : "the member app comes");
-    return what + " with " + listNames(levels) + ", so at " + GM.level().code + (to.key === "index" ? " the demo ends here" : " the demo goes on to " + to.label) + ". Switch the level to see them.";
+    return what + " with " + listNames(levels) + ", so on the " + GM.level().code + " plan" + (to.key === "index" ? " the demo ends here" : " the demo goes on to " + to.label) + ". Switch the plan to see them.";
   }
   function nextFor() {
     var i = pathIndex(KEY), hop = null;
@@ -221,7 +221,7 @@
     return { label: (to.key === "index" ? "" : "Next: ") + to.label, href: href, tour: to.tour !== false, note: skipNote(hop.skipped, to) };
   }
 
-  /* Where this screen sits on the guided demo path at this level, for the card's eyebrow:
+  /* Where this screen sits on the guided demo path on this plan, for the card's eyebrow:
      "Screen 3 of 12 · ". Empty for a screen off the path. */
   function screenOf() {
     var stops = PATH.filter(function (e) { return e.key !== "index" && open(e); });
@@ -237,18 +237,18 @@
   /* ------------------------------------------------------------------ the tours */
   /* Each tour: { title, done, steps: [{ sel, h, p, module, note }] }. Text may use {church.short},
      {church.name}, {assistant} and the other GM.fill keys. A step with a module outside the
-     level is replaced by a short step that names the level that adds it. */
+     level is replaced by a short step that names the plan that adds it. */
   var TOURS = {
     /* ---------------- The church workspace ---------------- */
     "church-today": function () {
-      if (GM.ctx && GM.ctx.locked) return { title: "Level 01", done: "At Level 01 a church gets a website that welcomes people, with {assistant} answering questions and every form arriving by email. Next, the website package itself.", steps: [
-        { sel: "#td-page .v2-page-head", h: "Level 01 starts with the website", p: "Welcome is the website in one of four looks, with {assistant} answering questions on it. This is the screen a Level 01 church sees." },
+      if (GM.ctx && GM.ctx.locked) return { title: "Care", done: "On the Care plan a church gets a website that welcomes people, with {assistant} answering questions and every form arriving by email. Next, the website package itself.", steps: [
+        { sel: "#td-page .v2-page-head", h: "Care starts with the website", p: "Care is the website in one of four looks, with {assistant} answering questions on it. This is the screen a church on Care sees." },
         { sel: ".td-grid3", h: "Website, brand board and social plan", p: "{church.name}'s website in the {church.look} look, a brand board any volunteer can follow, and a social marketing plan." },
-        { sel: "#td-page > .v2-pulse", h: "Every form arrives by email", p: "Plan a Visit, prayer and newsletter forms reach the church by email. At this level the prayer words are in that email, sent only to the pastors' address." },
-        { sel: ".gm-locked-card", h: "Today comes with Level 02", p: "This preview is showing Level 01, Welcome. Connect adds this view, the guest pipeline, the locked care inbox, the member app and drafts that wait for approval." },
-        { sel: PLAN_SEL, h: "Switch the level any time", p: "Level 02 and Level 03 are one tap away, so a church sees exactly what each level adds." }
+        { sel: "#td-page > .v2-pulse", h: "Every form arrives by email", p: "Plan a Visit, prayer and newsletter forms reach the church by email. On this plan the prayer words are in that email, sent only to the pastors' address." },
+        { sel: ".gm-locked-card", h: "Today comes with Shepherd", p: "This preview is showing Care. Shepherd adds this view, the guest pipeline, the locked care inbox, the member app and drafts that wait for approval." },
+        { sel: PLAN_SEL, h: "Switch the plan any time", p: "Shepherd and Plus are one tap away, so a church sees exactly what each plan adds." }
       ] };
-      var recorded = GM.isIncluded("access") ? "a record of who opened what" : "every open recorded (Shepherd adds the Access Record screen)";
+      var recorded = GM.isIncluded("access") ? "a record of who opened what" : "every open recorded (Plus adds the Access Record screen)";
       return { title: "Today", done: "That is Today. One calm list of what needs a person, so nobody falls through the cracks.", steps: [
         { sel: T("today.hope"), h: "{assistant} reads the week first", p: "New guests, care waiting on us and drafts to approve, counted for the pastor, with one question to ask." },
         { sel: T("today.next"), h: "Your next move", p: "One guest or care item at a time, most important first, with an owner and a reason. Next and Skip for Now work through the list." },
@@ -256,15 +256,15 @@
         { sel: T("today.drafts"), h: "{assistant} drafts, a person decides", p: "Welcome notes are labelled and wait for approval. Nothing goes out on its own." },
         { sel: [T("today.seen"), T("today.care")], h: "What each role sees on Today", p: "Switch to Staff and the prayer rows disappear: an office manager sees only that prayer is with the pastors and the prayer team. Topics only, even for pastors." },
         { sel: T("today.protect"), h: "Protecting people is built in", p: "Private prayer, alerts with no private words, " + recorded + ", archive instead of delete, and email-first follow-up." },
-        { sel: PLAN_SEL, h: "Show any level", p: "Switch between Level 01, 02 and 03 any time. Locked parts stay in the menu and explain what they add." }
+        { sel: PLAN_SEL, h: "Show any plan", p: "Switch between Care, Shepherd and Plus any time. Locked parts stay in the menu and explain what they add." }
       ] };
     },
-    "church-website": { title: "The website package", done: "That is what every level starts with: a website people can use, {assistant} on it, a brand board, a social plan and forms that reach the right person.", steps: [
+    "church-website": { title: "The website package", done: "That is what every plan starts with: a website people can use, {assistant} on it, a brand board, a social plan and forms that reach the right person.", steps: [
       { sel: T("website.site"), h: "The website, live in its look", p: "{church.name}'s site in the {church.look} look, built for phones first. {assistant} answers questions on it from facts the church approved." },
       { sel: T("website.kit"), h: "Brand board and social plan", p: "A brand board any volunteer can follow, and a plan that turns one Sunday message into a week of posts." },
-      { sel: T("website.visit"), h: "A Plan a Visit email, as the church gets it", p: "At Level 01 the form arrives by email to the address the church chose. From Level 02 it lands in Guests with an owner, and the email says only who to welcome." },
-      { sel: T("website.prayer"), h: "Prayer forms, honestly", p: "At Level 01 the words travel in the email, to the pastors' address only. Connect keeps prayer in a locked inbox, and the email says only: New request. Sign in to read." },
-      { sel: PLAN_SEL, h: "See what Connect adds", p: "Switch to Level 02 to see the same Plan a Visit become a guest with an owner and a next step." }
+      { sel: T("website.visit"), h: "A Plan a Visit email, as the church gets it", p: "On the Care plan the form arrives by email to the address the church chose. From Shepherd it lands in Guests with an owner, and the email says only who to welcome." },
+      { sel: T("website.prayer"), h: "Prayer forms, honestly", p: "On the Care plan the words travel in the email, to the pastors' address only. Shepherd keeps prayer in a locked inbox, and the email says only: New request. Sign in to read." },
+      { sel: PLAN_SEL, h: "See what Shepherd adds", p: "Switch to Shepherd to see the same Plan a Visit become a guest with an owner and a next step." }
     ] },
     "church-settings": { title: "Settings", done: "That is Settings. Genesis Ministry works beside the tools a church already uses, and Genesis signs in only when the church asks.", steps: [
       { sel: T("settings.tools"), h: "Works with your tools", p: "Giving opens your provider. Events, groups and kids check-in open Planning Center or Subsplash. People can be imported at onboarding, so nobody is entered twice." },
@@ -303,7 +303,7 @@
     ] },
     "church-care": function () {
       var personNote = GM.isIncluded("people") ? "" : "Open Person comes with " + levelOf("people").code + ", which adds a page for each person.";
-      var recorded = GM.isIncluded("access") ? "a record of who looked" : "every open recorded (Shepherd adds the Access Record screen)";
+      var recorded = GM.isIncluded("access") ? "a record of who looked" : "every open recorded (Plus adds the Access Record screen)";
       /* On phones the thread pane opens over the list, so these steps open the first conversation,
          or go back to the list, before they are drawn. */
       var phone = window.innerWidth <= 860;
@@ -355,7 +355,7 @@
     ] },
     "church-team": { title: "Team roles", done: "That is Team. Roles decide who sees what, and every change goes to the lead pastor.", steps: [
       { sel: VIEWS_SEL, h: "Roles and the record", p: "Team Roles decide who can see what. The Access Record shows what people actually opened." },
-      { sel: T("team.glance"), h: "Seats and safety", p: "Staff seats in use for this level, who can open prayer, and two-step sign in for everyone. Connect names the prayer team; Shepherd adds custom roles and named gift viewers." },
+      { sel: T("team.glance"), h: "Seats and safety", p: "Staff seats in use for this plan, who can open prayer, and two-step sign in for everyone. Shepherd names the prayer team; Plus adds custom roles and named gift viewers." },
       { sel: T("team.next"), h: "A role to confirm", p: "A new prayer team member waits for the lead pastor, with one gold Confirm action." },
       { sel: T("team.list"), h: "Every person and role", p: "Role, whether they open prayer or gift names, two-step and last sign in." },
       { sel: T("team.prayer"), h: "Who can open prayer", p: "Pastors and the prayer team, enforced by the system, with the last blocked try." },
@@ -450,18 +450,18 @@
     ] }
   };
 
-  /* A screen outside the level: a short tour of its calm locked state. */
+  /* A screen outside the plan: a short tour of its calm locked state. */
   function lockedTour(moduleKey) {
     var m = D.modules[moduleKey] || { label: "This screen", level: 3, adds: "", points: [] };
     var lv = GM.level(m.level), cur = GM.level();
     var steps = [
-      { sel: [".gm-locked-card", ".m-locked"], h: m.label + " is included in " + lv.code + ", " + lv.name, p: fill(m.adds.replace(/\bHope\b/g, AN)) + " This preview is showing " + cur.code + ", " + cur.name + ". " + lv.name + " adds this view." },
+      { sel: [".gm-locked-card", ".m-locked"], h: m.label + " is included in " + lv.name, p: fill(m.adds.replace(/\bHope\b/g, AN)) + " This preview is showing " + cur.name + ". " + lv.name + " adds this view." },
       { sel: [".gm-locked-card .gm-checks", ".m-locked .m-checks"], h: "What it adds", p: (m.points || []).slice(0, 3).join(". ") + "." },
-      { sel: PLAN_SEL, h: "Preview " + lv.code, p: "Switch the level to see this screen working. A locked part keeps its place and says which level adds it." }
+      { sel: PLAN_SEL, h: "Preview " + lv.code, p: "Switch the plan to see this screen working. A locked part keeps its place and says which plan adds it." }
     ];
     if (!MEMBER) steps.push({ sel: ['.v2-nav a[aria-current="page"]'], h: "It keeps its place in the menu", p: "Locked screens stay in the menu with a small lock, so a church sees what it can grow into." });
     var named = { "Member App": "the member app", "Access Record": "the access record", "My Gifts": "the gifts conversation" }[m.label] || m.label;
-    return { title: m.label, done: lv.name + " adds " + named + ". Compare every level, or switch the level shown.", steps: steps };
+    return { title: m.label, done: lv.name + " adds " + named + ". Compare every plan, or switch the plan shown.", steps: steps };
   }
 
   function currentTour() {
@@ -483,8 +483,8 @@
   /* Short member tours borrow from the stage around the phone, so every tour has four to seven steps. */
   var MEMBER_EXTRAS = [
     { sel: ".mx-about", h: "How this screen protects people", p: "Beside the phone: what this screen does to keep people safe, and a link to the same moment in the church workspace." },
-    { sel: ".mx-screens", h: "Every screen of the member app", p: "The member app in order, from sign in to gifts. A screen outside the level shows the level that adds it.", place: "edge-left" },
-    { sel: '.m-stagebar [data-tour="shell.plan"]', h: "Show any level", p: "Level 01, 02 or 03. Below Level 02 the app shows a calm Included in Level 02 state, never a broken page." },
+    { sel: ".mx-screens", h: "Every screen of the member app", p: "The member app in order, from sign in to gifts. A screen outside the plan shows the plan that adds it.", place: "edge-left" },
+    { sel: '.m-stagebar [data-tour="shell.plan"]', h: "Show any plan", p: "Care, Shepherd or Plus. On Care, the app shows a calm Included in Shepherd state, never a broken page." },
     { sel: [".hd-launch", ".mx-hope"], h: "{assistant}, in {church.short}'s colors", p: "Members can ask {assistant} questions any time. {assistant} answers from facts the church approved and hands anything personal to a real person." }
   ];
   function padMember(t) {
@@ -496,7 +496,7 @@
     MEMBER_EXTRAS.forEach(function (x) { if (live < 4 && have.indexOf(String(x.sel)) < 0 && shown(x.sel)) { steps.push(x); live++; } });
     return { title: t.title, done: t.done, steps: steps };
   }
-  /* Plan-aware steps: a step about a module outside the level says which level adds it. */
+  /* Plan-aware steps: a step about a module outside the plan says which plan adds it. */
   function compile(t) {
     if (!t) return [];
     t = padMember(t);
@@ -507,7 +507,7 @@
       if (s.only === "wide" && phone) return;
       if (s.module && !GM.isIncluded(s.module)) {
         var m = D.modules[s.module], lv = levelOf(s.module);
-        out.push({ sel: s.lockSel || PLAN_SEL, h: (s.lockLabel || m.label) + " comes with " + lv.code + ", " + lv.name, p: fill(m.adds.replace(/\bHope\b/g, AN)), note: "This preview is showing " + GM.level().code + ". Switch the level to see it." });
+        out.push({ sel: s.lockSel || PLAN_SEL, h: (s.lockLabel || m.label) + " comes with " + lv.name, p: fill(m.adds.replace(/\bHope\b/g, AN)), note: "This preview is showing " + GM.level().code + ". Switch the plan to see it." });
         return;
       }
       /* The Hope circle shows on wide screens; on phones Hope lives in the stage bar. */
@@ -534,7 +534,7 @@
       { label: "Who Sees Prayer Requests?", key: "prayerwho" },
       { label: "What Happens in a Crisis?", key: "crisisinfo" },
       { label: "What Do Members Need to Sign In?", key: "signin" },
-      { label: "What Does Each Level Include?", key: "levels" }
+      { label: "What Does Each Plan Include?", key: "levels" }
     ];
     function a(text, chips) { return { t: text, c: chips || chipsAbout.slice(0, 3) }; }
     return {
@@ -551,24 +551,24 @@
         { label: "What Happens in a Crisis?", key: "crisisinfo" },
         { label: "What Do Members Need to Sign In?", key: "signin" },
         { label: "Does It Replace Planning Center?", key: "pco" },
-        { label: "What Does Each Level Include?", key: "levels" }
+        { label: "What Does Each Plan Include?", key: "levels" }
       ],
       answers: addMore({
-        platform: a(ANSWERS.platform, [{ label: "What Does Each Level Include?", key: "levels" }, { label: "Take the Guided Demo", key: "tour", cta: true }]),
+        platform: a(ANSWERS.platform, [{ label: "What Does Each Plan Include?", key: "levels" }, { label: "Take the Guided Demo", key: "tour", cta: true }]),
         prayerwho: a(ANSWERS.prayer, [{ label: "What Happens in a Crisis?", key: "crisisinfo" }, { label: "How Is the AI Limited?", key: "ai" }]),
         crisisinfo: a(ANSWERS.crisis, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "How Is the AI Limited?", key: "ai" }]),
         ai: a(ANSWERS.ai, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "What Is Genesis Ministry?", key: "platform" }]),
-        pco: a(ANSWERS.pco, [{ label: "What Does Each Level Include?", key: "levels" }]),
+        pco: a(ANSWERS.pco, [{ label: "What Does Each Plan Include?", key: "levels" }]),
         signin: a(ANSWERS.signin, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "Is Texting On?", key: "texting" }]),
         texting: a(ANSWERS.texting, [{ label: "What Do Members Need to Sign In?", key: "signin" }]),
-        custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }, { label: "What Does Each Level Include?", key: "levels" }]),
+        custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }, { label: "What Does Each Plan Include?", key: "levels" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
         contact: a(ANSWERS.contact, [CONTACT_CHIP, { label: "What Is Genesis Ministry?", key: "platform" }]),
-        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),
+        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Plan Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),
         giftsinfo: a("The gifts conversation takes about 10 minutes and saves after every tap. It gives gifts to explore, worked out by plain arithmetic, and a member's name is shared with the pastors only after a yes. It comes with " + levelOf("member-gifts").code + ".", [{ label: "How Is the AI Limited?", key: "ai" }]),
         give: a("Give opens " + c.short + "'s own giving form. Genesis never handles the payment, and the app keeps no giving history. Recurring gifts and receipts stay with the church's giving provider.", [{ label: "Does It Replace Planning Center?", key: "pco" }]),
         times: a(c.short + " gathers " + c.times + " in " + c.city + ". The church website has the address, directions and what to expect on a first Sunday.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }])
-      }, a, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "What Does Each Level Include?", key: "levels" }]),
+      }, a, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "What Does Each Plan Include?", key: "levels" }]),
       match: RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1]]; }).concat([
         [/spiritual gifts?|gifts? (conversation|assessment|test|result)|my gifts/i, "giftsinfo"],
         [/\b(giv(e|ing)|tith\w*|donat\w*|offerings?)\b/i, "give"]
@@ -631,22 +631,22 @@
         { sel: ".tenant", h: "Show the demo as any church", p: "Four made up churches, one in each look. The choice carries through every screen, in the workspace and in the member app." },
         { sel: "#doors", h: "Every part, one door each", p: "From the front office to what members see on their phones, then the journey and the four looks. Each screen opens with sample data and its own short tour." },
         { sel: "#rules", h: "Care comes with rules", p: "Prayer stays with pastors and the prayer team, alerts carry no private words, a person approves every draft, and nothing is deleted." },
-        { sel: "#levels", h: "Start where the church is", p: "Welcome, Connect and Shepherd, with Enterprise for more than one campus. Each Demo This Level button starts the tour at that level. Pricing is set with Genesis." },
+        { sel: "#levels", h: "Start where the church is", p: "Care, Shepherd and Plus, with Enterprise for more than one campus. Each Demo This Plan button starts the tour on that plan. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month." },
         { sel: ".close-band", h: "One Sunday, start to finish", p: "Start the Guided Demo opens Today and walks through every screen, then brings you back here." }
       ] },
       gallery: { title: "The four looks", done: "That is the gallery. Start the Guided Demo to see what sits behind the website, screen by screen.", steps: [
         { sel: ".hero .hero-copy", h: "Four looks, one standard", p: "Every Genesis Ministry church gets a website in one of four looks, filled with its own story, photos and colors." },
         { sel: "#looks", h: "Pick the look that fits", p: "Each look opens as a full sample church site, with its brand board and social plan. " + AN + " answers questions on every one." },
-        { sel: "#package", h: "One package", p: "The website, a brand board, a social marketing plan and " + AN + ", at every level. Customization beyond the template is available for an additional cost." },
-        { sel: "#platform", h: "What sits behind the website", p: "From Level 02, a front office for guests, a care inbox and a member app. The front door and the journey explain it." },
+        { sel: "#package", h: "One package", p: "The website, a brand board, a social marketing plan and " + AN + ", on every plan. Customization beyond the template is available for an additional cost." },
+        { sel: "#platform", h: "What sits behind the website", p: "From Shepherd, a front office for guests, a care inbox and a member app. The front door and the journey explain it." },
         { sel: ".close-band", h: "See it working", p: "Start the Guided Demo opens Today and walks through every screen with sample data." }
       ] },
       journey: { title: "The journey", done: "That is how Genesis Ministry works, start to finish. Now see it working, screen by screen.", steps: [
-        { sel: [".chapters", ".hero"], h: "Four chapters", p: "A guest's path, privacy, what the AI does, and the levels." },
+        { sel: [".chapters", ".hero"], h: "Four chapters", p: "A guest's path, privacy, what the AI does, and the plans." },
         { sel: "#guest", h: "From a late night search to a place to serve", p: "Every first-time guest gets an owner, a next step and a date, from New to Serving." },
         { sel: "#privacy", h: "One record per person", p: "Prayer for pastors and the prayer team, alerts with no private words, a record of who opened what, and archive instead of delete." },
         { sel: "#ai", h: "It drafts, then waits", p: AN + " drafts, summarizes and sorts. A person approves everything, and " + AN + " never sets a gifts score." },
-        { sel: "#levels", h: "Welcome, Connect, Shepherd", p: "Each level adds to the one before, with Enterprise for more than one campus. The levels are a draft, and pricing is set with Genesis." }
+        { sel: "#levels", h: "Care, Shepherd, Plus", p: "Each plan adds to the one before, with Enterprise for more than one campus. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month." }
       ] }
     };
     var t = TS[file] || TS.index;
@@ -658,7 +658,7 @@
       return PRE + "church-today.html?church=" + encodeURIComponent(slug) + "&plan=" + encodeURIComponent(plan) + "&tour=1";
     }
     function a(text, chips) { return { t: text, c: chips }; }
-    var more = [{ label: "What Does Each Level Include?", key: "levels" }, { label: "Who Sees Prayer Requests?", key: "prayerwho" }];
+    var more = [{ label: "What Does Each Plan Include?", key: "levels" }, { label: "Who Sees Prayer Requests?", key: "prayerwho" }];
     window.HOPE_DEMO = {
       look: "Genesis Ministry",
       assistantName: AN,
@@ -687,7 +687,7 @@
         custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
         contact: a(ANSWERS.contact, [CONTACT_CHIP].concat(more)),
-        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }])
+        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Plan Include?", key: "levels" }])
       }, a, more),
       match: RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1]]; }),
       fallback: "Good question. The guided demo shows every screen with sample data, and a person at Genesis can answer the rest on a call. For now, try one of these.",
@@ -717,10 +717,10 @@
     next: null
   };
 
-  /* Demo This Level starts the church part of the demo path at that level. */
+  /* Demo This Plan starts the church part of the demo path on that plan. */
   function isDemoLink(a) {
     var label = (a.textContent || "").replace(/\s+/g, " ").trim();
-    return a.hasAttribute("data-demo") || a.id === "sa-demo-btn" || /^Demo (This Level|Level 0\d)$/i.test(label);
+    return a.hasAttribute("data-demo") || a.id === "sa-demo-btn" || /^Demo (This Plan|Level 0\d)$/i.test(label);
   }
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");

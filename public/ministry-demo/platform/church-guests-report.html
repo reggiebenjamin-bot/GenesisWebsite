@@ -163,9 +163,9 @@ GM.ready(function (ctx) {
   $("gr-scope").innerHTML = ic("shield") + "<span>Counts only. No names, no prayer and no private words. Last 12 months, sized for " + esc(c.short) + ", " + esc(c.size.charAt(0).toLowerCase() + c.size.slice(1)) + ".</span>";
   $("gr-updated").textContent = "Updated " + fmt.time(D.now);
 
-  /* ---------- Below Level 03: the real page head, then the calm locked card ---------- */
+  /* ---------- Below Plus: the real page head, then the calm locked card ---------- */
   if (ctx.locked) {
-    $("gr-sub").textContent = GM.isIncluded("guests") ? "The guest report comes with Level 03. Guests, the board and welcome notes are all here at " + GM.level().code + "." : "The guest report comes with Level 03. Guests and the board come with Level 02.";
+    $("gr-sub").textContent = GM.isIncluded("guests") ? "The guest report comes with Plus. Guests, the board and welcome notes are all here on the " + GM.level().code + " plan." : "The guest report comes with Plus. Guests and the board come with Shepherd.";
     $("gr-print").remove();
     var pg = document.querySelector(".gr-page");
     Array.prototype.slice.call(pg.children).forEach(function (ch) { if (!ch.matches(".v2-page-head,.v2-view-picker,noscript")) ch.remove(); });

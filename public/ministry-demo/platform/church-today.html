@@ -105,7 +105,7 @@
 
       <!-- Protecting people, visible on purpose -->
       <section class="v2-section td-later" aria-labelledby="td-protect-title" data-tour="today.protect">
-        <div class="v2-section-head"><div><h2 id="td-protect-title">How this workspace protects people</h2><p id="td-protect-sub">On for every church, from Level 02.</p></div></div>
+        <div class="v2-section-head"><div><h2 id="td-protect-title">How this workspace protects people</h2><p id="td-protect-sub">On for every church, from Shepherd.</p></div></div>
         <div class="v2-card"><ul class="gm-protect-list" id="td-protect"></ul></div>
       </section>
 
@@ -126,11 +126,11 @@ GM.ready(function (ctx) {
   $("td-date").innerHTML = "Today · " + esc(fmt.day()) + '<span class="td-tenant"> · ' + esc(c.name) + "</span>";
   $("td-greeting").innerHTML = esc(GM.greeting()) + ', <em class="v2-accent-em">' + esc(viewer.name) + "</em>";
 
-  /* ---------- Level 01: the Welcome home, with the calm locked state for Today ---------- */
+  /* ---------- Care: the Welcome home, with the calm locked state for Today ---------- */
   if (ctx.locked) {
     $("td-greeting").innerHTML = 'Your website is <em class="v2-accent-em">welcoming people</em>';
-    $("td-lede").textContent = "At Level 01, " + HOPE + " answers questions on your website, and Plan a Visit and prayer forms arrive by email. The Today view and the guest pipeline come with Level 02.";
-    /* One gold action on this screen: Preview Level 02 in the locked card. */
+    $("td-lede").textContent = "On the Care plan, " + HOPE + " answers questions on your website, and Plan a Visit and prayer forms arrive by email. The Today view and the guest pipeline come with Shepherd.";
+    /* One gold action on this screen: Preview Shepherd in the locked card. */
     $("td-actions").innerHTML = '<a class="v2-button" href="church-website.html">' + ic("website") + "Open Your Website</a>";
     var pg = $("td-page");
     Array.prototype.slice.call(pg.children).forEach(function (ch) { if (!ch.matches(".v2-page-head,noscript")) ch.remove(); });
@@ -140,10 +140,10 @@ GM.ready(function (ctx) {
         card("Brand board", "Logo, colors, type and voice, so a volunteer can make a slide or a post that looks like " + c.short + ".", '<a class="v2-button" href="' + esc(c.brandBoard) + '">Open Brand Board</a>') +
         card("Social marketing plan", "One Sunday message turned into a week of posts, with sample captions and what to measure.", '<a class="v2-button" href="' + esc(c.socialPlan) + '">Open Social Plan</a>') +
       "</div>" +
-      '<section class="v2-pulse" aria-label="This week at Level 01">' +
+      '<section class="v2-pulse" aria-label="This week on the Care plan">' +
         pulse("Hope conversations", "38", "On your website this week") +
         pulse("Plan a Visit forms", "4", "Sent to " + c.email) +
-        pulse("Prayer forms", "3", "Sent only to the pastors' address. The words are in that email. Connect keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.") +
+        pulse("Prayer forms", "3", "Sent only to the pastors' address. The words are in that email. Shepherd keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.") +
         pulse("Newsletter sign-ups", "6", "Added to your list") +
       "</section>" + GM.lockedState("today", { title: "The Today view" }));
     GM.carryLinks();
@@ -284,7 +284,7 @@ GM.ready(function (ctx) {
   }
   $("td-roles").addEventListener("click", function (e) { var b = e.target.closest("[data-role]"); if (b) paintCare(b.getAttribute("data-role")); });
   paintCare("pastor");
-  $("td-protect-sub").textContent = "On for every church that keeps care in the workspace, from Level 02.";
+  $("td-protect-sub").textContent = "On for every church that keeps care in the workspace, from Shepherd.";
 
   /* ---------- Charts ---------- */
   var m = D.metrics, done = m.newGuests.slice(0, 11);
@@ -313,7 +313,7 @@ GM.ready(function (ctx) {
     ["Alerts carry no words", "Emails say \"New request. Sign in to read.\""],
     GM.isIncluded("access")
       ? ["A record of who looked", 'Every open is written to the <a class="gm-link" href="church-access.html">access record</a>.']
-      : ["Every open is recorded", "Every open, reply and archive is recorded. Shepherd adds the Access Record screen to search and export it."],
+      : ["Every open is recorded", "Every open, reply and archive is recorded. Plus adds the Access Record screen to search and export it."],
     ["Archive, not delete", "Nothing pastoral is ever erased by accident."],
     ["Email first", "Guest follow-up goes by email. Texting is off unless the church turns it on."]
   ];

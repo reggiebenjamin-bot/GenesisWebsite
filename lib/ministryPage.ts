@@ -30,8 +30,7 @@ export const ministryDemo = {
   gallery: "/ministry-demo/index.html",
   platform: "/ministry-demo/platform/index.html",
   /* Starts as Lampstand Church, the sample church in the stills on /ministry. Its
-     account is on Plus (Level 03 in a demo copy from before the plans), the plan
-     the demo opens at, so no plan note shows. */
+     account is on Plus, the plan the demo opens at, so no plan note shows. */
   tour: "/ministry-demo/platform/index.html?tour=1&church=bold-dark",
   template: (slug: string) => `/ministry-demo/templates/${slug}/index.html`,
 } as const;

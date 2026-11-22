@@ -420,14 +420,14 @@
     var thumb = LOCKED_THUMB[key];
     return '<section class="v2-card gm-locked-card' + (thumb ? " has-thumb" : "") + '" aria-labelledby="gm-locked-' + esc(key) + '">' +
       '<div class="gm-locked-copy"><div class="gm-locked-icon">' + vIcon("lock") + "</div>" +
-      '<div class="v2-eyebrow">Included in ' + esc(lv.code) + ", " + esc(lv.name) + "</div>" +
+      '<div class="v2-eyebrow">Included in ' + esc(lv.name) + "</div>" +
       '<h2 id="gm-locked-' + esc(key) + '">' + esc(opts.title || m.label) + "</h2>" +
       '<p class="gm-fold-note" style="font-size:13px;margin:6px 0 18px">' + esc(GM.fill(m.adds.replace(/\bHope\b/g, ASSISTANT.name))) + "</p>" +
       (m.points && m.points.length ? '<ul class="gm-checks">' + m.points.map(function (p) { return "<li>" + GM.icon("check") + "<span>" + esc(p.replace(/\bHope\b/g, ASSISTANT.name)) + "</span></li>"; }).join("") + "</ul>" : "") +
       '<div class="gm-locked-actions"><a class="' + (opts.quiet ? "v2-button" : "v2-button v2-button-primary") + '" href="' + esc(target) + '">Preview ' + esc(lv.code) + "</a>" +
-      '<a class="v2-button' + (opts.quiet ? " v2-button-quiet" : "") + '" href="index.html#levels">Compare Levels</a></div>' +
-      '<p class="gm-locked-foot">This preview is showing ' + esc(cur.code) + ", " + esc(cur.name) + ". " + esc(lv.name) + " adds this view. Levels are a draft. " + esc(D.pricingLine) + ".</p></div>" +
-      (thumb ? '<figure class="gm-locked-thumb" aria-hidden="true"><img src="' + esc(SHARED + "previews/locked-" + thumb + ".jpg") + '" alt="" loading="lazy" decoding="async" onerror="this.closest(\'figure\').remove()"><figcaption>' + esc(lv.code) + ", " + esc(lv.name) + "</figcaption></figure>" : "") +
+      '<a class="v2-button' + (opts.quiet ? " v2-button-quiet" : "") + '" href="index.html#levels">Compare Plans</a></div>' +
+      '<p class="gm-locked-foot">This preview is showing ' + esc(cur.name) + ". " + esc(lv.name) + " adds this view. " + esc(D.pricingLine) + "</p></div>" +
+      (thumb ? '<figure class="gm-locked-thumb" aria-hidden="true"><img src="' + esc(SHARED + "previews/locked-" + thumb + ".jpg") + '" alt="" loading="lazy" decoding="async" onerror="this.closest(\'figure\').remove()"><figcaption>' + esc(lv.name) + "</figcaption></figure>" : "") +
       "</section>";
   };
   /* A dimmed picture of the real screen inside the locked card, so the calm state also shows what it adds. */
@@ -527,7 +527,7 @@
       more: [
         { key: "member-app", label: "Member App", href: "member-home.html", icon: "device", hint: "What members see on their phones" },
         { key: "website", label: "Church Website", hrefFn: function () { return GM.church.site; }, icon: "website", hint: "The website in its chosen look" },
-        { key: "levels", label: "Compare Levels", href: "index.html#levels", icon: "levels", hint: "Welcome, Connect, Shepherd, Enterprise" },
+        { key: "levels", label: "Compare Plans", href: "index.html#levels", icon: "levels", hint: "Care, Shepherd, Plus, Enterprise" },
         { key: "consult", label: "Book a Consultation", href: "/contact?topic=ministry", icon: "call", hint: "A free conversation with Genesis about your church" }
       ]
     },
@@ -569,7 +569,7 @@
   function lockFor(module) {
     if (!module || GM.side !== "church" || GM.isIncluded(module)) return "";
     var lv = D.levels[GM.moduleLevel(module) - 1];
-    return '<em class="gm-nav-lock" title="Included in ' + esc(lv.code) + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS.lock + "</svg>" + esc(lv.code.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(lv.code) + "</span>";
+    return '<em class="gm-nav-lock" title="Included in ' + esc(lv.code) + '"><svg viewBox="0 0 24 24" aria-hidden="true">' + ICONS.lock + "</svg>" + esc(lv.code) + '</em><span class="sr-only">, included in ' + esc(lv.code) + "</span>";
   }
   function navLink(item, currentKey) {
     if (item.action) return '<a href="#" data-gm-action="' + esc(item.action) + '" data-route="' + esc(item.key) + '" aria-label="' + esc(item.label) + ', ' + esc(item.hint || "") + '">' + vIcon(item.icon) + "<span>" + esc(item.label) + "</span></a>";
@@ -598,9 +598,9 @@
       '<div class="gm-menu" id="gm-switcher-menu" role="menu" aria-label="Switch church" hidden><p class="gm-menu-label">Show the member app for</p>' + items + "</div></div>";
   }
   function planHTML() {
-    return '<nav class="gm-plan" aria-label="Plan level shown in this preview" data-tour="shell.plan"><span class="gm-plan-label">Plan</span>' + D.levels.slice(0, 3).map(function (lv) {
+    return '<nav class="gm-plan" aria-label="Plan shown in this preview" data-tour="shell.plan"><span class="gm-plan-label">Plan</span>' + D.levels.slice(0, 3).map(function (lv) {
       var on = lv.n === plan;
-      return '<a href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried' + (on ? ' aria-current="true"' : "") + ' aria-label="' + esc(lv.code + ", " + lv.name + (on ? ", shown now" : "")) + '"><b>' + esc(lv.code.replace("Level ", "")) + "</b><span>" + esc(lv.name) + "</span></a>";
+      return '<a href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried' + (on ? ' aria-current="true"' : "") + ' aria-label="' + esc(lv.name + (on ? ", shown now" : "")) + '"><b>' + esc(lv.name) + "</b><span>" + esc(lv.price) + "</span></a>";
     }).join("") + "</nav>";
   }
   var PREVIEW_LABEL = '<span class="gm-preview-label" role="note">Design preview. Sample data shown.</span>';
@@ -615,10 +615,10 @@
         var p = new URLSearchParams(location.search); p.set("church", ch.slug); p.set("plan", String(plan)); p.delete("id");
         return '<a role="menuitemradio" aria-checked="' + on + '" href="' + esc(currentFile() + "?" + p.toString()) + '" data-gm-carried><span class="gm-tenant-mark">' + ch.mark + '</span><span class="gm-menu-copy">' + esc(ch.name) + "<small>" + esc(ch.city + ", " + ch.state) + "</small></span>" + (on ? '<span class="gm-menu-tick" aria-hidden="true">' + vIcon("check") + "</span>" : "") + "</a>";
       }).join("");
-      out += '<div class="v2-account-menu-sep" role="separator"></div><div class="gm-menu-label" role="presentation">Plan level shown</div>' + (planNoteText() ? '<p class="gm-menu-note">' + esc(planNoteText()) + "</p>" : "");
+      out += '<div class="v2-account-menu-sep" role="separator"></div><div class="gm-menu-label" role="presentation">Plan shown</div>' + (planNoteText() ? '<p class="gm-menu-note">' + esc(planNoteText()) + "</p>" : "");
       out += D.levels.slice(0, 3).map(function (lv) {
         var on = lv.n === plan;
-        return '<a role="menuitemradio" aria-checked="' + on + '" href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried><span class="gm-menu-copy">' + esc(lv.code + ", " + lv.name) + "</span>" + (on ? '<span class="gm-menu-tick" aria-hidden="true">' + vIcon("check") + "</span>" : "") + "</a>";
+        return '<a role="menuitemradio" aria-checked="' + on + '" href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried><span class="gm-menu-copy">' + esc(lv.name) + "</span>" + (on ? '<span class="gm-menu-tick" aria-hidden="true">' + vIcon("check") + "</span>" : "") + "</a>";
       }).join("");
     } else {
       out += '<div class="gm-menu-label" role="presentation">Open a church workspace</div>';
@@ -634,13 +634,13 @@
     return out;
   }
 
-  /* The church's real account level, when it differs from the level this preview shows. */
+  /* The church's real account level, when it differs from the plan this preview shows. */
   function accountDeal() { var d = null; D.sales.deals.forEach(function (x) { if (x.church === GM.church.slug) d = x; }); return d; }
   function planNoteText() {
     var d = accountDeal();
     if (!d || !d.level || d.level === plan) return "";
-    var lv = d.level === 4 ? "Enterprise" : "Level 0" + d.level;
-    return (d.stage === "proposal" ? GM.church.short + "'s proposal is " + lv : GM.church.short + " is on " + lv) + ". This preview shows Level 0" + plan + ".";
+    var lv = d.level === 4 ? "Enterprise" : ["Care","Shepherd","Plus"][d.level - 1];
+    return (d.stage === "proposal" ? GM.church.short + "'s proposal is " + lv : GM.church.short + " is on " + lv) + ". This preview shows " + ["Care","Shepherd","Plus"][plan - 1] + ".";
   }
   GM.planNote = planNoteText;
   function planNoteHTML() { var t = planNoteText(); return t ? '<p class="gm-plan-note">' + esc(t) + "</p>" : ""; }
@@ -659,7 +659,7 @@
 
     /* As in Genesis OS: WORK, ASSISTANT (Ask Hope, no count badge, as Ask Hawk has none), INTELLIGENCE, SYSTEM. */
     var nav = '<div class="v2-nav-group"><div class="v2-nav-label">Work</div>' + cfg.work.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
-      '<div class="v2-nav-group v2-genesis-nav"><div class="v2-nav-label">Assistant</div><a href="#v2-genesis-panel" data-route="genesis" data-gm-action="open-hope" data-tour="shell.genesis" aria-label="Ask ' + esc(ASSISTANT.name) + (hopeLocked ? ", included in Level 02" : "") + '">' + vIcon("genesis") + "<span>Ask " + esc(ASSISTANT.name) + "</span>" +
+      '<div class="v2-nav-group v2-genesis-nav"><div class="v2-nav-label">Assistant</div><a href="#v2-genesis-panel" data-route="genesis" data-gm-action="open-hope" data-tour="shell.genesis" aria-label="Ask ' + esc(ASSISTANT.name) + (hopeLocked ? ", included in Shepherd" : "") + '">' + vIcon("genesis") + "<span>Ask " + esc(ASSISTANT.name) + "</span>" +
       (hopeLocked ? lockFor("genesis") : "") + "</a></div>" +
       '<div class="v2-nav-group"><div class="v2-nav-label">Intelligence</div>' + cfg.intelligence.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
       (cfg.system ? '<div class="v2-nav-group"><div class="v2-nav-label">System</div>' + cfg.system.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" : "");
@@ -667,12 +667,12 @@
     var accountCopy = side === "church"
       ? "<b>" + esc(GM.church.name) + "</b><small>" + esc(v.name) + "</small>"
       : "<b>Genesis AI</b><small>" + esc(v.name) + "</small>";
-    var planSwitch = side === "church" ? '<nav class="gm-plan-switch" aria-label="Plan level shown in this preview" data-tour="shell.plan"><span>Level</span>' + D.levels.slice(0, 3).map(function (lv) {
+    var planSwitch = side === "church" ? '<nav class="gm-plan-switch" aria-label="Plan shown in this preview" data-tour="shell.plan"><span>Plan</span>' + D.levels.slice(0, 3).map(function (lv) {
       var on = lv.n === plan;
-      return '<a href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried' + (on ? ' aria-current="true"' : "") + ' aria-label="' + esc(lv.code + ", " + lv.name + (on ? ", shown now" : "")) + '" title="' + esc(lv.code + ", " + lv.name) + '">' + esc(lv.code.replace("Level ", "")) + "</a>";
+      return '<a href="' + esc(sameWith("plan", String(lv.n))) + '" data-gm-carried' + (on ? ' aria-current="true"' : "") + ' aria-label="' + esc(lv.name + (on ? ", shown now" : "")) + '" title="' + esc(lv.name) + '">' + esc(lv.code) + "</a>";
     }).join("") + "</nav>" + planNoteHTML() : "";
 
-    /* At Level 01 there is no guest pipeline, so the one gold action opens the church's website instead. */
+    /* On the Care plan there is no guest pipeline, so the one gold action opens the church's website instead. */
     var actionLocked = side === "church" && !GM.isIncluded("guests");
     var actionHTML = actionLocked
       ? '<a class="v2-sidebar-action" href="church-website.html" data-tour="shell.add">' + vIcon("website") + "<span>Open Your Website</span></a>"
@@ -965,14 +965,14 @@
         var due = GM.dueFollowUps(), g = due[0], p = g && GM.person(g.personId);
         return p ? "Start with " + p.name + ". " + g.next + " is " + GM.fmt.due(g.due).text.toLowerCase() + ", and " + GM.staff(g.owner).name + " owns it. Then the care that has waited longest." : "Start with the care that has waited longest.";
       } },
-      { match: /price|cost|pricing|custom/i, answer: "Every look is filled with your church's content, photos and colors. Changes beyond the template are available for an additional cost. " + D.pricingLine + "." },
-      { match: /level|plan|includ|what do (we|i) get|package/i, answer: "Every church gets a website in one of four looks, a brand board, a social marketing plan and " + ASSISTANT.name + " on the website. Connect adds this workspace, the guest pipeline, the member app and the care inbox. Shepherd adds person pages, the access record, the gifts picture and reports. Levels are a draft." },
+      { match: /price|cost|pricing|custom/i, answer: "Every look is filled with your church's content, photos and colors. Changes beyond the template are available for an additional cost. " + D.pricingLine + "" },
+      { match: /level|plan|includ|what do (we|i) get|package/i, answer: "Every church gets a website in one of four looks, a brand board, a social marketing plan and " + ASSISTANT.name + " on the website. Shepherd adds this workspace, the guest pipeline, the member app and the care inbox. Plus adds person pages, the access record, the gifts picture and reports." },
       { match: /hope|assistant|ai\b/i, answer: "On your website I answer from facts your team approved: times, kids, next steps, giving. In this workspace I draft welcome notes and summaries, and a person approves everything. I never draft a reply to prayer or a personal message, and I never set a gifts score." }
     ];
   }
   function genesisAnswers() { return []; }
   /* extraAnswers: a page's own (checked first). baseAnswers: the guided demo's product answers
-     (shared/demo.js), checked before the built-in ones and answered at every level. */
+     (shared/demo.js), checked before the built-in ones and answered on every plan. */
   var extraAnswers = [], baseAnswers = [];
   function pickAnswer(list, text) {
     for (var i = 0; i < list.length; i++) if (list[i].match.test(text)) { var a = list[i].answer; return typeof a === "function" ? a(text) : a; }
@@ -983,7 +983,7 @@
     var hopeLocked = GM.side === "church" && !GM.isIncluded("genesis");
     if (hopeLocked) {
       var product = pickAnswer(baseAnswers, text);
-      return product != null ? product : "At " + GM.level().code + " I answer questions on " + GM.church.short + "'s website. " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with Level 02.";
+      return product != null ? product : "On the " + GM.level().code + " plan I answer questions on " + GM.church.short + "'s website. " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with Shepherd.";
     }
     var list = extraAnswers.concat(baseAnswers, GM.side === "genesis" ? genesisAnswers() : churchAnswers());
     for (var i = 0; i < list.length; i++) if (list[i].match.test(text)) { var a = list[i].answer; return typeof a === "function" ? a(text) : a; }
@@ -996,8 +996,8 @@
     var v = GM.viewer() || {}, first = v.first || v.name || "";
     var hello = GM.greeting() + ", ";
     if (!GM.isIncluded("genesis")) {
-      return { name: v.name, line: hello + "{name}. At Level 01 I answer questions on " + GM.church.short + "'s website. Drafts, summaries and the Today view come with Level 02.",
-        chips: [{ label: "Preview Level 02", href: sameWith("plan", "2"), primary: true }, { label: "Compare Levels", href: "index.html#levels" }] };
+      return { name: v.name, line: hello + "{name}. On the Care plan I answer questions on " + GM.church.short + "'s website. Drafts, summaries and the Today view come with Shepherd.",
+        chips: [{ label: "Preview Shepherd", href: sameWith("plan", "2"), primary: true }, { label: "Compare Plans", href: "index.html#levels" }] };
     }
     var newG = D.guests.filter(function (g) { return g.stage === "new"; }).length;
     var care = GM.waitingCare().length, due = GM.dueFollowUps().length;
@@ -1468,10 +1468,10 @@
 
   function memberLocked(key) {
     var m = D.modules[key], lv = D.levels[m.level - 1], cur = GM.level();
-    return '<section class="m-locked"><div class="m-locked-icon">' + GM.icon("lock", "gm-icon--lg") + '</div><p class="m-eyebrow">Included in ' + esc(lv.code) + ", " + esc(lv.name) + '</p><h1 class="m-h1">' + esc(m.label) + '</h1><p class="m-lede">' + esc(m.adds) + "</p>" +
+    return '<section class="m-locked"><div class="m-locked-icon">' + GM.icon("lock", "gm-icon--lg") + '</div><p class="m-eyebrow">Included in ' + esc(lv.name) + '</p><h1 class="m-h1">' + esc(m.label) + '</h1><p class="m-lede">' + esc(m.adds) + "</p>" +
       '<ul class="m-checks">' + m.points.map(function (p) { return "<li>" + GM.icon("check") + "<span>" + esc(p) + "</span></li>"; }).join("") + "</ul>" +
-      '<a class="m-btn m-btn--primary m-btn--block" href="' + esc(sameWith("plan", String(lv.n))) + '">Preview ' + esc(lv.code) + '</a><a class="m-btn m-btn--block" href="index.html#levels">Compare Levels</a>' +
-      '<p class="m-note-quiet">This preview is showing ' + esc(cur.code) + ", " + esc(cur.name) + ".</p></section>";
+      '<a class="m-btn m-btn--primary m-btn--block" href="' + esc(sameWith("plan", String(lv.n))) + '">Preview ' + esc(lv.code) + '</a><a class="m-btn m-btn--block" href="index.html#levels">Compare Plans</a>' +
+      '<p class="m-note-quiet">This preview is showing ' + esc(cur.name) + ".</p></section>";
   }
 
   boot();

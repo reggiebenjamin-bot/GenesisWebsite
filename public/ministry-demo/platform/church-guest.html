@@ -696,7 +696,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Connected and protections ---------- */
   var personLocked = !GM.isIncluded("people");
-  var links = [["church-person.html?id=" + p.id, "Person page", personLocked ? GM.pill("Level 03", "neutral") : esc("One page for " + p.first) + ic("chevron")]];
+  var links = [["church-person.html?id=" + p.id, "Person page", personLocked ? GM.pill("Plus", "neutral") : esc("One page for " + p.first) + ic("chevron")]];
   (p.threads || []).forEach(function (tid) {
     var t = GM.thread(tid); if (!t) return;
     links.push(["church-care.html?id=" + t.id, "Thread: " + t.subject, esc(t.status === "waiting-on-them" ? "Waiting on " + p.first : t.status === "waiting-on-us" ? "Waiting on us" : "Closed") + ic("chevron")]);

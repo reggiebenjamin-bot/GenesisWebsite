@@ -97,37 +97,37 @@
   D.defaultChurch = "bright-modern";
 
   /* ------------------------------------------------------------------ levels */
-  /* DRAFT plan levels, to be confirmed by the owner. Never show a price.
-     Where a price would sit, show D.pricingLine. */
-  D.pricingLine = "Pricing set with Genesis";
+  /* The three plans and their prices, as /ministry shows them.
+     D.pricingLine is the one sentence with every price. */
+  D.pricingLine = "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
   D.customLine = "Customization beyond the template is available for an additional cost.";
   D.levels = [
-    { n: 1, code: "Level 01", name: "Welcome", draft: true, seats: "No seats needed. Forms arrive by email",
+    { n: 1, code: "Care", name: "Care", price: "$149 a month", draft: true, seats: "No seats needed. Forms arrive by email",
       summary: "A website people can find and use, with Hope answering questions and every form arriving by email.",
       includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, trained on facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up"] },
-    { n: 2, code: "Level 02", name: "Connect", draft: true, seats: "Up to 8 staff seats",
-      summary: "Everything in Welcome, plus a front office for guests and a member app, so nobody falls through the cracks.",
-      includes: ["Everything in Welcome", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval"] },
-    { n: 3, code: "Level 03", name: "Shepherd", draft: true, seats: "Up to 15 staff seats",
-      summary: "Everything in Connect, plus one page per person, the spiritual gifts picture and reports for pastors.",
-      includes: ["Everything in Connect", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "More staff seats"] },
-    { n: 4, code: "Enterprise", name: "Enterprise", draft: true, seats: "Scoped on a call",
-      summary: "For multi-campus churches. Everything in Shepherd, scoped on a call.",
-      includes: ["Everything in Shepherd", "More than one campus", "Scoped on a call"] }
+    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", draft: true, seats: "Up to 8 staff seats",
+      summary: "Everything in Care, plus a front office for guests and a member app, so nobody falls through the cracks.",
+      includes: ["Everything in Care", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval"] },
+    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", draft: true, seats: "Up to 15 staff seats",
+      summary: "Everything in Shepherd, plus one page per person, the spiritual gifts picture and reports for pastors.",
+      includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "More staff seats"] },
+    { n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", draft: true, seats: "Scoped on a call",
+      summary: "For multi-campus churches. Everything in Plus, scoped on a call.",
+      includes: ["Everything in Plus", "More than one campus", "Scoped on a call"] }
   ];
   D.defaultPlan = 3;
 
-  /* Modules and the level that includes each. The nav and the locked state read this. */
+  /* Modules and the plan that includes each. The nav and the locked state read this. */
   D.modules = {
     website:  { label: "Website", level: 1, side: "church", adds: "The website in its chosen look, the brand board, the social marketing plan, and the forms that reach the church.", points: ["The website, with Hope answering questions", "The brand board and the social plan", "Plan a Visit and prayer forms by email"] },
     today:    { label: "Today", level: 2, side: "church", adds: "One calm list of what needs a person today: new guests, care waiting on us and follow-ups due.", points: ["New guests since Sunday, each with an owner", "Care waiting on us, oldest first", "Follow-ups due today and overdue", "Hope drafts ready for your approval"] },
     guests:   { label: "Guests", level: 2, side: "church", adds: "The front office: every first-time guest moves from New to Serving with an owner, a next step and a due date.", points: ["Guests arrive from Plan a Visit, Hope, connect cards, events and the newsletter", "Six stages from New to Serving", "Hope drafts welcome notes that wait for approval", "Follow-up by email by default; texting only if the church turns it on"] },
     care:     { label: "Care", level: 2, side: "church", adds: "One shared inbox for prayer and messages, with an owner on every thread and a waiting-on-us list.", points: ["Prayer visible only to pastors and the prayer team", "Alert emails carry no private words", "Every open, reply and archive is recorded", "Archive, never delete"] },
     people:   { label: "People", level: 3, side: "church", adds: "One page per person with everything from them in one place.", points: ["Contact card, threads and prayer history (for those allowed)", "Gifts when the person said yes", "Private pastor notes", "Every open is recorded"] },
-    access:   { label: "Access Record", level: 3, side: "church", adds: "The Access Record screen: search and export every open, reply, change and archive. From Level 02 every open is already recorded; Shepherd adds this screen.", points: ["Search by person, record or action", "Export a copy, and the export is recorded too", "Role changes are emailed to the lead pastor", "Nobody can edit an entry"] },
+    access:   { label: "Access Record", level: 3, side: "church", adds: "The Access Record screen: search and export every open, reply, change and archive. From Shepherd every open is already recorded; Plus adds this screen.", points: ["Search by person, record or action", "Export a copy, and the export is recorded too", "Role changes are emailed to the lead pastor", "Nobody can edit an entry"] },
     gifts:    { label: "Gifts", level: 3, side: "church", adds: "The spiritual gifts conversation for members and a church-wide picture for pastors.", points: ["Plain arithmetic scoring; the AI never sets a score", "The chart stays hidden until 25 people finish", "Small counts show as fewer than 5", "Names only for people who said yes"] },
     reports:  { label: "Reports", level: 3, side: "church", adds: "Plain reports on guests, care and response times, counts only.", points: ["Guest path from first contact to serving", "Care volume and how fast we reply", "Counts only, never names or private words"] },
-    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. Connect has the four roles and a named prayer team; Shepherd adds custom roles, named gift viewers and more seats.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
+    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. Shepherd has the four roles and a named prayer team; Plus adds custom roles, named gift viewers and more seats.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
     "custom-roles": { label: "Custom Roles", level: 3, side: "church", adds: "Roles shaped to your church, like a care meals coordinator, and people named to see gift names for serving.", points: ["Custom roles with exactly what they need", "Named gift viewers", "Up to 15 staff seats"] },
     settings: { label: "Settings", level: 1, side: "church", adds: "The tools your church already uses, how follow-up and alerts travel, and when Genesis may sign in.", points: ["Giving, events and kids check-in links", "Follow-up and alert settings", "Support sessions, off by default"] },
     genesis:  { label: "Hope", level: 2, side: "church", adds: "Hope drafts welcome notes and everyday replies, and summarizes the week. A person approves everything.", points: ["Drafts are labelled and wait for approval", "Never drafts a reply to prayer or a personal message", "Never sets a gifts score"] },
@@ -455,14 +455,14 @@
   /* "How it runs", mirrored from geai.us. */
   D.howItRuns = [
     { n: "01", name: "Consultation", line: "Free fit conversation", church: "A short call with the pastor or executive pastor about guests, care and the website today." },
-    { n: "02", name: "Scoping", line: "Recommendation and next step", church: "A guided demo, then a proposal with a chosen look and plan level." },
+    { n: "02", name: "Scoping", line: "Recommendation and next step", church: "A guided demo, then a proposal with a chosen look and plan." },
     { n: "03", name: "Implementation", line: "The system build", church: "Content and photos, brand board, social plan, site build, Hope facts and platform set up." },
     { n: "04", name: "Launch", line: "Live in the church", church: "The site goes live, staff sign in, and the first guests flow through." },
     { n: "05", name: "Managed Platform", line: "Support and improve", church: "Genesis keeps the site, Hope and the platform running and improving." }
   ];
 
   /* ------------------------------------------------------------------ sales */
-  /* Never a dollar amount. Plans show a level, and "Pricing set with Genesis". */
+  /* Plans show a plan name and its price, from D.levels. */
   D.sales = {
     stages: [
       { key: "lead",      label: "Lead" },
@@ -473,7 +473,7 @@
     ],
     afterStages: [{ key: "onboarding", label: "Onboarding" }, { key: "managed", label: "Managed" }],
     deals: [
-      { id: "a-lightwell",  church: "bright-modern",    name: "Lightwell Church", city: "Raleigh", state: "NC", stage: "managed", level: 2, look: "bright-modern", owner: "g-amara", since: "2026-09-14", next: "Quarterly review, and a look at Level 03", due: "2026-12-10", source: "Referral from a pastor friend", demo: true },
+      { id: "a-lightwell",  church: "bright-modern",    name: "Lightwell Church", city: "Raleigh", state: "NC", stage: "managed", level: 2, look: "bright-modern", owner: "g-amara", since: "2026-09-14", next: "Quarterly review, and a look at Plus", due: "2026-12-10", source: "Referral from a pastor friend", demo: true },
       { id: "a-lampstand",  church: "bold-dark",        name: "Lampstand Church", city: "Columbus", state: "OH", stage: "onboarding", level: 3, look: "bold-dark", owner: "g-amara", signed: "2026-10-22", launchTarget: "2027-01-10", next: "Site build review with Pastor Talia", due: "2026-11-24", source: "Inbound from geai.us", demo: true },
       { id: "a-goldenrod",  church: "warm-community",   name: "Goldenrod Commons Church", city: "Des Moines", state: "IA", stage: "signed", level: 2, look: "warm-community", owner: "g-victor", signed: "2026-11-12", launchTarget: "2027-02-01", next: "Kickoff call and photo checklist", due: "2026-11-20", source: "Website Check reply", demo: true },
       { id: "a-calderhill", church: "classic-timeless", name: "Calder Hill Chapel", city: "Richmond", state: "VA", stage: "proposal", level: 3, look: "classic-timeless", owner: "g-victor", proposalSent: "2026-11-16", next: "Elder board decision", due: "2026-12-01", source: "Conference conversation", demo: true },

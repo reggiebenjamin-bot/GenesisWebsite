@@ -83,7 +83,7 @@ GM.ready(function (ctx) {
       ["Guest follow-up", "By email. A guest can stop guest emails with one click.", GM.pill("Email", "neutral")],
       ["Guest texting", D.guestSettings.textingNote, sw("st-texting", "Guest texting", false)],
       ["Pastor on call", care.name + " this week. An email and a phone notification, with no private words: Urgent request. Sign in to read. This is staff alerting, separate from guest texting.", GM.pill(care.name, "info")],
-      ["Alert wording", connect ? "New request. Sign in to read. Nothing else, so a shared family email gives nothing away." : "At Level 01 forms arrive by email with their words. Connect changes alerts to: New request. Sign in to read.", GM.pill(connect ? "No Private Words" : "Level 01", connect ? "positive" : "warning")]
+      ["Alert wording", connect ? "New request. Sign in to read. Nothing else, so a shared family email gives nothing away." : "On the Care plan forms arrive by email with their words. Shepherd changes alerts to: New request. Sign in to read.", GM.pill(connect ? "No Private Words" : "Care", connect ? "positive" : "warning")]
     ]);
 
   /* ---------- Genesis support ---------- */

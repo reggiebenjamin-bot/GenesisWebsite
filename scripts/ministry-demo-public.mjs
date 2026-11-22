@@ -17,14 +17,15 @@
  *   - PLAN_RENAMES and oldPlanRefs: the three plans. The owner replaced the
  *     draft levels with Care ($149 a month), Shepherd ($299) and Plus ($499).
  *     The renames run on every page and script after PUBLIC_EDITS and give
- *     the plan names and prices; oldPlanRefs stops the sync on any old level
- *     label, level name sentence or "pricing set with Genesis" left behind.
+ *     the plan names and prices, and say "plan" where a reader saw "level";
+ *     oldPlanRefs stops the sync on any old level label, level name
+ *     sentence, "level" a reader would see or "pricing set with Genesis"
+ *     left behind.
  *
- * RE-SYNC NEEDED. The committed public/ministry-demo/ was synced before the
- * plans, so it still shows the draft levels until the next sync. The source
- * was being edited when the plans were added, and several PUBLIC_EDITS no
- * longer find their text in its working tree; review them against the
- * commit you sync from.
+ * The committed public/ministry-demo/ is synced from genesis-ministry commit
+ * 432d5cd. The source was being edited when the plans were added, and
+ * several PUBLIC_EDITS no longer find their text in its working tree; review
+ * them against the commit you sync from.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -1035,6 +1036,31 @@ export const PLAN_RENAMES = [
     pattern: /(?<=data-tour="shell\.plan"><span>)Level(?=<\/span>)/g,
     replace: () => "Plan",
   },
+
+  /* The word itself. A tier is a plan now, so where people read "level" they read "plan". Class
+     names (.level, v2-level-card), data keys (D.levels, level: 2), the #levels anchor, "second-level
+     column" and the matchers for what a visitor types keep the word. */
+  {
+    note: 'a sentence that names the plan after "at" reads "on the ... plan"',
+    pattern: /\b([Aa])t " \+ ((?:GM\.level\(\)|ctx\.level)\.code) \+ (")?/g,
+    replace: (_, a, code, quote) => `${a === "A" ? "On" : "on"} the " + ${code} + ${quote ? '" plan' : '" plan" + '}`,
+  },
+  {
+    note: "at this, that or every level reads on this, that or every plan",
+    pattern: /\b([Aa])t (this|that|every) level\b/g,
+    replace: (_, a, which) => `${a === "A" ? "On" : "on"} ${which} plan`,
+  },
+  { note: "the plan switcher and menu say Plan, not Plan level", pattern: /\b([Pp])lan level\b/g, replace: (_, p) => `${p}lan` },
+  {
+    note: "the labels people click say Plan: Compare Plans, Demo This Plan, Choose Your Plan, What Does Each Plan Include?",
+    pattern: /\b(Compare|This|Each|Your) Level(s?)\b|(?<=>)Levels(?=\s*<)/g,
+    replace: (match, word, s) => (word ? `${word} Plan${s}` : "Plans"),
+  },
+  {
+    note: "each, every, any, this, which, the, its or your level is the plan",
+    pattern: /\b([Ee]ach|[Ee]very|[Aa]ny|[Tt]his|[Tt]hat|[Ww]hich|[Tt]he|[Ii]ts|[Yy]our|and) level(s?)\b/g,
+    replace: (_, word, s) => `${word} plan${s}`,
+  },
 ];
 
 /**
@@ -1067,6 +1093,10 @@ const OLD_PLAN_WORDS = [
   {
     what: "an old level name",
     pattern: /\bWelcome, Connect\b|\b[Ee]verything in (?:Welcome|Connect)\b|\b(?:Welcome|Connect) (?:adds|keeps|changes|turns|has|names|is the website)\b|name: "(?:Welcome|Connect)"|<h3>(?:Welcome|Connect)<\/h3>|dy="0">(?:Welcome|Connect)</g,
+  },
+  {
+    what: 'the word "level" where people read it',
+    pattern: /\b(?:[Ee]ach|[Ee]very|[Aa]ny|[Tt]his|[Tt]hat|[Ww]hich|[Tt]he|[Ii]ts|[Yy]our|[Pp]lan|and) levels?\b|\b(?:Compare|This|Each|Your) Levels?\b|>Levels?\s*<|\b[Aa]t " \+ (?:GM\.level\(\)|ctx\.level)\.code\b/g,
   },
 ];
 

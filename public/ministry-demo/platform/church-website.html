@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Website · Genesis Ministry · Design preview</title>
-<meta name="description" content="Genesis Ministry design preview: the website package every level starts with. The website with Hope on it, the brand board, the social plan, and the Plan a Visit and prayer emails as the church receives them. Sample data.">
+<meta name="description" content="Genesis Ministry design preview: the website package every plan starts with. The website with Hope on it, the brand board, the social plan, and the Plan a Visit and prayer emails as the church receives them. Sample data.">
 <script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
 <link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
@@ -46,7 +46,7 @@
       <div>
         <div class="v2-eyebrow" id="ws-eyebrow">Website</div>
         <h1 id="ws-title">Your website package</h1>
-        <p id="ws-sub">What every level starts with.</p>
+        <p id="ws-sub">What every plan starts with.</p>
       </div>
       <div class="v2-page-actions" id="ws-actions"></div>
     </header>
@@ -95,7 +95,7 @@ GM.ready(function (ctx) {
   var maya = GM.person("p-maya"), sarah = GM.person("p-sarah");
 
   $("ws-eyebrow").textContent = "Website · " + c.short;
-  $("ws-sub").textContent = "Every level starts here: the website in the " + c.look + " look with " + HOPE + " on it, a brand board, a social plan, and forms that reach the right person.";
+  $("ws-sub").textContent = "Every plan starts here: the website in the " + c.look + " look with " + HOPE + " on it, a brand board, a social plan, and forms that reach the right person.";
   $("ws-actions").innerHTML = '<a class="v2-button v2-button-primary" href="' + esc(c.site) + '">' + ic("website") + "Open the Website</a>";
 
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
@@ -114,7 +114,7 @@ GM.ready(function (ctx) {
     "Plan a Visit, prayer and newsletter forms on every look"
   ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
   $("ws-site-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("external") + "Open Full Size</a>" +
-    '<button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What does each level include?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>";
+    '<button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What does each plan include?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>";
   $("ws-frame").setAttribute("src", c.site);
 
   $("ws-brand-copy").textContent = "Logo, colors, type and voice for " + c.short + ", so a volunteer can make a slide or a post that looks right the first time.";
@@ -125,8 +125,8 @@ GM.ready(function (ctx) {
   function mail(rows) { return '<div class="v2-quick-context"><dl>' + rows.map(function (r) { return "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("") + "</dl></div>"; }
   function note(text, warn) { return '<p class="ws-level' + (warn ? " is-warn" : "") + '">' + ic(warn ? "alert" : "info") + "<span>" + esc(text) + "</span></p>"; }
   $("ws-mails-sub").textContent = connect
-    ? "From Level 02 a form becomes a guest or a locked care item, and the email carries no private words."
-    : "At Level 01 every form arrives by email, to the address the church chose.";
+    ? "From Shepherd a form becomes a guest or a locked care item, and the email carries no private words."
+    : "On the Care plan every form arrives by email, to the address the church chose.";
 
   if (connect) {
     $("ws-visit").innerHTML = mail([["From", c.name + " website"], ["To", "Nadia K., Connections Lead"], ["Subject", "A new guest to welcome"], ["It says", "Maya T. planned a visit for Sunday. Sign in to see the details and the welcome note " + HOPE + " drafted."]]) +
@@ -137,17 +137,17 @@ GM.ready(function (ctx) {
       '<div class="ws-actions"><a class="v2-button" href="church-care.html?view=prayer">' + ic("care") + "Open Prayer in Care</a></div>";
   } else {
     $("ws-visit").innerHTML = mail([["From", c.name + " website"], ["To", c.email], ["Subject", "Plan a Visit: " + maya.name + ", Sunday"], ["It says", "Name: " + maya.name + "\nEmail: " + maya.email + "\nComing: Sunday, second gathering\nWith: her husband and two kids, ages 4 and 7\nQuestion: where do the kids check in?"]]) +
-      note("At Level 01 someone on the team reads this inbox and replies by hand. Connect turns it into a guest with an owner, a next step and a welcome note waiting for approval.");
+      note("On the Care plan someone on the team reads this inbox and replies by hand. Shepherd turns it into a guest with an owner, a next step and a welcome note waiting for approval.");
     $("ws-prayer").innerHTML = mail([["From", c.name + " website"], ["To", "The pastors' address only"], ["Subject", "Prayer request from " + sarah.name], ["It says", D.prayer[0].text]]) +
-      note("At Level 01 the prayer words are in this email, sent only to the pastors' address. Connect keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.", true) +
-      '<div class="ws-actions"><a class="v2-button v2-button-primary" href="' + esc(GM.sameWith("plan", "2")) + '">Preview Level 02</a><a class="v2-button v2-button-quiet" href="index.html#levels">Compare Levels</a></div>';
+      note("On the Care plan the prayer words are in this email, sent only to the pastors' address. Shepherd keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.", true) +
+      '<div class="ws-actions"><a class="v2-button v2-button-primary" href="' + esc(GM.sameWith("plan", "2")) + '">Preview Shepherd</a><a class="v2-button v2-button-quiet" href="index.html#levels">Compare Plans</a></div>';
     $("ws-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("website") + "Open the Website</a>";
   }
   GM.carryLinks();
 
   GM.hope.setBriefing({
     line: GM.greeting() + ", {name}. " + c.short + "'s website is live in the " + c.look + " look. 38 people asked me questions on it this week, and 4 planned a visit.",
-    chips: [{ label: "Open the Website", href: c.site, primary: true }, { label: "Open the Brand Board", href: c.brandBoard }, { label: "What Does Each Level Include?", ask: "What does each level include?" }]
+    chips: [{ label: "Open the Website", href: c.site, primary: true }, { label: "Open the Brand Board", href: c.brandBoard }, { label: "What Does Each Plan Include?", ask: "What does each plan include?" }]
   });
 
   GM.setTour([

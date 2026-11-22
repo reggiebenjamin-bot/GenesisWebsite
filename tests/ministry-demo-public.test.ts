@@ -122,6 +122,42 @@ test("a level label and its name become the plan, and the old names never chain"
   assert.equal(renamed(kept), kept);
 });
 
+test('where a reader saw "level" they read "plan", and code keeps the word', () => {
+  assert.equal(
+    renamed('{ label: "What Does Each Level Include?", ask: "What does each level include?" }'),
+    '{ label: "What Does Each Plan Include?", ask: "What does each plan include?" }',
+  );
+  assert.equal(
+    renamed('<a href="#levels">Levels</a> <a href="#levels">Levels <span aria-hidden="true">&#8599;</span></a> <h2 id="levels-title">Choose your level</h2> Compare Levels. Choose Your Level', "platform/index.html"),
+    '<a href="#levels">Plans</a> <a href="#levels">Plans <span aria-hidden="true">&#8599;</span></a> <h2 id="levels-title">Choose your plan</h2> Compare Plans. Choose Your Plan',
+  );
+  /* The guided demo finds its buttons by their label, so the matcher follows the label. */
+  assert.equal(renamed('aria-label="Demo This Level: Care">Demo This Level</a>', "platform/index.html"), 'aria-label="Demo This Plan: Care">Demo This Plan</a>');
+  assert.equal(renamed("/^Demo (This Level|Level 0\\d)$/i.test(label)"), "/^Demo (This Plan|Level 0\\d)$/i.test(label)");
+  assert.equal(
+    renamed("Switch the level to see them. At this level the prayer words stay in email. Each Demo This Level button opens Today at that level."),
+    "Switch the plan to see them. On this plan the prayer words stay in email. Each Demo This Plan button opens Today on that plan.",
+  );
+  assert.equal(renamed('aria-label="Plan level shown in this preview"'), 'aria-label="Plan shown in this preview"');
+  assert.equal(renamed("Every level includes the website. The church you chose, and its level, carry through every screen."), "Every plan includes the website. The church you chose, and its plan, carry through every screen.");
+  /* A plan name after "at" reads "on the ... plan". */
+  assert.equal(renamed('"Guests are all here at " + GM.level().code + "."'), '"Guests are all here on the " + GM.level().code + " plan."');
+  assert.equal(renamed('"At " + GM.level().code + " I answer questions"'), '"On the " + GM.level().code + " plan I answer questions"');
+  assert.equal(renamed('" seats are in use at " + ctx.level.code + ". "'), '" seats are in use on the " + ctx.level.code + " plan. "');
+  assert.equal(
+    renamed('", so at " + GM.level().code + (end ? " the demo ends here" : " the demo goes on")'),
+    '", so on the " + GM.level().code + " plan" + (end ? " the demo ends here" : " the demo goes on")',
+  );
+  /* Class names, data keys, anchors and the matchers for what a visitor types keep the word. */
+  const kept = '.level .price { } D.levels.map, class="card level", #levels, the second-level column, v2-level-card, level: 2, /level|plan|includ/i, welcome level|connect level';
+  assert.equal(renamed(kept), kept);
+  assert.deepEqual(oldPlanRefs(kept, "platform/shared/app.js"), []);
+  assert.deepEqual(
+    oldPlanRefs('Compare Levels. Switch the level. <a href="#levels">Levels</a> "At " + GM.level().code', "platform/shared/app.js").map((ref) => ref.match),
+    ["Compare Levels", "the level", ">Levels<", 'At " + GM.level().code'],
+  );
+});
+
 test("the data gives each plan its name and price, and the scripts show the name once", () => {
   assert.equal(
     renamed('{ n: 2, code: "Level 02", name: "Connect", draft: true }', "platform/shared/data.js"),
@@ -156,7 +192,7 @@ test("price lines become the prices, and the hub's cards print them", () => {
     renamed('    price: "Pricing is set with Genesis, on a call. This preview never shows a price or a dollar amount, and the levels are a draft.",'),
     `    price: "${PRICE_ANSWER}",`,
   );
-  assert.equal(renamed("Each level includes everything before it. Draft levels. Pricing set with Genesis.", "platform/journey.html"), `Each level includes everything before it. ${PRICE_ANSWER}`);
+  assert.equal(renamed("Each level includes everything before it. Draft levels. Pricing set with Genesis.", "platform/journey.html"), `Each plan includes everything before it. ${PRICE_ANSWER}`);
   const card = (eyebrow: string, name: string) =>
     `<p class="eyebrow">${eyebrow}</p>\n          <h3>${name}</h3>\n          <p class="sum">Sum.</p>\n          <p class="price">Pricing set with Genesis</p>`;
   const hub = renamed([card("Level 02", "Connect"), card("Scoped on a call", "Enterprise")].join("\n"), "platform/index.html");
