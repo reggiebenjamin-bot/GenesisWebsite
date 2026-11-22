@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { GenesisMark } from "@/components/layout/GenesisMark";
 import { managedOverview } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import styles from "./InfrastructureMap.module.css";
@@ -94,13 +94,8 @@ export function InfrastructureMap({ className }: { className?: string }) {
           ))}
 
           <div className={styles.core}>
-            <Image
-              src="/brand/genesis-logo.svg"
-              alt=""
-              width={56}
-              height={56}
-              className="size-11 sm:size-14"
-            />
+            {/* The margins hold the 44px and 56px slots the old square file used. */}
+            <GenesisMark className="mt-1.5 mb-[9px] h-[29px] w-auto sm:mt-[7.5px] sm:mb-[11.5px] sm:h-[37px]" />
             <span className={styles.coreLabel}>Integrated AI infrastructure</span>
           </div>
 

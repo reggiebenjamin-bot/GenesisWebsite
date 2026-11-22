@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { GenesisMark } from "@/components/layout/GenesisMark";
 import styles from "./AccountExperience.module.css";
 
 export type AccountMode = "choose" | "create" | "login";
@@ -160,7 +161,7 @@ export function AccountExperience({
                   <AccountForm mode={mode} />
                 ) : (
                   <div className={styles.unavailable} role="status">
-                    <span className={styles.unavailableIcon} aria-hidden="true">G</span>
+                    <Image src="/brand/genesis-icon.svg" alt="" width={36} height={36} className={styles.unavailableIcon} />
                     <h2>Account access is being connected.</h2>
                     <p>The account form will appear here when Genesis authentication is configured. For now, every product is open to explore without signing in.</p>
                     <Link href="/workspace" className={styles.unavailableLink}>Explore products <ArrowRight aria-hidden="true" size={18} /></Link>
@@ -176,7 +177,7 @@ export function AccountExperience({
 
         <div className={styles.visualPanel}>
           <div className={styles.visualTop} role="img" aria-label="Genesis" translate="no">
-            <Image src="/brand/genesis-logo.svg" alt="" width={46} height={46} loading="eager" fetchPriority="high" />
+            <GenesisMark loading="eager" fetchPriority="high" className={styles.visualMark} />
             <span aria-hidden="true">ENESIS</span>
           </div>
           <div className={styles.visualBody}>

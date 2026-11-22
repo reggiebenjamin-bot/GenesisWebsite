@@ -85,8 +85,9 @@ Legacy topic pages referenced by the snapshot are consolidated rather than recre
 
 ## Supplied approved assets
 
-- `GenesisLogo.svg` — preserved unredrawn as `/public/brand/genesis-logo.svg`.
+- `GenesisLogo.svg` (the white and gold G) was retired on 2026-11-21. The Genesis G is always the gold gradient G.
 - `GenesisLogo_Gradient.svg` — preserved unredrawn as `/public/brand/genesis-logo-gradient.svg`.
+- `/public/brand/mark-gold.svg` and `/public/brand/mark-gold-on-light.svg` are the same paths cropped tight to the G, from the Genesis gold mark kit. Use `mark-gold.svg` on dark grounds and `mark-gold-on-light.svg` on ivory, paper and white, through `components/layout/GenesisMark.tsx`.
 
 ## Missing content required for future publication
 

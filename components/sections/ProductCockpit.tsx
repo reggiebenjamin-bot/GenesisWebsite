@@ -1,3 +1,4 @@
+import { GenesisMark } from "@/components/layout/GenesisMark";
 import styles from "./ProductCockpit.module.css";
 
 const capabilities = [
@@ -23,7 +24,7 @@ export function ProductCockpit() {
 
       <div className={styles.workspace}>
         <aside className={styles.sidebar} aria-label="Illustrative product navigation">
-          <div className={styles.brand}><span>G</span><b>Genesis</b></div>
+          <div className={styles.brand}><GenesisMark className={styles.brandMark} /><b>Genesis</b></div>
           <p>Work</p>
           {[
             ["Today", true],

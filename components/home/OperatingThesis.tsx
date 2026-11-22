@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { GenesisMark } from "@/components/layout/GenesisMark";
 import { Eyebrow } from "@/components/ui/Section";
 import { genesisPositioning, genesisThesis, offerPaths, type OfferPathId } from "@/lib/offers";
 import styles from "./OperatingThesis.module.css";
@@ -100,13 +100,8 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
               className="absolute inset-[-10px] rounded-full border border-gold/12"
             />
             <div className="grid justify-items-center gap-2">
-              <Image
-                src="/brand/genesis-logo.svg"
-                alt=""
-                width={44}
-                height={44}
-                className="size-11"
-              />
+              {/* The margins hold the 44px slot the old square file used. */}
+              <GenesisMark className="mt-1.5 mb-[9px] h-[29px] w-auto" />
               <span className="font-display text-[0.66rem] tracking-[0.2em] text-ivory uppercase">
                 Genesis
               </span>

@@ -1,10 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { GenesisMark } from "./GenesisMark";
 
-/** The Genesis mark, followed by the wordmark unless `wordmark` is false. */
+/**
+ * The Genesis mark, followed by the wordmark unless `wordmark` is false.
+ * `light` is the ivory lockup for dark grounds, so it takes the gold G; the
+ * ink lockup sits on ivory or paper and takes the deeper gold G.
+ */
 export function Logo({
   light = false,
   wordmark = true,
@@ -35,14 +39,12 @@ export function Logo({
         light ? "text-ivory" : "text-ink",
       )}
     >
-      <Image
-        src="/brand/genesis-logo.svg"
-        alt=""
-        width={42}
-        height={42}
+      {/* 24px tall. The margins put the G where the old 37px square file did. */}
+      <GenesisMark
+        ground={light ? "dark" : "light"}
         loading="eager"
         fetchPriority="high"
-        className="h-[37px] w-[37px] object-contain"
+        className="mt-[5px] mr-[3.5px] mb-2 ml-[3px] h-6 w-auto"
       />
       {wordmark ? (
         <span className="relative top-px -ml-0.5 flex items-baseline gap-1.5 font-display leading-none tracking-[0.12em] uppercase">
