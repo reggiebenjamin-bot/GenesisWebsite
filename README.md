@@ -164,21 +164,41 @@ node scripts/sync-ministry-demo.mjs "C:/path/to/genesis-ministry"
 ```
 
 The source is that argument or `MINISTRY_DEMO_SOURCE`; there is no default.
-The script:
+The source belongs to another team and is only read. The script:
 
 - writes the four look card screenshots, `public/images/ministry/look-<slug>.jpg`,
   as the first 1440 by 900 of each look's `shots/desktop/home-01.jpg`, so the
   cards always match the previews they open. `--looks-only` does just this.
-- replaces `public/ministry-demo/` with `index.html`, `shared/`, `platform/` and
-  each `templates/<slug>/`, leaving out every Markdown file, the `*.mjs` build
-  tools, and every screenshot except the `shots/desktop/home-01.jpg` and
-  `shots/mobile/home-01.jpg` the gallery shows.
-- leaves out `platform/sales-*`, the Genesis Growth Desk (Genesis's own tool
-  for finding and serving churches), unless you pass `--with-growth-desk`. The
-  platform hub links to it, so those links are reported as not copied until
-  the owner decides whether to publish it.
-- adds `<meta name="robots" content="noindex">` to any page without it, and
-  lists any local file a page points at that was not copied.
+- copies what the source's `platform/DESIGN.md` (section 12, "Uploading the
+  preview") lists: the gallery `index.html` and its three pictures,
+  `shared/hope-demo.js`, `platform/` without `DESIGN.md`, and each
+  `templates/<slug>/` without its `shots/` (except the
+  `shots/desktop/home-01.jpg` and `shots/mobile/home-01.jpg` the gallery shows)
+  and without the `*.mjs` build tools.
+- makes the public copy. The Growth Desk (`platform/sales-*`, Genesis's own
+  tool for finding and selling to churches, and the two hub pictures of it)
+  stays out, by the owner's decision. `scripts/ministry-demo-public.mjs` then
+  edits the copied pages and scripts so nothing public links to it, tours it or
+  points at it: the hub's Growth Desk doors and links, the Growth Desk entries
+  in the account menu and Jump To, and the tours and demo path stops on its
+  screens go, Compare Levels opens the levels on the hub (or, from the hub, the
+  journey), and the guided demo starts at Today. Each edit must find its text
+  exactly, so a change in the source stops the sync with the edit's name
+  instead of leaving a link behind. The script prints every file left out and
+  every edit made.
+- adds `<meta name="robots" content="noindex">` to any page without it.
+- builds the copy in a temporary folder and replaces `public/ministry-demo/`
+  only when it passes its checks: no file names a `sales-*` page or the words
+  "Growth Desk", every local link in a page, stylesheet or platform script
+  resolves to a copied file, and every script compiles. Otherwise it stops and
+  leaves the old copy as it was.
+
+`--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
+unedited, for looking at only. The folder must be outside `public/`.
+
+`tests/ministry-demo-public.test.ts` tests the edits and checks the committed
+copy the same way: no Growth Desk, no dead local link, every page noindex, and
+a guided demo path that starts at Today.
 
 Review `git status` before committing the copy. Until the copy is committed,
 `/ministry` links to none of it: each preview is linked only once its file is
@@ -191,6 +211,12 @@ The demo copies stay out of search through their own noindex meta and an
 `X-Robots-Tag: noindex, nofollow` header (`next.config.ts`). `robots.txt`
 deliberately does not block `/ministry-demo/`: a crawler blocked there would
 never see the noindex.
+
+The demo needs inline scripts, its own fonts and images, and Google Fonts
+(fonts.googleapis.com and fonts.gstatic.com) for the member screens and the
+four sites. The site sends no Content-Security-Policy today (`next.config.ts`
+and `proxy.ts` set none), so nothing blocks them. If one is added, give
+`/ministry-demo/:path*` its own policy that allows those.
 
 **Contact.** The "Book a Consultation", "Request a Walkthrough" and "Request a
 Website Check" links carry a `?topic=` the contact page recognizes. A known
