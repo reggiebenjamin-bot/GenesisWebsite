@@ -75,7 +75,7 @@
 .status { color: var(--account-muted); }
 
 .unavailable { padding: 25px; background: var(--account-surface); border: 1px solid var(--account-border); border-radius: 6px; }
-.unavailableIcon { width: 36px; height: 36px; display: grid; place-items: center; color: var(--account-canvas); background: var(--account-accent); border-radius: 6px; font-family: var(--font-display); font-size: 1rem; }
+.unavailableIcon { width: 36px; height: 36px; display: block; }
 .unavailable h2 { margin: 19px 0 10px; font-size: 1.45rem; font-weight: 500; line-height: 1.12; }
 .unavailable p { margin: 0; color: var(--account-muted); font-size: 0.85rem; line-height: 1.5; }
 .unavailableLink, .signedInLink { width: fit-content; min-height: 44px; display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; padding: 0 15px; color: var(--account-canvas); background: var(--account-accent); border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-decoration: none; transition: background 180ms ease; }
@@ -103,7 +103,8 @@
 .card[data-panel-side="right"] .visualPanel { transform: translateX(100%); }
 .visualPanel::before { position: absolute; z-index: -1; inset: 0; content: ""; background: repeating-radial-gradient(circle at 72% 63%, transparent 0 71px, rgb(255 255 255 / 0.07) 72px 73px); }
 .visualTop { display: flex; align-items: center; gap: 4px; padding: clamp(26px, 3.4vw, 46px); font-family: var(--font-sans); font-size: clamp(1.27rem, 2vw, 1.5rem); font-weight: 700; letter-spacing: 0.015em; line-height: 1; }
-.visualTop img { width: 46px; height: 46px; object-fit: contain; }
+/* 30px tall. The margins put the G where the old 46px square file did. */
+.visualMark { width: auto; height: 30px; margin: 6px 4.5px 10px 3.5px; }
 .visualBody { margin-top: auto; padding: clamp(30px, 3.4vw, 46px); }
 .visualLabel { margin: 0 0 13px; color: var(--account-muted); font-family: var(--font-display); font-size: 0.67rem; font-weight: 700; letter-spacing: 0.14em; }
 .visualBody h2 { max-width: 11ch; margin: 0; font-size: clamp(2.3rem, 4.2vw, 4.5rem); font-weight: 400; letter-spacing: -0.065em; line-height: 1.04; text-wrap: balance; }

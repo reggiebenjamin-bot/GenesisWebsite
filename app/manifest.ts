@@ -10,9 +10,12 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#08090e",
     theme_color: "#08090e",
+    // The gold G on the ink disc, from the Genesis brand kit. The PNGs are the
+    // kit's disc renders; the SVG is the same disc for any other size.
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/brand/genesis-icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
     ],
   };
 }
