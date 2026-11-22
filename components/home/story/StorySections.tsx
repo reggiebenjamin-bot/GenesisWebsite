@@ -1,14 +1,13 @@
-import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Link from "next/link";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
+import { ProductChooser } from "@/components/home/ProductChooser";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import {
   aiEmployeePersonas,
 } from "@/lib/aiEmployees";
-import { managedPlans } from "@/lib/offers";
 import { editions } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
 
@@ -130,31 +129,18 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: the Genesis Managed AI levels from lib/offers. */
+/** Chapter six: Business, Real Estate, and Lending, each with checkout. */
 export function StoryOffers() {
   return (
-    <Sheet surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
+    <Sheet id="choose-business" surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
       <SectionIntro
         layout="split"
         eyebrow="Chapter six. Build your team"
-        title="Choose your level."
+        title="Choose your business."
         titleId="story-offers-title"
-        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Monthly plans with a one time setup. Done For You is scoped on a call under Enterprise.</p>}
+        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Open the edition page, or start Level 01, Level 02, or Level 03 checkout. Monthly plans with a one time setup.</p>}
       />
-      <ul className="grid gap-4 md:grid-cols-3">
-        {managedPlans.map((plan) => (
-          <Card as="li" key={plan.id} className={plan.id === "managed-4500" ? "ring-1 ring-gold" : undefined}>
-            <Eyebrow className="text-gold">Level {plan.step}</Eyebrow>
-            <p className="mt-4 text-[2.6rem] font-light leading-none tracking-[-0.04em]">{plan.priceDisplay}</p>
-            <p className="mt-2 text-[0.85rem] text-muted-dark">a month, {plan.setupLine}</p>
-            <p className="mt-4 text-[0.95rem] leading-relaxed">{plan.name}</p>
-            <p className="mt-2 text-[0.85rem] font-bold">{plan.userLimit}</p>
-            <UserLimitNote plan={plan} className="text-muted-dark" />
-            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.summary}</p>
-            <div className="mt-6"><Button href="/pricing#custom-infrastructure" variant="outline">Choose Level {plan.step}</Button></div>
-          </Card>
-        ))}
-      </ul>
+      <ProductChooser />
     </Sheet>
   );
 }

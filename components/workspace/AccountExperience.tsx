@@ -54,9 +54,9 @@ function AccountForm({ mode }: { mode: "create" | "login" }) {
       <div className={styles.signedInPanel}>
         <p className={styles.signedInMark} aria-hidden="true">✓</p>
         <h2>You&apos;re signed in.</h2>
-        <p>{user?.firstName ? `Welcome back, ${user.firstName}.` : "Welcome back."} Your products are ready to explore.</p>
+        <p>{user?.firstName ? `Welcome back, ${user.firstName}.` : "Welcome back."} Access you already have stays on this account.</p>
         <Link href="/workspace" className={styles.signedInLink}>
-          Go to products <ArrowRight aria-hidden="true" size={18} />
+          Continue <ArrowRight aria-hidden="true" size={18} />
         </Link>
       </div>
     );
@@ -121,7 +121,7 @@ export function AccountExperience({
       <header className={styles.pageHeader}>
         <nav className={styles.returnNav} aria-label="Return navigation">
           <Link href="/" className={styles.returnLink}><ArrowLeft aria-hidden="true" size={17} /> Back to website</Link>
-          <Link href="/workspace" className={styles.returnLink}><ArrowLeft aria-hidden="true" size={17} /> Back to products</Link>
+          <Link href="/pricing" className={styles.returnLink}><ArrowLeft aria-hidden="true" size={17} /> See pricing</Link>
         </nav>
       </header>
 
@@ -131,7 +131,7 @@ export function AccountExperience({
             <div className={styles.contentInner} key="choose">
               <p className={styles.kicker}>YOUR GENESIS ACCOUNT</p>
               <h1 ref={headingRef} tabIndex={-1}>Make it yours.</h1>
-              <p className={styles.intro}>Choose how you want to continue. You can still explore every product without signing in.</p>
+              <p className={styles.intro}>Choose how you want to continue. Plans are on the pricing page. Signing in does not remove access you already have.</p>
               <div className={styles.choiceList} role="group" aria-label="Choose account access">
                 <button type="button" onClick={() => chooseMode("create")} className={styles.choiceButton}>
                   <span><strong>Create account</strong><small>New to Genesis</small></span>
@@ -142,7 +142,7 @@ export function AccountExperience({
                   <ArrowUpRight aria-hidden="true" size={23} />
                 </button>
               </div>
-              <Link href="/workspace" className={styles.exploreLink}>Explore products without an account <ArrowRight aria-hidden="true" size={17} /></Link>
+              <Link href="/pricing" className={styles.exploreLink}>See pricing <ArrowRight aria-hidden="true" size={17} /></Link>
             </div>
           ) : (
             <div className={styles.contentInner} key={mode}>
@@ -163,8 +163,8 @@ export function AccountExperience({
                   <div className={styles.unavailable} role="status">
                     <Image src="/brand/genesis-icon.svg" alt="" width={36} height={36} className={styles.unavailableIcon} />
                     <h2>Account access is being connected.</h2>
-                    <p>The account form will appear here when Genesis authentication is configured. For now, every product is open to explore without signing in.</p>
-                    <Link href="/workspace" className={styles.unavailableLink}>Explore products <ArrowRight aria-hidden="true" size={18} /></Link>
+                    <p>The account form will appear here when Genesis authentication is configured. Plans are on the pricing page.</p>
+                    <Link href="/pricing" className={styles.unavailableLink}>See pricing <ArrowRight aria-hidden="true" size={18} /></Link>
                   </div>
                 )}
               </div>

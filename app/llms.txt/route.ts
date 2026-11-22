@@ -1,4 +1,3 @@
-import { genesisPositioning } from "@/lib/offers";
 import { absoluteUrl, seoPage } from "@/lib/seo";
 
 /*
@@ -15,12 +14,13 @@ const link = (path: string) => {
 };
 
 export function GET() {
+  const home = seoPage("/");
   const managed = seoPage("/solutions");
 
   const text = [
     "# Genesis AI",
     "",
-    `> ${genesisPositioning.category}. ${genesisPositioning.summary}`,
+    `> ${home.description}`,
     "",
     `${managed.label} connects systems, data, workflows, communication, and AI across the business. Plans are listed on the pricing page.`,
     "",
@@ -34,6 +34,17 @@ export function GET() {
     "## AI Employees",
     "",
     link("/ai-employees"),
+    "",
+    "## Editions",
+    "",
+    link("/business"),
+    link("/real-estate"),
+    link("/lending"),
+    "",
+    "## Consults",
+    "",
+    link("/capital-desk"),
+    link("/leadscout"),
     "",
     "## Company",
     "",

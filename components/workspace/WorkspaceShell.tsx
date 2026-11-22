@@ -7,8 +7,7 @@ import { DealArchitectWorkspace } from "./workflows/DealArchitectWorkspace";
 import { DealPackagerWorkspace } from "./workflows/DealPackagerWorkspace";
 import { ExampleWalkthrough } from "./ExampleWalkthrough";
 import { AccountControls } from "./AccountControls";
-import { ProductCard } from "./ProductCard";
-import { getWorkspaceTool, workspaceTools, type WorkspaceToolId } from "@/lib/toolWorkspace";
+import { getWorkspaceTool, type WorkspaceToolId } from "@/lib/toolWorkspace";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
 import styles from "./WorkspaceApp.module.css";
 
@@ -20,8 +19,8 @@ function CatalogHeader({ productPage = false }: { productPage?: boolean }) {
           <ArrowLeft aria-hidden="true" size={17} /> Back to website
         </Link>
         {productPage ? (
-          <Link href="/workspace" className={styles.homeLink}>
-            <ArrowLeft aria-hidden="true" size={17} /> Back to products
+          <Link href="/pricing" className={styles.homeLink}>
+            <ArrowLeft aria-hidden="true" size={17} /> See pricing
           </Link>
         ) : null}
       </nav>
@@ -37,16 +36,20 @@ export function WorkspaceHome() {
       <CatalogHeader />
       <div className={styles.catalogContent}>
         <div className={styles.catalogIntro}>
-          <p className={styles.eyebrow}>Real estate, higher ground</p>
-          <h1>Choose your next move.</h1>
-          <p>Explore each product for free. Pay only when you request a finished result.</p>
+          <p className={styles.eyebrow}>Genesis</p>
+          <h1>Tools are no longer offered.</h1>
+          <p>
+            The Genesis Tools catalog has been removed. See Managed AI plans for business, real estate, and lending.
+          </p>
+          <p className={styles.catalogActions}>
+            <Link href="/pricing" className={styles.pricingLink}>
+              See pricing
+            </Link>
+          </p>
+          <p>
+            If you already bought a tool, open it from the link on your welcome page. That access stays in place.
+          </p>
         </div>
-        <nav className={styles.catalogGrid} aria-label="Choose a Genesis product">
-          {workspaceTools.map((tool) => (
-            <ProductCard key={tool.id} tool={tool} />
-          ))}
-        </nav>
-        <p className={styles.catalogFootnote}>No account needed to browse or prepare your brief.</p>
         <p className={styles.catalogFootnote}>{softwareDisclaimer}</p>
       </div>
     </div>

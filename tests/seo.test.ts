@@ -15,6 +15,7 @@ import {
   websiteSchema,
 } from "../lib/schema.ts";
 import { faqs, pricingFaqs } from "../lib/content.ts";
+import { defaultDescription, defaultTitle } from "../lib/defaultMeta.ts";
 import { absoluteUrl, breadcrumbTrail, fullTitle, seoPages, toolSeo } from "../lib/seo.ts";
 import { canonicalOrigin, siteUrl } from "../lib/site.ts";
 import { toolPages } from "../lib/toolPages.ts";
@@ -119,6 +120,36 @@ test("every structured-data price is the price printed on the page", () => {
     plans.map((offer) => offer.price),
     managedPlans.map((plan) => priceNumber(plan.priceDisplay)),
   );
+});
+
+test("the site default title and description cover business, real estate, and lending", () => {
+  const home = seoPages.find((page) => page.path === "/");
+  assert.ok(home);
+  assert.equal(fullTitle(home), defaultTitle);
+  assert.equal(home.description, defaultDescription);
+  assert.match(defaultTitle, /Texas Businesses/);
+  assert.match(defaultDescription, /business, real estate, and lending/);
+  assert.equal(defaultTitle.includes("Real Estate"), false);
+  assert.equal(defaultDescription.toLowerCase().includes("real estate only"), false);
+});
+
+test("legal page titles do not say Draft", () => {
+  for (const path of ["/privacy", "/terms"]) {
+    const page = seoPages.find((candidate) => candidate.path === path);
+    assert.ok(page);
+    assert.equal(fullTitle(page).toLowerCase().includes("draft"), false);
+    assert.equal(page.description.toLowerCase().includes("draft"), false);
+  }
+});
+
+test("consult pages are indexable and do not start checkout", () => {
+  for (const path of ["/capital-desk", "/leadscout"]) {
+    const page = seoPages.find((candidate) => candidate.path === path);
+    assert.ok(page, path);
+    assert.match(page.description, /consult/);
+    assert.match(page.description, /checkout/);
+    assert.equal(page.description.toLowerCase().includes("draft"), false);
+  }
 });
 
 test("the organization record carries what search engines need to recognise Genesis", () => {

@@ -15,8 +15,11 @@ const control =
 
 export function ConsultationForm({
   initialPlan = "",
+  interest = "",
 }: {
   initialPlan?: string;
+  /** Which consult this request came from, forwarded with the existing form. */
+  interest?: string;
 }) {
   const allowedPlanValues = useMemo(
     () => new Set(["", "done-for-you", ...managedPlans.map((plan) => plan.id)]),
@@ -80,6 +83,7 @@ export function ConsultationForm({
       `Team Size: ${payload.monthly_leads ?? ""}`,
       `Operation Type: ${payload.operation_type ?? ""}`,
       `Plan: ${payload.plan ?? ""}`,
+      `Interest: ${payload.interest ?? ""}`,
       `Current Setup: ${payload.notes ?? ""}`,
       `Page: ${payload.page ?? ""}`,
     ].join("\n");
@@ -258,6 +262,8 @@ export function ConsultationForm({
           className={`${control} py-4`}
         />
       </label>
+
+      {interest ? <input type="hidden" name="interest" value={interest} /> : null}
 
       {/* Honeypot — hidden from people, irresistible to bots. */}
       <input

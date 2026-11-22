@@ -43,6 +43,8 @@ test("edition copy has no dashes, emoji or old pack prices", () => {
 });
 
 test("editions keep their disclaimers", () => {
+  assert.equal(editionPricing.business.footer, "Genesis is software. We do not lend, place or arrange funding.");
+  assert.equal(editionPricing.business.landingPath, "/business");
   assert.equal(editionPricing.real_estate.footer, "Genesis is software. We do not buy, sell or list property.");
   assert.equal(editionPricing.lending.footer, "Genesis is software. We do not lend, place or arrange funding.");
 });
