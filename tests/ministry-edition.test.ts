@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
 import { editions, ministryEdition } from "../lib/editions.ts";
 import { FUNDING_LINE } from "../lib/legal.ts";
@@ -109,6 +111,30 @@ test("the platform rows have their silent loops and the demo has captions", () =
   }
   assert.ok(ministryHero.stillAlt.length > 40, "the hero poster needs alt text");
   assert.match(ministryMedia.demo.captions, /\.vtt$/);
+});
+
+/** Width and height of a JPEG, from its first frame header. */
+function jpegSize(bytes: Buffer): { width: number; height: number } | null {
+  if (bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  let at = 2;
+  while (at + 9 < bytes.length) {
+    if (bytes[at] !== 0xff) return null;
+    const marker = bytes[at + 1];
+    const length = bytes.readUInt16BE(at + 2);
+    if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+      return { height: bytes.readUInt16BE(at + 5), width: bytes.readUInt16BE(at + 7) };
+    }
+    at += 2 + length;
+  }
+  return null;
+}
+
+test("each film's poster is a 1920 by 1080 still in public/", () => {
+  for (const [id, media] of Object.entries(ministryMedia)) {
+    const file = join(process.cwd(), "public", media.poster);
+    assert.ok(existsSync(file), `${id}: ${media.poster} is missing`);
+    assert.deepEqual(jpegSize(readFileSync(file)), { width: 1920, height: 1080 }, `${id}: ${media.poster}`);
+  }
 });
 
 /** The starting note a /contact link opens with. */
