@@ -6,33 +6,36 @@
  * team and is never edited from here, so everything the public copy needs to
  * be different is written below, as edits made to the copy:
  *
- *   - PUBLIC_EDITS: exact text swaps and block cuts per copied file. Each one
- *     must find its text exactly as written (a swap the stated number of
- *     times, a cut exactly once), or the sync stops and names it. When the
- *     working folder changes, a stale edit fails loudly instead of quietly
- *     leaving a link to the Growth Desk behind.
+ *   - PUBLIC_EDITS: exact text swaps, block cuts and presenter drops per
+ *     copied file. Each one must find its text exactly as written (a swap the
+ *     stated number of times, a cut exactly once, a drop the stated number of
+ *     elements), or the sync stops and names it. When the working folder
+ *     changes, a stale edit fails loudly instead of quietly leaving a link to
+ *     the Growth Desk behind.
  *   - growthDeskRefs: what may never appear in a public file.
  *   - localRefs: the local files a copied page or script points at, so the
  *     sync can stop on a link to a file that was not copied.
- *   - PLAN_RENAMES and oldPlanRefs: the three plans. The owner replaced the
- *     draft levels with Care ($149 a month), Shepherd ($299) and Plus ($499).
- *     The renames run on every page and script after PUBLIC_EDITS and give
- *     the plan names and prices, and say "plan" where a reader saw "level";
- *     oldPlanRefs stops the sync on any old level label, level name
- *     sentence, "level" a reader would see or "pricing set with Genesis"
- *     left behind.
+ *   - siteRefs and SITE_LINKS: the only links to the rest of geai.us.
+ *   - planProblems and oldPlanRefs: the three plans. The owner set them on
+ *     November 21, 2026: Care at $149 a month, Shepherd at $299 and Plus at
+ *     $499, with Enterprise scoped on a call. The source now names the plans
+ *     and their prices itself, so nothing is renamed here any more. Instead
+ *     the sync stops when the source's plans or prices differ from the ones
+ *     /ministry shows, or when an old draft level is left anywhere.
  *
  * The committed public/ministry-demo/ is synced from genesis-ministry commit
- * 432d5cd. The source was being edited when the plans were added, and
- * several PUBLIC_EDITS no longer find their text in its working tree; review
- * them against the commit you sync from.
+ * 1beb6da (main on November 22, 2026), exported with git archive.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
- * public page may link to it, tour it or point at it. The edits below remove
- * every door, link, tour step and demo path stop that led there, send Compare
- * Levels to the levels on the hub and the journey instead of the Growth Desk's
- * Levels screen, and start the guided demo at Today.
+ * public page may link to it, tour it, point at it or describe its work. The
+ * source keeps it behind a presenter mode (?present=1): story pages mark its
+ * parts data-present-only, and the shell and the guided demo read
+ * GM.presenting. The public copy has no presenter mode at all. The edits
+ * below drop every data-present-only element, keep every data-public-only
+ * one for good, turn the switch off in the shell, the story pages and the
+ * guided demo, and cut every door, link, tour, demo path stop, answer and
+ * piece of sample data that belongs to the Growth Desk.
  *
  * tests/ministry-demo-public.test.ts tests the helpers and checks the
  * committed copy.
@@ -56,7 +59,14 @@ import vm from "node:vm";
  * given, the removed text must not match it.
  * @typedef {{ note: string, from: string, to: string, maxLines: number, replace?: string, keep?: RegExp }} Cut
  */
-/** @typedef {Swap | Cut} Edit */
+/**
+ * A drop: remove every HTML element whose opening tag carries the attribute
+ * `drop` (with everything inside it, and its line when it has one to itself).
+ * There must be exactly `count` of them, and, when `keep` is given, no
+ * dropped element may match it.
+ * @typedef {{ note: string, drop: string, count: number, keep?: RegExp }} Drop
+ */
+/** @typedef {Swap | Cut | Drop} Edit */
 
 /** Copied files of the Growth Desk itself. Never in the public copy. */
 export const GROWTH_DESK_FILES = /^platform\/sales-/;
@@ -88,11 +98,14 @@ const GROWTH_DESK_WORDS = [
 const SHARED_DESIGN_SYSTEM = /^platform\/shared\/os\//;
 
 /**
- * The only links to the rest of geai.us a public file may carry: the church
- * consultation. Every other path that starts with "/" is reported, so the
- * demo cannot quietly point at a business page or a price.
+ * The only link to the rest of geai.us a public file may carry: the church
+ * consultation, as a walkthrough of the demo (the contact page's
+ * "ministry-demo" topic, in ministryConsultationNotes in lib/ministryPage.ts).
+ * Every other site path is reported, and so is every absolute geai.us
+ * address, so the demo cannot quietly point at a business page or a price,
+ * and it links within the site it is served from.
  */
-export const SITE_LINKS = ["/contact?topic=ministry"];
+export const SITE_LINKS = ["/contact?topic=ministry-demo"];
 
 /**
  * Every forbidden reference in a text, with a little context around each.
@@ -126,6 +139,41 @@ function show(text) {
   return JSON.stringify(flat.length > 90 ? `${flat.slice(0, 87)}...` : flat);
 }
 
+/** Elements that have no closing tag. */
+const VOID_ELEMENTS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
+
+/**
+ * The first element in `text` whose opening tag carries `attr`, as
+ * [start, end) offsets, with its line when the element has the line to
+ * itself. Null when there is none. Throws when its closing tag is missing.
+ * @param {string} text
+ * @param {string} attr
+ */
+function elementWith(text, attr) {
+  const opening = new RegExp(String.raw`<([a-z][a-z0-9-]*)\b[^>]*?\s${attr}(?=[\s=>/])[^>]*>`, "i");
+  const m = opening.exec(text);
+  if (!m) return null;
+  const tag = m[1].toLowerCase();
+  const start = m.index;
+  let end = start + m[0].length;
+  if (!VOID_ELEMENTS.has(tag) && !m[0].endsWith("/>")) {
+    const tags = new RegExp(String.raw`<(/?)${tag}\b[^>]*>`, "gi");
+    tags.lastIndex = end;
+    let depth = 1;
+    let t;
+    while (depth && (t = tags.exec(text))) depth += t[1] ? -1 : 1;
+    if (depth) throw new Error(`no closing </${tag}> for ${show(m[0])}`);
+    end = tags.lastIndex;
+  }
+  /* An element alone on its line takes the line with it. */
+  const lineStart = text.lastIndexOf("\n", start - 1) + 1;
+  const lineEnd = text.indexOf("\n", end);
+  if (/^[ \t]*$/.test(text.slice(lineStart, start)) && lineEnd >= 0 && /^[ \t]*$/.test(text.slice(end, lineEnd))) {
+    return { start: lineStart, end: lineEnd + 1, tag };
+  }
+  return { start, end, tag };
+}
+
 /**
  * Applies a file's edits in order. Returns the new text and one report line
  * per edit. Throws, naming the file and the edit, when any edit does not find
@@ -145,6 +193,23 @@ export function applyEdits(file, text, edits) {
       }
       text = text.split(edit.find).join(edit.replace);
       report.push(`${edit.note} (${want} ${want === 1 ? "place" : "places"})`);
+    } else if ("drop" in edit) {
+      let dropped = 0;
+      let lines = 0;
+      for (let at; (at = elementWith(text, edit.drop)); ) {
+        const cut = text.slice(at.start, at.end);
+        if (edit.keep && edit.keep.test(cut)) {
+          throw new Error(`${file}: ${edit.note}: a ${edit.drop} <${at.tag}> would also remove ${show(cut.match(edit.keep)?.[0] ?? "")}`);
+        }
+        text = text.slice(0, at.start) + text.slice(at.end);
+        lines += cut.split("\n").length - 1;
+        dropped++;
+        if (dropped > edit.count) break;
+      }
+      if (dropped !== edit.count) {
+        throw new Error(`${file}: ${edit.note}: expected ${edit.count} elements with ${edit.drop}, found ${dropped}${dropped > edit.count ? " or more" : ""}`);
+      }
+      report.push(`${edit.note} (${dropped} ${dropped === 1 ? "element" : "elements"}, ${lines} ${lines === 1 ? "line" : "lines"} removed)`);
     } else {
       const starts = occurrences(text, edit.from);
       if (starts !== 1) {
@@ -169,29 +234,30 @@ export function applyEdits(file, text, edits) {
 }
 
 /*
- * Compare Levels used to open the Growth Desk's Levels screen. In the public
- * copy it opens the levels on the hub (platform/index.html#levels), or, from
- * the hub itself, the levels chapter of the journey.
- */
-const HUB_LEVELS = "index.html#levels";
-const JOURNEY_LEVELS = "journey.html#levels";
-
-/*
  * The way to reach Genesis from the demo: the church consultation on geai.us.
  * The demo is served from geai.us/ministry-demo/, so a site path works from
- * every page. It is the one entry in SITE_LINKS.
+ * every page, and on every preview of the site. It is the one entry in
+ * SITE_LINKS. The source links to the same form by its full address,
+ * https://geai.us/contact?topic=ministry-demo; the public copy uses the path.
+ * As in the source, it opens in a new tab, labelled Talk With Genesis.
  */
 const CONTACT = SITE_LINKS[0];
-const BOOK = "Book a Consultation";
+const SOURCE_CONTACT = `https://geai.us${CONTACT}`;
+const TALK = "Talk With Genesis";
+/** A link to the consultation, as the source draws its own (story.js keeps its address). */
+const talkLink = (arrow = false) =>
+  `<a data-contact href="${CONTACT}" target="_blank" rel="noopener">${TALK}${arrow ? ' <span aria-hidden="true">&#8599;</span>' : ""}<span class="sr-only"> (opens in a new tab)</span></a>`;
+
+/** The source's address for the consultation becomes the site path, the stated number of times. */
+const contactPath = (count) => ({ note: "Talk With Genesis opens the church consultation on this site, by its path", find: SOURCE_CONTACT, replace: CONTACT, count });
 
 /*
  * The Genesis Ministry plans, as /ministry shows them (ministryLevels in
  * lib/ministryPage.ts; tests/ministry-edition.test.ts keeps the two equal).
  * The owner replaced the draft levels with three plans and set their prices.
- * The demo source still calls them Level 01 (Welcome), Level 02 (Connect) and
- * Level 03 (Shepherd); in the public copy they are Care, Shepherd and Plus,
- * each with what that level included. Enterprise, for more than one campus,
- * stays scoped on a call. PLAN_RENAMES, below PUBLIC_EDITS, makes the change.
+ * Each plan holds what one draft level held: Care was Level 01 (Welcome),
+ * Shepherd was Level 02 (Connect) and Plus was Level 03 (Shepherd).
+ * Enterprise, for more than one campus, stays scoped on a call.
  */
 export const MINISTRY_PLANS = [
   { level: "01", was: "Welcome", name: "Care", price: "$149" },
@@ -205,23 +271,36 @@ const planPrices = MINISTRY_PLANS.map((plan) => `${plan.name} at ${plan.price} a
 /** Hope's price answer, and the one sentence that gives every price: the words of ministryPriceAnswer on /ministry. */
 export const PRICE_ANSWER = `Genesis Ministry has three plans: ${planPrices.slice(0, -1).join(", ")} and ${planPrices.at(-1)}.`;
 
+/*
+ * The story pages (the gallery, the hub and the journey) switch presenter
+ * mode on in a script in their head. The public copy has none, so the script
+ * goes. Its first words, to the end of the line.
+ */
+const presenterHead = (comment, next) => ({
+  note: "removed the presenter switch from the head; the public copy has no presenter mode",
+  from: `<script>/* Presenting: ${comment}`,
+  to: next,
+  maxLines: 1,
+  keep: /data-theme|location\.replace|<link|<meta/,
+});
+/** The theme script, the next line in the head of the hub and the journey. */
+const THEME_SCRIPT = '<script>(function(){var t="dark";';
+
+/** The story pages' presenter parts: never published. */
+const dropPresenterOnly = (count, keep) => ({ note: "dropped the parts shown only while presenting (data-present-only)", drop: "data-present-only", count, keep });
+/** The story pages' public parts: always shown, since there is no presenter mode to hide them. */
+const keepPublicOnly = (count) => ({ note: "the parts shown only to the public stay, without data-public-only", find: " data-public-only", replace: "", count });
+
 /** @type {Readonly<Record<string, readonly Edit[]>>} */
 export const PUBLIC_EDITS = {
-  /* The gallery: the platform card counted the Growth Desk doors. */
+  /* The gallery. */
   "index.html": [
-    {
-      note: "the platform card names the five doors that are published",
-      find: "Seven doors: acquisition, the sales desk, the front office, the back office, the member app, the journey and these templates.",
-      replace: "Five doors: the front office, the back office, the member app, the journey and these templates.",
-    },
-    {
-      note: "the journey card leaves out the chapter on finding a church",
-      find: '<p class="eyebrow">Five diagrams · The journey</p><h3><a href="platform/journey.html">The Journey</a></h3><p class="line">One Sunday guest end to end, finding a church through launch, who sees what,',
-      replace: '<p class="eyebrow">Four diagrams · The journey</p><h3><a href="platform/journey.html">The Journey</a></h3><p class="line">One Sunday guest end to end, who sees what,',
-    },
+    presenterHead("?present=1 for this tab (platform/story/story.js keeps it). */", "<link rel=\"icon\""),
+    dropPresenterOnly(1, /church-|member-|journey\.html/),
+    keepPublicOnly(1),
     {
       note: "Look 02 is described the way /ministry describes it",
-      find: '<span class="sep" aria-hidden="true">/</span>Youth heavy, worship led churches</p>',
+      find: '<span class="sep" aria-hidden="true">/</span>Youth-heavy, worship-led churches</p>',
       replace: '<span class="sep" aria-hidden="true">/</span>Worship led churches with students and young adults</p>',
     },
     {
@@ -233,70 +312,34 @@ export const PUBLIC_EDITS = {
     {
       note: "the header links to the church consultation",
       find: '      <a href="platform/journey.html">The Journey</a>\n    </nav>',
-      replace: `      <a href="platform/journey.html">The Journey</a>\n      <a href="${CONTACT}">Talk to Genesis</a>\n    </nav>`,
+      replace: `      <a href="platform/journey.html">The Journey</a>\n      ${talkLink()}\n    </nav>`,
     },
     {
       note: "the phone menu links to the church consultation",
       find: '    <a href="platform/journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>\n',
-      replace: `    <a href="platform/journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>\n    <a href="${CONTACT}">${BOOK} <span aria-hidden="true">&#8599;</span></a>\n`,
-    },
-    {
-      note: "the closing band offers the church consultation",
-      find: '<a class="btn btn-secondary" href="platform/index.html"><span>Open the Front Door</span></a>',
-      replace: `<a class="btn btn-secondary" href="platform/index.html"><span>Open the Front Door</span></a>\n        <a class="btn btn-secondary" href="${CONTACT}"><span>${BOOK}</span></a>`,
+      replace: `    <a href="platform/journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>\n    ${talkLink(true)}\n`,
     },
     {
       note: "the footer links to the church consultation",
-      find: '      <a href="platform/index.html#levels">Levels</a>\n    </nav>',
-      replace: `      <a href="platform/index.html#levels">Levels</a>\n      <a href="${CONTACT}">${BOOK}</a>\n    </nav>`,
+      find: '      <a href="platform/index.html#levels">Plans</a>\n    </nav>',
+      replace: `      <a href="platform/index.html#levels">Plans</a>\n      ${talkLink()}\n    </nav>`,
     },
+    contactPath(1),
   ],
 
-  /* The hub, the front door of the platform. */
+  /* The hub, the overview of the platform. */
   "platform/index.html": [
+    presenterHead("?present=1 shows the Growth Desk doors for this tab (story/story.js keeps it). */", THEME_SCRIPT),
+    /* The hero's "Or start where Genesis finds a church", Seven doors, the Finding to Launch chip, the
+       For Genesis doors (Acquisition and the Sales Desk), the link to the suppression list, Compare
+       Plans on the Growth Desk and "Start on the Growth Desk". */
+    dropPresenterOnly(7, /church-|member-|journey\.html#(guest|start|privacy|ai|levels)|data-tenant/),
+    keepPublicOnly(2),
     {
-      note: "the page description leaves out the acquisition arm and the sales desk",
-      find: "Edition 05 of Genesis OS for churches: the acquisition arm, the sales desk, the front office, the back office and the member app, with draft levels and the rules that protect people.",
-      replace: "Edition 05 of Genesis OS for churches: the website, the front office, the back office and the member app, with three plans and the rules that protect people.",
-    },
-    {
-      note: 'removed "Or start where Genesis finds a church" under the hero buttons',
-      from: '        <p class="hero-alt"><a class="text-link" data-carry href="sales-find.html',
-      to: "      </div>\n\n      <div class=\"tenant\">",
-      maxLines: 2,
-      keep: /church-|member-|journey\.html/,
-    },
-    { note: "the doors heading counts five doors", find: '<p class="eyebrow">Seven doors</p>', replace: '<p class="eyebrow">Five doors</p>' },
-    {
-      note: "removed the For Genesis doors (Acquisition and the Sales Desk)",
-      from: '      <div class="door-group">\n        <p class="group-label"><span class="eyebrow">For Genesis</span>',
-      to: '      <div class="door-group">\n        <p class="group-label"><span class="eyebrow">For each church</span>',
-      maxLines: 44,
-      keep: /church-|member-|journey\.html/,
-    },
-    { note: "renumbered the Front Office door", find: "Door 03 · Front office", replace: "Door 01 · Front office" },
-    { note: "renumbered the Back Office door", find: "Door 04 · Back office", replace: "Door 02 · Back office" },
-    { note: "renumbered the Member App door", find: "Door 05 · Member app", replace: "Door 03 · Member app" },
-    { note: "renumbered the Journey door", find: "Door 06 · The journey", replace: "Door 04 · The journey" },
-    { note: "renumbered the Templates door", find: "Door 07 · The templates", replace: "Door 05 · The templates" },
-    {
-      note: "removed rule 10, the Growth Desk rule that linked to its suppression list",
-      from: '        <li><span class="n" aria-hidden="true">10</span><div><h3>Genesis finds churches the right way.',
+      note: "removed rule 10, how Genesis writes to churches it has found, which is the Growth Desk's work",
+      from: '        <li><span class="n" aria-hidden="true">10</span><div><h3>If Genesis writes to your church, it writes the right way.',
       to: "      </ol>",
-      maxLines: 2,
-      keep: /church-|member-/,
-    },
-    {
-      note: "Compare Levels opens the levels chapter of the journey",
-      find: 'data-carry href="sales-levels.html">Compare Levels',
-      replace: `data-carry href="${JOURNEY_LEVELS}">Compare Levels`,
-      count: 2,
-    },
-    {
-      note: 'removed "Start on the Growth Desk" from the closing band',
-      from: '      <p class="foot">Showing this to the Genesis team? <a class="text-link" data-carry href="sales-find.html',
-      to: '      <p class="foot">Genesis is software.',
-      maxLines: 2,
+      maxLines: 1,
       keep: /church-|member-/,
     },
     {
@@ -304,160 +347,101 @@ export const PUBLIC_EDITS = {
       find: '<p class="eyebrow">Genesis OS<span class="sep" aria-hidden="true">/</span>For churches</p>',
       replace: '<p class="eyebrow">Genesis AI<span class="sep" aria-hidden="true">/</span>For churches</p>',
     },
-    {
-      note: "the church doors are introduced in church words, without tenant",
-      find: "<span>The platform, in Genesis OS, with the church as the tenant</span>",
-      replace: "<span>The platform each church runs on, with sample data</span>",
-    },
     { note: "the screen frames name Genesis Ministry, not an internal product name", find: "<em>Ministry OS · ", replace: "<em>Genesis Ministry · ", count: 3 },
-    { note: "the journey door counts four diagrams", find: '<span class="badge">Five diagrams</span>', replace: '<span class="badge">Four diagrams</span>' },
-    {
-      note: "the journey door leaves out the chapter on finding a church",
-      find: "Five pictures of how it works: one Sunday guest end to end, finding a church through launch, who sees what,",
-      replace: "Four pictures of how it works: one Sunday guest end to end, who sees what,",
-    },
-    {
-      note: "removed the journey door's Finding to Launch chip",
-      find: '                <li><a class="chip-link" href="journey.html#launch">Finding to Launch</a></li>\n',
-      replace: "",
-    },
     {
       note: "the header links to the church consultation",
       find: '      <a href="../index.html">The Templates</a>\n    </nav>',
-      replace: `      <a href="../index.html">The Templates</a>\n      <a href="${CONTACT}">Talk to Genesis</a>\n    </nav>`,
+      replace: `      <a href="../index.html">The Templates</a>\n      ${talkLink()}\n    </nav>`,
     },
     {
       note: "the phone menu links to the church consultation",
       find: '    <a href="../index.html">The Templates <span aria-hidden="true">&#8599;</span></a>\n',
-      replace: `    <a href="../index.html">The Templates <span aria-hidden="true">&#8599;</span></a>\n    <a href="${CONTACT}">${BOOK} <span aria-hidden="true">&#8599;</span></a>\n`,
-    },
-    {
-      note: "the levels offer the church consultation beside Compare Levels",
-      find: `<a class="text-link" data-carry href="${JOURNEY_LEVELS}">Compare Levels <span aria-hidden="true">&#8599;</span></a>`,
-      replace: `<a class="text-link" data-carry href="${JOURNEY_LEVELS}">Compare Levels <span aria-hidden="true">&#8599;</span></a>\n        <a class="text-link" href="${CONTACT}">${BOOK} <span aria-hidden="true">&#8599;</span></a>`,
-    },
-    {
-      note: "the closing band offers the church consultation",
-      find: '<span>See the Journey</span></a>\n      </div>\n      <p class="foot">Genesis is software.',
-      replace: `<span>See the Journey</span></a>\n        <a class="btn btn-secondary" href="${CONTACT}"><span>${BOOK}</span></a>\n      </div>\n      <p class="foot">Genesis is software.`,
+      replace: `    <a href="../index.html">The Templates <span aria-hidden="true">&#8599;</span></a>\n    ${talkLink(true)}\n`,
     },
     {
       note: "the footer links to the church consultation",
-      find: `      <a data-carry href="${JOURNEY_LEVELS}">Compare Levels</a>\n    </nav>`,
-      replace: `      <a data-carry href="${JOURNEY_LEVELS}">Compare Levels</a>\n      <a href="${CONTACT}">${BOOK}</a>\n    </nav>`,
+      find: '      <a href="#levels">Choose Your Plan</a>\n    </nav>',
+      replace: `      <a href="#levels">Choose Your Plan</a>\n      ${talkLink()}\n    </nav>`,
     },
+    contactPath(2),
   ],
 
-  /* The journey. Its second chapter told how Genesis finds a church, by the
-     names of the Growth Desk's two parts, so it goes, and the four chapters
-     left are renumbered. The church view of the same path, from the first
-     conversation to launch, is on /ministry under How It Runs. */
+  /* The journey. Its presenter chapter, Finding to Launch, told how Genesis
+     finds a church, by the names of the Growth Desk's two parts. The public
+     chapter two, Getting Started, tells the church's side of the same path,
+     from the first conversation to launch. */
   "platform/journey.html": [
+    presenterHead("?present=1 shows the Growth Desk chapter for this tab (story/story.js keeps it). */", THEME_SCRIPT),
+    /* Finding to Launch in the header, the phone menu and the chapter index, the chapter itself with
+       its diagram and its links into the Growth Desk, and the Outreach Drafts link. */
+    dropPresenterOnly(5, /id="(guest|start|privacy|ai|levels)"|href="#(guest|start|privacy|ai|levels)"|church-|member-/),
+    keepPublicOnly(4),
     {
-      note: "removed chapter two, how Genesis finds a church, with its diagram, its list and its links into the Growth Desk",
-      from: '  <section class="sheet rise s-ink" id="launch" aria-labelledby="launch-title">',
-      to: '  <section class="sheet rise s-paper" id="privacy" aria-labelledby="privacy-title">',
-      maxLines: 36,
-      keep: /id="(guest|privacy|ai|levels)"|church-|member-/,
-    },
-    {
-      note: "the page description counts four diagrams",
-      find: "Five diagrams of Genesis Ministry: one Sunday guest end to end, finding a church through launch, who sees what,",
-      replace: "Four diagrams of Genesis Ministry: one Sunday guest end to end, who sees what,",
-    },
-    { note: "the lede counts four pictures", find: "Five pictures of the whole thing.", replace: "Four pictures of the whole thing." },
-    { note: "removed Finding to Launch from the header", find: '      <a href="#launch">Finding to Launch</a>\n', replace: "" },
-    { note: "removed Finding to Launch from the phone menu", find: '    <a href="#launch">Finding to Launch <span aria-hidden="true">&#8599;</span></a>\n', replace: "" },
-    {
-      note: "removed chapter two from the chapter index",
-      find: '        <a href="#launch"><span class="num">02</span><b>Finding to launch</b><span>How Genesis finds a church and brings it live.</span></a>\n',
-      replace: "",
-    },
-    { note: "renumbered Who Sees What in the index", find: '<a href="#privacy"><span class="num">03</span>', replace: '<a href="#privacy"><span class="num">02</span>' },
-    { note: "renumbered What the AI Does in the index", find: '<a href="#ai"><span class="num">04</span>', replace: '<a href="#ai"><span class="num">03</span>' },
-    { note: "renumbered What Each Level Adds in the index", find: '<a href="#levels"><span class="num">05</span>', replace: '<a href="#levels"><span class="num">04</span>' },
-    { note: "renumbered the Who Sees What chapter", find: "Chapter three. Who sees what", replace: "Chapter two. Who sees what" },
-    { note: "renumbered the What Hope Does chapter", find: '<p class="eyebrow">Chapter four. What ', replace: '<p class="eyebrow">Chapter three. What ' },
-    { note: "renumbered the What Each Level Adds chapter", find: "Chapter five. What each level adds", replace: "Chapter four. What each level adds" },
-    {
-      note: "the chapter index has four columns",
-      find: ".chapters { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));",
-      replace: ".chapters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));",
-    },
-    {
-      note: "on tablets the four chapters sit two by two",
-      find: "@media (max-width: 1023px) { .chapters { grid-template-columns: repeat(2, minmax(0, 1fr)); } .chapters a:last-child { grid-column: 1 / -1; } }",
-      replace: "@media (max-width: 1023px) { .chapters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }",
-    },
-    /* The chapters keep alternating dark and light once chapter two is gone. */
-    { note: "Who Sees What turns dark", find: '<section class="sheet rise s-paper" id="privacy"', replace: '<section class="sheet rise s-ink" id="privacy"' },
-    { note: "What Hope Does turns light", find: '<section class="sheet rise s-ink" id="ai"', replace: '<section class="sheet rise s-paper" id="ai"' },
-    { note: "What Each Level Adds turns dark", find: '<section class="sheet rise s-paper" id="levels"', replace: '<section class="sheet rise s-ink" id="levels"' },
-    { note: "the closing band turns light", find: '<section class="sheet rise s-ink close-band"', replace: '<section class="sheet rise s-paper close-band"' },
-    /* Team roles come with Connect (the hub, the Team screen, /ministry); what
-       Shepherd adds is custom roles. The levels diagram's Shepherd row says so. */
-    { note: "the levels diagram's Shepherd row reads Custom roles, as the hub does", find: '<tspan x="24" dy="0">Team roles</tspan>', replace: '<tspan x="24" dy="0">Custom roles</tspan>' },
-    { note: "the levels list gives Shepherd custom roles", find: "reports, team roles, more staff seats.", replace: "reports, custom roles, more staff seats." },
-    {
-      note: "the closing band offers the church consultation",
-      find: '<span>Back to the Front Door</span></a>\n      </div>\n      <p class="foot">',
-      replace: `<span>Back to the Front Door</span></a>\n        <a class="btn btn-secondary" href="${CONTACT}"><span>${BOOK}</span></a>\n      </div>\n      <p class="foot">`,
-    },
-    {
-      note: "removed the Outreach Drafts link from the What the AI Does chapter",
-      find: '        <a class="chip-link" data-carry href="sales-outreach.html">Outreach Drafts <span class="arrow" aria-hidden="true">&#8599;</span></a>\n',
-      replace: "",
-    },
-    {
-      note: "Compare Levels opens the levels on the hub",
-      find: 'data-carry href="sales-levels.html">Compare Levels',
-      replace: `data-carry href="${HUB_LEVELS}">Compare Levels`,
-      count: 2,
+      note: "removed the script that only drew the Finding to Launch diagram",
+      from: "/* The dashed drop lines in the Growth Desk chapter draw under the labels they pass, not through them. */\n",
+      to: "</script>",
+      maxLines: 6,
+      keep: /#privacy|dg-levels|dg-guest/,
     },
     {
       note: "the header links to the church consultation",
-      find: '      <a href="#levels">Levels</a>\n    </nav>',
-      replace: `      <a href="#levels">Levels</a>\n      <a href="${CONTACT}">Talk to Genesis</a>\n    </nav>`,
+      find: '      <a href="#levels">Plans</a>\n    </nav>',
+      replace: `      <a href="#levels">Plans</a>\n      ${talkLink()}\n    </nav>`,
     },
     {
       note: "the phone menu links to the church consultation",
-      find: '    <a href="#levels">What Each Level Adds <span aria-hidden="true">&#8599;</span></a>\n',
-      replace: `    <a href="#levels">What Each Level Adds <span aria-hidden="true">&#8599;</span></a>\n    <a href="${CONTACT}">${BOOK} <span aria-hidden="true">&#8599;</span></a>\n`,
+      find: '    <a href="#levels">What Each Plan Adds <span aria-hidden="true">&#8599;</span></a>\n',
+      replace: `    <a href="#levels">What Each Plan Adds <span aria-hidden="true">&#8599;</span></a>\n    ${talkLink(true)}\n`,
     },
     {
       note: "the footer links to the church consultation",
-      find: `      <a data-carry href="${HUB_LEVELS}">Compare Levels</a>\n    </nav>`,
-      replace: `      <a data-carry href="${HUB_LEVELS}">Compare Levels</a>\n      <a href="${CONTACT}">${BOOK}</a>\n    </nav>`,
+      find: '      <a href="index.html#levels">Compare Plans</a>\n    </nav>',
+      replace: `      <a href="index.html#levels">Compare Plans</a>\n      ${talkLink()}\n    </nav>`,
     },
+    contactPath(1),
   ],
 
-  /* The member stage bar on a phone. The level switcher now shows plan names
-     (Care, Shepherd, Plus; see PLAN_RENAMES) where it showed 01, 02 and 03,
-     so its buttons are set closer to keep the bar on one row at 390 wide. The
-     member pages pad them in their own style block, hence body.mx-staged. */
-  "platform/shared/member.css": [
+  /* The story pages' script: presenter mode, and where Talk With Genesis goes. */
+  "platform/story/story.js": [
     {
-      note: "on a phone the plan switcher's buttons sit closer, so Care, Shepherd and Plus fit the stage bar's one row",
-      find: "  .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}\n}",
-      replace:
-        "  .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}\n" +
-        "  .m-stagebar .gm-plan a,body.mx-staged .m-stagebar .gm-plan a{padding:4px;font-size:11.5px}\n}",
+      note: "Talk With Genesis is the church consultation on this site; the note to confirm its address is done",
+      from: "  /* Where Talk With Genesis goes: the geai.us consultation form, opened as a Genesis Ministry\n",
+      to: "  var GENESIS_CONTACT_URL = ",
+      maxLines: 3,
+      keep: /var |function /,
+      replace: "  /* Where Talk With Genesis goes: the church consultation on geai.us, as a walkthrough of the demo. */\n",
+    },
+    contactPath(1),
+    {
+      note: "presenter mode is off for good in the public copy",
+      from: "  /* The Growth Desk (how Genesis finds and signs churches) is Genesis's own tool.",
+      to: "  var STORY = window.STORY",
+      maxLines: 10,
+      keep: /function theme|var church|var plan|setTheme/,
+      replace: '  /* The public copy has no presenter mode. */\n  var present = false;\n  root.removeAttribute("data-present");\n\n',
     },
   ],
 
-  /* The story pages' stylesheet (the hub, the journey and the gallery). */
+  /* The story pages' stylesheet. */
   "platform/story/story.css": [
     {
-      note: "in the light theme the Genesis mark is drawn in ink and deep gold, so its white half shows on ivory",
-      find: ".brand img { width: 37px; height: 37px; object-fit: contain; }",
-      replace:
-        ".brand img { width: 37px; height: 37px; object-fit: contain; }\n" +
-        '/* Light theme: the white half of the mark would vanish on ivory. Inverting the lightness keeps the hue, so the mark reads in ink and deep gold. */\n:root[data-theme="light"] .brand img { filter: invert(1) hue-rotate(180deg); }',
+      note: "the presenter rules' comment no longer names the Growth Desk",
+      find: "/* The Growth Desk is Genesis's own tool. It shows only while the owner presents (?present=1 sets\n   html[data-present] for the tab, see story.js), and the public copy never points to it. */",
+      replace: "/* Presenter-only parts are not in the public copy, which has no presenter mode. */",
+    },
+  ],
+
+  /* The one stylesheet every platform page links. */
+  "platform/shared/genesis.css": [
+    {
+      note: "a layout comment no longer names the Growth Desk",
+      find: "same place on church and Growth Desk screens.",
+      replace: "same place on every workspace screen.",
     },
   ],
 
   /* The sample data every platform page loads. The church screens read the
-     churches, people, guests, care, levels and the four sample accounts. The
+     churches, people, guests, care, plans and the four sample accounts. The
      Growth Desk's own data (its prospects, outreach, suppression list,
      pipeline, monthly funnel and outreach drafts) is cut, so it cannot be
      read in the page source either. */
@@ -487,11 +471,7 @@ export const PUBLIC_EDITS = {
     },
     { note: "the Genesis team roles use church words", find: 'role: "Sales Lead"', replace: 'role: "Church Partnerships"' },
     { note: "the Genesis team roles use church words", find: 'role: "Acquisition Seat"', replace: 'role: "Church Support"' },
-    {
-      note: "Goldenrod Commons Church is Goldenrod for short, so no screen reads Goldenrod Commons's",
-      find: 'short: "Goldenrod Commons"',
-      replace: 'short: "Goldenrod"',
-    },
+    contactPath(1),
   ],
 
   /* Hope on the four sample church sites, the story pages and the member screens. */
@@ -501,74 +481,46 @@ export const PUBLIC_EDITS = {
       find: 'custom: { t: "Yes. Every template is filled',
       replace: 'custom: { t: "Every template is filled',
     },
-    {
-      note: "a price question gets the price answer, the three plans and their prices, with a way to book the consultation",
-      find: '    hope: { t: "On your live site, "',
-      replace:
-        `    price: { t: "${PRICE_ANSWER}", c: [{ label: "${BOOK}", href: "${CONTACT}", go: true, cta: true }, { label: "What do we get?", key: "package" }] },\n` +
-        '    hope: { t: "On your live site, "',
-    },
-    {
-      note: "prices, cost and how much go to the price answer; customization questions keep their own",
-      find: '    [/\\b(prices?|costs?|pricing|custom\\w*|change|edit|colou?rs?|logos?|fonts?)\\b/i, "custom"],',
-      replace:
-        '    [/\\b(prices?|pricing|costs?|fees?)\\b|\\bhow much (does|is|will|would) (it|this|genesis|the (template|website|site|platform))\\b/i, "price"],\n' +
-        '    [/\\b(custom\\w*|change|edit|colou?rs?|logos?|fonts?)\\b/i, "custom"],',
-    },
-    {
-      note: "the last card of the guided demo can carry a second link (endLink), styled like the first",
-      find: ".hd-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}",
-      replace:
-        ".hd-next,.hd-end{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}.hd-end{margin-top:8px}",
-    },
-    {
-      note: "the last card in the church's colors shows endLink under the next link",
-      find: '      card.appendChild(a);\n    } else nx.setAttribute("data-hd-focus", "");',
-      replace:
-        '      card.appendChild(a);\n' +
-        '      if (CFG.endLink) { var ea = el("a", "hd-btn ghost hd-end"); ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; card.appendChild(ea); }\n' +
-        '    } else nx.setAttribute("data-hd-focus", "");',
-    },
-    {
-      note: "the last card in the Genesis look shows endLink beside the next link",
-      find: `(last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "")`,
-      replace: `(last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a>' + (CFG.endLink ? '<a class="v2-button hd-g-end"></a>' : "") + "</div>" : "")`,
-    },
-    {
-      note: "the Genesis last card fills in endLink",
-      find: '    if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }\n',
-      replace:
-        '    if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }\n' +
-        '    var ea = card.querySelector(".hd-g-end"); if (ea) { ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; }\n',
-    },
-  ],
-
-  /* The website package screen: its Level 01 prayer note. */
-  "platform/church-website.html": [
-    {
-      note: "Compare Levels opens the levels on the hub",
-      find: 'href="sales-levels.html">Compare Levels</a>',
-      replace: `href="${HUB_LEVELS}">Compare Levels</a>`,
-    },
   ],
 
   /* The shell every workspace and member screen runs on. */
   "platform/shared/app.js": [
     {
-      note: "Compare Levels on the locked card and the member locked screen opens the levels on the hub",
-      find: 'href="sales-levels.html">Compare Levels</a>',
-      replace: `href="${HUB_LEVELS}">Compare Levels</a>`,
-      count: 2,
+      note: "presenter mode is off for good: no church or member screen ever shows a Growth Desk link",
+      from: "  /* Presenter mode, the same switch the story pages use (story/story.js).",
+      to: "  /* The church-side levels view",
+      maxLines: 10,
+      keep: /LEVELS_HREF|GM\.data|var plan/,
+      replace: "  /* The public copy has no presenter mode. */\n  GM.presenting = false;\n",
     },
     {
-      note: "removed Genesis Growth Desk from the account menu and Jump To",
-      find: '        { key: "desk", label: "Genesis Growth Desk", href: "sales-pipeline.html", icon: "accounts", hint: "How Genesis finds and serves churches" },\n',
+      note: "the levels view comment no longer names the Growth Desk",
+      find: "  /* The church-side levels view: the overview's levels, never the Growth Desk. */",
+      replace: "  /* The church-side plans view: the overview's plans. */",
+    },
+    {
+      note: "the link comment names the guided demo's own settings, not a run from the Growth Desk",
+      find: "    /* A guided demo run that started on the Growth Desk keeps from=desk on every link and every\n       address a page rewrites",
+      replace: "    /* A guided demo run keeps its pace on every link and every\n       address a page rewrites",
+    },
+    {
+      note: "removed the rewrite of Growth Desk plan links, since no public page has one",
+      find:
+        "    /* On church and member screens Compare Plans opens the overview's levels, never the Growth Desk. */\n" +
+        '    if (raw && GM.side !== "genesis" && /^(?:\\.\\/)?sales-levels\\.html(?:[?#].*)?$/i.test(raw) && !a.hasAttribute("data-gm-carried")) { raw = LEVELS_HREF; a.setAttribute("href", raw); }\n',
       replace: "",
     },
     {
-      note: "Compare Levels in the account menu and Jump To opens the levels on the hub",
-      find: '{ key: "levels", label: "Compare Levels", href: "sales-levels.html", icon: "levels"',
-      replace: `{ key: "levels", label: "Compare Levels", href: "${HUB_LEVELS}", icon: "levels"`,
+      note: "removed Genesis Growth Desk from the account menu and Jump To",
+      find: '        { key: "desk", label: "Genesis Growth Desk", href: "sales-pipeline.html", icon: "accounts", hint: "How Genesis finds and serves churches", presenter: true },\n',
+      replace: "",
+    },
+    {
+      note: "the account menu and Jump To offer the church consultation",
+      find: '        { key: "levels", label: "Compare Plans", href: LEVELS_HREF, icon: "levels", hint: "Care, Shepherd, Plus, Enterprise" }\n',
+      replace:
+        '        { key: "levels", label: "Compare Plans", href: LEVELS_HREF, icon: "levels", hint: "Care, Shepherd, Plus, Enterprise" },\n' +
+        `        { key: "consult", label: "${TALK}", href: "${CONTACT}", icon: "call", hint: "A free conversation with Genesis about your church" }\n`,
     },
     {
       note: "removed the Growth Desk workspace from the navigation model",
@@ -583,6 +535,11 @@ export const PUBLIC_EDITS = {
       replace: 'var meta = side === "genesis" ? "Genesis" :',
     },
     {
+      note: "the account menu comment no longer names the Growth Desk",
+      find: "  /* Account-menu links; the Growth Desk link only while presenting. */",
+      replace: "  /* Account-menu links. */",
+    },
+    {
       note: "the Add a Church drawer no longer names the Growth Desk",
       find: 'eyebrow = "Growth desk"; title = "Add a church";',
       replace: 'eyebrow = "Genesis"; title = "Add a church";',
@@ -593,11 +550,6 @@ export const PUBLIC_EDITS = {
       to: '    if (!GM.isIncluded("genesis")) {',
       maxLines: 10,
       keep: /church-/,
-    },
-    {
-      note: "Compare Levels in the Level 01 briefing opens the levels on the hub",
-      find: '{ label: "Compare Levels", href: "sales-levels.html" }',
-      replace: `{ label: "Compare Levels", href: "${HUB_LEVELS}" }`,
     },
     {
       note: "the page title no longer names the Growth Desk",
@@ -635,21 +587,37 @@ export const PUBLIC_EDITS = {
       find: " +\n        '<p class=\"gm-drawer-note\">Public church contact details only. Outreach is email only, every email waits for approval and carries an unsubscribe line.</p>';",
       replace: ";",
     },
-    {
-      note: "the account menu and Jump To offer the church consultation",
-      find: `{ key: "levels", label: "Compare Levels", href: "${HUB_LEVELS}", icon: "levels", hint: "Welcome, Connect, Shepherd, Enterprise" }\n`,
-      replace:
-        `{ key: "levels", label: "Compare Levels", href: "${HUB_LEVELS}", icon: "levels", hint: "Welcome, Connect, Shepherd, Enterprise" },\n` +
-        `        { key: "consult", label: "${BOOK}", href: "${CONTACT}", icon: "call", hint: "A free conversation with Genesis about your church" }\n`,
-    },
   ],
 
   /* The guided demo: tours, the demo path and the scripted answers. */
   "platform/shared/demo.js": [
+    contactPath(1),
     {
       note: "the header comment names only the church workspace",
       find: "   - Genesis screens (the church workspace and the Growth Desk) use the real Genesis OS guide",
       replace: "   - Genesis screens (the church workspace) use the real Genesis OS guide",
+    },
+    {
+      note: "the texting answer's comment no longer names the Growth Desk",
+      find: "    /* The church's own answer. The Growth Desk adds how Genesis reaches churches (below). */\n",
+      replace: "    /* The church's own answer. */\n",
+    },
+    {
+      note: "removed the outreach answer, which described how Genesis finds churches",
+      from: '    outreach: "From public information only:',
+      to: "    price: ",
+      maxLines: 1,
+      keep: /\n    (levels|custom|texting|archive): /,
+    },
+    {
+      note: "removed the Growth Desk's own texting line",
+      find: '  } else if (GM && GM.side === "genesis") {\n    /* On the Growth Desk, the texting answer also says how Genesis reaches churches. */\n    ANSWERS.texting += " Genesis never texts a church it is reaching out to.";\n  }',
+      replace: "  }",
+    },
+    {
+      note: "questions about reaching Genesis get the call answer instead of the outreach rules",
+      find: String.raw`    [/how (do|does|will) (you|genesis|we) (find|contact|reach|choose|pick)|where do (the )?(churches|prospects|leads) come|public information|cold (email|call|outreach)|unsubscribe|suppression/i, "outreach"],` + "\n",
+      replace: String.raw`    [/\bhow (do|does|will|can|could) (i|we|you) (contact|reach|get in touch with) (you|genesis|someone|a person)\b/i, "call"],` + "\n",
     },
     {
       note: "the demo path comment starts at the church workspace",
@@ -657,23 +625,24 @@ export const PUBLIC_EDITS = {
       replace: "  /* The church workspace, the member app, then back. */",
     },
     {
+      note: "every run is a church buyer's demo: removed the run that starts on the Growth Desk",
+      from: "  /* Where this run of the demo started, so the path and the last card say the right thing.",
+      to: "  var PATH_ALL = [",
+      maxLines: 8,
+      keep: /PATH|SHORT_SKIP|church-/,
+      replace: "  /* Every run is a church buyer's demo, from Today to the overview's plans. */\n  var ORIGIN = \"church\";\n",
+    },
+    {
       note: "the demo path starts at Today: removed Find, One Prospect, the Website Check and the Proposal",
-      from: '    { key: "sales-find", label: "Find This Week" },\n',
+      from: '    { key: "sales-find", label: "Find This Week", desk: true },\n',
       to: '    { key: "church-today", label: "The Church Workspace" },',
-      maxLines: 5,
+      maxLines: 4,
       keep: /church-|member-/,
     },
     {
-      note: "the demo path ends at the overview: removed Onboarding and the Levels screen",
-      find: '    { key: "sales-onboarding", label: "What Happens After You Sign" },\n    { key: "sales-levels", label: "The Levels" },\n',
+      note: "the demo path ends at the overview: removed Onboarding and the Plans screen",
+      find: '    { key: "sales-onboarding", label: "What Happens After You Sign", desk: true },\n    { key: "sales-levels", label: "The Plans", desk: true },\n',
       replace: "",
-    },
-    {
-      note: "removed the run origin, which only told a run that started on Find from one that started on Today",
-      from: "  /* Where this run of the demo started, so the last card can say the right thing.",
-      to: "  /* Screens off the main path continue to a sensible next screen, then rejoin it. */",
-      maxLines: 9,
-      keep: /church-|member-/,
     },
     {
       note: "removed the off path stops on the Growth Desk",
@@ -687,17 +656,17 @@ export const PUBLIC_EDITS = {
       replace: "",
     },
     {
-      note: 'when the rest of the path is locked, the note says the demo ends here, not "goes on to Back to the Overview"',
-      find: '", so at " + GM.level().code + " the demo goes on to " + to.label + ". Switch the level to see them."',
-      replace: '", so at " + GM.level().code + (to.key === "index" ? " the demo ends here" : " the demo goes on to " + to.label) + ". Switch the level to see them."',
+      note: "removed how the Growth Desk stops are named in a sentence",
+      find: '    "sales-onboarding": "onboarding", "sales-levels": "the plans", "church-team"',
+      replace: '    "church-team"',
     },
     {
       note: "a run that falls off the path rejoins it at the overview instead of Onboarding",
-      find: '      if (!hop) hop = walk(pathIndex("sales-onboarding"));',
+      find: '      if (!hop) { var fb = pathIndex("sales-onboarding"); hop = walk(fb >= 0 ? fb : pathIndex("index")); }',
       replace: '      if (!hop) hop = walk(pathIndex("index"));',
     },
     {
-      note: "only church and member links carry the church and the level",
+      note: "only church and member links carry the church and the plan",
       find: "if (/^church-|^member-|^sales-/.test(href)) href = GM.url(href);",
       replace: "if (/^church-|^member-/.test(href)) href = GM.url(href);",
     },
@@ -716,9 +685,29 @@ export const PUBLIC_EDITS = {
       keep: /"(church|member)-[a-z-]+":/,
     },
     {
-      note: 'the last card no longer offers "See How Genesis Finds Churches"; at the end of the demo it offers the church consultation',
-      find: 'links: KEY === "sales-levels" && ORIGIN !== "desk" ? [{ label: "See How Genesis Finds Churches", href: GM.url("sales-find.html", { tour: "1" }) }] : [] },',
-      replace: "links: endOfDemo(nx) ? [CONTACT_LINK] : [] },\n      endLink: endOfDemo(nx) ? CONTACT_LINK : null,",
+      note: "member Hope no longer answers how Genesis finds churches",
+      find: '        outreach: a(ANSWERS.outreach, [{ label: "What Is Genesis Ministry?", key: "platform" }]),\n',
+      replace: "",
+    },
+    {
+      note: "the end of the demo card's How to Get Started opens the church's chapter of the journey",
+      find: 'var start = GM.presenting ? "journey.html#launch" : "journey.html#start";',
+      replace: 'var start = "journey.html#start";',
+    },
+    {
+      note: "the last card's comment no longer names the Growth Desk",
+      find: "      /* A church buyer's demo ends on the church side; the Growth Desk is only offered while presenting. */\n",
+      replace: "      /* A church buyer's demo ends on the church side. */\n",
+    },
+    {
+      note: "the last card's How to Get Started opens the church's chapter of the journey",
+      find: '{ label: "How to Get Started", href: GM.presenting ? "journey.html#launch" : "journey.html#start" }',
+      replace: '{ label: "How to Get Started", href: "journey.html#start" }',
+    },
+    {
+      note: 'the last card never offers "See How Genesis Finds Churches"',
+      find: '\n          : KEY === "sales-levels" && ORIGIN !== "desk" && GM.presenting ? [{ label: "See How Genesis Finds Churches", href: GM.url("sales-find.html", { tour: "1" }) }] : [] },',
+      replace: " : [] },",
     },
     {
       note: "no screen invites a tour on its own, as Find did",
@@ -731,110 +720,49 @@ export const PUBLIC_EDITS = {
       replace: 'caption: "A few short steps on each screen, from Today to the member app and back.',
     },
     {
-      note: "the hub tour describes the doors that are published",
-      find: 'p: "From how Genesis finds a church to what members see on their phones. Each screen opens with sample data and its own short tour."',
-      replace: 'p: "From the front office to what members see on their phones, then the journey and the four looks. Each screen opens with sample data and its own short tour."',
+      note: "the story pages have no presenter mode",
+      find: "    /* While the owner presents (story/story.js, ?present=1), the Growth Desk parts of the story show. */\n    var PRESENT = !!(STORY && STORY.present);\n",
+      replace: "    /* The public copy has no presenter mode. */\n    var PRESENT = false;\n",
     },
     {
-      note: "removed the Demo This Level hook of the Levels and Proposal screens",
+      note: "the overview tour describes the doors that are published",
+      find: '(PRESENT ? "From how Genesis finds a church to what members see on their phones." : "From the website to what members see on their phones.")',
+      replace: '"From the website to what members see on their phones."',
+    },
+    {
+      note: "the journey tour names the church's chapter, how a church gets started",
+      find: `p: PRESENT ? "A guest's path, how Genesis finds and launches a church, privacy, what the AI does, and the plans." : "A guest's path, how a church gets started, privacy, what the AI does, and the plans." },`,
+      replace: `p: "A guest's path, how a church gets started, privacy, what the AI does, and the plans." },`,
+    },
+    {
+      note: "removed the journey tour's step on how Genesis finds a church",
+      from: '        { sel: ["#launch .intro > div:first-child"',
+      to: '        { sel: ["#privacy .intro',
+      maxLines: 1,
+      keep: /#(guest|start|privacy|ai|levels) /,
+    },
+    {
+      note: "the story pages' Hope offers its data answer instead of how Genesis finds churches",
+      find: '        PRESENT ? { label: "How Does Genesis Find Churches?", key: "outreach" } : { label: "Is Our Data Safe?", key: "hosting" },',
+      replace: '        { label: "Is Our Data Safe?", key: "hosting" },',
+    },
+    {
+      note: "the story pages' Hope no longer answers how Genesis finds churches",
+      find: "        outreach: a(ANSWERS.outreach, more),\n",
+      replace: "",
+    },
+    {
+      note: "removed the Demo This Plan hook of the Plans and Proposal screens",
       from: '  if (FILE === "sales-levels" || FILE === "sales-account") {',
       to: "  function init() {",
       maxLines: 6,
       keep: /church-(?!today)|member-/,
     },
     {
-      note: "the church consultation link, the chip that opens it and the test for the end of the demo",
-      find: '  var GUIDE = "Genesis";\n',
-      replace:
-        '  var GUIDE = "Genesis";\n' +
-        "  /* The church consultation on geai.us: on the last card of the guided demo, and from Hope. */\n" +
-        `  var CONTACT = "${CONTACT}";\n` +
-        `  var CONTACT_LINK = { label: "${BOOK}", href: CONTACT };\n` +
-        `  var CONTACT_CHIP = { label: "${BOOK}", href: CONTACT, go: true, cta: true };\n` +
-        "  /* The guided demo ends when the next stop is the overview, the one stop with no tour. */\n" +
-        "  function endOfDemo(nx) { return !!(nx && nx.tour === false); }\n",
-    },
-    {
-      note: "Hope's levels answer puts team roles in Connect, as the hub and the Team screen do",
-      find: '"Level 02, Connect: everything in Welcome, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval. " +',
-      replace: '"Level 02, Connect: everything in Welcome, plus Today, the guest pipeline, the member app, the care inbox, team roles with the prayer team named, and drafts that wait for approval. " +',
-    },
-    {
-      note: "Hope's levels answer gives Shepherd custom roles and named gift viewers",
-      find: "the spiritual gifts picture, reports, team roles and more staff seats. ",
-      replace: "the spiritual gifts picture, reports, custom roles, named gift viewers and more staff seats. ",
-    },
-    {
-      note: "the texting answer no longer mentions churches Genesis reaches out to",
-      find: 'texting: "Texting is off. Guest follow-up goes by email unless the church turns texting on, and Genesis never texts a church it is reaching out to.",',
-      replace: 'texting: "Texting is off. Guest follow-up goes by email unless the church turns texting on.",',
-    },
-    {
-      note: "the outreach answer, which described how Genesis finds churches, becomes the consultation answer",
-      from: '    outreach: "From public information only:',
-      to: "\n    price: ",
-      maxLines: 1,
-      keep: /\n    (levels|custom|texting): /,
-      replace:
-        '    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation.",',
-    },
-    {
-      note: "questions about reaching Genesis get the consultation answer instead of the outreach rules",
-      from: String.raw`    [/how (do|does|will) (you|genesis|we) (find|contact|reach|choose|pick)|`,
-      to: String.raw`    [/\b(prices?|pricing|costs?|how much|fees?|dollars?|afford|budget)\b|\$/i, "price"],`,
-      maxLines: 1,
-      keep: /"(price|custom|levels|texting)"\]/,
-      replace: String.raw`    [/\b(talk|speak) (to|with) (someone|somebody|a person|a human|genesis)|\b(contact|reach|call|email) (genesis|you|someone|a person)\b|\bbook (a |the )?(call|consultation|meeting)\b|\bconsultation\b|\bget started\b/i, "contact"],` + "\n",
-    },
-    {
-      note: "member Hope answers the consultation question with a way to book it",
-      find: '        outreach: a(ANSWERS.outreach, [{ label: "What Is Genesis Ministry?", key: "platform" }]),',
-      replace: '        contact: a(ANSWERS.contact, [CONTACT_CHIP, { label: "What Is Genesis Ministry?", key: "platform" }]),',
-    },
-    {
-      note: "member Hope's price answer offers the consultation",
-      find: '        price: a(ANSWERS.price, [{ label: "What Does Each Level Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),',
-      replace: '        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),',
-    },
-    {
-      note: "at the end of the demo, member Hope's last card and its finale offer the consultation",
-      find: '      finale: { text: tour ? fill(tour.done) : "", chips: [{ label: "Take the Tour Again", key: "tour" }].concat(chipsAbout.slice(0, 2)) },',
-      replace:
-        '      finale: { text: tour ? fill(tour.done) : "", chips: [{ label: "Take the Tour Again", key: "tour" }].concat(chipsAbout.slice(0, 2), endOfDemo(nx) ? [CONTACT_CHIP] : []) },\n' +
-        "      endLink: endOfDemo(nx) ? CONTACT_LINK : null,",
-    },
-    {
-      note: 'the story pages\' Hope offers "Book a Consultation" instead of "How Does Genesis Find Churches?"',
-      find: '        { label: "How Does Genesis Find Churches?", key: "outreach" },',
-      replace: `        { label: "${BOOK}", href: CONTACT, go: true },`,
-    },
-    {
-      note: "the story pages' Hope answers the consultation question with a way to book it",
-      find: "        outreach: a(ANSWERS.outreach, more),",
-      replace: "        contact: a(ANSWERS.contact, [CONTACT_CHIP].concat(more)),",
-    },
-    {
-      note: "the story pages' price answer offers the consultation",
-      find: '        price: a(ANSWERS.price, [{ label: "What Does Each Level Include?", key: "levels" }])\n',
-      replace: '        price: a(ANSWERS.price, [CONTACT_CHIP, { label: "What Does Each Level Include?", key: "levels" }])\n',
-    },
-    {
-      note: "the journey tour counts four chapters",
-      find: `h: "Five chapters", p: "A guest's path, how Genesis finds and launches a church, privacy, what the AI does, and the levels." },`,
-      replace: `h: "Four chapters", p: "A guest's path, privacy, what the AI does, and the levels." },`,
-    },
-    {
-      note: "removed the journey tour's step on how Genesis finds a church",
-      from: '        { sel: "#launch", h: "How Genesis finds a church",',
-      to: '        { sel: "#privacy",',
-      maxLines: 1,
-      keep: /#(guest|privacy|ai|levels)"/,
-    },
-    {
       note: "each card of the guided demo says which screen of how many it is",
       find: "  /* ------------------------------------------------------------------ shared targets */\n",
       replace:
-        '  /* Where this screen sits on the guided demo path at this level, for the card\'s eyebrow:\n' +
+        '  /* Where this screen sits on the guided demo path on this plan, for the card\'s eyebrow:\n' +
         '     "Screen 3 of 12 · ". Empty for a screen off the path. */\n' +
         "  function screenOf() {\n" +
         '    var stops = PATH.filter(function (e) { return e.key !== "index" && open(e); });\n' +
@@ -851,8 +779,8 @@ export const PUBLIC_EDITS = {
     },
     {
       note: "the member cards carry the screen count in their eyebrow",
-      find: 'k: MEMBER ? AN + " · " + fill(t.title) : undefined',
-      replace: 'k: MEMBER ? AN + " · " + screenOf() + fill(t.title) : undefined',
+      find: 'k: MEMBER ? GUIDE + " · " + fill(t.title) : undefined',
+      replace: 'k: MEMBER ? GUIDE + " · " + screenOf() + fill(t.title) : undefined',
     },
   ],
 };
@@ -860,7 +788,7 @@ export const PUBLIC_EDITS = {
 /* ── the three plans ───────────────────────────────────────────────── */
 
 /**
- * The copied files that name the levels: the gallery, Hope on the sample
+ * The copied files that name the plans: the gallery, Hope on the sample
  * sites, and the platform pages and scripts, but not the copied Genesis OS
  * design system (platform/shared/os/), which never names them. The church
  * sites under templates/ are left alone: their "Connect" and "Welcome" are a
@@ -869,223 +797,43 @@ export const PUBLIC_EDITS = {
 export const PLAN_FILES = /^(?:index\.html|shared\/hope-demo\.js|platform\/(?!shared\/os\/)[a-z0-9/-]+\.(?:html|js))$/;
 
 /**
- * The source's first draft level, in platform/shared/data.js. The renames
- * assume the source still names the draft levels; once it names the plans
- * itself they would rename its new names again, so the sync stops when this
- * is missing.
+ * Where the source keeps the plans: GM_DATA in platform/shared/data.js, with
+ * D.pricingLine, the one sentence every price answer starts with.
  */
-export const PLAN_SOURCE_MARK = /code: "Level 01", name: "Welcome"/;
-
-/** The plan behind an old level number ("01") or an old level name ("Connect"). */
-const planFor = (key) => {
-  const plan = MINISTRY_PLANS.find((p) => p.level === key || p.was === key);
-  if (!plan) throw new Error(`no plan for ${key}`);
-  return plan;
-};
-const OLD_NAME = "(Welcome|Connect|Shepherd)";
+export const PLAN_DATA = "platform/shared/data.js";
 
 /**
- * A rename: every match of `pattern` (a global RegExp) becomes what `replace`
- * returns for it, in the files `files` matches (every PLAN_FILES file when not
- * given). Rules run in order, and a later rule never sees what an earlier
- * rule wrote, so "Connect" can become "Shepherd" while the old "Shepherd"
- * becomes "Plus", in any order in the text.
- * @typedef {{ note: string, pattern: RegExp, replace: (...match: string[]) => string, files?: RegExp }} Rename
+ * The first draft level, as the source named it before the plans. A source
+ * that still has it is older than the plans, and the sync stops.
  */
-
-const HUB = /^platform\/index\.html$/;
-const JOURNEY = /^platform\/journey\.html$/;
-
-/** @type {readonly Rename[]} */
-export const PLAN_RENAMES = [
-  /* Prices first: where the demo said "Pricing set with Genesis", it now gives the price. */
-  {
-    note: "a price answer that said pricing is set with Genesis gives the three plans and their prices",
-    pattern: /(price: (?:\{ t: )?")Pricing is set with Genesis[^"]*"/g,
-    replace: (_, lead) => `${lead}${PRICE_ANSWER}"`,
-  },
-  {
-    note: "D.pricingLine, shown where a price would sit, is the sentence with every price",
-    pattern: /D\.pricingLine = "Pricing set with Genesis";/g,
-    replace: () => `D.pricingLine = "${PRICE_ANSWER}";`,
-  },
-  {
-    note: "the lines that end with D.pricingLine drop the draft note and the second full stop",
-    pattern: /(?:Levels are a draft\. )?(" \+ (?:esc\()?D\.pricingLine\)?) \+ "\./g,
-    replace: (_, pricing) => `${pricing} + "`,
-  },
-  {
-    note: "the data comments say the plans show their prices",
-    pattern: /DRAFT plan levels, to be confirmed by the owner\. Never show a price\.(\s*)Where a price would sit, show D\.pricingLine\.|Never a dollar amount\. Plans show a level, and "Pricing set with Genesis"\./g,
-    replace: (_, space) =>
-      space === undefined ? "Plans show a plan name and its price, from D.levels." : `The three plans and their prices, as /ministry shows them.${space}D.pricingLine is the one sentence with every price.`,
-  },
-  {
-    note: "the hub's plan cards show each plan's price, and Enterprise says it is priced on a call",
-    files: HUB,
-    pattern: /(?<=<h3>(Welcome|Connect|Shepherd|Enterprise)<\/h3>\s*<p class="sum">[^\n]*<\/p>\s*)<p class="price">Pricing set with Genesis<\/p>/g,
-    replace: (_, name) =>
-      name === "Enterprise"
-        ? '<p class="price"><span>Priced with you on a call</span></p>'
-        : `<p class="price"><b>${planFor(name).price}</b> <span>per month</span></p>`,
-  },
-  {
-    note: "the hub's prices are set like the /ministry cards: the number large, then per month",
-    files: HUB,
-    pattern: /(\.level \.price \{ margin-top: 24px; padding-top: 16px; border-top: 1px solid var\(--line\);) font-family: var\(--font-mono\); font-size: 0\.62rem; letter-spacing: 0\.16em; text-transform: uppercase; color: var\(--muted\); \}/g,
-    replace: (_, box) =>
-      `${box} display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }\n` +
-      ".level .price b { font-weight: 400; font-size: clamp(2.1rem, 3vw, 2.7rem); line-height: 1; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }\n" +
-      ".level .price span { font-size: 0.9rem; color: var(--muted); }",
-  },
-  {
-    note: "the journey's levels diagram labels each step with its price, as Enterprise is labelled Scoped on a call",
-    files: JOURNEY,
-    pattern: /(?<=dy="0">)LEVEL (0[1-3])(?=<\/tspan>)/g,
-    replace: (_, level) => `${planFor(level).price} A MONTH`,
-  },
-  {
-    note: "the hub's plan cards drop the numbered eyebrow; the plan name above the price says it",
-    files: HUB,
-    pattern: /<p class="eyebrow">Level 0[1-3]<\/p>\s*(?=<h3>)/g,
-    replace: () => "",
-  },
-  {
-    note: "Hope's levels answer and the tour end on the prices, not a draft note",
-    pattern: /The levels are a draft, and pricing is set with Genesis\.|(?:Draft levels\. )?Pricing (?:is )?set with Genesis(?:, on a call)?\./g,
-    replace: () => PRICE_ANSWER,
-  },
-  {
-    note: "the plans are no longer a draft: the badge, the notes and the page descriptions",
-    pattern: /<span class="badge">Draft levels<\/span>|Draft levels, to be confirmed(?: by Genesis)?\. | \(draft levels\)| Levels are a draft\.|Levels are a draft(?:, to be confirmed| until the owner confirms them)\. |\b(?:with draft|Draft) levels(?= and\b)/g,
-    replace: (match) => (match === "with draft levels" ? "with three plans" : match === "Draft levels" ? "Three plans" : ""),
-  },
-  {
-    note: "the consultation answer no longer says pricing is set on that call",
-    pattern: / Pricing is set on that call, once we understand your church\./g,
-    replace: () => "",
-  },
-
-  /* Then the names. Each level's data entry gets the plan's name, and its price. */
-  {
-    note: "each level in D.levels is its plan: the plan's name as its label and name, and its price",
-    pattern: /code: "Level (0[1-3])", name: "(?:Welcome|Connect|Shepherd)",|code: "Enterprise", name: "Enterprise",/g,
-    replace: (match, level) => {
-      if (!level) return `${match} price: "Scoped on a call",`;
-      const plan = planFor(level);
-      return `code: "${plan.name}", name: "${plan.name}", price: "${plan.price} a month",`;
-    },
-  },
-  {
-    note: "the lists of levels name the plans",
-    pattern: /\bWelcome, Connect(,| and) Shepherd\b|\bWelcome to Connect to Shepherd\b|\bLevel 01, 02 (and|or) 03\b/g,
-    replace: (match, sep, word) =>
-      word ? `Care, Shepherd ${word} Plus` : sep ? `Care, Shepherd${sep} Plus` : "Care to Shepherd to Plus",
-  },
-  { note: "the Back Office badge names the plans", pattern: /\bLevel 02, more at 03\b/g, replace: () => "Shepherd, more in Plus" },
-  {
-    note: "a level label with its name is the plan name",
-    pattern: new RegExp(String.raw`\bLevel (0[1-3]),? ${OLD_NAME}\b`, "g"),
-    replace: (_, level) => planFor(level).name,
-  },
-  {
-    note: "at a level reads on a plan",
-    pattern: /(?<!look )\b([Aa])t Level (0[1-3])\b/g,
-    replace: (_, a, level) => `${a === "A" ? "On" : "on"} the ${planFor(level).name} plan`,
-  },
-  { note: "a Level 01 church is a church on Care", pattern: /\ba Level (0[1-3]) church\b/g, replace: (_, level) => `a church on ${planFor(level).name}` },
-  { note: "below Level 02 is on Care", pattern: /\bBelow Level 02 /g, replace: () => "On Care, " },
-  { note: "every other level label is the plan name", pattern: /\bLevel (0[1-3])\b/g, replace: (_, level) => planFor(level).name },
-  { note: "the lock badges name the plan", pattern: />L(0[1-3])</g, replace: (_, level) => `>${planFor(level).name}<` },
-  {
-    note: "everything in a level is everything in its plan",
-    pattern: new RegExp(String.raw`\b([Ee]verything in) ${OLD_NAME}\b`, "g"),
-    replace: (_, lead, name) => `${lead} ${planFor(name).name}`,
-  },
-  {
-    note: "what a level adds, keeps or has is what its plan does",
-    pattern: new RegExp(String.raw`\b${OLD_NAME}(?= (?:adds|keeps|changes|turns|has|names|is the website)\b)`, "g"),
-    replace: (name) => planFor(name).name,
-  },
-  {
-    note: "the hub's plan cards and the journey's levels diagram name the plans",
-    files: /^platform\/(?:index|journey)\.html$/,
-    pattern: new RegExp(String.raw`(<h3>|dy="0">)${OLD_NAME}(?=</h3>|</tspan>)`, "g"),
-    replace: (_, lead, name) => `${lead}${planFor(name).name}`,
-  },
-
-  /* Last, the scripts: a level's label is now its name, so "label, name" would say the name twice. */
-  {
-    note: 'the scripts show the plan name once where they showed "Level 02, Connect"',
-    pattern: /esc\((\w+)\.code\) \+ ", " \+ esc\(\1\.name\)|\b(\w+)\.code \+ ", " \+ \2\.name\b/g,
-    replace: (_, a, b) => (a ? `esc(${a}.name)` : `${b}.name`),
-  },
-  {
-    note: "the level switcher shows each plan's name and price",
-    pattern: /esc\((\w+)\.code\.replace\("Level ", ""\)\) \+ "<\/b><span>" \+ esc\(\1\.name\)/g,
-    replace: (_, v) => `esc(${v}.name) + "</b><span>" + esc(${v}.price)`,
-  },
-  { note: "the short level labels are the plan name", pattern: /\b((?:\w+\.)?code)\.replace\("Level ", "L?"\)/g, replace: (_, code) => code },
-  {
-    note: 'the labels the scripts build as "Level 0" and a number are the plan name',
-    pattern: /"([^"\n]*?)Level 0" \+ ([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)/g,
-    replace: (_, lead, n) => `${lead ? `"${lead}" + ` : ""}${JSON.stringify(MINISTRY_PLANS.map((plan) => plan.name))}[${n} - 1]`,
-  },
-  {
-    note: "the compact switcher is labelled Plan, as the full one is",
-    pattern: /(?<=data-tour="shell\.plan"><span>)Level(?=<\/span>)/g,
-    replace: () => "Plan",
-  },
-
-  /* The word itself. A tier is a plan now, so where people read "level" they read "plan". Class
-     names (.level, v2-level-card), data keys (D.levels, level: 2), the #levels anchor, "second-level
-     column" and the matchers for what a visitor types keep the word. */
-  {
-    note: 'a sentence that names the plan after "at" reads "on the ... plan"',
-    pattern: /\b([Aa])t " \+ ((?:GM\.level\(\)|ctx\.level)\.code) \+ (")?/g,
-    replace: (_, a, code, quote) => `${a === "A" ? "On" : "on"} the " + ${code} + ${quote ? '" plan' : '" plan" + '}`,
-  },
-  {
-    note: "at this, that or every level reads on this, that or every plan",
-    pattern: /\b([Aa])t (this|that|every) level\b/g,
-    replace: (_, a, which) => `${a === "A" ? "On" : "on"} ${which} plan`,
-  },
-  { note: "the plan switcher and menu say Plan, not Plan level", pattern: /\b([Pp])lan level\b/g, replace: (_, p) => `${p}lan` },
-  {
-    note: "the labels people click say Plan: Compare Plans, Demo This Plan, Choose Your Plan, What Does Each Plan Include?",
-    pattern: /\b(Compare|This|Each|Your) Level(s?)\b|(?<=>)Levels(?=\s*<)/g,
-    replace: (match, word, s) => (word ? `${word} Plan${s}` : "Plans"),
-  },
-  {
-    note: "each, every, any, this, which, the, its or your level is the plan",
-    pattern: /\b([Ee]ach|[Ee]very|[Aa]ny|[Tt]his|[Tt]hat|[Ww]hich|[Tt]he|[Ii]ts|[Yy]our|and) level(s?)\b/g,
-    replace: (_, word, s) => `${word} plan${s}`,
-  },
-];
+export const DRAFT_LEVEL_MARK = /code: "Level 01", name: "Welcome"/;
 
 /**
- * Applies PLAN_RENAMES to one copied file. Returns the new text and the number
- * of changes each rule made (rules that changed nothing are left out).
- * @param {string} file
- * @param {string} text
+ * What is wrong with the plans in the source's data, against the plans and
+ * prices /ministry shows: each plan by name with its monthly price,
+ * Enterprise scoped on a call, and D.pricingLine word for word the price
+ * answer. Empty when they match.
+ * @param {string} data the text of platform/shared/data.js
+ * @returns {string[]}
  */
-export function renamePlans(file, text) {
-  if (!PLAN_FILES.test(file)) return { text, counts: {} };
-  /* Each replacement is held behind a marker until the end, so no later rule rewrites it. */
-  const held = [];
-  const counts = {};
-  for (const rule of PLAN_RENAMES) {
-    if (rule.files && !rule.files.test(file)) continue;
-    text = text.replace(rule.pattern, (...match) => {
-      counts[rule.note] = (counts[rule.note] ?? 0) + 1;
-      held.push(rule.replace(...match.slice(0, -2).map((part) => part ?? undefined)));
-      return `\u0000${held.length - 1}\u0000`;
-    });
+export function planProblems(data) {
+  const problems = [];
+  if (DRAFT_LEVEL_MARK.test(data)) problems.push("it still has the draft levels (Level 01, Welcome)");
+  if (!data.includes(`D.pricingLine = "${PRICE_ANSWER}";`)) problems.push(`D.pricingLine is not "${PRICE_ANSWER}"`);
+  for (const plan of MINISTRY_PLANS) {
+    if (!data.includes(`code: "${plan.name}", name: "${plan.name}", price: "${plan.price} a month",`)) {
+      problems.push(`the ${plan.name} plan is not named with its price, ${plan.price} a month`);
+    }
   }
-  return { text: text.replace(/\u0000(\d+)\u0000/g, (_, index) => held[Number(index)]), counts };
+  if (!data.includes('code: "Enterprise", name: "Enterprise", price: "Scoped on a call",')) problems.push("Enterprise is not scoped on a call");
+  /* Every price the data names is one of the three. */
+  for (const [price] of data.matchAll(/\$\d[\d,]*/g)) {
+    if (!MINISTRY_PLANS.some((plan) => plan.price === price)) problems.push(`it names ${price}, which is not a plan price`);
+  }
+  return problems;
 }
 
-/** What may not be left in a renamed file: the old level labels, names and price lines. */
+/** What may not be left in a public page or script: the old level labels, names and price lines. */
 const OLD_PLAN_WORDS = [
   { what: "a numbered level label", pattern: /\bLevel 0[1-3]\b|>L0[1-3]<|\bLevel 0["'] ?\+|["']L0["'] ?\+/gi },
   { what: "pricing set on a call", pattern: /\bpricing (?:is )?set (?:with genesis|on)\b|never shows a (?:price|dollar)/gi },
@@ -1102,7 +850,7 @@ const OLD_PLAN_WORDS = [
 
 /**
  * Every old level label, old level name or "pricing set with Genesis" line
- * left in a renamed file, with a little context around each.
+ * left in a public page or script, with a little context around each.
  * @param {string} text
  * @param {string} file
  */
@@ -1163,9 +911,11 @@ export function localRefs(file, text) {
 
 /**
  * The links to the rest of geai.us in a copied file: site paths (starting
- * with a single "/") in a page's src, href and poster attributes, and quoted
- * site paths in the demo's own scripts (platform/shared/, platform/story/ and
- * shared/). The sync allows only SITE_LINKS.
+ * with a single "/") in a page's src, href and poster attributes, quoted site
+ * paths in the demo's own scripts (platform/shared/, platform/story/ and
+ * shared/), and, in any file, every absolute geai.us address, as written. The
+ * sync allows only SITE_LINKS, which are paths, so an absolute address is
+ * always reported.
  * @param {string} file the copied file, relative to the copy's root
  * @param {string} text its contents
  * @returns {string[]}
@@ -1178,6 +928,7 @@ export function siteRefs(file, text) {
   } else if (/^(platform\/(shared|story)|shared)\/[^/]+\.js$/.test(file)) {
     for (const [, url] of text.matchAll(/["'`](\/(?![/*])[a-z][^"'`\s]*)["'`]/gi)) refs.push(url);
   }
+  for (const [url] of text.matchAll(/\b(?:https?:)?\/\/(?:www\.)?geai\.us\b[^"'`\s<>)]*/gi)) refs.push(url);
   return [...new Set(refs)];
 }
 

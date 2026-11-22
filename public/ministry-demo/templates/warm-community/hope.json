@@ -6,12 +6,14 @@
     "city": "Des Moines, Iowa",
     "address": "3120 Wrenfield Ave",
     "times": "every Sunday, 9:00 and 10:45 AM,",
+    "length": "75 minutes",
+    "parking": "Park in the lot off Wrenfield or along the street. The yellow umbrellas out front mark the way in, and a greeter will be right there.",
     "phone": "(515) 555-0142",
     "mapUrl": "https://www.google.com/maps/search/?api=1&query=Des+Moines%2C+Iowa",
-    "pastors": "Marcus and Ellie are our lead pastors. They started Goldenrod Commons in their living room in 2012, they live a few blocks away, and they share one very loud beagle. Find them by the coffee after church. They would love to say hi.",
+    "pastors": "Marcus and Ellie are our lead pastors. They started Goldenrod Commons in their living room in 2012, they live a few blocks away, and they keep three very opinionated backyard chickens. Find them by the coffee after church. They would love to say hi.",
     "kids": "Kids have their own rooms every Sunday, from nursery through fifth grade. Check-in opens 15 minutes before each service, and every volunteer is trained and background checked. Tell a greeter it is your first time and we will walk you there.",
-    "students": "Middle schoolers through mid twenties have their own nights through the month, plus porch nights and Saturday service days with everyone else. It is a good place to bring your questions.",
-    "groups": "Twenty two small groups meet in living rooms across the city, every night of the week. Most of them share a meal. One of them has your name on it.",
+    "students": "Middle schoolers through mid-twenties have their own nights through the month, plus porch nights and Saturday service days with everyone else. It is a good place to bring your questions.",
+    "groups": "Twenty-two small groups meet in living rooms across the city, every night of the week. Most of them share a meal. One of them has your name on it.",
     "startHere": "So glad you found us. Come any Sunday at 9:00 or 10:45. Coffee is on from 8:30, and the yellow umbrellas out front mark the way in. After church, come to Start Here: lunch with the pastors and a plate of something good.",
     "give": "Every gift helps feed local families, builds the Porch Project and keeps the lights on for our neighbors. You can give online in about a minute, once or every month.",
     "watch": "Every message is online by Sunday afternoon. The latest is Casseroles and courage, part two of our Love Thy Neighbor series with Pastor Marcus.",
@@ -41,10 +43,202 @@
   },
   "links": {
     "brandBoard": "brand-board.html",
-    "socialPlan": "social-plan.html"
+    "socialPlan": "social-plan.html",
+    "prayer": "#prayer-request"
   },
-  "removeSelectors": [".cw-launch", "#cw", ".sbar .sb-chat"],
+  "removeSelectors": [
+    ".cw-launch",
+    "#cw",
+    ".sbar .sb-chat"
+  ],
   "bottomOffset": 66,
+  "answers": {
+    "newhere": {
+      "t": "So glad you found us. Come any Sunday at 9:00 or 10:45. Coffee is on from 8:30, and the yellow umbrellas out front mark the way in. Plan your visit and a greeter will be watching for you. After church, come to Start Here: lunch with the pastors and a plate of something good.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "Kids",
+          "key": "kids"
+        }
+      ]
+    },
+    "baptism": {
+      "t": "Our next Baptism Sunday is January 10, and we would love to walk into the water with you. Ask about baptism and one of our pastors will talk it through with you first. Then we celebrate together.",
+      "c": [
+        {
+          "label": "Ask About Baptism",
+          "href": "#baptism",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "curious": {
+      "t": "Yes, please come. You do not have to believe anything to sit on our porch. Plenty of people here are still asking big questions, and nobody will put you on the spot. Grab a coffee and come as you are.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "access": {
+      "t": "Yes. The front door by the yellow umbrellas has a ramp, and everything on Sunday is on one floor, the kids' rooms and the restrooms too. Accessible parking is closest to the door in the lot off Wrenfield. Tell a greeter what would help, and we will be glad to.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Where Do I Park?",
+          "key": "parking"
+        }
+      ]
+    },
+    "language": {
+      "t": "Our services are in English. If another language would help you or your family, call us at (515) 555-0142 and we will help however we can.",
+      "c": [
+        {
+          "label": "Call Goldenrod Commons",
+          "href": "tel:+15155550142",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "communion": {
+      "t": "We share communion on the first Sunday of each month, at both services. Everyone who follows Jesus is welcome at the table, and it is always fine to sit it out.",
+      "c": [
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "wear": {
+      "t": "Jeans are great. Come in whatever is comfortable, and you will fit right in. Coffee is on from 8:30.",
+      "c": [
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "price": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.",
+      "c": [
+        {
+          "label": "What Does a Church Get?",
+          "key": "package"
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        }
+      ]
+    },
+    "package": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is Warm Community), the brand board, the social marketing plan, Hope on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.",
+      "c": [
+        {
+          "label": "What Is the Back Office?",
+          "key": "backoffice",
+          "cta": true
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        },
+        {
+          "label": "See the Brand Board",
+          "href": "brand-board.html"
+        },
+        {
+          "label": "See the Social Plan",
+          "href": "social-plan.html"
+        }
+      ]
+    }
+  },
+  "matchPatterns": [
+    [
+      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "baptism"
+    ],
+    [
+      "\\bhow long\\b(?!.*\\b(?:been|ago|founded|around|existed?|started|kids?|children|students?|youth|groups?|class(?:es)?|lunch)\\b)",
+      "times"
+    ],
+    [
+      "\\b(?:not (?:a )?(?:christian|believer|religious|churchy)|non[- ]?(?:christian|believer|religious)|(?:don['’]?t|do not|didn['’]?t) (?:believe|know (?:if|what) i believe)|not sure (?:if|what) i believe|atheists?|agnostics?|skeptic\\w*|sceptic\\w*|doubts?|doubting|never been to (?:a )?church|(?:haven['’]?t|have not) been to (?:a )?church|(?:another|other|different) (?:faith|religion)s?)\\b",
+      "curious"
+    ],
+    [
+      "^(?!.*\\b(?:online|live ?stream\\w*|stream\\w*|website|site|videos?|app|podcasts?)\\b).*\\b(?:wheel ?chairs?|accessib\\w*|ramps?|elevators?|stairs|step[- ]free|mobility|walkers?|disab\\w*|handicap\\w*|hard of hearing|hearing (?:loop|aids?)|large print)\\b",
+      "access"
+    ],
+    [
+      "\\b(?:spanish|espa[nñ]ol|languages?|bilingual|interpreters?|translators?|translated|korean|mandarin|cantonese|chinese|vietnamese|french|portuguese|arabic|swahili|tagalog|hindi|haitian creole|sign language|asl)\\b",
+      "language"
+    ],
+    [
+      "\\b(?:communion|eucharist|lord['’]?s supper|sacraments?)\\b",
+      "communion"
+    ],
+    [
+      "\\b(?:wear|wearing|jeans|shorts|dress(?:ed)?(?: up)?|dress code|attire|outfits?|clothes|clothing|suit and tie|casual)\\b",
+      "wear"
+    ]
+  ],
+  "next": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-guest.html?church=warm-community&id=g-01",
+    "note": "Next: a Plan a Visit form as it arrives in Genesis Ministry, the way the welcome team sees it."
+  },
+  "nextLevel01": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-website.html?church=warm-community&plan=1#ws-visit-title",
+    "note": "Next: on the Care plan, a Plan a Visit form arrives as an email to the address your church chose.",
+    "tour": false
+  },
   "pages": {
     "index.html": {}
   }

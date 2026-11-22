@@ -1,9 +1,10 @@
 {
-  "look": "Bold & Dark",
+  "look": "Bold and Dark",
   "slug": "bold-dark",
   "forChurches": "Youth-heavy, worship-led churches: students, young adults and young families who meet on Sunday nights as much as Sunday mornings.",
   "church": {
     "name": "Lampstand Church",
+    "shortName": "Lampstand",
     "fictional": true,
     "nameCheck": "One web search on 2026-11-19 for \"Lampstand Church\" Columbus Ohio found no church by that exact name in Columbus.",
     "city": "Columbus",
@@ -22,7 +23,7 @@
       "Andre",
       "Talia"
     ],
-    "pastorsLine": "Lead pastors Andre and Talia, a married couple who started Lampstand in a borrowed living room in 2019 with eleven people and a guitar.",
+    "pastorsLine": "Lead pastors Andre and Talia, a married couple who started Lampstand in 2019 in the back room of a Short North coffee shop, with a handful of college friends and one guitar.",
     "tagline": "Light for the city.",
     "heroHeadline": {
       "line1": "Light for the",
@@ -154,7 +155,7 @@
       "Photo cards: the photo pushes in, a Flare bar wipes across its bottom edge and the title turns Flare",
       "Primary buttons: a sheen sweeps across once on arrival and a soft light follows the cursor, inside the button only",
       "Announcement play button pulses gently",
-      "Photo strip scrolls slowly, pauses on hover or focus, with a Pause Photos button",
+      "Photo strip scrolls slowly, pauses on hover or focus, with a Pause Motion button that stops every moving part",
       "Reviews rotate every 6.5 seconds with a reel line showing time left, paused on hover or focus",
       "Scroll progress line under the header; slight parallax on the statement band"
     ],

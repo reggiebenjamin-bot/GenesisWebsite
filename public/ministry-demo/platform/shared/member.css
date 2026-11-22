@@ -166,7 +166,6 @@ a.m-item:hover{background:var(--m-surface-2)}
   .m-caption{display:none}
   .m-stagebar .gm-plan-label{display:none}
   .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}
-  .m-stagebar .gm-plan a,body.mx-staged .m-stagebar .gm-plan a{padding:4px;font-size:11.5px}
 }
 
 /* --- Finishing pass --------------------------------------------------------------- */
@@ -178,10 +177,121 @@ a.m-item:hover{background:var(--m-surface-2)}
   /* On a phone the floating Hope circle would sit on the screen's own words, so Hope moves into the
      stage bar above the phone (.mx-hope), and the church switcher shows the church's mark only. */
   body[data-side="member"] .hd-launch{display:none!important}
-  .m-stagebar .gm-switcher-btn>span:not(.gm-tenant-mark){display:none}
+  /* The church's name stays in the button for screen readers, so it is never announced unnamed. */
+  .m-stagebar .gm-switcher-btn>span:not(.gm-tenant-mark){position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
   .m-stagebar .gm-switcher{flex:0 0 auto}
 }
 @media (max-width:760px){body.mx-staged .m-stagebar .mx-tour{width:44px;min-width:44px;min-height:44px}}
+/* Up to 960px the church switcher shows the church's name without the city line, so the stage bar stays on one row. */
+@media (max-width:960px){body.mx-staged .m-stagebar .gm-switcher-btn small{display:none}}
 
 .mx-hope{display:none}
 @media (max-width:520px){.m-stagebar .mx-hope{display:inline-flex;min-width:44px;min-height:44px}}
+
+/* --- Round 1: tap targets and the phone stage bar ---------------------------------- */
+/* The church name in the phone's top bar is a 44px target; the padding keeps the bar's look. */
+.m-top{padding:12px 18px 8px}
+.m-top .m-church{min-height:44px}
+/* The beside-the-phone link to a church screen carries the level lock when that screen is not included. */
+.mx-about .mx-land .gm-nav-lock{display:inline-flex;margin-left:2px}
+@media (max-width:520px),(pointer:coarse){
+  /* Phones, and touch screens of any width (tablets): small links and buttons reach 44px.
+     The negative margins keep each row's spacing as it was. */
+  .m-app .m-section-head .m-link,.m-app dd .m-link{min-height:44px;display:inline-flex;align-items:center}
+  .m-app .m-section-head .m-link{min-width:44px;justify-content:flex-end;margin-block:-11px}
+  .m-app dd .m-link{margin-block:-10px}
+  .m-app .m-btn--sm{min-height:44px}
+}
+@media (pointer:coarse){
+  /* Touch screens of any width: the stage bar's brand, level links and buttons are 44px targets too. */
+  body.mx-staged .m-stage-brand,body.mx-staged .m-stagebar .v2-button,body.mx-staged .m-stagebar .gm-plan a{min-height:44px}
+  body.mx-staged .m-stagebar .gm-plan a,body.mx-staged .m-stagebar .v2-icon-button,body.mx-staged .m-stagebar .mx-tour{min-width:44px;justify-content:center}
+  /* Beside the phone: the link to the same moment in the church workspace, and the screen list. */
+  body.mx-staged .mx-land,body.mx-staged .mx-screens .v2-rail-nav a{min-height:44px}
+}
+@media (max-width:520px){
+  /* The stage bar on one row: the church and the level on the left, the actions on the right. */
+  body.mx-staged .m-stagebar{gap:6px 4px}
+  body.mx-staged .m-stagebar .gm-switcher-btn{gap:6px;padding:5px 8px 5px 6px}
+  body.mx-staged .m-stagebar .gm-plan{margin-right:auto}
+  body.mx-staged .m-stagebar .gm-plan a{min-width:44px;justify-content:center}
+}
+@media (max-width:359px){
+  /* Too narrow for one row (320px): the plan switch takes its own row, with the plan names only. The
+     prices stay hidden here, so the bar never grows wider than the screen. */
+  body.mx-staged .m-stagebar .gm-switcher{margin-right:auto}
+  body.mx-staged .m-stagebar .gm-plan{order:9;flex:1 1 100%;margin-right:0}
+  body.mx-staged .m-stagebar .gm-plan a{flex:1 1 0;padding:4px 6px;justify-content:center}
+  body.mx-staged .m-stagebar .gm-menu{top:104px}
+}
+
+/* --- Review round 1: the stage bar keeps to one row ------------------------------------ */
+/* The plan prices show from 1280px. Narrower, the plan names alone (each link's title and the plans
+   page carry the prices), so the bar never wraps between 761 and 1279px. */
+@media (max-width:1279px){
+  .m-stagebar .gm-plan a span{display:none}
+}
+/* Phones: the theme switch moves into the church menu, and the plan links are a little tighter, so the
+   church, the plan, the tour and Hope fit one row from 360px. */
+.gm-menu .gm-menu-theme{display:none}
+@media (max-width:520px){
+  body.mx-staged .m-stagebar .gm-theme-btn{display:none}
+  body.mx-staged .gm-menu .gm-menu-theme{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 10px;border:0;border-top:1px solid var(--v2-border);border-radius:0 0 var(--v2-radius-sm) var(--v2-radius-sm);background:none;color:var(--v2-text);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
+  body.mx-staged .gm-menu .gm-menu-theme:hover,body.mx-staged .gm-menu .gm-menu-theme:focus-visible{background:var(--v2-hover)}
+  body.mx-staged .gm-menu .gm-menu-theme .gm-icon{width:18px;height:18px}
+  body.mx-staged .m-stagebar{padding-inline:10px}
+  body.mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+}
+
+/* --- Round 2: short screens ---------------------------------------------------------- */
+/* A phone on its side, or a page zoomed to 400 percent: the app's top bar and tabs scroll with the
+   screen instead of staying pinned, so the screen's own words keep the room. */
+@media (max-height:500px){
+  .m-app .m-top,.m-app .m-tabbar{position:static}
+  body.mx-staged .m-app .m-top{top:auto}
+}
+
+/* --- Round 3: focus never hides under a bar (WCAG 2.4.11) ---------------------------- */
+/* Whatever scrolls a field, link or card into view (Tab, scrollIntoView) leaves room for the bars
+   that stay on screen: the sample strip (44px), the app's top bar (65px) and its tabs (73px). */
+html:has(body.mx-staged){scroll-padding-top:52px}
+/* The framed phone (521px up): the app scrolls inside the frame, under its own top bar and tabs. */
+.m-device>.m-app{scroll-padding-top:73px}
+.m-device>.m-app:has(.m-tabbar){scroll-padding-bottom:85px}
+@media (max-width:520px){
+  /* Phones: the page scrolls, under the strip and the app's top bar, above the tabs. */
+  html:has(body.mx-staged){scroll-padding-top:117px}
+  html:has(body.mx-staged .m-tabbar){scroll-padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-height:500px){
+  /* The app's bars scroll with the screen here, so only the sample strip stays on top. */
+  html:has(body.mx-staged){scroll-padding-top:52px}
+  html:has(body.mx-staged .m-tabbar){scroll-padding-bottom:0}
+  .m-device>.m-app,.m-device>.m-app:has(.m-tabbar){scroll-padding-top:0;scroll-padding-bottom:0}
+}
+
+/* --- Round 3: the stage keeps a gutter at 1180px and up ------------------------------ */
+/* The member stage block in each page sets the three columns; the side columns keep 24px from the window edge. */
+@media (min-width:1180px){
+  body.mx-staged .mx-about{width:min(360px,calc(100% - 24px))}
+  body.mx-staged .mx-screens{width:min(236px,calc(100% - 24px))}
+}
+@media (min-width:1180px) and (max-width:1279px){body.mx-staged .m-stage{column-gap:32px}}
+/* "How it protects people" beside the phone is one column at every width, so the workspace's
+   two-column rule (1180px and down) never draws a stray divider beside its first item. */
+body.mx-staged .mx-card .gm-protect-list>li:nth-child(n){border-right:0;margin-right:0}
+
+/* --- Round 3: the crisis reply (prayer, messages, the gifts conversation's own words) --- */
+/* Shown before anything else when someone types crisis words: the fixed reply, word for word,
+   with 988, 911 and the church phone as real call links, and what the live product does next. */
+.m-crisis{display:grid;gap:12px;padding:16px;border:2px solid var(--m-accent);border-radius:var(--m-radius-lg);background:var(--m-surface);color:var(--m-text);scroll-margin-top:12px}
+.m-crisis:focus{outline:none}
+.m-app .m-crisis:focus-visible{outline:2px solid var(--m-focus);outline-offset:3px}
+.m-app .m-crisis-head{display:flex;align-items:center;gap:10px;margin:0}
+.m-crisis-head .gm-icon{flex:0 0 20px;width:20px;height:20px;color:var(--m-accent-ink)}
+.m-app .m-crisis p{margin:0}
+.m-app .m-crisis .m-crisis-from{margin-top:-6px;color:var(--m-muted);font-size:13.5px;line-height:1.45}
+.m-crisis-reply{font-size:16px;line-height:1.55}
+.m-crisis-calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
+.m-crisis-calls .m-btn{min-height:48px;padding:10px 12px;text-align:center}
+.m-app .m-crisis-note{color:var(--m-muted);font-size:14px;line-height:1.5}

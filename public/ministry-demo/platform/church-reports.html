@@ -18,12 +18,28 @@
   .rp-page .v2-report-body>*{margin-top:0;min-width:0}
   .rp-page .v2-viz-pair{margin-top:0;gap:14px}
   .rp-page .v2-viz-pair>.v2-card{min-width:0}
-  .rp-page .v2-report-trend .v2-section-head{margin-bottom:16px}
+  .rp-page .v2-report-trend .v2-viz-head{margin-bottom:16px}
+  .rp-chart-sub{margin:6px 0 0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
   .rp-page .v2-report-support .v2-section-head{margin-bottom:10px}
   .rp-page .v2-report-support dd a{color:inherit}
   .rp-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
   .rp-foot p{margin:0}
   @media (max-width:860px){.rp-page .v2-viz-pair{grid-template-columns:minmax(0,1fr)}}
+  /* The page column decides the weekly brief, so the Hope dock never squeezes five items into one row. */
+  .rp-page{container-type:inline-size}
+  @media (min-width:861px){
+    @container (max-width:900px){
+      .rp-page .v2-report-brief-card .v2-report-brief{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .rp-page .v2-report-brief-card .v2-report-brief article:nth-child(3n+2):last-child{grid-column:span 2}
+      .rp-page .v2-report-brief-card .v2-report-brief article:nth-child(3n+1):last-child{grid-column:1/-1}
+    }
+    @container (max-width:600px){
+      .rp-page .v2-report-brief-card .v2-report-brief{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .rp-page .v2-report-brief-card .v2-report-brief article:nth-child(3n+2):last-child{grid-column:auto}
+      .rp-page .v2-report-brief-card .v2-report-brief article:nth-child(2n+1):last-child{grid-column:1/-1}
+      .rp-page .v2-viz-pair{grid-template-columns:minmax(0,1fr)}
+    }
+  }
 </style>
 </head>
 <body data-side="church" data-page="reports" data-title="Reports">
@@ -38,14 +54,14 @@
         <p id="rp-sub">How quickly care gets a reply, and how guests find a home. Counts only.</p>
       </div>
       <div class="v2-page-actions">
-        <button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="Summarize this month's reports for me." id="rp-ask">Ask <span data-gm-text="assistant.name">Hope</span></button>
+        <button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="Summarize this month's reports for me." id="rp-ask"><span>Ask <span data-gm-text="assistant.name">Hope</span></span></button>
       </div>
     </header>
 
     <!-- The dashboards: underline tabs from 1024px, the native view picker below it, as in Genesis OS Reports -->
     <div class="v2-report-nav" id="rp-nav" data-tour="reports.tabs">
       <div class="v2-view-tabs v2-report-tabs" role="tablist" aria-label="Report dashboards" id="rp-tabs"></div>
-      <label class="v2-view-picker v2-report-picker"><span>Dashboard</span><select class="v2-select v2-nselect" id="rp-picker" aria-label="Report dashboard"></select></label>
+      <label class="v2-view-picker v2-report-picker"><span>View</span><select class="v2-select v2-nselect" id="rp-picker" aria-label="Report view"></select></label>
     </div>
 
     <section class="v2-report-controlbar v2-report-controlbar-plain" aria-label="Report basis">
@@ -61,6 +77,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -122,8 +139,9 @@ GM.ready(function (ctx) {
     return '<div class="v2-section-head"><div><h2 id="' + id + '">' + esc(title) + "</h2>" + (sub ? "<p>" + sub + "</p>" : "") + "</div>" + (meta ? '<div class="v2-report-head-meta">' + meta + "</div>" : "") + "</div>";
   }
   function basis(t) { return '<span class="v2-report-basis">' + esc(t) + "</span>"; }
-  function chartCard(id, title, sub, meta, tour) {
-    return '<section class="v2-card v2-report-trend" aria-labelledby="' + id + '-title"' + (tour ? ' data-tour="' + tour + '"' : "") + ">" + head(id + "-title", title, sub, meta) + '<div id="' + id + '"></div></section>';
+  /* Chart cards use the one Genesis OS chart head (eyebrow + h2), as the Guest Report does; the period is the eyebrow. */
+  function chartCard(id, title, sub, period, tour) {
+    return '<section class="v2-card v2-report-trend" aria-labelledby="' + id + '-title"' + (tour ? ' data-tour="' + tour + '"' : "") + '><div class="v2-viz-head"><div><div class="v2-eyebrow">' + esc(period) + '</div><h2 id="' + id + '-title">' + esc(title) + "</h2>" + (sub ? '<p class="rp-chart-sub">' + sub + "</p>" : "") + '</div></div><div id="' + id + '"></div></section>';
   }
   function dl(rows) { return "<dl>" + rows.map(function (r) { return "<div><dt>" + esc(r[0]) + "</dt><dd>" + r[1] + "</dd></div>"; }).join("") + "</dl>"; }
   function bars(rows) {
@@ -147,18 +165,18 @@ GM.ready(function (ctx) {
         '<p class="v2-report-diagnostic-count"><b class="v2-serif-number">' + overDay.length + "</b> waiting over a day <span>of " + waiting.length + " waiting on us</span></p>" +
         "<p>Reply in the care inbox. Each one has an owner, and the words stay there, visible to the pastors and the prayer team.</p>" +
         '<div class="v2-report-composition"><span><b>' + waiting.length + "</b> waiting on us</span><span><b>" + overDay.length + "</b> over a day</span><span><b>" + overWeek + "</b> over a week</span></div></div>" +
-        '<div class="v2-report-diagnostic-actions"><a class="v2-button v2-button-primary" href="church-care.html">' + ic("care") + 'Open Care</a><button class="v2-button" type="button" data-rp-dash="care">See the Care Report</button></div></section>' +
+        '<div class="v2-report-diagnostic-actions"><a class="v2-button v2-button-primary" href="church-care.html">' + ic("care") + 'Open Care Inbox</a><button class="v2-button" type="button" data-rp-dash="care">See the Care Report</button></div></section>' +
       '<section class="v2-card v2-report-brief-card" aria-labelledby="rp-brief-title"><div class="v2-section-head"><div><h2 id="rp-brief-title">Weekly brief</h2><p class="v2-report-week">' + esc(brief.label) + '</p></div><div class="v2-report-head-meta">' + basis("Last completed week") + "</div></div>" +
         '<div class="v2-report-brief">' +
           briefCard("Guests", brief.newGuests, "New guests", "Each one had an owner within a day.") +
           briefCard("Welcome", brief.welcomed + " of " + brief.newGuests, "Welcomed within 48 hours", "Every welcome note was approved by a person.") +
           briefCard("Care", brief.careThreads, "New care threads", "Prayer requests and messages together.") +
-          briefCard("Replies", brief.replyHours + " hrs", "Median first reply", "Well inside the one-day goal.") +
+          briefCard("Replies", brief.replyHours + " hours", "Median first reply, week of " + M.weeks[M.weeks.length - 2].replace(/ /g, String.fromCharCode(160)), "Well inside the one-day goal.") +
           briefCard("Gifts", brief.giftsFinished, "Finished the gifts conversation", "Counted without names.") +
         "</div></section>" +
       '<div class="v2-viz-pair">' +
-        chartCard("rp-c-reply", "Hours to first reply", "Median hours from a new thread to a person's first reply, by week.", basis("Last twelve weeks"), "reports.reply") +
-        chartCard("rp-c-path", "Guests to members", "Guests since December 1, by the furthest step reached.", basis("Last twelve months"), "reports.path") +
+        chartCard("rp-c-reply", "Hours to first reply", "Median hours from a new thread to a person's first reply, by week.", "Last twelve weeks", "reports.reply") +
+        chartCard("rp-c-path", "Guests to members", "Guests since December 1, by the furthest step reached.", "Last twelve months", "reports.path") +
       "</div>" +
       '<section class="v2-card" aria-labelledby="rp-protect-title" data-tour="reports.protect">' + head("rp-protect-title", "What these reports never show", "On for every church, on every plan.") + '<ul class="gm-protect-list" id="rp-protect"></ul></section>' +
       asOf;
@@ -174,19 +192,19 @@ GM.ready(function (ctx) {
         metric("Waiting on us now", waiting.length, "Oldest " + oldest + ". " + overDay.length + " over a day.") +
       "</section>" +
       '<div class="v2-viz-pair">' +
-        chartCard("rp-c-care", "Care by month", "Prayer requests and messages received. November runs through the 19th.", basis("Last twelve months")) +
-        chartCard("rp-c-reply", "Hours to first reply", "Median hours to a person's first reply, by week. The thread count sits in the tooltip.", basis("Last twelve weeks")) +
+        chartCard("rp-c-care", "Care by month", "Prayer requests and messages received. November runs through the 19th.", "Last twelve months") +
+        chartCard("rp-c-reply", "Hours to first reply", "Median hours to a person's first reply, by week. The thread count sits in the tooltip.", "Last twelve weeks") +
       "</div>" +
       '<div class="v2-viz-pair">' +
-        chartCard("rp-c-wait", "Waiting on us, by age", "Open prayer and threads where the person wrote last.", basis("Right now")) +
-        chartCard("rp-c-topics", "Prayer requests by topic", "Topics are picked by the person when they write. Prayer words never reach a report.", basis("Since September 1")) +
+        chartCard("rp-c-wait", "Waiting on us, by age", "Open prayer and threads where the person wrote last.", "Right now") +
+        chartCard("rp-c-topics", "Prayer requests by topic", "Topics are picked by the person when they write. Prayer words never reach a report.", "Since September 1") +
       "</div>" +
       '<section class="v2-report-support" aria-label="Care details">' +
         "<article>" + head("rp-s1", "Waiting on us", "Where the person wrote last.") + dl([["Prayer requests", esc(fmt.count(prayerWaiting))], ["Message threads", esc(fmt.count(threadsWaiting))], ["Oldest", esc(oldest)], ["Over a week", String(overWeek)]]) + "</article>" +
         "<article>" + head("rp-s2", "This month", "Received through November 19.") + dl([["Prayer requests", String(nPrayer)], ["Everyday messages", String(PAGE.messagesEveryday)], ["Private threads with a pastor", esc(fmt.count(PAGE.messagesPrivate))], ["Alert emails with private words", "0"]]) + "</article>" +
         "<article>" + head("rp-s3", "Who can open this", "Counts here; words only in the care inbox.") + dl([["Prayer", GM.lock("prayer")], ["Private threads", GM.lock("pastors")], ["Website admins", "None"]]) + "</article>" +
       "</section>" +
-      '<div class="rp-foot"><p class="v2-muted-copy">The list itself lives in the care inbox, oldest first, each with an owner.</p><a class="v2-button v2-button-quiet" href="church-care.html">' + ic("care") + "Open Care</a></div>" +
+      '<div class="rp-foot"><p class="v2-muted-copy">The list itself lives in the care inbox, oldest first, each with an owner.</p><a class="v2-button v2-button-quiet" href="church-care.html">' + ic("care") + "Open Care Inbox</a></div>" +
       asOf;
   }
 
@@ -199,13 +217,13 @@ GM.ready(function (ctx) {
         metric("Became members", PAGE.becameMembers12, "A pastor marks membership on the person page.") +
       "</section>" +
       '<div class="v2-viz-pair">' +
-        chartCard("rp-c-path", "Guest path", "Guests since December 1, by the furthest step reached.", basis("Last twelve months")) +
-        chartCard("rp-c-app", "Adults in the member app", "Signed-in adults at the end of each month, by how they first said they attend.", basis("Since September 14")) +
+        chartCard("rp-c-path", "Guest path", "Guests since December 1, by the furthest step reached.", "Last twelve months") +
+        chartCard("rp-c-app", "Adults in the member app", "Signed-in adults at the end of each month, by how they first said they attend.", "Since September 14") +
       "</div>" +
       '<section class="v2-report-support" aria-label="Guest details">' +
         "<article>" + head("rp-g1", "How guests found us", "Last 90 days, " + srcTotal + " guests.") + bars(M.guestSources90.map(function (s) { return { label: s.label.replace("Hope", HOPE), note: s.value + " of " + srcTotal, share: s.value / srcTotal * 100 }; })) + "</article>" +
         "<article>" + head("rp-g2", "From guest to member", "Last twelve months.") + dl([["Visited", String(path[2].value)], ["Came to Start Here", String(path[3].value)], ["Joined a group", String(path[4].value)], ["Serving", String(path[5].value)], ["Became members", String(PAGE.becameMembers12)]]) + "</article>" +
-        "<article>" + head("rp-g3", "The member app", "Adults only.") + dl([["Adults signed in", String(appNow)], ["New since October", String(appGain)], ["Confirmed 18 or older", "Every one, at first sign in"], ["Sign in", "6 digit code by email"]]) + "</article>" +
+        "<article>" + head("rp-g3", "The member app", "Adults only.") + dl([["Adults signed in", String(appNow)], ["New since October", String(appGain)], ["Confirmed 18 or older", "Every one, at first sign in"], ["Sign in", "6-digit code by email"]]) + "</article>" +
       "</section>" +
       '<div class="rp-foot"><p class="v2-muted-copy">The guest report has sources by month and the 48-hour welcome by week.</p><a class="v2-button v2-button-quiet" href="church-guests-report.html">' + ic("guests") + "Open the Guest Report</a></div>" +
       asOf;
@@ -218,7 +236,7 @@ GM.ready(function (ctx) {
         metric("Finished", G.finished, G.finishedInPerson + " in person, " + G.finishedOnline + " online. " + Math.round(G.finished / G.invited * 100) + "% of those invited.") +
         metric("Asked about serving", G.wantsToTalk, "Each request reaches the Connections lead as a care item.") +
       "</section>" +
-      chartCard("rp-c-gifts", "Gifts completion", "From the first invitation to asking about serving. Names stay on the Gifts page, and only with a yes.", basis("Since " + fmt.date(PAGE.giftsOpened))) +
+      chartCard("rp-c-gifts", "Gifts completion", "From the first invitation to asking about serving. Names stay on the Gifts page, and only with a yes.", "Since " + fmt.date(PAGE.giftsOpened)) +
       '<section class="v2-report-support" aria-label="Gifts details">' +
         "<article>" + head("rp-f1", "In person and online", "Of " + G.finished + " finished.") + bars([{ label: "In person", note: G.finishedInPerson + " of " + G.finished, share: G.finishedInPerson / G.finished * 100 }, { label: "Online", note: G.finishedOnline + " of " + G.finished, share: G.finishedOnline / G.finished * 100 }]) + "</article>" +
         "<article>" + head("rp-f2", "The church picture", "Drawn only once enough people finish.") + dl([["Opens at", G.threshold + " finished"], ["Opened on", "September 28"], ["Small counts", "Read fewer than 5"], ["Started, not finished", String(G.started - G.finished)]]) + "</article>" +
@@ -328,7 +346,7 @@ GM.ready(function (ctx) {
     return '<button type="button" role="tab" id="rp-tab-' + d.key + '" data-rp-dash="' + d.key + '" aria-controls="rp-body">' + esc(d.label) + "</button>";
   }).join("");
   $("rp-picker").innerHTML = DASHES.map(function (d) { return '<option value="' + d.key + '">' + esc(d.label) + "</option>"; }).join("");
-  $("rp-countsonly").innerHTML = GM.pill("Counts Only", "positive", { icon: "shield" });
+  $("rp-countsonly").innerHTML = GM.pill("Counts only", "positive", { icon: "shield" });
 
   function show(key, focusTab) {
     var d = dashByKey(key);
@@ -377,12 +395,12 @@ GM.ready(function (ctx) {
 
   /* ---------- Hope ---------- */
   GM.hope.setBriefing({
-    line: GM.greeting() + ", {name}. First replies take " + lastReply + " hours on the median. " + overDay.length + " care items have waited over a day.",
-    chips: [{ label: "Open Care", href: "church-care.html", primary: true }, { label: "See the Care Report", action: function () { GM.hope.close(); show("care"); } }, { label: "What Do Reports Never Show?", ask: "What do these reports never show?" }]
+    line: GM.greeting() + ", {name}. This week the median first reply is " + lastReply + " hours. " + overDay.length + " care items have waited over a day.",
+    chips: [{ label: "Open Care Inbox", href: "church-care.html", primary: true }, { label: "See the Care Report", action: function () { GM.hope.close(); show("care"); } }, { label: "What Do Reports Never Show?", ask: "What do these reports never show?" }]
   });
   GM.hope.addAnswers([
     { match: /never show|private|names in|privacy/i, answer: "Reports carry counts only: no names and no private words. In the gifts picture and prayer topics, any count from 1 to 4 reads fewer than 5. The prayer team sees prayer counts only, website admins see none, and every export is written to the access record." },
-    { match: /reply time|first reply|how fast|response time/i, answer: "The median first reply was " + lastReply + " hours last week, against a goal of within a day. It was under the goal " + underGoal + " of the last " + replies.length + " weeks." },
+    { match: /reply time|first reply|how fast|response time/i, answer: "The median first reply is " + lastReply + " hours for the week of " + M.weeks[M.weeks.length - 1] + ", against a goal of within a day. It was under the goal " + underGoal + " of the last " + replies.length + " weeks." },
     { match: /member(s)?\b|belong|path/i, answer: "Of " + path[0].value + " guests in the last twelve months, " + path[2].value + " visited, " + path[3].value + " came to Start Here, " + path[4].value + " joined a group and " + PAGE.becameMembers12 + " became members." },
     { match: /summar|report/i, answer: "This month " + (nPrayer + nMsg) + " prayer requests and messages arrived through November 19. The median first reply is " + lastReply + " hours. " + waiting.length + " care items are waiting on us, the oldest " + oldest + ". " + G.finished + " people have finished the gifts conversation." }
   ]);

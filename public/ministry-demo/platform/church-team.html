@@ -29,11 +29,17 @@
   .tm-cell-actions{display:flex;justify-content:flex-end}
   .tm-page .v2-report-mobile-rows article .tm-mobile-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .tm-page tr.is-editing td{background:var(--v2-accent-soft)}
-  @media (max-width:1180px){.tm-page .v2-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#tm-team .v2-table :is(th,td):nth-child(5),#tm-team .v2-table :is(th,td):nth-child(6){display:none}}
-  @media (max-width:980px){.tm-two{grid-template-columns:minmax(0,1fr)}}
+  /* Names and their role lines wrap rather than cut off, so "support sessions only" is always read in full. */
+  #tm-team .v2-primary-cell>:is(b,span){white-space:normal;overflow:visible;text-overflow:clip}
+  #tm-team .v2-table td{vertical-align:middle}
+  .tm-two .v2-section-head{flex-wrap:wrap;gap:8px 12px}
+  .tm-two .v2-section-head>div:first-child{flex:1 1 240px;min-width:0}
+  /* The page column decides, not the window: with the Hope dock open the cards stack and the table drops Last Sign In. */
+  .tm-page{container-type:inline-size}
+  @container (max-width:900px){.tm-page .v2-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#tm-team .v2-table :is(th,td):nth-child(5){display:none}}
+  @container (max-width:760px){.tm-two{grid-template-columns:minmax(0,1fr)}}
   @media (max-width:860px){.tm-page .v2-filter-panel .tm-ed-actions{grid-column:1/-1}}
   @media (max-width:560px){.tm-page .v2-level-grid{grid-template-columns:minmax(0,1fr)}}
-  body.v2-genesis-open .tm-page .v2-table-scroll>.v2-report-team-table{min-width:760px}
   .tm-limit{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;color:var(--v2-text-2);font-size:12.5px;line-height:1.6}
   .tm-limit svg{flex:none;margin-top:2px;color:var(--v2-info)}
   .tm-page .v2-level-card.is-locked{opacity:.78}
@@ -97,6 +103,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -109,8 +116,9 @@ GM.ready(function (ctx) {
   var PAGE = {
     last: {
       "s-lead": "2026-11-19T09:41", "s-care": "2026-11-18T09:00", "s-owen": "2026-11-19T09:15", "s-sofia": "2026-11-17T19:20",
-      "s-nadia": "2026-11-19T08:10", "s-hector": "2026-11-18T16:45", "s-imani": "2026-11-16T15:40", "s-jun": "2026-11-15T10:20", "s-web": "2026-11-14T16:05"
+      "s-nadia": "2026-11-19T08:10", "s-hector": "2026-11-18T16:45", "s-imani": "2026-11-16T15:40", "s-jun": "2026-11-15T10:20"
     },
+    /* Genesis Support signs in only in a support session the church opens. Settings and the access record show none in 90 days. */
     /* Role changes, newest first. The Nov 17 change is also in the access record. */
     changes: [
       { at: "2026-11-17T11:00", by: "s-lead", who: "s-sofia", kind: "Role added", text: "Sofia R. added to the Prayer Team." },
@@ -129,14 +137,14 @@ GM.ready(function (ctx) {
   var canPrayer = team.filter(function (s) { return s.caps.indexOf("pastor") >= 0 || s.caps.indexOf("prayer") >= 0; });
   var canGifts = team.filter(function (s) { return s.caps.indexOf("giftNames") >= 0; });
   var sofia = GM.staff("s-sofia");
-  /* Shepherd has the four roles and a named prayer team. Plus adds custom roles and named gift viewers. */
+  /* Shepherd has the four roles and a named prayer team. The Plus plan adds custom roles and named gift viewers. */
   var shepherd = GM.isIncluded("custom-roles");
-  function l3(text) { return '<span class="tm-l3">' + (text ? '<span class="v2-deal-why is-calm">' + esc(text) + "</span>" : "") + '<em class="gm-nav-lock" title="Included in Plus"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</em><span class="sr-only">, included in Plus</span></span>'; }
+  function l3(text) { return '<span class="tm-l3">' + (text ? '<span class="v2-deal-why is-calm">' + esc(text) + "</span>" : "") + '<em class="gm-nav-lock" title="Included in the Plus plan"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Plus</em><span class="sr-only">, included in the Plus plan</span></span>'; }
   function role(k) { for (var i = 0; i < D.roles.length; i++) if (D.roles[i].key === k) return D.roles[i]; return { key: k, label: k, sees: "" }; }
   function rolePill(k) { return GM.pill(role(k).label, k === "prayer" ? "info" : k === "pastor" ? "gold" : "neutral"); }
   function yes(t) { return GM.pill(t || "Yes", "positive"); }
   function no(t) { return '<span class="v2-deal-why is-calm">' + esc(t || "No") + "</span>"; }
-  function signedIn(id) { var t = PAGE.last[id]; return t ? fmt.when(t) : "Not yet"; }
+  function signedIn(id) { if (id === "s-web") return "None in 90 days"; var t = PAGE.last[id]; return t ? fmt.when(t) : "Not yet"; }
   var isMe = function (s) { return viewer && viewer.id === s.id; };
 
   /* ---------- Head ---------- */
@@ -148,7 +156,7 @@ GM.ready(function (ctx) {
   /* ---------- The numbers ---------- */
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
   $("tm-pulse").innerHTML =
-    pulse("Staff seats in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + ". " + (shepherd ? "Custom roles included." : "Plus adds custom roles and more seats.")) +
+    pulse("Staff seats in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + ". " + (shepherd ? "Custom roles included." : "The Plus plan adds custom roles and more seats.")) +
     pulse("Can open prayer", canPrayer.length, "Two pastors and the prayer team. Nobody else.") +
     pulse("Two-step sign in", "On", "For all " + team.length + ", through church Google accounts.");
 
@@ -157,12 +165,12 @@ GM.ready(function (ctx) {
   function paintNext() {
     if (confirmed) {
       $("tm-next").innerHTML = '<div><div class="v2-eyebrow">Roles to confirm</div><h2 class="v2-serif-headline" id="tm-next-title">Every role is confirmed</h2><h3>' + team.length + " people, " + churchSeats.length + " staff seats in use</h3>" +
-        '<div class="v2-next-meta">' + GM.pill("All Confirmed", "positive") + '</div><p class="v2-next-reason">Nothing waits on you here.<span class="v2-next-why">New roles and anyone named for gift names appear here for the lead pastor to confirm.</span></p></div>' +
+        '<div class="v2-next-meta">' + GM.pill("All confirmed", "positive") + '</div><p class="v2-next-reason">Nothing waits on you here.<span class="v2-next-why">New roles and anyone named for gift names appear here for the lead pastor to confirm.</span></p></div>' +
         '<div class="v2-next-actions"><a class="v2-button v2-button-quiet" href="church-access.html">' + ic("access") + "Open the Access Record</a></div>";
       return;
     }
     $("tm-next").innerHTML = '<div><div class="v2-eyebrow">Role to confirm</div><h2 class="v2-serif-headline" id="tm-next-title">' + esc(sofia.name) + "</h2><h3>" + esc(role(sofia.roleKey).label) + " · added " + esc(fmt.weekdayLong(sofia.addedOn)) + " by " + esc(lead.name) + "</h3>" +
-      '<div class="v2-next-meta">' + GM.pill("New Role", "gold") + GM.lock("prayer") + GM.pill("Two-Step On", "positive") + "</div>" +
+      '<div class="v2-next-meta">' + GM.pill("New role", "gold") + GM.lock("prayer") + GM.pill("Two-step on", "positive") + "</div>" +
       '<p class="v2-next-reason">Confirm what ' + esc(sofia.first) + ' can see<span class="v2-next-why">' + esc(role("prayer").sees) + " " + esc(lead.name) + " was emailed when the role changed, and the change is in the access record.</span></p></div>" +
       '<div class="v2-next-actions"><button class="v2-button v2-button-primary" type="button" data-tm="confirm">' + ic("check") + "Confirm " + esc(sofia.first) + "'s Role</button>" +
       '<button class="v2-button v2-button-quiet" type="button" data-tm-edit="' + esc(sofia.id) + '">' + ic("edit") + "Change Role</button></div>";
@@ -190,25 +198,24 @@ GM.ready(function (ctx) {
     });
     var prayer = function (s) { return s.caps.indexOf("pastor") >= 0 || s.caps.indexOf("prayer") >= 0; };
     var gifts = function (s) { return s.caps.indexOf("giftNames") >= 0; };
-    var tags = function (s) { return (s.addedOn ? ", new" : "") + (s.onCall ? ", on call" : ""); };
+    var tags = function (s) { return (s.addedOn ? ", new" : "") + (s.onCall ? ", on call" : "") + (s.id === "s-web" ? ", support sessions only" : ""); };
     var desktop = rows.map(function (s) {
-      return '<tr' + (editing === s.id ? ' class="is-editing"' : "") + '><td class="v2-primary-cell"><b>' + esc(s.name) + "</b><span>" + esc(s.role + tags(s)) + "</span></td>" +
+      return '<tr' + (editing === s.id ? ' class="is-editing"' : "") + '><td class="v2-primary-cell"><b>' + esc(s.name) + "</b><span>" + esc(s.id === "s-web" ? "Support sessions only" : s.role + tags(s)) + "</span></td>" +
         "<td>" + rolePill(s.roleKey) + "</td>" +
         "<td>" + (prayer(s) ? yes() : no()) + "</td>" +
         "<td>" + (!shepherd ? l3() : gifts(s) ? yes(s.roleKey === "pastor" ? "Yes" : "Named") : no()) + "</td>" +
-        "<td>" + yes("On") + "</td>" +
         "<td>" + esc(signedIn(s.id)) + "</td>" +
         '<td><div class="tm-cell-actions">' + editButton(s) + "</div></td></tr>";
     }).join("");
     var mobile = rows.map(function (s) {
-      return '<article><div class="tm-mobile-head"><b>' + esc(s.name) + "</b>" + editButton(s) + "</div><small>" + esc(s.role) + "</small>" +
+      return '<article><div class="tm-mobile-head"><b>' + esc(s.name) + "</b>" + editButton(s) + "</div><small>" + esc(s.role + " · " + (s.id === "s-web" ? "Support sessions only, none in 90 days" : "Signed in " + signedIn(s.id).replace(/^(Today|Yesterday)/, function (w) { return w.toLowerCase(); }))) + "</small>" +
         "<dl><div><dt>Role</dt><dd>" + esc(role(s.roleKey).label) + "</dd></div><div><dt>Opens prayer</dt><dd>" + (prayer(s) ? "Yes" : "No") + "</dd></div>" +
         "<div><dt>Gift names</dt><dd>" + (!shepherd ? "Plus" : gifts(s) ? (s.roleKey === "pastor" ? "Yes" : "Named") : "No") + "</dd></div><div><dt>Two-step</dt><dd>On</dd></div></dl></article>";
     }).join("");
     $("tm-team").innerHTML = '<div class="v2-table-meta"><span>' + (rows.length === team.length ? team.length + " people · " + churchSeats.length + " use a staff seat" : fmt.plural(rows.length, "person", "people") + " shown of " + team.length) + "</span><span>Only the lead pastor changes a role</span></div>" +
       (rows.length
-        ? '<div class="v2-table-scroll"><table class="v2-table v2-table-static v2-report-team-table"><caption class="sr-only">Team members, their role, and whether they can open prayer, see gift names and sign in with two steps.</caption><thead><tr><th scope="col">Person</th><th scope="col">Role</th><th scope="col">Opens prayer</th><th scope="col">Gift names</th><th scope="col">Two-step</th><th scope="col">Last sign in</th><th scope="col"><span class="sr-only">Change</span></th></tr></thead><tbody>' + desktop + '</tbody></table></div><div class="v2-report-mobile-rows">' + mobile + "</div>"
-        : '<div class="v2-card v2-state v2-state-empty"><div><h2 class="v2-state-title">Nobody matches</h2><p>Clear the search or choose Every role.</p></div></div>') +
+        ? '<div class="v2-table-scroll"><table class="v2-table v2-table-static v2-report-team-table"><caption class="sr-only">Team members, their role, whether they can open prayer and see gift names, and when they last signed in. Two-step sign in is on for everyone.</caption><thead><tr><th scope="col">Person</th><th scope="col">Role</th><th scope="col">Opens prayer</th><th scope="col">Gift names</th><th scope="col">Last sign in</th><th scope="col"><span class="sr-only">Change</span></th></tr></thead><tbody>' + desktop + '</tbody></table></div><div class="v2-report-mobile-rows">' + mobile + "</div>"
+        : '<div class="v2-card v2-state v2-state-empty"><div><h2 class="v2-state-title">Nobody matches</h2><p>Clear the search or choose Every Role.</p></div></div>') +
       (editing ? editorHTML(GM.staff(editing)) : "");
     if (editing) {
       var hint = function () { $("tm-ed-hint").textContent = role($("tm-ed-role").value).sees; };
@@ -259,16 +266,16 @@ GM.ready(function (ctx) {
     '<h3 class="tm-card-sub">Who can see gift names</h3>' +
     (shepherd
       ? setRows(canGifts, function (s) { return s.roleKey === "pastor" ? GM.pill("Pastor", "gold") : GM.pill("Named", "info"); }) + '<p class="v2-muted-copy">Only for people who said yes to sharing. Pastors name anyone else who may see them.</p>'
-      : '<p class="v2-muted-copy">Named gift viewers come with Plus, with the spiritual gifts picture. ' + l3() + "</p>");
+      : '<p class="v2-muted-copy">Named gift viewers come with the Plus plan, with the spiritual gifts picture. ' + l3() + "</p>");
 
   /* ---------- Sign in and safety ---------- */
   var sec = [
     ["Two-step sign in", "Required for everyone through the church's Google account. It cannot be turned off here.", '<label class="v2-switch"><input type="checkbox" checked disabled aria-label="Two-step sign in is on for everyone"><span></span><em>On</em></label>'],
     ["Staff sign in", "Church Google accounts. No shared passwords.", GM.pill("Google", "neutral")],
-    ["Members sign in", "A 6 digit code by email, or Google. Adults only.", GM.pill("Code by Email", "neutral")],
+    ["Members sign in", "A 6-digit code by email, or Google. Adults only.", GM.pill("Code by email", "neutral")],
     ["Pastor on call", care.name + " this week, by email and a phone notification, with no private words: Urgent request. Sign in to read. This is staff alerting, separate from guest texting.", GM.pill(care.name, "info")],
     ["Guest texting", D.guestSettings.textingNote, '<label class="v2-switch"><input type="checkbox" id="tm-texting" aria-label="Guest texting"><span></span><em>Off</em></label>'],
-    ["Website admins", "Run the system. Cannot read pastoral content.", GM.lock("staff", "No Pastoral Content")],
+    ["Website admins", "Run the system. Cannot read pastoral content.", GM.lock("staff", "No pastoral content")],
     ["Genesis support session", "Off. Genesis signs in to your workspace only when you open a support session, and that session is recorded where you can see it.", '<label class="v2-switch"><input type="checkbox" id="tm-support" aria-label="Genesis support session"><span></span><em>Off</em></label>']
   ];
   $("tm-sec").innerHTML = '<div class="v2-section-head"><div><h2 id="tm-sec-title">Sign in and safety</h2><p>Set once for the whole team. Changes are emailed to ' + esc(lead.name) + ".</p></div></div>" +
@@ -289,7 +296,7 @@ GM.ready(function (ctx) {
   $("tm-roles").innerHTML = D.roles.map(function (r) {
     var holders = team.filter(function (s) { return s.roleKey === r.key; });
     return '<article class="v2-level-card"><b class="v2-level-title">' + esc(r.label) + '</b><span class="v2-level-copy">' + esc(r.sees) + '</span><span class="v2-level-example"><small>Held by ' + holders.length + "</small><b>" + esc(holders.map(function (s) { return s.name; }).join(", ")) + "</b></span></article>";
-  }).join("") + '<article class="v2-level-card' + (shepherd ? "" : " is-locked") + '"><b class="v2-level-title">Custom role ' + (shepherd ? "" : l3()) + '</b><span class="v2-level-copy">' + (shepherd ? "Shaped to your church, with exactly what it needs. Example: Care Meals Coordinator sees the care meals list and nothing more." : "Plus adds roles shaped to your church, like a care meals coordinator, and named gift viewers.") + '</span><span class="v2-level-example"><small>' + (shepherd ? "Held by 0" : "Included in") + "</small><b>" + (shepherd ? "Ready when you need it" : "Plus") + "</b></span></article>";
+  }).join("") + '<article class="v2-level-card' + (shepherd ? "" : " is-locked") + '"><b class="v2-level-title">Custom role ' + (shepherd ? "" : l3()) + '</b><span class="v2-level-copy">' + (shepherd ? "Shaped to your church, with exactly what it needs. Example: Care Meals Coordinator sees the care meals list and nothing more." : "The Plus plan adds roles shaped to your church, like a care meals coordinator, and named gift viewers.") + '</span><span class="v2-level-example"><small>' + (shepherd ? "Held by 0" : "Included in") + "</small><b>" + (shepherd ? "Ready when you need it" : "Plus") + "</b></span></article>";
   /* y = yes, n = no, or a short note for a partial yes. Order: pastor, prayer, staff, admin. */
   var matrix = [
     ["Guests and follow-ups", ["y", "n", "y", "n"]],
@@ -375,9 +382,10 @@ GM.ready(function (ctx) {
     ]
   });
   GM.hope.addAnswers([
+    { match: /genesis support|support session|when (did|does|do|can) genesis|genesis (last )?(sign|log)/i, answer: "Genesis Support holds the Website Admin role, for the site and settings. It signs in to this workspace only in a support session you open, and there have been none in the last 90 days. It cannot read pastoral content, and any session would be written to the access record." },
     { match: /who can (open|see|read) prayer|prayer team|open prayer/i, answer: canPrayer.map(function (s) { return s.name; }).join(", ") + " can open prayer requests. Other staff and website admins cannot, and the system enforces it. Every open is written to the access record." },
     { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff seats are in use on the " + ctx.level.code + " plan. Genesis Support does not use a seat. " + D.pricingLine + "" },
-    { match: /two.?step|sign in|password|login/i, answer: "Two-step sign in is on for all " + team.length + " people, through the church's Google account. There are no shared passwords. Members sign in with a 6 digit code by email, and adults only." },
+    { match: /two.?step|sign in|password|login/i, answer: "Two-step sign in is on for all " + team.length + " people, through the church's Google account. There are no shared passwords. Members sign in with a 6-digit code by email, and adults only." },
     { match: /step(s|ped)? down|leave|remove|end access/i, answer: "When someone steps down, access ends that day, their open care moves to " + care.name + ", nothing they wrote is deleted, and " + lead.name + " gets a plain email. Their opens stay in the access record." },
     { match: /role|change|team/i, answer: "Only " + lead.name + " changes a role. Each change is emailed to the lead pastor with no private words and kept in the access record. " + sofia.name + "'s new Prayer Team role is waiting to be confirmed." }
   ]);

@@ -17,6 +17,12 @@
      v2-rec-head, v2-rec-layout, v2-rec-step); these rules only arrange it. */
   .gu-head{align-items:center;margin-bottom:0}
   .gu-head .v2-page-back{margin:0}
+  /* Who is reading, beside the back link; on phones it drops under the back link and the record actions. */
+  .gu-head{gap:10px 14px}
+  .gu-page .gu-head>.v2-page-back,.gu-page .gu-head>.v2-page-actions{flex:none}
+  .gu-head p.gu-seen{flex:1 1 0;min-width:0;max-width:none;margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  body.gm-col-narrow .gu-head{flex-wrap:wrap}
+  body.gm-col-narrow .gu-head p.gu-seen{order:3;flex-basis:100%}
   .gu-page .v2-rec-head{grid-template-columns:minmax(0,1fr) minmax(320px,460px);align-items:center}
   .gu-page .v2-rec-head .v2-next-actions{min-width:0}
   .gu-page .v2-drawer-recommendation small{text-transform:uppercase}
@@ -53,9 +59,14 @@
   .gu-reasons label{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:1px solid var(--v2-border);border-radius:10px;background:var(--v2-surface);font-size:13px;cursor:pointer}
   .gu-last{margin-top:4px;padding:12px 14px;border:1px solid var(--v2-border);border-radius:10px;background:var(--v2-surface);color:var(--v2-text);font-size:13.5px;line-height:1.6;white-space:pre-line}
   .gu-last-tag{display:block;margin-bottom:6px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-  @media (max-width:1180px){.gu-page .v2-rec-head{grid-template-columns:minmax(0,1fr);row-gap:12px}}
+  /* The page column decides, not the window: with the Hope dock open the head and then the side cards stack. */
+  .gu-page{container-type:inline-size}
+  @container (max-width:820px){.gu-page .v2-rec-head{grid-template-columns:minmax(0,1fr);row-gap:12px}}
+  @container (max-width:720px){.gu-page .v2-rec-layout{grid-template-columns:minmax(0,1fr)}.gu-page .v2-rec-side{position:static}}
+  @media (pointer:coarse){.gu-tl .gu-tl-link{display:inline-flex;align-items:center;min-height:44px;margin-top:0}}
   @media (max-width:860px){
     .gu-head{display:flex;flex-wrap:wrap;gap:10px}
+    .gu-head p.gu-seen{order:3;flex-basis:100%}
     .gu-head .v2-page-actions{margin-top:0}
     .gu-head .gu-wide-only{display:none}
     .gu-page .v2-rec-head{grid-template-columns:minmax(0,1fr);row-gap:4px}
@@ -72,6 +83,7 @@
     <!-- Back to the list, and the record's own actions (Take the Tour joins them) -->
     <header class="v2-page-head gu-head">
       <div class="v2-page-back"><a class="v2-button v2-button-quiet v2-home-link" href="church-guests.html" id="gu-back">All Guests</a></div>
+      <p class="gu-seen" id="gu-seen"></p>
       <div class="v2-page-actions" id="gu-actions"></div>
     </header>
 
@@ -179,26 +191,45 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
   "use strict";
   var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, viewer = ctx.viewer, ic = GM.v2Icon, HOPE = GM.assistant.name;
   var $ = function (id) { return document.getElementById(id); };
+  /* The record speaks to the person reading it: "You own it" when the owner is the viewer, never her own name in the third person. */
+  function isMe(id) { return !!(viewer && id === viewer.id); }
+  function ownsIt(id) { return isMe(id) ? "You own it" : GM.staff(id).name + " owns it"; }
 
   /* ================================================================
      Extra sample data for this page. Same shapes and ids as data.js.
      {assistant.name}, {church.short} and {owner} are filled when shown.
      ================================================================ */
 
+  /* A first Sunday as each church's own site describes it (its Plan a Visit choice and its kids answer),
+     so this record, the Website page and the site's confirmation agree. */
+  var VISITS = {
+    "bright-modern":    { time: "10:45 AM", word: "gathering", kids: "Kids check-in opens 20 minutes before each gathering." },
+    "bold-dark":        { time: "10 AM", word: "gathering", kids: "Lampstand Kids meets at the 10 AM gathering. Check in at the kids desk just inside the main doors." },
+    "classic-timeless": { time: "11:00 AM", word: "service", kids: "Calder Kids meets during the 11:00 AM service. Check in at the welcome table, and a teacher will walk you over." },
+    "warm-community":   { time: "10:45 AM", word: "service", kids: "Kids check-in opens 15 minutes before each service." }
+  };
+  /* The church's own fields come first (data.js church.visitGathering and church.kidsCheckIn), so this record says
+     exactly what Today, Guests, the thread and the welcome note say. The table above is the fallback. */
+  var V = VISITS[c.slug] || VISITS["bright-modern"];
+  V.at = c.visitGathering || "the " + V.time + " " + V.word;
+  V.word = /service/i.test(V.at) ? "service" : /gathering/i.test(V.at) ? "gathering" : V.word;
+  V.kids = c.kidsCheckIn || V.kids;
+
   /* The assistant does not keep conversations. These are the short summaries a
      guest chose to send when they asked for a person to follow up. */
   var HOPE_SUM = {
-    "g-01": { at: "2026-11-18T19:31", asked: ["What time the second gathering starts", "Where kids ages 4 and 7 check in", "Whether there is parking close to the doors"], handoff: "{assistant.name} pointed Maya to Plan a Visit. She filled it out 11 minutes later and chose to include this summary." },
-    "g-02": { at: "2026-11-18T22:09", asked: ["Where to park", "What people usually wear", "How long a Sunday gathering lasts"], handoff: "Daniel asked for a welcome note and left his email. He saw this summary before he sent it." },
+    "g-01": { at: "2026-11-18T19:31", asked: ["What time Sunday " + V.word + "s start", "Where kids ages 4 and 7 check in", "Whether there is parking close to the doors"], handoff: "{assistant.name} pointed Maya to Plan a Visit. She filled it out 11 minutes later and chose to include this summary." },
+    "g-02": { at: "2026-11-18T22:09", asked: ["Where to park", "What people usually wear", "How long a Sunday " + V.word + " lasts"], handoff: "Daniel asked for a welcome note and left his email. He saw this summary before he sent it." },
     "g-07": { at: "2026-11-14T20:55", asked: ["Whether there is a nursery for an 18 month old", "Who looks after the little ones"], handoff: "Hannah asked for a person to follow up and left her email. She saw this summary before she sent it." },
     "g-10": { at: "2026-11-01T09:24", asked: ["Whether people who watch online can just come in person", "What Start Here is"], handoff: "Evan left his email to hear about Start Here. He saw this summary before he sent it." },
-    "g-17": { at: "2026-10-28T21:04", asked: ["What time the Sunday gatherings start", "Whether he could come on his own"], handoff: "Yusuf left his email for a welcome note. He saw this summary before he sent it." },
+    "g-17": { at: "2026-10-28T21:04", asked: ["What time the Sunday " + V.word + "s start", "Whether he could come on his own"], handoff: "Yusuf left his email for a welcome note. He saw this summary before he sent it." },
     "g-14": { at: "2026-09-20T20:40", asked: ["Whether there is a young adults group", "How to find a place to serve"], handoff: "Luis left his email for the young adults leader. He saw this summary before he sent it." }
   };
 
@@ -207,12 +238,12 @@ GM.ready(function (ctx) {
   var TL = {
     "g-01": [
       ["2026-11-18T19:31", "Talked with {assistant.name} on the website", "", { hope: true }],
-      ["2026-11-18T19:42", "Filled out the Plan a Visit form", "Coming Sunday, Nov 22, to the second gathering with her husband and two kids."],
+      ["2026-11-18T19:42", "Filled out the Plan a Visit form", "Coming Sunday, Nov 22, to " + V.at + " with her husband and two kids."],
       ["2026-11-18T19:42", "Added to Guests as New", "Nadia K. became the owner, with a welcome note due Thursday.", SYS],
       ["2026-11-18T19:50", "Sent a message: Arriving with kids", "Asked what time to arrive so the kids can check in.", { link: ["church-care.html?id=t-05", "Open the Thread"] }],
-      ["2026-11-19T08:10", "Nadia K. replied in the thread", "Kids check-in opens 20 minutes before each gathering."],
+      ["2026-11-19T08:10", "Nadia K. replied in the thread", V.kids],
       ["2026-11-19T08:12", "{assistant.name} drafted a welcome note", "It waits for a person to approve it.", SYS],
-      ["2026-11-22", "Planned visit", "Sunday, second gathering. Nadia will meet the family at the welcome table."]
+      ["2026-11-22", "Planned visit", "Sunday, " + V.at + ". Nadia will meet the family at the welcome table."]
     ],
     "g-02": [
       ["2026-11-18T22:09", "Talked with {assistant.name} on the website", "", { hope: true }],
@@ -262,7 +293,7 @@ GM.ready(function (ctx) {
       ["2026-11-03T16:40", "Added to Guests as New", "{owner} became the owner, because she asked for a call.", SYS],
       ["2026-11-04T12:15", "{owner} called to welcome her", "A warm first call. She planned to come on Sunday."],
       ["2026-11-04T12:15", "Moved to Welcomed", "", SYS],
-      ["2026-11-08", "First Sunday visit", "Met {owner} at the welcome table after the first gathering."],
+      ["2026-11-08", "First Sunday visit", "Met {owner} at the welcome table after the first " + V.word + "."],
       ["2026-11-08", "Moved to Visited", "", SYS]
     ],
     "g-10": [
@@ -270,7 +301,7 @@ GM.ready(function (ctx) {
       ["2026-11-01T09:30", "Left an email with {assistant.name}", "Wanted to hear about Start Here."],
       ["2026-11-01T09:30", "Added to Guests as New", "Nadia K. became the owner.", SYS],
       ["2026-11-02T09:15", "Welcome note approved by Nadia K. and sent", "{assistant.name} drafted it. Sent by email."],
-      ["2026-11-15", "First Sunday in person", "Came to the second gathering after watching online for a few weeks."],
+      ["2026-11-15", "First Sunday in person", "Came in person after watching online for a few weeks."],
       ["2026-11-16T09:00", "Moved to Visited", "", SYS]
     ],
     "g-11": [
@@ -286,7 +317,7 @@ GM.ready(function (ctx) {
       ["2026-11-01", "Second Sunday visit", ""],
       ["2026-11-09T14:20", "Signed up for Start Here on Dec 6", "Signed up on the church website."],
       ["2026-11-09T14:20", "Moved to Start Here", "", SYS],
-      ["2026-12-06", "Start Here", "Right after the second gathering, with lunch."]
+      ["2026-12-06", "Start Here", "Right after " + V.at + ", with lunch."]
     ],
     "g-13": [
       ["2026-09-27T10:00", "Signed up for the Fall Family Picnic", "Came with a friend from the Tuesday Night Group."],
@@ -344,13 +375,13 @@ GM.ready(function (ctx) {
     "g-04": { id: "d-x04", side: "church", kind: "Welcome note", to: "p-kenji", channel: "Email", owner: "s-jun", why: "Signed up for Serve Day with his wife. First time with us.", subject: "See you at Serve Day, Kenji",
       body: "Hi Kenji,\n\nThank you for signing up for the Thanksgiving Serve Day. We are glad you and your wife are coming.\n\nWe meet Saturday at 9:00 AM in the main lobby for coffee and a quick plan, and we finish by noon. Wear clothes you do not mind getting dusty. Gloves are on us.\n\nIf you have any questions, just reply.\n\nJun P., {church.short}" },
     "g-06": { id: "d-x06", side: "church", kind: "Follow-up note", to: "p-tomas", channel: "Email", owner: "s-hector", why: "First Sunday with a family of five. New to the area.", subject: "Good to meet your family, Tomás",
-      body: "Hi Tomás,\n\nIt was good to have your family with us on Sunday. Since you are new to the area, here are two easy next steps.\n\nKids check-in opens 20 minutes before each gathering, and our kids team would love to meet your kids. And a men's group meets for breakfast on Saturday mornings. You would be welcome.\n\nHector M., {church.short}" },
+      body: "Hi Tomás,\n\nIt was good to have your family with us on Sunday. Since you are new to the area, here are two easy next steps.\n\n" + V.kids + " Our kids team would love to meet your kids. And a men's group meets for breakfast on Saturday mornings. You would be welcome.\n\nHector M., {church.short}" },
     "g-08": { id: "d-x08", side: "church", kind: "Start Here invite", to: "p-malik", channel: "Email", owner: "s-nadia", why: "Wrote that he would like to know what the church believes.", subject: "An invitation to Start Here on Dec 6",
-      body: "Hi Malik,\n\nYou mentioned you would like to know what we believe. Start Here is the best place for that. It is one relaxed hour after the second gathering on Sunday, December 6, with lunch and time for questions.\n\nWould you like me to save you a seat?\n\nNadia K., {church.short}" },
+      body: "Hi Malik,\n\nYou mentioned you would like to know what we believe. Start Here is the best place for that. It is one relaxed hour after " + V.at + " on Sunday, December 6, with lunch and time for questions.\n\nWould you like me to save you a seat?\n\nNadia K., {church.short}" },
     "g-10": { id: "d-x10", side: "church", kind: "Start Here invite", to: "p-evan", channel: "Email", owner: "s-nadia", why: "Asked {assistant.name} about Start Here, then came in person.", subject: "Start Here, as you asked",
-      body: "Hi Evan,\n\nIt was good to see you in person on Sunday. You asked about Start Here, so here are the details: Sunday, December 6, right after the second gathering, with lunch and time for questions.\n\nReply and I will save you a seat.\n\nNadia K., {church.short}" },
+      body: "Hi Evan,\n\nIt was good to see you in person on Sunday. You asked about Start Here, so here are the details: Sunday, December 6, right after " + V.at + ", with lunch and time for questions.\n\nReply and I will save you a seat.\n\nNadia K., {church.short}" },
     "g-12": { id: "d-x12", side: "church", kind: "Start Here reminder", to: "p-omar", channel: "Email", owner: "s-nadia", why: "Signed up for Start Here on Dec 6.", subject: "Start Here is coming up, Omar",
-      body: "Hi Omar,\n\nA friendly reminder that Start Here is on Sunday, December 6, right after the second gathering. Lunch is provided. Bring any questions you have.\n\nSee you there,\nNadia K., {church.short}" },
+      body: "Hi Omar,\n\nA friendly reminder that Start Here is on Sunday, December 6, right after " + V.at + ". Lunch is provided. Bring any questions you have.\n\nSee you there,\nNadia K., {church.short}" },
     "g-13": { id: "d-x13", side: "church", kind: "Serving note", to: "p-bethany", channel: "Email", owner: "s-hector", why: "In the Tuesday Night Group for three weeks.", subject: "A place to serve, if you would like one",
       body: "Hi Bethany,\n\nIt has been great to have you in the Tuesday Night Group. A few people in the group have asked how they can help on Sundays, so I wanted to ask you too, with no pressure at all.\n\nIf you are curious, reply and we can talk about what might fit.\n\nHector M., {church.short}" },
     "g-14": { id: "d-x14", side: "church", kind: "Gifts invite", to: "p-luis", channel: "Email", owner: "s-hector", why: "Asked {assistant.name} how to find a place to serve.", subject: "Finding your place to serve, Luis",
@@ -420,6 +451,8 @@ GM.ready(function (ctx) {
 
   document.title = p.name + " · Guest · " + c.short + " · Design preview";
   $("gu-back").innerHTML = ic("back") + "All Guests";
+  /* Today is seen as the lead pastor; a guest record is seen as the person who welcomes guests. Say so, as Today and Care do. */
+  if (viewer) $("gu-seen").textContent = "Seen as " + viewer.name + ", " + viewer.role + (viewer.id === "s-nadia" ? ", who welcomes new guests." : ".");
   $("gu-name").textContent = p.name;
   $("gu-actions").innerHTML =
     '<a class="v2-button v2-icon-button v2-button-quiet" href="church-guest.html?id=' + esc(prev.id) + '" aria-label="Previous guest, ' + esc(GM.person(prev.personId).name) + '" title="Previous guest">' + ic("back") + "</a>" +
@@ -431,7 +464,7 @@ GM.ready(function (ctx) {
   function draftWaiting() { var d = currentDraft(); return !!(d && GM.draftStatus(d.id) === "waiting"); }
   function recommendation() {
     var d = currentDraft(), st = d && GM.draftStatus(d.id), owner = GM.staff(S.owner), due = fmt.due(S.due);
-    var whoWhen = due.text + ". " + owner.name + " owns it.";
+    var whoWhen = due.text + ". " + ownsIt(owner.id) + ".";
     if (d && st === "waiting") return { label: S.next, reason: HOPE + " drafted the " + kindText(d.kind) + " from what " + p.first + " shared. It waits for a person to approve it. " + whoWhen,
       primary: '<a class="v2-button v2-button-primary" href="#draft" data-gu="to-draft">' + ic("send") + "Review " + esc(titleCase(d.kind)) + "</a>" };
     if (d && st === "approved" && S.stage === "new") return { label: "Move " + p.first + " to Welcomed", reason: "The welcome note is approved, so " + p.first + " has heard from a person. Moving the stage keeps the board honest.",
@@ -451,7 +484,7 @@ GM.ready(function (ctx) {
     var visit = g.visitDate ? (GM.parseDate(g.visitDate) > GM.now ? "Visiting " + fmt.weekdayLong(g.visitDate) + ", " + fmt.date(g.visitDate) : "First visit " + fmt.date(g.visitDate)) : null;
     var arrivedWhen = fmt.when(g.arrived);
     $("gu-where").textContent = [src(g.source), "Arrived " + (/^(Today|Yesterday)/.test(arrivedWhen) ? lower(arrivedWhen) : arrivedWhen), visit].filter(Boolean).join(" · ");
-    $("gu-meta").innerHTML = stageBadge(S.stage) + GM.duePill(S.due) + (g.quiet ? GM.pill("Gone Quiet", "warning") : "") + (g.coverFor && S.owner === g.owner ? GM.pill("Covering for " + GM.staff(g.coverFor).name, "info") : "") + (draftWaiting() ? GM.pill(HOPE + " Draft Ready", "neutral") : "") + GM.pill(prefersCall ? "Prefers a Call" : "Email First", "neutral");
+    $("gu-meta").innerHTML = stageBadge(S.stage) + GM.duePill(S.due) + (g.quiet ? GM.pill("Gone quiet", "warning") : "") + (g.coverFor && S.owner === g.owner ? GM.pill("Covering for " + GM.staff(g.coverFor).name, "info") : "") + (draftWaiting() ? GM.pill(HOPE + " draft ready", "neutral") : "") + GM.pill(prefersCall ? "Prefers a call" : "Email first", "neutral");
     var r = recommendation();
     var isDone = /data-gu="done"/.test(r.primary);
     $("gu-rec").innerHTML = '<div class="v2-drawer-recommendation"><small>Recommended next step</small><b>' + esc(r.label) + '</b><span class="v2-recommendation-reason">' + esc(r.reason) + '</span>' +
@@ -465,7 +498,7 @@ GM.ready(function (ctx) {
     $("gu-pulse").innerHTML =
       pulse("On the path", (idx + 1) + " of " + STAGES.length, STAGES[idx].label + ": " + lower(STAGES[idx].hint)) +
       pulse("Days since the first hello", days, "Arrived " + fmt.date(g.arrived) + " · " + touches + " touches so far") +
-      pulse("Next step due", due.days === 0 ? "Today" : due.days < 0 ? "Overdue" : fmt.weekday(S.due), (due.days < 0 ? due.text + " · " : "") + owner.name + " owns it");
+      pulse("Next step due", due.days === 0 ? "Today" : due.days < 0 ? "Overdue" : fmt.weekday(S.due), (due.days < 0 ? due.text + " · " : "") + ownsIt(owner.id));
     GM.carryLinks($("gu-rec-head"));
   }
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
@@ -487,7 +520,7 @@ GM.ready(function (ctx) {
 
   var phone = p.phone || PHONES[p.id];
   $("gu-contact").innerHTML =
-    '<div class="v2-related-row"><b>Prefers</b><span>' + GM.pill(prefersCall ? "Phone Call" : "Email", "positive") + "</span></div>" +
+    '<div class="v2-related-row"><b>Prefers</b><span>' + GM.pill(prefersCall ? "Phone call" : "Email", "positive") + "</span></div>" +
     '<div class="v2-related-row"><b>Email</b><span>' + esc(p.email) + "</span></div>" +
     '<div class="v2-related-row"><b>Phone</b><span>' + (phone ? esc(phone) + (prefersCall ? "" : ", for a call only if " + esc(p.first) + " asks") : "Not given") + "</span></div>" +
     '<div class="v2-related-row"><b>Text messages</b><span>' + GM.pill("Off", "neutral") + "</span></div>" +
@@ -613,7 +646,7 @@ GM.ready(function (ctx) {
       $("gu-draft-eyebrow").textContent = HOPE + " can draft this";
       $("gu-draft-title").textContent = extra.kind + " for " + p.first;
       $("gu-draft-sub").textContent = "Nothing is written until you ask.";
-      html = '<div class="gu-draft-alt"><p class="v2-muted-copy">' + esc(HOPE) + " can write a first draft of the " + esc(kindText(extra.kind)) + " using only what " + esc(p.first) + " shared with us. It is labelled, and it waits for a person to approve it.</p>" +
+      html = '<div class="gu-draft-alt"><p class="v2-muted-copy">' + esc(HOPE) + " can write a first draft of the " + esc(kindText(extra.kind)) + " using only what " + esc(p.first) + " shared with us. It is labeled, and it waits for a person to approve it.</p>" +
         '<button type="button" class="v2-button" data-gu="draft">' + ic("sparkle") + "Draft with " + esc(HOPE) + "</button></div>";
     } else if (PERSONAL[g.id]) {
       $("gu-draft-eyebrow").textContent = "A personal step";
@@ -662,7 +695,7 @@ GM.ready(function (ctx) {
   }
   function row(ev, kind) {
     var o = ev[3] || {}, h = o.hope ? HOPE_SUM[g.id] : null, at = h ? h.at : ev[0];
-    var badge = kind === "future" ? GM.pill("Coming Up", "info") : "";
+    var badge = kind === "future" ? GM.pill("Coming up", "info") : "";
     return '<div class="v2-activity-row"><span class="gu-tl-top"><b>' + esc(T(ev[1])) + "</b>" + badge + "</span>" +
       (ev[2] ? "<p>" + esc(T(ev[2])) + "</p>" : "") +
       (h ? hopeBox(h) : "") +
@@ -679,7 +712,7 @@ GM.ready(function (ctx) {
     items.sort(function (a, b) { return GM.parseDate(a[0]) - GM.parseDate(b[0]); });
     var d = fmt.due(S.due), owner = GM.staff(S.owner);
     $("gu-tl").innerHTML = items.map(function (ev) { return row(ev, "past"); }).join("") +
-      '<div class="v2-activity-row"><span class="gu-tl-top"><b>Now: ' + esc(S.next) + "</b>" + GM.pill("Next Step", "gold") + "</span><small>" + esc(d.text) + " · " + esc(owner.name) + " owns it</small></div>" +
+      '<div class="v2-activity-row"><span class="gu-tl-top"><b>Now: ' + esc(S.next) + "</b>" + GM.pill("Next step", "gold") + "</span><small>" + esc(d.text) + " · " + esc(ownsIt(owner.id)) + "</small></div>" +
       future.map(function (ev) { return row(ev, "future"); }).join("");
   }
 
@@ -696,7 +729,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Connected and protections ---------- */
   var personLocked = !GM.isIncluded("people");
-  var links = [["church-person.html?id=" + p.id, "Person page", personLocked ? GM.pill("Plus", "neutral") : esc("One page for " + p.first) + ic("chevron")]];
+  var links = [["church-person.html?id=" + p.id, "Person page", personLocked ? GM.pill("Plus plan", "neutral") : esc("One page for " + p.first) + ic("chevron")]];
   (p.threads || []).forEach(function (tid) {
     var t = GM.thread(tid); if (!t) return;
     links.push(["church-care.html?id=" + t.id, "Thread: " + t.subject, esc(t.status === "waiting-on-them" ? "Waiting on " + p.first : t.status === "waiting-on-us" ? "Waiting on us" : "Closed") + ic("chevron")]);
@@ -740,10 +773,18 @@ GM.ready(function (ctx) {
   var dw = draftWaiting();
   GM.hope.addAnswers([{ match: new RegExp("\\b(" + p.first + "|this guest|know about|before sunday)\\b", "i"), answer: function () {
     var owner = GM.staff(S.owner), d = fmt.due(S.due);
-    return p.name + " is at the " + GM.stage(S.stage).label + " stage. " + src(g.source) + ", arrived " + fmt.date(g.arrived) + ". " + owner.name + " owns the next step: " + lower(S.next) + ", " + d.text.toLowerCase() + "." + (draftWaiting() ? " A " + kindText(currentDraft().kind) + " is drafted and waiting for approval." : "") + (prefersCall ? " " + p.first + " prefers a phone call." : " Follow-up goes by email.");
+    return p.name + " is at the " + GM.stage(S.stage).label + " stage. " + src(g.source) + ", arrived " + fmt.date(g.arrived) + ". " + (isMe(owner.id) ? "You own" : owner.name + " owns") + " the next step: " + lower(S.next) + ", " + lower(d.text) + "." + (draftWaiting() ? " A " + kindText(currentDraft().kind) + " is drafted and waiting for approval." : "") + (prefersCall ? " " + p.first + " prefers a phone call." : " Follow-up goes by email.");
   } }]);
+  /* About 80 characters, three lines at 1440, as Genesis OS writes its greeting: where the guest is and what is next
+     for the reader ("Next for you"). A longer step keeps only what is next, and the longest only when it is due
+     (the step itself heads the record). */
+  var hello = GM.greeting() + ", " + (viewer && viewer.pastorSlot != null ? viewer.name : String((viewer && viewer.name) || "").split(" ")[0]) + ". ";
+  var nextSaid = lower(S.next) + ", " + lower(fmt.due(S.due).text) + ".";
+  var core = p.first + (S.stage === "new" ? " is new." : " is at " + GM.stage(S.stage).label + ".") + (isMe(S.owner) ? " Next for you: " : " Next: ") + nextSaid;
   GM.hope.setBriefing({
-    line: GM.greeting() + ", {name}. " + p.name + " is at the " + GM.stage(S.stage).label + " stage, and " + GM.staff(S.owner).name + " owns the next step: " + lower(S.next) + ", " + fmt.due(S.due).text.toLowerCase() + "." + (dw ? " The note is drafted and waiting for you." : ""),
+    line: GM.greeting() + ", {name}. " + ((hello + core).length <= 80 ? core + (isMe(S.owner) ? "" : " " + GM.staff(S.owner).name + " owns it.")
+      : (hello + "Next for " + p.first + ": " + nextSaid).length <= 81 ? "Next for " + p.first + ": " + nextSaid
+      : p.first + "'s next step is " + lower(fmt.due(S.due).text) + "."),
     chips: (dw ? [{ label: "Review the Note", href: "church-guest.html?id=" + g.id + "#draft", primary: true }] : [])
       .concat([{ label: "What Should I Know?", ask: "What should I know about " + p.first + "?", primary: !dw }, { label: "Who Else Is Due?", ask: "Who needs a follow-up today?" }])
   });
@@ -753,7 +794,7 @@ GM.ready(function (ctx) {
     { target: '[data-tour="guest.next"]', title: "One owner, one next step, one date", text: "Every guest has a person who owns the next step and a date it is due. The recommended step sits at the top, with one clear action." },
     { target: '[data-tour="guest.about"]', title: "In general terms", text: "Only what the guest chose to tell us. Family in general terms, never kids' names, and how they asked to hear from us." },
     { target: '[data-tour="guest.path"]', title: "Where they are on the path", text: "Six stages from New to Serving. Move a guest along, change the next step or hand it to someone else. Every change is written to the timeline." },
-    { target: '[data-tour="guest.draft"]', title: "{assistant.name} drafts, a person approves", text: "{assistant.name} writes the welcome note from what the guest shared. It is labelled and waits until someone approves it." }
+    { target: '[data-tour="guest.draft"]', title: "{assistant.name} drafts, a person approves", text: "{assistant.name} writes the welcome note from what the guest shared. It is labeled and waits until someone approves it." }
   ];
   if (document.querySelector('[data-tour="guest.hope"]')) steps.push({ target: '[data-tour="guest.hope"]', title: "The conversation, summarized", text: "{assistant.name} does not keep conversations. The guest saw this short summary and chose to send it with their request." });
   steps.push({ target: '[data-tour="guest.timeline"]', title: "From the first hello to today", text: "Every touch in order: forms, messages, notes sent and stage moves, so anyone can pick up where the last person left off." });

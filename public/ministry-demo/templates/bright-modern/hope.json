@@ -1,5 +1,5 @@
 {
-  "look": "Bright & Modern",
+  "look": "Bright and Modern",
   "church": {
     "name": "Lightwell Church",
     "short": "Lightwell",
@@ -7,13 +7,15 @@
     "address": "1218 Brightwater Ave",
     "phone": "(919) 555-0142",
     "times": "every Sunday at 9:00 and 10:45 AM",
+    "length": "75 minutes",
+    "parking": "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
     "mapUrl": "https://www.google.com/maps/search/?api=1&query=Raleigh%2C+North+Carolina",
     "pastors": "Theo and Priya lead Lightwell together. They started it in 2023 with eleven friends, a borrowed sound system and a lot of coffee. They teach as a team, they are raising two busy kids, and they would love to meet you after either gathering.",
-    "kids": "Yes. Lightwell Kids runs at both gatherings, for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked. The rooms are bright, safe and a lot of fun.",
+    "kids": "Lightwell Kids runs at both gatherings, for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked. The rooms are bright, safe and a lot of fun.",
     "students": "Students in grades 6 to 12 meet during the week, and our young adults group is for twentysomethings. Both have a few big nights out each season, and both are easy to drop into.",
     "groups": "We have 14 small groups across Raleigh. Ten or so people, a living room and real conversation. It is the fastest way to go from new face to friend.",
     "startHere": "So glad you found us. Come on a Sunday at 9:00 or 10:45, grab a coffee from 8:30 and tell us it is your first time. When you are ready, come to Start Here, a lunch with Theo and Priya where you hear where Lightwell is headed and find your spot.",
-    "give": "You can give online in about a minute, once or every month. Your giving stocks the pantry, builds the bright new kids rooms for Room to Grow and keeps the coffee on for whoever walks in next.",
+    "give": "You can give online in about a minute, once or every month. Your giving stocks the pantry, builds the bright new kids' rooms for Room to Grow and keeps the coffee on for whoever walks in next.",
     "watch": "Every message is online by Monday morning. The newest is Room for questions, week 3 of Open Doors, with Pastor Theo. It works great in the car, on a walk or during nap time.",
     "prayer": "Big or small, bring it. A real person on our prayer team reads every request and would love to pray with you. If you are in crisis, call or text 988, or 911 in an emergency.",
     "values": "We are a young church for people who are still figuring it out. So, all of us. We care about honest questions, real friendships, grace for the tired and loving Raleigh well."
@@ -41,10 +43,202 @@
   },
   "links": {
     "brandBoard": "brand-board.html",
-    "socialPlan": "social-plan.html"
+    "socialPlan": "social-plan.html",
+    "prayer": "#prayer-request"
   },
-  "removeSelectors": [".chat-fab", "#chat", ".sb-chat"],
+  "removeSelectors": [
+    ".chat-fab",
+    "#chat",
+    ".sb-chat"
+  ],
   "bottomOffset": 64,
+  "answers": {
+    "newhere": {
+      "t": "So glad you found us. Come on a Sunday at 9:00 or 10:45, grab a coffee from 8:30 and tell us it is your first time. Plan your visit and someone will be ready to meet you. When you are ready, come to Start Here, a lunch with Theo and Priya where you hear where Lightwell is headed and find your spot.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "Kids",
+          "key": "kids"
+        }
+      ]
+    },
+    "baptism": {
+      "t": "Our next Baptism Sunday is December 6. If you are ready to go public with your faith, or you are still wondering about it, talk to us and we will walk through it with you first.",
+      "c": [
+        {
+          "label": "Ask About Baptism",
+          "href": "#baptism",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "curious": {
+      "t": "Yes, please come. Lightwell is full of people who are still figuring out what they believe, and honest questions are welcome here. Nobody will put you on the spot. Grab a coffee, sit anywhere and see what you think.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "access": {
+      "t": "Yes. Both entrances are step-free, and the room, Lightwell Kids and the restrooms are all on one level. Accessible parking is closest to the doors in the lot behind the building. Tell us on Plan Your Visit what would help, and a greeter will meet you.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Where Do I Park?",
+          "key": "parking"
+        }
+      ]
+    },
+    "language": {
+      "t": "Our gatherings are in English. If another language would help you or your family, call us at (919) 555-0142 and we will help however we can.",
+      "c": [
+        {
+          "label": "Call Lightwell",
+          "href": "tel:+19195550142",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "communion": {
+      "t": "We share communion on the first Sunday of every month, at both gatherings. Everyone who follows Jesus is welcome to take part, and it is always fine to sit it out.",
+      "c": [
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "wear": {
+      "t": "Jeans are perfect. Come in whatever is comfortable, and you will fit right in. Coffee is on from 8:30.",
+      "c": [
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "price": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.",
+      "c": [
+        {
+          "label": "What Does a Church Get?",
+          "key": "package"
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        }
+      ]
+    },
+    "package": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is Bright and Modern), the brand board, the social marketing plan, Hope on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.",
+      "c": [
+        {
+          "label": "What Is the Back Office?",
+          "key": "backoffice",
+          "cta": true
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        },
+        {
+          "label": "See the Brand Board",
+          "href": "brand-board.html"
+        },
+        {
+          "label": "See the Social Plan",
+          "href": "social-plan.html"
+        }
+      ]
+    }
+  },
+  "matchPatterns": [
+    [
+      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "baptism"
+    ],
+    [
+      "\\bhow long\\b(?!.*\\b(?:been|ago|founded|around|existed?|started|kids?|children|students?|youth|groups?|class(?:es)?|lunch)\\b)",
+      "times"
+    ],
+    [
+      "\\b(?:not (?:a )?(?:christian|believer|religious|churchy)|non[- ]?(?:christian|believer|religious)|(?:don['’]?t|do not|didn['’]?t) (?:believe|know (?:if|what) i believe)|not sure (?:if|what) i believe|atheists?|agnostics?|skeptic\\w*|sceptic\\w*|doubts?|doubting|never been to (?:a )?church|(?:haven['’]?t|have not) been to (?:a )?church|(?:another|other|different) (?:faith|religion)s?)\\b",
+      "curious"
+    ],
+    [
+      "^(?!.*\\b(?:online|live ?stream\\w*|stream\\w*|website|site|videos?|app|podcasts?)\\b).*\\b(?:wheel ?chairs?|accessib\\w*|ramps?|elevators?|stairs|step[- ]free|mobility|walkers?|disab\\w*|handicap\\w*|hard of hearing|hearing (?:loop|aids?)|large print)\\b",
+      "access"
+    ],
+    [
+      "\\b(?:spanish|espa[nñ]ol|languages?|bilingual|interpreters?|translators?|translated|korean|mandarin|cantonese|chinese|vietnamese|french|portuguese|arabic|swahili|tagalog|hindi|haitian creole|sign language|asl)\\b",
+      "language"
+    ],
+    [
+      "\\b(?:communion|eucharist|lord['’]?s supper|sacraments?)\\b",
+      "communion"
+    ],
+    [
+      "\\b(?:wear|wearing|jeans|shorts|dress(?:ed)?(?: up)?|dress code|attire|outfits?|clothes|clothing|suit and tie|casual)\\b",
+      "wear"
+    ]
+  ],
+  "next": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-guest.html?church=bright-modern&id=g-01",
+    "note": "Next: a Plan a Visit form as it arrives in Genesis Ministry, the way the welcome team sees it."
+  },
+  "nextLevel01": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-website.html?church=bright-modern&plan=1#ws-visit-title",
+    "note": "Next: on the Care plan, a Plan a Visit form arrives as an email to the address your church chose.",
+    "tour": false
+  },
   "pages": {
     "index.html": {}
   }

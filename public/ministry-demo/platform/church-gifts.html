@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
-<title>Gifts of our church · Genesis Ministry · Design preview</title>
+<title>Gifts of Our Church · Genesis Ministry · Design preview</title>
 <meta name="description" content="Genesis Ministry design preview: the pastors' church-wide picture of spiritual gifts on the Genesis OS Reports screen, in counts, with a finder for people who said yes to sharing their name. Sample data.">
 <script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
 <link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
@@ -16,6 +16,7 @@
   /* Gifts only. Prefix: gf-. The page is the Genesis OS Reports screen; these only arrange it. */
   .gf-page .v2-report-body{display:grid;gap:14px;min-width:0}
   .gf-page .v2-report-body>*{margin-top:0;min-width:0}
+  .gf-finder .v2-primary-cell>span{white-space:normal;overflow:visible;text-overflow:clip}
   .gf-page .v2-report-trend .v2-section-head{margin-bottom:14px}
   .gf-page .v2-report-support .v2-section-head{margin-bottom:10px}
   .gf-page .v2-report-head-meta .v2-segments{flex:none}
@@ -31,7 +32,12 @@
   .gf-next-cell{display:grid;gap:4px;justify-items:start}
   .gf-teams{display:grid;gap:14px}
   .gf-teams .v2-table-card{margin-top:0}
-  .gf-chips{display:flex;flex-wrap:wrap;gap:4px}
+  .gf-chips{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+  .gf-chips .gf-also{color:var(--v2-text-2);font-size:12px;line-height:1.4;padding-left:4px}
+  /* Actions in the finder never break over two lines; the whole name cell is the target, not just the name. */
+  .gf-finder td>.v2-button{white-space:nowrap}
+  body.gm-col-narrow .gf-finder thead th:last-child{width:164px}
+  .gf-finder .v2-primary-cell>.v2-deal-row-link{display:flex}
   .gf-teams .v2-table td{vertical-align:middle}
   .gf-fit .v2-report-market-list{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:28px;margin-top:4px}
   .gf-fit>p{margin:8px 0 0}
@@ -49,7 +55,7 @@
     <header class="v2-page-head">
       <div>
         <div class="v2-eyebrow">Gifts</div>
-        <h1>Gifts of our church</h1>
+        <h1>Gifts of Our Church</h1>
         <p id="gf-sub">A church-wide picture in counts. Names only for people who said yes after seeing their own result.</p>
       </div>
       <div class="v2-page-actions">
@@ -144,6 +150,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -274,14 +281,16 @@ GM.ready(function (ctx) {
       var p = GM.person(r.personId);
       var hit = function (k) { return team ? team.gifts.indexOf(k) >= 0 : k === state.gift; };
       var first = r.top.filter(hit)[0];
-      var tops = r.top.map(function (k, i) { return (i + 1) + " " + GM.gift(k).name; }).join(" · ");
+      /* Each rank stays with its gift, and a line never starts with the dot. */
+      var NB = String.fromCharCode(160);
+      var tops = r.top.map(function (k, i) { return (i + 1) + NB + GM.gift(k).name.replace(/ /g, NB); }).join(NB + "· ");
       var fits = team ? [team] : gift ? teamsForGift(gift.key) : teamsForGift(r.top[0]);
       var serving = r.servingNow && p.serving && p.serving.length ? p.serving.join(", ") : "Not serving yet";
       var thread = (p.threads || []).map(GM.thread).filter(function (t) { return t && t.status === "waiting-on-us"; })[0];
       var next = r.wantsToTalk && thread
-        ? '<a class="v2-button v2-button-quiet" href="church-care.html?id=' + esc(thread.id) + '">' + ic("message") + "Open Their Message</a>"
-        : r.wantsToTalk ? GM.pill("Wants to Talk", "info") : '<span class="v2-deal-why is-calm">No request yet</span>';
-      return { p: p, r: r, tops: tops, badge: first ? GM.pill(GM.gift(first).name, "gold") : "", fits: fits, serving: serving, next: next };
+        ? '<a class="v2-button v2-button-quiet" href="church-care.html?id=' + esc(thread.id) + '">' + ic("message") + "Open Message</a>"
+        : r.wantsToTalk ? GM.pill("Wants to talk", "info") : '<span class="v2-deal-why is-calm">No request yet</span>';
+      return { p: p, r: r, tops: tops, badge: first && team ? GM.pill(GM.gift(first).name, "gold") : "", fits: fits, serving: serving, next: next };
     });
     var desktop = rows.map(function (x) {
       return '<tr><td class="v2-primary-cell"><a class="v2-deal-row-link" href="church-person.html?id=' + esc(x.p.id) + '"><b>' + esc(x.p.name) + "</b></a><span>" + esc(x.p.attends === "online" ? "Online" : "In person") + " · finished " + esc(fmt.date(x.r.finished)) + "</span></td>" +
@@ -291,7 +300,7 @@ GM.ready(function (ctx) {
     }).join("");
     var mobile = rows.map(function (x) {
       return '<a class="v2-mobile-deal-row" href="church-person.html?id=' + esc(x.p.id) + '"><span class="v2-mobile-deal-identity"><b>' + esc(x.p.name) + "</b><small>" + esc(x.serving) + "</small></span>" +
-        '<span class="v2-mobile-deal-why"><span class="v2-deal-why">' + esc(x.r.top.map(function (k) { return GM.gift(k).name; }).join(", ")) + "</span>" + (x.r.wantsToTalk ? GM.pill("Wants to Talk", "info") : "") + "</span>" +
+        '<span class="v2-mobile-deal-why"><span class="v2-deal-why">' + esc(x.r.top.map(function (k) { return GM.gift(k).name; }).join(", ")) + "</span>" + (x.r.wantsToTalk ? GM.pill("Wants to talk", "info") : "") + "</span>" +
         '<span class="v2-mobile-deal-open">' + esc(x.p.attends === "online" ? "Online" : "In person") + " " + ic("chevron") + "</span></a>";
     }).join("");
     $("gf-results").innerHTML = '<div class="v2-table-meta" aria-live="polite"><span>' + esc(countLine) + ".</span><span>" + esc(context) + "</span></div>" +
@@ -320,10 +329,12 @@ GM.ready(function (ctx) {
 
   /* ---------- The church's list, each gift linked to its teams ---------- */
   function teamChips(g) {
-    return '<div class="gf-chips">' + g.teams.map(function (n) {
+    /* Teams the finder knows are chips that open it; any other team on the church's list follows as plain words. */
+    var known = g.teams.filter(teamByName), other = g.teams.filter(function (n) { return !teamByName(n); });
+    return '<div class="gf-chips">' + known.map(function (n) {
       var t = teamByName(n);
-      return t ? '<button type="button" class="v2-chip" data-gf-team="' + esc(t.key) + '" aria-label="Find people who fit ' + esc(t.name) + '">' + esc(t.name) + "</button>" : '<span class="v2-badge">' + esc(n) + "</span>";
-    }).join("") + "</div>";
+      return '<button type="button" class="v2-chip" data-gf-team="' + esc(t.key) + '" aria-label="Find people who fit ' + esc(t.name) + '">' + esc(t.name) + "</button>";
+    }).join("") + (other.length ? '<span class="gf-also">' + (known.length ? "also " : "") + esc(other.join(", ")) + "</span>" : "") + "</div>";
   }
   $("gf-list-count").textContent = G.list.length + " scored gifts, plus " + G.talkWithPastor.length + " to talk about with a pastor";
   $("gf-list").innerHTML = G.list.map(function (g) {

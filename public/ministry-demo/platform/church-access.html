@@ -29,10 +29,13 @@
   .ac-foot{display:flex;align-items:flex-start;gap:10px;margin:0;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
   .ac-foot svg{flex:none;margin-top:2px;color:var(--v2-positive)}
   .ac-empty{padding:28px 12px;text-align:center;color:var(--v2-muted);font-size:13px}
+  /* What the alert said is the proof, so it wraps and is never cut off. */
+  .ac-page .v2-primary-cell>:is(b,span){white-space:normal;overflow:visible;text-overflow:clip}
   @media (max-width:1180px){.ac-pair{grid-template-columns:minmax(0,1fr)}}
   @media (max-width:640px){.ac-page .v2-primary-cell b,.ac-page .v2-mobile-deal-identity b,.ac-page .v2-mobile-deal-identity small{white-space:normal;overflow:visible;text-overflow:clip}}
   .ac-limit{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--v2-border);color:var(--v2-text-2);font-size:12.5px;line-height:1.6}
   .ac-limit svg{flex:none;margin-top:2px;color:var(--v2-info)}
+  @media (pointer:coarse){.ac-link-row>a{display:inline-flex;align-items:center;min-height:44px}}
 </style>
 </head>
 <body data-side="church" data-page="access" data-title="Access Record">
@@ -82,6 +85,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -91,26 +95,31 @@ GM.ready(function (ctx) {
      The same entries appear on church-care.html and church-person.html. No private words. */
   var EXTRA_ACCESS = [
     { at: "2026-11-19T10:12", who: "s-care",  action: "Opened",  what: "Person page for Sarah N.", where: "People" },
-    { at: "2026-11-19T10:05", who: "s-imani", action: "Opened",  what: "Thread with Abigail R.", where: "Care inbox" },
-    { at: "2026-11-19T07:20", who: "system",  action: "Alerted", what: "Imani W., by email: New message. Sign in to read.", where: "Care inbox" },
-    { at: "2026-11-18T23:05", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care inbox" },
-    { at: "2026-11-18T19:02", who: "s-care",  action: "Opened",  what: "Prayer request from Caleb E.", where: "Care inbox" },
-    { at: "2026-11-18T18:30", who: "system",  action: "Alerted", what: "Pastors, by email: New request. Sign in to read.", where: "Care inbox" },
-    { at: "2026-11-18T12:40", who: "s-care",  action: "Replied", what: "Thread with Sarah N.", where: "Care inbox" },
-    { at: "2026-11-18T09:30", who: "s-lead",  action: "Opened",  what: "Thread with Lucia P.", where: "Care inbox" },
-    { at: "2026-11-18T08:45", who: "system",  action: "Alerted", what: "Pastors, by email: New message. Sign in to read.", where: "Care inbox" },
-    { at: "2026-11-18T08:20", who: "s-owen",  action: "Opened",  what: "Prayer request from Sarah N.", where: "Care inbox" },
-    { at: "2026-11-18T07:55", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care inbox" },
-    { at: "2026-11-17T16:05", who: "s-sofia", action: "Replied", what: "Prayer request from Wyatt F.", where: "Care inbox" },
-    { at: "2026-11-17T09:40", who: "s-jun",   action: "Opened",  what: "Thread with Kwame A.", where: "Care inbox" },
-    { at: "2026-11-16T14:12", who: "s-care",  action: "Replied", what: "Prayer request from Fatima A.", where: "Care inbox" },
+    { at: "2026-11-19T10:05", who: "s-imani", action: "Opened",  what: "Thread with Abigail R.", where: "Care Inbox" },
+    { at: "2026-11-19T07:20", who: "system",  action: "Alerted", what: "Imani W., by email: New message. Sign in to read.", where: "Care Inbox" },
+    { at: "2026-11-18T23:05", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care Inbox" },
+    { at: "2026-11-18T19:02", who: "s-care",  action: "Opened",  what: "Prayer request from Caleb E.", where: "Care Inbox" },
+    { at: "2026-11-18T18:30", who: "system",  action: "Alerted", what: "Pastors, by email: New request. Sign in to read.", where: "Care Inbox" },
+    { at: "2026-11-18T12:40", who: "s-care",  action: "Replied", what: "Thread with Sarah N.", where: "Care Inbox" },
+    { at: "2026-11-18T09:30", who: "s-lead",  action: "Opened",  what: "Thread with Lucia P.", where: "Care Inbox" },
+    { at: "2026-11-18T08:45", who: "system",  action: "Alerted", what: "Pastors, by email: New message. Sign in to read.", where: "Care Inbox" },
+    { at: "2026-11-18T08:30", who: "s-care",  action: "Replied", what: "Thread with Sarah N.", where: "Care Inbox" },
+    { at: "2026-11-18T08:24", who: "s-care",  action: "Opened",  what: "Prayer request from Sarah N.", where: "Care Inbox" },
+    { at: "2026-11-18T08:20", who: "s-owen",  action: "Opened",  what: "Prayer request from Sarah N.", where: "Care Inbox" },
+    { at: "2026-11-18T07:55", who: "system",  action: "Alerted", what: "Pastors and the prayer team, by email: New request. Sign in to read.", where: "Care Inbox" },
+    { at: "2026-11-17T16:05", who: "s-sofia", action: "Replied", what: "Prayer request from Wyatt F.", where: "Care Inbox" },
+    { at: "2026-11-17T09:40", who: "s-jun",   action: "Opened",  what: "Thread with Kwame A.", where: "Care Inbox" },
+    { at: "2026-11-16T14:12", who: "s-care",  action: "Replied", what: "Prayer request from Fatima A.", where: "Care Inbox" },
     { at: "2026-11-13T09:00", who: "s-lead",  action: "Ended access", what: "Tobias E. stepped down from the prayer team. Access ended the same day. Emailed to the lead pastor.", where: "Team roles" }
   ];
 
   var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, viewer = ctx.viewer, HOPE = GM.assistant.name, ic = GM.v2Icon;
   var $ = function (id) { return document.getElementById(id); };
   var you = { at: D.now, who: viewer.id, action: "Opened", what: "The access record", where: "Access record", you: true };
-  var all = [you].concat(D.access, EXTRA_ACCESS).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at) || (a.you ? -1 : b.you ? 1 : 0); });
+  /* An entry the shared record already holds is never listed twice. */
+  var accessKey = function (a) { return a.at + "|" + a.who + "|" + a.action; }, inShared = {};
+  D.access.forEach(function (a) { inShared[accessKey(a)] = true; });
+  var all = [you].concat(D.access, EXTRA_ACCESS.filter(function (a) { return !inShared[accessKey(a)]; })).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at) || (a.you ? -1 : b.you ? 1 : 0); });
   var TONES = { "Opened": "neutral", "Replied": "info", "Added a note": "neutral", "Alerted": "info", "Changed a role": "warning", "Ended access": "warning", "Archived": "neutral", "Viewed names": "info", "Blocked": "danger", "Exported": "info" };
   function who(id) { return id === "system" ? { name: "Automatic", role: "Alert or safety check" } : GM.who(id); }
   function when(a) {
@@ -141,8 +150,8 @@ GM.ready(function (ctx) {
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
   $("ac-pulse").innerHTML =
     pulse("Entries since Sunday", thisWeek.length, "Opens, replies, alerts and changes") +
-    pulse("Prayer opened", prayerOpens.length, "By pastors and the prayer team only") +
-    pulse("Blocked attempts", blocked.length, "Stopped by the system, then written here");
+    pulse("Prayer opened", prayerOpens.length, "Since Sunday. Pastors and the prayer team only") +
+    pulse("Blocked attempts", blocked.length, blocked.length ? "Last 30 days. The last was " + fmt.weekdayLong(blocked[0].at) + ", " + fmt.date(blocked[0].at) : "None in the last 30 days");
   $("ac-sub").textContent = all.length + " entries, newest first. It names the record, never what it says. Nobody can edit it.";
 
   /* ---------- The one panel: the blocked attempt ---------- */
@@ -155,10 +164,13 @@ GM.ready(function (ctx) {
 
   /* ---------- Filters ---------- */
   var whoIds = []; all.forEach(function (a) { if (whoIds.indexOf(a.who) < 0) whoIds.push(a.who); });
-  $("ac-person").innerHTML = '<option value="">Everyone</option>' + whoIds.map(function (id) { var w = who(id); return '<option value="' + esc(id) + '">' + esc(w.name + (w.role ? ", " + w.role : "")) + "</option>"; }).join("");
+  $("ac-person").innerHTML = '<option value="">Everyone</option>' + whoIds.map(function (id) { var w = who(id); return '<option value="' + esc(id) + '">' + esc(id === "system" ? "Automatic Alerts and Safety Checks" : w.name + (w.role ? ", " + w.role : "")) + "</option>"; }).join("");
   var actions = []; all.forEach(function (a) { if (actions.indexOf(a.action) < 0) actions.push(a.action); });
   actions.sort();
-  $("ac-action").innerHTML = '<option value="">Every Action</option>' + actions.map(function (a) { return '<option value="' + esc(a) + '">' + esc(a) + "</option>"; }).join("");
+  /* Options are Title Case, as Genesis OS writes them; the badges in the rows stay in sentence case. */
+  var SMALL = { a: 1, an: 1, the: 1, and: 1, or: 1, to: 1, of: 1, for: 1, in: 1 };
+  function titleCase(t) { return String(t).split(" ").map(function (w, i) { return i && SMALL[w] ? w : w.charAt(0).toUpperCase() + w.slice(1); }).join(" "); }
+  $("ac-action").innerHTML = '<option value="">Every Action</option>' + actions.map(function (a) { return '<option value="' + esc(a) + '">' + esc(titleCase(a)) + "</option>"; }).join("");
   var q = "";
 
   function paint() {
@@ -183,7 +195,9 @@ GM.ready(function (ctx) {
     }).join("");
     $("ac-body").innerHTML = '<section class="v2-card v2-table-card v2-deal-list" aria-label="Access record, newest first"><div class="v2-table-meta"><span>' + (list.length === all.length ? "All " + all.length + " entries" : list.length + " of " + all.length + " entries") + "</span><span>Added, never changed</span></div>" +
       (list.length ? '<div class="v2-desktop-deals"><div class="v2-table-scroll"><table class="v2-table v2-deal-table"><caption class="sr-only">Access record, newest first</caption><thead><tr><th scope="col">Record</th><th scope="col">Action</th><th scope="col">Who</th><th scope="col">When</th></tr></thead><tbody>' + rows + '</tbody></table></div></div><div class="v2-mobile-deals">' + mobile + "</div>"
-        : '<p class="ac-empty">No entries match. Choose Everyone or Every action to see them all.</p>') + "</section>";
+        : '<div class="v2-state"><div><h2>No entries match</h2><p>Nothing in the record fits this search, person and action.</p><button class="v2-button" type="button" id="ac-clear">Show Every Entry</button></div></div>') + "</section>";
+    var clr = $("ac-clear");
+    if (clr) clr.addEventListener("click", function () { $("ac-person").value = ""; $("ac-action").value = ""; $("ac-search").value = ""; q = ""; $("ac-show-blocked").textContent = "Show Blocked Only"; paint(); $("ac-search").focus(); });
   }
   $("ac-person").addEventListener("change", paint);
   $("ac-action").addEventListener("change", paint);
@@ -211,18 +225,19 @@ GM.ready(function (ctx) {
     "<div><dt>Subject</dt><dd>A role changed at " + esc(c.short) + "</dd></div>" +
     "<div><dt>It says</dt><dd>Sofia R. was added to the Prayer Team on " + esc(fmt.dateLong(rc.at)) + ". She can now read prayer requests. If you did not expect this, sign in to review it.</dd></div></dl></section>" +
     '<div class="v2-rec-activity">' + changes.map(function (x) { return '<div class="v2-activity-row">' + esc(x.what) + "<small>" + esc(who(x.who).name + " · " + fmt.dateLong(x.at)) + "</small></div>"; }).join("") + "</div>" +
-    '<p class="v2-muted-copy" style="margin:12px 0 0"><a class="gm-link" href="church-team.html">Open Team Roles</a></p>';
+    '<p class="v2-muted-copy ac-link-row" style="margin:12px 0 0"><a class="gm-link" href="church-team.html">Open Team Roles</a></p>';
   $("ac-limit").innerHTML = ic("info") + "<span><b>An honest limit.</b> Genesis engineers who run the database could technically reach it. The rule, this record and our support policy are the promise. Genesis signs in to your workspace only when you open a support session, and that session is recorded here.</span>";
   $("ac-foot").innerHTML = ic("shield") + "<span>No row can be changed or removed. If something was logged in error, a pastor adds a new entry that says so. Opening this page is itself recorded, as the first row shows.</span>";
   GM.carryLinks();
 
   GM.hope.setBriefing({
-    line: GM.greeting() + ", {name}. " + thisWeek.length + " entries since Sunday. Prayer was opened only by pastors and the prayer team, and " + blocked.length + " old link was blocked.",
-    chips: [{ label: "Review Team Roles", href: "church-team.html", primary: true }, { label: "Who Opened Prayer?", ask: "Who opened prayer this week?" }, { label: "Open Care", href: "church-care.html" }]
+    /* About 80 characters, three lines at 1440 for every pastor name, as Genesis OS writes its greeting. The blocked link is the panel right under it. */
+    line: GM.greeting() + ", {name}. Only pastors and the prayer team saw prayer.",
+    chips: [{ label: "Review Team Roles", href: "church-team.html", primary: true }, { label: "Who Opened Prayer?", ask: "Who opened prayer this week?" }, { label: "Open Care Inbox", href: "church-care.html" }]
   });
   GM.hope.addAnswers([
     { match: /who opened|opened prayer|prayer this week/i, answer: function () { var names = {}; prayerOpens.forEach(function (a) { var n = who(a.who).name; names[n] = (names[n] || 0) + 1; }); return "Since Sunday, prayer was opened " + prayerOpens.length + " times: " + Object.keys(names).map(function (n) { return n + " (" + names[n] + ")"; }).join(", ") + ". Every one was a pastor or the prayer team. I name the record, never what it says."; } },
-    { match: /blocked|admin|edit/i, answer: "One attempt was blocked: Imani W., the office manager, opened an old forwarded link to a prayer request. Staff cannot open prayer, so nothing was shown. Genesis Support has made no attempts. Nobody can edit this record, and Genesis signs in only in a support session you open." }
+    { match: /blocked|admin|edit/i, answer: "One attempt was blocked, on " + fmt.weekdayLong(blocked[0].at) + ", " + fmt.dateLong(blocked[0].at) + ": Imani W., the office manager, opened an old forwarded link to a prayer request. Staff cannot open prayer, so nothing was shown. Genesis Support has made no attempts. Nobody can edit this record, and Genesis signs in only in a support session you open." }
   ]);
 
   GM.setTour([

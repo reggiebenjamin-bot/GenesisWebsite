@@ -3,7 +3,9 @@
    One shared set of people and care is shown under whichever church is selected.
    Text may carry placeholders that GM.fill() resolves for the selected church:
    {church.name} {church.short} {church.city} {church.leadPastor} {church.carePastor}
-   {church.email} {church.phone} {church.times}
+   {church.email} {church.phone} {church.times} {church.kidsCheckIn} {church.visitGathering}
+   The shell fills the church placeholders in guest notes, thread messages, prayer and drafts at load,
+   so a page that prints them as they are still shows the right church.
    Read it as window.GM_DATA. Do not mutate it from a page; copy what you change. */
 (function () {
   "use strict";
@@ -23,6 +25,12 @@
       pastors: ["Theo", "Priya"], leadPastor: "Pastor Theo", carePastor: "Pastor Priya",
       times: "Sundays 9:00 and 10:45 AM", phone: "(919) 555-0142", email: "hello@lightwell.example",
       size: "About 340 on a Sunday", sizeNumber: 340, founded: 2023,
+      /* The site's own facts (templates/<slug>/hope.json): kids check-in, the gathering a first-time family
+         comes to, where a greeter meets them (welcomeSpot, read after "look for Nadia"), parking and baptism. */
+      kidsCheckIn: "Kids check-in opens 20 minutes before each gathering.", visitGathering: "the 10:45 AM gathering",
+      welcomeSpot: "at the front door by the blue flags",
+      parking: "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
+      baptism: "Our next Baptism Sunday is December 6. If you are ready to go public with your faith, or you are still wondering about it, talk to us and we will walk through it with you first.",
       site: "../templates/bright-modern/index.html", brandBoard: "../templates/bright-modern/brand-board.html", socialPlan: "../templates/bright-modern/social-plan.html",
       mark: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#1F4FFF"/><path d="M11 0h6.5v26H31v6.5H11z" fill="#fff"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#E4ECFF"/></svg>',
       fontsUrl: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:wght@400..700&display=swap",
@@ -42,6 +50,10 @@
       pastors: ["Andre", "Talia"], leadPastor: "Pastor Andre", carePastor: "Pastor Talia",
       times: "Sundays 10 AM and 6 PM", phone: "(614) 555-0142", email: "hello@lampstand.example",
       size: "About 520 on a Sunday", sizeNumber: 520, founded: 2019,
+      kidsCheckIn: "Lampstand Kids runs during the 10 AM gathering. Come a few minutes early and check in at the kids desk.", visitGathering: "the 10 AM gathering",
+      welcomeSpot: "at the door by the amber flags",
+      parking: "Park free in the lot behind the building or on the street. Look for the amber flags, and a greeter will meet you at the door.",
+      baptism: "Our next Baptism Sunday is December 6, at 10 AM and 6 PM. It is one of our loudest days, with friends cheering you up out of the water. If you are ready to go public with your faith, ask about baptism and a pastor will talk it through with you first.",
       site: "../templates/bold-dark/index.html", brandBoard: "../templates/bold-dark/brand-board.html", socialPlan: "../templates/bold-dark/social-plan.html",
       mark: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="3" fill="#14110E"/><g transform="translate(7.2 4) scale(.8)"><path d="M16 1.5c3.6 4.3 6 7.6 6 11.2 0 3.4-2.7 6-6 6s-6-2.6-6-6c0-3.6 2.4-6.9 6-11.2z" fill="#FF9A1F"/><rect x="8" y="21" width="16" height="3" fill="#F4EEE4"/><rect x="13.5" y="24" width="5" height="11" fill="#F4EEE4"/><rect x="6" y="35" width="20" height="4" fill="#F4EEE4"/></g></svg>',
       fontsUrl: "https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&display=swap",
@@ -61,6 +73,10 @@
       pastors: ["Samuel", "Ruth"], leadPastor: "Pastor Samuel", carePastor: "Pastor Ruth",
       times: "Sundays 9:00 and 11:00 AM", phone: "(804) 555-0142", email: "hello@calderhill.example",
       size: "About 460 on a Sunday", sizeNumber: 460, founded: 1891,
+      kidsCheckIn: "Calder Kids runs during the 11:00 AM service. Come a few minutes early and check in at the welcome table.", visitGathering: "the 11:00 AM service",
+      welcomeSpot: "at the side door off Calder Lane",
+      parking: "Park free on Calder Lane or in the lot behind the parish hall. A greeter at the side door will point you to coffee and the sanctuary.",
+      baptism: "We baptize in the river each June, and our next river baptism is Sunday, June 6, 2027. If you have been wondering about it, Pastor Samuel and Pastor Ruth would be glad to talk it through with you.",
       site: "../templates/classic-timeless/index.html", brandBoard: "../templates/classic-timeless/brand-board.html", socialPlan: "../templates/classic-timeless/social-plan.html",
       mark: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="3" fill="#1F3D2F"/><g transform="translate(7.6 3.9) scale(.62)" fill="none"><path d="M2 51V20a18 18 0 0 1 36 0v31" stroke="#FCF9F1" stroke-width="2.6"/><path d="M7 51V21a13 13 0 0 1 26 0v30" stroke="#FCF9F1" stroke-width="1.3"/><path d="M20 11v24M14.5 18h11" stroke="#D2B574" stroke-width="2.6" stroke-linecap="square"/><path d="M7 51v-8c4-4.6 8.4-6.8 13-6.8s9 2.2 13 6.8v8z" fill="#FCF9F1"/></g></svg>',
       fontsUrl: "https://fonts.googleapis.com/css2?family=Commissioner:wght@400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap",
@@ -76,10 +92,14 @@
     },
     {
       slug: "warm-community", look: "Warm Community",
-      name: "Goldenrod Commons Church", short: "Goldenrod", city: "Des Moines", state: "IA",
+      name: "Goldenrod Commons Church", short: "Goldenrod Commons", city: "Des Moines", state: "IA",
       pastors: ["Marcus", "Ellie"], leadPastor: "Pastor Marcus", carePastor: "Pastor Ellie",
       times: "Sundays 9:00 and 10:45 AM", phone: "(515) 555-0142", email: "hello@goldenrod.example",
       size: "About 380 on a Sunday", sizeNumber: 380, founded: 2012,
+      kidsCheckIn: "Kids check-in opens 15 minutes before each service.", visitGathering: "the 10:45 AM service",
+      welcomeSpot: "under the yellow umbrellas out front",
+      parking: "Park in the lot off Wrenfield or along the street. The yellow umbrellas out front mark the way in, and a greeter will be right there.",
+      baptism: "Our next Baptism Sunday is January 10, and we would love to walk into the water with you. Ask about baptism and one of our pastors will talk it through with you first. Then we celebrate together.",
       site: "../templates/warm-community/index.html", brandBoard: "../templates/warm-community/brand-board.html", socialPlan: "../templates/warm-community/social-plan.html",
       mark: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FFFBF3"/><circle cx="24" cy="24" r="20" fill="#FFC83A"/><path d="M16.5 38.5V27a7.5 7.5 0 0 1 15 0v11.5z" fill="#3A2618"/><rect x="13" y="37.6" width="22" height="3" rx="1.5" fill="#3A2618"/><path d="M28.6 20.2c.6-5 4.6-8 9.6-7.4-.5 4.8-4.5 8-9.6 7.4z" fill="#3B7A37"/></svg>',
       fontsUrl: "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400..800&display=swap",
@@ -100,18 +120,22 @@
   /* The three plans and their prices, as /ministry shows them.
      D.pricingLine is the one sentence with every price. */
   D.pricingLine = "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
+  /* Where "Talk With Genesis" goes, everywhere in the preview: the story pages (story/story.js reads the
+     same address), the guided demo's last card and Hope's answer to "how do I book a call".
+     OWNER: confirm this address before the preview goes live. */
+  D.genesisContact = "/contact?topic=ministry-demo";
   D.customLine = "Customization beyond the template is available for an additional cost.";
   D.levels = [
-    { n: 1, code: "Care", name: "Care", price: "$149 a month", draft: true, seats: "No seats needed. Forms arrive by email",
+    { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "One sign-in for the pastors, with no staff seats needed",
       summary: "A website people can find and use, with Hope answering questions and every form arriving by email.",
-      includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, trained on facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up"] },
-    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", draft: true, seats: "Up to 8 staff seats",
+      includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, answering from facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up"] },
+    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "Up to 8 staff seats",
       summary: "Everything in Care, plus a front office for guests and a member app, so nobody falls through the cracks.",
       includes: ["Everything in Care", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval"] },
-    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", draft: true, seats: "Up to 15 staff seats",
+    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "Up to 15 staff seats",
       summary: "Everything in Shepherd, plus one page per person, the spiritual gifts picture and reports for pastors.",
-      includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "More staff seats"] },
-    { n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", draft: true, seats: "Scoped on a call",
+      includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "Up to 15 staff seats"] },
+    { n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", seats: "Scoped on a call",
       summary: "For multi-campus churches. Everything in Plus, scoped on a call.",
       includes: ["Everything in Plus", "More than one campus", "Scoped on a call"] }
   ];
@@ -122,16 +146,16 @@
     website:  { label: "Website", level: 1, side: "church", adds: "The website in its chosen look, the brand board, the social marketing plan, and the forms that reach the church.", points: ["The website, with Hope answering questions", "The brand board and the social plan", "Plan a Visit and prayer forms by email"] },
     today:    { label: "Today", level: 2, side: "church", adds: "One calm list of what needs a person today: new guests, care waiting on us and follow-ups due.", points: ["New guests since Sunday, each with an owner", "Care waiting on us, oldest first", "Follow-ups due today and overdue", "Hope drafts ready for your approval"] },
     guests:   { label: "Guests", level: 2, side: "church", adds: "The front office: every first-time guest moves from New to Serving with an owner, a next step and a due date.", points: ["Guests arrive from Plan a Visit, Hope, connect cards, events and the newsletter", "Six stages from New to Serving", "Hope drafts welcome notes that wait for approval", "Follow-up by email by default; texting only if the church turns it on"] },
-    care:     { label: "Care", level: 2, side: "church", adds: "One shared inbox for prayer and messages, with an owner on every thread and a waiting-on-us list.", points: ["Prayer visible only to pastors and the prayer team", "Alert emails carry no private words", "Every open, reply and archive is recorded", "Archive, never delete"] },
+    care:     { label: "Care Inbox", level: 2, side: "church", adds: "One shared inbox for prayer and messages, with an owner on every thread and a waiting-on-us list.", points: ["Prayer visible only to pastors and the prayer team", "Alert emails carry no private words", "Every open, reply and archive is recorded", "Archive, never delete"] },
     people:   { label: "People", level: 3, side: "church", adds: "One page per person with everything from them in one place.", points: ["Contact card, threads and prayer history (for those allowed)", "Gifts when the person said yes", "Private pastor notes", "Every open is recorded"] },
-    access:   { label: "Access Record", level: 3, side: "church", adds: "The Access Record screen: search and export every open, reply, change and archive. From Shepherd every open is already recorded; Plus adds this screen.", points: ["Search by person, record or action", "Export a copy, and the export is recorded too", "Role changes are emailed to the lead pastor", "Nobody can edit an entry"] },
+    access:   { label: "Access Record", level: 3, side: "church", adds: "The Access Record screen: search and export every open, reply, change and archive. From the Shepherd plan every open is already recorded. The Plus plan adds this screen.", points: ["Search by person, record or action", "Export a copy, and the export is recorded too", "Nobody can edit an entry"] },
     gifts:    { label: "Gifts", level: 3, side: "church", adds: "The spiritual gifts conversation for members and a church-wide picture for pastors.", points: ["Plain arithmetic scoring; the AI never sets a score", "The chart stays hidden until 25 people finish", "Small counts show as fewer than 5", "Names only for people who said yes"] },
     reports:  { label: "Reports", level: 3, side: "church", adds: "Plain reports on guests, care and response times, counts only.", points: ["Guest path from first contact to serving", "Care volume and how fast we reply", "Counts only, never names or private words"] },
-    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. Shepherd has the four roles and a named prayer team; Plus adds custom roles, named gift viewers and more seats.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
+    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. The Shepherd plan has the four roles and a named prayer team; the Plus plan adds custom roles, named gift viewers and more seats.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
     "custom-roles": { label: "Custom Roles", level: 3, side: "church", adds: "Roles shaped to your church, like a care meals coordinator, and people named to see gift names for serving.", points: ["Custom roles with exactly what they need", "Named gift viewers", "Up to 15 staff seats"] },
     settings: { label: "Settings", level: 1, side: "church", adds: "The tools your church already uses, how follow-up and alerts travel, and when Genesis may sign in.", points: ["Giving, events and kids check-in links", "Follow-up and alert settings", "Support sessions, off by default"] },
-    genesis:  { label: "Hope", level: 2, side: "church", adds: "Hope drafts welcome notes and everyday replies, and summarizes the week. A person approves everything.", points: ["Drafts are labelled and wait for approval", "Never drafts a reply to prayer or a personal message", "Never sets a gifts score"] },
-    "member-app":   { label: "Member App", level: 2, side: "member", adds: "What members see on their phones: sign in, home, prayer with history, messages and Give.", points: ["Sign in with a 6 digit code sent by email", "Adults only", "Prayer with a history and any reply", "Private message threads with the church"] },
+    genesis:  { label: "Hope", level: 2, side: "church", adds: "Hope drafts welcome notes and everyday replies, and summarizes the week. A person approves everything.", points: ["Drafts are labeled and wait for approval", "Never drafts a reply to prayer or a personal message", "Never sets a gifts score"] },
+    "member-app":   { label: "Member App", level: 2, side: "member", adds: "What members see on their phones: sign in, home, prayer with history, messages and Give.", points: ["Sign in with a 6-digit code sent by email", "Adults only", "Prayer with a history and any reply", "Private message threads with the church"] },
     "member-gifts": { label: "My Gifts", level: 3, side: "member", adds: "The spiritual gifts conversation, one statement at a time, in the church's own voice.", points: ["Saves after every tap", "Results kept under My Gifts", "Names shared with pastors only after a yes"] }
   };
 
@@ -216,11 +240,11 @@
   D.guestSettings = { followUpChannel: "Email", textingEnabled: false, textingNote: "Texting is off. Guest follow-up goes by email unless the church turns texting on." };
 
   D.guests = [
-    { id: "g-01", personId: "p-maya",    stage: "new",        source: "Plan a Visit form", arrived: "2026-11-18T19:42", owner: "s-nadia", next: "Send a welcome note", due: "2026-11-19", draft: "d-01", visitDate: "2026-11-22", note: "Coming Sunday at the second gathering with her husband and two kids, ages 4 and 7. Asked where to check in the kids." },
-    { id: "g-02", personId: "p-daniel",  stage: "new",        source: "Hope conversation", arrived: "2026-11-18T22:15", owner: "s-nadia", next: "Send a welcome note", due: "2026-11-19", draft: "d-02", note: "Asked Hope about parking and what people wear. Left an email for a welcome note." },
+    { id: "g-01", personId: "p-maya",    stage: "new",        source: "Plan a Visit form", arrived: "2026-11-18T19:42", owner: "s-nadia", next: "Send a welcome note", due: "2026-11-19", draft: "d-01", visitDate: "2026-11-22", note: "Coming Sunday to {church.visitGathering} with her husband and two kids, ages 4 and 7. Asked where to check in the kids." },
+    { id: "g-02", personId: "p-daniel",  stage: "new",        source: "Hope conversation", arrived: "2026-11-18T22:15", owner: "s-nadia", next: "Send a welcome note", due: "2026-11-19", draft: "d-02", note: "Asked {assistant.name} about parking and what people wear. Left an email for a welcome note." },
     { id: "g-03", personId: "p-aisha",   stage: "new",        source: "Newsletter", arrived: "2026-11-17T08:05", owner: "s-nadia", next: "Invite to a Sunday", due: "2026-11-20", draft: "d-03", note: "Signed up for the newsletter after watching online for a month." },
     { id: "g-04", personId: "p-kenji",   stage: "new",        source: "Event sign-up", arrived: "2026-11-16T13:30", owner: "s-jun", next: "Welcome and confirm Serve Day details", due: "2026-11-18", note: "Signed up with his wife for the Thanksgiving Serve Day. First time with us." },
-    { id: "g-05", personId: "p-rosa",    stage: "welcomed",   source: "Plan a Visit form", arrived: "2026-11-12T10:10", owner: "s-nadia", next: "Meet at the welcome table Sunday", due: "2026-11-22", visitDate: "2026-11-22", note: "Welcome note sent Nov 13. Her son is 15 and curious about students." },
+    { id: "g-05", personId: "p-rosa",    stage: "welcomed",   source: "Plan a Visit form", arrived: "2026-11-12T10:10", owner: "s-nadia", next: "Meet {church.welcomeSpot} Sunday", due: "2026-11-22", visitDate: "2026-11-22", note: "Welcome note sent Nov 13. Her son is 15 and curious about students." },
     { id: "g-06", personId: "p-tomas",   stage: "welcomed",   source: "Connect card", arrived: "2026-11-15T11:20", owner: "s-nadia", coverFor: "s-hector", next: "Follow up after first visit", due: "2026-11-19", note: "Filled a connect card at the first gathering. Family of five, new to the area." },
     { id: "g-07", personId: "p-hannah",  stage: "welcomed",   source: "Hope conversation", arrived: "2026-11-14T21:02", owner: "s-nadia", next: "Answer the kids check-in question", due: "2026-11-21", note: "Asked about the nursery for her toddler. Waiting on her reply." },
     { id: "g-08", personId: "p-malik",   stage: "visited",    source: "Connect card", arrived: "2026-11-15T11:05", owner: "s-nadia", next: "Invite to Start Here on Dec 6", due: "2026-11-19", visitDate: "2026-11-15", note: "Second Sunday. Said he wants to know what the church believes." },
@@ -230,7 +254,7 @@
     { id: "g-12", personId: "p-omar",    stage: "start-here", source: "Connect card", arrived: "2026-10-25T11:15", owner: "s-nadia", next: "Send Start Here reminder", due: "2026-12-03", note: "Signed up for Start Here on Dec 6." },
     { id: "g-13", personId: "p-bethany", stage: "group",      source: "Event sign-up", arrived: "2026-09-27T10:00", owner: "s-nadia", coverFor: "s-hector", next: "Ask about serving", due: "2026-11-26", note: "Joined the Tuesday Night Group on Oct 27." },
     { id: "g-14", personId: "p-luis",    stage: "group",      source: "Hope conversation", arrived: "2026-09-20T20:45", owner: "s-nadia", coverFor: "s-hector", next: "Invite to the gifts conversation", due: "2026-12-01", note: "Joined Young Adults. Asked how to find a place to serve." },
-    { id: "g-15", personId: "p-mei",     stage: "serving",    source: "Plan a Visit form", arrived: "2026-09-06T09:00", owner: "s-jun", next: "Thirty day check-in", due: "2026-12-01", note: "On the Welcome Team since Nov 1." },
+    { id: "g-15", personId: "p-mei",     stage: "serving",    source: "Plan a Visit form", arrived: "2026-09-06T09:00", owner: "s-jun", next: "Thirty-day check-in", due: "2026-12-01", note: "On the Welcome Team since Nov 1." },
     { id: "g-16", personId: "p-jamal",   stage: "serving",    source: "Newsletter", arrived: "2026-08-23T08:30", owner: "s-jun", next: "Thank-you note from a pastor", due: "2026-11-30", note: "On the Production team since Oct 18." },
     /* Gone quiet: no reply after two emails, or a planned visit missed. Each gets one gentle last note, then a choice to close. */
     { id: "g-17", personId: "p-yusuf",   stage: "welcomed",   source: "Hope conversation", arrived: "2026-10-28T21:10", owner: "s-nadia", next: "Send a gentle last note", due: "2026-11-21", note: "Asked Hope about Sunday times and left his email. Two welcome emails, Nov 4 and Nov 12, with no reply yet.",
@@ -255,7 +279,7 @@
      Prayer requests never go to the AI. Genesis never drafts a reply to prayer. */
   D.prayer = [
     { id: "pr-01", personId: "p-sarah",   received: "2026-11-18T07:55", topic: "Health", visibility: "prayer", status: "new", owner: "s-owen", waitingOnUs: true,
-      text: "My mom starts treatment next week in Durham. Please pray for her strength and for our family as we take turns driving her." },
+      text: "My mom starts treatment next week, about two hours away. Please pray for her strength and for our family as we take turns driving her." },
     { id: "pr-02", personId: "p-wyatt",   received: "2026-11-17T12:20", topic: "Job search", visibility: "prayer", status: "praying", owner: "s-sofia",
       text: "I have a second interview on Monday after eight months of looking. Please pray for peace and clear thinking.",
       replies: [{ from: "s-sofia", at: "2026-11-17T16:05", text: "Wyatt, the prayer team is praying for Monday. We are cheering you on." }] },
@@ -265,7 +289,7 @@
     { id: "pr-04", personId: "p-caleb",   received: "2026-11-18T18:30", topic: "Grief", visibility: "pastors", status: "new", owner: "s-care", waitingOnUs: true,
       text: "My grandfather passed away last week. Please pray for my grandmother, who is now on her own." },
     { id: "pr-05", personId: "p-naomi",   received: "2026-11-15T20:10", topic: "A move", visibility: "prayer", status: "replied", owner: "s-sofia",
-      text: "We are moving to Columbus in January for my husband's job. Please pray for the move and for a new church home.",
+      text: "We are moving out of state in January for my husband's job. Please pray for the move and for a new church home.",
       replies: [{ from: "s-sofia", at: "2026-11-16T10:00", text: "We will miss you, Naomi. We are praying for every box and every goodbye." }] },
     { id: "pr-06", personId: "p-diego",   received: "2026-11-12T08:15", topic: "Health", visibility: "prayer", status: "replied", owner: "s-owen",
       text: "Knee surgery on Thursday. Thankful for a good doctor. Please pray for a smooth recovery.",
@@ -299,8 +323,8 @@
     { id: "t-04", personId: "p-noah", subject: "Lost water bottle", kind: "everyday", owner: "s-imani", status: "archived", started: "2026-11-16T13:00",
       messages: [{ from: "member", at: "2026-11-16T13:00", text: "I left a green water bottle in the back row on Sunday." }, { from: "s-imani", at: "2026-11-16T15:20", text: "Found it. It is at the welcome desk for you." }, { from: "member", at: "2026-11-16T15:31", text: "Thank you!" }] },
     { id: "t-05", personId: "p-maya", subject: "Arriving with kids", kind: "everyday", owner: "s-nadia", status: "waiting-on-them", started: "2026-11-18T19:50",
-      messages: [{ from: "member", at: "2026-11-18T19:50", text: "What time should we arrive on Sunday so the kids can check in?" }, { from: "s-nadia", at: "2026-11-19T08:10", text: "Hi Maya! Kids check-in opens 20 minutes before each gathering. I will meet you at the welcome table." }] },
-    { id: "t-06", personId: "p-sarah", subject: "Thank you for praying", kind: "private", owner: "s-care", status: "waiting-on-them", started: "2026-11-18T08:30",
+      messages: [{ from: "member", at: "2026-11-18T19:50", text: "What time should we arrive on Sunday so the kids can check in?" }, { from: "s-nadia", at: "2026-11-19T08:10", text: "Hi Maya, great question! I am sending you a short welcome note today with everything for Sunday, kids check-in included." }] },
+    { id: "t-06", personId: "p-sarah", subject: "A call about your mom", kind: "private", owner: "s-care", status: "waiting-on-them", started: "2026-11-18T08:30",
       messages: [{ from: "s-care", at: "2026-11-18T08:30", text: "Sarah, I saw your request about your mom. Would it help if I called this week, or would a meal be better?" }, { from: "member", at: "2026-11-18T12:05", text: "A call would mean a lot. Thursday evening works best." }, { from: "s-care", at: "2026-11-18T12:40", text: "Thursday at 7 it is. I will call you then." }] },
     { id: "t-07", personId: "p-hannah", subject: "Nursery question", kind: "everyday", owner: "s-nadia", status: "waiting-on-them", started: "2026-11-15T09:00",
       messages: [{ from: "member", at: "2026-11-15T09:00", text: "Do you have a nursery for an 18 month old?" }, { from: "s-nadia", at: "2026-11-15T11:30", text: "We do! It is staffed by two checked volunteers every Sunday. Would you like a tour before the service?" }] },
@@ -311,19 +335,19 @@
   /* ------------------------------------------------------------------ access record */
   /* Append only. No private words. The lead pastor can read it; nobody can edit it. */
   D.access = [
-    { at: "2026-11-19T09:41", who: "s-lead",  action: "Opened", what: "Prayer request from Sarah N.", where: "Care inbox" },
-    { at: "2026-11-19T09:15", who: "s-owen",  action: "Opened", what: "Prayer request from Jasmine Y.", where: "Care inbox" },
-    { at: "2026-11-19T08:10", who: "s-nadia", action: "Replied", what: "Thread with Maya T.", where: "Care inbox" },
-    { at: "2026-11-18T14:02", who: "s-nadia", action: "Opened", what: "Person page for Maya T.", where: "People" },
-    { at: "2026-11-18T09:00", who: "s-care",  action: "Added a note", what: "Urgent request from Peter K.", where: "Care inbox" },
-    { at: "2026-11-17T21:31", who: "s-care",  action: "Opened", what: "Urgent request from Peter K.", where: "Care inbox" },
+    { at: "2026-11-19T09:41", who: "s-lead",  action: "Opened", what: "Prayer request from Sarah N.", where: "Care Inbox" },
+    { at: "2026-11-19T09:15", who: "s-owen",  action: "Opened", what: "Prayer request from Jasmine Y.", where: "Care Inbox" },
+    { at: "2026-11-19T08:10", who: "s-nadia", action: "Replied", what: "Thread with Maya T.", where: "Care Inbox" },
+    { at: "2026-11-19T08:05", who: "s-nadia", action: "Opened", what: "Guest record for Maya T.", where: "Guests" },
+    { at: "2026-11-18T09:00", who: "s-care",  action: "Added a note", what: "Urgent request from Peter K.", where: "Care Inbox" },
+    { at: "2026-11-17T21:31", who: "s-care",  action: "Opened", what: "Urgent request from Peter K.", where: "Care Inbox" },
     { at: "2026-11-17T21:12", who: "system",  action: "Alerted", what: "Pastor on call, by email and phone notification, with no private words", where: "Crisis check" },
     { at: "2026-11-17T11:00", who: "s-lead",  action: "Changed a role", what: "Sofia R. added to the prayer team. Emailed to the lead pastor.", where: "Team roles" },
-    { at: "2026-11-16T15:40", who: "s-imani", action: "Archived", what: "Thread with Noah B. (archived, not deleted)", where: "Care inbox" },
+    { at: "2026-11-16T15:40", who: "s-imani", action: "Archived", what: "Thread with Noah B. (archived, not deleted)", where: "Care Inbox" },
     { at: "2026-11-15T10:20", who: "s-jun",   action: "Viewed names", what: "Gifts finder: Hospitality, 6 people who said yes", where: "Gifts" },
-    { at: "2026-11-14T16:05", who: "s-imani", action: "Blocked", what: "Opened an old forwarded link to a prayer request. Staff cannot open prayer, so nothing was shown.", where: "Care inbox", blocked: true },
+    { at: "2026-11-14T16:05", who: "s-imani", action: "Blocked", what: "Opened an old forwarded link to a prayer request. Staff cannot open prayer, so nothing was shown.", where: "Care Inbox", blocked: true },
     { at: "2026-11-13T13:30", who: "s-lead",  action: "Exported", what: "A copy of Diego S.'s record, at his request", where: "People" },
-    { at: "2026-11-12T08:40", who: "s-owen",  action: "Opened", what: "Prayer request from Diego S.", where: "Care inbox" }
+    { at: "2026-11-12T08:40", who: "s-owen",  action: "Opened", what: "Prayer request from Diego S.", where: "Care Inbox" }
   ];
 
   /* ------------------------------------------------------------------ gifts */
@@ -419,16 +443,16 @@
   };
 
   /* ------------------------------------------------------------------ Genesis drafts (church side) */
-  /* Every draft is labelled and waits for a person. Genesis never drafts prayer or personal replies. */
+  /* Every draft is labeled and waits for a person. Genesis never drafts prayer or personal replies. */
   D.drafts = [
     { id: "d-01", side: "church", kind: "Welcome note", to: "p-maya", guest: "g-01", channel: "Email", owner: "s-nadia",
       why: "Planned a visit for Sunday with two kids, ages 4 and 7.",
       subject: "See you Sunday, Maya",
-      body: "Hi Maya,\n\nThank you for letting us know you are coming on Sunday. We are glad you are bringing the kids.\n\nKids check-in opens 20 minutes before each gathering. Look for the welcome table just inside the main doors and ask for Nadia. I will walk you over and make sure everyone feels at home.\n\nSee you soon,\nNadia K., {church.short}" },
+      body: "Hi Maya,\n\nThank you for letting us know you are coming on Sunday. We are glad you are bringing the kids.\n\n{church.kidsCheckIn} When you arrive, look for me {church.welcomeSpot}. I will walk you over and make sure everyone feels at home.\n\nSee you soon,\nNadia K., {church.short}" },
     { id: "d-02", side: "church", kind: "Welcome note", to: "p-daniel", guest: "g-02", channel: "Email", owner: "s-nadia",
-      why: "Asked Hope about parking and what to wear.",
+      why: "Asked {assistant.name} about parking and what to wear.",
       subject: "A little help for your first Sunday",
-      body: "Hi Daniel,\n\nHope mentioned you had a couple of questions. There is free parking in the lot beside the building, with spots saved for first-time guests near the doors.\n\nAs for what to wear, come as you are. You will see jeans and you will see a few jackets.\n\nIf you want, reply and I will save you a seat.\n\nNadia K., {church.short}" },
+      body: "Hi Daniel,\n\n{assistant.name} mentioned you had a couple of questions. {church.parking}\n\nAs for what to wear, come as you are. You will see jeans and you will see a few jackets.\n\nIf you want, reply and I will save you a seat.\n\nNadia K., {church.short}" },
     { id: "d-03", side: "church", kind: "Welcome note", to: "p-aisha", guest: "g-03", channel: "Email", owner: "s-nadia",
       why: "Joined the newsletter after a month of watching online.",
       subject: "Glad you are here, Aisha",
@@ -440,7 +464,7 @@
   ];
   D.summaries = [
     { id: "sum-week", side: "church", title: "This week, in counts only",
-      body: "Ten new guests this month so far, four of them since Sunday. Six follow-ups are due today and two are overdue. Care has six items waiting on us; the oldest is two days. The urgent request from Tuesday night was handled: the person was given 988 and 911 right away and the pastor on call followed up." }
+      body: "Ten new guests this month so far, four of them since Sunday. Six follow-ups are due, two of them overdue. Care has six items waiting on us; the oldest is two days. The urgent request from Tuesday night was handled: the person was given 988 and 911 right away and the pastor on call followed up." }
   ];
 
   /* ================================================================== GENESIS SIDE */
@@ -473,7 +497,7 @@
     ],
     afterStages: [{ key: "onboarding", label: "Onboarding" }, { key: "managed", label: "Managed" }],
     deals: [
-      { id: "a-lightwell",  church: "bright-modern",    name: "Lightwell Church", city: "Raleigh", state: "NC", stage: "managed", level: 2, look: "bright-modern", owner: "g-amara", since: "2026-09-14", next: "Quarterly review, and a look at Plus", due: "2026-12-10", source: "Referral from a pastor friend", demo: true },
+      { id: "a-lightwell",  church: "bright-modern",    name: "Lightwell Church", city: "Raleigh", state: "NC", stage: "managed", level: 2, look: "bright-modern", owner: "g-amara", since: "2026-09-14", next: "Quarterly review, and a look at the Plus plan", due: "2026-12-10", source: "Referral from a pastor friend", demo: true },
       { id: "a-lampstand",  church: "bold-dark",        name: "Lampstand Church", city: "Columbus", state: "OH", stage: "onboarding", level: 3, look: "bold-dark", owner: "g-amara", signed: "2026-10-22", launchTarget: "2027-01-10", next: "Site build review with Pastor Talia", due: "2026-11-24", source: "Inbound from geai.us", demo: true },
       { id: "a-goldenrod",  church: "warm-community",   name: "Goldenrod Commons Church", city: "Des Moines", state: "IA", stage: "signed", level: 2, look: "warm-community", owner: "g-victor", signed: "2026-11-12", launchTarget: "2027-02-01", next: "Kickoff call and photo checklist", due: "2026-11-20", source: "Website Check reply", demo: true },
       { id: "a-calderhill", church: "classic-timeless", name: "Calder Hill Chapel", city: "Richmond", state: "VA", stage: "proposal", level: 3, look: "classic-timeless", owner: "g-victor", proposalSent: "2026-11-16", next: "Elder board decision", due: "2026-12-01", source: "Conference conversation", demo: true },

@@ -1,5 +1,5 @@
 /* Genesis Ministry design preview: a small SVG chart helper. No dependencies.
-   One axis per chart, labelled axes and values, a legend for two or more series,
+   One axis per chart, labeled axes and values, a legend for two or more series,
    colors from the Obsidian chart tokens in a fixed order (series 1 = --v2-chart-1),
    drawn the way the Genesis OS Reports screen draws them: thin bars, quiet axes and a small legend under the plot,
    a tooltip on hover and keyboard focus, a View as Table toggle, and no motion.
@@ -479,7 +479,7 @@
       txt(g, left - 10, cy + 4, lab, { "text-anchor": "end", style: "fill:var(--v2-text-2);font-size:12px" });
       var lines = [], base = 0, total = 0, endX = left;
       if (stacked && hiddenSplit(series, i, o)) {
-        /* One unsplit bar at the true total, labelled with which part is fewer than 5. */
+        /* One unsplit bar at the true total, labeled with which part is fewer than 5. */
         var tot = totalAt(series, i), tpv = plotVal(tot, o), names = smallNames(series, i, o);
         if (tpv > 0) el("rect", { x: left, y: cy - barH / 2, width: Math.max(0, x(tpv) - left), height: barH, rx: 2, style: "fill:" + col((series[0] && series[0].color) || 1) + ";fill-opacity:.5" }, g);
         if (o.showValues !== false) txt(g, x(tpv) + 6, cy + 4, shortValue(tot, o) + (isSmall(tot, o) ? "" : narrowSplit ? " (<5)" : " (" + names.join(", ") + " <5)"), { "class": "gm-ch-value" });
@@ -492,7 +492,7 @@
         var v = s.values[i], c = col(s.color || si + 1), pv = plotVal(v || 0, o);
         var proj = !stacked && s.projected && s.projected[i] != null ? s.projected[i] : null;
         if (proj != null && v == null) {
-          /* A target, not a result: drawn hatched, labelled as a target. */
+          /* A target, not a result: drawn hatched, labeled as a target. */
           var pby = cy - (k * barH + (k - 1) * 2) / 2 + si * (barH + 2);
           el("path", { d: rightRoundedRect(left, pby, x(proj) - left, barH, 2), fill: "url(#" + hatchId + ")", style: "stroke:" + c + ";stroke-opacity:.55;stroke-width:1" }, g);
           if (o.showValues !== false) txt(g, x(proj) + 6, pby + barH / 2 + 4, "~" + shortValue(proj, o) + " " + (o.projectedShort || "target"), { "class": "gm-ch-proj" });
@@ -542,7 +542,10 @@
     if (o.reference) max = Math.max(max, o.reference.value);
     var sc = niceScale(o.yMax || max * 1.1, 4);
     var tickW = Math.max(textW(num(sc.max)), 14);
-    var left = Math.round(tickW + 14), right = 18, top = o.yTitle ? 30 : 16, bottom = o.xTitle ? 46 : 28;
+    /* With two or more series the last values sit to the right of their points, so leave room for them. */
+    var multiEnd = series.length > 1 && o.showValues !== false;
+    var endW = multiEnd ? Math.max.apply(null, series.map(function (s) { var v = s.values[n - 1]; return v == null ? 0 : textW(shortValue(v, o)); })) + 12 : 0;
+    var left = Math.round(tickW + 14), right = Math.max(18, Math.round(endW)), top = o.yTitle ? 30 : 16, bottom = o.xTitle ? 46 : 28;
     var pw = W - left - right, ph = H, totalH = top + ph + bottom;
     var svg = el("svg", { viewBox: "0 0 " + W + " " + totalH, width: W, height: totalH, role: "group", "aria-label": (o.title || "Chart") + (o.summary ? ". " + o.summary : "") });
     var y = function (v) { return top + ph - (v / sc.max) * ph; };
@@ -570,7 +573,7 @@
       });
       el("path", { d: d, fill: "none", style: "stroke:" + c + ";stroke-width:2;stroke-linejoin:round;stroke-linecap:round" }, svg);
     });
-    var points = [];
+    var points = [], ends = [];
     var single = series.length === 1;
     labels.forEach(function (lab, i) {
       var g = el("g", { "class": "gm-ch-point" }, svg);
@@ -581,8 +584,9 @@
         if (v != null) {
           el("circle", { cx: xAt(i), cy: y(v), r: 3, style: "fill:var(--v2-surface);stroke:" + c + ";stroke-width:2" }, g);
           peak = Math.min(peak, y(v));
-          var labelIt = o.showValues !== false && (single ? (n <= 14 || i === n - 1) : i === n - 1);
+          var labelIt = o.showValues !== false && single && (n <= 14 || i === n - 1);
           if (labelIt) txt(g, xAt(i), y(v) - 9, shortValue(v, o), { "text-anchor": "middle", "class": "gm-ch-value" });
+          if (!single && multiEnd && i === n - 1) ends.push({ g: g, y: y(v), text: shortValue(v, o) });
         }
         var extra = s.notes && s.notes[i] ? ", " + s.notes[i] : "";
         lines.push({ color: single ? null : c, text: (single ? "" : s.name + ": ") + fullValue(v, o) + extra });
@@ -590,6 +594,15 @@
       var full = o.fullLabels ? o.fullLabels[i] : lab;
       points.push({ g: g, x: xAt(i), y: peak, title: full, lines: lines, aria: full + ": " + lines.map(function (l) { return l.text; }).join("; ") });
     });
+    /* The last value of each series, beside its point and pushed apart so no two labels touch. */
+    if (ends.length) {
+      ends.sort(function (a, b) { return a.y - b.y; });
+      for (var e = 1; e < ends.length; e++) if (ends[e].y - ends[e - 1].y < 12) ends[e].y = ends[e - 1].y + 12;
+      var over = ends[ends.length - 1].y - (top + ph);
+      if (over > 0) ends.forEach(function (it) { it.y -= over; });
+      for (var e2 = ends.length - 2; e2 >= 0; e2--) if (ends[e2 + 1].y - ends[e2].y < 12) ends[e2].y = ends[e2 + 1].y - 12;
+      ends.forEach(function (it) { txt(it.g, xAt(n - 1) + 8, it.y + 4, it.text, { "text-anchor": "start", "class": "gm-ch-value" }); });
+    }
     if (o.xTitle) txt(svg, left + pw / 2, top + ph + 40, o.xTitle, { "text-anchor": "middle", "class": "gm-ch-axis-title" });
     this.plot.appendChild(svg);
     this.wirePoints(svg, points);

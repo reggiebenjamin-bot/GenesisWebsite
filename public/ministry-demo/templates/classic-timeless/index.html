@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Calder Hill Chapel | Template Preview</title>
-<meta name="description" content="Calder Hill Chapel is a fictional church in Richmond, Virginia, shown as a Genesis Ministry template preview in the Classic and Timeless look. Sundays 9:00 and 11:00 AM.">
+<title>Calder Hill Chapel | Richmond, VA | Template Preview</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="description" content="Template preview: Calder Hill Chapel, a made-up church in Richmond, Virginia, shown in the Genesis Ministry Classic and Timeless look. Sundays at 9:00 and 11:00 AM.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1F3D2F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Commissioner:FLAR,wght@0..100,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
 <style>
 /* =====================================================================
-   CALDER HILL CHAPEL · Classic & Timeless
+   CALDER HILL CHAPEL · Classic and Timeless
    A heritage look that still feels current: parchment grounds, deep
    forest green, brass hairlines and a small burgundy accent. Newsreader
    for headlines, Commissioner (flared) for reading.
@@ -28,7 +29,7 @@
   --wrap:1200px; --gutter:clamp(20px,4.6vw,64px);
   --section:clamp(72px,9vw,132px); --stack:clamp(36px,4vw,56px);
   --ease:cubic-bezier(.2,.7,.2,1); --ease-soft:cubic-bezier(.22,.61,.36,1);
-  --hdr:84px;
+  --hdr:84px; --pv:36px;
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -102,10 +103,19 @@ em{font-style:italic}
 /* =====================================================================
    PREVIEW BADGE + HEADER
    ===================================================================== */
-.preview{background:var(--deep);color:var(--on-dark);font-size:12.5px;line-height:1.3;text-align:center;padding:7px 16px;position:relative;z-index:61}
-.preview .tag{display:inline-block;margin-right:10px;padding:2px 9px 3px;border:1px solid var(--brass-light);border-radius:2px;
+.preview{position:relative;z-index:61;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 14px;min-height:var(--pv);padding:0 16px;background:var(--deep);color:var(--on-dark);font-size:12.5px;line-height:1.3;text-align:center}
+.preview .tag{flex:none;display:inline-block;padding:2px 9px 3px;border:1px solid var(--brass-light);border-radius:2px;
   font-family:var(--serif);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass-light)}
 .preview .more{color:var(--on-dark-muted)}
+.preview a{display:inline-flex;align-items:center;min-height:36px;color:var(--ivory);font-weight:600;text-decoration:underline;text-decoration-color:var(--brass-light);text-decoration-thickness:1px;text-underline-offset:4px}
+.preview a:hover{color:var(--brass-light)}
+.preview a:focus-visible{outline-color:var(--brass-light)}
+/* The preview strip stays on one line: the full sentence on wide screens, a short one on tablets, the tag and the link on phones */
+.preview{padding-top:0;padding-bottom:0}
+.preview .pv-mid{display:none}
+@media (max-width:1099px){.preview .pv-long,.preview .more,.preview .long{display:none}.preview .pv-mid{display:inline}}
+@media (max-width:640px){.preview .pv-mid{display:none}}
+@media (max-width:360px){.preview{padding-left:8px;padding-right:8px;column-gap:8px;font-size:12px}.preview .tag{font-size:9.5px;letter-spacing:.06em}}
 
 .site-header{position:sticky;top:0;z-index:50;background:var(--parchment);border-bottom:3px double var(--rule)}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:28px;height:var(--hdr)}
@@ -166,7 +176,7 @@ body.menu-open{overflow:hidden}
     repeating-linear-gradient(0deg,rgba(255,255,255,.016) 0 1px,rgba(255,255,255,0) 1px 3px),
     repeating-linear-gradient(90deg,rgba(0,0,0,.035) 0 1px,rgba(0,0,0,0) 1px 4px)}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);align-items:center;gap:clamp(40px,6vw,104px);
-  min-height:min(840px,calc(100svh - var(--hdr) - 31px));padding-block:clamp(56px,6.5vw,96px)}
+  min-height:min(840px,calc(100svh - var(--hdr) - var(--pv)));padding-block:clamp(56px,6.5vw,96px)}
 .hero-title{font-size:clamp(46px,7.6vw,112px);line-height:.98;font-weight:400;color:var(--ivory);letter-spacing:-.02em;margin:0 0 26px}
 .hero-title .l1,.hero-title .l2{display:block}
 .rot{display:inline-grid;vertical-align:baseline}
@@ -282,7 +292,14 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .strip{position:relative;margin-top:var(--stack);overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .strip-track{display:flex;align-items:flex-start;gap:28px;width:max-content;padding:6px 0 18px;animation:drift 70s linear infinite}
-.strip:hover .strip-track,.strip:focus-within .strip-track{animation-play-state:paused}
+.strip:hover .strip-track,.strip:focus-within .strip-track,.strip.paused .strip-track{animation-play-state:paused}
+/* Pause Motion: the album (and every moving part) stops for anyone, by touch, mouse or keyboard (WCAG 2.2.2), as on the other three looks */
+.strip-ctrl{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:6px;padding:0 18px;background:none;border:1.5px solid var(--rule);border-radius:2px;color:var(--forest);font:600 14.5px/1 var(--sans,inherit);cursor:pointer;transition:border-color .2s ease,background-color .2s ease}
+.strip-ctrl:hover{border-color:var(--forest);background:var(--vellum)}
+.strip-ctrl:focus-visible{outline:3px solid var(--brass);outline-offset:3px}
+.strip-ctrl svg{width:12px;height:12px}
+/* The edge fade would hide the focus ring, so it lifts while the strip has keyboard focus */
+.strip:focus-visible{-webkit-mask-image:none;mask-image:none}
 .print-item{margin:0;width:clamp(260px,26vw,380px);flex:none;padding:10px 10px 0;background:var(--ivory);border:1px solid var(--rule);box-shadow:0 18px 30px -26px rgba(21,42,32,.6)}
 .print-item:nth-child(even){margin-top:26px}
 .print-item img{width:100%;aspect-ratio:4/3;object-fit:cover}
@@ -353,7 +370,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .f-kinds{display:flex;flex-wrap:wrap;gap:6px 26px;margin:18px 0 0;font-size:16.5px;color:var(--on-dark-muted)}
 .f-kinds b{color:var(--on-dark);font-weight:600}
 .f-cols{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;gap:40px;padding:44px 0}
-.f-cols h4{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-light);margin:0 0 16px}
+.f-cols h3{font-family:var(--serif);font-size:13px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--brass-light);margin:0 0 16px}
 .f-cols ul{list-style:none;margin:0;padding:0}
 .f-cols li a,.f-cols li button{display:inline-block;padding:5px 0;background:none;border:0;font-size:16.5px;color:var(--on-dark);text-decoration:none;text-align:left}
 .f-cols li a:hover,.f-cols li button:hover{color:var(--brass-light);text-decoration:underline;text-underline-offset:4px}
@@ -363,7 +380,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .f-addr{font-size:16.5px;line-height:1.6;margin:0 0 12px}
 .f-dir{color:var(--brass-light);font-weight:600;text-decoration:none;background:linear-gradient(currentColor,currentColor) no-repeat left bottom/100% 1px;padding-bottom:2px}
 .socials{display:flex;gap:10px}
-.socials a{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule-dark);border-radius:50%;color:var(--on-dark);transition:border-color .3s ease,color .3s ease}
+.socials a{flex:none;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule-dark);border-radius:50%;color:var(--on-dark);transition:border-color .3s ease,color .3s ease}
 .socials a:hover{border-color:var(--brass-light);color:var(--brass-light)}
 .socials svg{width:18px;height:18px}
 .f-base{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 28px;padding-top:26px;border-top:1px solid var(--rule-dark);font-size:14.5px;color:var(--on-dark-muted)}
@@ -417,7 +434,7 @@ body:not(.sb-open){--hd-bottom:0px}
 body .hd-launch{transition:transform .25s cubic-bezier(.2,.7,.2,1),bottom .45s var(--ease),opacity .3s ease}
 body .hd-launch::after{content:"";position:absolute;inset:4px;border-radius:50%;border:1px solid rgba(210,181,116,.65);pointer-events:none}
 body .hd-invite{transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),bottom .45s var(--ease)}
-body.menu-open .hd-launch,body.menu-open .hd-invite{opacity:0;visibility:hidden;pointer-events:none}
+body.menu-open .hd-launch,body.menu-open .hd-invite,body.fd-open .hd-launch,body.fd-open .hd-invite{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 body .hd-invite p{padding-right:24px}
 @media (min-width:641px){body{--hd-bottom:0px}}
 @media (max-width:640px){
@@ -442,6 +459,73 @@ body .hd-invite p{padding-right:24px}
   font-size:15px;line-height:1.45;border-radius:2px;border-bottom:3px double var(--brass-light);transition:transform .45s var(--ease);box-shadow:0 18px 40px -20px rgba(21,42,32,.7)}
 .toast.show{transform:translate(-50%,0);visibility:visible}
 .show-sm{display:none}
+
+/* =====================================================================
+   PLAN A VISIT AND PRAYER FORMS (design preview: nothing is sent)
+   ===================================================================== */
+.fd{position:fixed;inset:0;z-index:92;display:grid;place-items:center;padding:24px;background:rgba(14,26,20,.78);opacity:0;transition:opacity .3s ease}
+.fd.open{opacity:1}
+.fd[hidden],.fd [hidden]{display:none!important}
+.fd-card{position:relative;display:flex;flex-direction:column;width:min(620px,100%);max-height:calc(100svh - 48px);background:var(--ivory);color:var(--ink);border:1px solid var(--rule);border-top:3px double var(--brass);outline:1px solid rgba(210,181,116,.35);outline-offset:6px;box-shadow:0 40px 80px -36px rgba(21,42,32,.7);transform:translateY(14px);transition:transform .45s var(--ease)}
+.fd.open .fd-card{transform:none}
+.fd-head{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:24px 18px 18px 28px;border-bottom:1px solid var(--rule)}
+.fd-head .label{margin-bottom:12px}
+.fd-title{font-family:var(--serif);font-weight:400;font-size:clamp(30px,3.2vw,40px);line-height:1.05;color:var(--forest)}
+.fd-title:focus{outline:none}
+.fd-x{flex:none;width:44px;height:44px;display:grid;place-items:center;background:none;border:1px solid var(--rule);border-radius:50%;color:var(--forest)}
+.fd-x:hover{border-color:var(--forest)}
+.fd-x svg{width:18px;height:18px}
+.fd-scroll{overflow-y:auto;overscroll-behavior:contain;padding:22px 28px 28px}
+.fd-lede{color:var(--muted);margin:0 0 20px;font-size:17px}
+.fd-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
+.fd-field{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;min-width:0}
+.fd-field > label,.fd-set legend{font-weight:600;font-size:15.5px;line-height:1.3;color:var(--ink)}
+.fd-opt{font-weight:400;color:var(--muted)}
+.fd input[type="text"],.fd input[type="email"],.fd select,.fd textarea{width:100%;min-height:52px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.4;color:var(--ink);background:#fff;border:1px solid #BDAF92;border-radius:2px}
+.fd textarea{min-height:108px;resize:vertical}
+.fd input:focus-visible,.fd select:focus-visible,.fd textarea:focus-visible{outline:2px solid var(--burgundy);outline-offset:1px;border-color:var(--forest)}
+.fd [aria-invalid="true"]{border-color:var(--burgundy)}
+.fd-err{margin:0;color:var(--burgundy);font-size:14.5px;font-weight:600}
+.fd-hint{margin:0;color:var(--muted);font-size:14.5px;line-height:1.45}
+.fd-set{border:0;margin:0 0 18px;padding:0;min-width:0}
+.fd-set legend{padding:0;margin-bottom:9px}
+.fd-choices{display:flex;flex-wrap:wrap;gap:8px}
+.fd-choice{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:10px 18px;background:#fff;border:1px solid #BDAF92;border-radius:2px;cursor:pointer;font-weight:600;font-size:15.5px;line-height:1.3;color:var(--forest)}
+.fd-choice input{flex:none;width:18px;height:18px;margin:0;accent-color:var(--forest)}
+.fd-choice:has(input:checked){border-color:var(--forest);box-shadow:inset 0 0 0 1px var(--forest);background:var(--parchment)}
+.fd-choice:has(input:focus-visible){outline:2px solid var(--burgundy);outline-offset:2px}
+.fd-stack{display:grid;gap:8px}
+.fd-stack .fd-choice{display:flex;align-items:flex-start;width:100%}
+.fd-stack .fd-choice input{margin-top:2px}
+.fd-choice small{display:block;margin-top:3px;font-weight:400;font-size:14.5px;color:var(--muted)}
+.fd-tick{display:flex;align-items:flex-start;gap:12px;min-height:44px;margin-bottom:18px;cursor:pointer;font-size:16px;line-height:1.45}
+.fd-tick input{flex:none;width:20px;height:20px;margin:2px 0 0;accent-color:var(--forest)}
+.fd-submit{width:100%}
+.fd-note{display:flex;align-items:flex-start;gap:12px;margin:16px 0 0;padding:13px 15px;background:var(--parchment);border:1px solid var(--rule);font-size:15.5px;line-height:1.5}
+.fd-note svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--burgundy)}
+.fd-note a{color:var(--forest);font-weight:700;text-underline-offset:3px;white-space:nowrap}
+.fd-note.line{background:none}
+.fd-note.line svg{color:var(--brass-deep)}
+.fd-fine{margin:14px 0 0;font-size:14.5px;color:var(--muted)}
+.fd-done p{margin:0 0 12px}
+.fd-done .fd-demo{margin-top:22px}
+.fd-done .fd-big{font-family:var(--serif);font-size:21px;line-height:1.5;color:var(--forest)}
+.fd-done .fd-big a{color:var(--forest);font-weight:600;text-underline-offset:3px;white-space:nowrap}
+.fd-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.fd-demo{display:grid;gap:2px;margin-top:22px;padding:14px 16px;border:1px dashed #BDAF92}
+.fd-demo .k{font-family:var(--serif);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--burgundy)}
+.fd-demo a{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:600;color:var(--forest);text-decoration:underline;text-decoration-color:var(--brass);text-underline-offset:4px}
+.fd-demo a:hover{color:var(--burgundy)}
+.fd-demo span:last-child{font-size:14.5px;color:var(--muted)}
+body.fd-open{overflow:hidden}
+@media (max-width:640px){
+  .fd{padding:0;place-items:stretch;grid-template-rows:minmax(0,1fr)}
+  .fd-card{width:100%;max-height:none;height:auto;border:0;border-top:3px double var(--brass);outline:0}
+  .fd-head{padding:14px 12px 14px 20px}
+  .fd-title{font-size:30px}
+  .fd-scroll{padding:20px 20px calc(28px + env(safe-area-inset-bottom))}
+  .fd-grid{grid-template-columns:minmax(0,1fr)}
+}
 
 /* =====================================================================
    MOTION: rise in, draw the brass rule, settle to a short mark
@@ -493,8 +577,10 @@ body .hd-invite p{padding-right:24px}
   .f-hero{grid-template-columns:1fr}
 }
 @media (max-width:640px){
+  :root{--pv:44px}
   body{font-size:17px}
   .preview .more{display:none}
+  .preview a{min-height:44px}
   .hero-title{font-size:clamp(44px,12.4vw,60px);margin-bottom:18px}
   .hero-lede{display:none}
   .hero-times{flex-direction:column;align-items:flex-start;gap:2px;margin-bottom:24px;font-size:16.5px}
@@ -530,11 +616,13 @@ body .hd-invite p{padding-right:24px}
   .signup .btn{width:100%}
   .f-cols{grid-template-columns:1fr;gap:30px;padding:36px 0}
   .f-base{flex-direction:column}
-  .f-cols li a,.f-cols li button{display:inline-flex;align-items:center;min-height:44px;padding:0}
+  .f-cols li a,.f-cols li button{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:0}
   .f-base a{display:inline-block;padding:12px 0}
-  .f-dir{display:inline-flex;align-items:center;min-height:44px;padding:0;background-position:left calc(100% - 8px)}
+  .f-dir{display:inline-flex;align-items:center;gap:.3em;min-height:44px;padding:0;background-position:left calc(100% - 8px)}
   .site-footer .brand{min-height:48px}
   .sbar{display:block}
+  /* Keyboard focus and in-page jumps stop above the bar, never behind it */
+  html{scroll-padding-bottom:calc(69px + env(safe-area-inset-bottom) + 12px)}
   body.sb-open .chat-fab{opacity:0;visibility:hidden;transform:translateY(20px)}
   .chat-fab{right:16px;bottom:16px}
   /* Like the old chat circle, Hope's circle waits until the hero buttons are scrolled past, so it never sits on Get Directions */
@@ -542,6 +630,14 @@ body .hd-invite p{padding-right:24px}
   .chat{right:0;left:0;bottom:0;width:100%;max-height:82svh;border-left:0;border-right:0}
   .quotes{margin:7px 7px 7px}
   .player .pbtn{width:66px;height:66px;margin:-33px 0 0 -33px}
+}
+/* Touch screens of any size: the same 44px targets as phones */
+@media (pointer:coarse){
+  :root{--pv:44px}
+  .preview a{min-height:44px}
+  .f-cols li a,.f-cols li button{display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:0}
+  .f-base a{display:inline-block;padding:12px 0}
+  .f-dir{display:inline-flex;align-items:center;gap:.3em;min-height:44px;padding:0;background-position:left calc(100% - 8px)}
 }
 @media (hover:none){
   .card:hover .print{transform:none;box-shadow:none}
@@ -559,14 +655,20 @@ body .hd-invite p{padding-right:24px}
   .strip{overflow-x:auto;-webkit-mask-image:none;mask-image:none}
   .strip-track{animation:none}
   .strip-track [aria-hidden="true"]{display:none}
+  .strip-ctrl{display:none}
   .statement .bg{transform:none!important}
 }
+
+/* Pause Motion (the photo strip's button): every moving part on the page stops, for anyone (WCAG 2.2.2) */
+html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
+/* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
+@media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="more">Calder Hill Chapel is a fictional church, shown in the Genesis Ministry Classic &amp; Timeless look.</span></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="more">Calder Hill Chapel is a made-up church, shown in the Classic and Timeless look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a></div>
 
 <!-- ================= HEADER ================= -->
 <header class="site-header">
@@ -593,13 +695,13 @@ body .hd-invite p{padding-right:24px}
       <div class="drop">
         <button type="button" aria-expanded="false" aria-controls="m-connect">Connect <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5"/></svg></button>
         <div class="menu" id="m-connect">
-          <a href="#/visit" data-demo><b>Plan Your Visit</b><small>What to expect on Sunday.</small></a>
+          <a href="#plan-a-visit"><b>Plan Your Visit</b><small>What to expect on Sunday.</small></a>
           <a href="#/connect" data-demo><b>Get Connected</b><small>Groups, serving and classes.</small></a>
           <a href="#/start-here" data-demo><b>Start Here</b><small>Lunch with the pastors, monthly.</small></a>
           <a href="#/groups" data-demo><b>Small Groups</b><small>Tables in homes across Richmond.</small></a>
-          <a href="#/baptism" data-demo><b>Ask About Baptism</b><small>River baptism each June.</small></a>
-          <a href="#/prayer" data-demo><b>Prayer Requests</b><small>Tell us how we can pray.</small></a>
-          <a href="#/contact" data-demo><b>Contact Us</b><small>Questions? We are glad to help.</small></a>
+          <a href="#baptism"><b>Ask About Baptism</b><small>River baptism each June.</small></a>
+          <a href="#prayer-request"><b>Prayer Requests</b><small>Tell us how we can pray.</small></a>
+          <a href="#footer"><b>Contact Us</b><small>Questions? We are glad to help.</small></a>
         </div>
       </div>
       <div class="drop">
@@ -614,10 +716,10 @@ body .hd-invite p{padding-right:24px}
       </div>
       <a href="#message">Watch</a>
       <a href="#/events" data-demo>Events</a>
-      <a href="#/give" data-demo>Give</a>
+      <a href="#/give" data-demo="give">Give</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-primary" href="#/visit" data-demo>Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
+      <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
       <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="msheet">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
       </button>
@@ -639,20 +741,20 @@ body .hd-invite p{padding-right:24px}
   <nav class="mlist wrap" aria-label="Site menu links">
     <a href="#top" aria-current="page" data-close>Home</a>
     <details class="mgroup"><summary>About <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></summary>
-      <a class="sub" href="#/about" data-demo>Who We Are</a><a class="sub" href="#/values" data-demo>Our Values</a><a class="sub" href="#/beliefs" data-demo>What We Believe</a>
+      <a class="sub" href="#/about" data-demo data-close>Who We Are</a><a class="sub" href="#/values" data-demo data-close>Our Values</a><a class="sub" href="#/beliefs" data-demo data-close>What We Believe</a>
     </details>
     <details class="mgroup"><summary>Connect <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></summary>
-      <a class="sub" href="#/visit" data-demo>Plan Your Visit</a><a class="sub" href="#/connect" data-demo>Get Connected</a><a class="sub" href="#/start-here" data-demo>Start Here</a><a class="sub" href="#/groups" data-demo>Small Groups</a><a class="sub" href="#/baptism" data-demo>Ask About Baptism</a><a class="sub" href="#/prayer" data-demo>Prayer Requests</a><a class="sub" href="#/contact" data-demo>Contact Us</a>
+      <a class="sub" href="#plan-a-visit" data-close>Plan Your Visit</a><a class="sub" href="#/connect" data-demo data-close>Get Connected</a><a class="sub" href="#/start-here" data-demo data-close>Start Here</a><a class="sub" href="#/groups" data-demo data-close>Small Groups</a><a class="sub" href="#baptism" data-close>Ask About Baptism</a><a class="sub" href="#prayer-request" data-close>Prayer Requests</a><a class="sub" href="#footer" data-close>Contact Us</a>
     </details>
     <details class="mgroup"><summary>Ministries <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></summary>
-      <a class="sub" href="#/ministries" data-demo>All Ministries</a><a class="sub" href="#/kids" data-demo>Calder Kids</a><a class="sub" href="#/youth" data-demo>Youth and Young Adults</a><a class="sub" href="#/mended" data-demo>Mended</a><a class="sub" href="#/serve" data-demo>Serving Teams</a>
+      <a class="sub" href="#/ministries" data-demo data-close>All Ministries</a><a class="sub" href="#/kids" data-demo data-close>Calder Kids</a><a class="sub" href="#/youth" data-demo data-close>Youth and Young Adults</a><a class="sub" href="#/mended" data-demo data-close>Mended</a><a class="sub" href="#/serve" data-demo data-close>Serving Teams</a>
     </details>
     <a href="#message" data-close>Watch</a>
-    <a href="#/events" data-demo>Events</a>
-    <a href="#/give" data-demo>Give</a>
+    <a href="#/events" data-demo data-close>Events</a>
+    <a href="#/give" data-demo="give" data-close>Give</a>
   </nav>
   <div class="mfoot wrap">
-    <a class="btn btn-primary" href="#/visit" data-demo>Plan Your Visit</a>
+    <a class="btn btn-primary" href="#plan-a-visit" data-close>Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 11:00 AM</b><a href="https://maps.google.com/?q=Richmond+Virginia" target="_blank" rel="noopener">1418 Calder Hill Road, Richmond</a></p>
     <p class="mquiet"><a href="tel:+18045550142">(804) 555-0142</a><button type="button" data-chat>Ask a Question</button></p>
   </div>
@@ -674,7 +776,7 @@ body .hd-invite p{padding-right:24px}
       <p class="hero-lede">A historic church with old hymns, warm people and good coffee. Someone will meet you at the side door and walk you in.</p>
       <p class="hero-times"><b>Sundays 9:00 &amp; 11:00 AM</b><span class="sep" aria-hidden="true"></span><span>1418 Calder Hill Road, Richmond, Virginia</span></p>
       <div class="btn-pair">
-        <a class="btn btn-primary on-brass" href="#/visit" data-demo data-visit>Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
+        <a class="btn btn-primary on-brass" href="#plan-a-visit" data-visit>Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
         <a class="btn btn-outline on-dark" href="https://maps.google.com/?q=Richmond+Virginia" target="_blank" rel="noopener">Get Directions</a>
       </div>
     </div>
@@ -692,7 +794,7 @@ body .hd-invite p{padding-right:24px}
     <p class="ab-text"><span class="ab-tag">News</span><span><b>The bell tower is being restored.</b> <span class="ab-more">Help us ring it again by Easter.</span></span></p>
     <div class="ab-actions">
       <button type="button" class="ab-watch" data-modal="tower"><span class="ab-play" aria-hidden="true"></span>Watch the Story</button>
-      <a class="btn btn-outline btn-sm" href="#/give" data-demo><span>Give<span class="hide-sm">&nbsp;to the Bell Tower</span><span class="show-sm">&nbsp;to the Tower</span></span></a>
+      <a class="btn btn-outline btn-sm" href="#/give" data-demo="give"><span>Give<span class="hide-sm">&nbsp;to the Bell Tower</span><span class="show-sm">&nbsp;to the Tower</span></span></a>
     </div>
   </div>
 </section>
@@ -738,11 +840,11 @@ body .hd-invite p{padding-right:24px}
       <p class="lead reveal">Three good places to begin, whether you are new to Richmond or coming back to church after a long while.</p>
     </div>
     <div class="cards reveal">
-      <a class="card" href="#/visit" data-demo>
+      <a class="card" href="#plan-a-visit">
         <div class="print"><div><img src="photos/welcome-embrace.jpg" alt="Two friends greeting each other with a warm hug at the chapel door" width="1800" height="1205" loading="lazy" style="object-position:62% 40%"></div></div>
         <h3>Plan Your Visit</h3>
-        <p>Your first Sunday, plainly explained. Where to park, what to expect and where the coffee is.</p>
-        <span class="go">Your first Sunday <span class="arw" aria-hidden="true">&rarr;</span></span>
+        <p>Tell us which Sunday, and a greeter will meet you at the side door, show you where to park and walk you in.</p>
+        <span class="go">Plan your first Sunday <span class="arw" aria-hidden="true">&rarr;</span></span>
       </a>
       <a class="card" href="#/about" data-demo>
         <div class="print"><div><img src="photos/friends-over-tea.jpg" alt="A member of the church laughing over a cup of tea with a friend" width="1800" height="1200" loading="lazy" style="object-position:58% 40%"></div></div>
@@ -750,7 +852,7 @@ body .hd-invite p{padding-right:24px}
         <p>A long story, a simple faith and a room full of good neighbors. Here is how it all began.</p>
         <span class="go">How it began <span class="arw" aria-hidden="true">&rarr;</span></span>
       </a>
-      <a class="card" href="#/give" data-demo>
+      <a class="card" href="#/give" data-demo="give">
         <div class="print"><div><img src="photos/serving-potluck.jpg" alt="Friends serving one another at a shared church meal" width="1800" height="1230" loading="lazy" style="object-position:45% 40%"></div></div>
         <h3>Give</h3>
         <p>Your generosity keeps the pantry stocked, the doors open and the bell ringing. Thank you.</p>
@@ -766,7 +868,7 @@ body .hd-invite p{padding-right:24px}
       <a class="step" href="#/start-here" data-demo><span class="num" aria-hidden="true">i.</span><h3>Start Here</h3><p>New to Calder Hill? Join the pastors for lunch on the first Sunday of the month.</p><span class="go">RSVP for lunch <span class="arw" aria-hidden="true">&rarr;</span></span></a>
       <a class="step" href="#/groups" data-demo><span class="num" aria-hidden="true">ii.</span><h3>Small Groups</h3><p>Twenty tables across Richmond, meeting in homes during the week.</p><span class="go">Find a group <span class="arw" aria-hidden="true">&rarr;</span></span></a>
       <a class="step" href="#/events" data-demo><span class="num" aria-hidden="true">iii.</span><h3>Events</h3><p>Wednesday suppers, hymn sings and Advent lessons and carols.</p><span class="go">See the calendar <span class="arw" aria-hidden="true">&rarr;</span></span></a>
-      <a class="step" href="#/prayer" data-demo><span class="num" aria-hidden="true">iv.</span><h3>Need Prayer</h3><p>Tell us what is heavy this week. Our prayer team will pray for you by name.</p><span class="go">Ask for prayer <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+      <a class="step" href="#prayer-request"><span class="num" aria-hidden="true">iv.</span><h3>Need Prayer</h3><p>Tell us what is heavy this week. Our prayer team will pray for you by name.</p><span class="go">Ask for prayer <span class="arw" aria-hidden="true">&rarr;</span></span></a>
     </div>
   </div>
 </section>
@@ -791,7 +893,7 @@ body .hd-invite p{padding-right:24px}
     </div>
   </div>
   <div class="wrap">
-    <div class="strip reveal" role="region" aria-label="Photos from life at Calder Hill Chapel" tabindex="0">
+    <div class="strip reveal" id="strip" role="region" aria-label="Photos from life at Calder Hill Chapel" tabindex="0">
       <div class="strip-track">
         <figure class="print-item"><img src="photos/sunday-pews-window-light.jpg" alt="Families and friends in wooden pews, lit by tall brick-framed windows" width="1800" height="2700" loading="lazy" style="object-position:50% 80%"><figcaption>Sunday morning, east windows</figcaption></figure>
         <figure class="print-item"><img src="photos/prayer-heads-bowed.jpg" alt="The congregation standing with heads bowed in prayer" width="1800" height="1200" loading="lazy"><figcaption>Prayers of the people</figcaption></figure>
@@ -805,7 +907,8 @@ body .hd-invite p{padding-right:24px}
         <figure class="print-item" aria-hidden="true"><img src="photos/baptism-open-water.jpg" alt="" width="1800" height="1200" loading="lazy" style="object-position:50% 40%"><figcaption>Baptism Sunday at the river</figcaption></figure>
       </div>
     </div>
-    <p class="aside-line reveal">Our next river baptism is Sunday, June 6, 2027. If you have been wondering about it, we would be glad to talk it through. <a class="inline-link" href="#/baptism" data-demo>Ask about baptism</a></p>
+    <button type="button" class="strip-ctrl" id="strip-ctrl" aria-pressed="false" aria-controls="strip"><svg viewBox="0 0 12 12" aria-hidden="true"><path class="i-pause" d="M2 1h3v10H2zM7 1h3v10H7z" fill="currentColor"/><path class="i-play" d="M2 1l9 5-9 5z" fill="currentColor" style="display:none"/></svg><span>Pause Motion</span></button>
+    <div id="baptism"><p class="aside-line reveal">Our next river baptism is Sunday, June 6, 2027. If you have been wondering about it, we would be glad to talk it through. <a class="inline-link" href="#/baptism" data-demo>Ask about baptism</a></p></div>
   </div>
 </section>
 
@@ -836,25 +939,26 @@ body .hd-invite p{padding-right:24px}
     <div class="sticky reveal">
       <p class="label">Kind words</p>
       <h2 class="h-md" id="rev-title">What our neighbors say</h2>
-      <p class="lead" style="margin-top:18px">Reviews from people who visited once and stayed a while.</p>
-      <div class="actions"><a class="btn btn-outline" href="#/reviews" data-demo>Read Our Reviews</a></div>
+      <p class="lead" style="margin-top:18px">From people who visited once and stayed a while.</p>
+      <p class="fine" style="margin-top:10px">Sample reviews written for this template preview.</p>
+      <div class="actions"><a class="btn btn-outline" href="#/reviews" data-demo>Read More Kind Words</a></div>
     </div>
     <div class="quotes reveal" aria-roledescription="carousel" aria-label="Reviews">
       <div class="quote-stage" aria-live="polite">
         <figure class="quote on" id="q1">
           <div class="stars" role="img" aria-label="Five stars"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></div>
           <blockquote>We visited once and someone remembered our names the next Sunday. Eight years later, this is home.</blockquote>
-          <figcaption>Margaret L. <span>· Member since 2018</span></figcaption>
+          <figcaption>Margaret L. <span>· Sample review</span></figcaption>
         </figure>
         <figure class="quote" id="q2" aria-hidden="true">
           <div class="stars" role="img" aria-label="Five stars"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></div>
           <blockquote>An old building full of warm people. Our kids have grown up in these pews, and honestly, so have we.</blockquote>
-          <figcaption>Derrick and Ana P. <span>· Google review</span></figcaption>
+          <figcaption>Derrick and Ana P. <span>· Sample review</span></figcaption>
         </figure>
         <figure class="quote" id="q3" aria-hidden="true">
           <div class="stars" role="img" aria-label="Five stars"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 1.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 15l-5.4 3 1.2-6L1.3 7.8l6.1-.7z"/></svg></div>
           <blockquote>Real Bible teaching, kind people and coffee that is much better than it needs to be.</blockquote>
-          <figcaption>James W. <span>· Google review</span></figcaption>
+          <figcaption>James W. <span>· Sample review</span></figcaption>
         </figure>
       </div>
       <div class="qdots" role="group" aria-label="Choose a review">
@@ -881,7 +985,7 @@ body .hd-invite p{padding-right:24px}
         <button class="btn btn-primary" type="submit">Subscribe <span class="arw" aria-hidden="true">&rarr;</span></button>
       </form>
       <p class="form-note" id="signup-note" role="status"></p>
-      <p class="fine">Carrying something heavy? <a class="inline-link" href="#/prayer" data-demo>Send a prayer request</a> and our prayer team will pray for you by name.</p>
+      <p class="fine">Carrying something heavy? <a class="inline-link" href="#prayer-request">Send a prayer request</a> and our prayer team will pray for you by name.</p>
     </div>
   </div>
 </section>
@@ -906,42 +1010,42 @@ body .hd-invite p{padding-right:24px}
         </a>
         <p>Deep roots, open doors. A church family in Richmond, Virginia, gathering every Sunday since 1891.</p>
         <div class="socials">
-          <a href="#/facebook" data-demo aria-label="Calder Hill Chapel on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg></a>
-          <a href="#/instagram" data-demo aria-label="Calder Hill Chapel on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="#/youtube" data-demo aria-label="Calder Hill Chapel on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 00-1.75-1.73C19.28 5.2 12 5.2 12 5.2s-7.28 0-8.85.37A2.5 2.5 0 001.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 001.75 1.73C4.72 18.8 12 18.8 12 18.8s7.28 0 8.85-.37a2.5 2.5 0 001.75-1.73C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+          <a href="#/facebook" data-demo="Facebook" aria-label="Calder Hill Chapel on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg></a>
+          <a href="#/instagram" data-demo="Instagram" aria-label="Calder Hill Chapel on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#/youtube" data-demo="YouTube" aria-label="Calder Hill Chapel on YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 00-1.75-1.73C19.28 5.2 12 5.2 12 5.2s-7.28 0-8.85.37A2.5 2.5 0 001.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 001.75 1.73C4.72 18.8 12 18.8 12 18.8s7.28 0 8.85-.37a2.5 2.5 0 001.75-1.73C23 15.2 23 12 23 12zM9.75 15.02V8.98L15.5 12z"/></svg></a>
         </div>
       </div>
       <div>
-        <h4>Find us</h4>
+        <h3>Find us</h3>
         <p class="f-addr">1418 Calder Hill Road<br>Richmond, VA 23221</p>
         <a class="f-dir" href="https://maps.google.com/?q=Richmond+Virginia" target="_blank" rel="noopener">Get directions <span aria-hidden="true">&rarr;</span></a>
         <p class="f-addr" style="margin-top:18px">Free parking on Calder Lane and in the lot behind the parish hall.</p>
       </div>
       <div>
-        <h4>Explore</h4>
+        <h3>Explore</h3>
         <ul class="two">
-          <li><a href="#/visit" data-demo>Plan Your Visit</a></li>
+          <li><a href="#plan-a-visit">Plan Your Visit</a></li>
           <li><a href="#/about" data-demo>Who We Are</a></li>
           <li><a href="#/beliefs" data-demo>What We Believe</a></li>
           <li><a href="#/ministries" data-demo>Ministries</a></li>
           <li><a href="#message">Watch</a></li>
           <li><a href="#/events" data-demo>Events</a></li>
-          <li><a href="#/give" data-demo>Give</a></li>
+          <li><a href="#/give" data-demo="give">Give</a></li>
         </ul>
       </div>
       <div>
-        <h4>Reach us</h4>
+        <h3>Reach us</h3>
         <ul>
           <li><a href="tel:+18045550142">(804) 555-0142</a></li>
-          <li><a href="#/contact" data-demo>calderhill@example.org</a></li>
+          <li><a href="mailto:calderhill@example.org">calderhill@example.org</a></li>
           <li><a href="#/contact" data-demo>Contact Us</a></li>
           <li><button type="button" data-chat>Ask a Question</button></li>
-          <li><a href="#/prayer" data-demo>Prayer Requests</a></li>
+          <li><a href="#prayer-request">Prayer Requests</a></li>
         </ul>
       </div>
     </div>
     <div class="f-base">
-      <span>&copy; 2026 Calder Hill Chapel · A fictional church for a Genesis Ministry template preview. Photos from Unsplash and Pexels.</span>
+      <span>&copy; 2026 Calder Hill Chapel · A made-up church with sample reviews, for a Genesis Ministry template preview. Photos from Unsplash and Pexels.</span>
       <span><a href="#/privacy" data-demo>Privacy</a> · <a href="#/staff" data-demo>Staff Login</a></span>
     </div>
   </div>
@@ -953,7 +1057,7 @@ body .hd-invite p{padding-right:24px}
     <p class="sbar-t" style="margin:0"><small>Sundays</small><b>9:00 &amp; 11:00 AM</b></p>
     <div class="sbar-r">
       <button type="button" class="sbar-ask" data-chat aria-label="Ask a question" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg></button>
-      <a class="btn btn-primary" href="#/visit" data-demo tabindex="-1">Plan Your Visit</a>
+      <a class="btn btn-primary" href="#plan-a-visit" tabindex="-1">Plan Your Visit</a>
     </div>
   </div>
 </div>
@@ -997,6 +1101,79 @@ body .hd-invite p{padding-right:24px}
   </div>
 </div>
 
+<!-- Plan a Visit (design preview: sample details are filled in and nothing is sent) -->
+<div class="fd" id="pv-dialog" data-fd="plan-a-visit" hidden>
+  <div class="fd-card" role="dialog" aria-modal="true" aria-labelledby="pv-title">
+    <div class="fd-head">
+      <div><p class="label">Plan your visit</p><h2 class="fd-title" id="pv-title" tabindex="-1">We will save you a seat</h2></div>
+      <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <div class="fd-scroll">
+      <form class="fd-form" novalidate>
+        <p class="fd-lede">Tell us which Sunday. A greeter will meet you at the side door, point you to the coffee and walk you in.</p>
+        <div class="fd-grid">
+          <div class="fd-field"><label for="pv-name">Your name</label><input id="pv-name" name="name" type="text" autocomplete="name" value="Maya T." required aria-describedby="pv-name-err"><p class="fd-err" id="pv-name-err" hidden>Please add your name.</p></div>
+          <div class="fd-field"><label for="pv-email">Email</label><input id="pv-email" name="email" type="email" autocomplete="email" value="maya.t@example.com" required aria-describedby="pv-email-err"><p class="fd-err" id="pv-email-err" hidden>Please enter an email address like you@example.com.</p></div>
+        </div>
+        <div class="fd-field"><label for="pv-sunday">Which Sunday?</label>
+          <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select>
+        </div>
+        <fieldset class="fd-set" aria-describedby="pv-time-hint"><legend>Which service?</legend>
+          <div class="fd-choices"><label class="fd-choice"><input type="radio" name="time" value="9:00 AM">9:00 AM</label><label class="fd-choice"><input type="radio" name="time" value="11:00 AM" checked>11:00 AM</label></div>
+          <p class="fd-hint" id="pv-time-hint" style="margin-top:8px">9:00 is hymns and organ. 11:00 has the choir, the band and Calder Kids classes. Both last about an hour and fifteen minutes.</p>
+        </fieldset>
+        <fieldset class="fd-set"><legend>Are kids coming with you?</legend>
+          <div class="fd-choices"><label class="fd-choice"><input type="radio" name="kids" value="yes" checked>Yes</label><label class="fd-choice"><input type="radio" name="kids" value="no">No</label></div>
+        </fieldset>
+        <div class="fd-field" data-fd-kids><label for="pv-ages">Their ages <span class="fd-opt">(optional)</span></label><input id="pv-ages" name="ages" type="text" value="4 and 7" aria-describedby="pv-ages-hint"><p class="fd-hint" id="pv-ages-hint">So the right class is ready. We never ask for kids' names here.</p></div>
+        <div class="fd-field"><label for="pv-q">Anything you would like to ask? <span class="fd-opt">(optional)</span></label><textarea id="pv-q" name="question" rows="3">Where do the kids check in?</textarea></div>
+        <button class="btn btn-primary fd-submit" type="submit">Plan My Visit</button>
+        <p class="fd-fine">We only use this to welcome you. Design preview: sample details are filled in, and nothing is sent.</p>
+      </form>
+      <div class="fd-done" hidden>
+        <p class="fd-big" data-fd-text role="status"></p>
+        <p class="fd-fine">Design preview: nothing was sent.</p>
+        <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
+        <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-guest.html?church=classic-timeless&amp;id=g-01&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">&rarr;</span></a><span>Open this visit the way the welcome team sees it in Genesis Ministry.</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Prayer request (design preview: nothing is sent) -->
+<div class="fd" id="pr-dialog" data-fd="prayer-request" hidden>
+  <div class="fd-card" role="dialog" aria-modal="true" aria-labelledby="pr-title">
+    <div class="fd-head">
+      <div><p class="label">Prayer</p><h2 class="fd-title" id="pr-title" tabindex="-1">How may we pray for you?</h2></div>
+      <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <div class="fd-scroll">
+      <form class="fd-form" novalidate>
+        <p class="fd-lede">Tell us what is heavy this week. Pastor Ruth and our prayer team will pray for you by name.</p>
+        <div class="fd-grid">
+          <div class="fd-field"><label for="pr-name">Your name <span class="fd-opt">(optional)</span></label><input id="pr-name" name="name" type="text" autocomplete="name"></div>
+          <div class="fd-field"><label for="pr-email">Email <span class="fd-opt">(optional)</span></label><input id="pr-email" name="email" type="email" autocomplete="email" aria-describedby="pr-email-hint pr-email-err"><p class="fd-hint" id="pr-email-hint">Only if you would like to hear back.</p><p class="fd-err" id="pr-email-err" hidden>Add your email so a pastor can reach you.</p></div>
+        </div>
+        <div class="fd-field"><label for="pr-text">What would you like us to pray for?</label><textarea id="pr-text" name="request" rows="4" required aria-describedby="pr-text-hint pr-text-err"></textarea><p class="fd-hint" id="pr-text-hint">Write as much or as little as you like.</p><p class="fd-err" id="pr-text-err" hidden>Please write a few words so we know how to pray.</p></div>
+        <fieldset class="fd-set"><legend>Who can see this?</legend>
+          <div class="fd-stack"><label class="fd-choice"><input type="radio" name="who" value="team" checked><span>Pastors and the prayer team<small>Pastor Samuel, Pastor Ruth and the prayer team.</small></span></label><label class="fd-choice"><input type="radio" name="who" value="pastors"><span>Pastors only<small>Pastor Samuel and Pastor Ruth. The prayer team will not see it.</small></span></label></div>
+        </fieldset>
+        <label class="fd-tick" for="pr-call"><input type="checkbox" id="pr-call" name="call"><span>I would welcome a call or an email from a pastor</span></label>
+        <button class="btn btn-primary fd-submit" type="submit">Send Prayer Request</button>
+        <p class="fd-fine">Design preview: nothing is sent.</p>
+      </form>
+      <div class="fd-done" hidden>
+        <p class="fd-big" data-fd-text role="status"></p>
+        <p class="fd-fine">Design preview: nothing was sent.</p>
+        <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
+        <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-care.html?church=classic-timeless&amp;view=prayer&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">&rarr;</span></a><span>See how prayer stays locked to the people the guest chose.</span></p>
+      </div>
+      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>If you or someone else is in danger, call <a href="tel:911">911</a>. To talk with someone now, call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:+18045550142">(804) 555-0142</a>.</span></p>
+      <p class="fd-note line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 5.6v6.1c0 4.9 3.4 8.9 8 9.8 4.6-.9 8-4.9 8-9.8V5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span></p>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -1032,11 +1209,23 @@ body .hd-invite p{padding-right:24px}
   var words = $$('.rot .w'), wi = 0;
   if (!reduce && words.length > 1) {
     setInterval(function () {
+      if (document.documentElement.classList.contains('motion-paused')) return;
       var cur = words[wi]; wi = (wi + 1) % words.length; var nxt = words[wi];
       cur.classList.remove('is-on'); cur.classList.add('is-out');
       setTimeout(function () { cur.classList.remove('is-out'); nxt.classList.add('is-on'); }, 300);
     }, 2800);
   }
+
+  /* ---------- Photo strip pause ---------- */
+  var strip = document.getElementById('strip'), sc = document.getElementById('strip-ctrl');
+  if (strip && sc) sc.addEventListener('click', function () {
+    var p = strip.classList.toggle('paused');
+    document.documentElement.classList.toggle('motion-paused', p);
+    sc.setAttribute('aria-pressed', p ? 'true' : 'false');
+    sc.querySelector('span').textContent = p ? 'Play Motion' : 'Pause Motion';
+    sc.querySelector('.i-pause').style.display = p ? 'none' : '';
+    sc.querySelector('.i-play').style.display = p ? '' : 'none';
+  });
 
   /* ---------- Desktop dropdowns ---------- */
   var drops = $$('.drop');
@@ -1053,21 +1242,28 @@ body .hd-invite p{padding-right:24px}
   function setMenu(open) {
     sheet.classList.toggle('open', open); sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
     burger.setAttribute('aria-expanded', open ? 'true' : 'false'); document.body.classList.toggle('menu-open', open);
-    if (open) { var c = $('[data-close].hamburger', sheet); if (c) c.focus(); } else { burger.focus({ preventScroll: true }); }
+    /* Everything behind the sheet is inert while it is open, so focus and a screen reader stay in the menu */
+    $$('body > .preview, body > .site-header, #main, #footer, #sbar').forEach(function (el) { el.inert = open; });
+    if (open) {
+      var c = $('[data-close].hamburger', sheet);
+      var put = function () { if (c && sheet.classList.contains('open')) c.focus(); };
+      put(); requestAnimationFrame(function () { put(); if (document.activeElement !== c) setTimeout(put, 120); });
+    } else { burger.focus({ preventScroll: true }); }
   }
   burger.addEventListener('click', function () { setMenu(true); });
   $$('[data-close]', sheet).forEach(function (el) { el.addEventListener('click', function () { setMenu(false); }); });
-
-  /* ---------- Demo links: inner pages belong to the full site ---------- */
-  var toast = $('#toast'), tt;
-  function say(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove('show'); }, 3200); }
-  $$('[data-demo]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (sheet.classList.contains('open')) setMenu(false);
-      say('Template preview: this link opens an inner page in the full Calder Hill site.');
-    });
+  /* Tab and Shift+Tab wrap inside the open sheet */
+  sheet.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !sheet.classList.contains('open')) return;
+    var f = $$('a[href],button:not([disabled]),summary', sheet).filter(function (n) { return n.getClientRects().length > 0 && getComputedStyle(n).visibility !== 'hidden'; });
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1], at = document.activeElement;
+    if (e.shiftKey && (at === first || f.indexOf(at) < 0)) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (at === last || f.indexOf(at) < 0)) { e.preventDefault(); first.focus(); }
   });
+  window.addEventListener('resize', function () { if (sheet.classList.contains('open') && window.innerWidth > 1020) setMenu(false); });
+
+  /* Inner-page links ("#/...") show a short note; that handler sits with the Plan a Visit and prayer forms below */
 
   /* ---------- Reviews ---------- */
   var qs = $$('.quote'), dots = $$('.qdots button'), qi = 0, qt, paused = false;
@@ -1075,7 +1271,7 @@ body .hd-invite p{padding-right:24px}
     qi = n; qs.forEach(function (q, i) { q.classList.toggle('on', i === n); q.setAttribute('aria-hidden', i === n ? 'false' : 'true'); });
     dots.forEach(function (d, i) { d.setAttribute('aria-current', i === n ? 'true' : 'false'); });
   }
-  function tick() { clearTimeout(qt); if (reduce || paused) return; qt = setTimeout(function () { showQ((qi + 1) % qs.length); tick(); }, 6200); }
+  function tick() { clearTimeout(qt); if (reduce || paused) return; qt = setTimeout(function () { if (!document.documentElement.classList.contains('motion-paused')) showQ((qi + 1) % qs.length); tick(); }, 6200); }
   dots.forEach(function (d) { d.addEventListener('click', function () { showQ(+d.dataset.q); tick(); }); });
   var qbox = $('.quotes');
   qbox.addEventListener('mouseenter', function () { paused = true; clearTimeout(qt); });
@@ -1178,9 +1374,222 @@ body .hd-invite p{padding-right:24px}
   });
 })();
 </script>
+<!-- guest-forms:start -->
+<script>
+/* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
+(function () {
+  "use strict";
+  var SITE = {
+    phone: "(804) 555-0142",
+    short: "Calder Hill",
+    menuButton: ".nav-cta .hamburger",
+    menuSheet: "#msheet",
+    visitDone: function (sunday, time, kids) {
+      var t = "Nadia from our welcome team will email you by tomorrow. A greeter will look for you at the side door on " + sunday + " before the " + time + " service";
+      if (kids && time === "9:00 AM") return t + ". Little ones are always welcome in the pews at 9:00, and Calder Kids classes meet at 11:00.";
+      return t + (kids ? ", and a teacher will walk your kids to their class." : ".");
+    }
+  };
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function shown(n) { return !!n && n.getClientRects().length > 0 && getComputedStyle(n).visibility !== "hidden"; }
+
+  /* Inside the platform's phone frame, links into Genesis Ministry open in the whole window, and the
+     way back to the gallery steps aside, because there the site plays the church's live site */
+  var framed = false; try { framed = window.self !== window.top; } catch (e) { framed = true; }
+  if (framed) {
+    $$("a[data-out]").forEach(function (a) { a.target = "_top"; });
+    $$(".preview a[data-out]").forEach(function (a) { a.style.display = "none"; });
+  }
+
+  /* Inner pages of the full site ("#/..." links) show a short note in this preview */
+  var toast = $("#toast"), tt = 0;
+  function note(msg) { if (!toast) return; toast.textContent = msg; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(function () { toast.classList.remove("show"); }, 3600); }
+  function demoNote(a) {
+    var d = a.getAttribute("data-demo") || "";
+    if (d === "give") return "Template preview: this opens " + SITE.short + "'s secure giving page in the full site.";
+    if (d) return "Template preview: this opens " + SITE.short + " on " + d + " in the full site.";
+    return "Template preview: this link opens an inner page in the full " + SITE.short + " site.";
+  }
+
+  /* ---------- The two forms ---------- */
+  var open = null, lastFocus = null;
+  function focusables(el) { return $$('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled])', el).filter(shown); }
+  function setBehind(on, fd) {
+    Array.prototype.forEach.call(document.body.children, function (el) {
+      if (el === fd || el.tagName === "SCRIPT" || el.tagName === "STYLE") return;
+      if (on) { if (!el.inert) { el.inert = true; el.setAttribute("data-fd-inert", ""); } }
+      else if (el.hasAttribute("data-fd-inert")) { el.inert = false; el.removeAttribute("data-fd-inert"); }
+    });
+  }
+  function kids(fd) { var k = $("[data-fd-kids]", fd), yes = $('input[name="kids"][value="yes"]', fd); if (k) k.hidden = !(yes && yes.checked); }
+  function setErr(input, on) {
+    var e = document.getElementById(input.id + "-err");
+    if (e) e.hidden = !on;
+    if (on) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
+    return on;
+  }
+  function firstName(v) { return String(v || "").trim().split(/\s+/)[0].replace(/[.,;:!?]+$/, ""); }
+  function reset(fd) {
+    var form = $(".fd-form", fd), done = $(".fd-done", fd), t = $(".fd-title", fd);
+    form.reset(); form.hidden = false; done.hidden = true;
+    $$("[aria-invalid]", form).forEach(function (n) { n.removeAttribute("aria-invalid"); });
+    $$(".fd-err", form).forEach(function (n) { n.hidden = true; });
+    if (t.hasAttribute("data-title")) t.textContent = t.getAttribute("data-title");
+    kids(fd);
+  }
+  /* Writes a confirmation with 988, 911 and the church phone as links a phone can tap. */
+  function telText(node, text) {
+    node.textContent = "";
+    String(text).split(/(\b988\b|\b911\b|\(\d{3}\) \d{3}-\d{4})/).forEach(function (part, i) {
+      if (i % 2) { var a = document.createElement("a"); a.href = "tel:" + (part.length === 3 ? part : "+1" + part.replace(/\D/g, "")); a.textContent = part; node.appendChild(a); }
+      else if (part) node.appendChild(document.createTextNode(part));
+    });
+  }
+  function finish(fd, title, text, crisis) {
+    var t = $(".fd-title", fd), done = $(".fd-done", fd);
+    /* A crisis reply stands alone: no template preview link under the 988 and 911 numbers. */
+    $$(".fd-demo", fd).forEach(function (d) { d.style.display = crisis ? "none" : ""; });
+    if (!t.hasAttribute("data-title")) t.setAttribute("data-title", t.textContent);
+    $(".fd-form", fd).hidden = true;
+    done.hidden = false;
+    t.textContent = title;
+    telText($("[data-fd-text]", done), text);
+    $(".fd-scroll", fd).scrollTop = 0;
+    t.focus();
+  }
+  /* The forms are found by name (data-fd), so "#plan-a-visit" and "#prayer-request" stay free as addresses */
+  function openForm(name, from) {
+    var fd = $("[data-fd=\"" + name + "\"]");
+    if (!fd || open === fd) return;
+    if (open) closeForm(true);
+    var hd = window.HopeDemo;
+    if (hd && hd.isTouring && hd.isTouring()) hd.end();
+    var hp = $(".hd-panel.on"); if (hp) { var hx = $(".hd-head button", hp); if (hx) hx.click(); }
+    lastFocus = from || document.activeElement;
+    reset(fd);
+    fd.hidden = false; void fd.offsetWidth; fd.classList.add("open");
+    document.body.classList.add("fd-open");
+    setBehind(true, fd);
+    open = fd;
+    var first = $("input,textarea", fd);
+    setTimeout(function () { if (first && open === fd) first.focus(); }, 60);
+  }
+  function closeForm(quiet) {
+    var fd = open; if (!fd) return;
+    open = null;
+    fd.classList.remove("open");
+    setBehind(false, fd);
+    document.body.classList.remove("fd-open");
+    setTimeout(function () { if (!fd.classList.contains("open")) fd.hidden = true; }, 220);
+    if (location.hash === "#" + fd.getAttribute("data-fd")) { try { history.replaceState(history.state, "", location.pathname + location.search); } catch (e) {} }
+    if (quiet) return;
+    var mb = $(SITE.menuButton);
+    var back = shown(lastFocus) ? lastFocus : (shown(mb) ? mb : null);
+    if (back) { try { back.focus({ preventScroll: true }); } catch (e) { back.focus(); } }
+  }
+
+  $$("[data-fd]").forEach(function (fd) {
+    var form = $(".fd-form", fd);
+    $$('input[name="kids"]', fd).forEach(function (r) { r.addEventListener("change", function () { kids(fd); }); });
+    $$("input,textarea", form).forEach(function (n) { n.addEventListener("input", function () { if (n.hasAttribute("aria-invalid") && n.value.trim()) setErr(n, false); }); });
+    var callBox = $("#pr-call", fd), mailBox = $("#pr-email", fd);
+    if (callBox && mailBox) callBox.addEventListener("change", function () { if (!callBox.checked) setErr(mailBox, false); });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (fd.getAttribute("data-fd") === "plan-a-visit") {
+        var name = $("#pv-name"), email = $("#pv-email");
+        var bad = [setErr(name, !name.value.trim()) && name, setErr(email, !EMAIL.test(email.value.trim())) && email].filter(Boolean);
+        if (bad.length) { bad[0].focus(); return; }
+        var time = ($('input[name="time"]:checked', fd) || {}).value || "";
+        var withKids = ($('input[name="kids"]:checked', fd) || {}).value === "yes";
+        var fn = firstName(name.value);
+        finish(fd, "Thank you" + (fn ? ", " + fn : "") + ".", SITE.visitDone($("#pv-sunday").value, time, withKids));
+      } else {
+        var text = $("#pr-text"), mail = $("#pr-email"), call = $("#pr-call");
+        if (setErr(text, !text.value.trim())) { text.focus(); return; }
+        var who = ($('input[name="who"]:checked', fd) || {}).value;
+        var fn2 = firstName($("#pr-name").value), thanks = "Thank you" + (fn2 ? ", " + fn2 : "") + ".";
+        var reach = EMAIL.test(mail.value.trim());
+        /* Crisis words come before anything else: the same fixed reply Hope gives, word for word, with
+           the church phone. Nothing is asked of the person first. */
+        var hope = window.HopeDemo;
+        if (hope && hope.isCrisis && hope.crisisReply && hope.isCrisis(text.value)) {
+          setErr(mail, false);
+          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone) + (reach ? " A pastor will reach out." : " A pastor will read your request."), true);
+          return;
+        }
+        /* A pastor can only reach out with a way to reach the person */
+        if (setErr(mail, call.checked && !reach)) { mail.focus(); return; }
+        finish(fd, thanks,
+          (who === "pastors" ? "Our pastors will pray for you this week, and only they will read it." : "Our pastors and the prayer team will pray for you this week.") +
+          (call.checked ? " A pastor will reach out, as you asked." : ""));
+      }
+    });
+    fd.addEventListener("click", function (e) { if (e.target === fd || (e.target.closest && e.target.closest("[data-fd-close]"))) closeForm(); });
+    fd.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeForm(); return; }
+      if (e.key !== "Tab") return;
+      var f = focusables($(".fd-card", fd)); if (!f.length) return;
+      var first = f[0], last = f[f.length - 1], at = document.activeElement;
+      if (e.shiftKey && (at === first || f.indexOf(at) < 0)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (at === last || f.indexOf(at) < 0)) { e.preventDefault(); first.focus(); }
+    });
+  });
+
+  /* Every Plan Your Visit and prayer link opens its form; inner pages show the note */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
+    var h = a.getAttribute("href") || "";
+    if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
+    if (h.indexOf("#/") === 0) {
+      e.preventDefault(); note(demoNote(a));
+      var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
+    }
+  });
+  /* On the Care plan the forms arrive by email (Guests and Care come with the Shepherd plan), so each form's
+     "See Where This Lands" opens that email on the Website screen of Genesis Ministry */
+  var level = ""; try { level = new URLSearchParams(location.search).get("plan") || sessionStorage.getItem("gm.plan") || ""; } catch (e) {}
+  if (level === "1") {
+    [["plan-a-visit", "ws-visit-title", "See this visit as the email your team gets on the Care plan."],
+     ["prayer-request", "ws-prayer-title", "See the email it becomes on the Care plan, sent only to the pastors' address."]].forEach(function (r) {
+      var a = $('[data-fd="' + r[0] + '"] .fd-demo a'); if (!a) return;
+      var slug = ""; try { slug = new URL(a.getAttribute("href"), location.href).searchParams.get("church") || ""; } catch (e) {}
+      a.setAttribute("href", "../../platform/church-website.html?church=" + encodeURIComponent(slug) + "&plan=1#" + r[1]);
+      var note = a.nextElementSibling; if (note) note.textContent = r[2];
+    });
+  }
+  /* Hope's chips and deep links reach the forms by their address (Hope sets the hash when no element has that id) */
+  function fromHash() { var h = location.hash.slice(1); if (h === "plan-a-visit" || h === "prayer-request") openForm(h); }
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+</script>
+<!-- guest-forms:end -->
+<!-- hope-rules:start -->
+<!-- Hope's keyword rules for this church (baptism, how long a gathering runs, visitor questions). hope.json
+     keeps them as text in matchPatterns, because JSON cannot carry a pattern. A module script runs after the
+     Hope block below sets window.HOPE_DEMO and before shared/hope-demo.js reads it, so the rules are in place
+     in time. It also picks where the tour's last link goes: on the Care plan a Plan a Visit form arrives as an
+     email (hope.json nextLevel01), because Guests comes with the Shepherd plan. -->
+<script type="module">
+  const H = window.HOPE_DEMO;
+  if (H && Array.isArray(H.matchPatterns)) {
+    const rules = [];
+    for (const [src, key] of H.matchPatterns) { try { rules.push([new RegExp(src, "i"), key]); } catch (e) {} }
+    H.match = rules.concat(H.match || []);
+  }
+  if (H && H.next && H.nextLevel01) {
+    const base = H.next, one = H.nextLevel01;
+    const level = () => { try { return new URLSearchParams(location.search).get("plan") || sessionStorage.getItem("gm.plan") || ""; } catch (e) { return ""; } };
+    H.next = () => (level() === "1" ? one : base);
+  }
+</script>
+<!-- hope-rules:end -->
 <!-- hope-demo:start -->
 <script>window.HOPE_DEMO = {
-  "look": "Classic & Timeless",
+  "look": "Classic and Timeless",
   "church": {
     "name": "Calder Hill Chapel",
     "short": "Calder Hill",
@@ -1188,9 +1597,11 @@ body .hd-invite p{padding-right:24px}
     "address": "1418 Calder Hill Road",
     "phone": "(804) 555-0142",
     "times": "every Sunday at 9:00 and 11:00 AM",
+    "length": "an hour and fifteen minutes",
+    "parking": "Park free on Calder Lane or in the lot behind the parish hall. A greeter at the side door will point you to coffee and the sanctuary.",
     "mapUrl": "https://www.google.com/maps/search/?api=1&query=Richmond%2C+Virginia",
     "pastors": "Samuel and Ruth have led Calder Hill since 2014. Samuel preaches most Sundays, and Ruth leads our care and prayer ministries. You will find them by the side door after either service, and they would much rather hear your story than tell their own.",
-    "kids": "Yes. Calder Kids runs during the 11:00 service, with a nursery for babies and toddlers and classes through fifth grade. Check in at the welcome table and a teacher will walk you over. Little ones are always welcome in the pews at 9:00 too.",
+    "kids": "Calder Kids runs during the 11:00 service, with a nursery for babies and toddlers and classes through fifth grade. Check in at the welcome table and a teacher will walk you over. Little ones are always welcome in the pews at 9:00 too.",
     "students": "Youth group meets Wednesday nights in the parish hall, right after the church supper, for sixth through twelfth grade. Young adults gather twice a month for dinner and Bible study.",
     "groups": "About twenty small groups meet in homes across Richmond during the week. We call them tables, because most of them start with a meal. There is also a Tuesday Bible study at the chapel. It is the surest way to go from visitor to friend.",
     "startHere": "Welcome. Come on any Sunday, park on Calder Lane and follow the brick path to the side door. A greeter will meet you there and point you to the coffee. When you are ready, join the pastors for lunch on the first Sunday of the month to hear our story and find your place.",
@@ -1222,15 +1633,204 @@ body .hd-invite p{padding-right:24px}
   },
   "links": {
     "brandBoard": "brand-board.html",
-    "socialPlan": "social-plan.html"
+    "socialPlan": "social-plan.html",
+    "prayer": "#prayer-request"
   },
   "removeSelectors": [
     ".chat-fab",
     "#chat",
     ".sbar-ask"
   ],
-  "bottomOffset": 66
+  "bottomOffset": 66,
+  "answers": {
+    "newhere": {
+      "t": "Welcome. Come on any Sunday, park on Calder Lane and follow the brick path to the side door. Plan your visit and a greeter will be there to meet you and point you to the coffee. When you are ready, join the pastors for lunch on the first Sunday of the month to hear our story and find your place.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "Kids",
+          "key": "kids"
+        }
+      ]
+    },
+    "baptism": {
+      "t": "We baptize in the river each June, and our next river baptism is Sunday, June 6, 2027. If you have been wondering about it, Pastor Samuel and Pastor Ruth would be glad to talk it through with you.",
+      "c": [
+        {
+          "label": "Ask About Baptism",
+          "href": "#baptism",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "curious": {
+      "t": "Of course. Our door has been open to believers, doubters and the simply curious since 1891. Nobody will single you out. Sit wherever you like, and if you have questions, Pastor Samuel and Pastor Ruth would be glad to listen.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "access": {
+      "t": "Yes. The side door off the brick path has a ramp, and there is room for wheelchairs at the front and back of the sanctuary. The parish hall and the restrooms are on the same floor. Accessible parking is in the lot behind the parish hall, and a greeter will gladly help.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Where Do I Park?",
+          "key": "parking"
+        }
+      ]
+    },
+    "language": {
+      "t": "Our services are in English. If another language would help you or your family, call us at (804) 555-0142 and we will help however we can.",
+      "c": [
+        {
+          "label": "Call Calder Hill",
+          "href": "tel:+18045550142",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "communion": {
+      "t": "We celebrate communion every Sunday at both services. All who follow Jesus are welcome at the rail, and you are always welcome to stay in your pew.",
+      "c": [
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "wear": {
+      "t": "Wear whatever is comfortable. You will see jeans in the pews at 9:00 and a few jackets at 11:00, and nobody minds either way.",
+      "c": [
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "price": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.",
+      "c": [
+        {
+          "label": "What Does a Church Get?",
+          "key": "package"
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        }
+      ]
+    },
+    "package": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is Classic and Timeless), the brand board, the social marketing plan, Hope on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.",
+      "c": [
+        {
+          "label": "What Is the Back Office?",
+          "key": "backoffice",
+          "cta": true
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        },
+        {
+          "label": "See the Brand Board",
+          "href": "brand-board.html"
+        },
+        {
+          "label": "See the Social Plan",
+          "href": "social-plan.html"
+        }
+      ]
+    }
+  },
+  "matchPatterns": [
+    [
+      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "baptism"
+    ],
+    [
+      "\\bhow long\\b(?!.*\\b(?:been|ago|founded|around|existed?|started|kids?|children|students?|youth|groups?|class(?:es)?|lunch)\\b)",
+      "times"
+    ],
+    [
+      "\\b(?:not (?:a )?(?:christian|believer|religious|churchy)|non[- ]?(?:christian|believer|religious)|(?:don['’]?t|do not|didn['’]?t) (?:believe|know (?:if|what) i believe)|not sure (?:if|what) i believe|atheists?|agnostics?|skeptic\\w*|sceptic\\w*|doubts?|doubting|never been to (?:a )?church|(?:haven['’]?t|have not) been to (?:a )?church|(?:another|other|different) (?:faith|religion)s?)\\b",
+      "curious"
+    ],
+    [
+      "^(?!.*\\b(?:online|live ?stream\\w*|stream\\w*|website|site|videos?|app|podcasts?)\\b).*\\b(?:wheel ?chairs?|accessib\\w*|ramps?|elevators?|stairs|step[- ]free|mobility|walkers?|disab\\w*|handicap\\w*|hard of hearing|hearing (?:loop|aids?)|large print)\\b",
+      "access"
+    ],
+    [
+      "\\b(?:spanish|espa[nñ]ol|languages?|bilingual|interpreters?|translators?|translated|korean|mandarin|cantonese|chinese|vietnamese|french|portuguese|arabic|swahili|tagalog|hindi|haitian creole|sign language|asl)\\b",
+      "language"
+    ],
+    [
+      "\\b(?:communion|eucharist|lord['’]?s supper|sacraments?)\\b",
+      "communion"
+    ],
+    [
+      "\\b(?:wear|wearing|jeans|shorts|dress(?:ed)?(?: up)?|dress code|attire|outfits?|clothes|clothing|suit and tie|casual)\\b",
+      "wear"
+    ]
+  ],
+  "next": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-guest.html?church=classic-timeless&id=g-01",
+    "note": "Next: a Plan a Visit form as it arrives in Genesis Ministry, the way the welcome team sees it."
+  },
+  "nextLevel01": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-website.html?church=classic-timeless&plan=1#ws-visit-title",
+    "note": "Next: on the Care plan, a Plan a Visit form arrives as an email to the address your church chose.",
+    "tour": false
+  }
 };</script>
+<script src="../../shared/crisis-words.js" defer></script>
 <script src="../../shared/hope-demo.js" defer></script>
 <!-- hope-demo:end -->
 </body>

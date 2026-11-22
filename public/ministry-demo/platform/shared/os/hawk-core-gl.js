@@ -3,12 +3,14 @@
    Source was copied read-only from MCC core-gl.js. MCC itself is not edited.
    Same API as HawkCore (setState, setLevel, beat, resize). Falls back to HawkCore
    when WebGL is missing. Palette is gold only. Speaking uses setLevel, not MCCTTS.
-   HawkCoreGL.attach also places the official Genesis G mark at the center. */
+   HawkCoreGL.attach also places the official Genesis G mark at the center.
+   opts.spread (default 1) widens the particle sphere inside its canvas. The small round
+   orbs use it so a ring of sparkles stays visible around their darkened center. */
 (() => {
 "use strict";
 const VS = `
 attribute vec3 a_pos; attribute float a_seed;
-uniform float u_t, u_amp, u_ripple, u_swirl, u_level, u_pulse, u_rot, u_size, u_gain, u_bright, u_breath, u_flow, u_aspect;
+uniform float u_t, u_amp, u_ripple, u_swirl, u_level, u_pulse, u_rot, u_size, u_gain, u_bright, u_breath, u_flow, u_aspect, u_spread;
 varying float v_a, v_rim, v_hot;
 vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
 vec4 mod289(vec4 x){return x-floor(x*(1./289.))*289.;}
@@ -47,7 +49,7 @@ void main(){
   float rip=sin(ang*8.-t*6.5)*u_ripple*(.025+u_level*.11)*(1.-ang/3.1416);
   float r=1.+u_amp*d+u_breath+u_pulse*.05+rip;
   vec3 p=v*r+f*u_flow;
-  float per=3.2/(3.2-p.z); vec2 xy=p.xy*per*.6;
+  float per=3.2/(3.2-p.z); vec2 xy=p.xy*per*.6*u_spread;
   if(u_aspect>1.) xy.x/=u_aspect; else xy.y*=u_aspect;
   gl_Position=vec4(xy,0.,1.);
   gl_PointSize=u_size*per*(.65+.7*a_seed)*(1.+u_pulse*.25);
@@ -108,7 +110,7 @@ class HawkCoreGL {
     const seeds = new Float32Array(this.n), pos = fib(this.n, seeds);
     const bind = (name, data, size) => { const b = gl.createBuffer(), loc = gl.getAttribLocation(pr, name); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0); };
     bind("a_pos", pos, 3); bind("a_seed", seeds, 1);
-    this.u = {}; ["u_t", "u_amp", "u_ripple", "u_swirl", "u_level", "u_pulse", "u_rot", "u_size", "u_gain", "u_bright", "u_breath", "u_flow", "u_aspect", "u_c1", "u_c2"].forEach(k => this.u[k] = gl.getUniformLocation(pr, k));
+    this.u = {}; ["u_t", "u_amp", "u_ripple", "u_swirl", "u_level", "u_pulse", "u_rot", "u_size", "u_gain", "u_bright", "u_breath", "u_flow", "u_aspect", "u_spread", "u_c1", "u_c2"].forEach(k => this.u[k] = gl.getUniformLocation(pr, k));
     gl.uniform3f(this.u.u_c1, .788, .631, .341); gl.uniform3f(this.u.u_c2, .945, .847, .596);   // fill #c9a157, rim #f1d898
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE); gl.disable(gl.DEPTH_TEST); gl.clearColor(0, 0, 0, 0);
     this.gl = gl; return true;
@@ -152,7 +154,7 @@ class HawkCoreGL {
     gl.uniform1f(u.u_t, this.t); gl.uniform1f(u.u_amp, c.amp); gl.uniform1f(u.u_ripple, c.ripple); gl.uniform1f(u.u_swirl, c.swirl);
     gl.uniform1f(u.u_level, this.lv); gl.uniform1f(u.u_pulse, this.pulse); gl.uniform1f(u.u_rot, this.rot); gl.uniform1f(u.u_size, this.size || 2);
     gl.uniform1f(u.u_gain, this.gain || .5); gl.uniform1f(u.u_bright, c.bright); gl.uniform1f(u.u_breath, breath); gl.uniform1f(u.u_flow, this.reduced ? 0 : c.flow);
-    gl.uniform1f(u.u_aspect, (this.w || 1) / (this.h || 1));
+    gl.uniform1f(u.u_aspect, (this.w || 1) / (this.h || 1)); gl.uniform1f(u.u_spread, this.opts.spread || 1);
     gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, this.n);
   }
 }

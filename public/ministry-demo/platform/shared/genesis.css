@@ -72,7 +72,7 @@
   --gm-active:var(--v2-active);
   --gm-overlay:var(--v2-overlay);
   --gm-topbar-bg:rgba(13,14,16,.86);
-  --gm-mark-a:#f4efe8; --gm-mark-b:#c9a55e;
+  --gm-mark-a:#f1d898; --gm-mark-b:#c8a562;
   /* Charts: the Obsidian chart tokens, in a fixed order. */
   --gm-chart-1:var(--v2-chart-1); --gm-chart-2:var(--v2-chart-2); --gm-chart-3:var(--v2-chart-3);
   --gm-chart-4:var(--v2-chart-4); --gm-chart-5:var(--v2-chart-5); --gm-chart-6:var(--v2-chart-6);
@@ -97,7 +97,7 @@
   --gm-shadow-md:0 0 0 .5px rgba(43,38,31,.07),0 4px 12px rgba(43,38,31,.08),0 12px 28px rgba(43,38,31,.06);
   --gm-shadow-lg:0 14px 36px rgba(43,38,31,.14);
   --gm-topbar-bg:rgba(246,244,239,.92);
-  --gm-mark-a:#1b1917; --gm-mark-b:#9a7534;
+  --gm-mark-a:#a07d2c; --gm-mark-b:#80601c;
 }
 
 /* ==========================================================================
@@ -108,10 +108,29 @@
 .gm-icon{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
 .gm-icon--sm{width:15px;height:15px}
 .gm-icon--lg{width:22px;height:22px}
-.gm-mark{width:30px;height:26px;display:block}
-.gm-mark .a{fill:var(--gm-mark-a)} .gm-mark .b{fill:var(--gm-mark-b)}
-/* The sidebar stays dark in both themes, so the mark inside it keeps the light-on-dark file. */
+.gm-mark{width:23px;height:18px;margin:0 3.5px;display:block}
+.gm-mark .a{stop-color:var(--gm-mark-a)} .gm-mark .b{stop-color:var(--gm-mark-b)}
+/* The sidebar stays dark in both themes, so the mark inside it keeps the gold file for dark grounds. */
 .v2-brand-mark img,.v2-mobile-top a img{display:block}
+/* The gold G boxes. The brand/gold-mark files are cropped tight to the G (1.26 wide to 1 tall), so each
+   box is the G's own size, never under 16px tall (USAGE.md). The sidebar G (25 x 20) and the welcome
+   orb's G (28.4 percent) match what the Genesis OS fix/gold-mark branch draws.
+   The copied Genesis OS sheets in os/ still size these for the old 116 x 100 file; drop these three
+   lines once a sync brings gold sizes from Genesis OS. The small orbs are sized with the round Genesis
+   button below. The dock's own orb gets the same rule in app.js (it is a shadow root). */
+.v2-brand .v2-brand-mark img{width:25px;height:20px}
+.v2-mobile-top a img[data-brand-mark]{width:20px;height:16px;margin:0 2.5px}
+.hawk-core-mark{width:28.4%}
+
+/* The round Genesis button (Reggie, November 21, 2026). The gold G stays, the centre of the gold
+   sparkles is darkened so the G reads, and no G has a glow (brand/gold-mark/USAGE.md). The same rules
+   as Genesis OS v2/refine/hawk-core.css; the sparkles spread wider (spread 1.3 in app.js, read by
+   os/hawk-core-gl.js) so a ring of them shows around the dark centre. The small orbs' box is set for
+   the tight gold G file: 21.73px wide draws the G 17.24px tall, the same G as Genesis OS (the kit's
+   smallest is 16px). The dock is a shadow root, so its header orb gets the same rules in app.js. */
+.hawk-core .hawk-core-mark,.hawk-core[data-state] .hawk-core-mark{filter:none}
+.hawk-core--mini .hawk-core-mark,.hawk-core--orb .hawk-core-mark{width:21.73px}
+.hawk-core--mini::after,.hawk-core--orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,rgba(8,9,14,.92) 0%,rgba(8,9,14,.88) 56%,rgba(8,9,14,.45) 72%,rgba(8,9,14,0) 88%);pointer-events:none}
 
 /* Member pages scroll the page itself; Genesis OS screens scroll inside .v2-main. */
 html:has(body[data-side="member"]),body[data-side="member"]{height:auto;min-height:100%;overflow:visible}
@@ -131,7 +150,7 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
    ========================================================================== */
 
 /* The sample strip is a design-preview strip, not a button. */
-.v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px;letter-spacing:.12em}
+.v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px}
 .gm-preview-strip b{font-weight:700}
 /* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
    page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
@@ -141,14 +160,15 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* Tenant marks: the church's small mark in the account row and the phone top bar. */
 .v2-avatar.gm-avatar-mark{width:30px;height:30px;flex-basis:30px;overflow:hidden;border-radius:8px;background:var(--v2-surface-3);padding:0}
 .v2-avatar.gm-avatar-mark svg{width:100%;height:100%;display:block}
-.v2-avatar.gm-avatar-mark .gm-mark{width:20px;height:18px;margin:auto}
+.v2-avatar.gm-avatar-mark .gm-mark{width:20px;height:16px;margin:auto}
 .v2-avatar.gm-avatar-mark--genesis{display:grid;place-items:center;background:#0d0e10;border:1px solid #303238}
 .v2-avatar.gm-avatar-mark--genesis img{width:20px;height:auto}
 .gm-tenant-mark{width:28px;height:28px;flex:0 0 28px;border-radius:7px;overflow:hidden;display:inline-grid;place-items:center;background:var(--v2-surface-3)}
 .gm-tenant-mark svg{width:100%;height:100%;display:block}
 .gm-tenant-mark--genesis{background:#0d0e10;border:1px solid #303238}
-.gm-tenant-mark--genesis img,.gm-tenant-mark--genesis .gm-mark{width:18px;height:auto}
-.gm-tenant-mark--genesis .gm-mark .a{fill:#f4efe8}.gm-tenant-mark--genesis .gm-mark .b{fill:#c9a55e}
+.gm-tenant-mark--genesis img,.gm-tenant-mark--genesis .gm-mark{width:20px;height:16px}
+/* Both Genesis tiles stay ink in both themes, so their G keeps the gold for dark grounds. */
+.gm-tenant-mark--genesis,.v2-avatar.gm-avatar-mark--genesis{--gm-mark-a:#f1d898;--gm-mark-b:#c8a562}
 .v2-mobile-top a .gm-tenant-mark{width:28px;height:28px;flex-basis:28px;margin-right:8px}
 .v2-mobile-top a{min-width:0}
 .v2-mobile-top a .gm-tenant-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -164,18 +184,32 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 
 /* The plan level shown in this preview. Sits in the account area of the sidebar. */
 .gm-plan-switch{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:3px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface)}
-.gm-plan-switch>span{padding:0 6px 0 7px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.gm-plan-switch a{flex:1;min-height:30px;display:grid;place-items:center;border-radius:6px;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
+.gm-plan-switch>span{padding:0 4px 0 6px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.gm-plan-switch a{flex:1 1 auto;min-height:30px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
 .gm-plan-switch a:hover{background:var(--v2-hover);color:var(--v2-text)}
 .gm-plan-switch a[aria-current="true"]{background:var(--v2-accent);color:var(--v2-on-accent)}
 @media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-plan-switch{display:none}}
 @media (max-width:860px){.gm-plan-switch{margin:0 8px 8px}}
+/* A short window: the plan switch is one slim line, so more of the nav shows above it. */
+@media (min-width:861px) and (max-height:960px){.gm-plan-switch{margin-bottom:6px;padding:2px}.gm-plan-switch a{min-height:26px}}
+/* The nav scrolls when it is taller than the sidebar: its foot fades while more rows sit below, the way
+   Genesis OS cuts its last row in half (shared/app.js watchNav). */
+.v2-nav.gm-nav-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 44px),transparent)}
 
 /* A module outside the selected level: a small lock in the nav row. */
 .gm-nav-lock{margin-left:auto;display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border:1px solid var(--v2-border);border-radius:6px;color:var(--v2-muted);font-size:10px;font-style:normal;font-weight:700;letter-spacing:.03em}
 .gm-nav-lock svg{width:11px;height:11px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+/* A locked row keeps its name on one line ("Care Inbox" beside "Shepherd"). */
+.v2-nav a.is-locked>span{white-space:nowrap}
+.v2-nav a.is-locked .gm-nav-lock{padding:1px 5px;gap:2px}
 .v2-nav a.is-locked span{color:var(--v2-muted)}
-@media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-nav-lock{display:none}}
+/* Folded sidebar (861 to 1279px): the icon carries a small dot instead of the L03 tag. The views rail
+   keeps its labels there, so it keeps its tag too. */
+@media (min-width:861px) and (max-width:1279px){
+  body:not(.v2-sidebar-expanded) .v2-sidebar .v2-nav a{position:relative}
+  body:not(.v2-sidebar-expanded) .v2-sidebar .gm-nav-lock{position:absolute;top:9px;right:11px;width:6px;height:6px;margin:0;padding:0;border:0;border-radius:50%;background:var(--v2-muted);box-shadow:0 0 0 2px var(--v2-sidebar);font-size:0;line-height:0;overflow:hidden;pointer-events:none}
+  body:not(.v2-sidebar-expanded) .v2-sidebar .gm-nav-lock svg{display:none}
+}
 .v2-mobile-top .v2-mobile-command,.v2-mobile-top .v2-avatar{flex:none}
 
 /* Hope dock host: the element that carries the dock's shadow root. */
@@ -221,18 +255,19 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-hope-brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .gm-hope-brief>.gm-hope-brief-head{grid-column:1/-1}
 .gm-hope-brief-head p{margin:6px 0 0;color:var(--v2-text);font-size:14px;line-height:1.55}
-.gm-hope-brief .v2-fact{display:flex;align-items:baseline;gap:10px;padding:12px 14px;border-radius:12px}
-.gm-hope-brief .v2-fact b{margin:0;font-family:"Gambetta",Georgia,serif;font-size:28px;font-weight:500;line-height:1;letter-spacing:-.02em;color:var(--v2-text)}
-.gm-hope-brief .v2-fact small{display:inline;margin:0;color:var(--v2-text-2);font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none}
+/* Each fact is the Genesis OS briefing fact: a small uppercase label over a 20px Satoshi value, placed by
+   grid area so the label reads first whichever order the page writes them in. */
+.gm-hope-brief .v2-fact{display:grid;grid-template-areas:"label" "value";align-content:start;justify-items:start}
+.gm-hope-brief .v2-fact small{grid-area:label;display:block;margin:0;color:var(--v2-text-2);font-size:11px;font-weight:700;line-height:1.45;letter-spacing:.08em;text-transform:uppercase}
+.gm-hope-brief .v2-fact b{grid-area:value;display:block;margin:6px 0 0;font-family:inherit;font-size:20px;font-weight:700;line-height:1.2;letter-spacing:0;color:var(--v2-text)}
 .gm-hope-brief a.v2-fact{color:inherit;text-decoration:none}
-.gm-hope-brief .v2-fact:hover{border-color:var(--v2-border-strong)}
-.gm-hope-brief>.gm-hope-ask{grid-column:1/-1;width:100%}
-.gm-hope-brief>.gm-hope-ask .v2-icon{color:var(--v2-accent-strong)}
-@media (max-width:860px){
-  .gm-hope-brief{gap:8px}
-  .gm-hope-brief .v2-fact{flex-direction:column;align-items:flex-start;gap:6px;padding:10px 12px}
-  .gm-hope-brief .v2-fact b{font-size:24px}
-  .gm-hope-brief .v2-fact small{font-size:11.5px;line-height:1.3}
+.gm-hope-brief a.v2-fact:hover{border-color:var(--v2-border-strong)}
+@media (max-width:860px){.gm-hope-brief{gap:8px}}
+/* Phones: one fact per row, the label beside its value, so no label wraps to three lines. */
+@media (max-width:520px){
+  .gm-hope-brief{grid-template-columns:minmax(0,1fr)}
+  .gm-hope-brief .v2-fact{grid-template-areas:"label value";grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px}
+  .gm-hope-brief .v2-fact b{margin:0;font-size:17px;text-align:right}
 }
 
 /* Small things the Ministry screens need beside the real components. */
@@ -241,14 +276,22 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-src{color:var(--v2-fine,var(--v2-muted))}
 .gm-fold-note{margin:0;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.7}
 .gm-chip-row{display:flex;flex-wrap:wrap;gap:6px}
-.gm-protect-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
-.gm-protect-list li{padding:4px 20px 4px 0;margin-right:20px;border-right:1px solid var(--v2-kpi-line,var(--v2-border))}
-.gm-protect-list li:last-child{border-right:0;margin-right:0}
+/* How this page protects people: a row of short rules with a hairline between them. The column count
+   follows the room the list really has (a container query on its section), so the dock, the rail or a
+   small window never squeeze a rule to one word a line: five across from about 900px, then three, two
+   and one. Six rules read as two rows of three. The hairline is each rule's left edge; the list is
+   clipped by one pixel on the left, so the first rule of every row shows none, at any column count. */
+:has(> .gm-protect-list){container-type:inline-size}
+.gm-protect-list{list-style:none;margin:0 0 0 -21px;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px 0;clip-path:inset(-8px -8px -8px 1px)}
+.gm-protect-list li{margin:0;padding:4px 20px;border-left:1px solid var(--v2-kpi-line,var(--v2-border))}
 .gm-protect-list b{display:block;color:var(--v2-text);font-size:13px;font-weight:700}
 .gm-protect-list span{display:block;margin-top:4px;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
 .gm-protect-list svg{width:16px;height:16px;margin-bottom:8px;color:var(--v2-positive)}
-@media (max-width:1180px){.gm-protect-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 0}.gm-protect-list li:nth-child(2n){border-right:0;margin-right:0}}
-@media (max-width:640px){.gm-protect-list{grid-template-columns:minmax(0,1fr)}.gm-protect-list li{border-right:0;margin-right:0}}
+.gm-protect-list:has(> li:nth-child(6)){grid-template-columns:repeat(3,minmax(0,1fr))}
+@container (max-width:900px){.gm-protect-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@container (max-width:600px){.gm-protect-list,.gm-protect-list:has(> li:nth-child(6)){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@container (max-width:380px){.gm-protect-list,.gm-protect-list:has(> li:nth-child(6)){grid-template-columns:minmax(0,1fr)}}
+@media (max-width:480px){.gm-protect-list,.gm-protect-list:has(> li:nth-child(6)){grid-template-columns:minmax(0,1fr)}}
 
 /* Charts (shared/charts.js), drawn the way Reports draws them: thin bars, quiet
    axes, a small legend under the plot, and a table behind "View as Table". */
@@ -669,3 +712,211 @@ a.v2-sidebar-action{text-decoration:none}
   .gm-wide-table .v2-table-scroll>.v2-table{min-width:600px}
   .gm-wide-table .v2-primary-cell b,.gm-wide-table .v2-primary-cell span{white-space:normal}
 }
+
+/* ==========================================================================
+   8. Round 1 of the 10 pass: layering, keyboard, touch and the account menu.
+      Ministry layer only; no v2- token is redefined.
+   ========================================================================== */
+/* The skip link is the first Tab stop: it shows in full, under the sample strip. */
+.v2-skip-link:focus{z-index:600}
+body.v2-showing-sample .v2-skip-link:focus{top:52px}
+
+/* The dock floats over the sample strip, as in Genesis OS main, so its header (the small orb, the name,
+   New Conversation, History and Close) is never cut by the strip. The fix/gold-mark branch of Genesis OS
+   starts the dock under the strip instead (commit f6d5e79); follow it when that branch merges. Copied
+   now, it costs the 1440 x 900 welcome 44px and drops its orb from 220px to 160px. */
+body.v2-showing-sample.v2-genesis-panel-open .v2-genesis-layer{z-index:501}
+/* Tablets: the sheet opens under the strip, so the preview label stays readable. */
+@media (max-width:860px){
+  body.v2-showing-sample .v2-genesis-panel{top:56px;height:calc(100dvh - 68px)}
+}
+/* Phones: the dock is the whole screen under the strip, edge to edge, with nothing cut off. */
+@media (max-width:480px){
+  .v2-genesis-panel{top:0;left:0;right:0;width:100%;border-radius:0}
+  body.v2-showing-sample .v2-genesis-panel{top:44px;height:calc(100dvh - 44px);min-height:0}
+}
+/* Jump to opens under the sample strip, as in Genesis OS, so the strip stays lit; its dialog sits well
+   below the strip, so the search field is never covered. */
+body.v2-showing-sample .v2-command-layer{top:44px}
+/* On a phone the dock's scrim starts under the strip too, so "Design preview. Sample data shown." stays lit. */
+@media (max-width:860px){body.v2-showing-sample .v2-genesis-scrim{top:44px}}
+@media (max-width:860px){body.v2-showing-sample .v2-command-dialog{max-height:calc(100dvh - 56px)}}
+
+/* The account menu: one line per church, and the level list only where the level switch is out of
+   sight (the folded sidebar and phones). */
+.gm-menu-one{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-menu-plan{display:none}
+.gm-menu-plan.is-always{display:grid;gap:2px}
+@media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .v2-account-menu .gm-menu-plan{display:grid;gap:2px}}
+.v2-account-menu [role="menuitemradio"]:focus-visible,.v2-mobile-account-menu [role="menuitemradio"]:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+.v2-account-menu .gm-menu-note,.v2-mobile-account-menu .gm-menu-note{margin:2px 9px 6px}
+/* On phones the avatar's menu is a full-width sheet, like the other phone menus. */
+@media (max-width:860px){
+  .v2-mobile-account-menu{position:fixed;left:12px;right:12px;top:64px;width:auto;max-height:calc(100dvh - 120px)}
+  body.v2-showing-sample .v2-mobile-account-menu{top:108px;max-height:calc(100dvh - 120px)}
+}
+
+/* Touch screens of any width (phones, tablets, a touch laptop): every small control is a 44px target. */
+@media (max-width:860px),(pointer:coarse){
+  .v2-chip,.v2-segments button,a.v2-related-row,a.v2-report-market,.v2-view-tabs [role="tab"]{min-height:44px}
+  .v2-sidebar-action,.v2-command-trigger{min-height:44px}
+  .v2-sidebar-toggle{min-width:44px;min-height:44px}
+  .gm-chart-toggle.v2-button,.gm-plan-switch a{min-height:44px}
+  a.v2-related-row,a.v2-report-market{display:flex;align-items:center}
+  /* Text fields at 16px, so iOS never zooms the page when one gets focus. */
+  .v2-input,.v2-select,.v2-textarea,#v2-command-input,.gm-input,.gm-select,.gm-textarea{font-size:16px!important}
+}
+@media (pointer:coarse) and (min-width:861px) and (max-width:1279px){
+  body:not(.v2-sidebar-expanded) .v2-command-trigger,body:not(.v2-sidebar-expanded) .v2-sidebar-action{min-width:44px}
+}
+
+/* Light theme: panels that stay dark keep the dark-theme eyebrow color (5.87:1). */
+[data-theme="light"] .v2-report-diagnostic .v2-eyebrow,
+[data-theme="light"] .v2-next-move .v2-drawer-recommendation small{color:rgb(164,151,127)}
+
+/* A card that opens with its title sits at the card's top padding, as Genesis OS cards do. */
+section.v2-card>h2:first-child,div.v2-card>h2:first-child{margin-top:0}
+
+/* The locked state shares the page head's right edge. */
+.gm-locked-page .v2-card.gm-locked-card,.gm-locked-page .v2-card.gm-locked-card.has-thumb{max-width:none}
+@media (min-width:1101px){.gm-locked-card.has-thumb{grid-template-columns:minmax(0,1fr) minmax(260px,400px);gap:32px}}
+.gm-locked-copy{max-width:68ch}
+
+/* The guided demo offer docks bottom right, above the orb, like a Genesis OS toast. */
+@media (min-width:861px){
+  .v2-guide.hd-g:not(.is-anchored):has([data-guide="start"]){left:auto;right:24px;bottom:96px;margin:0;width:340px}
+}
+
+/* The guided demo's quiet way on: "Skip to Next Screen" under the card's controls (shared/demo.js). */
+.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{display:inline-flex;align-items:center;margin-top:8px;font-size:12px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.hd-g .gm-skip-screen{color:var(--v2-text-2)}
+.hd-g .gm-skip-screen:hover{color:var(--v2-text)}
+.hd-card .gm-skip-screen{color:inherit;opacity:.78;font-family:var(--hd-font,inherit)}
+.hd-g .gm-skip-screen:focus-visible,.hd-card .gm-skip-screen:focus-visible{outline:2px solid var(--v2-focus,currentColor);outline-offset:2px;border-radius:4px}
+@media (max-width:860px),(pointer:coarse){.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{min-height:44px;margin-top:2px}}
+/* Round 2: the card keeps room for the link from the moment a step is drawn, so the link never makes
+   the card taller after the card and its target were placed (on phones that hid the target's foot).
+   Every step card but the last carries it; the last links on, the Done card and the invite never do. */
+html.gm-skip-on .hd-card:not(:has(.hd-next)){padding-bottom:48px}
+html.gm-skip-on .hd-g.v2-guide[role="dialog"]:not(:has(.hd-g-next)):not(:has([data-guide="start"])){padding-bottom:44px}
+html.gm-skip-on .hd-card .gm-skip-screen{position:absolute;left:20px;bottom:12px;margin:0}
+html.gm-skip-on .hd-g .gm-skip-screen{position:absolute;left:16px;bottom:10px;margin:0}
+@media (max-width:860px),(pointer:coarse){
+  html.gm-skip-on .hd-card:not(:has(.hd-next)){padding-bottom:60px}
+  html.gm-skip-on .hd-g.v2-guide[role="dialog"]:not(:has(.hd-g-next)):not(:has([data-guide="start"])){padding-bottom:56px}
+  html.gm-skip-on .hd-card .gm-skip-screen,html.gm-skip-on .hd-g .gm-skip-screen{bottom:6px;margin:0}
+}
+/* With the dock open beside the work, page actions wrap inside their own box, right aligned, as Genesis
+   OS wraps them (Deals at 1280 with Ask Hawk open); the title keeps the room it needs beside them. */
+
+/* ==========================================================================
+   9. Round 2 of the 10 pass. Ministry layer only; no v2- token is redefined.
+   ========================================================================== */
+/* The sidebar brand row is 56px from 1280px, as in Genesis OS, so the top of the sidebar sits at the
+   same place on every workspace screen. Folded to icons (861 to 1279px) it keeps the Genesis OS
+   height of its own (45px), so Show Labels, Jump to and the nav sit where they do in the real app. */
+@media (min-width:1280px){.v2-sidebar>.v2-brand{flex:0 0 56px}}
+@media (min-width:861px) and (max-width:1279px){.v2-sidebar>.v2-brand{flex:0 0 45px;height:45px;min-height:0}}
+
+/* Phones: the sort select fills the rest of the toolbar row, as #v2-deal-sort does in Genesis OS. */
+@media (max-width:860px){.v2-deal-toolbar>select.v2-select:last-child{flex:1 1 0%;min-width:108px}}
+
+/* A page title never splits inside a word: it wraps between words, and only a word longer than the
+   whole line may break. */
+.v2-page-head h1,.v2-full-record-head h1{overflow-wrap:break-word;word-break:normal}
+
+/* The page column, whatever narrows it (the dock open beside it, the rail, a small window). Genesis OS
+   keeps the page head and the next-move panel side by side down to a column of about 580px: the
+   title takes the room it needs and the page actions wrap inside their own box, right aligned.
+   body.gm-col-narrow (under 760px) stacks only the full record head; body.gm-col-tight (under
+   540px) stacks the page head and the next-move panel too, as Genesis OS stacks them on phones. */
+body.gm-col-narrow .v2-full-record-head{grid-template-columns:minmax(0,1fr)}
+/* A page action never wraps its own label; the actions wrap as whole buttons instead. */
+.v2-page-head>.v2-page-actions>.v2-button{white-space:nowrap}
+@media (min-width:861px){
+  .v2-page-head>div:first-child{flex:1 1 auto;min-width:0}
+}
+body.gm-col-tight .v2-next-move{grid-template-columns:minmax(0,1fr)}
+body.gm-col-tight .v2-page-head{display:block}
+body.gm-col-tight .v2-page-head>.v2-page-actions{margin-top:12px;justify-content:flex-start;flex-wrap:wrap}
+body.gm-col-tight .v2-page-head>div:first-child{min-width:0}
+body.gm-col-tight .v2-next-move .v2-next-actions{justify-content:flex-start}
+
+/* Touch tablets up to 1180px: the dock opens over the page, with a scrim, instead of squeezing the
+   page into a column too narrow to read. The shell makes it modal there (GM.dockIsOverlay). */
+@media (pointer:coarse) and (min-width:861px) and (max-width:1180px){
+  body.v2-genesis-panel-open:not(.v2-genesis-page-open) .v2-main{padding-right:28px}
+  .v2-genesis-layer[data-open="true"]{pointer-events:auto}
+  .v2-genesis-scrim{display:block}
+}
+@media (pointer:coarse) and (min-width:861px) and (max-width:980px){
+  body.v2-genesis-panel-open:not(.v2-genesis-page-open) .v2-main{padding-right:20px}
+}
+
+/* The guided demo's invite never stacks on the open dock: two floating surfaces, two gold buttons. */
+body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anchored):has([data-guide="start"]){display:none!important}
+
+/* Light theme: the dark panels and the dark guide card keep the dark-theme label color (5.87:1). */
+[data-theme="light"] .v2-outreach-next .v2-eyebrow,
+[data-theme="light"] .v2-guide .v2-guide-count{color:rgb(164,151,127)}
+
+/* Chart cards side by side: both footers (Sample data, View as Table) sit on the card bottoms. */
+.v2-viz-pair>.v2-card{display:flex;flex-direction:column}
+.v2-viz-pair>.v2-card>:last-child:has(>.gm-chart){flex:1 1 auto;display:flex;flex-direction:column}
+.v2-viz-pair>.v2-card .gm-chart{flex:1 1 auto;display:flex;flex-direction:column}
+.v2-viz-pair>.v2-card .gm-chart>.gm-chart-foot{margin-top:auto;padding-top:12px}
+
+/* The phone menu sheet's own Close Menu control, top right of the sheet. */
+.gm-sheet-close{display:none}
+@media (max-width:860px){
+  .v2-sidebar>.gm-sheet-close{display:inline-grid;place-items:center;position:absolute;top:8px;right:8px;z-index:2;width:44px;height:44px;min-width:44px;padding:0}
+}
+
+/* A Hope draft on a phone: Approve and Send on its own row, Edit and Not Now side by side under it. */
+@media (max-width:480px){
+  .gm-draft-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gm-draft-actions>[data-gm-action="approve-draft"]{grid-column:1/-1}
+}
+
+/* The close of a church buyer's demo on a member screen: the Genesis Done card, docked at the bottom
+   the way Genesis OS docks it, above the stage around the phone. */
+.v2-guide.gm-close-card{z-index:2147483001}
+/* Four ways on (See the Levels, Talk With Genesis, How to Get Started, Back to the Overview) keep to one row. */
+@media (min-width:861px){.v2-guide.gm-close-card{width:min(588px,calc(100vw - 32px))}}
+.gm-close-card .v2-guide-head .v2-guide-count{margin-left:auto;margin-right:0}
+.gm-close-card .v2-guide-close{margin-left:8px}
+@media (max-width:860px),(pointer:coarse){
+  .gm-close-card .v2-guide-controls .v2-button{min-height:44px}
+  .gm-close-card .v2-guide-close{width:44px;height:44px}
+}
+
+/* ==========================================================================
+   9. Review round 1 (November 22): phones.
+   ========================================================================== */
+/* Genesis OS keeps 136px at the foot of a phone for its bottom nav and the Hawk button
+   (os/refine-phone.css). This preview has no bottom nav, so the work area ends 12px above the round
+   Genesis button instead: the sample strip (44px), the top bar (58px) and the button's band (72px). */
+@media (max-width:860px){
+  body.v2-showing-sample .v2-main{height:calc(100dvh - 44px - 58px - 72px)!important}
+}
+/* A short, wide window (200 percent zoom of a laptop): the member tour card docks at the foot of the
+   screen (../shared/hope-demo.js shortDock), so Skip to Next Screen moves up beside the step count and
+   the card stays short enough to leave the part a step names on screen above it. */
+@media (max-height:500px) and (min-width:641px){
+  html.gm-skip-on.hd-tour-on .hd-card:not(:has(.hd-next)){padding-bottom:12px}
+  html.gm-skip-on.hd-tour-on .hd-card .gm-skip-screen{left:auto;right:18px;top:8px;bottom:auto;min-height:32px;margin:0}
+}
+
+/* Gifts and Reports on a phone: the line about who can see the page, its lock pill and the Updated stamp
+   stack, so the line is never squeezed into a narrow column. */
+@media (max-width:520px){
+  .v2-report-page .v2-report-controlbar-plain,.v2-report-controlbar-plain{flex-direction:column;align-items:flex-start;gap:6px}
+  .v2-report-controlbar-plain .v2-report-scope-copy{min-height:0}
+  .v2-report-controlbar-plain .v2-report-scope{flex-wrap:wrap;gap:8px}
+}
+
+/* The Website screen's embedded site holds about 30 Tab stops: a skip link before it shows on focus. */
+.gm-skip-frame{position:absolute;left:8px;top:8px;z-index:3;padding:8px 12px;border-radius:var(--v2-radius-sm);background:var(--v2-accent);color:var(--v2-on-accent);font-size:12px;font-weight:700;text-decoration:none;transform:translateY(-200%);opacity:0}
+.gm-skip-frame:focus{transform:none;opacity:1}
+.ws-phone{position:relative}
+#ws-kit:focus{outline:none}

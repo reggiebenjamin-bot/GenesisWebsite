@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lightwell Brand Board</title>
-<meta name="description" content="Brand board for Lightwell Church, a fictional demo church in Raleigh, North Carolina, in the Genesis Ministry Bright and Modern look: logo, color, type, photography, graphic elements, UI, voice and social posts.">
+<meta name="robots" content="noindex">
+<title>Lightwell Church | Brand Board | Template Preview</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="description" content="Brand board for Lightwell Church, a made-up church in Raleigh, North Carolina, in the Genesis Ministry Bright and Modern look: logo, color, type, photography, graphic elements, UI, voice and social posts.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
@@ -246,6 +248,10 @@ ul{padding:0;list-style:none}
 .btn-white{background:#fff;color:var(--cobalt)}
 .tlink{font-weight:600;color:var(--ink);text-decoration:none;background:linear-gradient(var(--cobalt),var(--cobalt)) no-repeat left bottom/100% 1.5px;padding-bottom:2px}
 .go{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--cobalt);text-decoration:none}
+/* Stand-alone text links get a full 44px target; the underline stays close to the words */
+a.tlink,a.go{display:inline-flex;align-items:center;min-height:44px}
+a.tlink{background:none;padding-bottom:0;text-decoration:underline;text-decoration-color:var(--cobalt);text-decoration-thickness:1.5px;text-underline-offset:5px}
+.top .brand{min-height:44px}
 .field{display:flex;gap:10px}
 .field input{flex:1;min-width:0;height:52px;padding:0 16px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font:16px var(--body)}
 .field input.focus{border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
@@ -469,7 +475,7 @@ ul{padding:0;list-style:none}
     <nav class="toc" aria-label="Board sections">
       <a href="#logo">Logo</a><a href="#color">Color</a><a href="#type">Type</a><a href="#photo">Photography</a><a href="#elements">Elements</a><a href="#ui">UI</a><a href="#voice">Voice</a><a href="#social">Social</a>
     </nav>
-    <span class="preview-badge" title="Lightwell Church is a fictional church used to preview this template.">Template preview</span>
+    <span class="preview-badge" title="Lightwell Church is a made-up church used to preview this template.">Template preview</span>
   </div>
 </header>
 
@@ -480,7 +486,7 @@ ul{padding:0;list-style:none}
       <div class="cover-main">
         <svg class="cover-shaft" aria-hidden="true"><use href="#i-shaft"/></svg>
         <div>
-          <p class="label">Genesis Ministry &middot; Bright &amp; Modern</p>
+          <p class="label">Genesis Ministry &middot; Bright and Modern</p>
           <h1 class="sr-only" id="cover-title">Lightwell Church brand board</h1>
           <div class="cover-wm" aria-hidden="true"><svg><use href="#i-mark-rev"/></svg><span>lightwell</span></div>
           <p class="cover-tag">Let the light in.</p>
@@ -760,7 +766,7 @@ ul{padding:0;list-style:none}
           <p class="cap"><span>Photo card, hover state</span></p>
         </div>
         <div class="ui s8 reveal">
-          <div class="annc"><span><span class="tag">New</span><b>Room to Grow:</b> bright new kids rooms open this spring.</span><span class="play"><i><svg aria-hidden="true"><use href="#i-play"/></svg></i>Watch the Video</span></div>
+          <div class="annc"><span><span class="tag">New</span><b>Room to Grow:</b> bright new kids' rooms open this spring.</span><span class="play"><i><svg aria-hidden="true"><use href="#i-play"/></svg></i>Watch the Video</span></div>
           <p class="cap" style="margin-top:0"><span>Announcement bar</span></p>
           <div class="row" style="align-items:flex-start;gap:20px">
             <div class="phone" aria-label="Phone Sundays bar example" role="img">
@@ -882,7 +888,7 @@ ul{padding:0;list-style:none}
 <footer class="foot">
   <div class="wrap">
     <span class="lockup"><svg aria-hidden="true"><use href="#i-mark-rev"/></svg><span class="wm" style="font:800 1em/1 var(--display);letter-spacing:-.045em">lightwell</span></span>
-    <p>Template preview by Genesis Ministry. Lightwell Church, its pastors and its address are fictional and used only to show the Bright &amp; Modern look. Photos are from Unsplash and Pexels under their free licenses; see photos/CREDITS.md.</p>
+    <p>Template preview by Genesis Ministry. Lightwell Church, its pastors and its address are made up and used only to show the Bright and Modern look. Photos are from Unsplash and Pexels under their free licenses; see photos/CREDITS.md.</p>
   </div>
 </footer>
 

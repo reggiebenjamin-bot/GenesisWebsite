@@ -7,6 +7,8 @@
 
   /* The church edition's AI employee. Rename here and every story page follows. */
   var ASSISTANT = "Hope";
+  /* Where Talk With Genesis goes: the church consultation on geai.us, as a walkthrough of the demo. */
+  var GENESIS_CONTACT_URL = "/contact?topic=ministry-demo";
 
   var D = window.GM_DATA || {};
   var FALLBACK = [
@@ -33,7 +35,12 @@
   sSet("gm.plan", String(plan));
 
   var root = document.documentElement;
-  var STORY = window.STORY = { assistant: ASSISTANT, church: church, plan: plan, churches: CHURCHES };
+
+  /* The public copy has no presenter mode. */
+  var present = false;
+  root.removeAttribute("data-present");
+
+  var STORY = window.STORY = { assistant: ASSISTANT, church: church, plan: plan, churches: CHURCHES, present: present, contact: GENESIS_CONTACT_URL };
 
   /* ------------------------------------------------------------------ theme */
   function theme() { return root.getAttribute("data-theme") === "light" ? "light" : "dark"; }
@@ -80,6 +87,7 @@
       if (!a.getAttribute("data-href")) a.setAttribute("data-href", base);
       a.setAttribute("href", withParams(base));
     });
+    document.querySelectorAll("a[data-contact]").forEach(function (a) { a.setAttribute("href", GENESIS_CONTACT_URL); });
     document.querySelectorAll("a[data-site]").forEach(function (a) {
       a.setAttribute("href", a.getAttribute("data-site").replace("{slug}", church.slug));
     });
@@ -132,7 +140,14 @@
       i = (i + all.length) % all.length;
       choose(all[i].getAttribute("data-tenant"), true);
     }
-    if (e.key === "Escape") setMenu(false);
+    if (e.key === "Escape") {
+      /* Escape closes the menu and gives focus back to its toggle, never to the page under it. */
+      var mb = document.querySelector("[data-story-menu]"), mm = document.getElementById("story-menu");
+      var was = mm && !mm.hidden && (mm.contains(document.activeElement) || document.activeElement === mb);
+      setMenu(false);
+      if (was && mb) mb.focus();
+    }
+    if (e.key === "Tab") menuTab(e);
   });
 
   /* ------------------------------------------------------------------ the phone menu */
@@ -144,25 +159,63 @@
     btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
     menu.hidden = !open;
   }
+  /* While the menu is open, Tab stays with the toggle and the menu's links, as the four church sites'
+     menus do, so focus never moves under the open panel (WCAG 2.4.11). */
+  function menuTab(e) {
+    var btn = document.querySelector("[data-story-menu]");
+    var menu = document.getElementById("story-menu");
+    if (!btn || !menu || menu.hidden) return;
+    var items = [btn].concat([].filter.call(menu.querySelectorAll("a[href], button:not([disabled]), input, select, [tabindex]:not([tabindex='-1'])"), function (n) { return n.offsetParent !== null; }));
+    var i = items.indexOf(document.activeElement);
+    if (i < 0) { e.preventDefault(); items[0].focus(); return; }
+    var to = e.shiftKey ? (i === 0 ? items.length - 1 : i - 1) : (i === items.length - 1 ? 0 : i + 1);
+    e.preventDefault();
+    items[to].focus();
+  }
   window.addEventListener("resize", function () { if (innerWidth > 920) setMenu(false); });
 
   /* ------------------------------------------------------------------ diagram steps */
   /* Every diagram is complete at rest. As the reader scrolls through one, its steps
-     take a gold edge in order. On phones the wide diagram pans to keep the current
-     step in view until the reader scrolls it by hand. Reduced motion: no highlight. */
+     take a gold edge in order. A wide diagram on a phone opens at its start and stays
+     where the reader puts it; Follow the Path (under it) pans it to each step as it
+     lights, until the reader pans it by hand. Reduced motion: no highlight. */
   var reduce = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
   var diagrams = [];
   function setupDiagrams() {
     document.querySelectorAll("[data-steps]").forEach(function (d) {
       var scroller = d.closest(".dg-scroll");
-      var rec = { el: d, n: +d.getAttribute("data-steps"), now: -1, scroller: scroller, touched: false };
-      if (scroller) {
-        ["pointerdown", "wheel", "touchstart", "keydown"].forEach(function (ev) {
-          scroller.addEventListener(ev, function () { rec.touched = true; }, { passive: true });
+      var rec = { el: d, n: +d.getAttribute("data-steps"), now: -1, scroller: scroller, follow: false, btn: null };
+      if (scroller && d.getAttribute("data-pan") !== "off") {
+        var foot = scroller.parentNode && scroller.parentNode.querySelector(".dg-foot");
+        if (foot) {
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "dg-follow"; b.setAttribute("aria-pressed", "false");
+          b.textContent = "Follow the Path";
+          b.addEventListener("click", function () { setFollow(rec, !rec.follow); if (rec.follow) pan(rec); });
+          foot.appendChild(b);
+          rec.btn = b;
+        }
+        ["pointerdown", "wheel", "touchstart"].forEach(function (ev) {
+          scroller.addEventListener(ev, function () { setFollow(rec, false); }, { passive: true });
         });
+        scroller.addEventListener("keydown", function (e) { if (/^Arrow|^Home$|^End$|^Page/.test(e.key)) setFollow(rec, false); });
       }
       diagrams.push(rec);
     });
+  }
+  function setFollow(rec, on) {
+    rec.follow = !!on;
+    if (rec.btn) rec.btn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  function pan(rec) {
+    if (!rec.scroller || rec.scroller.scrollWidth <= rec.scroller.clientWidth + 4) return;
+    var cur = rec.el.querySelector('.is-now[data-step][data-x]') || rec.el.querySelector(".is-now[data-step]");
+    if (!cur) return;
+    var x = +(cur.getAttribute("data-x") || 0);
+    var vb = rec.el.viewBox && rec.el.viewBox.baseVal;
+    var scale = vb && vb.width ? rec.el.getBoundingClientRect().width / vb.width : 1;
+    var target = Math.max(0, x * scale - rec.scroller.clientWidth * 0.3);
+    rec.scroller.scrollTo({ left: target, behavior: reduce.matches ? "auto" : "smooth" });
   }
   function light(rec, now) {
     if (rec.now === now) return;
@@ -172,16 +225,7 @@
       n.classList.toggle("is-lit", now > 0 && s <= now);
       n.classList.toggle("is-now", now > 0 && s === now);
     });
-    if (now > 0 && rec.scroller && !rec.touched && rec.el.getAttribute("data-pan") !== "off" && rec.scroller.scrollWidth > rec.scroller.clientWidth + 4) {
-      var cur = rec.el.querySelector('.is-now[data-step][data-x]') || rec.el.querySelector(".is-now[data-step]");
-      if (cur) {
-        var x = +(cur.getAttribute("data-x") || 0);
-        var vb = rec.el.viewBox && rec.el.viewBox.baseVal;
-        var scale = vb && vb.width ? rec.el.getBoundingClientRect().width / vb.width : 1;
-        var target = Math.max(0, x * scale - rec.scroller.clientWidth * 0.3);
-        rec.scroller.scrollTo({ left: target, behavior: "smooth" });
-      }
-    }
+    if (now > 0 && rec.follow) pan(rec);
   }
   var raf = 0;
   function tick() {
@@ -216,5 +260,10 @@
   }
   STORY.url = withParams;
   STORY.choose = choose;
+  /* The Hope circle shows on a phone once the first screen is passed (story.css), or while a tour runs. */
+  function pastHero() { document.documentElement.classList.toggle("gm-past-hero", window.scrollY > window.innerHeight * 0.5 || document.documentElement.classList.contains("hd-tour-on")); }
+  window.addEventListener("scroll", pastHero, { passive: true });
+  window.addEventListener("resize", pastHero);
+  pastHero();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();

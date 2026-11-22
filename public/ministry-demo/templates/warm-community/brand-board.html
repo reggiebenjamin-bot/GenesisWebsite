@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Goldenrod Commons Brand Board | Template preview</title>
-<meta name="description" content="Brand board for Goldenrod Commons Church, the fictional demo church for the Warm Community look from Genesis Ministry.">
+<meta name="robots" content="noindex">
+<title>Goldenrod Commons Church | Brand Board | Template Preview</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="description" content="Brand board for Goldenrod Commons Church, the made-up church for the Warm Community look from Genesis Ministry.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fredoka:wdth,wght@75..125,400..700&family=Nunito+Sans:ital,opsz,wght@0,6..12,400..800;1,6..12,400&display=swap" rel="stylesheet">
@@ -237,6 +239,8 @@ a{color:inherit}
 .btn-light{border-color:rgba(255,251,243,.7);color:var(--porch);background:transparent}
 .ondark{background:var(--dusk);border-radius:20px;padding:18px;display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
 .tlink{font-weight:800;color:var(--leaf-deep);text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding-bottom:3px;background:linear-gradient(currentColor,currentColor) no-repeat left bottom/100% 2px}
+/* Stand-alone text links get a full 44px target */
+a.tlink{min-height:44px}
 .field{display:flex;gap:10px;margin-top:6px}
 .field input{flex:1;min-width:0;min-height:56px;border-radius:999px;border:2px solid rgba(58,38,24,.28);background:var(--paper);padding:0 22px;font:400 17px var(--body);color:var(--cocoa)}
 .field input:focus{outline:none;border-color:var(--leaf);box-shadow:0 0 0 4px rgba(59,122,55,.2)}
@@ -552,8 +556,8 @@ a{color:inherit}
         <div class="srow"><p class="spec"><b>Hand note</b>Caveat 600, 22 to 40 px</p><p class="ex hand" style="font-size:34px;color:var(--leaf-deep)">Marcus and Ellie</p></div>
       </div>
       <div class="sample reveal">
-        <div class="s1"><p class="eyebrow">Sample setting</p><h3>Love God, love the block, and keep the porch light on.</h3><p class="b">Goldenrod Commons is a church for ordinary people on ordinary streets. Short sentences, plain words, and plenty of room for whoever comes up the walk.</p><p style="margin-top:18px"><a class="tlink" href="#">Meet our pastors <span class="arw" aria-hidden="true">&rarr;</span></a></p></div>
-        <div class="s2"><p class="eyebrow">On Dusk</p><h3>The porch light is always on.</h3><p class="b">Good week or hard week, sure about God or not so sure. Come by anyway. Somebody here will learn your name and remember it next week.</p><p style="margin-top:20px"><a class="btn btn-light" href="#">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></p></div>
+        <div class="s1"><p class="eyebrow">Sample setting</p><h3>Love God, love the block, and keep the porch light on.</h3><p class="b">Goldenrod Commons is a church for ordinary people on ordinary streets. Short sentences, plain words, and plenty of room for whoever comes up the walk.</p><p style="margin-top:18px"><a class="tlink" href="#h-ui">Meet our pastors <span class="arw" aria-hidden="true">&rarr;</span></a></p></div>
+        <div class="s2"><p class="eyebrow">On Dusk</p><h3>The porch light is always on.</h3><p class="b">Good week or hard week, sure about God or not so sure. Come by anyway. Somebody here will learn your name and remember it next week.</p><p style="margin-top:20px"><a class="btn btn-light" href="#h-ui">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></p></div>
       </div>
     </div>
   </section>
@@ -625,9 +629,9 @@ a{color:inherit}
       <div class="ui-grid">
         <div class="panel reveal" style="background:var(--porch)">
           <h3>Buttons and links</h3>
-          <div class="row"><a class="btn btn-primary" href="#">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a><a class="btn btn-outline" href="#">Get Directions</a></div>
-          <div class="ondark"><a class="btn btn-primary" href="#">Sign Me Up <span class="arw" aria-hidden="true">&rarr;</span></a><a class="btn btn-light" href="#">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></div>
-          <p style="margin-top:20px"><a class="tlink" href="#">See what to expect <span class="arw" aria-hidden="true">&rarr;</span></a></p>
+          <div class="row"><a class="btn btn-primary" href="#h-ui">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a><a class="btn btn-outline" href="#h-ui">Get Directions</a></div>
+          <div class="ondark"><a class="btn btn-primary" href="#h-ui">Sign Me Up <span class="arw" aria-hidden="true">&rarr;</span></a><a class="btn btn-light" href="#h-ui">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></div>
+          <p style="margin-top:20px"><a class="tlink" href="#h-ui">Save me a seat <span class="arw" aria-hidden="true">&rarr;</span></a></p>
           <div class="row" style="margin-top:22px"><span class="sticker"><span class="dot" aria-hidden="true"><svg viewBox="0 0 16 16" fill="#3A2618"><path d="M8 13.6 2.9 8.7A3 3 0 0 1 7.2 4.4L8 5.2l.8-.8a3 3 0 0 1 4.3 4.3z"/></svg></span>Say hi after church</span><span class="sticker" style="--tilt:4deg">First time? Hi!</span></div>
           <h3 style="margin-top:30px">Form field</h3>
           <form class="field" onsubmit="return false"><label class="sr-only" for="bb-email">Email address</label><input id="bb-email" type="email" placeholder="you@example.com"><button class="btn btn-outline" type="submit">Join</button></form>
@@ -645,15 +649,15 @@ a{color:inherit}
       </div>
       <div class="sunband reveal">
         <div class="steps reveal">
-          <a class="step" href="#"><h4>Start here</h4><p>Lunch with the pastors after church.</p></a>
-          <a class="step" href="#"><h4>Small groups</h4><p>Living rooms all over the city.</p></a>
-          <a class="step" href="#"><h4>Events</h4><p>Potlucks, porch nights and service days.</p></a>
-          <a class="step" href="#"><h4>Need prayer</h4><p>Tell us what is heavy this week.</p></a>
+          <a class="step" href="#h-ui"><h4>Start here</h4><p>Lunch with the pastors after church.</p></a>
+          <a class="step" href="#h-ui"><h4>Small groups</h4><p>Living rooms all over the city.</p></a>
+          <a class="step" href="#h-ui"><h4>Events</h4><p>Potlucks, porch nights and service days.</p></a>
+          <a class="step" href="#h-ui"><h4>Need prayer</h4><p>Tell us what is heavy this week.</p></a>
         </div>
       </div>
       <div class="ui-grid" style="margin-top:20px">
         <div class="panel reveal" style="background:var(--porch);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px">
-          <div class="mini-card"><img src="photos/family-arriving-boardwalk.jpg" alt="A family walking toward friends on a sunny path" style="object-position:50% 45%"><h4>Plan Your Visit</h4><p>Parking, kids check-in and where the coffee is.</p><a class="tlink" href="#">See what to expect <span class="arw" aria-hidden="true">&rarr;</span></a></div>
+          <div class="mini-card"><img src="photos/family-arriving-boardwalk.jpg" alt="A family walking toward friends on a sunny path" style="object-position:50% 45%"><h4>Plan Your Visit</h4><p>Parking, kids check-in and where the coffee is.</p><a class="tlink" href="#h-ui">See what to expect <span class="arw" aria-hidden="true">&rarr;</span></a></div>
           <div><h3>Chat</h3><div class="bubbles"><p class="bub">Hi neighbor! Ask me anything about Sundays, kids or parking.</p><p class="bub me">Where do I park?</p><p class="bub">Use the lot off Wrenfield. The yellow umbrellas mark the way in, and a greeter will be right there.</p></div></div>
         </div>
         <div class="panel reveal" style="background:var(--porch)">
@@ -760,7 +764,7 @@ a{color:inherit}
   <div class="wrap">
     <div class="row">
       <span class="lockup" role="img" aria-label="Goldenrod Commons Church"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg><span class="wm" aria-hidden="true"><span class="w1">goldenrod</span><span class="w2">Commons Church</span></span></span>
-      <p><b>Template preview.</b> Goldenrod Commons is a fictional church made to show the Warm Community look from Genesis Ministry. Photos are from Unsplash and Pexels under their free licenses, credited in photos/CREDITS.md. Fonts: Fredoka, Nunito Sans and Caveat from Google Fonts.</p>
+      <p><b>Template preview.</b> Goldenrod Commons is a made-up church made to show the Warm Community look from Genesis Ministry. Photos are from Unsplash and Pexels under their free licenses, credited in photos/CREDITS.md. Fonts: Fredoka, Nunito Sans and Caveat from Google Fonts.</p>
     </div>
   </div>
 </footer>

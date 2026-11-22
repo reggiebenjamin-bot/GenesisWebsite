@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lampstand Church Brand Board (Template Preview)</title>
+<meta name="robots" content="noindex">
+<title>Lampstand Church | Brand Board | Template Preview</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Brand board for Lampstand Church, a demo church for the Genesis Ministry Bold and Dark look: logo, color, type, photography, graphic elements, UI, voice and social posts.">
 <meta name="theme-color" content="#14110E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,7 +99,7 @@ a{color:inherit}
 .rules{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}
 .rule-card{border-top:3px solid var(--flare);padding:16px 0 0}
 .rule-card.no{border-top-color:var(--char-2)}
-.rule-card h4{margin:0 0 6px;font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rule-card h3{margin:0 0 6px;font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
 .rule-card p{margin:0;font-size:15px;color:var(--ash)}
 
 /* Color */
@@ -135,6 +137,8 @@ a{color:inherit}
 .tlink{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--bone);text-decoration:none;padding-bottom:3px;background:linear-gradient(var(--flare),var(--flare)) no-repeat left bottom/100% 2px}
 .tlink .arw{color:var(--flare);transition:transform .35s var(--ease)}
 .tlink:hover .arw{transform:translateX(5px)}
+/* Stand-alone text links get a full 44px target; the underline stays close to the words */
+a.tlink{min-height:44px;padding-bottom:0;background:none;text-decoration:underline;text-decoration-color:var(--flare);text-decoration-thickness:2px;text-underline-offset:6px}
 
 /* Photography */
 .photo-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(120px,13vw,190px);gap:12px}
@@ -149,10 +153,10 @@ a{color:inherit}
 .pg6{grid-column:span 3}
 .dodont{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
 .dd{border:1px solid var(--char);padding:22px 24px;background:var(--soot)}
-.dd h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
-.dd h4 i{display:grid;place-items:center;width:26px;height:26px;font-style:normal;font:900 16px/1 var(--body)}
-.dd.do h4 i{background:var(--flare);color:var(--kiln)}
-.dd.no h4 i{border:1.5px solid var(--char-2);color:var(--ash)}
+.dd h3{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.dd h3 i{display:grid;place-items:center;width:26px;height:26px;font-style:normal;font:900 16px/1 var(--body)}
+.dd.do h3 i{background:var(--flare);color:var(--kiln)}
+.dd.no h3 i{border:1.5px solid var(--char-2);color:var(--ash)}
 .dd ul{margin:0;padding:0;list-style:none}
 .dd li{position:relative;padding:8px 0 8px 22px;border-top:1px solid var(--char);font-size:15.5px;color:var(--ash)}
 .dd li:first-child{border-top:0}
@@ -173,7 +177,7 @@ a{color:inherit}
 .strike-demo{width:74%}
 .strike-demo .bar{height:1px;background:var(--char-2);position:relative}
 .strike-demo .bar::after{content:"";position:absolute;left:0;right:0;top:-2px;height:5px;background:var(--flare);transform-origin:left;transform:scaleX(.18);animation:strikeLoop 3.2s cubic-bezier(.3,.6,.2,1) infinite}
-.strike-demo h5{margin:18px 0 0;font:900 34px/1 var(--display);text-transform:uppercase}
+.strike-demo h3{margin:18px 0 0;font:900 34px/1 var(--display);text-transform:uppercase}
 @keyframes strikeLoop{0%{transform:scaleX(0)}35%{transform:scaleX(1)}60%,100%{transform:scaleX(.18)}}
 .nums{display:flex;gap:10px}
 .nums span{display:grid;place-items:center;min-width:64px;height:54px;padding:0 12px;background:var(--flare);color:var(--kiln);font:900 32px/1 var(--display)}
@@ -197,11 +201,11 @@ a{color:inherit}
 /* UI */
 .ui-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
 .ui{background:var(--soot);border:1px solid var(--char);padding:26px}
-.ui h4{margin:0 0 18px;font:600 12px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+.ui h3{margin:0 0 18px;font:600 12px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
 .u-btns{grid-column:span 7}
 .u-form{grid-column:span 5}
 .u-steps{grid-column:span 7;background:var(--flare);border-color:var(--flare);color:var(--kiln)}
-.u-steps h4{color:var(--umber)}
+.u-steps h3{color:var(--umber)}
 .u-rows{grid-column:span 5}
 .u-bits{grid-column:span 12}
 .btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:var(--r);font:600 16px/1 var(--body);text-decoration:none;white-space:nowrap;cursor:pointer;border:1.5px solid transparent;transition:transform .3s var(--ease),background-color .25s,border-color .25s}
@@ -255,7 +259,7 @@ a{color:inherit}
 .sbar-demo .t small{display:block;font:600 10.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;color:var(--flare);margin-bottom:4px}
 .sbar-demo .t b{font:800 21px/1 var(--display);text-transform:uppercase;white-space:nowrap}
 .sbar-demo .btn{min-height:46px;padding:0 16px;font-size:15px;animation:none}
-.menu-demo{width:280px;background:var(--kiln);border:1px solid var(--char);border-top:3px solid var(--flare);padding:8px}
+.menu-demo{width:280px;max-width:100%;background:var(--kiln);border:1px solid var(--char);border-top:3px solid var(--flare);padding:8px}
 .menu-demo div{position:relative;padding:10px 12px 10px 16px;font-weight:600;font-size:15px;line-height:1.25}
 .menu-demo div small{display:block;font-weight:400;font-size:13px;color:var(--ash);margin-top:2px}
 .menu-demo div.on{background:var(--soot-2)}
@@ -268,7 +272,7 @@ a{color:inherit}
 .vw p{margin:10px 0 0;font-size:14.5px;color:var(--ash)}
 .say{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .say .col{border:1px solid var(--char);background:var(--soot);padding:24px}
-.say h4{margin:0 0 14px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.say h3{margin:0 0 14px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
 .say ul{margin:0;padding:0;list-style:none}
 .say li{padding:11px 0;border-top:1px solid var(--char);font-size:16px}
 .say li:first-child{border-top:0}
@@ -413,7 +417,7 @@ a{color:inherit}
 <header class="topbar">
   <div class="wrap">
     <b>Lampstand Church</b>
-    <span>Brand board &nbsp;·&nbsp; Genesis Ministry, Bold &amp; Dark look</span>
+    <span>Brand board &nbsp;·&nbsp; Genesis Ministry, Bold and Dark look</span>
     <span class="tag">Template preview</span>
   </div>
 </header>
@@ -471,10 +475,10 @@ a{color:inherit}
       </div>
     </div>
     <div class="rules">
-      <div class="rule-card"><h4>Clear space</h4><p>Keep space equal to the flame height on every side of the lockup.</p></div>
-      <div class="rule-card"><h4>Minimum size</h4><p>Wordmark 120px wide on screens. Mark alone 24px tall.</p></div>
-      <div class="rule-card no"><h4>Never</h4><p>Stretch, outline, add glow or drop shadow, or set the wordmark in Flare.</p></div>
-      <div class="rule-card no"><h4>Never</h4><p>Place it on a busy photo without a shade, or on the Vesper violet at small sizes.</p></div>
+      <div class="rule-card"><h3>Clear space</h3><p>Keep space equal to the flame height on every side of the lockup.</p></div>
+      <div class="rule-card"><h3>Minimum size</h3><p>Wordmark 120px wide on screens. Mark alone 24px tall.</p></div>
+      <div class="rule-card no"><h3>Never</h3><p>Stretch, outline, add glow or drop shadow, or set the wordmark in Flare.</p></div>
+      <div class="rule-card no"><h3>Never</h3><p>Place it on a busy photo without a shade, or on the Vesper violet at small sizes.</p></div>
     </div>
   </div>
 </section>
@@ -529,7 +533,7 @@ a{color:inherit}
         <div class="srow"><span class="k">Title small</span><span class="s disp" style="font-size:clamp(32px,3.4vw,50px)">Get the Lampstand weekly</span><span class="v">70 / 0.90, Black</span></div>
         <div class="srow"><span class="k">Card title</span><span class="s disp" style="font-size:34px">Plan your visit</span><span class="v">40 / 0.95, Black</span></div>
         <div class="srow"><span class="k">Lead</span><span class="s" style="font-size:19.5px;color:var(--ash)">Three simple ways in. Pick one and we will take it from there.</span><span class="v">19.5 / 1.55, Regular</span></div>
-        <div class="srow"><span class="k">Body</span><span class="s" style="font-size:17px">They started Lampstand in a borrowed living room with eleven people.</span><span class="v">17 / 1.6, Regular</span></div>
+        <div class="srow"><span class="k">Body</span><span class="s" style="font-size:17px">They started Lampstand in a coffee shop back room with one guitar.</span><span class="v">17 / 1.6, Regular</span></div>
         <div class="srow"><span class="k">Label</span><span class="s"><span class="label" style="margin:0">Start somewhere</span></span><span class="v">12.5, 600, caps, +16%</span></div>
       </div>
       <div class="sample">
@@ -565,14 +569,14 @@ a{color:inherit}
       <div><b>Crop</b>Tight and wide. Leave dark space for type on one side.</div>
     </div>
     <div class="dodont">
-      <div class="dd do"><h4><i aria-hidden="true">+</i>Do</h4><ul>
+      <div class="dd do"><h3><i aria-hidden="true">+</i>Do</h3><ul>
         <li>Real people mid-moment: singing, laughing, praying, serving.</li>
         <li>Shoot from the crowd and the side of the stage, not only the back.</li>
         <li>Adults and students as the main subject. Kids only in groups.</li>
         <li>Keep one dark side in the frame so headlines can sit there.</li>
         <li>Ask before posting close faces. Keep a no-photo lanyard option.</li>
       </ul></div>
-      <div class="dd no"><h4><i aria-hidden="true">&#215;</i>Avoid</h4><ul>
+      <div class="dd no"><h3><i aria-hidden="true">&#215;</i>Avoid</h3><ul>
         <li>Cold blue or green LED washes and heavy haze that hides faces.</li>
         <li>Posed lineups, stock smiles and empty-room shots.</li>
         <li>Single-child close-ups or readable name tags on kids.</li>
@@ -588,7 +592,7 @@ a{color:inherit}
   <div class="wrap">
     <div class="sec-head"><span class="sec-num" aria-hidden="true">05</span><h2 id="ge-title">Graphic elements</h2><p>A small kit borrowed from the stage and the camera: a line that strikes like a light switching on, viewfinder corners, numbered markers and a reel line. Patterns stay in the background.</p></div>
     <div class="ge-grid">
-      <div class="ge"><div class="stage"><div class="strike-demo"><div class="bar"></div><h5>Start here</h5></div></div><div class="txt"><b>The strike</b><p>A Flare line draws across a column, then settles to a short mark. Used on next steps, rows and labels.</p></div></div>
+      <div class="ge"><div class="stage"><div class="strike-demo"><div class="bar"></div><h3>Start here</h3></div></div><div class="txt"><b>The strike</b><p>A Flare line draws across a column, then settles to a short mark. Used on next steps, rows and labels.</p></div></div>
       <div class="ge"><div class="stage"><div class="vf frame"><div class="ph"><img src="photos/pastors-couple-laughing.jpg" alt="The lead pastors laughing together, framed by viewfinder corners" loading="lazy" style="object-position:50% 12%"></div></div></div><div class="txt"><b>Viewfinder corners</b><p>Two Flare corners frame a key photo, once or twice per page. Never on every image.</p></div></div>
       <div class="ge"><div class="stage"><div class="nums" aria-hidden="true"><span>01</span><span>02</span><span>03</span></div></div><div class="txt"><b>Numbered markers</b><p>Square number chips in the display face for cards, steps and carousel slides.</p></div></div>
       <div class="ge"><div class="stage"><div class="reel"><div class="row"><i></i>Sunday nights at 6</div><span class="playtile" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z" fill="currentColor"/></svg></span></div></div><div class="txt"><b>Reel line and play tile</b><p>Video first. A thin progress line and a square Flare play tile mark anything that plays.</p></div></div>
@@ -604,19 +608,19 @@ a{color:inherit}
     <div class="sec-head"><span class="sec-num" aria-hidden="true">06</span><h2 id="ui-title">Buttons and UI</h2><p>Sharp corners at 2px. One filled Flare button per view, outline for the rest. Arrows only on primary buttons and text links. Nothing glows; the light stays inside the button.</p></div>
     <div class="ui-grid">
       <div class="ui u-btns">
-        <h4>Buttons</h4>
+        <h3>Buttons</h3>
         <div class="brow"><a class="btn btn-primary" href="#ui-title">Plan Your Visit <span class="arw" aria-hidden="true">→</span></a><a class="btn btn-outline" href="#ui-title">Get Directions</a></div>
         <div class="brow"><a class="btn btn-primary btn-sm" href="#ui-title" style="animation:none">Join <span class="arw" aria-hidden="true">→</span></a><a class="btn btn-outline btn-sm" href="#ui-title">All Messages</a><a class="tlink" href="#ui-title">Ask about baptism <span class="arw" aria-hidden="true">→</span></a></div>
         <p class="note">Primary: Flare fill, Kiln text, a sheen sweeps across once on arrival and a soft light follows the cursor. Outline: Bone at 55% border. Height 52px, small 44px. Title Case labels.</p>
       </div>
       <div class="ui u-form">
-        <h4>Form field</h4>
+        <h3>Form field</h3>
         <label class="lbl" for="bb-email">Email address</label>
         <div class="field"><input id="bb-email" type="email" placeholder="you@example.com"><a class="btn btn-primary" href="#ui-title" style="animation:none">Join <span class="arw" aria-hidden="true">→</span></a></div>
         <div class="err" style="margin-top:18px"><div class="field"><input type="text" value="jordan@" aria-label="Email address with an error"></div><p class="errmsg">Please enter an email address like you@example.com.</p></div>
       </div>
       <div class="ui u-steps">
-        <h4>Next steps on the Flare band (hover one)</h4>
+        <h3>Next steps on the Flare band (hover one)</h3>
         <div class="cols">
           <a class="st" href="#ui-title"><b>Start here</b><span>Lunch with the pastors. One hour, and you will know where you fit.</span></a>
           <a class="st" href="#ui-title"><b>Small groups</b><span>Living rooms all over the city, every night of the week.</span></a>
@@ -625,18 +629,18 @@ a{color:inherit}
         </div>
       </div>
       <div class="ui u-rows">
-        <h4>Numbered rows</h4>
+        <h3>Numbered rows</h3>
         <div class="nrow"><span class="n">01</span><div><b>How long</b><p>About 75 minutes. Coffee before and after.</p></div></div>
         <div class="nrow"><span class="n">02</span><div><b>Parking</b><p>Free lot behind the building, greeters at the door.</p></div></div>
         <div class="nrow"><span class="n">03</span><div><b>Kids</b><p>Check in at the kids desk inside the main doors.</p></div></div>
       </div>
       <div class="ui u-bits">
-        <h4>Small parts</h4>
+        <h3>Small parts</h3>
         <div class="bits">
           <div class="bit"><small>Label</small><p class="label" style="margin:0">Latest message</p></div>
-          <div class="bit"><small>Tags</small><div style="display:flex;gap:10px;align-items:center"><span class="ann">Announcement</span><span class="tag">Template preview</span></div></div>
+          <div class="bit"><small>Tags</small><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;max-width:100%"><span class="ann">Announcement</span><span class="tag">Template preview</span></div></div>
           <div class="bit"><small>Pulse play</small><span class="pulse" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z" fill="#14110E"/></svg></span></div>
-          <div class="bit"><small>Chat circle</small><span class="fab" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg><span class="dot"></span></span></div>
+          <div class="bit"><small>Chat circle</small><span class="fab" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg></span></div>
           <div class="bit"><small>Menu item</small><div class="menu-demo"><div>Plan Your Visit<small>What to expect on Sunday.</small></div><div class="on">Small Groups<small>Living rooms all over the city.</small></div></div></div>
           <div class="bit"><small>Phone Sundays bar</small><div class="sbar-demo"><span class="t"><small>Sundays</small><b>10 AM &amp; 6 PM</b></span><a class="btn btn-primary" href="#ui-title">Plan Your Visit</a></div></div>
         </div>
@@ -657,14 +661,14 @@ a{color:inherit}
       <div class="vw"><b>Brave</b><p>We invite people to big steps: baptism, serving, leading.</p></div>
     </div>
     <div class="say">
-      <div class="col yes"><h4>We say</h4><ul>
+      <div class="col yes"><h3>We say</h3><ul>
         <li>The lamp is lit and the door is open. Come loud or come quiet.<em>Welcome that sounds like a person.</em></li>
         <li>Sundays 10 AM and 6 PM, 1180 Foundry Row.<em>Times and place, plainly.</em></li>
         <li>Bring your questions. Bring a friend.<em>Short, two-beat invitations.</em></li>
         <li>Here is what to expect.<em>Take the guesswork out.</em></li>
         <li>We would love to pray with you.<em>Personal, never pushy.</em></li>
       </ul></div>
-      <div class="col no"><h4>We avoid</h4><ul>
+      <div class="col no"><h3>We avoid</h3><ul>
         <li>Church words like fellowship opportunities or corporate worship.</li>
         <li>Hype like epic, insane or life-changing in every post.</li>
         <li>Guilt and pressure: you should, do not miss out.</li>
@@ -728,7 +732,7 @@ a{color:inherit}
 
 <footer class="foot">
   <div class="wrap">
-    <span>Lampstand Church is a fictional demo church for the Genesis Ministry Bold &amp; Dark template.</span>
+    <span>Lampstand Church is a made-up church for the Genesis Ministry Bold and Dark template.</span>
     <span>Photos: Unsplash License, credits in photos/CREDITS.md. Fonts: Google Fonts.</span>
   </div>
 </footer>

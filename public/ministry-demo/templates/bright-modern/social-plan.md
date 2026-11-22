@@ -1,12 +1,12 @@
 # Lightwell Church: social marketing plan
 
-**Template preview.** Lightwell Church is a fictional demo church in Raleigh, North Carolina, used to show the Genesis Ministry Bright & Modern package. Swap in your own church's names, times, numbers and photos.
+**Template preview.** Lightwell Church is a made-up church in Raleigh, North Carolina, used to show the Genesis Ministry Bright and Modern package. Swap in your own church's names, times, numbers and photos.
 
-Lightwell is a young church (planted 2023) with about 180 people across two Sunday gatherings, 9:00 and 10:45 AM, at 1218 Brightwater Ave in downtown Raleigh. Pastors Theo and Priya lead it. Most people found Lightwell because a friend invited them. This plan helps social media do two things: make it easy for members to invite friends, and make it easy for strangers to say yes.
+Lightwell is a young church (planted 2023) with about 340 people across two Sunday gatherings, 9:00 and 10:45 AM, at 1218 Brightwater Ave in downtown Raleigh. Pastors Theo and Priya lead it. Most people found Lightwell because a friend invited them. This plan helps social media do two things: make it easy for members to invite friends, and make it easy for strangers to say yes.
 
 The full plan suits a small team: one communications lead (staff or volunteer, about 4 to 5 hours a week), one volunteer photographer, one clip editor (about 2 hours a week), a Sunday story volunteer, and 15 minutes a week from the pastors.
 
-### If your team is two people
+## If your team is two people
 
 Most church plants start here, and the plan still works. Two people split it like this:
 
@@ -36,7 +36,7 @@ That is 3 feed posts, 1 clip, 1 email and a handful of stories. Schedule all of 
 
 **The curious and the drifted-away.** Adults in their twenties and thirties who grew up around church, stepped away, and are open again but wary of pressure. They watch YouTube and short video, they read comments, and they want honest answers more than polish.
 
-**Our own people, as messengers.** The 180 people already here. Every post should be something a member is glad to share or send to a friend in a DM.
+**Our own people, as messengers.** The 340 people already here. Every post should be something a member is glad to share or send to a friend in a DM.
 
 What all three need to see quickly: when, where, what happens with the kids, and what it feels like inside.
 

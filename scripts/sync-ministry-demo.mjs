@@ -17,12 +17,13 @@
  * What is copied follows "Uploading the preview" in the source's
  * platform/DESIGN.md (section 12):
  *   - index.html (the gallery);
- *   - shared/hope-demo.js;
+ *   - shared/crisis-words.js and shared/hope-demo.js;
  *   - platform/, without platform/DESIGN.md;
  *   - templates/<slug>/ for each look, without its shots/, except the two
  *     screenshots per look the gallery shows (shots/desktop/home-01.jpg and
  *     shots/mobile/home-01.jpg), and without the *.mjs build tools.
- * Everything else (tools/, voice-samples/, BASELINE.md, shared/test.html,
+ * Everything else (tools/, voice-samples/, brand/, BASELINE.md, LAUNCH.md,
+ * README.md, shared/test.html, shared/hope-check.html,
  * templates/PHOTO-CLAIMS.txt) stays out. So do the gallery's three loose
  * pictures that section 12 lists (early-look.jpg, four-looks.jpg and
  * geai-ministry-page.jpg): nothing links to them, and geai-ministry-page.jpg
@@ -33,12 +34,14 @@
  * selling to churches, and the owner keeps it out of the public demo. The
  * public copy leaves those files out, and scripts/ministry-demo-public.mjs
  * edits the copied pages and scripts so nothing links to it, tours it,
- * points at it or describes its work, and so the demo offers the church
- * consultation. Each edit must find its text exactly, or the script stops.
- * Then PLAN_RENAMES turns the draft levels into the three plans /ministry
- * shows (Level 01 Welcome is Care at $149 a month, Level 02 Connect is
- * Shepherd at $299, Level 03 Shepherd is Plus at $499), with their prices
- * where the demo said "Pricing set with Genesis". The source is never changed.
+ * points at it or describes its work: it drops every part the source shows
+ * only while presenting (?present=1), turns presenter mode off, and cuts the
+ * rest. It also points Talk With Genesis at the church consultation on this
+ * site. Each edit must find its text exactly, or the script stops. The source
+ * names the three plans and their prices itself (Care at $149 a month,
+ * Shepherd at $299, Plus at $499, Enterprise scoped on a call); the script
+ * checks them against /ministry and stops when they differ. The source is
+ * never changed.
  *
  * The source folder is a git repository that another team keeps editing. To
  * publish a reviewed version rather than work in progress, export one of its
@@ -63,11 +66,11 @@
  *     or (outside the copied Genesis OS design system) "acquisition",
  *     "sales desk", "suppression" or "prospect";
  *   - a public file links to a geai.us path other than the church
- *     consultation (SITE_LINKS);
- *   - the source no longer has the draft levels (it may name the plans
- *     itself), or a public page or script still has a Level 01 to 03 label,
- *     an old level name in a level sentence, a draft level note or "pricing
- *     set with Genesis";
+ *     consultation (SITE_LINKS), or to geai.us by its full address;
+ *   - the source's plans or prices are not the ones /ministry shows
+ *     (planProblems), or a public page or script still has a Level 01 to 03
+ *     label, an old level name in a level sentence, a draft level note or
+ *     "pricing set with Genesis";
  *   - a copied page, stylesheet or platform script points at a local file
  *     that was not copied;
  *   - a copied script, or a page's inline script, does not compile.
@@ -97,16 +100,14 @@ import { fileURLToPath } from "node:url";
 import {
   GROWTH_DESK_FILES,
   GROWTH_DESK_PICTURES,
-  PLAN_FILES,
-  PLAN_RENAMES,
-  PLAN_SOURCE_MARK,
+  PLAN_DATA,
   PUBLIC_EDITS,
   applyEdits,
   SITE_LINKS,
   growthDeskRefs,
   localRefs,
   oldPlanRefs,
-  renamePlans,
+  planProblems,
   scriptErrors,
   siteRefs,
 } from "./ministry-demo-public.mjs";
@@ -229,7 +230,7 @@ function leftOut(r) {
   return null;
 }
 
-const REQUIRED = ["index.html", "shared/hope-demo.js", "platform"];
+const REQUIRED = ["index.html", "shared/crisis-words.js", "shared/hope-demo.js", "platform"];
 const templates = readdirSync(join(SOURCE, "templates"))
   .filter((slug) => statSync(join(SOURCE, "templates", slug)).isDirectory())
   .map((slug) => `templates/${slug}`);
@@ -287,26 +288,16 @@ if (!withGrowthDesk) {
 
 /* ── the three plans ───────────────────────────────────────────────── */
 
-/* The source still names the draft levels; PLAN_RENAMES turns them into the
-   plans. If the source has been renamed itself, the rules would rename the new
-   names again (its Shepherd would become Plus), so the sync stops instead. */
-/** @type {Map<string, number>} rule -> changes, over the whole copy */
-const renameCounts = new Map();
+/* The source names the plans and their prices itself. They must be the ones
+   /ministry shows, word for word, or the sync stops (planProblems). */
 if (!withGrowthDesk) {
-  const data = join(STAGE, "platform", "shared", "data.js");
-  if (!existsSync(data) || !PLAN_SOURCE_MARK.test(readFileSync(data, "utf8"))) {
+  const data = join(STAGE, ...PLAN_DATA.split("/"));
+  const wrong = existsSync(data) ? planProblems(readFileSync(data, "utf8")) : [`${PLAN_DATA} was not copied`];
+  if (wrong.length) {
     fail(
-      "platform/shared/data.js no longer has the draft levels (Level 01, Welcome). If the source now names the plans itself,\n" +
-        "  remove PLAN_RENAMES from scripts/ministry-demo-public.mjs, or update it, before syncing.",
+      `the plans in ${PLAN_DATA} are not the ones /ministry shows:\n  ${wrong.join("\n  ")}\n` +
+        "  Update MINISTRY_PLANS in scripts/ministry-demo-public.mjs and ministryLevels in lib/ministryPage.ts together, or fix the source.",
     );
-  }
-  for (const file of walk(STAGE)) {
-    if (!PLAN_FILES.test(file)) continue;
-    const path = join(STAGE, file);
-    const { text, counts } = renamePlans(file, readFileSync(path, "utf8"));
-    if (!Object.keys(counts).length) continue;
-    writeFileSync(path, text);
-    for (const [note, n] of Object.entries(counts)) renameCounts.set(note, (renameCounts.get(note) ?? 0) + n);
   }
 }
 
@@ -351,7 +342,7 @@ for (const file of files) {
       if (!SITE_LINKS.includes(url)) problems.push(`${file} links to ${url} on geai.us; the public copy may only link to ${SITE_LINKS.join(", ")}`);
     }
     for (const ref of oldPlanRefs(text, file)) {
-      problems.push(`${file}:${ref.line} still has ${ref.what}: "${ref.match}" in ...${ref.context}... (add a rule to PLAN_RENAMES)`);
+      problems.push(`${file}:${ref.line} still has ${ref.what}: "${ref.match}" in ...${ref.context}... (the source must name the plans)`);
     }
   }
   for (const ref of localRefs(file, text)) {
@@ -386,7 +377,7 @@ if (withGrowthDesk) writeFileSync(join(DEST, PRIVATE_MARK), "A private copy of t
 const where = inside(ROOT, DEST) ? relative(ROOT, DEST).split(sep).join("/") : DEST;
 console.log(`${withGrowthDesk ? "Private copy, with the Growth Desk" : "Public copy"} in ${where}/`);
 console.log(`  ${files.length} files, ${pages.length} HTML pages, noindex added to ${stamped}.`);
-console.log("  Not copied (DESIGN.md section 12): tools/, voice-samples/, BASELINE.md, shared/test.html, templates/PHOTO-CLAIMS.txt.");
+console.log("  Not copied (DESIGN.md section 12): tools/, voice-samples/, brand/, BASELINE.md, LAUNCH.md, README.md, shared/test.html, shared/hope-check.html, templates/PHOTO-CLAIMS.txt.");
 for (const [why, list] of skipped) {
   const shown = list.length > 6 ? `${list.slice(0, 6).join(", ")} and ${list.length - 6} more` : list.join(", ");
   console.log(`  Left out ${why}: ${list.length} ${list.length === 1 ? "entry" : "entries"} (${shown}).`);
@@ -398,15 +389,10 @@ if (editReport.length) {
     console.log(`    ${file}`);
     for (const line of lines) console.log(`      ${line}`);
   }
-  const renamed = [...renameCounts.values()].reduce((n, count) => n + count, 0);
-  console.log(`  ${renamed} plan renames (Level 01 Welcome is Care, Level 02 Connect is Shepherd, Level 03 Shepherd is Plus):`);
-  for (const rule of PLAN_RENAMES) {
-    const count = renameCounts.get(rule.note) ?? 0;
-    console.log(`    ${count ? `${rule.note} (${count})` : `UNUSED: ${rule.note}`}`);
-  }
+  console.log("  Checked: the plans and prices are the ones /ministry shows (Care $149, Shepherd $299, Plus $499 a month).");
   console.log("  Checked: no public file keeps a Level 01 to 03 label, a draft level note or pricing set with Genesis.");
   console.log('  Checked: no public file names a sales-* page, the words "Growth Desk" or the Growth Desk\'s work.');
-  console.log(`  Checked: the only geai.us link is ${SITE_LINKS.join(", ")}.`);
+  console.log(`  Checked: the only geai.us link is ${SITE_LINKS.join(", ")}, by its path.`);
 }
 if (problems.length) {
   console.warn(`  ${problems.length} ${problems.length === 1 ? "problem" : "problems"} in this private copy:`);

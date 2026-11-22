@@ -198,10 +198,11 @@ button { font: inherit; color: inherit; }
 :root[data-theme="light"] .site-header { background: rgb(250 247 242 / 0.9); border-bottom-color: var(--line-light); color: var(--ink); --focus: var(--ink); }
 .site-header .shell { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 100%; }
 .brand { display: inline-flex; align-items: center; min-height: 48px; text-decoration: none; color: inherit; flex: none; }
-.brand img { width: 37px; height: 37px; object-fit: contain; }
-/* Light theme: the white half of the mark would vanish on ivory. Inverting the lightness keeps the hue, so the mark reads in ink and deep gold. */
-:root[data-theme="light"] .brand img { filter: invert(1) hue-rotate(180deg); }
-.brand-word { position: relative; top: 1px; margin-left: -2px; display: flex; align-items: baseline; gap: 6px; font-family: var(--font-mono); line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }
+.brand img { width: 30px; height: 24px; margin-left: 3px; object-fit: contain; }
+/* The gold G: the dark-ground file in the dark theme, the deeper gold file in the light theme (brand/gold-mark/USAGE.md). */
+:root[data-theme="light"] .mark-on-dark, :root:not([data-theme="light"]) .mark-on-light { display: none; }
+/* The header and footer G are the two gold G files above (.brand img), one shown per theme. */
+.brand-word { position: relative; top: 1px; margin-left: 2px; display: flex; align-items: baseline; gap: 6px; font-family: var(--font-mono); line-height: 1; letter-spacing: 0.12em; text-transform: uppercase; }
 .brand-word b { font-size: 0.87rem; font-weight: 600; }
 .brand-word i { font-style: normal; font-size: 0.72rem; font-weight: 700; color: var(--gold-light); }
 :root[data-theme="light"] .brand-word i { color: var(--gold-dark); }
@@ -360,6 +361,10 @@ button { font: inherit; color: inherit; }
 .card.inverse .btn-outline:hover { color: var(--ink); }
 .btn-gold { color: var(--ink); background: var(--gold-light); border-color: var(--gold-light); --focus: var(--gold-light); }
 .btn-gold:hover { background: var(--ivory); border-color: var(--ivory); }
+/* On a light ground the pale gold ring would vanish (1.2:1): gold buttons and the skip link ring in ink, as
+   .btn-primary does (WCAG 1.4.11). A gold button on a dark card keeps its gold ring. */
+:root[data-theme="light"] .btn-gold:not(.card.inverse .btn-gold):not(.s-ink .btn-gold), :root[data-theme="light"] .skip-link { --focus: var(--ink); }
+:root[data-theme="light"] .btn-gold:focus-visible:not(.card.inverse .btn-gold):not(.s-ink .btn-gold), :root[data-theme="light"] .skip-link:focus-visible { outline-color: var(--ink); }
 .text-link {
   display: inline-flex; align-items: center; gap: 10px; min-height: 44px;
   border-bottom: 1px solid rgb(127 127 127 / 0.45); font-weight: 700; text-decoration: none; color: var(--fg);
@@ -418,5 +423,19 @@ details.disclosure .body { padding-bottom: 20px; font-size: 0.94rem; line-height
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* Phones: story chips reach a 44px tap target. */
-@media (max-width: 860px) { .chip-link { min-height: 44px; display: inline-flex; align-items: center; } }
+/* Phones and tablets: every story link reaches a 44px tap target. */
+@media (max-width: 1080px) { .chip-link { min-height: 44px; display: inline-flex; align-items: center; } }
+.site-nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; box-sizing: border-box; }
+.brand { min-width: 44px; }
+.text-link { min-height: 44px; }
+.site-footer nav a { min-width: 44px; justify-content: center; }
+
+/* Presenter-only parts are not in the public copy, which has no presenter mode. */
+:root:not([data-present]) [data-present-only] { display: none !important; }
+:root[data-present] [data-public-only] { display: none !important; }
+
+/* Phones: the Hope circle waits until the first screen is passed, as on the four church sites, so it never
+   sits on See the Journey or the first card (story/story.js sets gm-past-hero). */
+@media (max-width: 640px) {
+  html:not(.gm-past-hero) .hd-launch:not([aria-expanded="true"]) { opacity: 0; visibility: hidden; pointer-events: none; }
+}

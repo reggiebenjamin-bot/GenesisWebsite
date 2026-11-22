@@ -11,18 +11,22 @@
   Each page sets window.HOPE_DEMO before loading this file:
 
     window.HOPE_DEMO = {
-      look: "Bright & Modern",
-      church: { name, short, city, address, phone, times, mapUrl, pastors, kids,
+      look: "Bright and Modern",
+      church: { name, short, city, address, phone, times, length, parking, mapUrl, pastors, kids,
                 students, groups, startHere, give, watch, prayer, values },
       brand: { accent, accentInk, accentText, ink, surface, surface2, line, font, radius, buttonRadius },
       selectors: { hero, announce, pastors, nextSteps, strip, message,
                    reviews, newsletter, footer },
-      links: { brandBoard: "brand-board.html", socialPlan: "social-plan.html" },
-      tour: [{ sel, k, h, p }],   // optional; sel may also be a list (the first visible one wins)
+      links: { brandBoard: "brand-board.html", socialPlan: "social-plan.html", prayer: "" },
+      tour: [{ sel, k, h, p, focus }],   // optional; sel may also be a list (the first visible one wins)
       removeSelectors: [],         // simpler chats to remove, so there is only one assistant
       bottomOffset: 0,             // extra space when a pinned bar sits at the bottom
-      autoInvite: true             // the small "Want a tour?" card after a moment
+      autoInvite: true             // the small "Want a tour?" card (phones: once the hero has scrolled away)
     };
+
+  church.length (how long a gathering runs) and church.parking are said only when the page gives them.
+  links.prayer is where Share a Prayer Request goes (the member app finds its own Prayer tab).
+  In a frame, or with ?embed=1 in the address, the page never offers the tour on its own.
 
   Optional settings (every one defaults to the template behavior above):
 
@@ -30,7 +34,9 @@
       greeting: "text",            what the assistant says first when the chat opens
       menu: [{ label, key | href, cta }],       the chips under the greeting
       answers: { key: { t, c } },  extra scripted answers, merged over the defaults
-      match: [[/regex/, "key"]],   extra keyword rules, checked before the defaults
+      match: [[/regex/, "key"]],   extra keyword rules, checked before the defaults; a rule's pattern
+                                   may also be its text (["\\bbapti[sz]\\w*", "baptism"])
+      matchPatterns: [["text", "key"]],  the same rules as text, as hope.json carries them
       autoStartParam: "tour",      start the tour when the address has ?tour=1
       next: { label, href, note }, shown on the last tour card and in the finale, so a
                                    tour can continue on the next page (the link gets
@@ -38,11 +44,24 @@
       guideName: "Hope",           the name on the tour card (defaults to assistantName)
       tourTitle: "Home",           a short name for this page's tour
       finale: { text, chips },     what the assistant says when the tour ends
-                                   (Genesis skin: links: [{ label, href }] adds buttons to the Done card)
+                                   (Genesis skin: links: [{ label, href }] adds buttons to the Done card;
+                                   chat: false ends the tour without opening the chat, for a page that
+                                   shows its own last card)
       tour steps may also carry:   before: function () {}  runs before the step is drawn, so a step can
                                    open the panel it points at (the step is kept even if its target
                                    is not on screen yet); place: "edge-left" keeps the card at the left
-                                   edge on wide screens
+                                   edge on wide screens; focus: "selector" names the part of a tall
+                                   target the step talks about (matched inside the target first, every
+                                   match counts; a list of selectors means the first one found wins), so
+                                   that part is what stays in view beside the card; place: "beside-focus"
+                                   puts the card beside that part on wide screens when the target is too
+                                   tall for the card above or below it, on the clearest part of the screen
+                                   (off the section's words; photos count at photoWeight, 0.25 unless the
+                                   step sets it); phoneFocus: the focus on phones; scrollTop: true shows
+                                   the page from the top on wide screens (the first screen's step)
+      links.contact:               where "talk to someone at Genesis" goes on a page with no church
+                                   (else the page's own a[data-contact])
+      A church site with a sticky header and no topInset keeps the tour clear of that header.
       note: "text",                the line under the chat
       invite: { text },            the invite's question
       launcher: false,             no chat circle (HopeDemo.open() still opens the chat)
@@ -54,30 +73,41 @@
       topInset: 0 | function (scroller) { return px; },   room to keep clear at the top
       keepParams: ["church", "plan"]
 
-  Copy rules: warm, plain, short sentences, no em dashes, no emojis.
+  window.HopeDemo: open(), tour(), end(), ask(text), isTouring(), crisisReply(phone) (the fixed crisis
+  reply, the one source of its words) and route(text) (where a question goes, for shared/hope-check.html,
+  the answer check that lists the questions every Hope must get right).
+
+  Copy rules: warm, plain, short sentences, no em dashes, no emojis. Chips and buttons in Title Case.
 */
 (function () {
   "use strict";
   if (window.__hopeDemoLoaded) return;
   window.__hopeDemoLoaded = true;
 
+  /* The crisis words: ../shared/crisis-words.js (window.HOPE_WORDS), one list for every Hope. */
+  var WORDS = window.HOPE_WORDS;
+  if (!WORDS) throw new Error("Hope: load shared/crisis-words.js before shared/hope-demo.js. Hope never runs without the crisis words.");
   var CFG = window.HOPE_DEMO || {};
   var CH = CFG.church || {};
   var BR = CFG.brand || {};
   var SEL = CFG.selectors || {};
   var LINKS = CFG.links || {};
-  var LOOK = CFG.look || "this template";
+  var LOOK = String(CFG.look || "this template").replace(/\s*&\s*/g, " and ");
   var NAME = CH.name || "our church";
   var SHORT = CH.short || NAME;
   var AN = CFG.assistantName || "Hope";
   var GUIDE = CFG.guideName || AN;
   var GENESIS = CFG.skin === "genesis";
   var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* A page that is not a church site (the Genesis Ministry story pages) has no times or address. */
+  var CHURCH = !!(CH.times || CH.address);
+  var FRAMED = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
+  var EMBED = /[?&]embed=1(&|$)/.test(location.search);
 
   function $(sel) { try { return sel ? document.querySelector(sel) : null; } catch (e) { return null; } }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function store(key, val) { try { if (val === undefined) return sessionStorage.getItem(key); sessionStorage.setItem(key, val); } catch (e) { return null; } }
-  function val(v) { return typeof v === "function" ? v() : v; }
+  function val(v, arg) { return typeof v === "function" ? v(arg) : v; }
   /* On screen or reachable by scrolling: drawn, not hidden, and not parked off to the side (a closed menu sheet). */
   function visible(n) {
     if (!n || !n.getClientRects || !n.getClientRects().length) return false;
@@ -86,6 +116,13 @@
     try { if (getComputedStyle(n).visibility === "hidden") return false; } catch (e) {}
     return true;
   }
+  /* Can take focus right now: visible and not switched off with pointer-events (a launcher hidden over a hero). */
+  function focusable(n) {
+    if (!n || !document.contains(n) || n === document.body || !visible(n)) return false;
+    try { if (getComputedStyle(n).pointerEvents === "none") return false; } catch (e) {}
+    return true;
+  }
+  function focusOn(n) { if (n && n.focus) try { n.focus({ preventScroll: true }); } catch (e) {} }
   /* A step's target: a selector or a list of them. The first one on screen wins. */
   function pick(sel) {
     var list = Array.isArray(sel) ? sel : [sel];
@@ -102,13 +139,16 @@
     ":root{--hd-accent:" + (BR.accent || "#2f5bea") + ";--hd-accent-ink:" + (BR.accentInk || "#ffffff") + ";--hd-accent-text:" + (BR.accentText || BR.accent || "#2f5bea") + ";--hd-ink:" + (BR.ink || "#14161a") +
       ";--hd-surface:" + (BR.surface || "#ffffff") + ";--hd-surface2:" + (BR.surface2 || "#f3f4f6") + ";--hd-line:" + (BR.line || "rgba(0,0,0,.12)") +
       ";--hd-font:" + (BR.font || "system-ui,-apple-system,Segoe UI,Roboto,sans-serif") + ";--hd-radius:" + (BR.radius || "18px") + ";--hd-btn-radius:" + (BR.buttonRadius || "999px") + ";--hd-bottom:" + (Number(CFG.bottomOffset) || 0) + "px}",
-    ".hd-launch{position:fixed;right:20px;bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1)}",
+    ".hd-launch{position:fixed;right:20px;bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
     ".hd-launch:hover{transform:translateY(-2px)}.hd-launch:focus-visible{outline:3px solid var(--hd-ink);outline-offset:3px}",
     ".hd-launch svg{width:24px;height:24px}",
     ".hd-invite{position:fixed;right:20px;bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
     ".hd-invite.on{opacity:1;transform:none}",
     ".hd-invite p{margin:0 0 12px;padding-right:28px}.hd-invite b{font-weight:700}",
-    ".hd-invite .hd-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:inherit;opacity:.6;cursor:pointer;font-size:18px;line-height:1}",
+    ".hd-invite .hd-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:inherit;opacity:.6;cursor:pointer;font-size:18px;line-height:1;border-radius:8px}",
+    ".hd-invite .hd-x:focus-visible{outline:3px solid var(--hd-ink);outline-offset:0;opacity:1}",
+    /* An open menu sheet keeps its own buttons: the invite and the circle step aside. */
+    "body.menu-open .hd-invite,body.menu-open .hd-launch{opacity:0!important;visibility:hidden;pointer-events:none}",
     ".hd-row{display:flex;flex-wrap:wrap;gap:8px}",
     ".hd-btn{font:600 14px/1 var(--hd-font);min-height:40px;padding:10px 16px;border-radius:var(--hd-btn-radius);border:1.5px solid var(--hd-accent);background:var(--hd-accent);color:var(--hd-accent-ink);cursor:pointer;transition:transform .2s ease,opacity .2s ease}",
     ".hd-btn.ghost{background:transparent;color:var(--hd-ink);border-color:var(--hd-line)}",
@@ -118,12 +158,14 @@
     ".hd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 12px 14px 18px;border-bottom:1px solid var(--hd-line)}",
     ".hd-head .t{font-weight:700;font-size:15px;line-height:1.2}.hd-head small{display:block;font-weight:400;font-size:12px;opacity:.7}",
     ".hd-dot{width:9px;height:9px;border-radius:50%;background:var(--hd-accent);display:inline-block;margin-right:10px;vertical-align:middle}",
-    ".hd-head button{width:40px;height:40px;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
+    ".hd-head button{width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
+    ".hd-head button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:-3px}",
     ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}",
     ".hd-msg{max-width:88%;padding:10px 14px;border-radius:16px;white-space:pre-line;animation:hdIn .35s cubic-bezier(.2,.7,.2,1) both}",
     ".hd-bot{background:var(--hd-surface2);border-bottom-left-radius:6px;align-self:flex-start}",
     ".hd-user{background:var(--hd-accent);color:var(--hd-accent-ink);border-bottom-right-radius:6px;align-self:flex-end}",
-    ".hd-from{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin:4px 2px -4px}",
+    /* Small type keeps 4.5:1 or more on every church's surface. */
+    ".hd-from{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin:4px 2px -4px}",
     ".hd-chips{display:flex;flex-wrap:wrap;gap:8px;animation:hdIn .35s .05s cubic-bezier(.2,.7,.2,1) both}",
     ".hd-chip{font:600 13.5px/1.2 var(--hd-font);padding:9px 13px;min-height:40px;border-radius:var(--hd-btn-radius);border:1.5px solid var(--hd-line);background:var(--hd-surface);color:var(--hd-ink);cursor:pointer;text-align:left}",
     ".hd-chip.cta{background:var(--hd-accent);border-color:var(--hd-accent);color:var(--hd-accent-ink)}",
@@ -134,7 +176,8 @@
     ".hd-foot input{flex:1;min-width:0;font:16px var(--hd-font);padding:11px 15px;border-radius:999px;border:1.5px solid var(--hd-line);background:var(--hd-surface);color:var(--hd-ink)}",
     ".hd-foot input:focus{outline:none;border-color:var(--hd-accent)}",
     ".hd-foot button{width:44px;height:44px;flex:none;border-radius:50%;border:0;background:var(--hd-accent);color:var(--hd-accent-ink);cursor:pointer;display:grid;place-items:center}",
-    ".hd-note{font-size:12px;opacity:.65;text-align:center;padding:0 16px 10px}",
+    ".hd-foot button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
+    ".hd-note{font-size:12px;opacity:.8;text-align:center;padding:0 16px 10px}",
     "@keyframes hdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}",
     "@keyframes hdDot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:.9;transform:translateY(-3px)}}",
     /* tour */
@@ -147,9 +190,9 @@
     ".hd-card p{margin:0 0 14px}",
     ".hd-card .hd-cnote{font-size:13px;line-height:1.5;opacity:.8;margin:-6px 0 14px}",
     ".hd-card .bar{display:flex;align-items:center;justify-content:space-between;gap:10px}",
-    ".hd-card .hd-next,.hd-end{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}.hd-end{margin-top:8px}",
+    ".hd-card .hd-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}",
     ".hd-dots{display:flex;gap:6px}.hd-dots i{width:7px;height:7px;border-radius:50%;background:var(--hd-line)}.hd-dots i.on{background:var(--hd-accent);width:18px;border-radius:4px}",
-    ".hd-skip{background:none;border:0;color:inherit;opacity:.65;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px}",
+    ".hd-skip{background:none;border:0;color:inherit;opacity:.8;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px;border-radius:6px}",
     ".hd-skip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;opacity:1}",
     "@media (max-width:640px){",
     "  .hd-panel{right:0;left:0;bottom:0;width:auto;height:min(86vh,640px);border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
@@ -157,15 +200,61 @@
     "  .hd-tour-on.hd-step-launch .hd-launch{opacity:1}",
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",
     "  .hd-card{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}",
-    "  .hd-invite{left:16px;right:16px;max-width:none}",
+    /* The invite is a compact card above the circle, never across the first screen. */
+    "  .hd-invite{left:auto;right:16px;max-width:min(300px,calc(100vw - 32px))}",
+    /* Phone tap targets: 44px. */
+    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip{min-height:44px}",
+    "  .hd-skip{padding:8px 10px}",
+    "  .hd-invite .hd-x{top:2px;right:2px;width:44px;height:44px}",
+    "  .hd-invite p{padding-right:34px}",
+    /* While the invite is up it takes the circle's place, so the two never stack over the page. */
+    "  html.hd-invite-on .hd-launch{opacity:0;visibility:hidden;pointer-events:none}",
+    "  html.hd-invite-on .hd-invite{bottom:calc(16px + var(--hd-bottom) + env(safe-area-inset-bottom,0px))}",
+    "}",
+    /* Touch screens of any width (a tablet held in landscape): 44px targets too. */
+    "@media (pointer:coarse){",
+    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip{min-height:44px}",
+    "  .hd-skip{padding:8px 10px}",
+    "  .hd-invite .hd-x{top:2px;right:2px;width:44px;height:44px}",
+    "  .hd-invite p{padding-right:34px}",
+    "  .hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}",
+    "  .hd-g .v2-guide-close,.hd-g .hd-g-again{width:44px;height:44px;margin:-10px -12px -10px 0}",
     "}",
     /* the Genesis OS guide (skin: "genesis") uses the host page's own .v2-guide styles; only these few extras */
     ".hd-g.v2-guide{z-index:2147482999}.hd-g-ring.v2-guide-ring{z-index:2147482998}",
-    ".hd-g .v2-guide-controls .v2-button{min-height:32px}",
+    /* Mouse screens only: a touch screen keeps the 44px controls set above. */
+    "@media (pointer:fine){.hd-g .v2-guide-controls .v2-button{min-height:32px}}",
+    /* A phone held on its side (short and wide): the card sits at the right, under the top bar, so the
+       part of the screen a step names shows beside it instead of under it. */
+    ".hd-g.v2-guide.hd-g-side{left:auto;right:12px;bottom:auto;margin:0;width:min(380px,46vw);overflow:auto}",
+    ".hd-g.hd-g-side .v2-guide-say{font-size:13px}",
+    /* ...and the workspace makes room for it, so a full-width part never sits under the card. */
+    "html.hd-side-on .v2-main{padding-right:calc(min(380px,46vw) + 20px)}",
     ".hd-g .hd-g-next{gap:6px}",
+    ".hd-g .hd-g-headr{display:inline-flex;align-items:center;gap:6px;flex:none}",
+    ".hd-g .hd-g-again{margin:-6px -8px -6px 0}",
+    /* Take the Tour Again beside Close: only the last icon reaches into the card's corner. */
+    ".hd-g .hd-g-headr .hd-g-again:not(:last-child){margin-right:0}",
+    ".hd-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}",
     ".hd-g .v2-guide-foot [data-guide=\"back\"]{margin-left:0}",
-    "@media (max-width:860px){.hd-g.v2-guide.is-top{top:calc(12px + env(safe-area-inset-top,0px))}}",
-    "@media (prefers-reduced-motion:reduce){.hd-launch,.hd-invite,.hd-panel,.hd-msg,.hd-chips,.hd-spot,.hd-card,.hd-g,.hd-g-ring{transition:none!important;animation:none!important}.hd-typing i{animation:none}}",
+    "@media (max-width:860px){",
+    "  .hd-g.v2-guide.is-top{top:calc(12px + env(safe-area-inset-top,0px))}",
+    "  .hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}",
+    "  .hd-g .v2-guide-close,.hd-g .hd-g-again{width:44px;height:44px;margin:-10px -12px -10px 0}",
+    /* A guide card docked at the bottom would sit on the Hope orb: the orb steps aside until the card is gone. */
+    "  html.hd-invite-on .v2-genesis-opener,html.hd-tour-on:not(.hd-step-orb) .v2-genesis-opener{visibility:hidden;pointer-events:none}",
+    "}",
+    /* A short, wide window: the site and member tour card docks at the foot of the screen (shortDock). */
+    "@media (max-height:500px) and (min-width:641px){",
+    "  html.hd-tour-on .hd-card{left:12px!important;right:12px;width:auto;max-width:760px;margin:0 auto;top:auto!important;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:14px 18px 12px}",
+    "  html.hd-tour-on .hd-card h3{font-size:17px;margin-bottom:4px}",
+    "  html.hd-tour-on .hd-card p{margin-bottom:10px}",
+    "  html.hd-tour-on .hd-card .hd-dots{display:none}",
+    "  html.hd-tour-on.hd-step-launch .hd-card{top:10px!important;bottom:auto}",
+    "  html.hd-tour-on .hd-launch{opacity:0;pointer-events:none}",
+    "  html.hd-tour-on.hd-step-launch .hd-launch{opacity:1;pointer-events:auto}",
+    "}",
+    "@media (prefers-reduced-motion:reduce){.hd-body{scroll-behavior:auto}.hd-launch,.hd-invite,.hd-panel,.hd-msg,.hd-chips,.hd-spot,.hd-card,.hd-g,.hd-g-ring{transition:none!important;animation:none!important}.hd-typing i{animation:none}}",
   ].join("\n");
   var style = el("style"); style.id = "hope-demo-style"; style.textContent = css; document.head.appendChild(style);
 
@@ -174,16 +263,18 @@
   var ICON_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_SEND = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4l17.45-8.02a.5.5 0 0 0 0-.9L3.4 3.46a.5.5 0 0 0-.7.62L5 11.5l9 .5-9 .5-2.3 6.92a.5.5 0 0 0 .7.98z"/></svg>';
   var ICON_ARROW = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var ICON_AGAIN = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.2 8a4.8 4.8 0 1 0 1.4-3.4M3.2 2.6v2.6h2.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICON_GX = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
   // Remove any simpler chat the template shipped with, so there is only one Hope.
   (CFG.removeSelectors || []).forEach(function (s) { try { document.querySelectorAll(s).forEach(function (n) { n.remove(); }); } catch (e) {} });
 
-  var launch = null, panel = null, body = null, input = null, closeBtn = null;
-  var isOpen = false, started = false, busy = false;
+  var launch = null, panel = null, body = null, input = null, closeBtn = null, opener = null;
+  var isOpen = false, started = false, busy = false, queued = 0;
+  function phoneChat() { return window.innerWidth <= 640; }
   if (!GENESIS) {
     launch = el("button", "hd-launch"); launch.type = "button"; launch.setAttribute("aria-label", "Chat with " + AN + ", the " + SHORT + " assistant"); launch.innerHTML = ICON_CHAT;
-    panel = el("div", "hd-panel"); panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", AN + ", the " + SHORT + " assistant");
+    panel = el("div", "hd-panel"); panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", AN + ", the " + SHORT + " assistant"); panel.setAttribute("aria-modal", "false");
     var head = el("div", "hd-head");
     var ttl = el("div", "t"); ttl.innerHTML = '<span class="hd-dot" aria-hidden="true"></span><span class="hd-name"></span><small></small>'; ttl.querySelector(".hd-name").textContent = AN; ttl.querySelector("small").textContent = "Automated assistant for " + SHORT;
     closeBtn = el("button"); closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close chat"); closeBtn.innerHTML = ICON_X;
@@ -199,23 +290,44 @@
     if (CFG.launcher !== false) document.body.appendChild(launch); else launch = null;
 
     if (launch) launch.addEventListener("click", function () { setOpen(!isOpen); });
-    closeBtn.addEventListener("click", function () { setOpen(false); if (launch) launch.focus(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen && !touring) setOpen(false); });
+    closeBtn.addEventListener("click", function () { setOpen(false, true); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen && !touring) { e.preventDefault(); setOpen(false, true); } });
+    /* On a phone the chat is a sheet over most of the screen: Tab stays inside it until it closes. */
+    panel.addEventListener("keydown", function (e) {
+      if (e.key !== "Tab" || !phoneChat()) return;
+      var all = [].filter.call(panel.querySelectorAll("button, input, a[href]"), function (n) { return !n.disabled && visible(n); });
+      if (!all.length) return;
+      var first = all[0], last = all[all.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); focusOn(last); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); focusOn(first); }
+    });
     foot.addEventListener("submit", function (e) {
       e.preventDefault();
-      var q = input.value.trim(); if (!q || busy) return;
+      var q = input.value.trim(); if (!q) return;
+      /* Asked while Hope is still typing (the greeting): the question waits its turn. */
+      if (busy) { if (!queued) queued = setTimeout(function () { queued = 0; if (foot.requestSubmit) foot.requestSubmit(); else foot.dispatchEvent(new Event("submit", { cancelable: true })); }, 250); return; }
       input.value = ""; addUser(q);
-      if (CRISIS.test(q)) { say("I am an automated assistant, and I want you to be safe. If you are in danger, call 911 now. You can call or text 988 any time to reach the Suicide and Crisis Lifeline." + (CH.phone ? " You can also call the church at " + CH.phone + "." : ""), [{ label: "Back to the menu", key: "menu" }]); return; }
-      for (var i = 0; i < MATCH.length; i++) { if (MATCH[i][0].test(q)) { answer(MATCH[i][1]); return; } }
-      say(CFG.fallback || "Good question. On a live church site I would answer that from the church's own facts, or pass it to a real person on the team. For this demo, try one of these.", MENU);
+      var key = route(q);
+      if (key === "crisis") { say(CRISIS_REPLY, CRISIS_CHIPS); return; }
+      if (key === "fallback") { var fb = fallback(q); say(fb.t, fb.c); return; }
+      answer(key, q);
     });
   }
 
-  function setOpen(v) {
+  /* restore: give focus back to whatever opened the chat (or the chat circle), as a dialog should. */
+  function setOpen(v, restore) {
     if (!panel) { if (v && CFG.openChat) CFG.openChat(); return; }
+    if (v && !isOpen) { var a = document.activeElement; opener = a && a !== document.body && !panel.contains(a) ? a : null; }
     isOpen = v; panel.classList.toggle("on", v); if (launch) launch.innerHTML = v ? ICON_X : ICON_CHAT;
     if (launch) launch.setAttribute("aria-expanded", v ? "true" : "false");
-    if (v) { hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { input.focus({ preventScroll: true }); }, 280); }
+    panel.setAttribute("aria-modal", v && phoneChat() ? "true" : "false");
+    /* Someone who has used the chat is never offered the tour invite again. */
+    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { input.focus({ preventScroll: true }); }, 280); }
+    else if (restore) {
+      var back = focusable(opener) ? opener : focusable(launch) ? launch : null;
+      opener = null;
+      if (back) focusOn(back);
+    }
   }
   function openChat(prompt) {
     if (CFG.openChat) { CFG.openChat(prompt); return; }
@@ -253,69 +365,371 @@
   }
 
   /* ------------------------------------------------------------ answers */
+  /* The fixed crisis reply, word for word the live church site's, with this church's phone. It is
+     never improvised. A page with no church (the story pages) ends after "You are not alone." */
+  function crisisReply(phone) { return WORDS.reply(phone); }
+  var CRISIS_REPLY = crisisReply(CH.phone);
+  /* Each sample church's own parking words, from its site. A page can give church.parking instead. */
+  var PARKING = {
+    "Lightwell Church": "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
+    "Lampstand Church": "Park free in the lot behind the building or on the street. Look for the amber flags, and a greeter will meet you at the door.",
+    "Calder Hill Chapel": "Park free on Calder Lane or in the lot behind the parish hall. A greeter at the side door will point you to coffee and the sanctuary.",
+    "Goldenrod Commons Church": "Park in the lot off Wrenfield or along the street. The yellow umbrellas out front mark the way in, and a greeter will be right there."
+  };
+  var PARK = CH.parking || PARKING[NAME] || "";
+  var TEL = CH.phone ? "tel:" + String(CH.phone).replace(/[^\d+]/g, "") : "";
+  var BACK = { label: "Back to the Menu", key: "menu" };
+  var DIRECTIONS = CH.mapUrl ? { label: "Get Directions", href: CH.mapUrl, cta: true } : null;
+  var CALL = TEL ? { label: "Call " + SHORT, href: TEL, go: true } : null;
+  /* The church's email: church.email, or the page's own mailto link. */
+  var EMAIL = CH.email || (function () { var m = $('a[href^="mailto:"]'); return m ? m.getAttribute("href").replace(/^mailto:/i, "").split("?")[0] : ""; })();
+  function chips() { return [].slice.call(arguments).filter(Boolean); }
+  /* Where Share a Prayer Request goes: the page's own prayer form when it has one. */
+  function prayerLink() {
+    if (LINKS.prayer) return LINKS.prayer;
+    var tab = $('.m-tabbar a[href*="member-prayer"]');
+    if (tab) return tab.href;
+    var form = $("#prayer-request, #prayer-form");
+    return form ? "#" + form.id : "";
+  }
+  /* A chip that points to a part of this page: close the chat, bring that part up, and put the
+     cursor in its first field when it is a form. */
+  function goAnchor(hash) {
+    var dest = null; try { dest = document.getElementById(decodeURIComponent(hash.slice(1))); } catch (e) {}
+    /* No element by that name: the page opens it from the address (a site's Plan a Visit form opens on
+       #plan-a-visit). The chat steps aside, and the same address twice still opens it. */
+    if (!dest) {
+      setOpen(false);
+      if (location.hash === hash) try { history.replaceState(history.state, "", location.pathname + location.search); } catch (e) {}
+      location.hash = hash; return;
+    }
+    setOpen(false);
+    dest.scrollIntoView({ block: "start", behavior: REDUCE ? "auto" : "smooth" });
+    try { history.replaceState(history.state, "", hash); } catch (e) {}
+    var field = dest.matches("input, textarea, select") ? dest : dest.querySelector("input:not([type=hidden]), textarea, select");
+    if (field) setTimeout(function () { focusOn(field); }, REDUCE ? 0 : 450);
+  }
+  function sharePrayer() {
+    var href = prayerLink();
+    if (href && href.charAt(0) === "#") { goAnchor(href); return; }
+    if (href) {
+      var here = location.pathname.split("/").pop(), there = href.split("#")[0].split("?")[0].split("/").pop();
+      if (here && here === there) {
+        /* Already on the prayer form: close the chat and put the cursor in it. */
+        setOpen(false);
+        var box = $('[data-tour="prayer.form"] textarea') || $("main textarea") || $("textarea");
+        if (box) { box.scrollIntoView({ block: "center", behavior: REDUCE ? "auto" : "smooth" }); setTimeout(function () { focusOn(box); }, REDUCE ? 0 : 400); }
+        return;
+      }
+      location.href = href; return;
+    }
+    say("On the live site this opens a short prayer form that goes only to the pastors and the prayer team. A real person reads every one. This preview sends nothing.", [BACK]);
+  }
+  var NOT_HERE = "That is a question for a church's own website. On each of the four sample sites I answer it from that church's own facts, like times, kids and parking.";
+  /* The page's way to talk with Genesis (the story pages carry a[data-contact]), and the journey's
+     getting started chapter. */
+  function contactHref() { if (LINKS.contact) return LINKS.contact; var a = $("a[data-contact]"); return a ? a.href : ""; }
+  function talkChip(cta) { var h = contactHref(); return h ? { label: "Talk With Genesis", href: h, cta: cta !== false } : null; }
+  function startHref() {
+    var present = document.documentElement.hasAttribute("data-present"), hash = present ? "#launch" : "#start";
+    if (/(^|\/)journey\.html$/.test(location.pathname)) return hash;
+    return (/\/platform\//.test(location.pathname) ? "" : "platform/") + "journey.html" + hash;
+  }
+  /* The site's own Plan a Visit form, when the page has one. */
+  var PLAN_VISIT = $('a[href="#plan-a-visit"], #plan-a-visit') ? { label: "Plan Your Visit", href: "#plan-a-visit", go: true, cta: true } : null;
+  /* The lead pastors by name ("Pastor Theo and Pastor Priya"), from church.pastorNames or the first
+     words of church.pastors ("Theo and Priya lead Lightwell together."). */
+  function pastorNames() {
+    var n = CH.pastorNames;
+    if (!n) { var m = /^([A-Z][\w'-]+) and ([A-Z][\w'-]+)\b/.exec(CH.pastors || ""); n = m ? [m[1], m[2]] : null; }
+    if (!n) return ["our pastors"];
+    if (typeof n === "string") return [n];
+    return n.map(function (x) { return /^pastor\b/i.test(x) ? x : "Pastor " + x; });
+  }
+  function listOf(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  var SHARE = { label: "Share a Prayer Request", run: sharePrayer, cta: true };
+  var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
+  /* The member app's Messages tab, when the page has one. */
+  function messageChip() { var m = $('.m-tabbar a[href*="member-messages"]'); return m ? { label: "Send a Message", href: m.href, go: true } : null; }
+
+  /* Someone hurting, in their own words: a death, a hard season or a heavy feeling, said about their
+     own life (the sentence speaks in the first person). They get a person and the prayer form, never
+     a product answer and never "Good question". */
+  var PERSON = WORDS.PERSON;
+  var FIRST_PERSON = /\b(?:i|i'?m|i'?ve|i'?d|i'?ll|me|my|mine|myself|we|we'?re|we'?ve|our|us)\b/i;
+  var LOSS = new RegExp("\\b(?:passed away|passed on|funeral|memorial service|widow\\w*|miscarr\\w*|stillborn|bereave\\w*|death of (?:my|our)|lost (?:my|our) (?:" + PERSON.slice(3, -1) + "|dog|cat|pet)(?! (?:at|in|during|after|somewhere)\\b)|(?:" + PERSON.slice(3, -1) + "|dog|cat|pet)\\b.{0,24}\\b(?:died|passed|was killed|got killed|were killed)|(?:he|she|they) (?:just |recently )?(?:died|passed))\\b", "i");
+  var HARD = /\b(?:grie\w*|lost (?:my|our|his|her|their) (?:job|work|home|house|apartment|income)|laid off|got fired(?! up)|been fired(?! up)|evicted|homeless|divorc\w*|separated|cancer|chemo\w*|hospice|diagnos\w*|terminal(?:ly)?|in (?:the )?hospital|in the icu|surgery|addiction|an addict|relaps\w*|in jail|in prison|arrested|(?:having|going through|had) a (?:really |very |pretty )?(?:hard|rough|tough|difficult|dark) (?:time|season|week|year|month|day))\b/i;
+  var HEAVY = /\b(?:lonely|loneliness|hopeless|worthless|depress\w*|anxious|anxiety|panic attacks?|(?:so|all|completely|totally) alone|empty inside|no hope|lost (?:all )?hope|(?:giving|give|gave) up on (?:life|everything|myself|god|hope|living)|(?:ready|about|going|want(?:ing)?) to give up(?! (?:coffee|sugar|chocolate|meat|social media|caffeine|soda|alcohol|something|for lent))|(?:nobody|no one) (?:cares|loves|wants) (?:about )?me|feel(?:s|ing)? (?:so |really |very |completely |totally |all |kind of )?(?:alone|lost|empty|broken|ashamed|numb|invisible|overwhelmed|abandoned)|(?:i'?m|i am) (?:so |really |very )?(?:broken|ashamed|overwhelmed|struggling|not ok(?:ay)?|falling apart)|(?:i'?m|i am) (?:so |really |completely |totally )(?:lost|alone))\b/i;
+  var HURT = { test: function (q) { q = String(q || ""); return FIRST_PERSON.test(q) && (LOSS.test(q) || HARD.test(q) || HEAVY.test(q)); } };
+  var HEAVY_LINE = /depress|anxi|mental health|hopeless|panic|worthless|empty inside|feel(?:s|ing)? (?:so |really |very )?(?:empty|alone)|(?:so|all|completely|totally) alone|lonely|no hope|lost (?:all )?hope|give up|giving up|gave up on|falling apart/i;
+  /* The first words of a reply to someone hurting. */
+  function sorry(q) { q = String(q || ""); return LOSS.test(q) && FIRST_PERSON.test(q) ? "I am so sorry for your loss." : HURT.test(q) ? "I am so sorry you are going through that." : ""; }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  /* The year a church began, from church.founded or the page's own words ("Gathering since 1891"). */
+  function foundedYear() {
+    if (CH.founded) return String(CH.founded);
+    var text = ""; try { text = (document.querySelector("main") || document.body).innerText || ""; } catch (e) {}
+    var re = /\b(?:since|founded in|established in|est\.?)\s+(1[6-9]\d\d|20[0-4]\d)\b/gi, m, best = 0;
+    while ((m = re.exec(text))) { var y = +m[1]; if (!best || y < best) best = y; }
+    return best ? String(best) : "";
+  }
   var A = {
-    times: { t: "We gather " + (CH.times || "every Sunday") + " at " + (CH.address || "our building") + (CH.city ? ", " + CH.city : "") + ". Plan for about " + (CH.length || "75 minutes") + ", and wear whatever is comfortable.", c: [{ label: "Get Directions", href: CH.mapUrl, cta: true }, { label: "I am new here", key: "newhere" }] },
-    newhere: { t: CH.startHere || ("So glad you are here. The best first step is to visit on a Sunday, then come to Start Here to meet the team and find where you fit."), c: [{ label: "Service times", key: "times", cta: true }, { label: "Kids", key: "kids" }] },
-    kids: { t: CH.kids || "Kids are welcome every Sunday, with a safe, fun class and a nursery for little ones.", c: [{ label: "Students", key: "students" }, { label: "Service times", key: "times" }] },
-    students: { t: CH.students || "Students have their own time together during the month, with events through the year.", c: [{ label: "Small groups", key: "groups" }, { label: "Service times", key: "times" }] },
-    groups: { t: CH.groups || "Small groups meet during the week in homes across the city. It is the best way to make church feel like family.", c: [{ label: "I am new here", key: "newhere" }] },
-    give: { t: CH.give || "You can give securely online in about a minute, once or every month.", c: [{ label: "Watch a message", key: "watch" }] },
-    watch: { t: CH.watch || "Every message is online after Sunday, and the late gathering is live each week.", c: [{ label: "Service times", key: "times" }] },
-    prayer: { t: CH.prayer || "We would be honored to pray with you. Share your request and our pastors and prayer team will stand with you. If you are in crisis, call or text 988, or 911 in an emergency.", c: [{ label: "Back to the menu", key: "menu" }] },
-    pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service times", key: "times" }] },
-    values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I am new here", key: "newhere" }] },
+    times: { t: "We gather " + (CH.times || "every Sunday") + (CH.address ? " at " + CH.address + (CH.city ? ", " + CH.city : "") : CH.city ? " in " + CH.city : "") + "." + (CH.length ? " Plan for about " + CH.length + "." : "") + " Wear whatever is comfortable.", c: chips(DIRECTIONS, { label: "Where Do I Park?", key: "parking" }, { label: "I Am New Here", key: "newhere" }) },
+    parking: { t: PARK || ("Parking details are on " + SHORT + "'s Plan Your Visit page, with directions." + (CH.phone ? " You can also call the church at " + CH.phone + "." : "")), c: chips(DIRECTIONS, { label: "Service Times", key: "times", cta: !DIRECTIONS }) },
+    newhere: { t: CH.startHere || ("So glad you are here. The best first step is to visit on a Sunday, then come to Start Here to meet the team and find where you fit."), c: [{ label: "Service Times", key: "times", cta: true }, { label: "Kids", key: "kids" }] },
+    kids: { t: CH.kids || "Kids are welcome every Sunday, with a safe, fun class and a nursery for little ones.", c: [{ label: "Students", key: "students" }, { label: "Service Times", key: "times" }] },
+    students: { t: CH.students || "Students have their own time together during the month, with events through the year.", c: [{ label: "Small Groups", key: "groups" }, { label: "Service Times", key: "times" }] },
+    groups: { t: CH.groups || "Small groups meet during the week in homes across the city. It is the best way to make church feel like family.", c: [{ label: "I Am New Here", key: "newhere" }] },
+    give: { t: CH.give || "You can give securely online in about a minute, once or every month.", c: [{ label: "Watch a Message", key: "watch" }] },
+    /* "Do you livestream?" gets a plain yes or no before the rest. */
+    watch: { t: function (q) {
+      var w = CH.watch || "Every message is online after Sunday, on the church's website.";
+      if (/\blive ?stream\w*|\bstream\w* live\b|\bwatch\w* live\b|\blive online\b|\bstreamed\b/i.test(q || "") && !/\blive\b/i.test(w)) return "Sundays are not streamed live right now. " + w;
+      return w;
+    }, c: [{ label: "Service Times", key: "times" }] },
+    prayer: { t: CH.prayer || "We would be honored to pray with you. Share your request and our pastors and prayer team will stand with you." + CRISIS_LINE, c: [SHARE, BACK] },
+    prayerwho: { t: "Only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + CRISIS_LINE, c: [SHARE, BACK] },
+    pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service Times", key: "times" }] },
+    values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I Am New Here", key: "newhere" }] },
+    contact: { t: CH.phone ? "You can call " + NAME + " at " + CH.phone + (EMAIL ? " or email " + EMAIL : "") + ", and someone on the team will help." : "Someone on the team would be glad to help. The fastest way is to plan a visit or share a request on this site.", c: chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK) },
+    /* "Can I talk to a pastor this week?" gets a way to reach them, not only their story. */
+    talkpastor: { t: function () { return cap(listOf(pastorNames())) + " would be glad to talk with you. " + (CH.phone ? "Call " + CH.phone + " and the office will find a time with you" : "Ask on Sunday and the team will find a time with you") + ", or share a prayer request and choose Pastors only."; }, c: function () { return chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, SHARE, BACK); } },
+    /* Beliefs deserve a person, not a guess and never the care or crisis path. */
+    beliefs: { t: function () { return "Thank you for asking. That deserves a real conversation, not a quick answer from me. " + cap(listOf(pastorNames())) + " would be glad to talk it through with you" + (CH.phone ? ". Call " + CH.phone + " to find a time." : "."); }, c: function () { return chips({ label: "What We Believe", key: "values" }, { label: "Talk to a Pastor", key: "talkpastor", cta: true }, BACK); } },
+    wedding: { t: "I do not want to guess about weddings. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and the pastors will talk it through with you.", c: chips(CALL, BACK) },
+    /* Groceries or help with a bill: the church's own pantry when its page names one, and a person either way. */
+    pantry: { t: function (q) {
+      var page = ""; try { page = ((document.querySelector("main") || document.body).innerText || "") + " " + (CH.give || ""); } catch (e) {}
+      var call = CH.phone ? "Call " + CH.phone : "Ask on Sunday";
+      return /\b(pantry|food|groceries|meals?)\b/i.test(q || "") && /\bpantry\b/i.test(page) ?"Yes. " + SHORT + " has a food pantry, and the team would want to help. " + call + ", and someone will tell you when it is open." : SHORT + " would want to help. " + call + ", and someone on the team will talk with you about what you need.";
+    }, c: function () { return chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, SHARE, BACK); } },
+    noapp: { t: "No. You do not need an app to visit, plan a visit or share a prayer request. Everything works right here on the website.", c: chips(PLAN_VISIT, { label: "Service Times", key: "times" }, BACK) },
+    free: { t: "Coming on a Sunday is always free, and nobody will ask you for anything. Giving is for people who call " + SHORT + " home, when they are ready.", c: [{ label: "Service Times", key: "times", cta: true }, { label: "I Am New Here", key: "newhere" }] },
+    visitchange: { t: "Of course. Plans change, and nobody minds. Fill in Plan Your Visit again with the new Sunday" + (CH.phone ? ", or call us at " + CH.phone : "") + ", and the welcome team will update it.", c: chips(PLAN_VISIT, CALL, BACK) },
+    /* Asked about care ("Do you offer counseling?"), or told something heavy ("My husband just died"). */
+    care: { t: function (q) {
+      var open = sorry(q), line = HEAVY_LINE.test(q || "") ? CRISIS_LINE : "";
+      if (!open) return "Our pastors would be glad to talk with you about that, and they can point you to trusted help. Share a request or call " + (CH.phone || "the church") + ", and a real person will get back to you." + line;
+      return open + " You do not have to carry it alone. " + cap(listOf(pastorNames())) + " would be glad to " + (LOSS.test(q || "") ? "walk with you through this and pray with you" : "talk with you and pray with you") + ". Share a prayer request" + (CH.phone ? " or call " + CH.phone : "") + ", and a real person will get back to you." + line;
+    }, c: function () { return chips(SHARE, messageChip(), CALL, BACK); } },
+    /* "Is there hope for someone like me?" gets a yes; "Will I be judged?" gets a welcome. */
+    welcome: { t: function (q) {
+      var also = NAME + " is full of people who once asked that same question";
+      if (/\bhope for\b/i.test(q || "")) return "Yes, there is. " + also + ". You are welcome here just as you are, with nothing to figure out first. If you would like, our pastors would be glad to talk or pray with you.";
+      return "You are welcome here, just as you are. " + also + ", and nobody has to have it all figured out first. If you would like, our pastors would be glad to talk or pray with you.";
+    }, c: [SHARE, { label: "I Am New Here", key: "newhere" }, { label: "Service Times", key: "times" }] },
+    moved: { t: function () { return "I am so glad it spoke to you. " + cap(listOf(pastorNames())) + " would love to hear what stood out, and you are always welcome back on Sunday."; }, c: function () { return chips({ label: "Watch a Message", key: "watch", cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK); } },
+    /* What a guest asks that the page already says. */
+    privacy: { t: "What you share here goes only to the people at " + SHORT + " who need it. Plan Your Visit reaches the welcome team. A prayer request is read only by " + listOf(pastorNames().concat("our prayer team")) + ", and you choose who may read it.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] },
+    serve: { t: "We would love that. Most people start serving after a Sunday or two. Tell a greeter or one of the pastors you would like to help, and they will help you find a team that fits.", c: [{ label: "I Am New Here", key: "newhere", cta: true }, { label: "Service Times", key: "times" }] },
+    history: { t: function () { var y = foundedYear(), p = CH.pastors || ""; return (y && p.indexOf(y) < 0 ? NAME + " has been gathering since " + y + ". " : "") + (p || "Our pastors would love to tell you the story on a Sunday."); }, c: [{ label: "I Am New Here", key: "newhere" }, { label: "Service Times", key: "times" }] },
+    special: { t: function (q) {
+      if (/christmas|easter|good friday|maundy|thanksgiving|new year|holiday|ash wednesday|\blent\b|advent|candlelight/i.test(q || "")) return "Holiday services, like Christmas Eve and Easter, have their own times each year, and " + SHORT + " shares them ahead of time." + (CH.phone ? " You can also call " + CH.phone + " to ask." : "");
+      return "I do not want to guess about that. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and someone on the team will tell you what they offer.";
+    }, c: chips({ label: "Service Times", key: "times" }, CALL, BACK) },
+    kidsafe: { t: CH.kids && /background|screened/i.test(CH.kids) ? CH.kids : "I do not want to guess about that. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and someone on the team will tell you how they keep kids safe.", c: chips({ label: "Kids and Students", key: "kids" }, CALL) },
+    real: { t: NAME + " is a made-up church for this preview. Its times, people and stories are samples, and a real church fills every part with its own.", c: [{ label: "What Does a Church Get?", key: "package", cta: true }, { label: "Take the Tour", key: "tour" }] },
+    /* plain words about who is answering */
+    human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". A real person on our team follows up on anything I cannot answer" + (CH.phone ? ", and you can call us at " + CH.phone + "." : ".") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
+    hello: { t: "Hi. I am " + AN + ", an automated assistant" + (CHURCH ? " for " + NAME : "") + ". Here is what I can help with.", c: null },
+    thanks: { t: "You are welcome. Anything else I can help with?", c: null },
     /* questions a church leader asks about the product */
-    package: { t: "Every Genesis Ministry church gets four things: a website in one of four looks (this one is " + LOOK + "), a brand board, a social marketing plan, and " + AN + ", an assistant like me trained on your church's own facts. Depending on your plan, you also get the back office, where your team cares for people: prayer, messages and spiritual gifts in one place.", c: [{ label: "What is the back office?", key: "backoffice", cta: true }, { label: "Can we customize it?", key: "custom" }, { label: "See the brand board", href: LINKS.brandBoard }, { label: "See the social plan", href: LINKS.socialPlan }] },
-    custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "How does " + AN + " work?", key: "hope" }, { label: "Take the tour", key: "tour", cta: true }] },
-    price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: [{ label: "Book a Consultation", href: "/contact?topic=ministry", go: true, cta: true }, { label: "What do we get?", key: "package" }] },
-    hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, next steps, giving. " + AN + " hands prayer requests and personal questions to a real person, and gives crisis numbers right away when someone is hurting. " + AN + " never makes things up.", c: [{ label: "What do we get?", key: "package" }, { label: "Take the tour", key: "tour", cta: true }] },
-    backoffice: { t: "The back office comes with it depending on your plan. Each person gets one private record: prayer requests with a history, message threads with your staff, and a spiritual gifts conversation. Your staff get one shared inbox and follow up reminders, and your pastor sees a picture of the gifts across the whole church.", c: [{ label: "What do we get?", key: "package" }, { label: "Can we customize it?", key: "custom" }] },
+    /* The same plan contents as the plan cards and the workspace Hope (platform/shared/demo.js LEVELS_TEXT). */
+    package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is " + LOOK + "), the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
+    custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
+    hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and gives 988 and 911 right away when someone is in crisis. " + AN + " never makes things up.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    backoffice: { t: "The back office starts with the Shepherd plan, at $299 a month: Today, a front office where every first-time guest gets an owner and a next step, the care inbox for prayer and messages, the member app, and drafts that wait for approval. The Plus plan, at $499 a month, adds a page for each person, the Access Record screen, the spiritual gifts conversation with a picture of the gifts across the church, and reports.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     menu: null,
   };
-  if (AN === "Hope") A.hope.t = "On your live site, Hope answers questions day and night from facts your team approves: times, kids, next steps, giving. She hands prayer requests and personal questions to a real person, and she gives crisis numbers right away when someone is hurting. She never makes things up.";
+  /* A buyer's questions on a church site go to Genesis, never to the made-up church's phone. */
+  var ON_CALL = "settled with a person at Genesis on a call, before a church signs anything";
+  A.gm = { t: "Genesis Ministry is the church edition of Genesis OS, from Genesis AI. It gives a church a website in one of four looks, with " + AN + " answering guests, and from the Shepherd plan a back office where every guest and prayer request has an owner. " + (CHURCH ? NAME + " is a made-up sample church in the " + LOOK + " look." : ""), c: [{ label: "What Does a Church Get?", key: "package", cta: true }, { label: "What Does It Cost?", key: "price" }, { label: "Take the Tour", key: "tour" }] };
+  A.contract = { t: "Contract terms are " + ON_CALL + ". Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
+  A.domain = { t: "A church's web address is settled during scoping, with a person at Genesis: which address the new site uses and how the move is handled.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
+  A.trial = { t: "A trial is " + ON_CALL + ". Scoping includes a guided demo in the look a church chooses, like this " + LOOK + " sample.", c: function () { return chips(talkChip(), { label: "Take the Tour", key: "tour", cta: !talkChip() }); } };
+  A.cancel = { t: "How a plan ends is " + ON_CALL + ". If a church leaves, its data is its own: Genesis hands over a full export, then deletes its copy once the church confirms it has it.", c: function () { return chips(talkChip(), { label: "What Does It Cost?", key: "price" }); } };
+  A.fees = { t: "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. Anything more, like customization beyond the template, is quoted in writing before a church signs.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }); } };
+  /* The story pages speak for Genesis Ministry, not a church: a Sunday question points to the sample
+     sites, and a buyer's questions (getting started, a call) get Genesis's own answers. */
+  if (!CHURCH) {
+    /* A church's own fact ("What time is your service?") belongs to a church's site. Anything else a
+       pastor asks is honestly not known here, with a person at Genesis one tap away. */
+    var CHURCH_FACT = /\b(your|y'?all'?s?)\s+(church|service|services|sunday|sundays|gathering|pastors?|kids|children|nursery|youth|students|small groups?|groups|building|address|parking|times?|worship|location|staff|sermons?|messages?)\b|\bwhat time\b|\bwhere (is|are) (the|your) (church|service|building|parking)\b|\b(service|sunday|worship|gathering) times?\b|\bwhere (are you|is it) located\b|\bcan i (give|join|visit|come|bring|park|serve|attend|watch)\b|\b(is there|do you have) (a |an )?(nursery|kids'? (ministry|program|church)|youth group|student ministry|small groups?|parking|coffee|food pantry|bible stud(y|ies))\b|\bpray for (me|my|us)\b/i;
+    var notHere = {
+      t: function (q) { return CHURCH_FACT.test(q || "") ? NOT_HERE : (CFG.fallback || "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call."); },
+      c: function (q) { return CHURCH_FACT.test(q || "") ? MENU.slice(0, 4) : chips(talkChip(), MENU[1], MENU[2]); }
+    };
+    ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "talkpastor", "wedding", "pantry", "noapp"].forEach(function (k) { A[k] = notHere; });
+    A.beliefs = { t: "Each church answers that in its own words. On a church's own site, " + AN + " shares what the church has written and hands questions like this to a pastor rather than guessing.", c: null };
+    A.moved = { t: "I am glad it spoke to you. A person at Genesis would be glad to walk you through it with your own church in mind.", c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
+    /* Someone hurting on a page with no church: kind words, the crisis line and a way back, no product. */
+    A.prayer = { t: "I am sorry you are carrying that. This is the Genesis Ministry preview, so no prayer team reads this chat, but your own church's pastors would be honored to pray with you." + CRISIS_LINE, c: [BACK] };
+    A.care = { t: function (q) { return (sorry(q) || "I am sorry you are carrying that.") + " This is the Genesis Ministry preview, so no one reads this chat, but a pastor at your own church would be honored to walk with you." + CRISIS_LINE; }, c: [BACK] };
+    A.welcome = { t: function (q) { return (/\bhope for\b/i.test(q || "") ? "Yes, there is." : "You are welcome, just as you are.") + " This is a software preview, so no one reads this chat, but a pastor at a church near you would be glad to talk with you." + CRISIS_LINE; }, c: [BACK] };
+    A.free = A.price;
+    A.real = { t: "Genesis Ministry is real software from Genesis AI. The four churches in this preview are made up, with sample data, so you can try every screen without touching anyone's real information.", c: function () { return chips(A.startdemo && { label: "Start the Guided Demo", key: "startdemo", cta: true }, { label: "How Do We Get Started?", key: "start" }); } };
+    A.start = { t: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "See Getting Started", href: startHref(), go: true }, { label: "What Does Each Plan Include?", key: "levels" }); } };
+    A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Talk With Genesis opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
+    A.contact = A.talk;
+    A.human.c = function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }, { label: "Take the Tour", key: "tour" }); };
+  }
   if (CFG.answers) for (var ak in CFG.answers) if (Object.prototype.hasOwnProperty.call(CFG.answers, ak)) A[ak] = CFG.answers[ak];
   var MENU = CFG.menu && CFG.menu.length ? CFG.menu : [
-    { label: "Take the guided demo", key: "tour", cta: true },
-    { label: "What does a church get?", key: "package" },
-    { label: "Service times", key: "times" },
-    { label: "I am new here", key: "newhere" },
-    { label: "Kids and students", key: "kids" },
-    { label: "Can we customize it?", key: "custom" },
+    { label: "Take the Tour", key: "tour", cta: true },
+    { label: "What Does a Church Get?", key: "package" },
+    { label: "Service Times", key: "times" },
+    { label: "I Am New Here", key: "newhere" },
+    { label: "Kids and Students", key: "kids" },
+    { label: "Can We Customize It?", key: "custom" },
   ];
-  // Most specific first. Patterns allow plurals and word stems. A page's own rules come first.
-  var MATCH = (CFG.match || []).map(function (m) { return Array.isArray(m) ? m : [m.match || m.re, m.key]; }).filter(function (m) { return m[0] && m[0].test; }).concat([
-    [/\b(tours?|demos?|walk ?through|show me)\b/i, "tour"],
-    [/\b(prices?|pricing|costs?|fees?)\b|\bhow much (does|is|will|would) (it|this|genesis|the (template|website|site|platform))\b/i, "price"],
-    [/\b(custom\w*|change|edit|colou?rs?|logos?|fonts?)\b/i, "custom"],
-    [/\b(packages?|includ\w*|offers?|brand ?boards?|social|marketing|templates?|what do (we|i) get)\b/i, "package"],
-    [/\b(hope|chat ?bots?|assistants?|ai)\b/i, "hope"],
-    [/\b(back ?office|crm|spiritual gifts?|gifts? (assessment|test|conversation)|care (inbox|team)|staff inbox|care)\b/i, "backoffice"],
-    [/\b(kids?|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
-    [/\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
-    [/\b(small groups?|groups?|bible stud(y|ies)|life groups?)\b/i, "groups"],
-    [/\b(giv(e|ing)|gifts?|tith\w*|donat\w*|offerings?)\b/i, "give"],
-    [/\b(watch\w*|online|live|stream\w*|sermons?|messages?|podcasts?)\b/i, "watch"],
-    [/\b(pray\w*|hurting|sick|struggl\w*)\b/i, "prayer"],
-    [/\b(pastors?|leaders?|who runs|staff)\b/i, "pastors"],
-    [/\b(believ\w*|beliefs?|values?|mission|denomination\w*)\b/i, "values"],
-    [/\b(times?|when|sundays?|services?|gatherings?|where|address|location|park\w*|directions?|wear)\b/i, "times"],
-    [/\b(new|first time|start\w*|visit\w*|join\w*|members?|membership)\b/i, "newhere"],
+  ["human", "hello", "thanks"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = k === "thanks" ? MENU.slice(0, 4) : MENU; });
+  if (!CHURCH) ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "contact", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "beliefs"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = MENU.slice(0, 4); });
+  /* Under the crisis reply (its words never change): numbers a phone can dial with one tap. */
+  var CRISIS_CHIPS = chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, CALL, BACK);
+  /* When nothing fits, a church's own Hope offers the church's next steps, never the product. */
+  var FALLBACK_CHIPS = !CHURCH ? MENU
+    : A.talk ? chips({ label: "Talk to a Person", key: "talk", cta: true }, { label: "Service Times", key: "times" }, BACK)
+    : chips({ label: "Talk to a Person", key: "contact", cta: true }, { label: "Service Times", key: "times" }, { label: "I Am New Here", key: "newhere" }, { label: "Kids and Students", key: "kids" }, BACK);
+  function fallback(q) {
+    /* Someone who told Hope about their own life is thanked and pointed to a person. */
+    if (CHURCH && FIRST_PERSON.test(q) && !/\?\s*$/.test(q))
+      return { t: "Thank you for telling me. " + SHORT + " would want to help. " + (CH.phone ? "Call " + CH.phone + ", and a real person will hear you out." : "A real person at " + SHORT + " would be glad to hear more."), c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
+    return { t: CFG.fallback || (CHURCH
+      ? "I am not sure about that one, and I would rather not guess. " + (CH.phone ? "Someone at " + SHORT + " can tell you at " + CH.phone + ", or try one of these." : "Try one of these, or ask someone at " + SHORT + " on Sunday.")
+      : "I am not sure about that one, and I would rather not guess. Try one of these."), c: CHURCH ? FALLBACK_CHIPS : chips(talkChip(), MENU[1], MENU[2], MENU[3]) };
+  }
+
+  /* Asked first, before any page rule: who is answering, and a plain hello or thank you. */
+  var FIRST = [
+    [/\b(are you|am i (talking|speaking|chatting) (to|with)) (a |an )?(real|human|person|bot|robot|ai|machine|computer)\b|\b(is this|is that) (a |an )?(real person|human|person|bot|robot|ai|machine|computer)\b|\b(talk|speak|chat) (to|with) (a |an )?(real )?(person|human|someone|somebody)\b|\breal (person|human)\b/i, "human"],
+    [/^\s*(hi|hello|hey|hiya|howdy|good (morning|afternoon|evening))( there| hope)?\s*[!.?]*\s*$/i, "hello"],
+    [/^\s*(thanks?|thank you|thx|ty)( so much| very much| hope)?\s*[!.?]*\s*$/i, "thanks"],
+  ];
+  /* Before the page's own rules: a hurting person and "is this real" never get a product answer.
+     "Will I be judged?" is a welcome; "My husband just died" or "I feel hopeless" goes to a pastor.
+     On the story pages, a buyer's "how do we start" and "can we talk" come first too. */
+  var EARLY = [
+    [/\bhope for (?:me|someone like me|people like me|us|my \w+)\b|\b(?:someone|people|a person) like me\b|\b(?:am i|would i be|will i be|could i be|can i be) (?:welcome|accepted|judged|wanted|allowed|loved|forgiven)\b|\btoo far gone\b|\bnot good enough\b|\btoo (?:late|broken|bad|messed up|sinful) for (?:me|someone like me|god)\b|\b(?:can|could|would|will|does|did) (?:god|jesus|christ|anyone) (?:really |still )?(?:love|forgive|accept|want|care (?:about|for)|die for) (?:me|us|someone like me)\b/i, "welcome"],
+    [HURT, "care"],
+    /* A holiday service has its own times: the regular Sunday times would read as a yes. */
+    [/\b(?:christmas|easter|good friday|maundy thursday|thanksgiving|new year'?s? (?:eve|day)|ash wednesday|candlelight service)\b/i, "special"],
+    [/\b(real church|is (this|it|that) (a )?real\b|made[- ]up|fake church|actual church|does (this|the) church (really )?exist|is (this|it) (a )?(sample|demo|fake))\b/i, "real"],
+  ].concat(CHURCH ? [] : [
+    [/^(?!.*\bhow long\b).*(\bget(ting)? started\b|\bhow (do|can|would|should) (we|i) (start|begin|get going)\b|\bnext steps?\b|\bfirst steps?\b|\bwhere do (we|i) (start|begin)\b|\bhow (do|can) (we|i) sign (our church )?up\b|\bonboard\w*)/i, "start"],
+    [/\b(book|schedule|set up|arrange) (a |an )?(call|meeting|demo|time|consultation|walk ?through)\b|\btalk (to|with) (genesis|sales|your team|someone at genesis|a person at genesis)\b|\b(contact|reach|email|call|phone) (genesis|you|sales|your team|someone)\b|\bget in touch\b|\bcontact (info|information|details|page)\b|\bhow (do|can) (i|we) (reach|contact) (you|genesis)\b|\b(buy|purchase)\b/i, "talk"],
   ]);
-  // Same pattern as the live church site's crisis check. Word stems use \w* so "suicide",
-  // "suicidal" and "overdosed" all match.
-  var CRISIS = /\b(suicid\w*|kill(?:ing)? (?:myself|my self)|end(?:ing)? (?:my|my own) life|end it all|take my (?:own )?life|want(?:ed)? to die|wanna die|don'?t want to (?:live|be alive|be here)|hurt(?:ing)? myself|harm(?:ing)? myself|self[- ]?harm\w*|cut(?:ting)? myself|overdos\w*|no reason to live|better off (?:dead|without me)|not safe at home|(?:hits|hit|beats|beating|abus\w+) me|being abused|(?:i am|i'?m|we are|we'?re) in danger)\b/i;
+  /* A church site answers like a church first: guests ask about kids, times and prayer, and only a
+     clear product question gets the Genesis Ministry answer. The story pages keep the product first. */
+  var AN_RE = String(AN).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  var PRODUCT = [
+    [/\bdemos?\b(?!\s+(?:really|was|is|hit|felt|made|moved|got))|\bwalk ?through\b|\bguided (tour|demo)\b|\b(take|start) (the |a )?tour\b|\btour of (the|this) (site|page|website|template|app)\b|^\s*(a |the )?tours?\s*[.!?]*\s*$|\btours?\b(?! of (the|our|your|this) (building|church|campus|chapel|facilit\w*|grounds|sanctuary))/i, "tour"],
+    [/\bwhat(?:'s| is) genesis( ministry)?\b|\bwho (makes|made|built) (this|genesis)\b|\babout genesis ministry\b|\bwhat is this\s*[?.!]*\s*$/i, "gm"],
+    [/\bcontracts?\b|\b(sign|signing) (a |an )?(contract|agreement)\b/i, "contract"],
+    [/\bdomains?\b|\bweb address\b|\bdns\b/i, "domain"],
+    [/\bfree trials?\b|\btrial (period|plan|month)\b|\btry (it|this|genesis( ministry)?) (free|for free|first|out)\b/i, "trial"],
+    [/\bcancel\w*\b.{0,25}\b(subscription|contract|genesis|account|service)\b|\bend (our|the|my) (subscription|contract)\b/i, "cancel"],
+    [/\b(setup|set-up|set up|onboarding|hidden|extra|additional|one-time|upfront)\s+(fees?|costs?|charges?)\b|\bhidden (costs?|charges?)\b/i, "fees"],
+    [/\b(prices?|pricing|costs?|fees?|afford\w*|budget)\b|how much (is it|does it|will it|would it|do you charge)|\$/i, "price"],
+    [/\bcustomi[sz]\w*|\b(change|edit|swap|use) (the |our |my )?(own )?(colou?rs?|logos?|fonts?|layout|template|look|design)\b|\bour own (look|design|colou?rs|logo|fonts?)\b|\bredesign\w*/i, "custom"],
+    [/\bgenesis ministry\b|\bwhat is (this|genesis)\b|\b(packages?|brand ?boards?|social (media|plan|marketing)|marketing plan|templates?|what do (we|i) get|what does a church get)\b/i, "package"],
+    [new RegExp("\\b(who|what) is " + AN_RE + "\\b|\\bhow does " + AN_RE + " work\\b|\\bwhat (can|does|will) " + AN_RE + " do\\b|\\b(chat ?bots?|assistants?|ai|a\\.i\\.)\\b", "i"), "hope"],
+    [/\b(back ?office|crm|care (inbox|team)|staff inbox|spiritual gifts? (assessment|test|conversation|picture|inventory|survey))\b/i, "backoffice"],
+    /* The plans by name ("What is the Shepherd plan?", "Care, Shepherd or Plus?") get every plan. */
+    [/\b(care|shepherd|plus) (plans?|tiers?)\b|\bcare\b[^.?!]{0,30}\bshepherd\b|\bshepherd\b[^.?!]{0,30}\bplus\b|\b(which|what) plans?\b/i, "package"],
+  ];
+  var SITE = [
+    [/\bwho (sees|can see|reads|can read|will see|will read|gets to see|gets to read|gets) (my|a|the|our|your) (prayer|request)|\b(is|are) (my |our )?prayer( requests?)? (private|confidential|safe|secret)\b|\b(private|confidential) prayer\b|\bwho (sees|reads) (it|them|prayer requests?)\b/i, "prayerwho"],
+    [/\b(?:is|are|will) (?:my|our) (?:personal )?(?:information|info|details|data|email|forms?|requests?) (?:be )?(?:safe|private|secure|protected|kept private|shared|sold)\b|\bwhat (?:do|will) you do with (?:my|our) (?:information|info|details|email|data)\b|\b(?:do|will) you (?:share|sell) (?:my|our) (?:information|info|details|email|data)\b/i, "privacy"],
+    /* Beliefs come before care: "What do you believe about gay marriage?" is a question, not distress. */
+    [/\b(believe|believes|views?|position|stance|teach|teaches) (about|on)\b|\b(gay|lgbtq?\w*|same[- ]sex|homosexual\w*|transgender|affirming)\b|\bwomen (pastors?|preach\w*|elders?|leaders?|in ministry)\b|\bwomen be (pastors?|elders?|preachers?)\b|\b(can|do|does|are) women (preach|lead|teach|pastor)\w*\b|\bdenomination\w*\b|\bstatement of faith\b|\bdoctrin\w*\b|\bwhat (do|does) (you|your church|the church) teach\b/i, "beliefs"],
+    [/\b(talk|speak|meet|chat|sit down|get coffee) (to|with) (a|the|one of the|your|our)?\s?pastors?\b|\b(see|reach|call|email|contact) (a|the|your) pastor\b|\bpastors?\b.{0,30}\b(this week|appointment|available|meet with)\b/i, "talkpastor"],
+    [/\bweddings?\b|\bget married\b|\bmarry us\b|\bofficiat\w*/i, "wedding"],
+    [/\b(food )?pantry\b|\bfood bank\b|\bgroceries\b|\bneed (food|groceries|help with (rent|bills|food|utilities))\b|\bbenevolence\b|\bhelp (paying|with) (rent|bills|utilities|groceries)\b/i, "pantry"],
+    [/\b(download|install)\b.{0,30}\bapps?\b|\b(need|have) to (get|use|download|install) (an |the )?apps?\b|\bapps?\b.{0,20}\b(required|necessary)\b/i, "noapp"],
+    [/\b(counsel\w*|therap\w*|marriage|divorce|grie\w*|addiction|recovery|support groups?|mental health|depress\w*|anxiety|anxious|panic attacks?)\b/i, "care"],
+    [/\b(change|move|cancel|reschedul\w*|switch|push) (my|our|the) (visit|plans?|sunday|date|rsvp)\b/i, "visitchange"],
+    [/\b(cost|pay|charge|fee)s?\b.*\b(attend|come|coming|visit|church|sunday|service)\b|\bis (it|church|sunday|this|coming) free\b|\bdo (i|we) (have to|need to) (pay|give)\b/i, "free"],
+    [/\bbackground[- ]?check\w*|\b(?:volunteers?|leaders?|teachers?|workers?|staff) (?:are |get |been )?(?:screened|vetted)\b/i, "kidsafe"],
+    [/\bvolunteer\w*|\bserve teams?\b|\b(?:how (?:can|do|could) (?:i|we)|(?:i|we) (?:want|would like|'d like) to|can (?:i|we)|ways to|where (?:can|do) (?:i|we)) (?:serve|help out|get involved)\b|\bget involved\b/i, "serve"],
+    [/\b(kids?|child ?care|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
+    [/\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
+    [/\b(small groups?|groups?|bible stud(y|ies)|life groups?|events?|socials?|fellowship|meet (new )?people|make friends|get connected)\b/i, "groups"],
+    [/\b(giv(e|ing)(?! up\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
+    /* A guest moved by Sunday ("the sermon hit me hard") hears gladness, not a schedule. */
+    [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
+    [/\b(watch\w*|live ?stream\w*|stream\w*|sermons?|podcasts?)\b|\b(service|church|gathering|worship)s? online\b|\bonline (service|church|gathering|worship)s?\b|\b(latest|last|this week'?s|sunday'?s|recent|newest) (message|sermon|teaching)\b/i, "watch"],
+    [/\b(pray\w*|hurting|sick|struggl\w*|hospital\w*|surgery|cancer)\b/i, "prayer"],
+    /* A holiday or another language: the regular Sunday times would read as a yes. */
+    [/\b(?:spanish|espa(?:ñ|n)ol|korean|chinese|mandarin|cantonese|vietnamese|french|portuguese|arabic|haitian|creole|sign language|asl|interpret\w*|translat\w*|another language|other languages?|christmas|easter|good friday|maundy|thanksgiving|new year'?s?|holidays?|ash wednesday|lent|advent|candlelight)\b/i, "special"],
+    [/\b(?:coffee|tea|donuts?|snacks?)\b/i, "newhere"],
+    /* "My phone died, what time is church again?" is a question about Sunday, not the phone number. */
+    [/\bwhat time\b|\bwhen (?:is|does|do|are) (?:church|the service|services|sunday|worship|the gathering|gatherings|it start|things start|you meet)\b/i, "times"],
+    [/\b(phone( number)?|telephone|call (you|the church|someone|the office)|contact|e-?mail|reach (you|someone|the church|the office)|office hours)\b|\bwhat'?s (your|the) number\b|\b(your|the) number\b/i, "contact"],
+    [/\bhow long (?:have|has) (?:you|y'?all|the church|this church|[a-z]+(?: [a-z]+)? church) (?:all )?been\b|\b(?:when|what year) (?:was|were|did) (?:you|y'?all|the church|this church|it) (?:get )?(?:founded|started|start|begin|planted|built)\b|\bhow old is (?:the|your|this) church\b|\bfounded\b|\b(?:church'?s|your) history\b|\bbeen around\b/i, "history"],
+    [/\b(pastors?|leaders?|who runs|who leads|who preaches|staff)\b/i, "pastors"],
+    [/\babout (your|the|this) church\b|\btell me about (you|yourselves|it)\b|\bwhat (kind|type|sort) of church\b|\bwhat is (your|the) church like\b|\b(believ\w*|beliefs?|values?|mission|denomination\w*|theology)\b/i, "values"],
+    [/\b(park|parking|parked|garage)\b/i, "parking"],
+    /* A first-time guest's questions go to the welcome, not only the times. */
+    [/\b(?:i'?m|i am|we'?re|we are) (?:brand )?new\b|\bnew here\b|\bfirst (?:time|sunday|visit)\b|\bnever been\b|\b(?:need|looking for|want|find|finding) (?:a |a new |a home )?church\b|\bwhere (?:do|should|can) (?:i|we) (?:start|begin)\b|\bwhat (?:happens|should (?:i|we) expect|to expect|can (?:i|we) expect)\b|\bcome (?:alone|by myself|on my own)\b|\bbring (?:a friend|friends|my (?:friend|family|partner|husband|wife|parents?|roommate))\b/i, "newhere"],
+    [/\b(times?|when|sundays?|services?|gatherings?|where|address|location|located|directions?|how far|nearby|close to|wear|dress)\b/i, "times"],
+    [/\b(new|first time|start\w*|visit\w*|join\w*|members?|membership)\b|\btour of the (building|church|campus|chapel)\b|\bshow me around\b/i, "newhere"],
+  ];
+  // Most specific first. Patterns allow plurals and word stems. A page's own rules come first: a rule
+  // may be a pattern or its text (["\\bbapti[sz]\\w*", "baptism"]), and hope.json's matchPatterns
+  // (text rules, since JSON cannot carry a pattern) are read here too.
+  function toRule(m) {
+    var r = Array.isArray(m) ? [m[0], m[1]] : m ? [m.match || m.re, m.key] : [];
+    if (typeof r[0] === "string") try { r[0] = new RegExp(r[0], "i"); } catch (e) { r[0] = null; }
+    return r;
+  }
+  var PAGE_RULES = [], seenRule = {};
+  (CFG.match || []).concat(CFG.matchPatterns || []).map(toRule).forEach(function (r) {
+    if (!r[0] || !r[0].test || !r[1]) return;
+    var id = String(r[0].source) + "\u0000" + r[1];
+    if (seenRule[id]) return;
+    seenRule[id] = 1; PAGE_RULES.push(r);
+  });
+  var MATCH = FIRST.concat(EARLY, PAGE_RULES, CHURCH ? SITE.concat(PRODUCT) : PRODUCT.concat(SITE));
+  /* On the story pages a question about prayer with product words in it is about the product. */
+  var PRODUCT_WORDS = /\b(staff|team|admins?|levels?|access|private|privacy|protect\w*|locks?|locked|genesis|records?|data|volunteers?|software|platform)\b|\bwho (can |will |gets to )?(see|sees|read|reads|open|opens)\b|\b(see|sees|read|reads|open|opens) (the |our |my |a |their )?prayer|\b(does|can|will|would) hope\b|\bhope (answer|respond|repl|handl|draft|writ|read|see)\w*/i;
+
+  /* The crisis check. The words live in shared/crisis-words.js, the one list every Hope reads (the
+     workspace dock too): the live church site's pattern, widened so a crisis is heard however it is
+     written, about someone else, or by staff writing about someone in the church. Word stems use \w*
+     so "suicide", "suicidal" and "overdosed" all match. */
+  var CRISIS = WORDS.crisis, calm = WORDS.calm;
+  /* Someone else in danger, and a staff member writing about someone in the church, on every page. */
+  function isCrisis(q) { q = calm(q); return CRISIS.test(q) || WORDS.staff.test(q); }
+  /* A last net before the fallback: a crisis word that no rule caught still gets the crisis reply. */
+  var CRISIS_NET = WORDS.net;
+  /* Where a question goes: "crisis", an answer key, or "fallback". */
+  function route(q) {
+    q = String(q || "");
+    if (isCrisis(q)) return "crisis";
+    var net = CRISIS_NET.test(calm(q));
+    for (var i = 0; i < MATCH.length; i++) {
+      if (!MATCH[i][0].test(q)) continue;
+      var k = MATCH[i][1];
+      /* Someone hurting who also says a crisis word ("my dad is dying") gets the crisis reply. */
+      if (MATCH[i][0] === HURT && net) return "crisis";
+      if (k === "prayer" && !CHURCH && A.prayerwho && PRODUCT_WORDS.test(q)) return "prayerwho";
+      if (k === "tour" || k === "menu" || A[k]) return k;
+    }
+    return net ? "crisis" : "fallback";
+  }
 
   function onChip(c) {
     addUser(c.label);
     if (c.run) { c.run(); return; }
-    if (c.go) { location.href = c.go === true ? c.href : c.go; return; }
+    if (c.go) { var dest = c.go === true ? c.href : c.go; if (/^#./.test(dest || "")) goAnchor(dest); else location.href = dest; return; }
     if (c.href) { window.open(c.href, "_blank", "noopener"); say("Opened in a new tab. Anything else I can show you?", MENU.slice(0, 4)); return; }
     answer(c.key);
   }
-  function answer(key) {
+  function answer(key, q) {
     if (key === "tour") { say(CFG.tourIntro || "Great. I will walk you through the page one section at a time. Use Next to move on, or press Escape any time to stop.", null, function () { setTimeout(startTour, REDUCE ? 50 : 600); }); return; }
     if (key === "menu" || !A[key]) { say("Here are a few things I can help with.", MENU); return; }
-    say(val(A[key].t), val(A[key].c));
+    say(val(A[key].t, q), val(A[key].c, q));
   }
   function greet() {
     say(val(CFG.greeting) || ("Hi, I am " + AN + ", the assistant for " + NAME + ". This is a live preview of the " + LOOK + " template from Genesis Ministry. Want a quick guided demo of the site, or do you have a question?"), MENU);
@@ -324,10 +738,67 @@
   /* ------------------------------------------------------------- invite */
   var invite = null;
   var INVITE_KEY = CFG.inviteKey || "hd-invited";
-  function hideInvite() { if (invite) { invite.classList.remove("on"); var n = invite; invite = null; setTimeout(function () { n.remove(); }, GENESIS ? 0 : 400); } }
+  function hideInvite() {
+    document.documentElement.classList.remove("hd-invite-on");
+    if (inviteEsc) { document.removeEventListener("keydown", inviteEsc, true); inviteEsc = null; }
+    if (foldFocus) { document.removeEventListener("focusin", foldFocus, true); foldFocus = null; }
+    if (invite) { invite.classList.remove("on"); var n = invite; invite = null; setTimeout(function () { n.remove(); }, GENESIS ? 0 : 400); }
+  }
+  /* Escape puts the invite away at any width. Focus inside it goes back to the chat circle. */
+  var inviteEsc = null;
+  function armEscape() {
+    inviteEsc = function (e) {
+      if (e.key !== "Escape" || !invite || isOpen || touring) return;
+      var inside = invite.contains(document.activeElement);
+      clearTimeout(foldTimer); hideInvite();
+      if (inside && focusable(launch)) focusOn(launch);
+    };
+    document.addEventListener("keydown", inviteEsc, true);
+  }
+  /* On a phone the invite folds back into the chat circle after a few seconds, on the next scroll,
+     or when the first screen comes back into view, so it never sits on the page's own words. */
+  var foldTimer = 0, foldScroll = null, foldFocus = null;
+  function foldInvite() {
+    clearTimeout(foldTimer);
+    if (!invite || GENESIS) return;
+    if (invite.contains(document.activeElement)) return; // someone is using it
+    if (foldScroll) { window.removeEventListener("scroll", foldScroll); foldScroll = null; }
+    if (foldFocus) { document.removeEventListener("focusin", foldFocus, true); foldFocus = null; }
+    hideInvite();
+  }
+  /* At every width it folds as soon as a keyboard user moves on to something else on the page, so it
+     never sits over the control that has focus (WCAG 2.4.11), at 200 percent zoom and on a desktop too. */
+  function armFold() {
+    if (GENESIS) return;
+    foldFocus = function (e) { if (invite && !invite.contains(e.target) && !(launch && launch.contains(e.target))) foldInvite(); };
+    document.addEventListener("focusin", foldFocus, true);
+    if (!phoneChat()) return;
+    foldTimer = setTimeout(foldInvite, 8000);
+    var y0 = window.scrollY, t0 = Date.now();
+    foldScroll = function () { if (Date.now() - t0 > 700 && Math.abs(window.scrollY - y0) > 160) foldInvite(); };
+    window.addEventListener("scroll", foldScroll, { passive: true });
+  }
+  /* The invite never covers what a keyboard user is on (WCAG 2.4.11): not in a short window (400
+     percent zoom), not while focus is inside the page, and not over the focused control. */
+  function inviteWouldCover() {
+    if (GENESIS) return false;
+    if (window.innerHeight < 500) return true;
+    var a = document.activeElement;
+    if (!a || a === document.body || a === document.documentElement || (launch && launch.contains(a))) return false;
+    if (viaKeys && a.closest && a.closest("main, #main, [role=main]")) return true;
+    var r = a.getBoundingClientRect(), w = Math.min(300, window.innerWidth - 32), right = window.innerWidth - 16, bottom = window.innerHeight - 88;
+    return r.right > right - w && r.bottom > bottom - 190 && r.top < bottom;
+  }
   function showInvite() {
     if (isOpen || touring || store(INVITE_KEY)) return;
+    if (inviteWouldCover()) { if (window.innerHeight >= 500) setTimeout(showInvite, 3000); return; }
+    /* An open menu sheet or one of the site's own forms keeps the screen: the invite waits. */
+    if (document.body.classList.contains("menu-open") || document.body.classList.contains("fd-open")) { setTimeout(showInvite, 1500); return; }
+    /* Genesis screens: never while the Hope dock is open (it would sit on the dock's own controls). */
+    if (GENESIS && document.body.classList.contains("v2-genesis-open")) { setTimeout(showInvite, 1500); return; }
     store(INVITE_KEY, "1");
+    document.documentElement.classList.add("hd-invite-on");
+    armEscape();
     if (GENESIS) {
       /* The real Genesis OS offer: a guide card docked at the bottom, Start and Not Now. */
       invite = el("section", "v2-guide hd-g"); invite.setAttribute("aria-label", "Guided demo with " + GUIDE);
@@ -342,11 +813,20 @@
         var a = b.getAttribute("data-guide"); hideInvite();
         if (a === "start") startTour();
       });
+      /* If the dock opens while the offer is up, the offer steps aside for good. */
+      if (window.MutationObserver) {
+        var mine = invite, mo = new MutationObserver(function () {
+          if (invite !== mine) { mo.disconnect(); return; }
+          if (document.body.classList.contains("v2-genesis-open")) { mo.disconnect(); hideInvite(); }
+        });
+        mo.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      }
       return;
     }
-    invite = el("div", "hd-invite"); invite.setAttribute("role", "status");
-    var p = el("p"); p.innerHTML = "<b></b> "; p.querySelector("b").textContent = "Hi, I am " + AN + "."; p.appendChild(document.createTextNode((CFG.invite && CFG.invite.text) || "Want a 60 second tour of this template?"));
-    var x = el("button", "hd-x"); x.type = "button"; x.setAttribute("aria-label", "Dismiss"); x.textContent = "×";
+    /* A labeled region; only its words are announced, never the buttons or the close glyph. */
+    invite = el("div", "hd-invite"); invite.setAttribute("role", "region"); invite.setAttribute("aria-label", "Tour invitation from " + AN);
+    var p = el("p"); p.setAttribute("role", "status"); p.innerHTML = "<b></b> "; p.querySelector("b").textContent = "Hi, I am " + AN + "."; p.appendChild(document.createTextNode((CFG.invite && CFG.invite.text) || "Want a short tour of this site?"));
+    var x = el("button", "hd-x"); x.type = "button"; x.setAttribute("aria-label", "Dismiss"); x.innerHTML = '<span aria-hidden="true">×</span>';
     var row = el("div", "hd-row");
     var go = el("button", "hd-btn", "Start the Tour"); go.type = "button";
     var ask = el("button", "hd-btn ghost", "Ask " + AN); ask.type = "button";
@@ -354,29 +834,66 @@
     invite.appendChild(x); invite.appendChild(p); invite.appendChild(row);
     document.body.appendChild(invite);
     requestAnimationFrame(function () { requestAnimationFrame(function () { if (invite) invite.classList.add("on"); }); });
-    x.addEventListener("click", hideInvite);
-    go.addEventListener("click", function () { hideInvite(); startTour(); });
-    ask.addEventListener("click", function () { hideInvite(); setOpen(true); });
+    armFold();
+    x.addEventListener("click", function () { clearTimeout(foldTimer); hideInvite(); if (focusable(launch)) focusOn(launch); });
+    go.addEventListener("click", function () { clearTimeout(foldTimer); hideInvite(); startTour(); });
+    ask.addEventListener("click", function () { clearTimeout(foldTimer); hideInvite(); setOpen(true); });
   }
-  if (GENESIS ? CFG.autoInvite === true : CFG.autoInvite !== false) setTimeout(showInvite, 2200);
+  /* The invite never covers the first screen: on a phone it waits until the hero has scrolled away,
+     and it folds away again when the hero comes back. Framed (the church's site inside the
+     workspace) or ?embed=1, the page never offers it at all. */
+  function scheduleInvite() {
+    var hero = !GENESIS && SEL.hero ? pick(SEL.hero) : null;
+    if (hero && phoneChat() && "IntersectionObserver" in window) {
+      var away = false, wait = 0;
+      var io = new IntersectionObserver(function (es) {
+        var e = es[es.length - 1];
+        away = !e.isIntersecting;
+        if (away && !store(INVITE_KEY)) { clearTimeout(wait); wait = setTimeout(function () { if (away) showInvite(); }, REDUCE ? 0 : 700); }
+        if (!away && e.intersectionRatio >= 0.2 && invite) foldInvite();
+        if (store(INVITE_KEY) && !invite) io.disconnect();
+      }, { threshold: [0, 0.2] });
+      io.observe(hero);
+      return;
+    }
+    setTimeout(showInvite, 2200);
+  }
+  if ((GENESIS ? CFG.autoInvite === true : CFG.autoInvite !== false) && !FRAMED && !EMBED) scheduleInvite();
 
   /* --------------------------------------------------------------- tour */
+  var HERO_FOCUS = ".times, .hero-times, .btn-pair, .cta, .pair, .hero-actions";
+  /* The part of a tall section a step names, for each of the four looks (the first one found wins):
+     the pastors' names and story, and the footer's times, address and directions. */
+  var PASTOR_FOCUS = [".pastors-copy", ".pastor-text", ".split.pastors > div:last-child", ".sig"];
+  /* On a phone the photo sits above the words: the step keeps the pastors' photo and names in view. */
+  var PASTOR_PHOTO = [".pastors-photo, .pastors-copy h3", ".ph, .pt-row h3", ".split.pastors figure", ".pastors figure"];
+  var FOOTER_FOCUS = [".f-cols > div:nth-child(2)", "#directions", ".ft-sundays", ".f-times"];
   var DEFAULT_STEPS = [
-    { sel: SEL.hero, k: "First impression", h: "Everything a guest needs on the first screen", p: "Service times, the address and one clear next step, over a calm moving photo or film. Most people decide in a few seconds whether to visit, so this screen does the most work." },
+    { sel: SEL.hero, k: "First impression", h: "Everything a guest needs on the first screen", p: "Service times, the address and one clear next step, over a calm moving photo. This screen does the most work.", focus: HERO_FOCUS, place: "beside-focus", scrollTop: true },
     { sel: SEL.announce, k: "Announcements", h: "One big thing, without a pop-up", p: "A building campaign, a conference or Easter. One line, one button, and it opens a video when you want it. Your team changes it in a minute." },
-    { sel: SEL.pastors, k: "Your people", h: "Put faces and a mission up front", p: "Guests want to know who leads and what the church is about before they walk in. Real photos of your pastors do more than any paragraph." },
-    { sel: SEL.nextSteps, k: "Next steps", h: "A clear path for every visitor", p: "Plan a visit, get to know us, give, then Start Here, small groups, events and prayer. Each one gently moves as you scroll, so the page feels alive without being busy." },
-    { sel: SEL.strip, k: "Church life", h: "Show what a Sunday really feels like", p: "A slow moving strip of your own photos. It pauses when someone hovers, and it stays still for anyone who prefers less motion." },
+    { sel: SEL.pastors, k: "Your people", h: "Faces and a mission first", p: "Guests want to know who leads and what you believe before they walk in. Real photos and names do more than any paragraph.", focus: PASTOR_FOCUS, phoneFocus: PASTOR_PHOTO, place: "beside-focus", photoWeight: 1 },
+    { sel: SEL.nextSteps, k: "Next steps", h: "A clear path for every visitor", p: "Plan a visit, get to know us, give, then Start Here, groups and prayer. Plan Your Visit opens a short form that reaches your welcome team right away.", place: "beside-focus" },
+    { sel: SEL.strip, k: "Church life", h: "Show what a Sunday really feels like", p: "A slow-moving strip of your own photos. Pause Motion stops it, and everything else that moves on the page, for anyone, it pauses when someone hovers or tabs to it, and it stays still for anyone who prefers less motion." },
     { sel: SEL.message, k: "Messages", h: "Your latest message, updated for you", p: "On the live site this pulls the newest message from YouTube automatically, so the home page is never out of date." },
-    { sel: SEL.reviews, k: "Trust", h: "Real words from real people", p: "Your Google reviews rotate here. A short quote from a neighbor is often what turns a maybe into a visit." },
-    { sel: SEL.newsletter, k: "Stay connected", h: "Grow a list you own", p: "A simple newsletter sign up, so people who are not ready to visit can still hear from you." },
-    { sel: ".hd-launch", k: AN, h: "An assistant that never sleeps", p: "That is me. On your site I answer questions from your church's own facts, take prayer requests to your team, and give crisis numbers right away when someone is hurting." },
-    { sel: SEL.footer, k: "Every page", h: "Built around your Sunday", p: "Times, address and directions sit in the footer of every page, and on phones a slim bar keeps them one tap away." },
+    { sel: SEL.reviews, k: "Trust", h: "Kind words from your own people", p: "Short quotes from your own members rotate here, shared with their permission. A neighbor's words can turn a maybe into a visit." },
+    { sel: SEL.newsletter, k: "Stay connected", h: "Grow a list you own", p: "A simple newsletter sign-up, so people who are not ready to visit can still hear from you. A prayer request opens a short form too, where each person chooses who may read it, with 988 and 911 right on it." },
+    { sel: ".hd-launch", k: AN, h: "An assistant that never sleeps", p: "That is me. On your site I answer questions from your church's own facts, point people to the prayer form, where they choose who reads it, and give 988 and 911 right away when someone is in crisis." },
+    /* The ring goes on the footer's times, address and directions where one block holds all three. */
+    { sel: SEL.footer ? ["footer div.f-times", "footer .ft-sundays", "#footer div.f-times", SEL.footer] : SEL.footer, k: "Every page", h: "Built around your Sunday", p: "Times, address and directions sit in the footer of every page, and on phones a slim bar keeps them one tap away.", focus: FOOTER_FOCUS, place: "beside-focus" },
   ];
-  /* Steps are worked out when the tour starts, so a page can draw its sections first. */
+  /* Steps are worked out when the tour starts, so a page can draw its sections first. A hero step
+     with no focus of its own keeps the times and the buttons in view beside the card. */
   function resolveSteps() {
     var raw = typeof CFG.tour === "function" ? CFG.tour() : (CFG.tour && CFG.tour.length ? CFG.tour : DEFAULT_STEPS);
-    return (raw || []).filter(function (s) { return s && (s.sel === ".hd-launch" ? !!launch : (typeof s.before === "function" || !!pick(s.sel))); });
+    var phone = isPhone();
+    return (raw || []).filter(function (s) { return s && (s.sel === ".hd-launch" ? !!launch : (typeof s.before === "function" || !!pick(s.sel))); }).map(function (s) {
+      var hero = !s.focus && SEL.hero && s.sel === SEL.hero, small = phone && s.phoneFocus;
+      if (!hero && !small) return s;
+      var o = {}; for (var k in s) o[k] = s[k];
+      if (hero) o.focus = HERO_FOCUS;
+      if (small) o.focus = s.phoneFocus;
+      return o;
+    });
   }
 
   /* The next page of the demo: the link keeps the church and plan and starts that page's tour. */
@@ -396,6 +913,39 @@
   var STEPS = [];
   var WIDE = 560; // wider than this, a Genesis guide card prefers to sit under or over its target
   var touring = false, idx = 0, spot = null, card = null, rafId = 0, returnTo = null, settleTimer = 0;
+  /* Where focus goes when a tour ends: what started it, else the page's own Take the Tour button,
+     else the chat circle, else the main content. Never the body, never a card that is gone. */
+  function tourHome() {
+    var a = document.activeElement;
+    if (a && a !== document.body && document.contains(a) && !(a.closest && a.closest(".hd-invite, .hd-panel, .hd-g, .hd-card"))) return a;
+    return null;
+  }
+  function goHome() {
+    var home = focusable(returnTo) ? returnTo : pick([".gm-tour-btn", ".mx-tour", "[data-hope-tour]"]);
+    if (!focusable(home)) home = focusable(launch) ? launch : null;
+    if (!home) {
+      home = $("#v2-main") || $("#gm-main") || $("main");
+      if (home && !home.hasAttribute("tabindex")) home.setAttribute("tabindex", "-1");
+    }
+    returnTo = null;
+    focusOn(home);
+    /* A keyboard user sees where focus landed: the page brings that control into view. */
+    if (viaKeys && home && home.scrollIntoView) try { home.scrollIntoView({ block: "nearest", inline: "nearest", behavior: REDUCE ? "auto" : "smooth" }); } catch (e) {}
+  }
+  var viaKeys = false;
+  document.addEventListener("keydown", function () { viaKeys = true; }, true);
+  document.addEventListener("pointerdown", function () { viaKeys = false; }, true);
+  /* One live region for the whole page, so each step is read out as it changes (a region that is
+     drawn already filled, inside a card that is redrawn each step, is often not read). */
+  var live = null;
+  function announce(text) {
+    if (!live) {
+      live = el("div", "hd-sr"); live.setAttribute("role", "status"); live.setAttribute("aria-live", "polite"); live.setAttribute("aria-atomic", "true");
+      document.body.appendChild(live);
+    }
+    live.textContent = "";
+    setTimeout(function () { if (live) live.textContent = text; }, 60);
+  }
   function startTour() {
     if (touring) endTour(false);
     if (card) { card.remove(); card = null; }
@@ -406,16 +956,18 @@
       if (GENESIS) { openChat(); return; }
       setOpen(true); say("This page has no sections tagged for the tour yet.", MENU); return;
     }
-    returnTo = document.activeElement;
+    returnTo = tourHome();
     if (panel) setOpen(false);
+    store(INVITE_KEY, "1"); // someone who has taken the tour is never offered it again
     hideInvite(); touring = true; idx = 0;
     document.documentElement.classList.add("hd-tour-on");
     if (GENESIS) {
       spot = el("div", "v2-guide-ring hd-g-ring"); spot.setAttribute("aria-hidden", "true"); spot.hidden = true;
-      card = el("section", "v2-guide hd-g"); card.setAttribute("role", "dialog"); card.setAttribute("aria-label", "Guided demo with " + GUIDE);
+      card = el("section", "v2-guide hd-g"); card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "Guided demo with " + GUIDE);
+      card.setAttribute("aria-describedby", "hd-say");
     } else {
       spot = el("div", "hd-spot"); spot.setAttribute("aria-hidden", "true");
-      card = el("div", "hd-card"); card.setAttribute("role", "dialog"); card.setAttribute("aria-live", "polite"); card.setAttribute("aria-label", "Guided demo");
+      card = el("div", "hd-card"); card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "true"); card.setAttribute("aria-label", "Guided demo with " + GUIDE);
     }
     document.body.appendChild(spot); document.body.appendChild(card);
     document.addEventListener("scroll", place, { passive: true, capture: true }); window.addEventListener("resize", place);
@@ -427,7 +979,8 @@
     if (!touring && !finale) return;
     touring = false;
     clearTimeout(settleTimer);
-    document.documentElement.classList.remove("hd-tour-on", "hd-step-launch");
+    clearRoom();
+    document.documentElement.classList.remove("hd-tour-on", "hd-step-launch", "hd-step-orb", "hd-side-on");
     document.removeEventListener("scroll", place, { capture: true }); window.removeEventListener("resize", place);
     document.removeEventListener("keydown", tourKeys);
     cancelAnimationFrame(rafId);
@@ -436,41 +989,72 @@
       if (finale && card) { showDone(); return; }
       if (card) card.remove();
       spot = card = null;
-      if (returnTo && returnTo.focus && document.contains(returnTo)) try { returnTo.focus({ preventScroll: true }); } catch (e) {}
+      goHome();
       if (typeof CFG.onTourEnd === "function") try { CFG.onTourEnd(!!finale); } catch (e) {}
       return;
     }
     [spot, card].forEach(function (n) { if (n) { n.classList.remove("on"); setTimeout(function () { n.remove(); }, 350); } });
     spot = card = null;
     if (typeof CFG.onTourEnd === "function") try { CFG.onTourEnd(!!finale); } catch (e) {}
+    /* finale.chat: false ends the tour without opening the chat (the page shows its own last card). */
+    if (finale && (val(CFG.finale) || {}).chat === false) { goHome(); return; }
     if (finale) {
       started = true;
       setOpen(true);
       var fin = val(CFG.finale) || {};
       var chips = fin.chips || [
-        { label: "See the brand board", href: LINKS.brandBoard, cta: true },
-        { label: "See the social plan", href: LINKS.socialPlan },
-        { label: "What is the back office?", key: "backoffice" },
-        { label: "How does " + AN + " work?", key: "hope" },
-        { label: "Take the tour again", key: "tour" },
-      ];
+        LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard, cta: true },
+        LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan },
+        { label: "What Is the Back Office?", key: "backoffice" },
+        { label: "How Does " + AN + " Work?", key: "hope" },
+        { label: "Take the Tour Again", key: "tour" },
+      ].filter(Boolean);
       if (NEXT && NEXT.href) chips = [{ label: NEXT.label || "Continue the Demo", href: nextHref(), go: true, cta: true }].concat(chips.map(function (c) { var o = {}; for (var k in c) o[k] = c[k]; o.cta = false; return o; }));
-      say(fin.text || ("That is the tour. Every Genesis Ministry church gets this website in its own content and photos, plus a brand board, a social marketing plan, and me. Depending on your plan, the back office comes too. Customization beyond the template is available for an additional cost.") + (NEXT && NEXT.note ? "\n\n" + NEXT.note : ""), chips);
-    } else if (returnTo && returnTo.focus && document.contains(returnTo) && returnTo !== document.body) {
-      try { returnTo.focus({ preventScroll: true }); } catch (e) {}
-    } else if (launch) launch.focus();
+      /* The next screen's note follows the text, unless the text already carries it. */
+      var finText = fin.text || "That is the tour. Every Genesis Ministry church gets this website in its own content and photos, plus a brand board, a social marketing plan, and me. From the Shepherd plan, the back office comes too. Customization beyond the template is available for an additional cost.";
+      if (NEXT && NEXT.note && finText.indexOf(NEXT.note) < 0) finText += "\n\n" + NEXT.note;
+      say(finText, chips);
+    } else goHome();
   }
   function tourKeys(e) {
     var t = e.target, typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
     if (e.key === "Escape") { e.preventDefault(); endTour(false); }
+    else if (e.key === "Tab") trapTab(e);
     else if (typing) return;
     else if (e.key === "ArrowRight") { e.preventDefault(); next(); }
     else if (e.key === "ArrowLeft") { e.preventDefault(); back(); }
   }
+  /* The tour card is a dialog: Tab and Shift Tab go round its own buttons and links. */
+  function trapTab(e) {
+    if (!card) return;
+    var all = [].filter.call(card.querySelectorAll("button, a[href]"), function (n) { return !n.disabled && visible(n); });
+    if (!all.length) return;
+    var first = all[0], last = all[all.length - 1], a = document.activeElement;
+    if (!card.contains(a)) { e.preventDefault(); focusOn(e.shiftKey ? last : first); }
+    else if (e.shiftKey && a === first) { e.preventDefault(); focusOn(last); }
+    else if (!e.shiftKey && a === last) { e.preventDefault(); focusOn(first); }
+  }
+  /* Genesis screens on a short, wide window (a phone on its side): the guide card docks at the side. */
+  function sideDock() { return GENESIS && window.innerHeight < 500 && window.innerWidth >= 640 && window.innerWidth <= 1180; }
+  /* The bottom of the bars at the top of a Genesis screen (the sample strip, the phone top bar), while
+     they are on screen, so the card never sits on the menu, search or account buttons. */
+  function topBars() {
+    var y = 0;
+    [".v2-fixture-badge", ".v2-mobile-top"].forEach(function (s) {
+      var n = $(s); if (!n || !visible(n)) return;
+      var r = n.getBoundingClientRect();
+      if (r.top <= y + 2 && r.bottom > y) y = r.bottom;
+    });
+    return y;
+  }
   function next() { if (!touring) return; if (idx < STEPS.length - 1) show(idx + 1); else endTour(true); }
   function back() { if (!touring) return; if (idx > 0) show(idx - 1); }
   function target() { return STEPS[idx] ? pick(STEPS[idx].sel) : null; }
-  function isPhone() { return window.innerWidth <= (GENESIS ? 860 : 640); }
+  /* A short, wide window (a laptop at 200 percent zoom, a tablet on its side) on a church site or in the
+     member app: the card docks at the foot of the screen as on a phone, and the target is brought into the
+     room above it, so the card never sits over the part a step describes. */
+  function shortDock() { return !GENESIS && window.innerHeight <= 500 && window.innerWidth > 640; }
+  function isPhone() { return window.innerWidth <= (GENESIS ? 860 : 640) || shortDock(); }
 
   /* The element that scrolls a target: a scrolling ancestor, or the page itself (null). */
   function scrollParent(n) {
@@ -480,28 +1064,150 @@
     }
     return null;
   }
-  function inset(sp) { var v = CFG.topInset; return Math.max(0, Number(typeof v === "function" ? v(sp) : v) || 0); }
+  /* A church site's own sticky header (the page scrolls under it): without a topInset of its own,
+     the tour keeps clear of it, so a step never rings the nav or hides a section's first line. */
+  var siteHeader = null;
+  function stickyHeader() {
+    if (GENESIS || CFG.topInset != null) return null;
+    if (siteHeader && document.contains(siteHeader)) return siteHeader;
+    var list = document.querySelectorAll("body > header, .site-header, header.site");
+    for (var i = 0; i < list.length; i++) {
+      var pos = getComputedStyle(list[i]).position;
+      if ((pos === "sticky" || pos === "fixed") && visible(list[i])) return (siteHeader = list[i]);
+    }
+    return null;
+  }
+  function hasInset() { return CFG.topInset != null || !!stickyHeader(); }
+  function inset(sp) {
+    var v = CFG.topInset;
+    if (v == null) { var h = stickyHeader(); if (!h || sp) return 0; var hr = h.getBoundingClientRect(); return hr.bottom > 0 && hr.top < 160 ? hr.bottom + 8 : 0; }
+    return Math.max(0, Number(typeof v === "function" ? v(sp) : v) || 0);
+  }
+  /* The part of the screen where a target can be seen: the window, cut to every box around it that
+     clips (a phone frame, a table, the rail), and below a sticky bar at the top (topInset). */
+  function viewBox(t) {
+    var vw = window.innerWidth, vh = window.innerHeight, b = { top: 0, left: 0, right: vw, bottom: vh };
+    for (var p = t.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+      var cs = getComputedStyle(p);
+      if (cs.position === "fixed") break;
+      var ox = cs.overflowX !== "visible", oy = cs.overflowY !== "visible";
+      if (!ox && !oy) continue;
+      var pr = p.getBoundingClientRect();
+      if (ox) { b.left = Math.max(b.left, pr.left); b.right = Math.min(b.right, pr.right); }
+      if (oy) { b.top = Math.max(b.top, pr.top); b.bottom = Math.min(b.bottom, pr.bottom); }
+    }
+    var sp = scrollParent(t), r = t.getBoundingClientRect();
+    /* A bar pinned to the top or the foot of that scroller (the member app's top bar and tabs). */
+    if (sp) {
+      var spr = sp.getBoundingClientRect();
+      [].forEach.call(sp.children, function (c) {
+        if (c.contains(t)) return;
+        var cs = getComputedStyle(c);
+        if (cs.position !== "sticky" && cs.position !== "fixed") return;
+        var cr = c.getBoundingClientRect();
+        if (!cr.height || cr.height > spr.height * 0.4) return;
+        if (Math.abs(cr.bottom - Math.min(spr.bottom, vh)) < 6) b.bottom = Math.min(b.bottom, cr.top);
+        else if (Math.abs(cr.top - Math.max(spr.top, 0)) < 6) b.top = Math.max(b.top, cr.bottom);
+      });
+    }
+    var ins = (sp ? sp.getBoundingClientRect().top : 0) + inset(sp) - 8;
+    /* Clip under a sticky bar only when the target runs on below it (not when it sits in that bar). */
+    if (ins > b.top && r.bottom > ins + 24) b.top = ins;
+    return b;
+  }
+  /* The part of a tall target a step talks about: step.focus (inside the target first), or on the
+     story and template pages the section's heading, so a long section opens at its title. */
+  /* The box of what an element shows, not of its block: a line of times in a full-width paragraph
+     is only as wide as its words. */
+  function tightRect(n) {
+    var r = n.getBoundingClientRect();
+    try { var rg = document.createRange(); rg.selectNodeContents(n); var t = rg.getBoundingClientRect(); if (t.width > 0 && t.height > 0 && t.width < r.width - 1) return t; } catch (e) {}
+    return r;
+  }
+  function unionRect(list) {
+    var u = null;
+    list.forEach(function (n) { var r = tightRect(n); if (!u) u = { top: r.top, bottom: r.bottom, left: r.left, right: r.right }; else { u.top = Math.min(u.top, r.top); u.bottom = Math.max(u.bottom, r.bottom); u.left = Math.min(u.left, r.left); u.right = Math.max(u.right, r.right); } });
+    if (u) u.height = u.bottom - u.top;
+    return u;
+  }
+  /* step.focus is a selector (every match counts) or a list of selectors (the first one found wins). */
+  function focusRect(s, t) {
+    if (!s || !s.focus) return null;
+    var sels = Array.isArray(s.focus) ? s.focus : [s.focus];
+    function find(root) {
+      for (var i = 0; i < sels.length; i++) {
+        var list = [];
+        try { list = [].filter.call(root.querySelectorAll(sels[i]), visible); } catch (e) {}
+        if (list.length) return unionRect(list);
+      }
+      return null;
+    }
+    /* The target itself, when it is the part named ("#footer .f-times" on Lampstand), before any match
+       elsewhere on the page. */
+    function self() { for (var i = 0; i < sels.length; i++) { try { if (t.matches(sels[i])) return unionRect([t]); } catch (e) {} } return null; }
+    return find(t) || self() || find(document);
+  }
+  function headOffset(t) {
+    if (GENESIS || !hasInset()) return 0;
+    var h = null; try { h = t.querySelector(".intro, h1, h2, h3"); } catch (e) {}
+    if (!h || !visible(h)) return 0;
+    return Math.max(0, h.getBoundingClientRect().top - t.getBoundingClientRect().top - 28);
+  }
+
+  /* On a phone the card docks at the bottom. While touring, the scroller gets room at its foot,
+     so a target at the very end of a page can still rise above the card. */
+  var roomEl = null, roomInline = "", roomBase = 0;
+  function makeRoom(t) {
+    if (!isPhone() || !card) { clearRoom(); return; }
+    var sc = scrollParent(t) || document.body;
+    if (roomEl && roomEl !== sc) clearRoom();
+    if (!roomEl) { roomEl = sc; roomInline = sc.style.paddingBottom; roomBase = parseFloat(getComputedStyle(sc).paddingBottom) || 0; }
+    sc.style.paddingBottom = Math.round(roomBase + (card.offsetHeight || 260) + 24) + "px";
+  }
+  function clearRoom() { if (roomEl) { roomEl.style.paddingBottom = roomInline; roomEl = null; } }
+
   /* Bring the target into view so it and the card both fit. With no scroll container and no
      inset this is the same arithmetic the template tour has always used. */
-  function bringIntoView(t, cardH, cardW) {
+  function bringIntoView(t, cardH, cardW, s) {
     var sp = scrollParent(t), vh = window.innerHeight, vw = window.innerWidth;
     var box = sp ? sp.getBoundingClientRect() : { top: 0, bottom: vh };
     var rTop = Math.max(0, box.top) + inset(sp), rBottom = Math.min(vh, box.bottom), rH = Math.max(80, rBottom - rTop);
-    var r = t.getBoundingClientRect(), phone = isPhone(), desired;
+    var r = t.getBoundingClientRect(), phone = isPhone(), desired, f = focusRect(s, t);
     var beside = !phone && (GENESIS || CFG.placement === "side") && !(GENESIS && r.width > WIDE && r.height + cardH + 56 <= rH) && (r.right + 16 + cardW <= vw - 12 || r.left - 16 - cardW >= 12);
+    /* A tall target with a focus part: keep that part above the card, with as much of the
+       target above it as fits. */
+    function fitFocus(avail) {
+      if (f.height > avail - 20) return rTop + 8 - (f.top - r.top);
+      return rTop + Math.min(16, avail - 12 - (f.bottom - r.top));
+    }
+    var how = REDUCE ? "auto" : "smooth";
+    /* The first screen's step shows the first screen as a guest meets it: the page at the top. */
+    if (s && s.scrollTop && !phone && !sp) { if (window.scrollY > 2) window.scrollTo({ top: 0, behavior: how }); return; }
     if (phone) {
-      var room = rH - cardH - 24;
-      desired = r.height <= room ? rTop + Math.max(GENESIS ? 12 : 16, Math.min(80, (room - r.height) / 2)) : rTop + (GENESIS ? 8 : 16);
+      var room = rH - (sideDock() ? 0 : cardH) - 24;
+      if (r.height <= room) desired = rTop + Math.max(GENESIS ? 12 : 16, Math.min(80, (room - r.height) / 2));
+      else if (f) desired = fitFocus(room);
+      else desired = rTop + (GENESIS ? 8 : 16) - headOffset(t);
     } else if (beside) {
       desired = r.height + 48 <= rH ? rTop + (rH - r.height) / 2 : rTop + 24;
     } else if (r.height + cardH + 56 <= rH) {
       desired = rTop + Math.max(24, (rH - r.height - cardH - 16) / 2);
+    } else if (s && s.place === "beside-focus" && (f || !GENESIS)) {
+      /* The card will sit on a clear part of the section, beside the focus part: show the whole
+         section when it fits, else its top down to the focus, else the focus in the middle. */
+      /* A section with a photo the card must not cover (the pastors): its top, so the room under the
+         photo is on screen for the card. */
+      if (r.height <= rH - 16) desired = s.photoWeight ? rTop + 8 : rTop + (rH - r.height) / 2;
+      else if (!f) desired = rTop + 8 - headOffset(t);
+      else if (f.bottom - r.top + 24 <= rH) desired = rTop + 8;
+      else desired = rTop + rH / 2 - (f.top - r.top) - f.height / 2;
+    } else if (f) {
+      desired = fitFocus(rH - cardH - 56);
     } else {
-      desired = rTop + (GENESIS ? 24 : 90);
+      desired = rTop + (GENESIS || hasInset() ? 24 : 90) - headOffset(t);
     }
     var delta = r.top - desired;
     if (Math.abs(delta) < 3) return;
-    var how = REDUCE ? "auto" : "smooth";
     if (sp) sp.scrollTo({ top: Math.max(0, sp.scrollTop + delta), behavior: how });
     else window.scrollTo({ top: Math.max(0, window.scrollY + delta), behavior: how });
   }
@@ -509,16 +1215,28 @@
   function show(i) {
     idx = i;
     if (STEPS[i] && typeof STEPS[i].before === "function") { try { STEPS[i].before(); } catch (e) {} }
+    var root = document.documentElement;
+    if (GENESIS) root.classList.add("hd-step-orb"); // the orb is findable while the step's target is picked
     var s = STEPS[i], t = target(), last = i === STEPS.length - 1, nh = last ? nextHref() : "";
-    document.documentElement.classList.toggle("hd-step-launch", s.sel === ".hd-launch");
+    if (GENESIS) root.classList.toggle("hd-step-orb", !!(t && (t.matches(".v2-genesis-opener") || t.querySelector(".v2-genesis-opener"))));
+    root.classList.toggle("hd-step-launch", s.sel === ".hd-launch");
     if (GENESIS) paintGenesis(s, i, last, nh); else paintSite(s, i, last, nh);
-    if (t && s.sel !== ".hd-launch") bringIntoView(t, card.offsetHeight || 230, GENESIS && !isPhone() ? 340 : (card.offsetWidth || 360));
+    if (t && s.sel !== ".hd-launch") { makeRoom(t); bringIntoView(t, card.offsetHeight || 230, GENESIS && !isPhone() ? 340 : (card.offsetWidth || 360), s); }
     clearTimeout(settleTimer);
     settleTimer = setTimeout(function () {
       place();
       if (!card) return;
       if (GENESIS) { if (spot) spot.hidden = false; card.style.visibility = ""; } else { if (spot) spot.classList.add("on"); card.classList.add("on"); }
-      var f = card.querySelector("[data-hd-focus]"); if (f) f.focus({ preventScroll: true });
+      /* The card takes focus on every step. A card that was hidden a moment ago may not take it on the
+         first try (the Genesis guide on step 1), so it tries again on the next frames. */
+      var f = card.querySelector("[data-hd-focus]");
+      if (f) {
+        focusOn(f);
+        if (document.activeElement !== f) requestAnimationFrame(function () {
+          focusOn(f);
+          if (document.activeElement !== f) setTimeout(function () { if (card && card.contains(f)) focusOn(f); }, 160);
+        });
+      }
     }, REDUCE ? 60 : 520);
   }
   function paintSite(s, i, last, nh) {
@@ -527,9 +1245,9 @@
     var kk = s.k || (CFG.tourTitle ? GUIDE + " · " + CFG.tourTitle : GUIDE);
     var k = el("p", "k", kk + "  ·  " + (i + 1) + " of " + STEPS.length);
     var h = el("h3", null, s.h);
-    var p = el("p", null, s.p);
+    var p = el("p", null, s.p); p.id = "hd-say"; card.setAttribute("aria-describedby", "hd-say");
     var bar = el("div", "bar");
-    var dots = el("div", "hd-dots"); STEPS.forEach(function (_, j) { dots.appendChild(el("i", j === i ? "on" : "")); });
+    var dots = el("div", "hd-dots"); dots.setAttribute("aria-hidden", "true"); STEPS.forEach(function (_, j) { dots.appendChild(el("i", j === i ? "on" : "")); });
     var ctr = el("div", "hd-row");
     var skip = el("button", "hd-skip", "End Tour"); skip.type = "button";
     var bk = el("button", "hd-btn ghost", "Back"); bk.type = "button"; bk.disabled = i === 0; if (i === 0) bk.style.visibility = "hidden";
@@ -544,10 +1262,10 @@
       var a = el("a", "hd-btn hd-next"); a.href = nh; a.setAttribute("data-hd-focus", "");
       a.appendChild(document.createTextNode(NEXT.label || "Continue the Demo")); a.insertAdjacentHTML("beforeend", ICON_ARROW);
       card.appendChild(a);
-      if (CFG.endLink) { var ea = el("a", "hd-btn ghost hd-end"); ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; card.appendChild(ea); }
     } else nx.setAttribute("data-hd-focus", "");
     skip.addEventListener("click", function () { endTour(false); });
     bk.addEventListener("click", back); nx.addEventListener("click", next);
+    announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
   }
   function guideHead(count, closeLabel) {
     return '<div class="v2-guide-head"><span class="v2-guide-eyebrow"></span>' + (count ? '<span class="v2-guide-count"></span>' : "") +
@@ -559,18 +1277,18 @@
     if (i === 0 && !card.hasAttribute("data-placed")) card.style.visibility = "hidden";
     var title = CFG.tourTitle || s.k || "";
     card.innerHTML = guideHead(false, "End Tour") +
-      '<h2 class="v2-guide-title"></h2><p class="v2-guide-say" role="status" aria-live="polite"></p>' + (s.note ? '<p class="v2-guide-note"></p>' : "") +
+      '<h2 class="v2-guide-title"></h2><p class="v2-guide-say" id="hd-say"></p>' + (s.note ? '<p class="v2-guide-note"></p>' : "") +
       '<div class="v2-guide-foot"><span class="v2-guide-count"></span>' +
       (i > 0 ? '<button class="v2-button v2-button-quiet" type="button" data-guide="back">Back</button>' : "") +
       '<button class="v2-button' + (last && nh ? "" : " v2-button-primary") + ' v2-guide-next" type="button" data-guide="next"' + (last && nh ? "" : " data-hd-focus") + ">" + (last ? "Finish" : "Next") + "</button></div>" +
-      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a>' + (CFG.endLink ? '<a class="v2-button hd-g-end"></a>' : "") + "</div>" : "");
+      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "");
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + (title ? " · " + title : "");
     card.querySelector(".v2-guide-title").textContent = s.h;
     card.querySelector(".v2-guide-say").textContent = s.p;
     if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
     card.querySelector(".v2-guide-count").textContent = (i + 1) + " of " + STEPS.length;
     if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
-    var ea = card.querySelector(".hd-g-end"); if (ea) { ea.href = CFG.endLink.href; ea.textContent = CFG.endLink.label; }
+    announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
     card.onclick = function (e) {
       var b = e.target.closest("[data-guide]"); if (!b) return;
       var act = b.getAttribute("data-guide");
@@ -582,89 +1300,245 @@
     var fin = val(CFG.finale) || {}, nh = nextHref();
     card.className = "v2-guide hd-g";
     card.removeAttribute("data-side");
-    card.style.left = card.style.top = "";
+    card.removeAttribute("aria-modal");
+    card.setAttribute("role", "region");
+    card.style.left = card.style.top = card.style.maxHeight = "";
     card.style.removeProperty("--v2-guide-arrow");
-    card.innerHTML = guideHead(true, "") + '<p class="v2-guide-say" role="status"></p>' + (NEXT && NEXT.note ? '<p class="v2-guide-note"></p>' : "") +
+    card.setAttribute("aria-label", "Guided demo with " + GUIDE + ", done");
+    card.setAttribute("aria-describedby", "hd-say");
+    /* With links of its own (the last card of a demo), Close moves up beside Take the Tour Again as an
+       icon, so the actions stay on one row. */
+    var links = fin.links || [], iconClose = !!links.length;
+    card.innerHTML = '<div class="v2-guide-head"><span class="v2-guide-eyebrow"></span><span class="hd-g-headr"><span class="v2-guide-count"></span>' +
+      '<button class="v2-guide-icon hd-g-again" type="button" data-guide="again" aria-label="Take the Tour Again" title="Take the Tour Again">' + ICON_AGAIN + "</button>" +
+      (iconClose ? '<button class="v2-guide-icon v2-guide-close hd-g-x" type="button" data-guide="close" aria-label="Close" title="Close">' + ICON_GX + "</button>" : "") + "</span></div>" +
+      '<p class="v2-guide-say" id="hd-say"></p>' + (NEXT && NEXT.note ? '<p class="v2-guide-note"></p>' : "") +
       '<div class="v2-guide-controls">' + (nh ? '<a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a>' : "") +
-      (fin.links || []).map(function (l, li) { return '<a class="v2-button" data-guide-link="' + li + '"></a>'; }).join("") +
+      links.map(function (l, li) { return '<a class="v2-button" data-guide-link="' + li + '"' + (!nh && !li ? " data-hd-focus" : "") + "></a>"; }).join("") +
       (CFG.openChat ? '<button class="v2-button" type="button" data-guide="ask"></button>' : "") +
-      '<button class="v2-button' + (nh ? " v2-button-quiet" : " v2-button-primary") + '" type="button" data-guide="close"' + (nh ? "" : " data-hd-focus") + ">Close</button>" +
-      '<button class="v2-button v2-button-quiet" type="button" data-guide="again">Take the Tour Again</button></div>';
+      (iconClose ? "" : '<button class="v2-button' + (nh ? " v2-button-quiet" : " v2-button-primary") + '" type="button" data-guide="close"' + (nh ? "" : " data-hd-focus") + ">Close</button>") + "</div>";
     var title = CFG.tourTitle || "";
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + (title ? " · " + title : "");
     card.querySelector(".v2-guide-count").textContent = "Done";
     card.querySelector(".v2-guide-say").textContent = fin.text || "That is the tour of this screen.";
     if (NEXT && NEXT.note) card.querySelector(".v2-guide-note").textContent = NEXT.note;
+    announce("Done. " + (fin.text || "That is the tour of this screen.") + (NEXT && NEXT.note ? " " + NEXT.note : ""));
     if (nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
-    (fin.links || []).forEach(function (l, li) { var la = card.querySelector('[data-guide-link="' + li + '"]'); if (la) { la.href = l.href; la.textContent = l.label; } });
+    links.forEach(function (l, li) { var la = card.querySelector('[data-guide-link="' + li + '"]'); if (la) { la.href = l.href; la.textContent = l.label; } });
     var ask = card.querySelector('[data-guide="ask"]'); if (ask) ask.textContent = fin.askLabel || ("Ask " + AN);
+    /* The last card keeps its actions on one row: Ask Hope steps aside when it would wrap (the orb
+       still opens Hope). */
+    if (ask && iconClose) {
+      var first = card.querySelector(".v2-guide-controls > :first-child");
+      if (first && first !== ask && ask.getBoundingClientRect().top > first.getBoundingClientRect().top + 4) ask.remove();
+    }
     var doneCard = card;
-    function closeDone() { doneCard.remove(); if (card === doneCard) card = null; spot = null; if (typeof CFG.onTourEnd === "function") try { CFG.onTourEnd(true); } catch (e) {} }
+    /* The Done card is docked at the bottom on phones too, so the orb stays aside until it closes. */
+    document.documentElement.classList.add("hd-invite-on");
+    function closeDone() { document.documentElement.classList.remove("hd-invite-on"); doneCard.remove(); if (card === doneCard) card = null; spot = null; if (typeof CFG.onTourEnd === "function") try { CFG.onTourEnd(true); } catch (e) {} }
     card.onclick = function (e) {
       var b = e.target.closest("[data-guide]"); if (!b) return;
       var act = b.getAttribute("data-guide");
-      if (act === "close") { closeDone(); if (returnTo && returnTo.focus && document.contains(returnTo)) try { returnTo.focus({ preventScroll: true }); } catch (x) {} }
+      if (act === "close") { closeDone(); goHome(); }
       else if (act === "ask") { closeDone(); openChat(fin.askPrompt || ""); }
       else if (act === "again") { closeDone(); startTour(); }
     };
-    card.onkeydown = function (e) { if (e.key === "Escape") { e.preventDefault(); closeDone(); } };
+    card.onkeydown = function (e) { if (e.key === "Escape") { e.preventDefault(); closeDone(); goHome(); } };
     var f = card.querySelector("[data-hd-focus]"); if (f) f.focus({ preventScroll: true });
   }
 
+  /* Where the words of a section sit on screen: every visible element with text of its own (a heading,
+     a line of times, a sticker, a card's title), as the box its words fill. */
+  /* A photo that is part of the content (the pastors, a card's picture) counts too, at a quarter of
+     the weight, so the card would rather cover a corner of a photo than a line of words. A photo
+     behind the whole section (the hero) does not count. */
+  function wordBoxes(root, photo) {
+    var out = [], vw = window.innerWidth, vh = window.innerHeight, all = root.querySelectorAll("*");
+    var rr = root.getBoundingClientRect(), whole = Math.min(rr.width * rr.height, vw * vh);
+    for (var i = 0; i < all.length && i < 800; i++) {
+      var n = all[i], tag = n.tagName, own = /^(BUTTON|INPUT|SELECT|TEXTAREA)$/.test(tag), r;
+      if (/^(IMG|VIDEO|PICTURE)$/.test(tag)) {
+        if (!visible(n)) continue;
+        r = n.getBoundingClientRect();
+        if (r.width * r.height < whole * 0.5 && r.bottom > 0 && r.top < vh) out.push([r, photo || 0.25, true]);
+        continue;
+      }
+      if (!own && /^(SCRIPT|STYLE|svg|SOURCE|BR|path)$/.test(tag)) continue;
+      for (var c = n.firstChild; c && !own; c = c.nextSibling) if (c.nodeType === 3 && /\S/.test(c.nodeValue)) own = true;
+      if (!own || !visible(n)) continue;
+      r = tightRect(n);
+      if (r.bottom < 0 || r.top > vh || r.right < 0 || r.left > vw || !r.width || !r.height) continue;
+      out.push([r, 1]);
+    }
+    return out;
+  }
+  /* The best place for the card over a tall section: no words under it if anywhere fits (else as few
+     as possible), inside the visible box, clear of the chat circle, and as near the focus part as it
+     can be. */
+  function clearSpot(t, s, cw, ch, b) {
+    var vw = window.innerWidth, vh = window.innerHeight, m = 10, step = 12, pad = 6; // a clear spot may sit 10px from the screen edge and 6px from words
+    var boxes = wordBoxes(t, s && s.photoWeight).map(function (e) { var r = e[0], p = e[2] ? 0 : pad; return [r.left - p, r.top - p, r.right + p, r.bottom + p, e[1], !!e[2]]; });
+    var f = focusRect(s, t);
+    if (f) boxes.push([f.left - pad, f.top - pad, f.right + pad, f.bottom + pad, 1]);
+    if (launch && launch.isConnected) { var lr = launch.getBoundingClientRect(); if (lr.width) boxes.push([lr.left - 12, lr.top - 12, lr.right + 12, lr.bottom + 12, 1]); }
+    var y0 = Math.max(m, b.top + 8), y1 = Math.min(vh, b.bottom) - ch - m, x0 = Math.max(m, b.left + 8), x1 = Math.min(vw, b.right) - cw - m;
+    if (y1 < y0 || x1 < x0) return null;
+    var tr = t.getBoundingClientRect();
+    var ax = f ? (f.left + f.right) / 2 : (tr.left + tr.right) / 2, ay = f ? (f.top + f.bottom) / 2 : Math.max(y0, tr.top) + ch / 2;
+    var best = null, ys = [], xs = [], yi, xi, y, x;
+    /* Every step of the grid, and the last spot that fits too (the lowest, the rightmost), which the
+       grid alone can miss by a few pixels. */
+    for (y = y0; y < y1; y += step) ys.push(y);
+    for (x = x0; x < x1; x += step) xs.push(x);
+    ys.push(y1); xs.push(x1);
+    for (yi = 0; yi < ys.length; yi++) {
+      y = ys[yi];
+      for (xi = 0; xi < xs.length; xi++) {
+        x = xs[xi];
+        var o = 0;
+        for (var i = 0; i < boxes.length; i++) {
+          var q = boxes[i], w = Math.min(x + cw, q[2]) - Math.max(x, q[0]), h = Math.min(y + ch, q[3]) - Math.max(y, q[1]);
+          if (w <= 0 || h <= 0) continue;
+          /* A line cut in half ("Sundays at 9:00 & 11:00 A") reads as broken: it costs more than
+             covering a whole small block. */
+          var all = (q[2] - q[0]) * (q[3] - q[1]);
+          o += q[5] ? w * h * q[4] : (w * h >= all - 1 ? all : all * 2 + 4000);
+        }
+        var dx = x + cw / 2 - ax, dy = y + ch / 2 - ay, d = dx * dx + dy * dy;
+        if (!best || o < best.o || (o === best.o && d < best.d)) best = { x: Math.round(x), y: Math.round(y), o: o, d: d };
+      }
+    }
+    return best;
+  }
+  /* Where a ring that stops at a docked card should end: just above a line of words the edge would
+     cut in half, so the ring never ends halfway through a sentence. */
+  function lineEdge(t, top, edge) {
+    var lines = [], n = 0, w = document.createTreeWalker(t, NodeFilter.SHOW_TEXT), node, range = document.createRange(), i;
+    while ((node = w.nextNode()) && n++ < 600) {
+      if (!/\S/.test(node.nodeValue)) continue;
+      range.selectNodeContents(node);
+      var rs = range.getClientRects();
+      for (i = 0; i < rs.length; i++) if (rs[i].height && rs[i].bottom > top && rs[i].top < edge) lines.push(rs[i]);
+    }
+    /* Moving the edge above one line can land it inside the line above, so look again until it rests. */
+    for (var pass = 0, moved = true; moved && pass < 6; pass++) {
+      moved = false;
+      for (i = 0; i < lines.length; i++) if (lines[i].top < edge && lines[i].bottom > edge) { edge = lines[i].top - 4; moved = true; }
+    }
+    return Math.max(top + 40, edge);
+  }
+  function setSpot(top, left, bottom, right) {
+    spot.style.top = top + "px"; spot.style.left = left + "px";
+    spot.style.width = Math.max(0, right - left) + "px"; spot.style.height = Math.max(0, bottom - top) + "px";
+  }
   function place() {
     cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(function () {
       if (!touring || !spot || !card) return;
       var t = target(); if (!t) return;
       if (GENESIS) { placeGenesis(t); return; }
-      var r = t.getBoundingClientRect(), pad = 10, vw = window.innerWidth, vh = window.innerHeight;
-      var top = Math.max(8, r.top - pad), left = Math.max(8, r.left - pad);
-      var bottom = Math.min(vh - 8, r.bottom + pad), right = Math.min(vw - 8, r.right + pad);
-      spot.style.top = top + "px"; spot.style.left = left + "px";
-      spot.style.width = Math.max(0, right - left) + "px"; spot.style.height = Math.max(0, bottom - top) + "px";
-      if (vw <= 640) return; // the card docks to the bottom on phones
+      var r = t.getBoundingClientRect(), b = viewBox(t), pad = 10, vw = window.innerWidth, vh = window.innerHeight;
+      var top = Math.max(8, b.top + 4, r.top - pad), left = Math.max(8, b.left + 4, r.left - pad);
+      var bottom = Math.min(vh - 8, b.bottom - 4, r.bottom + pad), right = Math.min(vw - 8, b.right - 4, r.right + pad);
+      if (vw <= 640 || shortDock()) {
+        /* The card docks at the bottom (at the top for the chat circle step): the ring stops at its edge. */
+        var cr = card.getBoundingClientRect();
+        if (document.documentElement.classList.contains("hd-step-launch")) top = Math.max(top, Math.min(bottom - 40, cr.bottom + 8));
+        else if (cr.height && cr.top - 8 < bottom) bottom = lineEdge(t, top, Math.max(top + 40, cr.top - 8));
+        setSpot(top, left, bottom, right);
+        return;
+      }
+      setSpot(top, left, bottom, right);
       var cw = card.offsetWidth, chh = card.offsetHeight, gap = 16;
       var stp = STEPS[idx];
       if (stp && stp.place === "edge-left") { card.style.top = Math.max(16, Math.min(vh - chh - 16, (top + bottom) / 2 - chh / 2)) + "px"; card.style.left = "16px"; return; }
-      if (CFG.placement === "side") {
+      if (CFG.placement === "side" && right - left <= vw * 0.7) {
         var cyS = Math.max(16, Math.min(vh - chh - 16, (top + bottom) / 2 - chh / 2));
         if (right + gap + cw <= vw - 12) { card.style.top = cyS + "px"; card.style.left = (right + gap) + "px"; return; }
         if (left - gap - cw >= 12) { card.style.top = cyS + "px"; card.style.left = (left - gap - cw) + "px"; return; }
       }
-      var below = bottom + gap + chh < vh, above = top - gap - chh >= 8;
-      var cy = below ? bottom + gap : above ? top - gap - chh : vh - chh - 24;
-      var cx = below || above ? Math.min(vw - cw - 16, Math.max(16, left)) : vw - cw - 24;
-      /* In the corner, keep the card clear of the chat circle so Next is never covered. */
-      if (!below && !above && launch && launch.isConnected) { var lr = launch.getBoundingClientRect(); if (lr.width && lr.left < cx + cw && lr.top < cy + chh) cy = Math.max(8, lr.top - chh - 12); }
+      var below = bottom + gap + chh < vh - 8, above = top - gap - chh >= Math.max(8, b.top + 4), cy, cx;
+      /* A section too tall for the card above or below it: a step that names its parts (the hero's
+         times and buttons, the pastors, the next steps, the footer's address) puts the card on the
+         clearest part of the screen, beside the focus part and off every line of the section's words. */
+      var free = !below && !above && stp && stp.place === "beside-focus" ? clearSpot(t, stp, cw, chh, b) : null;
+      if (below || above) {
+        cy = below ? bottom + gap : top - gap - chh;
+        cx = Math.min(vw - cw - 16, Math.max(16, left));
+      } else if (free) {
+        cy = free.y; cx = free.x;
+      } else if ((vh - chh - gap - 24) - top >= 120) {
+        /* A tall section: the ring shows its top part and the card sits just under it, over the
+           dimmed rest of the section, never over the part being described. */
+        bottom = vh - chh - gap - 24;
+        setSpot(top, left, bottom, right);
+        cy = bottom + gap;
+        cx = Math.min(vw - cw - 16, Math.max(16, (left + right) / 2 - cw / 2));
+      } else {
+        cy = vh - chh - 24; cx = vw - cw - 24;
+      }
+      /* Keep the card clear of the chat circle so Next is never covered. */
+      if (launch && launch.isConnected) {
+        var lr = launch.getBoundingClientRect();
+        if (lr.width && lr.left < cx + cw && lr.right > cx && lr.top < cy + chh && lr.bottom > cy) {
+          if (lr.left - cw - 12 >= 16) cx = lr.left - cw - 12; else cy = Math.max(8, lr.top - chh - 12);
+        }
+      }
       card.style.top = cy + "px"; card.style.left = cx + "px";
     });
   }
   /* Ring and card the way Genesis OS guided-session.js draws them: the card beside the target,
      to the right when there is room, then the left, below and above, with its arrow on the
      middle of the target. A phone, or a target with no room around it, keeps the card docked
-     at the bottom, or at the top when the target sits under it. */
+     at the bottom, or at the top when the target sits under it. The ring stays inside the box
+     that scrolls the target (the workspace, a table, the rail) and stops at a docked card. */
   function placeGenesis(t) {
     card.setAttribute("data-placed", "");
-    var r = t.getBoundingClientRect(), pad = 6, vw = window.innerWidth, vh = window.innerHeight;
-    var top = Math.max(4, r.top - pad), left = Math.max(4, r.left - pad);
-    var bottom = Math.min(vh - 4, r.bottom + pad), right = Math.min(vw - 4, r.right + pad);
-    spot.style.top = top + "px"; spot.style.left = left + "px";
-    spot.style.width = Math.max(0, right - left) + "px"; spot.style.height = Math.max(0, bottom - top) + "px";
+    card.classList.remove("hd-g-side"); card.style.maxHeight = "";
+    var r = t.getBoundingClientRect(), b = viewBox(t), pad = 6, vw = window.innerWidth, vh = window.innerHeight;
+    var top = Math.max(4, b.top + 2, r.top - pad), left = Math.max(4, b.left + 2, r.left - pad);
+    var bottom = Math.min(vh - 4, b.bottom - 2, r.bottom + pad), right = Math.min(vw - 4, b.right - 2, r.right + pad);
+    /* On a phone a full-width target starts its words a few pixels from the screen's edge: the ring
+       sits in the gutter outside them, never on the first letter. It is held inside the box that
+       scrolls the target only where the target is cut by it. */
+    if (vw <= 860) {
+      left = r.left >= b.left - 1 ? Math.max(2, r.left - pad) : Math.max(2, b.left + 2);
+      right = r.right <= b.right + 1 ? Math.min(vw - 2, r.right + pad) : Math.min(vw - 2, b.right - 2);
+    }
     var box = { top: top, left: left, right: right, bottom: bottom, width: right - left, height: bottom - top };
+    /* A phone held on its side (short and wide): a card docked at the bottom would leave the target a
+       sliver, so the card sits at the right under the top bar and the target shows beside it. */
+    var sd = sideDock(), root = document.documentElement;
+    if (sd !== root.classList.contains("hd-side-on")) { root.classList.toggle("hd-side-on", sd); place(); return; }
+    if (sd) {
+      card.classList.remove("is-anchored", "is-top"); card.removeAttribute("data-side");
+      card.style.left = ""; card.style.removeProperty("--v2-guide-arrow");
+      card.classList.add("hd-g-side");
+      var sTop = topBars() + 8;
+      card.style.top = sTop + "px"; card.style.maxHeight = Math.max(160, vh - sTop - 12) + "px";
+      var sr = card.getBoundingClientRect();
+      if (sr.width && sr.left < right) right = Math.max(left + 40, sr.left - 8);
+      setSpot(top, left, bottom, right);
+      return;
+    }
     if (vw > 860) {
       card.classList.add("is-anchored"); card.classList.remove("is-top");
       var w = card.offsetWidth || 340, h = card.offsetHeight || 180, gap = 16, m = 12;
+      /* The card never covers the sidebar: on a wide window its left edge stays right of it. */
+      var lm = m, sb = document.querySelector("aside.v2-sidebar");
+      if (sb && !sb.contains(t)) { var sbr = sb.getBoundingClientRect(); if (sbr.width && sbr.right > 0 && sbr.right < vw / 2) lm = Math.max(m, sbr.right + m); }
       var cx = box.left + box.width / 2, cy = box.top + box.height / 2, side = "", L = 0, T = 0;
       var fits = {
         right: function () { if (box.right + gap + w <= vw - m) { side = "right"; L = box.right + gap; T = cy - h / 2; } },
-        left: function () { if (box.left - gap - w >= m) { side = "left"; L = box.left - gap - w; T = cy - h / 2; } },
+        left: function () { if (box.left - gap - w >= lm) { side = "left"; L = box.left - gap - w; T = cy - h / 2; } },
         bottom: function () { if (box.bottom + gap + h <= vh - m) { side = "bottom"; T = box.bottom + gap; L = cx - w / 2; } },
         top: function () { if (box.top - gap - h >= m) { side = "top"; T = box.top - gap - h; L = cx - w / 2; } }
       };
       /* A wide section reads best with the card under it (or over it); a narrow one, beside it. */
       (box.width > WIDE ? ["bottom", "top", "right", "left"] : ["right", "left", "bottom", "top"]).forEach(function (k) { if (!side) fits[k](); });
       if (side) {
-        L = Math.max(m, Math.min(L, vw - m - w)); T = Math.max(m, Math.min(T, vh - h - m));
+        setSpot(top, left, bottom, right);
+        L = Math.max(lm, Math.min(L, vw - m - w)); T = Math.max(m, Math.min(T, vh - h - m));
         var across = side === "right" || side === "left";
         var arrow = Math.max(18, Math.min(across ? cy - T : cx - L, (across ? h : w) - 18));
         card.style.left = Math.round(L) + "px"; card.style.top = Math.round(T) + "px";
@@ -678,7 +1552,15 @@
     var cw = card.offsetWidth || 440, ch = card.offsetHeight || 160, g = 12;
     var cl = vw / 2 - cw / 2, cb = vh - (vw <= 860 ? 12 : 20);
     var under = box.right + g > cl && box.left - g < cl + cw && box.bottom + g > cb - ch;
-    card.classList.toggle("is-top", under && box.top > ch + 24);
+    var isTop = under && box.top > ch + 24;
+    card.classList.toggle("is-top", isTop);
+    /* A docked card never sits on the ring: the ring stops at its edge (keeping at least 40px). */
+    var cr = card.getBoundingClientRect();
+    if (cr.height && cr.left < right && cr.right > left) {
+      if (isTop) top = Math.max(top, Math.min(bottom - 40, cr.bottom + 6));
+      else if (cr.top < bottom) bottom = lineEdge(t, top, Math.max(top + 40, Math.min(bottom, cr.top - 6)));
+    }
+    setSpot(top, left, bottom, right);
   }
 
   // Let the page open the demo from its own buttons: data-hope-tour or data-hope-open.
@@ -715,6 +1597,25 @@
         if (input.form.requestSubmit) input.form.requestSubmit(); else input.form.dispatchEvent(new Event("submit", { cancelable: true }));
       })();
     },
-    isTouring: function () { return touring; }
+    isTouring: function () { return touring; },
+    /* The element the current tour step points at (null when no tour runs), for the placement checks. */
+    stepTarget: function () { return touring ? target() : null; },
+    stepFocus: function () { var t = touring ? target() : null; return t ? focusRect(STEPS[idx], t) : null; },
+    /* The fixed crisis reply, for any Hope that shares these words (shared/app.js reads it). */
+    crisisReply: crisisReply,
+    /* Whether text is a crisis, by the widened check above (shared/app.js can ask it too). */
+    isCrisis: function (text) { var q = String(text || ""); return isCrisis(q) || CRISIS_NET.test(calm(q)); },
+    /* Where a question would go ("crisis", an answer key or "fallback"), for the checks in
+       shared/hope-check.html. It answers nothing and changes nothing. */
+    route: route,
+    /* The words and chips a question would get, for the same checks. It says nothing in the chat. */
+    answerInfo: function (q) {
+      q = String(q || ""); var k = route(q), t, c;
+      if (k === "crisis") { t = CRISIS_REPLY; c = CRISIS_CHIPS; }
+      else if (k === "fallback") { var fb = fallback(q); t = fb.t; c = fb.c; }
+      else if (k === "tour" || k === "menu" || !A[k]) { t = k; c = MENU; }
+      else { t = val(A[k].t, q); c = val(A[k].c, q); }
+      return { key: k, text: t, chips: (c || []).filter(Boolean).map(function (x) { return x.label; }) };
+    }
   };
 })();

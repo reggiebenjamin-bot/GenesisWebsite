@@ -1,5 +1,5 @@
 {
-  "template": "Bright & Modern",
+  "template": "Bright and Modern",
   "slug": "bright-modern",
   "forChurches": "Church plants and young families",
   "lookInOneLine": "White space, heavy grotesk type, big daylight photos and one cobalt accent: crisp and confident like a modern product site, but warm.",
@@ -26,7 +26,7 @@
     "heroHeadline": { "line1": "Find your", "changingWord": ["people.", "peace.", "Sunday."] },
     "missionLine": "A young church in the middle of Raleigh for people who are still figuring it out. So, all of us.",
     "statementBand": "Come as you are. Leave a little lighter.",
-    "announcement": "Room to Grow: bright new kids rooms open this spring.",
+    "announcement": "Room to Grow: bright new kids' rooms open this spring.",
     "currentSeries": "Open Doors",
     "assistantName": "Hope",
     "neighborhoods": ["Five Points", "Oakwood", "Boylan Heights", "Glenwood South", "Warehouse District"]
@@ -66,7 +66,7 @@
   "contrastMethod": "WCAG 2.x relative luminance formula, computed with a short Node script. Every body text pair is 4.5:1 or better.",
   "fonts": {
     "display": { "family": "Bricolage Grotesque", "weightsUsed": [650, 700, 780, 800], "notes": "Variable font with an optical size axis (font-optical-sizing: auto). Headlines tracked tight, -2.4% to -3.6%. Wordmark at -4.5%. Line height 0.92 to 1.05." },
-    "body": { "family": "Hanken Grotesk", "weightsUsed": [400, 500, 600], "notes": "Body 17px / 1.6, lead 19px / 1.55, labels 12.5px caps +14%. Lining figures everywhere. Chosen in review over Instrument Sans, which the Bold & Dark look also uses, so no two looks share a body face." },
+    "body": { "family": "Hanken Grotesk", "weightsUsed": [400, 500, 600], "notes": "Body 17px / 1.6, lead 19px / 1.55, labels 12.5px caps +14%. Lining figures everywhere. Chosen in review over Instrument Sans, which the Bold and Dark look also uses, so no two looks share a body face." },
     "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap",
     "scale": [
       { "name": "Display XL (hero)", "size": "clamp(52px, 7.4vw, 112px)", "lineHeight": 0.92, "tracking": "-0.036em", "weight": 800 },
@@ -97,7 +97,7 @@
       "Announcement play button: a cobalt ring pulses gently outward.",
       "Hero photo drifts and zooms slowly over 28 seconds in place of a film.",
       "Mission highlighter draws in behind one phrase.",
-      "Photo strip scrolls slowly (80s loop), pauses on hover, and has a Pause Photos button.",
+      "Photo strip scrolls slowly (80s loop), pauses on hover, and has a Pause Motion button that stops every moving part.",
       "Reviews rotate on a 6.5s progress line under the quote that pauses on hover or focus. The old review is gone before the next one rises in, so they never overlap.",
       "Statement band sky drifts 56px with scroll (parallax).",
       "Header hairline appears on scroll with a cobalt reading-progress line."

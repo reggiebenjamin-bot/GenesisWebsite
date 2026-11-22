@@ -1,5 +1,5 @@
 {
-  "look": "Bold & Dark",
+  "look": "Bold and Dark",
   "church": {
     "name": "Lampstand Church",
     "short": "Lampstand",
@@ -7,9 +7,11 @@
     "address": "1180 Foundry Row in the Short North",
     "phone": "(614) 555-0142",
     "times": "every Sunday at 10 AM and 6 PM",
+    "length": "80 minutes",
+    "parking": "Park free in the lot behind the building or on the street. Look for the amber flags, and a greeter will meet you at the door.",
     "mapUrl": "https://www.google.com/maps/search/?api=1&query=Columbus%2C+Ohio",
-    "pastors": "Andre and Talia lead Lampstand together. They started it in a borrowed living room in 2019 with eleven people and a guitar. Talia is teaching our Lamps On series right now, and you will usually find them both by the stage after the 6 PM gathering.",
-    "kids": "Yes. Lampstand Kids runs during the 10 AM gathering, from nursery through fifth grade. Check in at the kids desk just inside the main doors. Every leader is background checked, and the room is safe, happy and a little loud, like the rest of us.",
+    "pastors": "Andre and Talia lead Lampstand together. They started it in 2019 in the back room of a Short North coffee shop, with a handful of college friends and one guitar. Talia is teaching our Lamps On series right now, and you will usually find them both by the stage after the 6 PM gathering.",
+    "kids": "Lampstand Kids runs during the 10 AM gathering, from nursery through fifth grade. Check in at the kids desk just inside the main doors. Every leader is background checked, and the room is safe, happy and a little loud, like the rest of us.",
     "students": "Middle and high school students meet Sundays at 6. They sit together at the night gathering, then hang out after with leaders who know their names. College students and twentysomethings have their own crew too.",
     "groups": "Small groups meet in living rooms all over Columbus, every night of the week. Find one near you and come as you are. It is how a big, loud room starts to feel like family.",
     "startHere": "So glad you found us. Come on a Sunday, at 10 AM or 6 PM, and follow the amber flags. We will meet you at the door and point you to the coffee. After a visit or two, come to Start Here: one hour of lunch with Andre and Talia, and you will know where you fit.",
@@ -41,10 +43,202 @@
   },
   "links": {
     "brandBoard": "brand-board.html",
-    "socialPlan": "social-plan.html"
+    "socialPlan": "social-plan.html",
+    "prayer": "#prayer-request"
   },
-  "removeSelectors": ["#chat-fab", "#chat", ".sb-chat"],
+  "removeSelectors": [
+    "#chat-fab",
+    "#chat",
+    ".sb-chat"
+  ],
   "bottomOffset": 68,
+  "answers": {
+    "newhere": {
+      "t": "So glad you found us. Come on a Sunday, at 10 AM or 6 PM, and follow the amber flags. Plan your visit and we will meet you at the door and point you to the coffee. After a visit or two, come to Start Here: one hour of lunch with Andre and Talia, and you will know where you fit.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "Kids",
+          "key": "kids"
+        }
+      ]
+    },
+    "baptism": {
+      "t": "Our next Baptism Sunday is December 6, at 10 AM and 6 PM. It is one of our loudest days, with friends cheering you up out of the water. If you are ready to go public with your faith, ask about baptism and a pastor will talk it through with you first.",
+      "c": [
+        {
+          "label": "Ask About Baptism",
+          "href": "#baptism",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "curious": {
+      "t": "Yes, come. Plenty of people in the room are still working out what they believe, and there is room for every voice here. Nobody will single you out. Follow the amber flags, find the coffee and bring your questions.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "access": {
+      "t": "Yes. The main doors have a ramp, and the room, Lampstand Kids and the restrooms are all on the ground floor. Accessible parking is closest to the doors in the lot behind the building. Tell us on Plan Your Visit what would help, and a greeter will meet you at the door.",
+      "c": [
+        {
+          "label": "Plan Your Visit",
+          "href": "#plan-a-visit",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Where Do I Park?",
+          "key": "parking"
+        }
+      ]
+    },
+    "language": {
+      "t": "Our gatherings are in English. If another language would help you or your family, call us at (614) 555-0142 and we will help however we can.",
+      "c": [
+        {
+          "label": "Call Lampstand",
+          "href": "tel:+16145550142",
+          "go": true,
+          "cta": true
+        },
+        {
+          "label": "Service Times",
+          "key": "times"
+        }
+      ]
+    },
+    "communion": {
+      "t": "We share communion on the first Sunday of each month, at 10 AM and 6 PM. If you follow Jesus, you are welcome at the table. If you are still deciding, it is fine to sit it out.",
+      "c": [
+        {
+          "label": "What We Believe",
+          "key": "values"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "wear": {
+      "t": "Come as you are. Jeans, hoodies, Sunday best. All of it fits here.",
+      "c": [
+        {
+          "label": "Service Times",
+          "key": "times"
+        },
+        {
+          "label": "I Am New Here",
+          "key": "newhere"
+        }
+      ]
+    },
+    "price": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.",
+      "c": [
+        {
+          "label": "What Does a Church Get?",
+          "key": "package"
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        }
+      ]
+    },
+    "package": {
+      "t": "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is Bold and Dark), the brand board, the social marketing plan, Hope on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.",
+      "c": [
+        {
+          "label": "What Is the Back Office?",
+          "key": "backoffice",
+          "cta": true
+        },
+        {
+          "label": "Can We Customize It?",
+          "key": "custom"
+        },
+        {
+          "label": "See the Brand Board",
+          "href": "brand-board.html"
+        },
+        {
+          "label": "See the Social Plan",
+          "href": "social-plan.html"
+        }
+      ]
+    }
+  },
+  "matchPatterns": [
+    [
+      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "baptism"
+    ],
+    [
+      "\\bhow long\\b(?!.*\\b(?:been|ago|founded|around|existed?|started|kids?|children|students?|youth|groups?|class(?:es)?|lunch)\\b)",
+      "times"
+    ],
+    [
+      "\\b(?:not (?:a )?(?:christian|believer|religious|churchy)|non[- ]?(?:christian|believer|religious)|(?:don['’]?t|do not|didn['’]?t) (?:believe|know (?:if|what) i believe)|not sure (?:if|what) i believe|atheists?|agnostics?|skeptic\\w*|sceptic\\w*|doubts?|doubting|never been to (?:a )?church|(?:haven['’]?t|have not) been to (?:a )?church|(?:another|other|different) (?:faith|religion)s?)\\b",
+      "curious"
+    ],
+    [
+      "^(?!.*\\b(?:online|live ?stream\\w*|stream\\w*|website|site|videos?|app|podcasts?)\\b).*\\b(?:wheel ?chairs?|accessib\\w*|ramps?|elevators?|stairs|step[- ]free|mobility|walkers?|disab\\w*|handicap\\w*|hard of hearing|hearing (?:loop|aids?)|large print)\\b",
+      "access"
+    ],
+    [
+      "\\b(?:spanish|espa[nñ]ol|languages?|bilingual|interpreters?|translators?|translated|korean|mandarin|cantonese|chinese|vietnamese|french|portuguese|arabic|swahili|tagalog|hindi|haitian creole|sign language|asl)\\b",
+      "language"
+    ],
+    [
+      "\\b(?:communion|eucharist|lord['’]?s supper|sacraments?)\\b",
+      "communion"
+    ],
+    [
+      "\\b(?:wear|wearing|jeans|shorts|dress(?:ed)?(?: up)?|dress code|attire|outfits?|clothes|clothing|suit and tie|casual)\\b",
+      "wear"
+    ]
+  ],
+  "next": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-guest.html?church=bold-dark&id=g-01",
+    "note": "Next: a Plan a Visit form as it arrives in Genesis Ministry, the way the welcome team sees it."
+  },
+  "nextLevel01": {
+    "label": "See Where a Visit Lands",
+    "href": "../../platform/church-website.html?church=bold-dark&plan=1#ws-visit-title",
+    "note": "Next: on the Care plan, a Plan a Visit form arrives as an email to the address your church chose.",
+    "tour": false
+  },
   "pages": {
     "index.html": {}
   }

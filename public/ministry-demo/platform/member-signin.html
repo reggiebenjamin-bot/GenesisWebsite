@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Sign In · Member app · Genesis Ministry · Design preview</title>
-<meta name="description" content="Genesis Ministry design preview: member sign in with a 6 digit code by email or Google, and the one-time adults-only check.">
+<meta name="description" content="Genesis Ministry design preview: member sign in with a 6-digit code by email or Google, and the one-time adults-only check.">
 <script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
 <link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
@@ -44,6 +44,8 @@
   .ms-adult .m-check{font-weight:700;font-size:17px}
   .m-app .ms-done{display:flex;gap:10px;align-items:center;margin-bottom:16px;color:var(--m-muted);font-size:14.5px}
   .ms-done .gm-icon{color:var(--m-accent-ink)}
+  /* "6-digit" never breaks at its hyphen. */
+  .ms-nw{white-space:nowrap}
   /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
      Fold it into shared/member.css and shared/app.js when the foundation next touches them.
      1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
@@ -73,13 +75,14 @@
   .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
   @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
   .mx-about,.mx-screens{display:none}
-  @media (min-width:1180px){
-    .mx-staged .m-stage{display:grid;grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px;align-items:start;align-content:start}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
     .mx-staged .m-stagebar{grid-column:1/-1}
-    .mx-staged .m-device{grid-column:2;grid-row:2}
     .mx-staged .m-caption{display:none}
-    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px;display:grid;gap:22px;align-content:start}
-    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px;display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
     .mx-about .v2-page-head{margin:0}
     .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
     .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
@@ -93,8 +96,27 @@
     .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
     .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
   }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
   @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
-  @media (max-width:760px){
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
     .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
     .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
   }
@@ -116,7 +138,7 @@
     <div class="ms-mark" id="ms-mark" aria-hidden="true"></div>
     <p class="m-eyebrow">Member sign in</p>
     <h1 class="m-h1" id="ms-email-title">Sign in to <span data-gm-text="church.short"></span></h1>
-    <p class="m-lede">No password to remember. We email you a 6 digit code, and you are in.</p>
+    <p class="m-lede">No password to remember. We email you a <span class="ms-nw">6-digit</span> code, and you are in.</p>
 
     <form class="ms-form m-section" id="ms-email-form" novalidate data-tour="signin.email">
       <div class="m-field">
@@ -140,17 +162,17 @@
     </div>
   </section>
 
-  <!-- Step 2: the 6 digit code -->
+  <!-- Step 2: the 6-digit code -->
   <section class="ms-step" id="ms-code" aria-labelledby="ms-code-title" hidden>
     <button type="button" class="ms-back" data-ms-go="email" id="ms-back-1"></button>
     <ol class="ms-steps" aria-label="Step 2 of 3"><li class="is-done"></li><li class="is-done"></li><li></li></ol>
     <p class="m-eyebrow">Step 2 of 3</p>
     <h1 class="m-h1" id="ms-code-title">Check your email</h1>
-    <p class="m-lede">We sent a 6 digit code to <b id="ms-sent-to"></b>. It works for 10 minutes.</p>
+    <p class="m-lede">We sent a <span class="ms-nw">6-digit</span> code to <b id="ms-sent-to"></b>. It works for 10 minutes.</p>
 
     <form class="ms-form m-section" id="ms-code-form" novalidate data-tour="signin.code">
       <fieldset class="ms-code-wrap">
-        <legend>Your 6 digit code</legend>
+        <legend>Your <span class="ms-nw">6-digit</span> code</legend>
         <div class="m-code" id="ms-digits"></div>
       </fieldset>
       <p class="m-hint" style="margin:8px 0 16px">In this preview, any six digits work.</p>
@@ -191,13 +213,15 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 /* ==== Member stage. The same function sits on every member page (prefix mx-). ====
    Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
    strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
    what this screen protects (left) and the member app's screens (right). The phone is untouched.
-   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon } } */
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
 function mxStage(o) {
   "use strict";
   var body = document.body, stage = document.querySelector(".m-stage");
@@ -218,6 +242,7 @@ function mxStage(o) {
   tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
   tour.setAttribute("data-gm-action", "start-tour");
   tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
   tour.innerHTML = GM.v2Icon("play") + "<span>Take the Tour</span>";
   tour.hidden = !!(GM.ctx && GM.ctx.locked);
   bar.insertBefore(tour, desk || theme || null);
@@ -233,15 +258,20 @@ function mxStage(o) {
     return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
       (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
   }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
   var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
   var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
     '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
     '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
     (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
-    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span></a>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
     "</aside>";
   var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
-    '<p class="mx-fine">Every screen wears ' + esc(c.name) + "'s own brand. Powered by Genesis.</p></nav>";
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
   var device = stage.querySelector(".m-device");
   device.insertAdjacentHTML("afterend", about + screens);
 }
@@ -249,13 +279,13 @@ function mxStage(o) {
 <script>
 mxStage({
   title: 'Sign in with a code, <em class="v2-accent-em">no password</em>',
-  sub: "Members type their email and get a 6 digit code, or continue with Google. The adults-only check happens once, the first time.",
+  sub: "Members type their email and get a 6-⁠digit code, or continue with Google. The adults-only check happens once, the first time.",
   protect: [
     ["Adults only", "Confirmed once and saved with the date. No accounts for minors."],
     ["Nothing private in email", "The code email carries only the code."],
     ["No directory", "Members only ever see their own things."]
   ],
-  land: { href: "church-person.html?id=p-sarah", label: "See Sarah's Record", icon: "people" }
+  land: { href: "church-person.html?id=p-sarah", label: "See Sarah's Record", icon: "people", module: "people" }
 });
 GM.ready(function (ctx) {
   "use strict";
@@ -368,14 +398,14 @@ GM.ready(function (ctx) {
   function setTour(step) {
     var tours = {
       email: [
-        { target: '[data-tour="signin.email"]', title: "No password to remember", text: "Members type their email and get a 6 digit code. Signing in the first time creates the account." },
+        { target: '[data-tour="signin.email"]', title: "No password to remember", text: "Members type their email and get a 6-⁠digit code. Signing in the first time creates the account." },
         { target: '[data-tour="signin.google"]', title: "Or Google", text: "Members who prefer it can continue with Google. Either way, the email is proven before anything is saved." },
         { target: '[data-tour="signin.adults"]', title: "Adults only", text: "Member accounts are for people 18 and older, confirmed once with the date." },
         { target: '[data-tour="signin.privacy"]', title: "Plain about what is kept", text: "Members only ever see their own things. There is no directory, and they can ask for a copy or for removal." }
       ],
       code: [
         { target: '[data-tour="signin.code"]', title: "Six digits, then in", text: "Boxes accept typing or a pasted code. A new code is one tap away." },
-        { target: '[data-tour="signin.mail"]', title: "An email with nothing private", text: "The code email carries only the code, in {church.name}'s name." }
+        { target: '[data-tour="signin.mail"]', title: "An email with nothing private", text: "The code email carries only the code, in {church.namePoss} name." }
       ],
       adult: [
         { target: '[data-tour="signin.adult"]', title: "One tick, one time", text: "\"I am 18 or older\" is confirmed once and saved with the date. No accounts for minors, and no children's names kept." }

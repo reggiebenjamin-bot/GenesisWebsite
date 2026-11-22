@@ -1,4 +1,4 @@
-# Photo credits: Bright & Modern (Lightwell Church demo)
+# Photo credits: Bright and Modern (Lightwell Church demo)
 
 Thirteen photos are from Unsplash under the Unsplash License (free for commercial use, no permission needed, attribution appreciated). None are Unsplash+ images. Those were downloaded at 1800px wide, JPEG quality 80, through the Unsplash image CDN. One photo (serving-donations-sorting.jpg) is from Pexels under the Pexels License (free to use, no attribution required, attribution appreciated); it was resized from the original to 1800px wide and saved at JPEG quality 80. Every photo was checked by eye at 900px for readable logos, brand names, name tags, other church names and single-child close-ups.
 

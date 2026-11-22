@@ -42,8 +42,25 @@
   .gg-last-tag{display:block;margin-bottom:6px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
   .gg-quiet-actions{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px;margin-top:12px}
   .gg-quiet-actions .v2-field{min-width:220px}
+  /* Drafts Waiting and Gone Quiet hide the toolbar, so the list keeps the Genesis OS 26px rhythm under the numbers. */
+  .gg-page.gg-no-tools>#gg-body{margin-top:26px}
+  .gg-closed .v2-primary-cell>span{white-space:normal;overflow:visible;text-overflow:clip}
+  /* With the Hope dock open the list narrows, so where a guest came from wraps instead of being cut off. */
+  .gg-page .v2-deal-table .v2-primary-cell>span{white-space:normal;overflow:visible;text-overflow:clip}
+  .gg-closed td{vertical-align:top}
+  .gg-closed .v2-mobile-deal-identity small{white-space:normal;overflow:visible;text-overflow:clip}
+  @media (max-width:860px){.gg-closed .v2-table-meta{flex-direction:column;align-items:flex-start;gap:2px}}
   @media (max-width:860px){.gg-safety{grid-template-columns:minmax(0,1fr)}.gg-safety .v2-fact b{font-size:24px}}
   @media (min-width:861px) and (max-width:1100px){.gg-page .v2-deal-pipeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  /* Who is reading: this screen is seen as the Connections Lead, so the switch from the pastor on Today is said out loud. */
+  .gg-page .v2-page-head p.gg-seen{margin-top:4px;font-size:12px}
+  /* The board card keeps the due date whole, and the owner gets a line of its own, so a narrow column
+     (the dock open at 1440) never cuts a name to "Ju...". */
+  .gg-page .v2-stage-card small{flex-wrap:wrap;row-gap:2px;white-space:normal}
+  .gg-page .v2-stage-card small>span{flex:none}
+  .gg-page .v2-stage-card small>i{flex:1 0 100%;min-width:0;overflow:visible;white-space:normal}
+  /* The whole name cell is the target, not just the name. */
+  .gg-page .v2-primary-cell>.v2-deal-row-link{display:flex}
   /* Phones keep two head actions, as Genesis OS Deals does: the orb asks the assistant and the view picker holds the report. */
   @media (max-width:860px){#gg-ask{display:none}}
 </style>
@@ -58,6 +75,7 @@
         <div class="v2-eyebrow">Guests</div>
         <h1 id="gg-title">Needs You</h1>
         <p id="gg-sub">Guests whose next step is due.</p>
+        <p class="gg-seen" id="gg-seen"></p>
       </div>
       <div class="v2-page-actions" id="gg-actions">
         <button class="v2-button" type="button" data-gm-action="add-guest" id="gg-add"></button>
@@ -72,9 +90,6 @@
 
     <!-- The one panel: the guest to welcome first -->
     <section class="v2-card v2-next-move v2-deal-next" aria-labelledby="gg-next-title" data-tour="guests.next" id="gg-next"></section>
-
-    <!-- Nobody falls through: what the system checks every morning -->
-    <section class="v2-card v2-briefing gg-safety" aria-labelledby="gg-safety-title" data-tour="guests.safety" id="gg-safety"></section>
 
     <div class="v2-toolbar v2-deal-toolbar" role="toolbar" aria-label="Guest tools" id="gg-toolbar">
       <label class="v2-search"><span class="sr-only">Search guests</span><input class="v2-input" id="gg-search" type="search" value="" placeholder="Search guest, source, owner, next step&hellip;" autocomplete="off"></label>
@@ -97,6 +112,10 @@
     <!-- The list, the board, or the drafts, depending on the view -->
     <div id="gg-body" data-tour="guests.list"></div>
 
+    <!-- Nobody falls through: what the system checks every morning. Under the list, as in Genesis OS Deals,
+         so the toolbar and the table start on the first screen. -->
+    <section class="v2-card v2-briefing gg-safety" aria-labelledby="gg-safety-title" data-tour="guests.safety" id="gg-safety"></section>
+
     <section class="v2-section" aria-label="How follow-up works">
       <p class="gg-email" data-tour="guests.email" id="gg-email"></p>
     </section>
@@ -105,6 +124,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -119,6 +139,9 @@ GM.ready(function (ctx) {
   /* ---------- Head and actions (one gold action per screen: the panel's) ---------- */
   $("gg-add").innerHTML = ic("plus") + "Add a Guest";
   $("gg-ask").textContent = "Ask " + HOPE;
+  /* Today is seen as the lead pastor; the front office is seen as the person who welcomes guests. Say so, as Today and Care do. */
+  var me = ctx.viewer || {};
+  $("gg-seen").textContent = "Seen as " + me.name + ", " + me.role + (me.id === "s-nadia" ? ", who welcomes new guests." : ".");
   $("gg-filters").innerHTML = ic("filter") + "Filters";
   $("gg-view").innerHTML = Object.keys(VIEWS).map(function (k) { return '<option value="' + k + '"' + (k === view ? " selected" : "") + ">" + esc(VIEWS[k]) + "</option>"; }).join("") + '<option value="report">Guest Report</option>';
   $("gg-view").addEventListener("change", function () {
@@ -129,6 +152,10 @@ GM.ready(function (ctx) {
   /* ---------- Helpers ---------- */
   /* Source names from data.js; the assistant source follows the one name constant. */
   function src(x) { return String(x).replace(/^Hope /, HOPE + " "); }
+  /* Options are Title Case, as Genesis OS writes them ("Plan a Visit Form"); badges are sentence case ("Found another church"). */
+  var SMALL = { a: 1, an: 1, the: 1, and: 1, or: 1, to: 1, of: 1, for: 1, in: 1, on: 1, at: 1, by: 1 };
+  function titleCase(t) { return String(t).split(" ").map(function (w, i) { return i && SMALL[w.toLowerCase()] ? w.toLowerCase() : w.replace(/(^|-)([a-z])/g, function (m, d, ch) { return d + ch.toUpperCase(); }); }).join(" "); }
+  function sentenceCase(t) { t = String(t); return t.charAt(0) + t.slice(1).toLowerCase(); }
   function person(g) { return GM.person(g.personId); }
   function draftWaiting(g) { return !!(g.draft && GM.draftStatus(g.draft) === "waiting"); }
   function stageBadge(g) { var s = GM.stage(g.stage); return GM.pill(s.label, g.stage === "new" ? "gold" : g.stage === "serving" ? "positive" : "neutral"); }
@@ -149,7 +176,7 @@ GM.ready(function (ctx) {
       '<a class="v2-fact" href="church-guests.html?view=all"><b>' + noOwner + "</b><small>Without an owner</small></a>" +
       '<a class="v2-fact" href="church-guests.html?view=all"><b>' + noNext + "</b><small>Without a next step</small></a>" +
       '<a class="v2-fact" href="church-guests.html?view=quiet"><b>' + quietList.length + "</b><small>Gone quiet</small></a>" +
-      (away ? '<p class="gg-away" data-tour="guests.away">' + GM.pill("Owner Away", "info") + "<span>" + esc(GM.staff(away.id).name) + " is away until " + esc(fmt.weekdayLong(away.away.until) + ", " + fmt.date(away.away.until)) + ". His " + covered.length + " guests moved to " + esc(GM.staff(away.away.coveredBy).name) + " and move back when he returns.</span></p>" : "");
+      (away ? '<p class="gg-away" data-tour="guests.away">' + GM.pill("Owner away", "info") + "<span>" + esc(GM.staff(away.id).name) + " is away until " + esc(fmt.weekdayLong(away.away.until) + ", " + fmt.date(away.away.until)) + ". His " + covered.length + " guests moved to " + esc(GM.staff(away.away.coveredBy).name) + " and move back when he returns.</span></p>" : "");
   }
 
   /* ---------- The numbers row ---------- */
@@ -157,8 +184,11 @@ GM.ready(function (ctx) {
   var newWeek = D.guests.filter(function (g) { return g.stage === "new"; });
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
   function paintPulse() {
-    $("gg-pulse").innerHTML =
-      pulse("With an open next step", D.guests.length, D.metrics.guestPathFall[0].value + " arrived this fall") +
+    var drafts = GM.waitingDrafts("church").filter(function (d) { return d.guest; }).length;
+    var lead = view === "drafts" ? pulse("Drafts waiting", drafts, drafts ? "Each waits for a person to approve it" : "Every draft is handled")
+      : view === "quiet" ? pulse("Gone quiet", quietList.length, "Each gets one gentle last note")
+      : pulse("With an open next step", D.guests.length, D.metrics.guestPathFall[0].value + " arrived this fall");
+    $("gg-pulse").innerHTML = lead +
       pulse("New this week", newWeek.length, "Each one has an owner") +
       pulse("Follow-ups due", due.length, "Overdue or due today");
   }
@@ -171,7 +201,7 @@ GM.ready(function (ctx) {
     var visit = g.visitDate ? " · visiting " + fmt.weekdayLong(g.visitDate) : "";
     $("gg-next").innerHTML =
       '<div><div class="v2-eyebrow">' + (draftWaiting(g) ? "Guest to welcome" : "Guest to follow up") + '</div><h2 class="v2-serif-headline" id="gg-next-title">' + esc(p.name) + "</h2><h3>" + esc(src(g.source)) + visit + " · " + esc(owner.name) + "</h3>" +
-      '<div class="v2-next-meta">' + stageBadge(g) + GM.pill(d.text, d.late ? "danger" : d.today ? "warning" : "neutral") + (draftWaiting(g) ? GM.pill(HOPE + " Draft Ready", "neutral") : "") + "</div>" +
+      '<div class="v2-next-meta">' + stageBadge(g) + GM.pill(d.text, d.late ? "danger" : d.today ? "warning" : "neutral") + (draftWaiting(g) ? GM.pill(HOPE + " draft ready", "neutral") : "") + "</div>" +
       '<p class="v2-next-reason">' + esc(g.next) + '<span class="v2-next-why">Why now: ' + esc(g.note) + "</span></p></div>" +
       '<div class="v2-next-actions">' +
         '<a class="v2-button v2-button-primary" href="church-guest.html?id=' + esc(g.id) + (draftWaiting(g) ? "#draft" : "") + '">' + ic("arrow") + (draftWaiting(g) ? "Review Welcome Note" : "Update Next Step") + "</a>" +
@@ -181,7 +211,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Filters ---------- */
   function opts(list, all) { return '<option value="">' + esc(all) + "</option>" + list.map(function (x) { return '<option value="' + esc(x[0]) + '">' + esc(x[1]) + "</option>"; }).join(""); }
-  $("gg-f-source").innerHTML = opts(D.guestSources.map(function (s) { return [s, src(s)]; }), "Any Source");
+  $("gg-f-source").innerHTML = opts(D.guestSources.map(function (s) { return [s, titleCase(src(s))]; }), "Any Source");
   var owners = []; D.guests.forEach(function (g) { if (owners.indexOf(g.owner) < 0) owners.push(g.owner); });
   $("gg-f-owner").innerHTML = opts(owners.map(function (o) { return [o, GM.staff(o).name]; }), "Anyone");
   $("gg-f-stage").innerHTML = opts(D.guestStages.map(function (s) { return [s.key, s.label]; }), "Any Stage");
@@ -237,7 +267,7 @@ GM.ready(function (ctx) {
     $("gg-body").innerHTML = '<section class="v2-card v2-table-card v2-deal-list" aria-label="Guests"><div class="v2-table-meta"><span>' + list.length + " of " + total + (view === "attention" ? " guests need a person" : " guests") + "</span><span>Open a guest to update their next step</span></div>" +
       (list.length
         ? '<div class="v2-desktop-deals"><div class="v2-table-scroll"><table class="v2-table v2-deal-table"><thead><tr><th scope="col">Guest</th><th scope="col">Stage</th><th scope="col">Next step</th><th scope="col">Owner</th></tr></thead><tbody>' + rows + '</tbody></table></div></div><div class="v2-mobile-deals">' + mobile + "</div>"
-        : '<p class="gg-empty">No guests match these filters. Clear Filters shows everyone again.</p>') + "</section>";
+        : '<div class="v2-state"><div><h2>No guests match</h2><p>Nothing fits this search and these filters. Clear them to see every guest again.</p><button class="v2-button" type="button" data-gg-clear-all>Clear Search</button></div></div>') + "</section>";
   }
 
   /* ---------- By Stage: the real pipeline board, New to Serving ---------- */
@@ -248,7 +278,7 @@ GM.ready(function (ctx) {
       return '<details class="v2-card v2-stage-group" open><summary><span>' + GM.pill(s.label, s.key === "new" ? "gold" : s.key === "serving" ? "positive" : "neutral") + "<b>" + inStage.length + "</b></span><small>" + esc(s.hint) + "</small></summary>" +
         '<div class="v2-stage-records">' + (inStage.length ? inStage.map(function (g) {
           var p = person(g), d = dueText(g);
-          return '<a class="v2-stage-card" href="church-guest.html?id=' + esc(g.id) + '"><b>' + esc(p.name) + '</b><span class="gg-src">' + esc(src(g.source)) + "</span><span>" + esc(g.next) + (draftWaiting(g) ? " · draft ready" : "") + '</span><small><span class="v2-deal-why' + (d.late ? " is-late" : "") + '">' + esc(g.quiet ? "Gone quiet" : d.text) + "</span><i>" + esc(ownerText(g)) + "</i></small></a>";
+          return '<a class="v2-stage-card" href="church-guest.html?id=' + esc(g.id) + '"><b>' + esc(p.name) + '</b><span class="gg-src">' + esc(src(g.source)) + "</span><span>" + esc(g.next) + (draftWaiting(g) ? " · draft ready" : "") + '</span><small><span class="v2-deal-why' + (d.late ? " is-late" : "") + '">' + esc(g.quiet ? "Gone quiet" : d.text) + "</span><i title=\"" + esc(ownerText(g) + (g.coverFor ? ", away" : "")) + "\">" + esc(ownerText(g)) + "</i></small></a>";
         }).join("") : '<p class="v2-stage-empty" style="padding:10px 12px;margin:0">Nobody here right now.</p>') + "</div></details>";
     }).join("") + "</section>";
   }
@@ -261,6 +291,18 @@ GM.ready(function (ctx) {
       return '<section class="v2-card" aria-label="Draft for ' + esc(p.name) + '"><div class="gg-draft-for"><b>' + esc(p.name) + " · " + esc(GM.stage(g.stage).label) + '</b><a href="church-guest.html?id=' + esc(g.id) + '">Open Guest →</a></div>' + GM.draft(d) + "</section>";
     }).join("") + "</div>";
     GM.paintDrafts($("gg-body"));
+    oneGold();
+  }
+  /* One gold action per screen: only the first draft still waiting gets the gold Approve and Send. */
+  function oneGold() {
+    var first = true;
+    document.querySelectorAll("#gg-body .gm-draft").forEach(function (n) {
+      var b = n.querySelector('[data-gm-action="approve-draft"]'), a = n.querySelector(".gm-draft-actions");
+      if (!b) return;
+      var live = !(a && a.hidden);
+      b.classList.toggle("v2-button-primary", live && first);
+      if (live) first = false;
+    });
   }
 
   /* ---------- Gone Quiet: one gentle last note, then a choice to close with a reason ---------- */
@@ -277,12 +319,19 @@ GM.ready(function (ctx) {
         '<label class="v2-field"><span>Close with a reason</span><select class="v2-select v2-nselect" data-gg-reason="' + esc(g.id) + '">' + reasons + "</select></label>" +
         '<button class="v2-button v2-button-quiet" type="button" data-gg-close="' + esc(g.id) + '">' + ic("archive") + "Close and Archive</button></div></section>";
     }).join("") +
-      '<section class="v2-card v2-table-card" aria-labelledby="gg-closed-title"><div class="v2-table-meta"><span id="gg-closed-title">Recently closed, with a reason</span><span>Archived, never deleted. Counted in the Guest Report.</span></div>' +
-      '<div class="v2-table-scroll"><table class="v2-table"><thead><tr><th scope="col">Guest</th><th scope="col">Reason</th><th scope="col">Closed</th></tr></thead><tbody>' +
-      D.closedGuests.map(function (x) { return '<tr><td class="v2-primary-cell"><b>' + esc(x.name) + "</b><span>" + esc(x.note) + "</span></td><td>" + GM.pill(x.reason, "neutral") + "</td><td>" + esc(fmt.date(x.closed)) + "</td></tr>"; }).join("") +
-      "</tbody></table></div></section></div>";
+      '<section class="v2-card v2-table-card v2-deal-list gg-closed" aria-labelledby="gg-closed-title"><div class="v2-table-meta"><span id="gg-closed-title">Recently closed, with a reason</span><span>Archived, never deleted. Counted in the Guest Report.</span></div>' +
+      '<div class="v2-desktop-deals"><div class="v2-table-scroll"><table class="v2-table"><thead><tr><th scope="col">Guest</th><th scope="col">Reason</th><th scope="col">Closed</th></tr></thead><tbody>' +
+      D.closedGuests.map(function (x) { return '<tr><td class="v2-primary-cell"><b>' + esc(x.name) + "</b><span>" + esc(x.note) + "</span></td><td>" + GM.pill(sentenceCase(x.reason), "neutral") + "</td><td>" + esc(fmt.date(x.closed)) + "</td></tr>"; }).join("") +
+      '</tbody></table></div></div><div class="v2-mobile-deals">' +
+      D.closedGuests.map(function (x) { return '<div class="v2-mobile-deal-row"><span class="v2-mobile-deal-identity"><b>' + esc(x.name) + "</b><small>" + esc(x.note) + '</small></span><span class="v2-mobile-deal-why"><span class="v2-deal-why is-calm">Closed ' + esc(fmt.date(x.closed)) + "</span>" + GM.pill(sentenceCase(x.reason), "neutral") + "</span></div>"; }).join("") +
+      "</div></section></div>";
   }
   document.addEventListener("click", function (e) {
+    if (e.target.closest("[data-gg-clear-all]")) {
+      ["gg-f-source", "gg-f-owner", "gg-f-stage", "gg-f-draft"].forEach(function (id) { $(id).value = ""; });
+      state.source = state.owner = state.stage = state.draft = state.q = ""; $("gg-search").value = "";
+      paintBody(); $("gg-search").focus(); return;
+    }
     var l = e.target.closest("[data-gg-last]");
     if (l) { var gq = GM.guest(l.getAttribute("data-gg-last")); GM.toast("The last note would go to " + person(gq).name + " by email. This is a preview, so nothing was sent."); return; }
     var x = e.target.closest("[data-gg-close]");
@@ -311,9 +360,8 @@ GM.ready(function (ctx) {
   if (view === "all") { state.sort = "stage"; $("gg-sort").value = "stage"; }
   /* As in Genesis OS Deals, the one panel belongs to the Needs You view; the other views open straight onto the list. */
   if (view !== "attention") $("gg-next").hidden = true;
-  /* With no panel, the head's Add a Guest becomes the screen's one gold action, as New opportunity does on the Deals pipeline. */
-  if (view === "all" || view === "board") $("gg-add").classList.add("v2-button-primary");
-  if (view === "drafts" || view === "quiet") $("gg-toolbar").hidden = true;
+  /* The head's Add a Guest stays an outline button on every view: the sidebar already holds the gold one. */
+  if (view === "drafts" || view === "quiet") { $("gg-toolbar").hidden = true; document.querySelector(".gg-page").classList.add("gg-no-tools"); }
   if (view !== "attention") $("gg-safety").hidden = true;
   $("gg-email").innerHTML = ic("shield") + "<span>" + esc(D.guestSettings.textingNote) + " Every welcome note is a " + esc(HOPE) + " draft that waits for a person, and every step is written to the access record.</span>";
 
@@ -321,7 +369,7 @@ GM.ready(function (ctx) {
   paintNext();
   paintSafety();
   paintBody();
-  document.addEventListener("gm:draft", function () { paintPulse(); paintNext(); if (view === "attention") paintBody(); });
+  document.addEventListener("gm:draft", function () { paintPulse(); paintNext(); if (view === "attention") paintBody(); if (view === "drafts") oneGold(); });
 
   GM.hope.setBriefing({
     line: GM.greeting() + ", {name}. " + needCount + " guests need a person today. " + due.length + " follow-ups are due and " + GM.waitingDrafts("church").filter(function (d) { return d.guest; }).length + " welcome notes are ready to review.",
@@ -336,7 +384,7 @@ GM.ready(function (ctx) {
   tour.push(view === "board"
     ? { target: '[data-tour="guests.list"]', title: "New to Serving, at a glance", text: "Six stages. Each card shows where the guest came from, the next step, when it is due and who owns it." }
     : view === "drafts"
-      ? { target: '[data-tour="guests.list"]', title: "{assistant.name} drafts, a person decides", text: "Each welcome note is labelled and waits here. Approve it, edit it or keep it for later. Nothing goes out on its own." }
+      ? { target: '[data-tour="guests.list"]', title: "{assistant.name} drafts, a person decides", text: "Each welcome note is labeled and waits here. Approve it, edit it or keep it for later. Nothing goes out on its own." }
       : { target: '[data-tour="guests.list"]', title: "Every guest has an owner", text: "Plan a Visit forms, {assistant.name} conversations, connect cards, event sign-ups and the newsletter all land here at New." });
   tour.push({ target: '[data-tour="guests.email"]', title: "Email first, a person approves", text: "Follow-up goes by email. Texting stays off unless the church turns it on, and {assistant.name}'s drafts wait for approval." });
   GM.setTour(tour);

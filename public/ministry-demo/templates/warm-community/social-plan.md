@@ -5,7 +5,7 @@
 **Plan length:** six months, starting Monday, November 30, 2026
 **Team it is built for:** two people. A communications lead (staff or a committed volunteer, about 5 hours a week) and a Sunday volunteer who takes the photos and cuts the two weekly clips (about 3 hours a week). The pastors give 15 minutes every Thursday and record one short video a month. The hour-by-hour split is in section 5.
 
-> Template preview: Goldenrod Commons is a fictional church. Swap in a real church's name, times, people and numbers before using this plan.
+> Template preview: Goldenrod Commons is a made-up church. Swap in a real church's name, times, people and numbers before using this plan.
 
 ---
 
@@ -50,7 +50,7 @@ Aim for a mix across the week. No pillar should go two weeks without a post.
 | **2. The Message** | Teaching, turned into small pieces | 25% | Quote cards, 45 second clips, "three things from Sunday" carousels, group questions |
 | **3. Neighbors and Stories** | Real people from the church family | 20% | Baptism stories, a volunteer spotlight, "how I found Goldenrod," pastor Q and A |
 | **4. Love the Block** | Serving Beaverdale and Des Moines | 15% | Food drive, Porch Project updates, a shout-out to a local business or school |
-| **5. Porch Life** | Light, warm, behind the scenes | 15% | Coffee bar crew at 8:15, the chili cook-off, sunflowers on the welcome table, the pastors' beagle |
+| **5. Porch Life** | Light, warm, behind the scenes | 15% | Coffee bar crew at 8:15, the chili cook-off, sunflowers on the welcome table, the pastors' backyard chickens |
 
 ## 5. Weekly rhythm
 

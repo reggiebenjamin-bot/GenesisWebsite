@@ -18,15 +18,39 @@
     .gr-page .v2-viz-pair>.v2-card{display:flex;flex-direction:column;min-width:0}
   .gr-page .v2-viz-pair>.v2-card>.gm-chart{margin-top:auto}
   .gr-steps th[scope="row"] b{display:block;font-weight:inherit;white-space:nowrap}
-  .gr-steps th[scope="row"] .gr-from{display:block;color:var(--v2-muted);font-size:11px;white-space:nowrap}
+  .gr-steps th[scope="row"] .gr-from{display:block;color:var(--v2-muted);font-size:11px}
   .gr-steps thead th{white-space:nowrap}
   .gr-steps td{white-space:nowrap}
+  /* The step table keeps its columns apart: in a narrow card it scrolls inside its own frame instead of printing one column over the next. */
+  .gr-steps{min-width:300px}
+  .gr-steps thead th:nth-child(1){width:32%}
+  .gr-steps thead th:nth-child(2){width:26%}
+  .gr-steps thead th:nth-child(3){width:17%}
+  .gr-steps thead th:nth-child(4){width:25%}
+  .gr-steps tbody tr:last-child th{border-bottom:0}
   .gr-page .v2-report-updated{white-space:nowrap}
   .gr-steps .is-num{text-align:right;font-variant-numeric:tabular-nums}
   .gr-foot{display:flex;align-items:flex-start;gap:10px;margin:0;color:var(--v2-fine);font-size:12px;line-height:1.6}
   .gr-foot svg{flex:none;margin-top:2px;color:var(--v2-positive)}
   .gr-scope{display:flex;align-items:center;gap:8px}
   .gr-scope svg{flex:none;color:var(--v2-positive)}
+  /* A narrow page (the Hope dock open, or a small window) keeps the three numbers on one row, each starting at the column's edge,
+     instead of wrapping two and one with the last one indented. */
+  .gr-page{container-type:inline-size}
+  /* Two chart cards under about 340px each (the Hope dock open beside a laptop window) stack, one chart per row. */
+  @container (max-width:700px){.gr-page .v2-viz-pair{grid-template-columns:minmax(0,1fr)}}
+  @media (min-width:861px){
+    @container (min-width:440px) and (max-width:660px){
+      .gr-page .v2-report-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .gr-page .v2-report-metric{padding-left:16px;padding-right:16px}
+      .gr-page .v2-report-metric:first-child{padding-left:0}
+    }
+    @container (max-width:439px){
+      .gr-page .v2-report-metrics{grid-template-columns:minmax(0,1fr)}
+      .gr-page .v2-report-metric{padding:12px 0;border-right:0}
+      .gr-page .v2-report-metric+.v2-report-metric{border-top:1px solid var(--v2-kpi-line,var(--v2-border))}
+    }
+  }
   @media (max-width:600px){.gr-page .v2-report-metric{padding-left:0;border-right:0}.gr-page .v2-report-metric+.v2-report-metric{padding-top:16px;border-top:1px solid var(--v2-kpi-line,var(--v2-border))}}
   @media print{
     .v2-page-actions,.gm-chart-toggle,.v2-view-picker{display:none!important}
@@ -127,6 +151,7 @@
 
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
 <script src="shared/app.js"></script>
 <script>
 GM.ready(function (ctx) {
@@ -157,19 +182,23 @@ GM.ready(function (ctx) {
   /* ---------- Head, the phone view picker and the basis line ---------- */
   $("gr-sub").textContent = "How guests find their way at " + c.short + ", from the first hello to a place to serve.";
   $("gr-print").addEventListener("click", function () { window.print(); });
-  var VIEWS = [["attention", "Needs You", "church-guests.html"], ["all", "All Guests", "church-guests.html?view=all"], ["board", "By Stage", "church-guests.html?view=board"], ["drafts", "Drafts Waiting", "church-guests.html?view=drafts"], ["report", "Guest Report", "church-guests-report.html"]];
+  var VIEWS = [["attention", "Needs You", "church-guests.html"], ["all", "All Guests", "church-guests.html?view=all"], ["board", "By Stage", "church-guests.html?view=board"], ["drafts", "Drafts Waiting", "church-guests.html?view=drafts"], ["quiet", "Gone Quiet", "church-guests.html?view=quiet"], ["report", "Guest Report", "church-guests-report.html"]];
   $("gr-view").innerHTML = VIEWS.map(function (v) { return '<option value="' + v[0] + '"' + (v[0] === "report" ? " selected" : "") + ">" + esc(v[1]) + "</option>"; }).join("");
   $("gr-view").addEventListener("change", function () { var v = this.value; VIEWS.forEach(function (x) { if (x[0] === v && v !== "report") GM.go(x[2]); }); });
   $("gr-scope").innerHTML = ic("shield") + "<span>Counts only. No names, no prayer and no private words. Last 12 months, sized for " + esc(c.short) + ", " + esc(c.size.charAt(0).toLowerCase() + c.size.slice(1)) + ".</span>";
-  $("gr-updated").textContent = "Updated " + fmt.time(D.now);
+  $("gr-updated").innerHTML = "<span class=\"v2-updated\">Updated today, " + esc(fmt.time(D.now)) + "</span>";
 
   /* ---------- Below Plus: the real page head, then the calm locked card ---------- */
   if (ctx.locked) {
-    $("gr-sub").textContent = GM.isIncluded("guests") ? "The guest report comes with Plus. Guests, the board and welcome notes are all here on the " + GM.level().code + " plan." : "The guest report comes with Plus. Guests and the board come with Shepherd.";
+    $("gr-sub").textContent = GM.isIncluded("guests") ? "The guest report comes with the Plus plan. Guests, the board and welcome notes are all here on the " + GM.level().code + " plan." : "The guest report comes with the Plus plan. Guests and the board come with the Shepherd plan.";
     $("gr-print").remove();
     var pg = document.querySelector(".gr-page");
     Array.prototype.slice.call(pg.children).forEach(function (ch) { if (!ch.matches(".v2-page-head,.v2-view-picker,noscript")) ch.remove(); });
-    pg.insertAdjacentHTML("beforeend", GM.lockedState("reports", { title: "The guest report" }));
+    pg.insertAdjacentHTML("beforeend", GM.lockedState("reports", { title: "The guest report", thumb: "guests-report" }));
+    /* The card shows the Guest Report's own picture (locked-guests-report-<slug>.jpg), never the Reports
+       summary's, so any other picture is taken off. */
+    var lockCard = pg.querySelector(".gm-locked-card"), lockImg = lockCard && lockCard.querySelector(".gm-locked-thumb img");
+    if (lockImg && !/locked-guests-report[-.]/.test(lockImg.getAttribute("src") || "")) { lockImg.closest("figure").remove(); lockCard.classList.remove("has-thumb"); }
     pg.classList.add("gm-locked-page");
     GM.carryLinks();
     return;
@@ -275,7 +304,8 @@ GM.ready(function (ctx) {
   $("gr-foot").innerHTML = ic("shield") + '<span>No names, prayer or private words appear in reports. Sources come from the form or card a guest filled in; nothing is tracked on the website, and ' + esc(HOPE) + ' keeps no conversations. Prayer, care and reply times live in the <a class="gm-link" href="church-reports.html">care reports</a>, and every guest on the <a class="gm-link" href="church-guests.html?view=board">board</a> has an owner and a next step.</span>';
 
   GM.hope.setBriefing({
-    line: GM.greeting() + ", {name}. " + year + " new guests in twelve months, a first hello in " + MEDIAN_FIRST_CONTACT + " hours, and " + rate + "% came back within six weeks. The biggest drop is " + leak.from.label + " to " + leak.to.label + ".",
+    /* About 80 characters, as Genesis OS writes its greeting: the greeting and the two numbers a front office watches. */
+    line: GM.greeting() + ", {name}. " + year + " new guests in 12 months, a first hello in about " + MEDIAN_FIRST_CONTACT + " hours.",
     chips: [{ label: "Open By Stage", href: "church-guests.html?view=board", primary: true }, { label: "Who Has Not Come to Start Here?", ask: "Who visited but has not come to Start Here?" }, { label: "All Reports", href: "church-reports.html" }]
   });
 

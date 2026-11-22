@@ -1,4 +1,4 @@
-# Photo credits: Classic & Timeless template
+# Photo credits: Classic and Timeless template
 
 Thirteen photos are free stock images from Unsplash, used under the Unsplash License (free for commercial and non-commercial use, no permission needed, attribution appreciated). None are Unsplash+ images: every Unsplash file was downloaded from images.unsplash.com, never plus.unsplash.com. One photo (bible-study-round-table.jpg) is from Pexels under the Pexels License (free to use, no attribution required, credited here anyway). Each was saved at 1800px wide, JPEG quality 80, and checked by eye for readable logos, name tags and other church names.
 
@@ -21,6 +21,6 @@ The people shown are not members of any real church. Calder Hill Chapel is a fic
 | morning-field-mist.jpg | A misty green field and tree line at first light | Yuliya Grechushkina | https://unsplash.com/photos/a-foggy-field-with-trees-in-the-background-23Q38zUVb-s | Unsplash License |
 | elders-laughing.jpg | Older friends holding hands and laughing at a gathering | Age Cymru | https://unsplash.com/photos/elderly-people-enjoying-a-social-gathering-indoors-96vNkptUfz0 | Unsplash License |
 
-The pastors photo was swapped during the template review for a wider, relaxed outdoor portrait that no other Genesis template uses. The Bible study photo replaced an earlier Unsplash shot of hands on Bibles, because that shot came from the same venue as a photo in the Bold & Dark template. Retouching is allowed under both licenses. The original choir photo (stage lighting, concert staging) was replaced by the pews photo during the design review, because it broke the brand board photo rules.
+The pastors photo was swapped during the template review for a wider, relaxed outdoor portrait that no other Genesis template uses. The Bible study photo replaced an earlier Unsplash shot of hands on Bibles, because that shot came from the same venue as a photo in the Bold and Dark template. Retouching is allowed under both licenses. The original choir photo (stage lighting, concert staging) was replaced by the pews photo during the design review, because it broke the brand board photo rules.
 
 Licenses: Unsplash License https://unsplash.com/license and Pexels License https://www.pexels.com/license/

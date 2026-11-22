@@ -183,71 +183,77 @@ The source belongs to another team and is only read. The script:
   as the first 1440 by 900 of each look's `shots/desktop/home-01.jpg`, so the
   cards always match the previews they open. `--looks-only` does just this.
 - copies what the source's `platform/DESIGN.md` (section 12, "Uploading the
-  preview") lists: the gallery `index.html`, `shared/hope-demo.js`,
-  `platform/` without `DESIGN.md`, and each `templates/<slug>/` without its
-  `shots/` (except the `shots/desktop/home-01.jpg` and
-  `shots/mobile/home-01.jpg` the gallery shows) and without the `*.mjs`
-  build tools. The gallery's three loose pictures (`early-look.jpg`,
-  `four-looks.jpg`, `geai-ministry-page.jpg`) stay out: nothing links to
-  them, and one is a screenshot of an old `/ministry`.
+  preview") lists: the gallery `index.html`, `shared/crisis-words.js` and
+  `shared/hope-demo.js`, `platform/` without `DESIGN.md`, and each
+  `templates/<slug>/` without its `shots/` (except the
+  `shots/desktop/home-01.jpg` and `shots/mobile/home-01.jpg` the gallery
+  shows) and without the `*.mjs` build tools. The gallery's three loose
+  pictures (`early-look.jpg`, `four-looks.jpg`, `geai-ministry-page.jpg`) stay
+  out: nothing links to them, and one is a screenshot of an old `/ministry`.
+  So do the working files (`tools/`, `brand/`, `LAUNCH.md`, `README.md`,
+  `shared/test.html`, `shared/hope-check.html`).
 - makes the public copy. The Growth Desk (`platform/sales-*`, Genesis's own
   tool for finding and selling to churches, and the two hub pictures of it)
-  stays out, by the owner's decision. `scripts/ministry-demo-public.mjs` then
-  edits the copied pages and scripts so nothing public links to it, tours it or
-  points at it: the hub's Growth Desk doors and links, the Growth Desk entries
-  in the account menu and Jump To, and the tours and demo path stops on its
-  screens go, Compare Plans opens the plans on the hub (or, from the hub, the
-  journey), and the guided demo starts at Today. The journey's chapter on how
-  Genesis finds a church goes too (the journey has four chapters), with Hope's
-  "How Does Genesis Find Churches?" answer and the Growth Desk's own sample
-  data in `platform/shared/data.js` (prospects, outreach, the suppression
-  list, the pipeline). Other edits make the demo point back to Genesis: "Book a
-  Consultation" (`/contact?topic=ministry`) in the hub, journey and gallery
-  headers, menus, closing bands and footers, in the church workspace's account
-  menu, in Hope's price and consultation answers, and on the last card of the
-  guided demo. Each card of the guided demo also says which screen of how many
-  it is, Hope on the four sample sites answers a price question with the plans
-  and their prices, and the light theme draws the Genesis mark in ink. Each edit must find its text
-  exactly, so a change in the source stops the sync with the edit's name
-  instead of leaving a link behind. The script prints every file left out and
-  every edit made.
-- turns the draft levels into the three plans with `PLAN_RENAMES` in the same
-  file: Level 01 (Welcome) becomes Care, Level 02 (Connect) Shepherd and
-  Level 03 (Shepherd) Plus, with $149, $299 and $499 a month where the demo
-  said "Pricing set with Genesis", and Hope's price answer is the same
-  sentence as on `/ministry`. Where a reader saw the word "level" ("Compare
-  Levels", "Demo This Level", "Switch the level"), the copy says "plan", and
-  "at" before a plan name reads "on the ... plan". Class names, data keys and
-  the `#levels` anchor keep the word. The renames assume the source still names the
-  draft levels, and the sync stops if it does not.
+  stays out, by the owner's decision. The source keeps it behind a presenter
+  mode (`?present=1`): the story pages mark its parts `data-present-only`, and
+  the shell and the guided demo read `GM.presenting`. The public copy has no
+  presenter mode. `scripts/ministry-demo-public.mjs` drops every
+  `data-present-only` element (the hub's Growth Desk doors and links, the
+  journey's Finding to Launch chapter), keeps every `data-public-only` one
+  (the journey's Getting Started chapter, so the journey has five chapters),
+  removes the presenter switch from each story page's head, and turns
+  presenter mode off in `platform/shared/app.js`, `platform/story/story.js` and
+  `platform/shared/demo.js`. It then cuts what is left of the Growth Desk: the
+  Growth Desk entries in the account menu and Jump To, the tours and demo path
+  stops on its screens (the guided demo starts at Today), Hope's "How Does
+  Genesis Find Churches?" answer, the hub's rule on how Genesis writes to
+  churches it has found, and the Growth Desk's own sample data in
+  `platform/shared/data.js` (prospects, outreach, the suppression list, the
+  pipeline). Talk With Genesis, the source's way back to Genesis, opens the
+  church consultation on this site by its path,
+  `/contact?topic=ministry-demo`, in a new tab; the public copy adds it to the
+  hub, journey and gallery headers, menus and footers and to the church
+  workspace's account menu. Each card of the guided demo also says which
+  screen of how many it is. Each edit must find its text exactly (a drop, its
+  number of elements), so a change in the source stops the sync with the
+  edit's name instead of leaving a link behind. The script prints every file
+  left out and every edit made.
+- checks the plans. The source names the three plans and their prices itself:
+  Care at $149 a month, Shepherd at $299 and Plus at $499, with Enterprise
+  scoped on a call, and `D.pricingLine` in `platform/shared/data.js` is the
+  same sentence as the price answer on `/ministry`. The sync stops when they
+  differ from `MINISTRY_PLANS` (`planProblems`), or when the source still has
+  the draft levels.
 - adds `<meta name="robots" content="noindex">` to any page without it.
 - builds the copy in a temporary folder and replaces `public/ministry-demo/`
   only when it passes its checks: no file names a `sales-*` page or the words
   "Growth Desk", and none outside the copied Genesis OS design system
   (`platform/shared/os/`) says "acquisition", "sales desk", "suppression" or
-  "prospect"; the only link to the rest of geai.us is `/contact?topic=ministry`;
-  every local link in a page, stylesheet or platform script
-  resolves to a copied file, every script compiles, and no page or script
-  keeps a Level 01 to 03 label, an old level name, a draft level note, the
-  word "level" where a reader sees it, or "pricing set with Genesis". Otherwise it stops and leaves the old copy as
-  it was.
+  "prospect"; the only link to the rest of geai.us is
+  `/contact?topic=ministry-demo`, and never by its full address; every local
+  link in a page, stylesheet or platform script resolves to a copied file,
+  every script compiles, and no page or script keeps a Level 01 to 03 label,
+  an old level name, a draft level note, the word "level" where a reader sees
+  it, or "pricing set with Genesis". Otherwise it stops and leaves the old copy
+  as it was.
 
 **The committed copy.** `public/ministry-demo/` is synced from genesis-ministry
-commit `432d5cd`, exported with `git archive` as described below, so it shows
-the three plans and their prices. The three desktop posters in
-`public/video/ministry/` were retaken from it, so their plan switcher reads
-Care, Shepherd and Plus.
+commit `1beb6da` (its `main` on November 22, 2026), exported with
+`git archive` as described below. It shows the three plans and their prices
+and the gold Genesis G. The posters in `public/video/ministry/` were taken
+from an earlier copy, `432d5cd`.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.
 
 The source folder is a git repository another team keeps editing. Publish a
 reviewed commit, not work in progress: export it into an empty folder and sync
-from there. The committed copy was made from the source's commit `432d5cd`:
+from there. The committed copy was made from the source's commit `1beb6da`:
 
 ```bash
-git -C "C:/path/to/genesis-ministry" archive 432d5cd | tar -x -C /tmp/gm-432d5cd
-node scripts/sync-ministry-demo.mjs /tmp/gm-432d5cd
+mkdir /tmp/gm-1beb6da
+git -C "C:/path/to/genesis-ministry" archive 1beb6da | tar -x -C /tmp/gm-1beb6da
+node scripts/sync-ministry-demo.mjs /tmp/gm-1beb6da
 ```
 
 A folder address such as `/ministry-demo/` or `/ministry-demo/platform/`
@@ -255,8 +261,9 @@ redirects (307) to its `index.html` (`next.config.ts`), because the demo's
 links are relative and would break if the folder were served in place.
 
 `tests/ministry-demo-public.test.ts` tests the edits and checks the committed
-copy the same way: no Growth Desk, no dead local link, every page noindex, and
-a guided demo path that starts at Today.
+copy the same way: no Growth Desk, no presenter parts, no dead local link,
+every page noindex, the plans and prices as `/ministry` shows them, and a
+guided demo path that starts at Today.
 
 Review `git status` before committing the copy. Until the copy is committed,
 `/ministry` links to none of it: each preview is linked only once its file is

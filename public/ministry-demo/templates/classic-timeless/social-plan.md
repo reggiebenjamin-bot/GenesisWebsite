@@ -1,6 +1,6 @@
 # Calder Hill Chapel: social marketing plan
 
-**Template preview.** Calder Hill Chapel is a fictional church in Richmond, Virginia, used to show the Genesis Ministry Classic & Timeless package. A real church receives this plan rewritten around its own people, calendar and numbers.
+**Template preview.** Calder Hill Chapel is a made-up church in Richmond, Virginia, used to show the Genesis Ministry Classic and Timeless package. A real church receives this plan rewritten around its own people, calendar and numbers.
 
 This plan is built for a team of two, plus a pastor who gives it fifteen minutes a week.
 
@@ -148,7 +148,7 @@ Captions open with a plain, human line, say one true thing, and end with one cle
 
 **4. Giving Tuesday: the bell tower**
 > Our bell has rung over Calder Hill Road since 1891. Last spring we found a crack in the frame that holds it, and it has been quiet ever since.
-> The restoration costs $86,000. We have raised $52,400. Today, every gift up to $10,000 is matched by two families in our congregation. Help us ring it again by Easter. Give at the link in our bio.
+> We are more than halfway there. Today, two families in our congregation will match every gift. Help us ring it again by Easter. Give at the link in our bio.
 
 **5. Lessons and Carols (event)**
 > Nine short readings, carols old and new, candlelight and the 11:00 choir. Advent Lessons and Carols is one of our oldest traditions and one of the easiest ways to bring a friend to church.
@@ -240,6 +240,6 @@ Keep one Google Sheet with one row per month. Review it on the first Monday of t
 | **MailerLite** or **Mailchimp** | Free up to 1,000 or 500 subscribers | The Thursday letter |
 | **Google Business Profile** | Free | Weekly updates, event posts, replying to reviews |
 | **Google Drive and Sheets** | Free | The shared *Sunday Media* folder, this calendar, the monthly numbers |
-| **A clip-on microphone** | About $25 | Clear audio for short announcements and member stories |
+| **A clip-on microphone** | Low cost | Clear audio for short announcements and member stories |
 
 The brand board is the style guide for every one of these. When in doubt, choose the warmer, plainer, quieter option.

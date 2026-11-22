@@ -1,6 +1,6 @@
 # Lampstand Church: social marketing plan
 
-*Template preview. Lampstand Church is a fictional demo church in the Short North, Columbus, Ohio, built to show the Genesis Ministry Bold & Dark package. Swap in your own names, times, numbers and photos.*
+*Template preview. Lampstand Church is a made-up church in the Short North, Columbus, Ohio, built to show the Genesis Ministry Bold and Dark package. Swap in your own names, times, numbers and photos.*
 
 **Who runs this:** two people.
 
@@ -122,7 +122,7 @@ Series: **Night Light** (Advent), weeks 1 to 4. Baptism Sunday is December 6. Ch
 | Wed, Dec 16 | IG, FB | Next Steps | Carousel: "Bringing kids on Christmas Eve? Here is the plan" | Plan your visit |
 | Thu, Dec 17 | IG, FB, Email, Google | Next Steps | Main Christmas Eve invite and email | Invite one person |
 | Fri, Dec 18 | TikTok, IG | People | Student voices: "What Christmas means to me" | Follow |
-| Sat, Dec 19 | FB Event, IG Stories | Next Steps | Boost the Christmas Eve Facebook event ($40, 10 miles) | RSVP |
+| Sat, Dec 19 | FB Event, IG Stories | Next Steps | Boost the Christmas Eve Facebook event (a small boost, 10 miles) | RSVP |
 | Sun, Dec 20 | IG Stories, YouTube Live | Sunday Nights | Live Stories, the candle moment at 6 PM | Watch live |
 | Mon, Dec 21 | IG, TikTok, Shorts | The Message | Clip 1 from Night Light week 4 | Watch the full message |
 | Tue, Dec 22 | IG, FB | Next Steps | Christmas Eve questions carousel: parking, length, kids | Save it |
@@ -256,14 +256,14 @@ Keep a one-page scorecard in a shared Google Sheet. Review it at the first staff
 
 | Job | Tool | Cost |
 |---|---|---|
-| Graphics, quote cards, carousels | Canva with templates built from the brand board. The free plan is enough; Canva Pro adds a brand kit. Check whether your church qualifies for Canva for Nonprofits. | Free, or about $120 a year for Pro |
+| Graphics, quote cards, carousels | Canva with templates built from the brand board. The free plan is enough; Canva Pro adds a brand kit. Check whether your church qualifies for Canva for Nonprofits. | Free, or Canva Pro if you want the brand kit |
 | Scheduling Instagram and Facebook | Meta Business Suite | Free |
 | Scheduling TikTok | TikTok's built-in scheduler, or Buffer's free plan | Free |
 | Clips and captions | CapCut | Free |
 | Live stream | OBS Studio and YouTube Studio | Free |
 | Photo editing | Lightroom mobile or Snapseed, with the "Lampstand Warm" settings saved as a preset | Free |
-| Email | Mailchimp's free plan while the list is small, then a paid plan as it grows | Free, then about $15 to $40 a month |
+| Email | Mailchimp's free plan while the list is small, then a paid plan as it grows | Free, then a paid plan as the list grows |
 | Link in bio | A simple links page on the church website with UTM links | Free |
 | Tracking links | Google Campaign URL Builder and Bitly free | Free |
 | Content calendar and scorecard | Google Sheets in a shared Drive folder | Free |
-| Local boosts | Facebook and Instagram ads for big days only | About $100 a month, more at Christmas and Easter |
+| Local boosts | Facebook and Instagram ads for big days only | A small set amount each month, a little more at Christmas and Easter |

@@ -1,4 +1,4 @@
-# Photo credits: Bold & Dark (Lampstand Church demo)
+# Photo credits: Bold and Dark (Lampstand Church demo)
 
 All photos are free stock photos from Unsplash, used under the Unsplash License (free for commercial use, no permission needed, attribution appreciated). None are Unsplash+ (premium) images; every image was downloaded from images.unsplash.com, not plus.unsplash.com. Each was resized to 1800px wide, JPEG quality 80, and checked by eye before it was kept. Five photos were added on 2026-11-20 and given the same warm stage-light grade as the rest of the set (warmer highlights, deep warm shadows, a little less saturation, a soft edge falloff); editing is allowed under the Unsplash License.
 

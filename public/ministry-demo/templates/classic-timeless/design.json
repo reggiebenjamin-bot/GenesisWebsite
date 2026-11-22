@@ -1,12 +1,13 @@
 {
   "template": {
     "slug": "classic-timeless",
-    "name": "Classic & Timeless",
+    "name": "Classic and Timeless",
     "audience": "Established congregations with history, a building people love and a multi-generational family",
     "summary": "A heritage look that still feels current: parchment grounds, deep forest green, brass hairlines and a small burgundy accent, set in Newsreader with a flared humanist sans for reading. Photos sit in ivory mats or inside an arched chapel window."
   },
   "church": {
     "name": "Calder Hill Chapel",
+    "shortName": "Calder Hill",
     "fictional": true,
     "nameCheck": "Web search on 2026-11-19 for \"Calder Hill Chapel\" Richmond Virginia found no church by that name.",
     "city": "Richmond",
