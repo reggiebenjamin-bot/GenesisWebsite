@@ -142,10 +142,18 @@ Use 16:9 landscape files. The loops are muted, play only while on screen,
 have a pause button, and are replaced by their poster for readers who prefer
 reduced motion. A poster can arrive before its film: it then stands in for the
 film and is described by the `stillAlt` text beside it in
-`lib/ministryPage.ts` (written for stills of the Today view, the care inbox
-and the member app home screen), so update that text if a poster shows
-something else. While the hero has neither a film nor a poster, its frame is
-hidden on phones, where the drawn placeholder is too small to read.
+`lib/ministryPage.ts`, so update that text whenever a poster changes. While the
+hero has neither a film nor a poster, its frame is hidden on phones, where the
+drawn placeholder is too small to read.
+
+The four posters are in place now: 1920 by 1080 stills from the public demo,
+with Lampstand Church, a made up sample church. `demo-landscape.jpg` is Today
+at Level 03 in the light theme with the Hope dock closed; `loop-front-office.jpg`
+is the Guests view; `loop-back-office.jpg` is the care inbox, with prayer shown
+only as locked topics; `loop-member-app.jpg` is the member app home screen in a
+phone on a calm ivory background. Each still keeps the demo's "Design preview.
+Sample data shown." line. `tests/ministry-edition.test.ts` checks that each
+poster is there at 1920 by 1080.
 
 **Demo previews.** The four looks, the gallery and the clickable platform are
 static pages served from `public/ministry-demo/`. Copy them in from the

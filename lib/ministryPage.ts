@@ -55,10 +55,15 @@ export function ministryDemoAction(hasFile: (path: string) => boolean): Ministry
 }
 
 /*
- * Where each film lives in public/. None of these files exist yet: the page
- * checks for each one when it renders, and shows the poster, or a placeholder
- * drawn from the site's visual kit, until the file is there. Add the file and
+ * Where each film lives in public/. The films do not exist yet: the page
+ * checks for each file when it renders, and shows the poster, or a placeholder
+ * drawn from the site's visual kit, until the film is there. Add the file and
  * rebuild; no code changes.
+ *
+ * The posters are stills from the public demo (public/ministry-demo/), with
+ * Lampstand Church, a made up sample church: Today at Level 03 in the light
+ * theme, the Guests view, the care inbox, and the member app home screen in a
+ * phone. Each stillAlt below describes its still; update both together.
  */
 export const ministryMedia = {
   demo: {
@@ -93,7 +98,7 @@ export const ministryHero = {
     "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
   /** Describes the poster image when it is shown without the film. Keep it true to the still. */
   stillAlt:
-    "The Genesis Ministry Today view for a made up sample church: first time guests to welcome, care to follow up and the week ahead.",
+    "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing counts 4 new guests, 6 care items waiting and 4 drafts to approve, and the next move is a welcome note for a first time guest, Maya T.",
   filmPlay: "Play the guided film",
   filmNote: "Sample church and sample people shown.",
 } as const;
@@ -229,7 +234,7 @@ export const ministryPlatform = {
       filmLabel:
         "Silent looping film of the front office with sample data: a new guest arrives in the pipeline and a welcome note waits for a person to approve it.",
       stillAlt:
-        "The Today view for a made up sample church, with first time guests to welcome and next steps waiting for a person.",
+        "The Guests view for Lampstand Church, a made up sample church. It counts 18 guests with an open next step, 4 new this week and 6 follow ups due, and shows Maya T. as the guest to welcome first, with her welcome note ready for review.",
     },
     {
       id: "backOffice",
@@ -240,7 +245,7 @@ export const ministryPlatform = {
       filmLabel:
         "Silent looping film of the back office with sample data: a prayer request reaches the care inbox and a pastor opens one person's page.",
       stillAlt:
-        "The shared care inbox for a made up sample church, with prayer requests and messages for the pastors and prayer team.",
+        "The shared care inbox for Lampstand Church, a made up sample church. Six conversations wait on the team, oldest first. Prayer requests show only a topic behind a lock, and an everyday question about joining the setup team is open beside them.",
     },
     {
       id: "memberApp",
@@ -251,7 +256,7 @@ export const ministryPlatform = {
       filmLabel:
         "Silent looping film of the member app with sample data: a member opens the app, sees the week ahead and sends a prayer request.",
       stillAlt:
-        "The member app home screen on a phone for a made up sample church, with the week ahead and a way to send a prayer request.",
+        "The member app home screen for Lampstand Church, a made up sample church, on a phone. Sarah sees a reply from her pastor, buttons to ask for prayer, send a message or talk about serving, and this week's sermon notes.",
     },
   ] satisfies readonly MinistryPlatformRow[],
 } as const;
