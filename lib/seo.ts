@@ -1,5 +1,6 @@
 import { aiEmployeesHero } from "./aiEmployees.ts";
-import { genesisPositioning, genesisTools, managedPlans, type ToolId } from "./offers.ts";
+import { defaultDescription, defaultTitle } from "./defaultMeta.ts";
+import { genesisTools, managedPlans, type ToolId } from "./offers.ts";
 import { blogPosts } from "./blog.ts";
 import { siteUrl } from "./site.ts";
 import { texasLandings } from "./texasPages.ts";
@@ -79,8 +80,8 @@ export const toolSeo: Readonly<Record<ToolId, { title: string; description: stri
 export const seoPages: readonly SeoPage[] = [
   {
     path: "/",
-    title: { absolute: `Genesis AI | ${genesisPositioning.category}` },
-    description: genesisPositioning.summary,
+    title: { absolute: defaultTitle },
+    description: defaultDescription,
     label: "Home",
     image: socialImage("home", "Genesis AI — AI infrastructure for growing businesses"),
     lastModified: "2026-11-15",
@@ -211,6 +212,28 @@ export const seoPages: readonly SeoPage[] = [
     priority: 0.7,
   },
   {
+    path: "/capital-desk",
+    title: "Capital Desk",
+    description:
+      "Request a consult for Capital Desk, a back office for brokers. No checkout on this page. Genesis follows up about fit.",
+    label: "Capital Desk",
+    image: null,
+    lastModified: "2026-11-22",
+    changeFrequency: "monthly",
+    priority: 0.6,
+  },
+  {
+    path: "/leadscout",
+    title: "Leadscout",
+    description:
+      "Request a Leadscout consult or demo. Tell us about your operation and we will follow up. This page does not start checkout.",
+    label: "Leadscout",
+    image: null,
+    lastModified: "2026-11-22",
+    changeFrequency: "monthly",
+    priority: 0.6,
+  },
+  {
     path: "/enterprise",
     title: "Software for Multi Location Operations",
     description:
@@ -234,9 +257,9 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/privacy",
-    title: "Privacy Policy Draft",
+    title: "Privacy Policy",
     description:
-      "Draft Genesis privacy notice for legal review. What information the Genesis software collects, how payments and sign in work, and how to reach us.",
+      "Genesis privacy notice. What information the Genesis software collects, how payments and sign in work, and how to reach us.",
     label: "Privacy",
     image: null,
     lastModified: "2026-11-05",
@@ -245,9 +268,9 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/terms",
-    title: "Terms of Service Draft",
+    title: "Terms of Service",
     description:
-      "Draft Genesis terms for legal review. The software is provided as is, you are responsible for lawful use, and classes are education only.",
+      "Genesis terms of service. The software is provided as is, you are responsible for lawful use, and classes are education only.",
     label: "Terms",
     image: null,
     lastModified: "2026-11-05",

@@ -25,6 +25,7 @@ export function ConsultationForm({
   initialNote = "",
   audience = "business",
   websiteCheck = false,
+  interest = "",
 }: {
   initialPlan?: string;
   /** A starting note for the notes field, from a known topic link. */
@@ -41,6 +42,8 @@ export function ConsultationForm({
    * the church's website first, and its title, button and notes say so.
    */
   websiteCheck?: boolean;
+  /** Which consult this request came from, forwarded with the existing form. */
+  interest?: string;
 }) {
   const church = audience === "church";
   const check = church && websiteCheck;
@@ -116,6 +119,7 @@ export function ConsultationForm({
       `Team Size: ${payload.monthly_leads ?? ""}`,
       `Operation Type: ${payload.operation_type ?? ""}`,
       `Plan: ${payload.plan ?? ""}`,
+      `Interest: ${payload.interest ?? ""}`,
       `Current Setup: ${payload.notes ?? ""}`,
       `Page: ${payload.page ?? ""}`,
     ].join("\n");
@@ -349,6 +353,8 @@ export function ConsultationForm({
           className={`${control} py-4`}
         />
       </label>
+
+      {interest ? <input type="hidden" name="interest" value={interest} /> : null}
 
       {/* Honeypot — hidden from people, irresistible to bots. */}
       <input

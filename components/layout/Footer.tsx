@@ -22,7 +22,12 @@ const editionPages = [...editions, ministryEdition].map((edition) => ({
   href: edition.href,
 }));
 
-/* Draft legal pages and the classes index, linked from the bottom bar. */
+/* Legal pages and the classes index, linked from the bottom bar. */
+
+const consultPages = [
+  { label: "Capital Desk", href: "/capital-desk" },
+  { label: "Leadscout", href: "/leadscout" },
+];
 const bottomLinks = [
   { label: "Classes", href: "/classes" },
   { label: "Privacy", href: "/privacy" },
@@ -46,7 +51,7 @@ export function Footer() {
         <div>
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
-            {[...pathPages, ...editionPages, { label: "Texas", href: "/texas" }, { label: "Texas service businesses", href: "/texas/service-businesses" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
+            {[...pathPages, ...editionPages, ...consultPages, { label: "Texas", href: "/texas" }, { label: "Texas service businesses", href: "/texas/service-businesses" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>

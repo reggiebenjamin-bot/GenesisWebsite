@@ -3,13 +3,13 @@ import "./globals.css";
 import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
 import {
   DEFAULT_OFFER_PATH,
-  genesisPositioning,
   OFFER_PATH_ATTRIBUTE,
   OFFER_PATH_STORAGE_KEY,
   offerPathByPage,
   offerPathHashAliases,
   offerPaths,
 } from "@/lib/offers";
+import { defaultDescription, defaultTitle } from "@/lib/defaultMeta";
 import { indexable, siteUrl } from "@/lib/site";
 
 /* Search Console and Bing Webmaster Tools ownership tags, set per deployment
@@ -33,10 +33,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Genesis AI | AI Infrastructure for Growing Businesses",
+    default: defaultTitle,
     template: "%s | Genesis AI",
   },
-  description: genesisPositioning.summary,
+  description: defaultDescription,
   applicationName: "Genesis AI",
   category: "Business services",
   manifest: "/manifest.webmanifest",
@@ -63,22 +63,21 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Genesis AI",
     url: "/",
-    title: "Genesis AI | AI Infrastructure for Growing Businesses",
-    description: genesisPositioning.summary,
+    title: defaultTitle,
+    description: defaultDescription,
     images: [
       {
         url: "/images/social/og-home-1920x1080.png",
         width: 1920,
         height: 1080,
-        alt: "Genesis AI — AI infrastructure for growing businesses",
+        alt: "Genesis AI. AI employees for Texas businesses.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Genesis AI | AI Infrastructure for Growing Businesses",
-    description:
-      "Genesis Managed AI across communication, sales, deal flow, and the workflows that run the business.",
+    title: defaultTitle,
+    description: defaultDescription,
     images: ["/images/social/og-home-1920x1080.png"],
   },
   ...(Object.keys(verification).length ? { verification } : {}),

@@ -2,6 +2,7 @@ import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Link from "next/link";
 import { SectionIntro } from "@/components/ui/Blocks";
 import { TextLink } from "@/components/ui/Button";
+import { chooserProducts } from "@/lib/productChooser";
 import { managedOverview, managedPlans } from "@/lib/offers";
 import styles from "./PlanCards.module.css";
 
@@ -14,8 +15,8 @@ const TIERS = ["", styles.tierTwo, styles.tierThree];
  * The three Genesis Managed AI plans as three equal cards in the site's
  * earlier pricing look — dark surface, faint grid, a gold edge travelling
  * round — carrying the level, the price, what Genesis does there, two points,
- * and the one action that applies: every level opens the pricing page, where
- * the level checks out.
+ * and checkout for Business, Real Estate, and Lending on the existing
+ * /start routes.
  */
 export function PlanCards() {
   return (
@@ -71,14 +72,23 @@ export function PlanCards() {
                 ))}
               </ul>
 
-              <Link
-                href="/pricing#custom-infrastructure"
-                aria-label={`Choose Level ${plan.step} at ${plan.priceDisplay} a month`}
-                className={styles.cta}
-              >
-                Choose Level {plan.step}
-                <span aria-hidden="true">↗</span>
-              </Link>
+              <p className={styles.checkoutLabel}>Checkout</p>
+              <nav className={styles.choices} aria-label={`Level ${plan.step} checkout`}>
+                {chooserProducts().map((product) => {
+                  const level = product.levels.find((item) => item.id === plan.id);
+                  if (!level) return null;
+                  return (
+                    <Link
+                      key={product.key}
+                      href={level.href}
+                      aria-label={`${product.label} Level ${plan.step} checkout, ${plan.priceDisplay} a month, ${plan.setupLine}`}
+                      className={styles.cta}
+                    >
+                      {product.label}
+                    </Link>
+                  );
+                })}
+              </nav>
             </article>
           </li>
         ))}
@@ -88,7 +98,12 @@ export function PlanCards() {
         <p className="max-w-[58ch] text-[0.8rem] text-muted-dark">
           {managedOverview.thirdPartyShort}
         </p>
-        <TextLink href="/pricing#custom-infrastructure">See Pricing Details</TextLink>
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+          <TextLink href="/business">Business</TextLink>
+          <TextLink href="/real-estate">Real Estate</TextLink>
+          <TextLink href="/lending">Lending</TextLink>
+          <TextLink href="/pricing#custom-infrastructure">See Pricing Details</TextLink>
+        </div>
       </div>
     </div>
   );

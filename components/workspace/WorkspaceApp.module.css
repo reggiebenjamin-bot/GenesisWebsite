@@ -10,7 +10,10 @@
 .catalogIntro { max-width: 850px; margin: 0 auto clamp(1.25rem, 2vw, 2rem); text-align: center; }
 .eyebrow, .cardEyebrow, .briefStep { color: var(--color-gold-dark); font-family: var(--font-display); font-size: 0.67rem; font-weight: 700; letter-spacing: 0.19em; text-transform: uppercase; }
 .catalogIntro h1 { margin-top: 1.05rem; font-size: clamp(3.2rem, 6.5vw, 6.4rem); font-weight: 300; letter-spacing: -0.067em; line-height: 1.02; text-wrap: balance; }
-.catalogIntro > p:last-child { margin-top: 1rem; color: #5d5b56; font-size: clamp(1rem, 1.4vw, 1.17rem); }
+.catalogIntro > p { margin-top: 1rem; color: #5d5b56; font-size: clamp(1rem, 1.4vw, 1.17rem); }
+.catalogActions { display: flex; justify-content: center; }
+.pricingLink { display: inline-flex; min-height: 52px; align-items: center; justify-content: center; padding: 0 1.4rem; color: #222426; background: #f5f1e8; border: 1px solid #9a835f; border-radius: 6px; font-size: 0.95rem; font-weight: 700; }
+.pricingLink:hover { background: #fffaf0; }
 .catalogGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 2.25rem); max-width: 1240px; margin-inline: auto; }
 .productCard { display: flex; min-width: 0; flex-direction: column; overflow: hidden; color: #f8f5ef; background: #222426; border: 1px solid #343638; border-radius: 6px; box-shadow: 0 14px 28px rgb(20 19 16 / 0.12), 0 2px 5px rgb(20 19 16 / 0.06); touch-action: manipulation; -webkit-tap-highlight-color: rgb(198 165 108 / 0.22); transition: transform 220ms ease; }
 .productCard:hover, .productCard:focus-visible { border-color: #9a835f; box-shadow: 0 22px 38px rgb(20 19 16 / 0.18), 0 4px 10px rgb(20 19 16 / 0.08); transform: translateY(-4px); }
