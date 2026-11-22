@@ -291,7 +291,8 @@ test("the structured data carries the three plans at the prices the cards print"
 
 test("the business pricing page points churches to the Ministry plans", () => {
   const pricing = readFileSync(join(process.cwd(), "app", "(marketing)", "pricing", "page.tsx"), "utf8");
-  assert.match(pricing, /Genesis Ministry has its own plans, from \{ministryLevels\.levels\[0\]\.priceDisplay\} a month\./);
+  /* The same sentence as the plan cards, the demo and Hope: all three plans with their prices. */
+  assert.match(pricing, /For churches: \{ministryPriceAnswer\}/);
   assert.match(pricing, /href="\/ministry#levels">See the Ministry Plans</);
   assert.doesNotMatch(pricing, /set with Genesis on a call|Ministry Levels/);
   assert.match(seoPage("/ministry").description, /Plans from \$149 a month\./);
@@ -321,6 +322,12 @@ test("a church reaches a church version of the consultation form", () => {
   for (const topic of Object.keys(ministryConsultationNotes)) {
     assert.ok(ministryConsultationNote(topic), topic);
   }
+  /* The church consultation names the plans in the same sentence as the page, then links to them. */
+  assert.ok(ministryContact.aside.plans.line.startsWith(ministryPriceAnswer));
+  assert.equal(ministryContact.aside.plans.link.href, "/ministry#levels");
+  const contactPage = readFileSync(join(process.cwd(), "app", "(marketing)", "contact", "page.tsx"), "utf8");
+  assert.match(contactPage, /church && !websiteCheck \?/);
+  assert.match(contactPage, /ministryContact\.aside\.plans\.line/);
 });
 
 test("the process keeps the five shared stages", () => {

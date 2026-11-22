@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { TextLink } from "@/components/ui/Button";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
 import { isWebsiteCheckTopic, ministryConsultationNote, ministryContact } from "@/lib/ministryPage";
@@ -91,6 +92,17 @@ export default async function ContactPage({
             <p className="mt-7 text-[0.95rem] leading-relaxed text-muted-dark">
               <span className="text-ink">{copy.aside.closingLead}</span> {copy.aside.closing}
             </p>
+
+            {/* A church consultation names the plans and prices, as /ministry and /pricing do.
+                The free Website Check does not: it is not a sale. */}
+            {church && !websiteCheck ? (
+              <div className="mt-7 grid gap-1">
+                <p className="text-[0.95rem] leading-relaxed text-muted-dark">{ministryContact.aside.plans.line}</p>
+                <TextLink href={ministryContact.aside.plans.link.href} className="w-fit">
+                  {ministryContact.aside.plans.link.label}
+                </TextLink>
+              </div>
+            ) : null}
 
             <div className="mt-10 grid gap-2 border-t border-line-light pt-7">
               <p className="text-[0.9rem] text-muted-dark">

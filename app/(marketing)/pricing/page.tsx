@@ -8,7 +8,7 @@ import { Eyebrow } from "@/components/ui/Section";
 import { pricingFaqs } from "@/lib/content";
 import { FUNDING_LINE } from "@/lib/legal";
 import { pageMetadata } from "@/lib/metadata";
-import { ministryLevels } from "@/lib/ministryPage";
+import { ministryPriceAnswer } from "@/lib/ministryPage";
 import { breadcrumbSchema, faqPageSchema, graph, managedServiceSchema } from "@/lib/schema";
 import { managedOverview } from "@/lib/offers";
 
@@ -59,9 +59,7 @@ export default function PricingPage() {
           {/* These are the business plans. Genesis Ministry, for churches, has its own three
               plans and prices, so a church is pointed there before it reads a business number. */}
           <p className="mt-6 flex max-w-[58ch] flex-wrap items-center gap-x-3 gap-y-1 text-[0.95rem] text-muted-dark">
-            <span>
-              For churches: Genesis Ministry has its own plans, from {ministryLevels.levels[0].priceDisplay} a month.
-            </span>
+            <span>For churches: {ministryPriceAnswer}</span>
             <TextLink href="/ministry#levels">See the Ministry Plans</TextLink>
           </p>
         </div>

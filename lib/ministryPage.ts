@@ -545,6 +545,11 @@ export const ministryContact = {
     ],
     closingLead: "Not everything needs to change.",
     closing: "We look at what to keep, what to link to, and where Genesis could carry more of the work.",
+    /** The plans and prices, in the same sentence /ministry, /pricing, the demo and Hope use. */
+    plans: {
+      line: `${ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.`,
+      link: { label: "See the Plans", href: "/ministry#levels" },
+    },
   },
   form: {
     title: "A few details about your church.",
