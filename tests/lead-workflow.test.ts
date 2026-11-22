@@ -35,7 +35,7 @@ test("the lead diagram is an illustration with no dashes, emoji, stats, or outsi
   assert.match(blob, /follow up/);
 });
 
-test("employee marks are local icons and the path runs from the lead to follow up", () => {
+test("employee portraits are local headshots and the path runs from the lead to follow up", () => {
   const logos = [
     ...leadWorkflowGraph.nodes.map((node) => node.data.logo),
     ...leadWorkflowApps.map((app) => app.logo),
@@ -45,6 +45,28 @@ test("employee marks are local icons and the path runs from the lead to follow u
   for (const logo of logos) {
     assert.equal(logo.startsWith("/brand/"), true, logo);
     assert.equal(logo.startsWith("http"), false, logo);
+  }
+
+  const byId = Object.fromEntries(leadWorkflowGraph.nodes.map((node) => [node.id, node.data]));
+  assert.deepEqual(
+    [byId.ava, byId.hawk, byId.darius, byId.susan].map((step) => [step.logo, step.logoAlt]),
+    [
+      ["/brand/workflow/ava.webp", "Ava, Speed to Lead"],
+      ["/brand/workflow/hawk.webp", "Hawk, operations"],
+      ["/brand/workflow/darius.webp", "Darius, sales and prospecting"],
+      ["/brand/workflow/susan.webp", "Susan, marketing"],
+    ],
+  );
+  assert.equal(byId.lead.logoAlt, undefined);
+  assert.equal(byId.approve.logo, undefined);
+  for (const app of leadWorkflowApps) {
+    assert.equal(app.logo?.endsWith(".webp"), true, app.name);
+    assert.ok(app.logoAlt?.startsWith(app.name), app.name);
+  }
+  const serialized = JSON.stringify({ leadWorkflowGraph, leadWorkflowApps });
+  assert.equal(serialized.includes("shannon"), false);
+  for (const logo of logos) {
+    if (logo.includes("/workflow/")) assert.equal(logo.endsWith(".webp"), true, logo);
   }
 
   assert.deepEqual(

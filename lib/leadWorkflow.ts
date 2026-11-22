@@ -16,10 +16,15 @@ export const leadWorkflowIntro = {
 } as const;
 
 const lead = "/brand/genesis-icon.svg";
-const hawk = "/brand/workflow/hawk.svg";
-const ava = "/brand/workflow/ava.svg";
-const susan = "/brand/workflow/susan.svg";
-const darius = "/brand/workflow/darius.svg";
+/** Persona portraits, 160px square. Ava is Speed to Lead. Shannon has no step on this path. */
+const hawk = "/brand/workflow/hawk.webp";
+const ava = "/brand/workflow/ava.webp";
+const susan = "/brand/workflow/susan.webp";
+const darius = "/brand/workflow/darius.webp";
+const hawkAlt = "Hawk, operations";
+const avaAlt = "Ava, Speed to Lead";
+const susanAlt = "Susan, marketing";
+const dariusAlt = "Darius, sales and prospecting";
 
 export const leadWorkflowGraph: WorkflowGraph = {
   nodes: [
@@ -44,6 +49,7 @@ export const leadWorkflowGraph: WorkflowGraph = {
         kind: "agent",
         tool: "Ava",
         logo: ava,
+        logoAlt: avaAlt,
       },
     },
     {
@@ -56,6 +62,7 @@ export const leadWorkflowGraph: WorkflowGraph = {
         kind: "agent",
         tool: "Hawk",
         logo: hawk,
+        logoAlt: hawkAlt,
       },
     },
     {
@@ -68,6 +75,7 @@ export const leadWorkflowGraph: WorkflowGraph = {
         kind: "agent",
         tool: "Darius",
         logo: darius,
+        logoAlt: dariusAlt,
       },
     },
     {
@@ -91,6 +99,7 @@ export const leadWorkflowGraph: WorkflowGraph = {
         kind: "delivery",
         tool: "Susan",
         logo: susan,
+        logoAlt: susanAlt,
       },
     },
   ],
@@ -108,6 +117,7 @@ export const leadWorkflowApps: WorkflowApp[] = [
     id: "hawk",
     name: "Hawk",
     logo: hawk,
+    logoAlt: hawkAlt,
     actions: [
       {
         label: "Name the next step",
@@ -127,6 +137,7 @@ export const leadWorkflowApps: WorkflowApp[] = [
     id: "ava",
     name: "Ava",
     logo: ava,
+    logoAlt: avaAlt,
     actions: [
       {
         label: "Answer a question",
@@ -152,6 +163,7 @@ export const leadWorkflowApps: WorkflowApp[] = [
     id: "susan",
     name: "Susan",
     logo: susan,
+    logoAlt: susanAlt,
     actions: [
       {
         label: "Draft a message",
@@ -171,6 +183,7 @@ export const leadWorkflowApps: WorkflowApp[] = [
     id: "darius",
     name: "Darius",
     logo: darius,
+    logoAlt: dariusAlt,
     actions: [
       {
         label: "Draft first contact",
