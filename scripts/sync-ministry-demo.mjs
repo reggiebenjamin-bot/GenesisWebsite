@@ -16,23 +16,32 @@
  *
  * What is copied follows "Uploading the preview" in the source's
  * platform/DESIGN.md (section 12):
- *   - index.html (the gallery), early-look.jpg, four-looks.jpg and
- *     geai-ministry-page.jpg;
+ *   - index.html (the gallery);
  *   - shared/hope-demo.js;
  *   - platform/, without platform/DESIGN.md;
  *   - templates/<slug>/ for each look, without its shots/, except the two
  *     screenshots per look the gallery shows (shots/desktop/home-01.jpg and
  *     shots/mobile/home-01.jpg), and without the *.mjs build tools.
  * Everything else (tools/, voice-samples/, BASELINE.md, shared/test.html,
- * templates/PHOTO-CLAIMS.txt) stays out.
+ * templates/PHOTO-CLAIMS.txt) stays out. So do the gallery's three loose
+ * pictures that section 12 lists (early-look.jpg, four-looks.jpg and
+ * geai-ministry-page.jpg): nothing links to them, and geai-ministry-page.jpg
+ * is a screenshot of an old version of /ministry.
  *
  * The default is the public copy. The Growth Desk (platform/sales-*, with the
  * two hub door screenshots of it) is Genesis's own tool for finding and
  * selling to churches, and the owner keeps it out of the public demo. The
  * public copy leaves those files out, and scripts/ministry-demo-public.mjs
- * edits the copied pages and scripts so nothing links to it, tours it or
- * points at it. Each edit must find its text exactly, or the script stops.
+ * edits the copied pages and scripts so nothing links to it, tours it,
+ * points at it or describes its work, and so the demo offers the church
+ * consultation. Each edit must find its text exactly, or the script stops.
  * The source is never changed.
+ *
+ * The source folder is a git repository that another team keeps editing. To
+ * publish a reviewed version rather than work in progress, export one of its
+ * commits into an empty folder and sync from there:
+ *   git -C <genesis-ministry folder> archive <commit> | tar -x -C <empty folder>
+ *   node scripts/sync-ministry-demo.mjs <that folder>
  *
  * --with-growth-desk makes a private copy instead: everything above plus the
  * Growth Desk, unedited. It needs --out with a folder outside public/, and the
@@ -47,7 +56,11 @@
  * The copy is built in a temporary folder and checked before it replaces the
  * destination. The script stops, and leaves the destination as it was, when
  *   - an edit does not find its text;
- *   - a public file still names a sales-* page or the words "Growth Desk";
+ *   - a public file still names a sales-* page or the words "Growth Desk",
+ *     or (outside the copied Genesis OS design system) "acquisition",
+ *     "sales desk", "suppression" or "prospect";
+ *   - a public file links to a geai.us path other than the church
+ *     consultation (SITE_LINKS);
  *   - a copied page, stylesheet or platform script points at a local file
  *     that was not copied;
  *   - a copied script, or a page's inline script, does not compile.
@@ -79,9 +92,11 @@ import {
   GROWTH_DESK_PICTURES,
   PUBLIC_EDITS,
   applyEdits,
+  SITE_LINKS,
   growthDeskRefs,
   localRefs,
   scriptErrors,
+  siteRefs,
 } from "./ministry-demo-public.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -202,9 +217,6 @@ function leftOut(r) {
   return null;
 }
 
-/* The gallery's pictures that nothing links to: copied when present, as
-   section 12 asks, and not required. */
-const OPTIONAL = ["early-look.jpg", "four-looks.jpg", "geai-ministry-page.jpg"];
 const REQUIRED = ["index.html", "shared/hope-demo.js", "platform"];
 const templates = readdirSync(join(SOURCE, "templates"))
   .filter((slug) => statSync(join(SOURCE, "templates", slug)).isDirectory())
@@ -215,13 +227,9 @@ process.on("exit", () => rmSync(STAGE, { recursive: true, force: true }));
 
 /** @type {Map<string, string[]>} reason -> files */
 const skipped = new Map();
-const copy = (from, required) => {
+const copy = (from) => {
   const source = join(SOURCE, from);
-  if (!existsSync(source)) {
-    if (required) fail(`${from} is not in ${SOURCE}.`);
-    console.warn(`  ${from} is not in the source; nothing links to it, so the copy goes on without it.`);
-    return;
-  }
+  if (!existsSync(source)) fail(`${from} is not in ${SOURCE}.`);
   cpSync(source, join(STAGE, from), {
     recursive: true,
     filter: (path) => {
@@ -236,9 +244,8 @@ const copy = (from, required) => {
   });
 };
 
-for (const from of REQUIRED) copy(from, true);
-for (const from of OPTIONAL) copy(from, false);
-for (const from of templates) copy(from, true);
+for (const from of REQUIRED) copy(from);
+for (const from of templates) copy(from);
 
 /** Every file under a folder, relative to it, with forward slashes. */
 function walk(dir, base = dir) {
@@ -300,8 +307,11 @@ for (const file of files) {
   if (!TEXT.test(file)) continue;
   const text = readFileSync(join(STAGE, file), "utf8");
   if (!withGrowthDesk) {
-    for (const ref of growthDeskRefs(text)) {
+    for (const ref of growthDeskRefs(text, file)) {
       problems.push(`${file}:${ref.line} names ${ref.what}: "${ref.match}" in ...${ref.context}...`);
+    }
+    for (const url of siteRefs(file, text)) {
+      if (!SITE_LINKS.includes(url)) problems.push(`${file} links to ${url} on geai.us; the public copy may only link to ${SITE_LINKS.join(", ")}`);
     }
   }
   for (const ref of localRefs(file, text)) {
@@ -343,12 +353,13 @@ for (const [why, list] of skipped) {
 }
 if (editReport.length) {
   const total = editReport.reduce((n, { lines }) => n + lines.length, 0);
-  console.log(`  ${total} edits so nothing public points at the Growth Desk:`);
+  console.log(`  ${total} edits to the public copy:`);
   for (const { file, lines } of editReport) {
     console.log(`    ${file}`);
     for (const line of lines) console.log(`      ${line}`);
   }
-  console.log('  Checked: no public file names a sales-* page or the words "Growth Desk".');
+  console.log('  Checked: no public file names a sales-* page, the words "Growth Desk" or the Growth Desk\'s work.');
+  console.log(`  Checked: the only geai.us link is ${SITE_LINKS.join(", ")}.`);
 }
 if (problems.length) {
   console.warn(`  ${problems.length} ${problems.length === 1 ? "problem" : "problems"} in this private copy:`);
