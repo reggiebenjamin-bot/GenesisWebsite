@@ -68,8 +68,8 @@ function ChurchPageFromUrl({ pathname, children }: { pathname: string; children:
  * A church is not assessing a business and has no business plans to price.
  * On the Ministry page the header books the church consultation the page
  * offers; on the church version of /contact it leads back to Genesis
- * Ministry. On both, Pricing (the business plans) becomes Levels, the
- * Ministry levels, which are priced with Genesis on a call.
+ * Ministry. On both, Pricing (the business plans) becomes Plans: the three
+ * Ministry plans and their prices, on /ministry#levels.
  */
 function primaryFor(church: ChurchPage) {
   if (church === "ministry") return { href: "/contact?topic=ministry", label: "Book a Consultation" };
@@ -77,10 +77,10 @@ function primaryFor(church: ChurchPage) {
   return { href: "/assessment", label: "Assess My Business" };
 }
 
-const CHURCH_LEVELS: NavLink = { label: "Levels", href: "/ministry#levels" };
+const CHURCH_PLANS: NavLink = { label: "Plans", href: "/ministry#levels" };
 
 function entryFor(entry: NavLink, church: ChurchPage): NavLink {
-  return church && entry.href === "/pricing" ? CHURCH_LEVELS : entry;
+  return church && entry.href === "/pricing" ? CHURCH_PLANS : entry;
 }
 
 /**

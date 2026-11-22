@@ -4,6 +4,8 @@ import {
   expertPhone,
 } from "./aiEmployees.ts";
 import { contact } from "./content.ts";
+import { ministryEdition } from "./editions.ts";
+import { ministryLevels } from "./ministryPage.ts";
 import {
   genesisPositioning,
   genesisTools,
@@ -248,6 +250,43 @@ export function aiEmployeesServiceSchema() {
       itemListElement: [
         ...managedPlans.map((plan) => monthly(plan.monthlyPriceUsd, `Level ${plan.step} ${plan.name}`, plan.summary)),
       ],
+    },
+  };
+}
+
+/**
+ * Genesis Ministry, for churches: the three plans and the monthly prices the
+ * /ministry cards print. Enterprise is scoped on a call, so it carries no
+ * price and is left out of the catalog.
+ */
+export function ministryServiceSchema() {
+  const url = absoluteUrl("/ministry");
+  return {
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: ministryEdition.name,
+    serviceType: "Church websites and care software",
+    description: ministryEdition.body,
+    url,
+    provider: organizationRef,
+    areaServed: { "@type": "Country", name: "United States" },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${ministryEdition.name} plans`,
+      itemListElement: ministryLevels.levels.map((plan) => ({
+        "@type": "Offer",
+        name: `${ministryEdition.name} ${plan.name}`,
+        description: plan.summary,
+        url: `${url}#levels`,
+        price: plan.monthlyPriceUsd,
+        priceCurrency: "USD",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: plan.monthlyPriceUsd,
+          priceCurrency: "USD",
+          unitText: ministryLevels.priceUnit,
+        },
+      })),
     },
   };
 }

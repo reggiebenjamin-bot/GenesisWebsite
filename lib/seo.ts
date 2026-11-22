@@ -225,10 +225,10 @@ export const seoPages: readonly SeoPage[] = [
     path: "/ministry",
     title: "Church Websites and Care Software",
     description:
-      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. A person approves every draft.",
+      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. Plans from $149 a month.",
     label: "Ministry",
     image: null,
-    lastModified: "2026-11-19",
+    lastModified: "2026-11-21",
     changeFrequency: "monthly",
     priority: 0.7,
   },

@@ -119,12 +119,16 @@ and dashboard boundary is documented in
 1,000 people. Its edition record is `ministryEdition` in `lib/editions.ts`,
 exported on its own so the homepage keeps four edition cards; add it to the
 `editions` list to give it a homepage card. Every other visitor string, the
-four website looks, the draft levels, the questions and the church version of
+four website looks, the three plans, the questions and the church version of
 the contact page live in `lib/ministryPage.ts`, and
-`tests/ministry-edition.test.ts` checks them (no dashes, no emojis, no
-prices). The levels (Welcome, Connect and Shepherd as cards, Enterprise as the
-line under them) are a draft for the owner to confirm, and show "Pricing set
-with Genesis" until real prices are approved.
+`tests/ministry-edition.test.ts` checks them (no dashes, no emojis, and no
+price outside the plan prices). The plans are Care at $149 a month, Shepherd
+at $299 and Plus at $499, as cards, with Enterprise (more than one campus) as
+the line under them, scoped on a call. They replace the draft levels Welcome,
+Connect and Shepherd, and keep what those levels included, in order, until
+the owner lists each plan's contents. No setup fee is named. The section
+keeps its `#levels` anchor, and `ministryServiceSchema` in `lib/schema.ts`
+carries the three prices as structured data.
 
 **Films.** The page plays these files from `public/video/ministry/` once they
 exist. Until then each frame shows a placeholder drawn from the diagram kit,
@@ -202,11 +206,17 @@ The source belongs to another team and is only read. The script:
   headers, menus, closing bands and footers, in the church workspace's account
   menu, in Hope's price and consultation answers, and on the last card of the
   guided demo. Each card of the guided demo also says which screen of how many
-  it is, Hope on the four sample sites answers a price question with "Pricing is
-  set with Genesis", and the light theme draws the Genesis mark in ink. Each edit must find its text
+  it is, Hope on the four sample sites answers a price question with the plans
+  and their prices, and the light theme draws the Genesis mark in ink. Each edit must find its text
   exactly, so a change in the source stops the sync with the edit's name
   instead of leaving a link behind. The script prints every file left out and
   every edit made.
+- turns the draft levels into the three plans with `PLAN_RENAMES` in the same
+  file: Level 01 (Welcome) becomes Care, Level 02 (Connect) Shepherd and
+  Level 03 (Shepherd) Plus, with $149, $299 and $499 a month where the demo
+  said "Pricing set with Genesis", and Hope's price answer is the same
+  sentence as on `/ministry`. The renames assume the source still names the
+  draft levels, and the sync stops if it does not.
 - adds `<meta name="robots" content="noindex">` to any page without it.
 - builds the copy in a temporary folder and replaces `public/ministry-demo/`
   only when it passes its checks: no file names a `sales-*` page or the words
@@ -214,8 +224,15 @@ The source belongs to another team and is only read. The script:
   (`platform/shared/os/`) says "acquisition", "sales desk", "suppression" or
   "prospect"; the only link to the rest of geai.us is `/contact?topic=ministry`;
   every local link in a page, stylesheet or platform script
-  resolves to a copied file, and every script compiles. Otherwise it stops and
-  leaves the old copy as it was.
+  resolves to a copied file, every script compiles, and no page or script
+  keeps a Level 01 to 03 label, an old level name, a draft level note or
+  "pricing set with Genesis". Otherwise it stops and leaves the old copy as
+  it was.
+
+**Re-sync needed.** The committed `public/ministry-demo/` was synced before
+the three plans, so it still shows the draft levels. The next sync gives it
+the plans; until then `tests/ministry-demo-public.test.ts` marks its check of
+the plans in the copy as todo.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.
@@ -269,10 +286,11 @@ the notes), the form before the explanation on phones, and a "Request My
 Website Check" button. On `/ministry` the header button books the church
 consultation; on the church version of `/contact` it reads "See Genesis
 Ministry". On both, the header's Pricing (the business plans, with prices)
-becomes Levels, `/ministry#levels`, and `/pricing` tells churches that
-Ministry pricing is set on a call. The sections above `#levels` on
+becomes Plans, `/ministry#levels`, and `/pricing` points churches to the
+Ministry plans, from $149 a month. A plan's button opens `/contact` with the
+plan and its price in the starting note. The sections above `#levels` on
 `/ministry` skip the site's `content-visibility` shortcut so that link lands
-on the levels.
+on the plans.
 
 ## Search launch checklist
 

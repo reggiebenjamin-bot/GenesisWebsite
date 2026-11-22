@@ -35,7 +35,10 @@
  * edits the copied pages and scripts so nothing links to it, tours it,
  * points at it or describes its work, and so the demo offers the church
  * consultation. Each edit must find its text exactly, or the script stops.
- * The source is never changed.
+ * Then PLAN_RENAMES turns the draft levels into the three plans /ministry
+ * shows (Level 01 Welcome is Care at $149 a month, Level 02 Connect is
+ * Shepherd at $299, Level 03 Shepherd is Plus at $499), with their prices
+ * where the demo said "Pricing set with Genesis". The source is never changed.
  *
  * The source folder is a git repository that another team keeps editing. To
  * publish a reviewed version rather than work in progress, export one of its
@@ -61,6 +64,10 @@
  *     "sales desk", "suppression" or "prospect";
  *   - a public file links to a geai.us path other than the church
  *     consultation (SITE_LINKS);
+ *   - the source no longer has the draft levels (it may name the plans
+ *     itself), or a public page or script still has a Level 01 to 03 label,
+ *     an old level name in a level sentence, a draft level note or "pricing
+ *     set with Genesis";
  *   - a copied page, stylesheet or platform script points at a local file
  *     that was not copied;
  *   - a copied script, or a page's inline script, does not compile.
@@ -90,11 +97,16 @@ import { fileURLToPath } from "node:url";
 import {
   GROWTH_DESK_FILES,
   GROWTH_DESK_PICTURES,
+  PLAN_FILES,
+  PLAN_RENAMES,
+  PLAN_SOURCE_MARK,
   PUBLIC_EDITS,
   applyEdits,
   SITE_LINKS,
   growthDeskRefs,
   localRefs,
+  oldPlanRefs,
+  renamePlans,
   scriptErrors,
   siteRefs,
 } from "./ministry-demo-public.mjs";
@@ -273,6 +285,31 @@ if (!withGrowthDesk) {
   }
 }
 
+/* ── the three plans ───────────────────────────────────────────────── */
+
+/* The source still names the draft levels; PLAN_RENAMES turns them into the
+   plans. If the source has been renamed itself, the rules would rename the new
+   names again (its Shepherd would become Plus), so the sync stops instead. */
+/** @type {Map<string, number>} rule -> changes, over the whole copy */
+const renameCounts = new Map();
+if (!withGrowthDesk) {
+  const data = join(STAGE, "platform", "shared", "data.js");
+  if (!existsSync(data) || !PLAN_SOURCE_MARK.test(readFileSync(data, "utf8"))) {
+    fail(
+      "platform/shared/data.js no longer has the draft levels (Level 01, Welcome). If the source now names the plans itself,\n" +
+        "  remove PLAN_RENAMES from scripts/ministry-demo-public.mjs, or update it, before syncing.",
+    );
+  }
+  for (const file of walk(STAGE)) {
+    if (!PLAN_FILES.test(file)) continue;
+    const path = join(STAGE, file);
+    const { text, counts } = renamePlans(file, readFileSync(path, "utf8"));
+    if (!Object.keys(counts).length) continue;
+    writeFileSync(path, text);
+    for (const [note, n] of Object.entries(counts)) renameCounts.set(note, (renameCounts.get(note) ?? 0) + n);
+  }
+}
+
 /* ── noindex on every page ─────────────────────────────────────────── */
 
 const files = walk(STAGE);
@@ -312,6 +349,9 @@ for (const file of files) {
     }
     for (const url of siteRefs(file, text)) {
       if (!SITE_LINKS.includes(url)) problems.push(`${file} links to ${url} on geai.us; the public copy may only link to ${SITE_LINKS.join(", ")}`);
+    }
+    for (const ref of oldPlanRefs(text, file)) {
+      problems.push(`${file}:${ref.line} still has ${ref.what}: "${ref.match}" in ...${ref.context}... (add a rule to PLAN_RENAMES)`);
     }
   }
   for (const ref of localRefs(file, text)) {
@@ -358,6 +398,13 @@ if (editReport.length) {
     console.log(`    ${file}`);
     for (const line of lines) console.log(`      ${line}`);
   }
+  const renamed = [...renameCounts.values()].reduce((n, count) => n + count, 0);
+  console.log(`  ${renamed} plan renames (Level 01 Welcome is Care, Level 02 Connect is Shepherd, Level 03 Shepherd is Plus):`);
+  for (const rule of PLAN_RENAMES) {
+    const count = renameCounts.get(rule.note) ?? 0;
+    console.log(`    ${count ? `${rule.note} (${count})` : `UNUSED: ${rule.note}`}`);
+  }
+  console.log("  Checked: no public file keeps a Level 01 to 03 label, a draft level note or pricing set with Genesis.");
   console.log('  Checked: no public file names a sales-* page, the words "Growth Desk" or the Growth Desk\'s work.');
   console.log(`  Checked: the only geai.us link is ${SITE_LINKS.join(", ")}.`);
 }

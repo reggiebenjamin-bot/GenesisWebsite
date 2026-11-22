@@ -4,27 +4,27 @@ import { Card } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { ministryLevels } from "@/lib/ministryPage";
 
-/* The gold hairline gets stronger with the level, as on the edition Levels. */
+/* The gold hairline gets stronger with the plan, as on the edition Levels. */
 const TIER_EDGES = ["rgb(201 165 94 / 0.3)", "rgb(201 165 94 / 0.6)", "rgb(201 165 94 / 0.95)"] as const;
 
 /**
- * The Genesis Ministry levels, in the same visual language as EditionLevels:
- * light cards, a gold edge that strengthens by level, the level label, its
- * name, what it includes, and one outline action. Draft levels with no
- * prices: where the edition cards show a price, these say pricing is set with
- * Genesis, and every button books a consultation with the level noted.
+ * The three Genesis Ministry plans (Care, Shepherd and Plus), in the same
+ * visual language as EditionLevels: light cards, a gold edge that strengthens
+ * by plan, the plan name, what it is for, the monthly price in the edition
+ * price style, what it includes, and one outline action. Every button books a
+ * consultation with the plan and its price in the starting note.
  *
  * Enterprise, for more than one campus, is the line under the cards, as
  * Genesis Enterprise is under the edition levels.
  */
 export function MinistryLevels() {
-  const { enterprise } = ministryLevels;
+  const { enterprise, priceUnit } = ministryLevels;
   return (
     <>
       <ol className="grid gap-4 md:grid-cols-3">
-        {ministryLevels.levels.map((level, index) => (
+        {ministryLevels.levels.map((plan, index) => (
           <Card
-            key={level.id}
+            key={plan.id}
             as="li"
             className="relative flex h-full flex-col overflow-hidden"
             style={{ "--tier-edge": TIER_EDGES[index] } as CSSProperties}
@@ -33,20 +33,20 @@ export function MinistryLevels() {
               aria-hidden="true"
               className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--tier-edge),transparent)]"
             />
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
-              Level {level.step}
-            </p>
-            <h3 className="mt-3 font-light text-[clamp(1.9rem,2.6vw,2.4rem)] leading-none tracking-[-0.04em]">
-              {level.name}
+            <h3 className="font-light text-[clamp(1.9rem,2.6vw,2.4rem)] leading-none tracking-[-0.04em]">
+              {plan.name}
             </h3>
-            <p className="mt-3 text-[0.95rem] leading-snug text-muted-dark">{level.summary}</p>
+            <p className="mt-3 text-[0.95rem] leading-snug text-muted-dark">{plan.summary}</p>
 
-            <p className="mt-6 border-t border-line-light pt-4 font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
-              {ministryLevels.priceLine}
+            <p className="mt-6 flex items-baseline gap-1.5 border-t border-line-light pt-5">
+              <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
+                {plan.priceDisplay}
+              </span>
+              <span className="text-[0.9rem] text-muted-dark">{priceUnit}</span>
             </p>
 
-            <ul className="mt-5 grid gap-3 border-t border-line-light pt-5">
-              {level.bullets.map((bullet) => (
+            <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">
+              {plan.bullets.map((bullet) => (
                 <li
                   key={bullet}
                   className="grid grid-cols-[1rem_minmax(0,1fr)] gap-2.5 text-[0.95rem] leading-snug"
@@ -61,12 +61,12 @@ export function MinistryLevels() {
 
             <div className="mt-auto pt-8">
               <Button
-                href={level.action.href}
+                href={plan.action.href}
                 variant="outline"
                 className="w-full"
-                aria-label={`${level.action.label}: Level ${level.step} ${level.name}`}
+                aria-label={`${plan.action.label}: ${plan.name}, ${plan.priceDisplay} ${priceUnit}`}
               >
-                {level.action.label}
+                {plan.action.label}
               </Button>
             </div>
           </Card>

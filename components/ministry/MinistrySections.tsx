@@ -501,7 +501,7 @@ export function MinistryProtection() {
   );
 }
 
-/* ── 6. choose your level ────────────────────────────────────────────── */
+/* ── 6. choose your plan ─────────────────────────────────────────────── */
 
 export function MinistryLevelsSection() {
   return (

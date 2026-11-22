@@ -49,10 +49,11 @@ export default async function ContactPage({
 }: PageProps<"/contact">) {
   const params = await searchParams;
   const plan = typeof params.plan === "string" ? params.plan : "";
-  /* A known Ministry topic (a level, the demo walkthrough or the free Church
-     Website Check) starts the notes field with what the visitor came for and
-     shows the church version of the page: church words, church roles and no
-     business plans or prices. Unknown topics are ignored. */
+  /* A known Ministry topic (a plan, the demo walkthrough or the free Church
+     Website Check) starts the notes field with what the visitor came for, a
+     plan with its name and price, and shows the church version of the page:
+     church words, church roles and never the business plans or their prices.
+     Unknown topics are ignored. */
   const note = ministryConsultationNote(params.topic);
   const church = note !== "";
   /* The free Church Website Check has its own words and asks for the website first. */

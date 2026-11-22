@@ -14,6 +14,17 @@
  *   - growthDeskRefs: what may never appear in a public file.
  *   - localRefs: the local files a copied page or script points at, so the
  *     sync can stop on a link to a file that was not copied.
+ *   - PLAN_RENAMES and oldPlanRefs: the three plans. The owner replaced the
+ *     draft levels with Care ($149 a month), Shepherd ($299) and Plus ($499).
+ *     The renames run on every page and script after PUBLIC_EDITS and give
+ *     the plan names and prices; oldPlanRefs stops the sync on any old level
+ *     label, level name sentence or "pricing set with Genesis" left behind.
+ *
+ * RE-SYNC NEEDED. The committed public/ministry-demo/ was synced before the
+ * plans, so it still shows the draft levels until the next sync. The source
+ * was being edited when the plans were added, and several PUBLIC_EDITS no
+ * longer find their text in its working tree; review them against the
+ * commit you sync from.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -172,6 +183,27 @@ const JOURNEY_LEVELS = "journey.html#levels";
 const CONTACT = SITE_LINKS[0];
 const BOOK = "Book a Consultation";
 
+/*
+ * The Genesis Ministry plans, as /ministry shows them (ministryLevels in
+ * lib/ministryPage.ts; tests/ministry-edition.test.ts keeps the two equal).
+ * The owner replaced the draft levels with three plans and set their prices.
+ * The demo source still calls them Level 01 (Welcome), Level 02 (Connect) and
+ * Level 03 (Shepherd); in the public copy they are Care, Shepherd and Plus,
+ * each with what that level included. Enterprise, for more than one campus,
+ * stays scoped on a call. PLAN_RENAMES, below PUBLIC_EDITS, makes the change.
+ */
+export const MINISTRY_PLANS = [
+  { level: "01", was: "Welcome", name: "Care", price: "$149" },
+  { level: "02", was: "Connect", name: "Shepherd", price: "$299" },
+  { level: "03", was: "Shepherd", name: "Plus", price: "$499" },
+];
+
+/** "Care at $149 a month", one per plan, in order. */
+const planPrices = MINISTRY_PLANS.map((plan) => `${plan.name} at ${plan.price} a month`);
+
+/** Hope's price answer, and the one sentence that gives every price: the words of ministryPriceAnswer on /ministry. */
+export const PRICE_ANSWER = `Genesis Ministry has three plans: ${planPrices.slice(0, -1).join(", ")} and ${planPrices.at(-1)}.`;
+
 /** @type {Readonly<Record<string, readonly Edit[]>>} */
 export const PUBLIC_EDITS = {
   /* The gallery: the platform card counted the Growth Desk doors. */
@@ -186,9 +218,6 @@ export const PUBLIC_EDITS = {
       find: '<p class="eyebrow">Five diagrams · The journey</p><h3><a href="platform/journey.html">The Journey</a></h3><p class="line">One Sunday guest end to end, finding a church through launch, who sees what,',
       replace: '<p class="eyebrow">Four diagrams · The journey</p><h3><a href="platform/journey.html">The Journey</a></h3><p class="line">One Sunday guest end to end, who sees what,',
     },
-    { note: "the page description says level, not plan", find: "the Genesis Ministry platform depending on plan.", replace: "the Genesis Ministry platform depending on level." },
-    { note: "the package aside says level, not plan", find: "The back office comes with it depending on your plan.", replace: "The back office comes with it depending on your level." },
-    { note: "the back office badge says level, not plan", find: '<small class="badge">Depending on plan</small>', replace: '<small class="badge">Depending on level</small>' },
     {
       note: "Look 02 is described the way /ministry describes it",
       find: '<span class="sep" aria-hidden="true">/</span>Youth heavy, worship led churches</p>',
@@ -227,7 +256,7 @@ export const PUBLIC_EDITS = {
     {
       note: "the page description leaves out the acquisition arm and the sales desk",
       find: "Edition 05 of Genesis OS for churches: the acquisition arm, the sales desk, the front office, the back office and the member app, with draft levels and the rules that protect people.",
-      replace: "Edition 05 of Genesis OS for churches: the website, the front office, the back office and the member app, with draft levels and the rules that protect people.",
+      replace: "Edition 05 of Genesis OS for churches: the website, the front office, the back office and the member app, with three plans and the rules that protect people.",
     },
     {
       note: 'removed "Or start where Genesis finds a church" under the hero buttons',
@@ -401,6 +430,20 @@ export const PUBLIC_EDITS = {
     },
   ],
 
+  /* The member stage bar on a phone. The level switcher now shows plan names
+     (Care, Shepherd, Plus; see PLAN_RENAMES) where it showed 01, 02 and 03,
+     so its buttons are set closer to keep the bar on one row at 390 wide. The
+     member pages pad them in their own style block, hence body.mx-staged. */
+  "platform/shared/member.css": [
+    {
+      note: "on a phone the plan switcher's buttons sit closer, so Care, Shepherd and Plus fit the stage bar's one row",
+      find: "  .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}\n}",
+      replace:
+        "  .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}\n" +
+        "  .m-stagebar .gm-plan a,body.mx-staged .m-stagebar .gm-plan a{padding:4px;font-size:11.5px}\n}",
+    },
+  ],
+
   /* The story pages' stylesheet (the hub, the journey and the gallery). */
   "platform/story/story.css": [
     {
@@ -458,10 +501,10 @@ export const PUBLIC_EDITS = {
       replace: 'custom: { t: "Every template is filled',
     },
     {
-      note: "a price question gets the price answer, the same wording as the platform, with a way to book the consultation",
+      note: "a price question gets the price answer, the three plans and their prices, with a way to book the consultation",
       find: '    hope: { t: "On your live site, "',
       replace:
-        `    price: { t: "Pricing is set with Genesis, on a call, once we understand your church. This preview never shows a price. Customization beyond the template is available for an additional cost.", c: [{ label: "${BOOK}", href: "${CONTACT}", go: true, cta: true }, { label: "What do we get?", key: "package" }] },\n` +
+        `    price: { t: "${PRICE_ANSWER}", c: [{ label: "${BOOK}", href: "${CONTACT}", go: true, cta: true }, { label: "What do we get?", key: "package" }] },\n` +
         '    hope: { t: "On your live site, "',
     },
     {
@@ -471,9 +514,6 @@ export const PUBLIC_EDITS = {
         '    [/\\b(prices?|pricing|costs?|fees?)\\b|\\bhow much (does|is|will|would) (it|this|genesis|the (template|website|site|platform))\\b/i, "price"],\n' +
         '    [/\\b(custom\\w*|change|edit|colou?rs?|logos?|fonts?)\\b/i, "custom"],',
     },
-    { note: "the package answer says level, not plan", find: "Depending on your plan, you also get the back office", replace: "Depending on your level, you also get the back office" },
-    { note: "the back office answer says level, not plan", find: "The back office comes with it depending on your plan.", replace: "The back office comes with it depending on your level." },
-    { note: "the tour's last words say level, not plan", find: "Depending on your plan, the back office comes too.", replace: "Depending on your level, the back office comes too." },
     {
       note: "the last card of the guided demo can carry a second link (endLink), styled like the first",
       find: ".hd-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}",
@@ -735,7 +775,7 @@ export const PUBLIC_EDITS = {
       maxLines: 1,
       keep: /\n    (levels|custom|texting): /,
       replace:
-        '    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation. Pricing is set on that call, once we understand your church.",',
+        '    contact: "A person at Genesis would be glad to talk with you. Book a consultation: a free conversation about your church, with no obligation.",',
     },
     {
       note: "questions about reaching Genesis get the consultation answer instead of the outreach rules",
@@ -815,6 +855,240 @@ export const PUBLIC_EDITS = {
     },
   ],
 };
+
+/* ── the three plans ───────────────────────────────────────────────── */
+
+/**
+ * The copied files that name the levels: the gallery, Hope on the sample
+ * sites, and the platform pages and scripts, but not the copied Genesis OS
+ * design system (platform/shared/os/), which never names them. The church
+ * sites under templates/ are left alone: their "Connect" and "Welcome" are a
+ * church's own words.
+ */
+export const PLAN_FILES = /^(?:index\.html|shared\/hope-demo\.js|platform\/(?!shared\/os\/)[a-z0-9/-]+\.(?:html|js))$/;
+
+/**
+ * The source's first draft level, in platform/shared/data.js. The renames
+ * assume the source still names the draft levels; once it names the plans
+ * itself they would rename its new names again, so the sync stops when this
+ * is missing.
+ */
+export const PLAN_SOURCE_MARK = /code: "Level 01", name: "Welcome"/;
+
+/** The plan behind an old level number ("01") or an old level name ("Connect"). */
+const planFor = (key) => {
+  const plan = MINISTRY_PLANS.find((p) => p.level === key || p.was === key);
+  if (!plan) throw new Error(`no plan for ${key}`);
+  return plan;
+};
+const OLD_NAME = "(Welcome|Connect|Shepherd)";
+
+/**
+ * A rename: every match of `pattern` (a global RegExp) becomes what `replace`
+ * returns for it, in the files `files` matches (every PLAN_FILES file when not
+ * given). Rules run in order, and a later rule never sees what an earlier
+ * rule wrote, so "Connect" can become "Shepherd" while the old "Shepherd"
+ * becomes "Plus", in any order in the text.
+ * @typedef {{ note: string, pattern: RegExp, replace: (...match: string[]) => string, files?: RegExp }} Rename
+ */
+
+const HUB = /^platform\/index\.html$/;
+const JOURNEY = /^platform\/journey\.html$/;
+
+/** @type {readonly Rename[]} */
+export const PLAN_RENAMES = [
+  /* Prices first: where the demo said "Pricing set with Genesis", it now gives the price. */
+  {
+    note: "a price answer that said pricing is set with Genesis gives the three plans and their prices",
+    pattern: /(price: (?:\{ t: )?")Pricing is set with Genesis[^"]*"/g,
+    replace: (_, lead) => `${lead}${PRICE_ANSWER}"`,
+  },
+  {
+    note: "D.pricingLine, shown where a price would sit, is the sentence with every price",
+    pattern: /D\.pricingLine = "Pricing set with Genesis";/g,
+    replace: () => `D.pricingLine = "${PRICE_ANSWER}";`,
+  },
+  {
+    note: "the lines that end with D.pricingLine drop the draft note and the second full stop",
+    pattern: /(?:Levels are a draft\. )?(" \+ (?:esc\()?D\.pricingLine\)?) \+ "\./g,
+    replace: (_, pricing) => `${pricing} + "`,
+  },
+  {
+    note: "the data comments say the plans show their prices",
+    pattern: /DRAFT plan levels, to be confirmed by the owner\. Never show a price\.(\s*)Where a price would sit, show D\.pricingLine\.|Never a dollar amount\. Plans show a level, and "Pricing set with Genesis"\./g,
+    replace: (_, space) =>
+      space === undefined ? "Plans show a plan name and its price, from D.levels." : `The three plans and their prices, as /ministry shows them.${space}D.pricingLine is the one sentence with every price.`,
+  },
+  {
+    note: "the hub's plan cards show each plan's price, and Enterprise says it is priced on a call",
+    files: HUB,
+    pattern: /(?<=<h3>(Welcome|Connect|Shepherd|Enterprise)<\/h3>\s*<p class="sum">[^\n]*<\/p>\s*)<p class="price">Pricing set with Genesis<\/p>/g,
+    replace: (_, name) =>
+      name === "Enterprise"
+        ? '<p class="price"><span>Priced with you on a call</span></p>'
+        : `<p class="price"><b>${planFor(name).price}</b> <span>per month</span></p>`,
+  },
+  {
+    note: "the hub's prices are set like the /ministry cards: the number large, then per month",
+    files: HUB,
+    pattern: /(\.level \.price \{ margin-top: 24px; padding-top: 16px; border-top: 1px solid var\(--line\);) font-family: var\(--font-mono\); font-size: 0\.62rem; letter-spacing: 0\.16em; text-transform: uppercase; color: var\(--muted\); \}/g,
+    replace: (_, box) =>
+      `${box} display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }\n` +
+      ".level .price b { font-weight: 400; font-size: clamp(2.1rem, 3vw, 2.7rem); line-height: 1; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }\n" +
+      ".level .price span { font-size: 0.9rem; color: var(--muted); }",
+  },
+  {
+    note: "the journey's levels diagram labels each step with its price, as Enterprise is labelled Scoped on a call",
+    files: JOURNEY,
+    pattern: /(?<=dy="0">)LEVEL (0[1-3])(?=<\/tspan>)/g,
+    replace: (_, level) => `${planFor(level).price} A MONTH`,
+  },
+  {
+    note: "the hub's plan cards drop the numbered eyebrow; the plan name above the price says it",
+    files: HUB,
+    pattern: /<p class="eyebrow">Level 0[1-3]<\/p>\s*(?=<h3>)/g,
+    replace: () => "",
+  },
+  {
+    note: "Hope's levels answer and the tour end on the prices, not a draft note",
+    pattern: /The levels are a draft, and pricing is set with Genesis\.|(?:Draft levels\. )?Pricing (?:is )?set with Genesis(?:, on a call)?\./g,
+    replace: () => PRICE_ANSWER,
+  },
+  {
+    note: "the plans are no longer a draft: the badge, the notes and the page descriptions",
+    pattern: /<span class="badge">Draft levels<\/span>|Draft levels, to be confirmed(?: by Genesis)?\. | \(draft levels\)| Levels are a draft\.|Levels are a draft(?:, to be confirmed| until the owner confirms them)\. |\b(?:with draft|Draft) levels(?= and\b)/g,
+    replace: (match) => (match === "with draft levels" ? "with three plans" : match === "Draft levels" ? "Three plans" : ""),
+  },
+  {
+    note: "the consultation answer no longer says pricing is set on that call",
+    pattern: / Pricing is set on that call, once we understand your church\./g,
+    replace: () => "",
+  },
+
+  /* Then the names. Each level's data entry gets the plan's name, and its price. */
+  {
+    note: "each level in D.levels is its plan: the plan's name as its label and name, and its price",
+    pattern: /code: "Level (0[1-3])", name: "(?:Welcome|Connect|Shepherd)",|code: "Enterprise", name: "Enterprise",/g,
+    replace: (match, level) => {
+      if (!level) return `${match} price: "Scoped on a call",`;
+      const plan = planFor(level);
+      return `code: "${plan.name}", name: "${plan.name}", price: "${plan.price} a month",`;
+    },
+  },
+  {
+    note: "the lists of levels name the plans",
+    pattern: /\bWelcome, Connect(,| and) Shepherd\b|\bWelcome to Connect to Shepherd\b|\bLevel 01, 02 (and|or) 03\b/g,
+    replace: (match, sep, word) =>
+      word ? `Care, Shepherd ${word} Plus` : sep ? `Care, Shepherd${sep} Plus` : "Care to Shepherd to Plus",
+  },
+  { note: "the Back Office badge names the plans", pattern: /\bLevel 02, more at 03\b/g, replace: () => "Shepherd, more in Plus" },
+  {
+    note: "a level label with its name is the plan name",
+    pattern: new RegExp(String.raw`\bLevel (0[1-3]),? ${OLD_NAME}\b`, "g"),
+    replace: (_, level) => planFor(level).name,
+  },
+  {
+    note: "at a level reads on a plan",
+    pattern: /(?<!look )\b([Aa])t Level (0[1-3])\b/g,
+    replace: (_, a, level) => `${a === "A" ? "On" : "on"} the ${planFor(level).name} plan`,
+  },
+  { note: "a Level 01 church is a church on Care", pattern: /\ba Level (0[1-3]) church\b/g, replace: (_, level) => `a church on ${planFor(level).name}` },
+  { note: "below Level 02 is on Care", pattern: /\bBelow Level 02 /g, replace: () => "On Care, " },
+  { note: "every other level label is the plan name", pattern: /\bLevel (0[1-3])\b/g, replace: (_, level) => planFor(level).name },
+  { note: "the lock badges name the plan", pattern: />L(0[1-3])</g, replace: (_, level) => `>${planFor(level).name}<` },
+  {
+    note: "everything in a level is everything in its plan",
+    pattern: new RegExp(String.raw`\b([Ee]verything in) ${OLD_NAME}\b`, "g"),
+    replace: (_, lead, name) => `${lead} ${planFor(name).name}`,
+  },
+  {
+    note: "what a level adds, keeps or has is what its plan does",
+    pattern: new RegExp(String.raw`\b${OLD_NAME}(?= (?:adds|keeps|changes|turns|has|names|is the website)\b)`, "g"),
+    replace: (name) => planFor(name).name,
+  },
+  {
+    note: "the hub's plan cards and the journey's levels diagram name the plans",
+    files: /^platform\/(?:index|journey)\.html$/,
+    pattern: new RegExp(String.raw`(<h3>|dy="0">)${OLD_NAME}(?=</h3>|</tspan>)`, "g"),
+    replace: (_, lead, name) => `${lead}${planFor(name).name}`,
+  },
+
+  /* Last, the scripts: a level's label is now its name, so "label, name" would say the name twice. */
+  {
+    note: 'the scripts show the plan name once where they showed "Level 02, Connect"',
+    pattern: /esc\((\w+)\.code\) \+ ", " \+ esc\(\1\.name\)|\b(\w+)\.code \+ ", " \+ \2\.name\b/g,
+    replace: (_, a, b) => (a ? `esc(${a}.name)` : `${b}.name`),
+  },
+  {
+    note: "the level switcher shows each plan's name and price",
+    pattern: /esc\((\w+)\.code\.replace\("Level ", ""\)\) \+ "<\/b><span>" \+ esc\(\1\.name\)/g,
+    replace: (_, v) => `esc(${v}.name) + "</b><span>" + esc(${v}.price)`,
+  },
+  { note: "the short level labels are the plan name", pattern: /\b((?:\w+\.)?code)\.replace\("Level ", "L?"\)/g, replace: (_, code) => code },
+  {
+    note: 'the labels the scripts build as "Level 0" and a number are the plan name',
+    pattern: /"([^"\n]*?)Level 0" \+ ([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)/g,
+    replace: (_, lead, n) => `${lead ? `"${lead}" + ` : ""}${JSON.stringify(MINISTRY_PLANS.map((plan) => plan.name))}[${n} - 1]`,
+  },
+  {
+    note: "the compact switcher is labelled Plan, as the full one is",
+    pattern: /(?<=data-tour="shell\.plan"><span>)Level(?=<\/span>)/g,
+    replace: () => "Plan",
+  },
+];
+
+/**
+ * Applies PLAN_RENAMES to one copied file. Returns the new text and the number
+ * of changes each rule made (rules that changed nothing are left out).
+ * @param {string} file
+ * @param {string} text
+ */
+export function renamePlans(file, text) {
+  if (!PLAN_FILES.test(file)) return { text, counts: {} };
+  /* Each replacement is held behind a marker until the end, so no later rule rewrites it. */
+  const held = [];
+  const counts = {};
+  for (const rule of PLAN_RENAMES) {
+    if (rule.files && !rule.files.test(file)) continue;
+    text = text.replace(rule.pattern, (...match) => {
+      counts[rule.note] = (counts[rule.note] ?? 0) + 1;
+      held.push(rule.replace(...match.slice(0, -2).map((part) => part ?? undefined)));
+      return `\u0000${held.length - 1}\u0000`;
+    });
+  }
+  return { text: text.replace(/\u0000(\d+)\u0000/g, (_, index) => held[Number(index)]), counts };
+}
+
+/** What may not be left in a renamed file: the old level labels, names and price lines. */
+const OLD_PLAN_WORDS = [
+  { what: "a numbered level label", pattern: /\bLevel 0[1-3]\b|>L0[1-3]<|\bLevel 0["'] ?\+|["']L0["'] ?\+/gi },
+  { what: "pricing set on a call", pattern: /\bpricing (?:is )?set (?:with genesis|on)\b|never shows a (?:price|dollar)/gi },
+  { what: "a draft level note", pattern: /\bdraft levels?\b|\blevels are a draft\b/gi },
+  {
+    what: "an old level name",
+    pattern: /\bWelcome, Connect\b|\b[Ee]verything in (?:Welcome|Connect)\b|\b(?:Welcome|Connect) (?:adds|keeps|changes|turns|has|names|is the website)\b|name: "(?:Welcome|Connect)"|<h3>(?:Welcome|Connect)<\/h3>|dy="0">(?:Welcome|Connect)</g,
+  },
+];
+
+/**
+ * Every old level label, old level name or "pricing set with Genesis" line
+ * left in a renamed file, with a little context around each.
+ * @param {string} text
+ * @param {string} file
+ */
+export function oldPlanRefs(text, file) {
+  if (!PLAN_FILES.test(file)) return [];
+  const found = [];
+  for (const { what, pattern } of OLD_PLAN_WORDS) {
+    for (const match of text.matchAll(pattern)) {
+      const at = match.index ?? 0;
+      const line = text.slice(0, at).split("\n").length;
+      const context = text.slice(Math.max(0, at - 40), at + match[0].length + 40).replace(/\s+/g, " ").trim();
+      found.push({ what, match: match[0], line, context });
+    }
+  }
+  return found;
+}
 
 /** A link that leaves the demo: another site, a mail or phone link, a data URL or a site path. */
 const OUTSIDE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|\/|data:)/i;

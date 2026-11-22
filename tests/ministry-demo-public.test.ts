@@ -5,11 +5,18 @@ import test from "node:test";
 import {
   GROWTH_DESK_FILES,
   GROWTH_DESK_PICTURES,
+  MINISTRY_PLANS,
+  PLAN_FILES,
+  PLAN_RENAMES,
+  PLAN_SOURCE_MARK,
+  PRICE_ANSWER,
   PUBLIC_EDITS,
   SITE_LINKS,
   applyEdits,
   growthDeskRefs,
   localRefs,
+  oldPlanRefs,
+  renamePlans,
   scriptErrors,
   siteRefs,
 } from "../scripts/ministry-demo-public.mjs";
@@ -63,6 +70,132 @@ test("every public edit names its change, and every cut is guarded", () => {
       if ("from" in edit) assert.ok(edit.maxLines > 0, `${file}: ${edit.note} needs maxLines`);
     }
   }
+});
+
+/* ── the three plans ───────────────────────────────────────────────── */
+
+/** The text renamePlans makes of one string in a file. */
+const renamed = (text: string, file = "platform/shared/demo.js") => renamePlans(file, text).text;
+
+test("the plans are Care, Shepherd and Plus, and Hope's price answer names all three", () => {
+  assert.deepEqual(
+    MINISTRY_PLANS.map((plan) => [plan.level, plan.was, plan.name, plan.price]),
+    [
+      ["01", "Welcome", "Care", "$149"],
+      ["02", "Connect", "Shepherd", "$299"],
+      ["03", "Shepherd", "Plus", "$499"],
+    ],
+  );
+  assert.equal(
+    PRICE_ANSWER,
+    "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.",
+  );
+  const hope = PUBLIC_EDITS["shared/hope-demo.js"].map((edit) => ("find" in edit ? edit.replace : edit.replace ?? "")).join("\n");
+  assert.ok(hope.includes(`price: { t: "${PRICE_ANSWER}"`), "Hope on the sample sites gives the prices");
+  const all = JSON.stringify(PUBLIC_EDITS);
+  assert.doesNotMatch(all, /level, not plan|Pricing is set on that call/, "no edit turns plan back into level or says pricing is set on a call");
+  assert.doesNotMatch(all, /"replace":"[^"]*Pricing is set with Genesis/, "no edit adds the old price line");
+});
+
+test("a level label and its name become the plan, and the old names never chain", () => {
+  /* Connect becomes Shepherd while the old Shepherd becomes Plus, in one pass. */
+  assert.equal(
+    renamed('"Level 01, Welcome: the website. " + "Level 02, Connect: everything in Welcome. " + "Level 03, Shepherd: everything in Connect."'),
+    '"Care: the website. " + "Shepherd: everything in Care. " + "Plus: everything in Shepherd."',
+  );
+  assert.equal(renamed("Connect keeps prayer in a locked inbox. Shepherd adds the Access Record screen."), "Shepherd keeps prayer in a locked inbox. Plus adds the Access Record screen.");
+  assert.equal(renamed("Welcome is the website in one of four looks."), "Care is the website in one of four looks.");
+  assert.equal(renamed("Welcome, Connect and Shepherd, with Enterprise"), "Care, Shepherd and Plus, with Enterprise");
+  assert.equal(renamed('hint: "Welcome, Connect, Shepherd, Enterprise"'), 'hint: "Care, Shepherd, Plus, Enterprise"');
+  assert.equal(renamed("Switch between Level 01, 02 and 03 any time."), "Switch between Care, Shepherd and Plus any time.");
+  assert.equal(renamed('<span class="badge">Level 02, more at 03</span>', "platform/index.html"), '<span class="badge">Shepherd, more in Plus</span>');
+  assert.equal(renamed("comes with Level 03, Shepherd, with the gifts picture"), "comes with Plus, with the gifts picture");
+  /* Grammar around a lone label. */
+  assert.equal(renamed("At Level 01 every form arrives by email. From Level 02 it lands in Guests."), "On the Care plan every form arrives by email. From Shepherd it lands in Guests.");
+  assert.equal(renamed('aria-label="This week at Level 01"'), 'aria-label="This week on the Care plan"');
+  assert.equal(renamed("Quarterly review, and a look at Level 03"), "Quarterly review, and a look at Plus");
+  assert.equal(renamed("This is the screen a Level 01 church sees."), "This is the screen a church on Care sees.");
+  assert.equal(renamed("Below Level 02 the app shows a calm Included in Level 02 state."), "On Care, the app shows a calm Included in Shepherd state.");
+  assert.equal(renamed('</svg>L03</em><span class="sr-only">, included in Level 03</span>'), '</svg>Plus</em><span class="sr-only">, included in Plus</span>');
+  /* Words that only look like level names stay. */
+  const kept = 'source: "Connect card", ["Shepherd", sh ? sh.name : "Not set"], "Welcome Team", <h3>Welcome</h3>';
+  assert.equal(renamed(kept), kept);
+});
+
+test("the data gives each plan its name and price, and the scripts show the name once", () => {
+  assert.equal(
+    renamed('{ n: 2, code: "Level 02", name: "Connect", draft: true }', "platform/shared/data.js"),
+    '{ n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", draft: true }',
+  );
+  assert.equal(
+    renamed('{ n: 4, code: "Enterprise", name: "Enterprise", draft: true }', "platform/shared/data.js"),
+    '{ n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", draft: true }',
+  );
+  assert.equal(renamed('D.pricingLine = "Pricing set with Genesis";', "platform/shared/data.js"), `D.pricingLine = "${PRICE_ANSWER}";`);
+  const app = "platform/shared/app.js";
+  assert.equal(renamed(`'Included in ' + esc(lv.code) + ", " + esc(lv.name)`, app), `'Included in ' + esc(lv.name)`);
+  assert.equal(renamed('esc(lv.code + ", " + lv.name + (on ? ", shown now" : ""))', app), 'esc(lv.name + (on ? ", shown now" : ""))');
+  assert.equal(
+    renamed(`'<b>' + esc(lv.code.replace("Level ", "")) + "</b><span>" + esc(lv.name) + "</span>"`, app),
+    `'<b>' + esc(lv.name) + "</b><span>" + esc(lv.price) + "</span>"`,
+  );
+  assert.equal(renamed('esc(code.replace("Level ", "L"))', app), "esc(code)");
+  assert.equal(
+    renamed('". This preview shows Level 0" + plan + "."', app),
+    '". This preview shows " + ["Care","Shepherd","Plus"][plan - 1] + "."',
+  );
+  assert.equal(
+    renamed('seat. Levels are a draft. " + D.pricingLine + "." }', "platform/church-team.html"),
+    'seat. " + D.pricingLine + "" }',
+  );
+  assert.equal(renamed('data-tour="shell.plan"><span>Level</span>', app), 'data-tour="shell.plan"><span>Plan</span>');
+});
+
+test("price lines become the prices, and the hub's cards print them", () => {
+  assert.equal(
+    renamed('    price: "Pricing is set with Genesis, on a call. This preview never shows a price or a dollar amount, and the levels are a draft.",'),
+    `    price: "${PRICE_ANSWER}",`,
+  );
+  assert.equal(renamed("Each level includes everything before it. Draft levels. Pricing set with Genesis.", "platform/journey.html"), `Each level includes everything before it. ${PRICE_ANSWER}`);
+  const card = (eyebrow: string, name: string) =>
+    `<p class="eyebrow">${eyebrow}</p>\n          <h3>${name}</h3>\n          <p class="sum">Sum.</p>\n          <p class="price">Pricing set with Genesis</p>`;
+  const hub = renamed([card("Level 02", "Connect"), card("Scoped on a call", "Enterprise")].join("\n"), "platform/index.html");
+  assert.equal(
+    hub,
+    '<h3>Shepherd</h3>\n          <p class="sum">Sum.</p>\n          <p class="price"><b>$299</b> <span>per month</span></p>\n' +
+      '<p class="eyebrow">Scoped on a call</p>\n          <h3>Enterprise</h3>\n          <p class="sum">Sum.</p>\n          <p class="price"><span>Priced with you on a call</span></p>',
+  );
+  assert.equal(
+    renamed('<tspan x="388" dy="0">LEVEL 01</tspan></text><text class="t big"><tspan x="388" dy="0">Welcome</tspan>', "platform/journey.html"),
+    '<tspan x="388" dy="0">$149 A MONTH</tspan></text><text class="t big"><tspan x="388" dy="0">Care</tspan>',
+  );
+});
+
+test("the renames touch only the demo's own pages and scripts", () => {
+  for (const file of ["index.html", "shared/hope-demo.js", "platform/index.html", "platform/shared/app.js", "platform/story/story.js"]) {
+    assert.ok(PLAN_FILES.test(file), file);
+  }
+  for (const file of ["templates/bold-dark/index.html", "platform/shared/os/hawk-core.js", "platform/shared/genesis.css", "platform/DESIGN.md"]) {
+    assert.ok(!PLAN_FILES.test(file), file);
+    assert.equal(renamed("Level 01, Welcome", file), "Level 01, Welcome");
+  }
+  assert.ok(PLAN_SOURCE_MARK.test('{ n: 1, code: "Level 01", name: "Welcome", draft: true'));
+  assert.ok(!PLAN_SOURCE_MARK.test('{ n: 1, code: "Care", name: "Care", price: "$149 a month"'));
+  for (const rule of PLAN_RENAMES) {
+    assert.ok(rule.pattern.global, `${rule.note} must be global`);
+    assert.ok(rule.note.length > 10);
+  }
+});
+
+test("oldPlanRefs finds what the renames missed", () => {
+  const text = 'At Level 02 the email. "Level 0" + n. Everything in Connect. Pricing is set with Genesis. <span class="badge">Draft levels</span> name: "Welcome"';
+  assert.deepEqual(
+    oldPlanRefs(text, "platform/shared/demo.js").map((ref) => ref.match),
+    ["Level 02", 'Level 0" +', "Pricing is set with Genesis", "Draft levels", "Everything in Connect", 'name: "Welcome"'],
+  );
+  /* A bare name: "Welcome" outside a level entry is not renamed; the check stops the sync on it instead. */
+  assert.deepEqual(oldPlanRefs(renamed(text), "platform/shared/demo.js").map((ref) => ref.match), ['name: "Welcome"']);
+  assert.deepEqual(oldPlanRefs("Level 01", "templates/bold-dark/index.html"), []);
 });
 
 /* ── the checks ────────────────────────────────────────────────────── */
@@ -132,6 +265,15 @@ test("scriptErrors compiles scripts without running them", () => {
 /* ── the committed public copy ─────────────────────────────────────── */
 
 const DEMO = join(process.cwd(), "public", "ministry-demo");
+/*
+ * Whether the committed copy has the three plans. It was synced before the
+ * plans, so until the next sync the checks of the plans in it are marked
+ * todo (they run and report, but do not fail the suite), and the renames are
+ * instead checked against the copy as it is.
+ */
+const DEMO_DATA = join(DEMO, "platform", "shared", "data.js");
+const PLANS_SYNCED = existsSync(DEMO_DATA) && !PLAN_SOURCE_MARK.test(readFileSync(DEMO_DATA, "utf8"));
+const AFTER_SYNC = PLANS_SYNCED ? {} : { todo: "re-sync public/ministry-demo/ with scripts/sync-ministry-demo.mjs to give the demo the three plans" };
 const TEXT = /\.(html?|js|css|json|md|svg|txt)$/i;
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -201,8 +343,37 @@ test("Hope on the sample sites answers a price question with the price answer", 
   for (const q of ["How much does Genesis Ministry cost?", "What is the price?", "How much is it?"]) assert.ok(re.test(q), q);
   assert.ok(!re.test("How much should I give?"));
   assert.ok(rules.indexOf('"price"]') < rules.indexOf('"custom"]'), "the price rule comes before the custom rule");
-  assert.match(hope, /price: \{ t: "Pricing is set with Genesis/);
   assert.doesNotMatch(hope, /custom: \{ t: "Yes\./);
+});
+
+test("the renames leave nothing of the draft levels in the committed copy", { skip: !existsSync(DEMO) || PLANS_SYNCED ? "the copy already has the plans" : false }, () => {
+  let changed = 0;
+  for (const file of walk(DEMO).filter((name) => PLAN_FILES.test(name))) {
+    const { text, counts } = renamePlans(file, readFileSync(join(DEMO, file), "utf8"));
+    changed += Object.values(counts).reduce((n: number, count) => n + (count as number), 0);
+    assert.deepEqual(oldPlanRefs(text, file).map((ref) => `${file}:${ref.line} ${ref.what}: ${ref.context}`), []);
+    assert.deepEqual(scriptErrors(file, text), []);
+  }
+  assert.ok(changed > 150, `the renames found the levels (${changed} changes)`);
+});
+
+test("the public demo names the three plans and their prices, as /ministry does", { ...AFTER_SYNC, skip: !existsSync(DEMO) }, () => {
+  for (const file of walk(DEMO).filter((name) => PLAN_FILES.test(name))) {
+    assert.deepEqual(oldPlanRefs(readFileSync(join(DEMO, file), "utf8"), file).map((ref) => `${file}:${ref.line} ${ref.match}`), []);
+  }
+  const hub = readFileSync(join(DEMO, "platform", "index.html"), "utf8");
+  for (const plan of MINISTRY_PLANS) assert.match(hub, new RegExp(`<h3>${plan.name}</h3>[\\s\\S]*?<b>\\${plan.price}</b> <span>per month</span>`));
+  /* Team roles come with Shepherd; Plus adds custom roles. */
+  const shepherdCard = hub.slice(hub.indexOf("<h3>Shepherd</h3>"), hub.indexOf("<h3>Plus</h3>"));
+  assert.match(shepherdCard, /Team roles, with the prayer team named/);
+  const demo = readFileSync(join(DEMO, "platform", "shared", "demo.js"), "utf8");
+  assert.match(demo, /"Shepherd: [^"]*team roles/);
+  assert.doesNotMatch(demo, /"Plus: [^"]*team roles/);
+  assert.ok(demo.includes(`price: "${PRICE_ANSWER}"`), "the platform's Hope gives the prices");
+  const hope = readFileSync(join(DEMO, "shared", "hope-demo.js"), "utf8");
+  assert.ok(hope.includes(`price: { t: "${PRICE_ANSWER}"`), "Hope on the sample sites gives the prices");
+  const data = readFileSync(DEMO_DATA, "utf8");
+  assert.ok(data.includes(`D.pricingLine = "${PRICE_ANSWER}";`));
 });
 
 test("the public data carries no Growth Desk sample data", { skip: !existsSync(DEMO) }, () => {

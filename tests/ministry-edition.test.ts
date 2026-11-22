@@ -20,20 +20,31 @@ import {
   ministryLooks,
   ministryMedia,
   ministryPlatform,
+  ministryPriceAnswer,
   ministryProcess,
   ministryProtection,
   ministryWalkthrough,
   ministryWebsiteCheck,
 } from "../lib/ministryPage.ts";
 import * as ministryPage from "../lib/ministryPage.ts";
-import { fullTitle, seoPage } from "../lib/seo.ts";
+import { ministryServiceSchema } from "../lib/schema.ts";
+import { absoluteUrl, fullTitle, seoPage } from "../lib/seo.ts";
+import { MINISTRY_PLANS, PRICE_ANSWER } from "../scripts/ministry-demo-public.mjs";
 
 /* The three dash characters that must never appear in visitor copy. */
 const DASHES = ["-", "–", "—"];
 /* Any emoji or pictographic character is banned from visitor copy. */
 const EMOJI = /\p{Extended_Pictographic}/u;
-/* Ministry has no public prices: no currency, no "per month", no "a month". */
-const PRICE = /[$€£]|\bper month\b|\ba month\b|\bfree trial\b/i;
+/* Anything that reads like a price: a currency, "per month", "a month", a trial or a setup fee. */
+const PRICE = /[$€£]|\bper month\b|\ba month\b|\bfree trial\b|\bsetup\b/i;
+/* The only amounts Ministry may print are the three plan prices. */
+const PLAN_AMOUNTS = ["$149", "$299", "$499"];
+/** Where a price may appear: the plan cards, the price sentence and what is built from them. */
+function mayShowPrice(path: string, text: string): boolean {
+  if (/^ministryLevels\.(levels\[\d\]\.priceDisplay|priceUnit)$/.test(path)) return true;
+  if (/^ministryConsultationNotes\.ministry-(care|shepherd|plus)$/.test(path)) return true;
+  return text.includes(ministryPriceAnswer);
+}
 
 /** Every string reachable from a value, paired with the key path that reached it. */
 function strings(value: unknown, path: string): { path: string; text: string }[] {
@@ -145,23 +156,145 @@ test("each film's poster is a 1920 by 1080 still in public/", () => {
 /** The starting note a /contact link opens with. */
 const noteFor = (href: string) => ministryConsultationNote(new URL(href, "https://x.test").searchParams.get("topic"));
 
-test("the draft levels show no prices and each books a consultation", () => {
+test("the three plans are Care, Shepherd and Plus at $149, $299 and $499 a month", () => {
   assert.deepEqual(
-    ministryLevels.levels.map((level) => level.name),
-    ["Welcome", "Connect", "Shepherd"],
+    ministryLevels.levels.map((plan) => [plan.id, plan.name, plan.monthlyPriceUsd, plan.priceDisplay]),
+    [
+      ["care", "Care", 149, "$149"],
+      ["shepherd", "Shepherd", 299, "$299"],
+      ["plus", "Plus", 499, "$499"],
+    ],
   );
-  assert.deepEqual(
-    ministryLevels.levels.map((level) => level.step),
-    ["01", "02", "03"],
-  );
-  assert.equal(ministryLevels.priceLine, "Pricing set with Genesis");
-  for (const action of [...ministryLevels.levels.map((level) => level.action), ministryLevels.enterprise.action]) {
+  for (const plan of ministryLevels.levels) {
+    assert.equal(plan.priceDisplay, `$${plan.monthlyPriceUsd}`, `${plan.name} prints the price it is sold at`);
+  }
+  assert.equal(ministryLevels.priceUnit, "per month");
+  assert.equal(ministryLevels.eyebrow, "Choose your plan");
+  assert.doesNotMatch(JSON.stringify(ministryLevels), /Welcome"|Connect"|Level 0|Pricing set|set with Genesis/);
+});
+
+test("each plan and Enterprise books a consultation that names what was picked", () => {
+  for (const action of [...ministryLevels.levels.map((plan) => plan.action), ministryLevels.enterprise.action]) {
     assert.equal(action.label, "Book a Consultation");
     assert.ok(action.href.startsWith("/contact?topic=ministry"), action.href);
     assert.ok(noteFor(action.href), `${action.href} opens with no starting note`);
   }
+  assert.deepEqual(
+    ministryLevels.levels.map((plan) => noteFor(plan.action.href)),
+    [
+      "Genesis Ministry, the Care plan at $149 a month. ",
+      "Genesis Ministry, the Shepherd plan at $299 a month. ",
+      "Genesis Ministry, the Plus plan at $499 a month. ",
+    ],
+  );
+  /* The draft level topics are gone. */
+  for (const old of ["ministry-welcome", "ministry-connect"]) assert.equal(ministryConsultationNote(old), "", old);
+  /* Enterprise, for more than one campus, stays scoped on a call, with no price. */
   assert.equal(ministryLevels.enterprise.name, "Enterprise");
-  assert.match(ministryLevels.enterprise.line, /campus/);
+  assert.match(ministryLevels.enterprise.line, /more than one campus/i);
+  assert.match(ministryLevels.enterprise.line, /scoped with you on a call/);
+  assert.doesNotMatch(ministryLevels.enterprise.line + noteFor(ministryLevels.enterprise.action.href), PRICE);
+});
+
+test("each plan keeps exactly what its draft level included", () => {
+  /* Care was Level 01 (Welcome), Shepherd was Level 02 (Connect), Plus was Level 03 (Shepherd). */
+  assert.deepEqual(
+    ministryLevels.levels.map((plan) => [plan.summary, [...plan.bullets]]),
+    [
+      [
+        "Everything a guest sees first.",
+        [
+          "Website in one of four looks",
+          "Brand board",
+          "Social marketing plan",
+          "Hope on your website",
+          "Plan a Visit and prayer forms by email",
+          "Newsletter sign up",
+        ],
+      ],
+      [
+        "Every guest followed up.",
+        [
+          "Everything in Care",
+          "The Today view",
+          "Guest pipeline",
+          "Member app",
+          "Care inbox",
+          "Team roles, with your prayer team named",
+          "Hope drafts that wait for approval",
+        ],
+      ],
+      [
+        "Care for every person, over time.",
+        [
+          "Everything in Shepherd",
+          "Person pages",
+          "Access record",
+          "Spiritual gifts, with a church wide view for pastors",
+          "Reports",
+          "Custom roles and named gift viewers",
+          "More staff seats",
+        ],
+      ],
+    ],
+  );
+});
+
+test("the price sentence is the same on the page and in the demo", () => {
+  assert.equal(
+    ministryPriceAnswer,
+    "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.",
+  );
+  assert.equal(PRICE_ANSWER, ministryPriceAnswer);
+  assert.deepEqual(
+    MINISTRY_PLANS.map((plan) => [plan.name, plan.price]),
+    ministryLevels.levels.map((plan) => [plan.name, plan.priceDisplay]),
+  );
+  /* The demo's draft levels map to the plans in order. */
+  assert.deepEqual(
+    MINISTRY_PLANS.map((plan) => `${plan.level} ${plan.was}`),
+    ["01 Welcome", "02 Connect", "03 Shepherd"],
+  );
+});
+
+test("the questions give the prices, and no setup fee is named", () => {
+  const cost = ministryFaq.items.find((item) => item.question === "What does Genesis Ministry cost?");
+  assert.ok(cost, "there is a price question");
+  assert.ok(cost.answer.startsWith(ministryPriceAnswer), cost.answer);
+  assert.match(cost.answer, /Enterprise is scoped with you on a call/);
+  const custom = ministryFaq.items.find((item) => /customization/i.test(item.question));
+  assert.ok(custom);
+  assert.doesNotMatch(custom.answer, /set with Genesis|on a call/);
+  assert.doesNotMatch(JSON.stringify(ministryPage), /setup fee|set up fee|one time fee/i);
+});
+
+test("the structured data carries the three plans at the prices the cards print", () => {
+  const service = ministryServiceSchema();
+  assert.equal(service["@type"], "Service");
+  assert.equal(service.url, absoluteUrl("/ministry"));
+  const offers = service.hasOfferCatalog.itemListElement;
+  assert.deepEqual(
+    offers.map((offer) => [offer.name, offer.price, offer.priceCurrency, offer.priceSpecification.unitText]),
+    [
+      ["Genesis Ministry Care", 149, "USD", "per month"],
+      ["Genesis Ministry Shepherd", 299, "USD", "per month"],
+      ["Genesis Ministry Plus", 499, "USD", "per month"],
+    ],
+  );
+  for (const offer of offers) {
+    assert.equal(offer.priceSpecification.price, offer.price);
+    assert.equal(offer.url, `${absoluteUrl("/ministry")}#levels`);
+  }
+  const page = readFileSync(join(process.cwd(), "app", "(marketing)", "ministry", "page.tsx"), "utf8");
+  assert.match(page, /ministryServiceSchema\(\)/);
+});
+
+test("the business pricing page points churches to the Ministry plans", () => {
+  const pricing = readFileSync(join(process.cwd(), "app", "(marketing)", "pricing", "page.tsx"), "utf8");
+  assert.match(pricing, /Genesis Ministry has its own plans, from \{ministryLevels\.levels\[0\]\.priceDisplay\} a month\./);
+  assert.match(pricing, /href="\/ministry#levels">See the Ministry Plans</);
+  assert.doesNotMatch(pricing, /set with Genesis on a call|Ministry Levels/);
+  assert.match(seoPage("/ministry").description, /Plans from \$149 a month\./);
 });
 
 test("the guided demo is linked only once its files are published", () => {
@@ -219,35 +352,33 @@ test("the page is registered for search with its own title", () => {
   assert.ok(fullTitle(page).length <= 60);
 });
 
-test("no copy string has a dash, an emoji or a price", () => {
+test("no copy string has a dash or an emoji, and prices only where the plans are", () => {
   assert.ok(allCopy.length > 100, "the walk found the page copy");
+  let priced = 0;
   for (const { path, text } of allCopy) {
     for (const dash of DASHES) {
       assert.equal(text.includes(dash), false, `${path} contains "${dash}": ${text}`);
     }
     assert.equal(EMOJI.test(text), false, `${path} contains an emoji: ${text}`);
-    assert.equal(PRICE.test(text), false, `${path} reads like a price: ${text}`);
+    if (!PRICE.test(text)) continue;
+    priced++;
+    assert.ok(mayShowPrice(path, text), `${path} reads like a price outside the plans: ${text}`);
+    for (const amount of text.match(/\$[\d,.]+/g) ?? []) {
+      assert.ok(PLAN_AMOUNTS.includes(amount), `${path} names ${amount}, which is not a plan price`);
+    }
   }
+  assert.ok(priced >= 8, "the plan prices were found");
 });
 
-test("the levels match the demo: team roles in Connect, custom roles in Shepherd", () => {
-  const [welcome, connect, shepherd] = ministryLevels.levels.map((level) => level.bullets.join(" | "));
-  assert.match(welcome, /Plan a Visit and prayer forms by email/);
-  assert.match(welcome, /Newsletter sign up/);
-  assert.match(connect, /Team roles/);
-  assert.match(connect, /Hope drafts that wait for approval/);
-  assert.match(shepherd, /Custom roles and named gift viewers/);
-  assert.doesNotMatch(shepherd, /Team roles/);
-
-  /* The demo hub and Hope's levels answer say the same. */
-  const demo = join(process.cwd(), "public", "ministry-demo", "platform");
-  if (!existsSync(demo)) return;
-  const hub = readFileSync(join(demo, "index.html"), "utf8");
-  const connectCard = hub.slice(hub.indexOf("<h3>Connect</h3>"), hub.indexOf("<h3>Shepherd</h3>"));
-  assert.match(connectCard, /Team roles, with the prayer team named/);
-  const hope = readFileSync(join(demo, "shared", "demo.js"), "utf8");
-  assert.match(hope, /Level 02, Connect: [^"]*team roles/);
-  assert.doesNotMatch(hope, /Level 03, Shepherd: [^"]*team roles/);
+test("the plans match the demo: team roles in Shepherd, custom roles in Plus", () => {
+  const [care, shepherd, plus] = ministryLevels.levels.map((plan) => plan.bullets.join(" | "));
+  assert.match(care, /Plan a Visit and prayer forms by email/);
+  assert.match(care, /Newsletter sign up/);
+  assert.match(shepherd, /Team roles/);
+  assert.match(shepherd, /Hope drafts that wait for approval/);
+  assert.match(plus, /Custom roles and named gift viewers/);
+  assert.doesNotMatch(plus, /Team roles/);
+  /* The demo hub and Hope's levels answer are checked in tests/ministry-demo-public.test.ts. */
 });
 
 test("the protection rules do not promise more than the product does", () => {

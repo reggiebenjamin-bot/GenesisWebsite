@@ -32,8 +32,8 @@ export function ConsultationForm({
   /**
    * "church" when the visitor came from a Genesis Ministry link: church
    * labels and roles, the operation type sent as Church, and no plan select,
-   * because the business plans carry prices and Ministry pricing is set with
-   * Genesis on a call.
+   * because that select lists the business plans and their prices. A church
+   * plan (Care, Shepherd or Plus) arrives in the starting note instead.
    */
   audience?: ConsultationAudience;
   /**
@@ -318,7 +318,7 @@ export function ConsultationForm({
       </div>
 
       {church ? (
-        /* The business plans carry prices; Ministry pricing is set with Genesis on a call. */
+        /* The select lists the business plans; a church plan is named in the starting note. */
         <input type="hidden" name="plan" value="" />
       ) : (
         <label className={field}>

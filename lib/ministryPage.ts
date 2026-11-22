@@ -1,11 +1,12 @@
 /*
  * The Genesis Ministry page (Edition 05): every visitor string on /ministry,
- * the four website looks, the platform rows, the draft levels, the church
+ * the four website looks, the platform rows, the three plans, the church
  * version of the process, the free Church Website Check and the questions, in
  * one place. The page and its tests read from here, so the copy cannot drift.
  *
  * The proof standard applies: no statistics, results or testimonials. Ministry
- * has no public prices; pricing is set with Genesis on a call.
+ * shows its three plan prices (Care, Shepherd and Plus, per month); Enterprise,
+ * for more than one campus, is scoped on a call. No setup fees are named.
  *
  * Copy rules: warm, plain, short sentences. No em dashes, no emojis, and no
  * hyphens in visitor copy (the tests check all three).
@@ -29,7 +30,8 @@ export const ministryDemo = {
   gallery: "/ministry-demo/index.html",
   platform: "/ministry-demo/platform/index.html",
   /* Starts as Lampstand Church, the sample church in the stills on /ministry. Its
-     account is at Level 03, the level the demo opens at, so no level note shows. */
+     account is on Plus (Level 03 in a demo copy from before the plans), the plan
+     the demo opens at, so no plan note shows. */
   tour: "/ministry-demo/platform/index.html?tour=1&church=bold-dark",
   template: (slug: string) => `/ministry-demo/templates/${slug}/index.html`,
 } as const;
@@ -63,7 +65,7 @@ export function ministryDemoAction(hasFile: (path: string) => boolean): Ministry
  * rebuild; no code changes.
  *
  * The posters are stills from the public demo (public/ministry-demo/), with
- * Lampstand Church, a made up sample church: Today at Level 03 in the light
+ * Lampstand Church, a made up sample church: Today on Plus in the light
  * theme, the Guests view, the care inbox, and the member app home screen in a
  * phone. Each also has a phone still (posterPhone): the same screen as a
  * phone shows it, 390 by 520 at three times the pixels, scrolled to the part
@@ -123,7 +125,7 @@ export const ministryPackage = {
   eyebrow: "What a church gets",
   title: "Everything you need to welcome people well.",
   aside:
-    "Every church starts with a website, a brand and a plan to share it, with Hope on the site from day one. The platform comes with the level you choose.",
+    "Every church starts with a website, a brand and a plan to share it, with Hope on the site from day one. The platform comes with the plan you choose.",
   items: [
     {
       no: "01",
@@ -151,8 +153,8 @@ export const ministryPackage = {
     },
     {
       no: "05",
-      title: "The platform, by level",
-      body: "A front office for guests, a back office for care and a member app on phones. Which parts you get depends on the level you choose.",
+      title: "The platform, by plan",
+      body: "A front office for guests, a back office for care and a member app on phones. Which parts you get depends on the plan you choose.",
       points: ["Front office for guests", "Back office for care", "Member app"],
     },
   ] satisfies readonly MinistryPackageItem[],
@@ -305,36 +307,47 @@ export const ministryProtection = {
   },
 } as const;
 
+export type MinistryPlanId = "care" | "shepherd" | "plus";
+
 export type MinistryLevel = {
-  id: "welcome" | "connect" | "shepherd";
-  /** "01" to "03". */
-  step: string;
+  id: MinistryPlanId;
   name: string;
+  /** The monthly price in US dollars, as the structured data carries it. */
+  monthlyPriceUsd: number;
+  /** The monthly price as the card prints it. */
+  priceDisplay: string;
   summary: string;
   bullets: readonly string[];
   action: MinistryLink;
 };
 
 /*
- * DRAFT LEVELS. The names (Welcome, Connect, Shepherd, Enterprise), what each
- * includes, and the decision to show no prices are a draft for the owner to
- * confirm. Prices are deliberately absent: every card reads "Pricing set with
- * Genesis" until the owner approves real numbers. Enterprise, for more than
- * one campus, is a line under the three cards rather than a fourth card, the
- * way Genesis Enterprise sits under the edition levels: most churches of 100
- * to 1,000 people meet on one campus.
+ * THE THREE PLANS. The owner set the names and the prices: Care at $149 a
+ * month, Shepherd at $299 and Plus at $499. They replace the draft levels
+ * Welcome, Connect and Shepherd, and the section keeps its #levels anchor.
+ *
+ * What each plan includes is a working mapping until the owner lists it: Care
+ * has exactly what Level 01 (Welcome) had, Shepherd what Level 02 (Connect)
+ * had, and Plus what Level 03 (Shepherd) had. No setup fee is named.
+ *
+ * Enterprise, for more than one campus, is a line under the three cards
+ * rather than a fourth card, the way Genesis Enterprise sits under the
+ * edition levels, and it stays scoped on a call: most churches of 100 to
+ * 1,000 people meet on one campus.
  */
 export const ministryLevels = {
-  eyebrow: "Choose your level",
+  eyebrow: "Choose your plan",
   title: "Start where your church is.",
   aside:
-    "Every level includes the website, the brand board, the social plan and Hope. Pricing is set with Genesis on a call, once we understand your church.",
-  priceLine: "Pricing set with Genesis",
+    "Every plan includes the website, the brand board, the social marketing plan and Hope. Prices are monthly, for one campus.",
+  /** Printed beside each price, as on the edition Levels. */
+  priceUnit: "per month",
   levels: [
     {
-      id: "welcome",
-      step: "01",
-      name: "Welcome",
+      id: "care",
+      name: "Care",
+      monthlyPriceUsd: 149,
+      priceDisplay: "$149",
       summary: "Everything a guest sees first.",
       bullets: [
         "Website in one of four looks",
@@ -344,15 +357,16 @@ export const ministryLevels = {
         "Plan a Visit and prayer forms by email",
         "Newsletter sign up",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-welcome") },
+      action: { label: "Book a Consultation", href: consult("ministry-care") },
     },
     {
-      id: "connect",
-      step: "02",
-      name: "Connect",
+      id: "shepherd",
+      name: "Shepherd",
+      monthlyPriceUsd: 299,
+      priceDisplay: "$299",
       summary: "Every guest followed up.",
       bullets: [
-        "Everything in Level 01",
+        "Everything in Care",
         "The Today view",
         "Guest pipeline",
         "Member app",
@@ -360,15 +374,16 @@ export const ministryLevels = {
         "Team roles, with your prayer team named",
         "Hope drafts that wait for approval",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-connect") },
+      action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
     },
     {
-      id: "shepherd",
-      step: "03",
-      name: "Shepherd",
+      id: "plus",
+      name: "Plus",
+      monthlyPriceUsd: 499,
+      priceDisplay: "$499",
       summary: "Care for every person, over time.",
       bullets: [
-        "Everything in Level 02",
+        "Everything in Shepherd",
         "Person pages",
         "Access record",
         "Spiritual gifts, with a church wide view for pastors",
@@ -376,10 +391,10 @@ export const ministryLevels = {
         "Custom roles and named gift viewers",
         "More staff seats",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
+      action: { label: "Book a Consultation", href: consult("ministry-plus") },
     },
   ] satisfies readonly MinistryLevel[],
-  /** Draft: Enterprise is everything in Level 03, across more than one campus. */
+  /** Enterprise is everything in Plus, across more than one campus. */
   enterprise: {
     name: "Enterprise",
     line: "More than one campus? Enterprise is scoped with you on a call.",
@@ -387,6 +402,16 @@ export const ministryLevels = {
   },
   footnote: "Customization beyond the template is quoted separately.",
 } as const;
+
+/** "Care at $149 a month", one per plan, in order. */
+const planPrices = ministryLevels.levels.map((plan) => `${plan.name} at ${plan.priceDisplay} a month`);
+
+/**
+ * How Genesis states the plans and prices in one sentence: the price question
+ * on this page, and Hope's price answer in the public demo
+ * (PRICE_ANSWER in scripts/ministry-demo-public.mjs, which a test keeps equal).
+ */
+export const ministryPriceAnswer = `Genesis Ministry has three plans: ${planPrices.slice(0, -1).join(", ")} and ${planPrices.at(-1)}.`;
 
 /** The church version of the five stages, for the shared process timeline. */
 export const ministryProcess = {
@@ -403,16 +428,16 @@ export const ministryProcess = {
     {
       number: "02",
       title: "Scoping",
-      summary: "Your look and your level",
+      summary: "Your look and your plan",
       description:
-        "Together we choose the look, the level and the tools to link to, and agree on the facts Hope may use.",
+        "Together we choose the look, the plan and the tools to link to, and agree on the facts Hope may use.",
     },
     {
       number: "03",
       title: "Implementation",
       summary: "Your site and platform built",
       description:
-        "Genesis builds your website with your content and photos, sets up Hope and configures the platform for your level.",
+        "Genesis builds your website with your content and photos, sets up Hope and configures the platform for your plan.",
     },
     {
       number: "04",
@@ -470,9 +495,12 @@ export const ministryFaq = {
         "Yes, and we hope you will. The previews use free stock photos so you can see each look. Your website is built with your own photos, your own words and your own times.",
     },
     {
+      question: "What does Genesis Ministry cost?",
+      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan and Hope. More than one campus? Enterprise is scoped with you on a call.`,
+    },
+    {
       question: "What does customization cost?",
-      answer:
-        "Customization beyond the template is quoted separately, once we know what you want. Pricing for each level is set with Genesis on a call.",
+      answer: "Customization beyond the template is quoted separately, once we know what you want.",
     },
   ],
 } as const;
@@ -480,7 +508,7 @@ export const ministryFaq = {
 export const ministryClose = {
   eyebrow: "Genesis Ministry",
   title: "Be ready for whoever walks in this Sunday.",
-  line: "Book a consultation and we will walk through your church, the look that fits and the level to start with.",
+  line: "Book a consultation and we will walk through your church, the look that fits and the plan to start with.",
   primary: ministryHero.primary,
   secondary: ministryHero.secondary,
   footnote: ministryEdition.disclaimer,
@@ -489,7 +517,8 @@ export const ministryClose = {
 /*
  * The contact page and consultation form, as a church sees them. A link with
  * a known Ministry topic (below) opens /contact in this version: church
- * words, church roles, and no business plans or prices.
+ * words, church roles, and never the business plans or their prices. A plan
+ * link names the church plan and its price in the starting note.
  */
 export const ministryContact = {
   intro: {
@@ -497,7 +526,7 @@ export const ministryContact = {
     title: "Start with a conversation about your church.",
     description: [
       "Tell us about your church and how guests find you today.",
-      "The first conversation is free. We listen first, then suggest the look and the level that fit.",
+      "The first conversation is free. We listen first, then suggest the look and the plan that fit.",
     ],
   },
   aside: {
@@ -530,11 +559,11 @@ export const ministryContact = {
     notesPlaceholder: "Tell us about your church, your website address and what you would like help with first.",
     submit: "Book a Consultation",
     footnotes: [
-      "Your request starts a conversation. It does not sign your church up for anything or commit you to a level.",
+      "Your request starts a conversation. It does not sign your church up for anything or commit you to a plan.",
       "Genesis uses these details only to prepare for the call and to follow up about your request.",
     ],
     success:
-      "Genesis will reach out to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a level before anything is proposed in writing.",
+      "Genesis will reach out to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a plan before anything is proposed in writing.",
   },
   /*
    * The free Church Website Check (the church-website-check topic): the same
@@ -581,15 +610,19 @@ export const MINISTRY_OPERATION_TYPE = "Church";
 /*
  * The starting note the contact form fills in for each Ministry topic, so a
  * church that clicks "Book a Consultation" or "Request a Website Check" does
- * not have to explain what it came for. Only these topics are recognized; any
- * other value leaves the note empty.
+ * not have to explain what it came for. A plan's note names the plan and its
+ * price, from ministryLevels, so the note cannot drift from the card. Only
+ * these topics are recognized; any other value leaves the note empty.
  */
 export const ministryConsultationNotes: Readonly<Record<string, string>> = {
   ministry: "Genesis Ministry for our church. ",
   "ministry-demo": "A walkthrough of the Genesis Ministry demo. ",
-  "ministry-welcome": "Genesis Ministry, Level 01 Welcome. ",
-  "ministry-connect": "Genesis Ministry, Level 02 Connect. ",
-  "ministry-shepherd": "Genesis Ministry, Level 03 Shepherd. ",
+  ...Object.fromEntries(
+    ministryLevels.levels.map((plan) => [
+      `ministry-${plan.id}`,
+      `Genesis Ministry, the ${plan.name} plan at ${plan.priceDisplay} a month. `,
+    ]),
+  ),
   "ministry-enterprise": "Genesis Ministry, Enterprise for more than one campus. ",
   "church-website-check": "Free Church Website Check. ",
 };
