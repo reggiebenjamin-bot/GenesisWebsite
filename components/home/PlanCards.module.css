@@ -304,16 +304,33 @@
   stroke-linejoin: round;
 }
 
-/* Every level is consultation-led, so the card's action is the conversation:
-   a footer band running the full width of the card, under the price it
-   belongs to. */
+.checkoutLabel {
+  margin-top: auto;
+  padding-top: 22px;
+  color: rgb(244 239 232 / 0.48);
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Three edition checkouts, stacked, full width of the card. */
+.choices {
+  display: grid;
+  margin-top: 12px;
+  margin-inline: calc(-1 * clamp(26px, 2.8vw, 38px));
+  margin-bottom: calc(-1 * clamp(26px, 2.8vw, 38px));
+  border-top: 1px solid rgb(244 239 232 / 0.1);
+}
+
 .cta {
   display: flex;
-  min-height: 58px;
+  min-height: 52px;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: auto calc(-1 * clamp(26px, 2.8vw, 38px)) calc(-1 * clamp(26px, 2.8vw, 38px));
+  margin: 0;
   border-top: 1px solid rgb(244 239 232 / 0.1);
   background-color: var(--tier-cta);
   color: var(--tier-cta-text);
@@ -323,6 +340,10 @@
   transition:
     color 220ms ease,
     background-color 220ms ease;
+}
+
+.choices .cta:first-child {
+  border-top: 0;
 }
 
 .cta:hover {

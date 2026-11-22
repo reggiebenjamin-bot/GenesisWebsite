@@ -1,19 +1,21 @@
 /*
- * The two editions of the three Genesis Levels: Real Estate Edition and
- * Lending Edition. Every price, setup fee and user limit comes from
- * managedPlans in offers.ts, so an edition can never show a number the Levels
- * do not. Only the edition bullets live here, drawn from the existing Real
- * Estate Pros and Lending copy. Every buy button posts to the managed
- * checkout for that Level with the edition passed along.
+ * The editions of the three Genesis Levels: Business, Real Estate, and
+ * Lending. Every price, setup fee and user limit comes from managedPlans in
+ * offers.ts, so an edition can never show a number the Levels do not. Only
+ * the edition bullets live here, drawn from the existing Business, Real
+ * Estate Pros, and Lending copy. Every buy button posts to the managed
+ * checkout for that Level with the edition passed along. The same three
+ * Stripe prices are reused. No new products or prices.
  *
  * No path aliases in this file: tests import it directly under Node.
  */
 
+import { FUNDING_LINE } from "./legal.ts";
 import { managedPlans, type ManagedPlan, type ManagedPlanId } from "./offers.ts";
 
-export type EditionKey = "real_estate" | "lending";
+export type EditionKey = "business" | "real_estate" | "lending";
 
-export const editionKeys: readonly EditionKey[] = ["real_estate", "lending"];
+export const editionKeys: readonly EditionKey[] = ["business", "real_estate", "lending"];
 
 export function isEditionKey(value: unknown): value is EditionKey {
   return typeof value === "string" && (editionKeys as readonly string[]).includes(value);
@@ -37,6 +39,32 @@ export type EditionPricing = {
 };
 
 export const editionPricing: Record<EditionKey, EditionPricing> = {
+  business: {
+    key: "business",
+    name: "Business Edition",
+    landingPath: "/business",
+    pricingPath: "/pricing",
+    eyebrow: "Business Edition pricing",
+    headline: "Software that answers the call and follows up for your business.",
+    lede:
+      "For any service business: contractors, clinics, law offices, home services and agencies. Calls answered, quotes followed up, appointments confirmed. Pick the Level that fits your team.",
+    footer: FUNDING_LINE,
+    bullets: {
+      "managed-750": ["Calls answered", "Quotes followed up", "Appointments confirmed"],
+      "managed-1750": [
+        "Everything in Level 01",
+        "Calls answered",
+        "Quotes followed up",
+        "Appointments confirmed",
+      ],
+      "managed-4500": [
+        "Everything in Level 02",
+        "Calls answered",
+        "Quotes followed up",
+        "Appointments confirmed",
+      ],
+    },
+  },
   real_estate: {
     key: "real_estate",
     name: "Real Estate Edition",
