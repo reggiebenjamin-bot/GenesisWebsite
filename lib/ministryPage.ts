@@ -108,7 +108,7 @@ export const ministryHero = {
     "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
   /** Describes the poster image when it is shown without the film. Keep it true to the still. */
   stillAlt:
-    "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing counts 4 new guests, 6 care items waiting and 4 drafts to approve, and the next move is Maya T., a first time guest visiting on Sunday.",
+    "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing puts today's list in order and starts with Maya T., a first time guest visiting on Sunday, and 4 drafts wait for a person's judgment.",
   filmPlay: "Play the guided film",
   filmNote: "Sample church and sample people shown.",
 } as const;

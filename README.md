@@ -240,8 +240,9 @@ The source belongs to another team and is only read. The script:
 **The committed copy.** `public/ministry-demo/` is synced from genesis-ministry
 commit `1beb6da` (its `main` on November 22, 2026), exported with
 `git archive` as described below. It shows the three plans and their prices
-and the gold Genesis G. The posters in `public/video/ministry/` were taken
-from an earlier copy, `432d5cd`.
+and the gold Genesis G. The eight posters in `public/video/ministry/` (four
+1920 by 1080 stills and four 1170 by 1560 phone stills) were retaken from it,
+so they show the gold G and the plan switcher reads Care, Shepherd and Plus.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.
