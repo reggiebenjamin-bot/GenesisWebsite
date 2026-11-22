@@ -1,0 +1,197 @@
+/* Copied from the Genesis OS repo (v2/refine/mydeals.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: mydeals.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* One rhythm. The page is a column and its gap owns the spacing, so a margin
+ * on a child can no longer stack on top of it and double the space. The page
+ * head keeps its usual 20px under it; a hairline owns the 14px below it. */
+.v2-mydeals-page{display:flex;flex-direction:column;gap:14px}
+.v2-mydeals-page>*{min-width:0}
+.v2-mydeals-page>.v2-page-head{margin-bottom:6px}
+.v2-mydeals-page .v2-mydeals-tabs{margin-top:0}
+.v2-mydeals-tabs button{font-size:12.5px;font-weight:500}
+.v2-mydeals-page .v2-pill{font-size:11px}
+.v2-mydeal-quiet{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+/* Pills pop in on arrival only. Opening a deal or switching a view repaints the
+ * page, and every stage pill popping again read as the page reloading. */
+.v2-main:not(.v2-page-enter) .v2-mydeals-page .v2-pill{animation:none}
+
+/* Portfolio pulse: a tiny uppercase caption over the number that is the point
+ * of the tile. The strip is a summary, not a control, so it does not react. */
+.v2-mydeals-pulse{margin:0}
+.v2-mydeals-pulse>div{gap:6px;padding:14px 16px}
+.v2-mydeals-pulse small{color:var(--v2-muted);font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-mydeals-pulse strong{color:var(--v2-text)}
+.v2-mydeals-pulse p{margin:0;color:var(--v2-muted);font-size:12px}
+
+/* The list. The deal name is the column that carries meaning, so it takes the
+ * spare width instead of an equal sixth that truncated every name. */
+.v2-mydeals-collection>.v2-section-head{align-items:baseline;margin:0}
+.v2-mydeals-collection>.v2-section-head h2{margin:0;font-size:15px;font-weight:700}
+.v2-mydeals-collection>.v2-section-head>small{font-size:12px}
+.v2-mydeals-collection>.v2-mydeal-feedback{padding:10px 15px;border-bottom:1px solid var(--v2-border)}
+.v2-mydeals-collection .v2-table th{font-size:10.5px}
+.v2-mydeals-collection .v2-table th:nth-child(1){width:31%}
+.v2-mydeals-collection .v2-table th:nth-child(2){width:16%}
+.v2-mydeals-collection .v2-table th:nth-child(3){width:18%}
+.v2-mydeals-collection .v2-table th:nth-child(4){width:13%}
+.v2-mydeals-collection .v2-table th:nth-child(5){width:22%}
+.v2-mydeals-collection .v2-table td{font-size:12.5px}
+.v2-mydeals-collection .v2-table td:first-child b,.v2-mydeals-collection .v2-table td:first-child small{max-width:none}
+.v2-mydeals-collection .v2-table td:first-child small{font-size:12px}
+.v2-mydeal-open{display:block;width:100%;min-width:0;padding:2px 0;border:0;border-radius:4px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.v2-mydeal-open b{color:var(--v2-text);font-size:13px;font-weight:700}
+.v2-mydeal-open:focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px}
+
+/* The selected deal is marked the way "you are here" is marked everywhere
+ * else: a straight gold brick on the leading edge, not the hover tint. */
+.v2-mydeals-collection .v2-table tbody tr:hover{background:var(--v2-hover)}
+.v2-mydeals-collection .v2-table tbody tr.is-selected{background:rgba(var(--v2-accent-rgb),.07)}
+/* Painted as a background on the cell: positioning a table cell to hang a
+ * pseudo-element on it split the row tint with a seam. */
+.v2-mydeals-collection .v2-table tbody tr.is-selected>td:first-child{background:linear-gradient(var(--v2-accent),var(--v2-accent)) left center/3px calc(100% - 24px) no-repeat}
+.v2-mydeal-mobile-row[aria-current="true"]{position:relative;background:rgba(var(--v2-accent-rgb),.07)}
+.v2-mydeal-mobile-row[aria-current="true"]::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--v2-accent)}
+.v2-mydeal-mobile-row:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+.v2-mydeal-mobile-row>span:first-child b{font-size:13px}
+.v2-mydeal-mobile-row>span:first-child small{font-size:12px}
+.v2-mydeal-mobile-owner small,.v2-mydeal-mobile-next>small{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.v2-mydeal-mobile-owner b{font-size:12.5px}
+
+.v2-mydeals-collection .v2-pipeline-owner{display:flex;max-width:100%}
+.v2-mydeals-collection .v2-pill{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-pipeline-owner>span{font-size:10.5px;font-weight:700}
+.v2-pipeline-owner>b{font-size:12.5px;font-weight:500}
+.v2-pipeline-owner.is-unassigned>span{border-style:dashed;border-color:var(--v2-border-strong);background:transparent}
+.v2-pipeline-owner.is-unassigned>b{color:var(--v2-muted);font-weight:400}
+.v2-mydeal-stage-pill.is-committed{border-color:var(--v2-accent-border);background:var(--v2-accent-soft);color:var(--v2-accent-strong)}
+.v2-mydeal-noplan-pill{border-style:dashed;background:transparent;color:var(--v2-muted)}
+.v2-mydeal-next{display:grid;gap:2px;min-width:0}
+.v2-mydeal-next b,.v2-mydeal-next small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-mydeal-next b{color:var(--v2-text);font-size:12.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.v2-mydeal-next small{color:var(--v2-muted);font-size:11.5px}
+
+/* The wide split is for the offer document, so it applies only when that
+ * document is actually on screen, and the list then keeps just the columns
+ * that still fit. Below 1121px the layout stacks (styles.css). */
+@media(min-width:1121px){
+  .v2-mydeals-view-offers .v2-mydeals-layout{grid-template-columns:minmax(0,1fr) minmax(360px,410px)}
+  .v2-mydeals-view-offers .v2-mydeals-layout:has(.v2-offer-foundation){grid-template-columns:minmax(300px,.78fr) minmax(500px,1.22fr)}
+  .v2-mydeals-layout:has(.v2-offer-foundation) .v2-mydeals-collection .v2-table th:nth-child(1){width:46%}
+  .v2-mydeals-layout:has(.v2-offer-foundation) .v2-mydeals-collection .v2-table th:nth-child(2),
+  .v2-mydeals-layout:has(.v2-offer-foundation) .v2-mydeals-collection .v2-table th:nth-child(3){width:27%}
+  .v2-mydeals-layout:has(.v2-offer-foundation) .v2-mydeals-collection .v2-table :is(th,td):nth-child(4),
+  .v2-mydeals-layout:has(.v2-offer-foundation) .v2-mydeals-collection .v2-table :is(th,td):nth-child(5){display:none}
+}
+/* One way to answer "which view am I in" at a time: the picker replaces the
+ * tabs below 861px, as it already does between 861 and 1023px. */
+@media(max-width:860px){.v2-mydeals-tabs{display:none}}
+
+/* Quick View */
+.v2-mydeal-quick{gap:16px;padding:18px}
+.v2-mydeal-quick-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v2-mydeal-quick-head>div{min-width:0}
+.v2-mydeal-quick-head .v2-button{flex:none}
+.v2-mydeal-quick h2.v2-serif-card{margin:0;color:var(--v2-text);overflow-wrap:anywhere}
+.v2-mydeal-quick h2:focus{outline:none}
+.v2-mydeal-quick h2:focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px;border-radius:4px}
+.v2-mydeal-quick-head p{margin:4px 0 0;color:var(--v2-muted);font-size:12.5px}
+.v2-mydeal-idle,.v2-mydeal-locked{min-height:250px;align-content:center;gap:8px}
+.v2-mydeal-idle p,.v2-mydeal-locked p{max-width:46ch;margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
+.v2-mydeal-locked p.v2-mydeal-quiet{color:var(--v2-muted);font-size:12px}
+.v2-mydeal-locked .v2-button{justify-self:start;margin-top:6px}
+
+/* Where the deal is on the canonical ladder: six short bars, done ones in
+ * full text colour, the current step in gold, and the words beside them. */
+.v2-mydeal-stage{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.v2-mydeal-dots{display:flex;gap:4px;margin:0;padding:0;list-style:none}
+.v2-mydeal-dots li{width:18px;height:4px;border-radius:2px;background:var(--v2-border-strong)}
+.v2-mydeal-dots li.is-done{background:var(--v2-text-2)}
+.v2-mydeal-dots li.is-current{background:var(--v2-accent)}
+.v2-mydeal-stage.is-stopped .v2-mydeal-dots li{background:var(--v2-border)}
+.v2-mydeal-stage small{flex-basis:100%;color:var(--v2-muted);font-size:12px}
+.v2-mydeal-facts dt{font-size:10.5px}
+.v2-mydeal-facts dd{color:var(--v2-text);font-size:13px;font-variant-numeric:tabular-nums}
+
+.v2-mydeal-section{gap:12px;padding-top:14px}
+.v2-mydeal-section-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
+.v2-mydeal-section-head h3{margin:0;color:var(--v2-text);font-size:14px;font-weight:700}
+.v2-mydeal-section-head small{color:var(--v2-muted);font-size:12px;font-variant-numeric:tabular-nums}
+
+/* Revenue legs: what each piece is, what it is worth, and how far along the
+ * projected, earned, invoiced, collected ladder it has come. The next leg to
+ * collect carries the card accent edge, held clear of both corners. */
+.v2-mydeal-legs{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.v2-mydeal-leg{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 12px;padding:11px 12px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2)}
+.v2-mydeal-leg.is-next::after{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--v2-accent);pointer-events:none}
+.v2-mydeal-leg-main{min-width:0;display:grid;gap:2px}
+.v2-mydeal-leg-main b{color:var(--v2-text);font-size:13px;font-weight:700}
+.v2-mydeal-leg-main small{color:var(--v2-muted);font-size:12px;line-height:1.4}
+.v2-mydeal-leg-amount{color:var(--v2-text);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.v2-mydeal-leg-status{min-width:0;display:flex;align-items:center;gap:8px}
+.v2-mydeal-leg-status small{color:var(--v2-text-2);font-size:11.5px}
+.v2-mydeal-legdots{display:inline-flex;gap:3px}
+.v2-mydeal-legdots i{width:7px;height:7px;border:1px solid var(--v2-border-strong);border-radius:50%}
+.v2-mydeal-legdots i.is-done{border-color:var(--v2-text-2);background:var(--v2-text-2)}
+.v2-mydeal-leg.is-collected .v2-mydeal-legdots i{border-color:var(--v2-positive);background:var(--v2-positive)}
+.v2-mydeal-leg>.v2-button{min-height:32px;justify-self:end;padding:4px 10px;font-size:12px}
+.v2-mydeal-noplan{display:grid;gap:4px;padding:12px 14px;border:1px dashed var(--v2-border-strong);border-radius:var(--v2-radius-sm)}
+.v2-mydeal-noplan b{color:var(--v2-text);font-size:13px;font-weight:700}
+.v2-mydeal-noplan p{margin:0;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+
+.v2-mydeal-editor{display:grid;gap:10px;padding:14px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2)}
+.v2-mydeal-editor h4{margin:0;color:var(--v2-text);font-size:13px;font-weight:700}
+.v2-mydeal-editor>p{margin:-4px 0 0;color:var(--v2-muted);font-size:12px}
+/* The Quick View is narrow, so the editor lays its fields out as pairs on one
+ * grid instead of rows of three that wrapped unevenly. */
+.v2-mydeal-editor{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px}
+.v2-mydeal-editor>*{grid-column:1/-1}
+.v2-mydeal-editor>.v2-deal-new-row{display:contents}
+.v2-mydeal-editor>.v2-deal-new-row>.v2-field{grid-column:auto;min-width:0}
+@media(max-width:420px){.v2-mydeal-editor{grid-template-columns:minmax(0,1fr)}}
+.v2-mydeal-editor .v2-select,.v2-mydeal-editor .v2-input{width:100%;min-width:0}
+.v2-mydeal-editor-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.v2-mydeal-feedback{margin:0;color:var(--v2-text-2);font-size:12.5px;line-height:1.45}
+.v2-mydeal-feedback.is-success{color:var(--v2-positive)}
+.v2-mydeal-feedback.is-error{color:var(--v2-danger)}
+.v2-mydeal-plan-foot{display:grid;gap:8px;padding-top:14px;border-top:1px solid var(--v2-border)}
+.v2-mydeal-plan-foot>.v2-button{justify-self:start}
+.v2-mydeal-confirm{display:grid;gap:6px;padding:12px 14px;border:1px solid rgba(var(--v2-danger-rgb),.42);border-radius:var(--v2-radius-sm);background:rgba(var(--v2-danger-rgb),.07)}
+.v2-mydeal-confirm b{color:var(--v2-text);font-size:13px;font-weight:700}
+.v2-mydeal-confirm p{margin:0;color:var(--v2-text-2);font-size:12.5px;line-height:1.5}
+
+/* The disposition trail connector runs from under one dot to the next,
+ * measured on the list item. It used to be sized from the 8px dot, which
+ * stopped it well short of the next event. */
+.v2-mydeal-trail li{position:relative}
+.v2-mydeal-trail li:not(:last-child)>span::after{display:none}
+.v2-mydeal-trail li:not(:last-child)::before{content:"";position:absolute;left:3.5px;top:22px;bottom:-10px;width:1px;background:var(--v2-border-strong)}
+.v2-mydeal-trail b{font-size:12.5px;font-weight:700}
+.v2-mydeal-trail p{font-size:12px}
+.v2-mydeal-trail small{font-size:11.5px}
+
+/* Exit and offer panels, when the backend serves them: data text 12 to 13px,
+ * and the draft reads as a document with a stamp, not as app chrome. */
+.v2-mydeals-page .v2-boundary-note{font-size:12px}
+.v2-mydeals-page .v2-boundary-banner b{font-size:12.5px;font-weight:700}
+.v2-mydeals-page .v2-boundary-banner span{font-size:12px}
+.v2-mydeals-page .v2-exit-readiness article b{font-size:12.5px;font-weight:700}
+.v2-mydeals-page .v2-exit-readiness article p{font-size:12px}
+.v2-mydeals-page .v2-exit-readiness article small{font-size:11.5px}
+.v2-mydeals-page .v2-offer-field-summary b{font-size:12px;font-weight:700}
+.v2-mydeals-page .v2-offer-field-summary span{font-size:11.5px}
+.v2-mydeals-page .v2-offer-preview-empty b{font-size:13px}
+.v2-mydeals-page .v2-offer-preview-empty span{font-size:12px}
+.v2-mydeals-page .v2-offer-watermark{font-family:var(--v2-font-serif);font-size:40px;font-style:italic;font-weight:500;letter-spacing:.02em}
+.v2-mydeals-page .v2-offer-preview header{padding-right:88px}
+.v2-mydeals-page .v2-offer-preview header span{font-size:10.5px;font-weight:700}
+.v2-mydeals-page .v2-offer-preview header h3{font-family:var(--v2-font-serif);font-size:22px;font-weight:500}
+.v2-mydeals-page .v2-offer-preview header strong{font-size:11px;font-weight:700}
+.v2-mydeals-page .v2-offer-preview-status b{font-size:12px;font-weight:700}
+.v2-mydeals-page .v2-offer-preview-status span{font-size:11.5px}
+.v2-mydeals-page .v2-offer-preview footer{font-size:11.5px}
+.v2-mydeals-page .v2-draft-history b{font-size:12px;font-weight:700}
+.v2-mydeals-page .v2-draft-history small{font-size:11.5px}
+.v2-mydeals-page .v2-draft-history>button:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px}

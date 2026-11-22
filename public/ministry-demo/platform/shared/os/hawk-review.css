@@ -1,0 +1,56 @@
+/* Copied from the Genesis OS repo (v2/hawk-review.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+.hawk-review-dialog{width:min(1080px,calc(100% - 32px));max-width:none;max-height:calc(100dvh - 32px);padding:0;border:1px solid var(--v2-border);border-radius:18px;background:var(--v2-surface);color:var(--v2-text);font-family:var(--v2-font);box-shadow:0 28px 100px var(--v2-overlay);overflow:auto}
+.hawk-review-dialog::backdrop{background:var(--v2-overlay);backdrop-filter:blur(5px)}
+.hawk-review-dialog *{box-sizing:border-box}
+.hawk-review-dialog .hr-header{position:sticky;top:0;z-index:2;background:var(--v2-surface);display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:28px 32px 22px;border-bottom:1px solid var(--v2-border)}
+.hawk-review-dialog h2{font-size:27px;line-height:1.2;margin:6px 0 10px;font-weight:600;letter-spacing:-.03em}
+.hawk-review-dialog h3{font-size:22px;line-height:1.3;margin:0 0 12px;letter-spacing:-.025em}
+.hawk-review-dialog h4{font-size:15px;margin:14px 0 8px}
+.hawk-review-dialog p{font-size:14px;line-height:1.6;margin:8px 0 14px;color:var(--v2-text-2)}
+.hawk-review-dialog .hr-eyebrow{font-size:10px;letter-spacing:.13em;color:var(--v2-accent-strong);font-weight:700;margin:0 0 10px}
+.hawk-review-dialog .hr-body{padding:0}
+.hawk-review-dialog .hr-grid{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:470px}
+.hawk-review-dialog .hr-queue{padding:26px 20px;background:var(--v2-bg);border-right:1px solid var(--v2-border)}
+.hawk-review-dialog .hr-queue h3{font-size:15px;margin:0}
+.hawk-review-dialog .hr-queue p{font-size:12px}
+.hawk-review-dialog .hr-section-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.hawk-review-dialog .hr-review-row{display:block;text-align:left;width:100%;font:inherit;padding:14px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--v2-text);cursor:pointer;margin:4px 0}
+.hawk-review-dialog .hr-review-row b{display:block;font-size:13px;overflow-wrap:anywhere}
+.hawk-review-dialog .hr-review-row span{display:block;font-size:11px;color:var(--v2-text-2);margin-top:6px;text-transform:capitalize}
+.hawk-review-dialog .hr-review-row:hover,.hawk-review-dialog .hr-review-row[aria-current]{background:var(--v2-accent-soft);border-color:var(--v2-accent-border)}
+.hawk-review-dialog .hr-work{min-width:0;padding:30px 34px}
+.hawk-review-dialog form{display:grid;gap:18px;margin:22px 0}
+.hawk-review-dialog label{display:grid;gap:8px;font-size:13px;font-weight:600}
+.hawk-review-dialog input:not([type=checkbox]),.hawk-review-dialog select,.hawk-review-dialog textarea{width:100%;min-width:0;padding:12px;border:1px solid var(--v2-border-strong);border-radius:9px;background:var(--v2-bg);color:var(--v2-text);font:inherit;font-size:16px}
+.hawk-review-dialog textarea{resize:vertical;min-height:100px;line-height:1.5}
+.hawk-review-dialog .hr-check{display:flex;align-items:flex-start;gap:10px;font-weight:400;line-height:1.6;margin:20px 0}
+.hawk-review-dialog .hr-check input{width:18px;height:18px;flex-shrink:0;margin:3px 0 0;accent-color:var(--v2-accent)}
+.hawk-review-dialog button{min-height:42px;white-space:normal}
+.hawk-review-dialog button:disabled{opacity:.48;cursor:not-allowed}
+.hawk-review-dialog :focus-visible{outline:2px solid var(--v2-focus);outline-offset:3px}
+.hawk-review-dialog .hr-notice{padding:14px 24px;background:var(--v2-accent-soft);font-size:13px;line-height:1.6;color:var(--v2-text);overflow-wrap:anywhere}
+.hawk-review-dialog .hr-notice[hidden]{display:none}
+.hawk-review-dialog .hr-error{background:var(--v2-danger-soft)}
+.hawk-review-dialog .hr-empty{padding:24px 0}
+.hawk-review-dialog .hr-boundary{border-left:3px solid var(--v2-accent);padding:8px 14px;margin:18px 0;color:var(--v2-text-2);font-size:13px;line-height:1.6}
+.hawk-review-dialog .hr-facts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;font-size:13px;line-height:1.5}
+.hawk-review-dialog .hr-facts dt{text-transform:capitalize;color:var(--v2-text-2);font-size:12px}
+.hawk-review-dialog .hr-facts dd{margin:4px 0 0;overflow-wrap:anywhere}
+.hawk-review-dialog .hr-packet{margin:24px 0;border:1px solid var(--v2-border);border-radius:10px;padding:14px}
+.hawk-review-dialog summary{font-size:14px;font-weight:600;cursor:pointer}
+.hawk-review-dialog pre{max-height:240px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.65;background:var(--v2-bg);padding:14px;border-radius:6px;color:var(--v2-text-2)}
+.hawk-review-dialog small{font-size:11px;color:var(--v2-text-2);overflow-wrap:anywhere}
+.hawk-review-dialog .hr-link,.hawk-review-dialog .hr-access{padding:20px 0;border-top:1px solid var(--v2-border)}
+.hawk-review-dialog .hr-identity{display:grid;gap:10px;font-size:12px;line-height:1.6;margin:16px 0}
+.hawk-review-dialog .hr-identity dt{color:var(--v2-text-2)}
+.hawk-review-dialog .hr-identity dd{margin:0;overflow-wrap:anywhere;font-family:ui-monospace,monospace}
+.hawk-review-dialog .hr-verified{padding:8px 18px;border:1px solid var(--v2-accent-border);border-radius:10px;background:var(--v2-accent-soft)}
+.hawk-review-dialog .hr-result{padding:22px 0;border-bottom:1px solid var(--v2-border)}
+.hawk-review-dialog .hr-result li{font-size:14px;line-height:1.6;margin-bottom:7px;overflow-wrap:anywhere}
+.hawk-review-dialog .hr-pill{display:inline-block;background:var(--v2-accent-soft);color:var(--v2-accent-strong);border-radius:99px;font-size:11px;font-weight:600;padding:5px 10px;text-transform:uppercase;letter-spacing:.04em}
+.hawk-review-dialog .hr-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.hr-next-move{padding:20px;margin:16px 0;overflow-wrap:anywhere;background:var(--v2-surface);color:var(--v2-text)}
+.hr-next-move p{font-size:13px;line-height:1.6;color:var(--v2-text-2)}
+.hr-next-move [role="status"]{color:var(--v2-muted)}
+@media(max-width:680px){.hawk-review-dialog{width:100%;max-height:100dvh;height:100dvh;border:0;border-radius:0;margin:0}.hawk-review-dialog .hr-header{padding:22px 18px 16px}.hawk-review-dialog h2{font-size:23px}.hawk-review-dialog .hr-grid{display:flex;flex-direction:column}.hawk-review-dialog .hr-queue{border-right:0;border-bottom:1px solid var(--v2-border);padding:16px 18px}.hawk-review-dialog .hr-queue nav{display:flex;gap:8px;overflow:auto;max-height:150px;margin:8px 0}.hawk-review-dialog .hr-review-row{min-width:170px;max-width:210px}.hawk-review-dialog .hr-work{order:-1;padding:24px 18px 36px}.hawk-review-dialog .hr-actions>button{flex:1}.hawk-review-dialog .hr-header>button{flex-shrink:0}.hawk-review-dialog .hr-notice{padding:12px 18px}}

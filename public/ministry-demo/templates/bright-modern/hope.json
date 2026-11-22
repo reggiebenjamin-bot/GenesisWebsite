@@ -1,0 +1,51 @@
+{
+  "look": "Bright & Modern",
+  "church": {
+    "name": "Lightwell Church",
+    "short": "Lightwell",
+    "city": "Raleigh, North Carolina",
+    "address": "1218 Brightwater Ave",
+    "phone": "(919) 555-0142",
+    "times": "every Sunday at 9:00 and 10:45 AM",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Raleigh%2C+North+Carolina",
+    "pastors": "Theo and Priya lead Lightwell together. They started it in 2023 with eleven friends, a borrowed sound system and a lot of coffee. They teach as a team, they are raising two busy kids, and they would love to meet you after either gathering.",
+    "kids": "Yes. Lightwell Kids runs at both gatherings, for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked. The rooms are bright, safe and a lot of fun.",
+    "students": "Students in grades 6 to 12 meet during the week, and our young adults group is for twentysomethings. Both have a few big nights out each season, and both are easy to drop into.",
+    "groups": "We have 14 small groups across Raleigh. Ten or so people, a living room and real conversation. It is the fastest way to go from new face to friend.",
+    "startHere": "So glad you found us. Come on a Sunday at 9:00 or 10:45, grab a coffee from 8:30 and tell us it is your first time. When you are ready, come to Start Here, a lunch with Theo and Priya where you hear where Lightwell is headed and find your spot.",
+    "give": "You can give online in about a minute, once or every month. Your giving stocks the pantry, builds the bright new kids rooms for Room to Grow and keeps the coffee on for whoever walks in next.",
+    "watch": "Every message is online by Monday morning. The newest is Room for questions, week 3 of Open Doors, with Pastor Theo. It works great in the car, on a walk or during nap time.",
+    "prayer": "Big or small, bring it. A real person on our prayer team reads every request and would love to pray with you. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "values": "We are a young church for people who are still figuring it out. So, all of us. We care about honest questions, real friendships, grace for the tired and loving Raleigh well."
+  },
+  "brand": {
+    "accent": "#1F4FFF",
+    "accentInk": "#FFFFFF",
+    "ink": "#0B1220",
+    "surface": "#FFFFFF",
+    "surface2": "#E4ECFF",
+    "line": "#C5CEDC",
+    "font": "\"Hanken Grotesk\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "radius": "10px"
+  },
+  "selectors": {
+    "hero": "section.hero",
+    "announce": "section.announce",
+    "pastors": ".mission-grid",
+    "nextSteps": "#visit",
+    "strip": "#strip",
+    "message": "#message .msg-grid",
+    "reviews": ".rv-grid",
+    "newsletter": ".nl-grid",
+    "footer": ".site-footer"
+  },
+  "links": {
+    "brandBoard": "brand-board.html",
+    "socialPlan": "social-plan.html"
+  },
+  "removeSelectors": [".chat-fab", "#chat", ".sb-chat"],
+  "bottomOffset": 64,
+  "pages": {
+    "index.html": {}
+  }
+}

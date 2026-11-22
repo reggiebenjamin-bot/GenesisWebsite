@@ -1,0 +1,114 @@
+/* Copied from the Genesis OS repo (v2/refine/content.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: content.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ---- page rhythm ---------------------------------------------------------
+ * Header, the view picker (narrow widths only), the stepper, then the work.
+ * Section eyebrows are headings here, so they lose the browser's heading
+ * margins and every card keeps one even inset. */
+.v2-content-page .v2-view-picker{margin:-4px 0 14px}
+.v2-content-stepper{margin:0 0 16px}
+.v2-content-page h2.v2-eyebrow{margin:0}
+.v2-content-slot{display:contents}
+.v2-content-reason{margin:0;color:var(--v2-muted);font-size:11.5px;line-height:1.5}
+.v2-content-error{margin:0;color:var(--v2-danger);font-size:12px;line-height:1.5}
+.v2-content-muted{color:var(--v2-muted)}
+.v2-content-page .v2-button[aria-disabled="true"]{opacity:.7;cursor:progress}
+.v2-content-page .v2-field small{color:var(--v2-muted);font-size:11.5px;line-height:1.5}
+/* Toasts hold no controls, and after "Add to cadence" one sits over the new
+ * touch's remove button for four seconds, so clicks pass through them here.
+ * (A global version of this rule is requested from foundation.) */
+body:has(.v2-content-page) .v2-toast-region,body:has(.v2-content-page) .v2-toast{pointer-events:none}
+
+/* Two columns only when the workspace itself has room for both: the sidebar
+ * and the views rail change the width at the same viewport, so a viewport
+ * breakpoint cannot tell. Below 780px of column the flow stacks. */
+.v2-content-body{container-type:inline-size}
+.v2-content-grid{grid-template-columns:minmax(0,1fr)}
+@container (min-width:780px){
+  .v2-content-grid{grid-template-columns:minmax(280px,340px) minmax(0,1fr)}
+}
+.v2-main:not(.v2-page-enter) .v2-content-variant{animation:none}
+
+/* ---- 1 Compose ------------------------------------------------------------ */
+.v2-content-verticals{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.v2-content-vertical[aria-checked="true"]{border-color:var(--v2-accent);background:var(--v2-accent-soft);color:var(--v2-text)}
+.v2-content-vertical{padding:8px 9px}
+.v2-content-vertical b{font-size:13px;font-weight:700;line-height:1.35}
+.v2-content-vertical small{font-size:11px}
+.v2-content-tags{flex-wrap:wrap;align-items:center;gap:3px 6px;margin-top:1px}
+.v2-content-tags em{padding:0 4px;font-size:10px;font-weight:700;letter-spacing:.08em;line-height:16px;text-transform:uppercase}
+.v2-content-brand-note{margin:-6px 0 0;color:var(--v2-muted);font-size:11.5px;line-height:1.5}
+.v2-content-brand-note b{color:var(--v2-text-2);font-weight:700}
+.v2-content-grounded{font-size:11.5px}
+
+.v2-content-variants{display:flex;flex-direction:column;gap:12px}
+.v2-content-next{margin:0;color:var(--v2-text-2);font-size:12.5px;line-height:1.5}
+.v2-content-variant h3.v2-serif-card{font-size:22px;letter-spacing:-.005em;line-height:1.2;text-wrap:pretty}
+.v2-content-variant footer{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.v2-content-why{font-size:12px}
+
+/* A block stops the email; a review item does not. The word says which, so
+ * the colour is never the only signal, and neither of them is gold. */
+.v2-content-flags{display:grid;gap:4px;padding:0;list-style:none;color:var(--v2-text-2);font-size:12px}
+.v2-content-flags li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 7px}
+.v2-content-flags em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-content-flags li[data-level="block"] em{color:var(--v2-danger)}
+.v2-content-flags li[data-level="warn"] em{color:var(--v2-warning)}
+.v2-content-flags b{color:var(--v2-text);font-weight:700}
+
+/* ---- 2 Cadence ------------------------------------------------------------ */
+.v2-content-card-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;min-height:28px}
+.v2-content-page .v2-content-card-head h2.v2-eyebrow{margin-right:auto}
+.v2-content-card-head .v2-pill{font-size:11px}
+.v2-content-card-head .v2-button{min-height:28px;padding:2px 8px;font-size:12px}
+.v2-content-mismatch{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:9px 10px 9px 12px;border:1px solid rgba(var(--v2-warning-rgb),.35);border-radius:var(--v2-radius-sm);background:rgba(var(--v2-warning-rgb),.06)}
+.v2-content-mismatch p{flex:1 1 200px;margin:0;color:var(--v2-text-2);font-size:12.5px}
+.v2-content-steps{margin:0;padding:0;list-style:none}
+.v2-content-step{grid-template-columns:64px minmax(0,1fr) 42px;padding:4px 4px 4px 10px}
+.v2-content-step-day{color:var(--v2-text-2);font-size:12px;font-variant-numeric:tabular-nums}
+.v2-content-step-text{display:grid;gap:1px;min-width:0}
+.v2-content-step-text b,.v2-content-step-text small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-content-step-text b{color:var(--v2-text);font-size:13px;font-weight:500}
+.v2-content-step-text small{color:var(--v2-muted);font-size:11.5px}
+.v2-content-tag-warn{justify-self:start;color:var(--v2-warning);font-size:10px;font-style:normal;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-content-add{display:grid;grid-template-columns:88px minmax(0,1fr) auto;align-items:end;gap:8px}
+.v2-content-add>.v2-content-reason{grid-column:1/-1}
+.v2-content-save{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:6px 8px}
+.v2-content-save>.v2-content-slot>.v2-content-reason{grid-column:1/-1}
+.v2-content-open{margin-top:4px;padding-top:14px;border-top:1px solid var(--v2-border)}
+
+/* ---- 3 Launch ------------------------------------------------------------- */
+.v2-content-launch{display:flex;flex-direction:column;gap:10px;padding:16px}
+.v2-content-note{font-size:12px;line-height:1.5}
+.v2-content-actions{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.v2-content-preview{display:grid;gap:8px;padding-top:14px;border-top:1px solid var(--v2-border)}
+.v2-content-preview-meta{margin:0;color:var(--v2-muted);font-size:11.5px}
+.v2-content-preview-subject{color:var(--v2-text);font-size:14px;font-weight:700}
+.v2-content-preview pre{margin:0;padding:10px;border:1px solid var(--v2-border);border-radius:8px;background:var(--v2-surface);color:var(--v2-text-2);font:inherit;font-size:12.5px;line-height:1.6;white-space:pre-wrap;overflow-x:auto}
+
+/* ---- What's Working ------------------------------------------------------- */
+.v2-content-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:520px){.v2-content-stats{grid-template-columns:minmax(0,1fr)}}
+.v2-content-stats .v2-stat{gap:6px;padding:16px}
+.v2-content-stats .v2-serif-number{color:var(--v2-text)}
+.v2-content-stat-empty{color:var(--v2-muted);font-size:13px;font-weight:500;line-height:30px}
+.v2-content-perf h2.v2-eyebrow{margin-bottom:10px}
+.v2-content-perf .v2-table th{font-size:10px}
+.v2-content-perf .v2-table th:first-child{width:40%}
+.v2-content-perf .v2-table td{height:auto;padding:10px 11px;font-size:12px}
+.v2-content-perf .v2-table tbody tr,.v2-content-perf .v2-table tbody tr:hover{background:transparent;cursor:default}
+.v2-content-perf .v2-num{text-align:right;font-variant-numeric:tabular-nums}
+.v2-content-top{display:grid;margin:0;padding:0;list-style:none;line-height:1.5}
+.v2-content-top li{padding-bottom:12px}
+.v2-content-top li+li{padding-top:14px;border-top:1px solid var(--v2-border)}
+.v2-content-top li:last-child{padding-bottom:0}
+.v2-content-top li>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.v2-content-top b{color:var(--v2-text);font-size:13px;font-weight:500}
+.v2-content-top span{margin:0;color:var(--v2-muted);font-size:12px;font-variant-numeric:tabular-nums}
+.v2-content-top em{color:var(--v2-muted);font-size:10px;font-style:normal;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-content-top q{display:block;margin-top:3px;overflow:hidden;color:var(--v2-text-2);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.v2-content-noise p{font-size:12px}
+.v2-content-noise div{font-variant-numeric:tabular-nums}

@@ -1,0 +1,165 @@
+/* Copied from the Genesis OS repo (v2/refine/settings.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: settings.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ----- Frame --------------------------------------------------------------- */
+/* Wider and a fixed height, so moving between sections never resizes the
+   dialog under the pointer. The overlay mechanics are untouched. */
+.v2-settings-layer .v2-settings-panel{width:min(980px,100%);height:min(82vh,760px);max-height:none}
+.v2-settings-panel-head h2{font-family:var(--v2-font);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--v2-muted)}
+.v2-settings-panel-body{overflow:hidden;display:flex}
+.v2-settings{flex:1;min-height:0;display:grid;grid-template-columns:220px minmax(0,1fr)}
+
+/* ----- Section list -------------------------------------------------------- */
+.v2-settings-nav{display:flex;flex-direction:column;gap:2px;padding:16px 10px;border-right:1px solid var(--v2-border);background:var(--v2-sidebar);overflow:auto}
+.v2-settings-group{margin:14px 10px 6px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-settings-group:first-child{margin-top:2px}
+.v2-settings-tab{position:relative;display:flex;align-items:center;gap:10px;min-height:36px;padding:7px 10px;border:1px solid transparent;border-radius:var(--v2-radius-sm);background:transparent;color:var(--v2-text-2);font:500 13px var(--v2-font);text-align:left;cursor:pointer}
+.v2-settings-tab .v2-icon{width:16px;height:16px;flex:none}
+.v2-settings-tab:hover{background:var(--v2-surface);color:var(--v2-text)}
+.v2-settings-tab[aria-selected="true"]{background:var(--v2-accent-soft);border-color:var(--v2-accent-border);color:var(--v2-text);font-weight:700}
+.v2-settings-tab[aria-selected="true"] .v2-icon{color:var(--v2-accent-strong)}
+/* The same you-are-here brick as the sidebar, flush with the column edge. */
+.v2-settings-tab[aria-selected="true"]::before{content:"";position:absolute;left:-10px;top:50%;width:4px;height:20px;margin-top:-10px;border-radius:0 3px 3px 0;background:var(--v2-marker,var(--v2-accent-strong))}
+
+/* ----- Section -------------------------------------------------------------- */
+.v2-settings-panes{min-width:0;overflow:auto;overscroll-behavior:contain;padding:26px 32px 32px}
+.v2-settings-pane{display:grid;gap:16px;max-width:760px}
+.v2-settings-pane[hidden]{display:none}
+.v2-settings-pane-head{margin-bottom:4px}
+.v2-settings-pane-head h3{margin:0}
+.v2-settings-pane-head p{margin:6px 0 0;max-width:62ch;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+
+/* One rounded group panel; rows inside are split by hairlines. */
+.v2-set-panel{border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-set-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;padding:14px 16px}
+.v2-set-row+.v2-set-row,.v2-set-row+.v2-set-cards{border-top:1px solid var(--v2-border)}
+.v2-set-row b{display:block;font-size:13px;font-weight:700;color:var(--v2-text)}
+.v2-set-row b label{cursor:pointer}
+.v2-set-row p{margin:3px 0 0;max-width:56ch;color:var(--v2-muted);font-size:12px;line-height:1.5}
+.v2-set-row p:empty{display:none}
+.v2-set-control{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.v2-set-control:empty{display:none}
+.v2-set-control .v2-switch{margin:0}
+.v2-set-control select.v2-nselect{min-height:34px}
+.v2-set-control .v2-button{min-height:34px}
+.v2-set-cards{padding:16px}
+.v2-set-panel.v2-set-cards{display:grid;gap:14px}
+.v2-set-cards>.v2-level-grid{margin-top:14px}
+.v2-set-panel.v2-set-cards>.v2-level-grid{margin-top:0}
+.v2-set-banner h4{margin:0}
+.v2-set-banner p{margin:4px 0 0;max-width:62ch;color:var(--v2-muted);font-size:12px;line-height:1.5}
+.v2-voice-scales{display:grid;gap:16px}
+.v2-voice-scales:empty{display:none}
+[data-voice-settings]{display:grid;gap:16px}
+
+/* ----- Choice cards --------------------------------------------------------- */
+.v2-level-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v2-level-card{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-height:100%;padding:16px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-bg);color:var(--v2-text);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.v2-level-card:hover:not(:disabled){border-color:var(--v2-border-strong)}
+.v2-level-card[aria-checked="true"],.v2-level-card.is-on{border-color:var(--v2-accent);background:var(--v2-accent-soft)}
+.v2-level-card:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px;box-shadow:none}
+.v2-level-card:disabled{cursor:not-allowed;opacity:.5}
+.v2-level-title{color:var(--v2-text)}
+.v2-level-copy{color:var(--v2-text-2);font-size:12px;line-height:1.5}
+/* The example sits at the foot of every card so the three line up. */
+.v2-level-example{display:grid;gap:3px;margin-top:auto;padding:10px 12px;border-radius:var(--v2-radius-sm);background:var(--v2-surface-2);font-size:12px;line-height:1.45;color:var(--v2-text-2)}
+.v2-level-card .v2-level-copy+.v2-level-example{margin-top:auto}
+.v2-level-copy{margin-bottom:8px}
+.v2-level-example small{color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-level-example b{color:var(--v2-text);font-weight:500}
+.v2-level-quote{font-style:italic;color:var(--v2-text)}
+.v2-level-card[aria-checked="true"] .v2-level-example{background:rgba(var(--v2-accent-rgb),.1)}
+
+/* Theme cards lead with a miniature of the workspace in that theme. The
+   miniature uses literal colours so it does not flip with the theme itself. */
+.v2-level-card-visual{gap:8px}
+.v2-theme-mini{position:relative;display:flex;height:74px;margin-bottom:6px;overflow:hidden;border-radius:var(--v2-radius-sm);border:1px solid var(--v2-border)}
+.v2-theme-mini>i{position:relative;z-index:1;width:22%;flex:none}
+.v2-theme-mini>span{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 10px}
+.v2-theme-mini b{font:500 11px var(--v2-font)}
+.v2-theme-mini em{align-self:flex-start;padding:2px 7px;border-radius:999px;font:700 10px var(--v2-font);font-style:normal;letter-spacing:.04em}
+.v2-theme-mini-dark,.v2-theme-mini-system{background:#18191d}
+.v2-theme-mini-dark>i,.v2-theme-mini-system>i{background:#0d0e10}
+.v2-theme-mini-dark b,.v2-theme-mini-system b{color:#f5f3ef}
+.v2-theme-mini-dark em,.v2-theme-mini-system em{background:rgba(201,161,87,.18);color:#f1d898}
+.v2-theme-mini-light{background:#fbf9f5}
+.v2-theme-mini-light>i{background:#ebe6dc}
+.v2-theme-mini-light b{color:#1e1b16}
+.v2-theme-mini-light em{background:rgba(160,125,44,.16);color:#7a5c1f}
+.v2-theme-mini-system::after{content:"";position:absolute;inset:0;z-index:0;background:#fbf9f5;clip-path:polygon(84% 0,100% 0,100% 100%,70% 100%)}
+.v2-theme-mini-system>span{padding-right:32%}
+
+/* Visualizer choices keep their live swatch; they sit as a row of five. */
+.v2-set-cards .v2-voice-styles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.v2-set-cards .v2-voice-preview-stage{height:160px}
+
+/* ----- Narrow --------------------------------------------------------------- */
+@media (max-width:860px){
+  .v2-settings-layer .v2-settings-panel{height:100%;width:100%}
+  .v2-settings{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .v2-settings-nav{flex-direction:row;gap:6px;padding:8px 12px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--v2-border)}
+  .v2-settings-group{display:none}
+  .v2-settings-tab{flex:none;white-space:nowrap}
+  .v2-settings-tab[aria-selected="true"]::before{display:none}
+  .v2-settings-panes{padding:20px 16px 28px}
+  .v2-set-cards .v2-voice-styles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .v2-level-grid{grid-template-columns:1fr}
+  .v2-set-row{grid-template-columns:1fr}
+  .v2-set-control{justify-content:flex-start}
+}
+
+/* Workspace sections reuse the Agents page panels; they sit in the pane without a second page frame. */
+.v2-set-embed .v2-agent-embedded{display:grid;gap:14px}
+.v2-set-embed .v2-section{margin:0}
+.v2-set-embed .v2-pulse{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+
+/* Settings is modal. A later pass raised the Hawk and command layers to 450,
+   which put a docked Hawk panel on top of the Settings dialog; the dialog
+   now sits above both while it is open. */
+body.v2-settings-open .v2-settings-layer{z-index:470}
+/* Messages raised from inside Settings (Chores, System health, G-Brain exam)
+   sit above the dialog, or they would be hidden behind it. */
+body.v2-settings-open .v2-toast-region{z-index:480}
+
+/* Minimal choice cards: a name and a few words. The examples and long notes
+ * are gone, so the cards sit shorter and the hint reads as a quiet caption. */
+.v2-level-card{gap:3px;padding:13px 15px}
+.v2-level-copy{margin-bottom:0;color:var(--v2-muted);font-size:12px;line-height:1.4}
+.v2-level-card[aria-checked="true"] .v2-level-copy,.v2-level-card.is-on .v2-level-copy{color:var(--v2-text-2)}
+
+/* ----- G-Brain exam ---------------------------------------------------------- */
+/* the owner review of the answers G-Brain is graded on (v2/gbrain-exam.js): a
+   summary, the skill tabs and filter, then one card per question. */
+.v2-set-panel.v2-exam-panel{padding:16px}
+.v2-exam{display:grid;gap:14px}
+.v2-exam-summary{margin:0;max-width:70ch;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-exam-summary b{color:var(--v2-text)}
+.v2-exam-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.v2-exam-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.v2-exam-tabs .v2-button{min-height:32px;font-size:12px}
+.v2-exam-filter{display:flex;align-items:center;gap:8px;color:var(--v2-muted);font-size:12px}
+.v2-exam-filter .v2-select{min-height:32px;font-size:12px}
+.v2-exam-card{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--v2-border)}
+.v2-exam-card header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v2-exam-card header b{font-size:13px;font-weight:600;line-height:1.45;color:var(--v2-text)}
+.v2-exam-card header .v2-badge{flex:none}
+.v2-exam-context,.v2-exam-proposed{margin:0;font-size:12px;line-height:1.5;color:var(--v2-text-2)}
+.v2-exam-proposed b{color:var(--v2-text)}
+.v2-exam-proposed span{color:var(--v2-muted)}
+.v2-exam-fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.v2-exam-fields label,.v2-exam-wide{display:grid;gap:4px;min-width:0}
+.v2-exam-fields span,.v2-exam-wide span{color:var(--v2-muted);font-size:11px;font-weight:600}
+.v2-exam-fields .v2-select,.v2-exam-fields .v2-input,.v2-exam-wide .v2-input,.v2-exam-wide .v2-textarea{width:100%;min-height:34px;font-size:13px}
+.v2-exam-wide .v2-textarea{resize:vertical}
+.v2-exam-actions{display:flex;flex-wrap:wrap;gap:8px}
+.v2-exam-actions .v2-button{min-height:32px}
+.v2-exam-more{justify-self:start}
+@media (max-width:640px){
+  .v2-exam-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-exam-card header{flex-direction:column}
+}

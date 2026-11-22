@@ -1,0 +1,671 @@
+/* ==========================================================================
+   Genesis Ministry, Edition 05. Design preview foundation.
+
+   1. The real Genesis OS stylesheets, copied unchanged into shared/os/ and
+      imported here in the exact order v2/index.html links them (later files
+      win). Refresh them with: node tools/sync-os.mjs <Genesis OS repo>.
+   2. The Ministry layer: the few things Genesis OS has no class for (plan
+      levels, lock badges, Hope drafts, the locked state, charts), the old gm-
+      tokens mapped onto the real v2 tokens, and a bridge that keeps pages
+      still written with gm- classes looking like Genesis OS until they are
+      moved onto the real v2- classes. New work uses v2- classes first.
+
+   Never restyle a v2- class here. If a screen needs something Genesis OS
+   does not have, add a gm- class in section 4 and use the v2- tokens.
+   ========================================================================== */
+@import url("os/fonts.css");
+@import url("os/styles.css");
+@import url("os/refine-shell.css");
+@import url("os/refine-hawk.css");
+@import url("os/refine-today-leads.css");
+@import url("os/refine-deals.css");
+@import url("os/refine-outreach.css");
+@import url("os/refine-acquisitions.css");
+@import url("os/refine-content.css");
+@import url("os/refine-mydeals.css");
+@import url("os/refine-reports.css");
+@import url("os/refine-settings.css");
+@import url("os/refine-agents.css");
+@import url("os/refine-simple.css");
+@import url("os/refine-light.css");
+@import url("os/refine-system.css");
+@import url("os/refine-hawk-core.css");
+@import url("os/hawk-review.css");
+@import url("os/refine-deals-board.css");
+@import url("os/refine-deals-workspace.css");
+@import url("os/refine-decisions.css");
+@import url("os/refine-reactivation.css");
+@import url("os/refine-phone.css");
+
+/* ==========================================================================
+   2. Tokens. gm- names point at the real v2 tokens, so anything written with
+      them follows both themes exactly the way Genesis OS does.
+   ========================================================================== */
+:root{
+  --gm-font:var(--v2-font);
+  --gm-font-serif:"Gambetta",Georgia,"Times New Roman",serif;
+  --gm-font-mono:var(--v2-font-mono);
+  --gm-bg:var(--v2-bg);
+  --gm-sidebar:var(--v2-sidebar);
+  --gm-surface:var(--v2-surface);
+  --gm-surface-2:var(--v2-surface-2);
+  --gm-surface-3:var(--v2-surface-3);
+  --gm-border:var(--v2-hairline,var(--v2-border));
+  --gm-border-strong:var(--v2-border-strong);
+  --gm-control-border:var(--v2-border-strong);
+  --gm-text:var(--v2-text);
+  --gm-text-2:var(--v2-text-2);
+  --gm-muted:var(--v2-muted);
+  --gm-fine:var(--v2-fine,var(--v2-muted));
+  --gm-accent:var(--v2-accent);
+  --gm-accent-hover:var(--v2-accent-hover);
+  --gm-accent-strong:var(--v2-accent-strong);
+  --gm-accent-soft:var(--v2-accent-soft);
+  --gm-accent-border:var(--v2-accent-border);
+  --gm-on-accent:var(--v2-on-accent);
+  --gm-positive:var(--v2-positive); --gm-positive-soft:var(--v2-positive-soft);
+  --gm-warning:var(--v2-warning);   --gm-warning-soft:var(--v2-warning-soft);
+  --gm-danger:var(--v2-danger);     --gm-danger-soft:var(--v2-danger-soft);
+  --gm-info:var(--v2-info);         --gm-info-soft:var(--v2-info-soft);
+  --gm-focus:var(--v2-focus);
+  --gm-hover:var(--v2-hover);
+  --gm-active:var(--v2-active);
+  --gm-overlay:var(--v2-overlay);
+  --gm-topbar-bg:rgba(13,14,16,.86);
+  --gm-mark-a:#f4efe8; --gm-mark-b:#c9a55e;
+  /* Charts: the Obsidian chart tokens, in a fixed order. */
+  --gm-chart-1:var(--v2-chart-1); --gm-chart-2:var(--v2-chart-2); --gm-chart-3:var(--v2-chart-3);
+  --gm-chart-4:var(--v2-chart-4); --gm-chart-5:var(--v2-chart-5); --gm-chart-6:var(--v2-chart-6);
+  --gm-on-chart-1:#1b170e;
+  --gm-chart-grid:var(--v2-chart-grid);
+  --gm-chart-axis:rgba(255,255,255,.14);
+  --gm-chart-ref:rgba(255,255,255,.34);
+  --gm-shadow-sm:var(--v2-card-shadow,0 1px 2px rgba(0,0,0,.18));
+  --gm-shadow-md:0 0 0 .5px rgba(255,255,255,.05),0 4px 16px rgba(0,0,0,.2),0 12px 40px rgba(0,0,0,.35);
+  --gm-shadow-lg:0 14px 36px rgba(0,0,0,.42);
+  --gm-radius-xs:6px; --gm-radius-sm:8px; --gm-radius-md:12px; --gm-radius-lg:18px;
+  --gm-space-1:4px; --gm-space-2:8px; --gm-space-3:12px; --gm-space-4:16px; --gm-space-5:24px; --gm-space-6:32px; --gm-space-7:48px;
+  --gm-ease:cubic-bezier(.22,.9,.3,1);
+  --gm-motion:160ms var(--gm-ease);
+  --gm-focus-ring:var(--v2-focus-ring,0 0 0 2px var(--v2-bg),0 0 0 4px var(--v2-focus));
+  --gm-caption:11px; --gm-meta:12.5px; --gm-data:13.5px; --gm-body:14px; --gm-lead:15px;
+}
+[data-theme="light"]{
+  --gm-on-chart-1:#ffffff;
+  --gm-chart-axis:rgba(43,38,31,.24);
+  --gm-chart-ref:rgba(43,38,31,.45);
+  --gm-shadow-md:0 0 0 .5px rgba(43,38,31,.07),0 4px 12px rgba(43,38,31,.08),0 12px 28px rgba(43,38,31,.06);
+  --gm-shadow-lg:0 14px 36px rgba(43,38,31,.14);
+  --gm-topbar-bg:rgba(246,244,239,.92);
+  --gm-mark-a:#1b1917; --gm-mark-b:#9a7534;
+}
+
+/* ==========================================================================
+   3. Base helpers every page may use.
+   ========================================================================== */
+[hidden]{display:none!important}
+.gm-sr-only,.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.gm-icon{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle}
+.gm-icon--sm{width:15px;height:15px}
+.gm-icon--lg{width:22px;height:22px}
+.gm-mark{width:30px;height:26px;display:block}
+.gm-mark .a{fill:var(--gm-mark-a)} .gm-mark .b{fill:var(--gm-mark-b)}
+/* The sidebar stays dark in both themes, so the mark inside it keeps the light-on-dark file. */
+.v2-brand-mark img,.v2-mobile-top a img{display:block}
+
+/* Member pages scroll the page itself; Genesis OS screens scroll inside .v2-main. */
+html:has(body[data-side="member"]),body[data-side="member"]{height:auto;min-height:100%;overflow:visible}
+body[data-side="member"] :where(h1,h2,h3,h4,p){margin:0}
+body[data-side="member"] :where(ul,ol){margin:0;padding:0}
+body[data-side="member"] :where(img,svg){display:block;max-width:100%}
+body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* Pages still written with gm- classes keep their old resets inside .gm-page. */
+.gm-page :where(h1,h2,h3,h4,p){margin:0}
+.gm-page :where(ul,ol){margin:0;padding:0}
+.gm-page :where(img,svg){display:block;max-width:100%}
+.gm-page :where(h1,h2,h3,h4){font-weight:700;line-height:1.25;letter-spacing:-.01em}
+
+/* ==========================================================================
+   4. Ministry additions to the Genesis OS shell (no v2- class exists).
+   ========================================================================== */
+
+/* The sample strip is a design-preview strip, not a button. */
+.v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px;letter-spacing:.12em}
+.gm-preview-strip b{font-weight:700}
+/* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
+   page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
+.v2-fixture-badge.gm-preview-strip{background:linear-gradient(rgba(232,149,90,.12),rgba(232,149,90,.12)),var(--v2-bg,#0d0e10)}
+[data-theme="light"] .v2-fixture-badge.gm-preview-strip{background:linear-gradient(rgba(232,149,90,.14),rgba(232,149,90,.14)),var(--v2-bg,#f6f4ef)}
+
+/* Tenant marks: the church's small mark in the account row and the phone top bar. */
+.v2-avatar.gm-avatar-mark{width:30px;height:30px;flex-basis:30px;overflow:hidden;border-radius:8px;background:var(--v2-surface-3);padding:0}
+.v2-avatar.gm-avatar-mark svg{width:100%;height:100%;display:block}
+.v2-avatar.gm-avatar-mark .gm-mark{width:20px;height:18px;margin:auto}
+.v2-avatar.gm-avatar-mark--genesis{display:grid;place-items:center;background:#0d0e10;border:1px solid #303238}
+.v2-avatar.gm-avatar-mark--genesis img{width:20px;height:auto}
+.gm-tenant-mark{width:28px;height:28px;flex:0 0 28px;border-radius:7px;overflow:hidden;display:inline-grid;place-items:center;background:var(--v2-surface-3)}
+.gm-tenant-mark svg{width:100%;height:100%;display:block}
+.gm-tenant-mark--genesis{background:#0d0e10;border:1px solid #303238}
+.gm-tenant-mark--genesis img,.gm-tenant-mark--genesis .gm-mark{width:18px;height:auto}
+.gm-tenant-mark--genesis .gm-mark .a{fill:#f4efe8}.gm-tenant-mark--genesis .gm-mark .b{fill:#c9a55e}
+.v2-mobile-top a .gm-tenant-mark{width:28px;height:28px;flex-basis:28px;margin-right:8px}
+.v2-mobile-top a{min-width:0}
+.v2-mobile-top a .gm-tenant-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Account menu: section labels and a check on the current choice. */
+.v2-account-menu,.v2-mobile-account-menu{max-height:min(640px,calc(100dvh - 120px));overflow-y:auto}
+.gm-menu-label{padding:8px 9px 4px;color:var(--v2-muted);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.v2-account-menu a .gm-menu-copy,.v2-mobile-account-menu a .gm-menu-copy{display:grid;min-width:0;flex:1;text-align:left}
+.gm-menu-copy small{color:var(--v2-muted);font-size:11px;font-weight:500}
+.gm-menu-tick{margin-left:auto;color:var(--v2-accent-strong);font-weight:700;font-size:11px;letter-spacing:.04em}
+.v2-account-menu [aria-checked="true"],.v2-mobile-account-menu [aria-checked="true"]{background:var(--v2-accent-soft);color:var(--v2-text)}
+.v2-mobile-account-menu .gm-menu-label{padding-left:12px}
+
+/* The plan level shown in this preview. Sits in the account area of the sidebar. */
+.gm-plan-switch{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:3px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface)}
+.gm-plan-switch>span{padding:0 6px 0 7px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.gm-plan-switch a{flex:1;min-height:30px;display:grid;place-items:center;border-radius:6px;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
+.gm-plan-switch a:hover{background:var(--v2-hover);color:var(--v2-text)}
+.gm-plan-switch a[aria-current="true"]{background:var(--v2-accent);color:var(--v2-on-accent)}
+@media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-plan-switch{display:none}}
+@media (max-width:860px){.gm-plan-switch{margin:0 8px 8px}}
+
+/* A module outside the selected level: a small lock in the nav row. */
+.gm-nav-lock{margin-left:auto;display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border:1px solid var(--v2-border);border-radius:6px;color:var(--v2-muted);font-size:10px;font-style:normal;font-weight:700;letter-spacing:.03em}
+.gm-nav-lock svg{width:11px;height:11px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.v2-nav a.is-locked span{color:var(--v2-muted)}
+@media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-nav-lock{display:none}}
+.v2-mobile-top .v2-mobile-command,.v2-mobile-top .v2-avatar{flex:none}
+
+/* Hope dock host: the element that carries the dock's shadow root. */
+hope-dock{display:flex;height:100%;min-height:0}
+.v2-genesis-panel>[data-genesis-mount]{height:100%;display:flex;flex-direction:column;min-height:0}
+.v2-genesis-panel>[data-genesis-mount]>hope-dock{flex:1}
+
+/* "Add a Guest" and "Add a Church" drawer, on the real drawer layer. */
+.gm-drawer-form{display:grid;gap:14px}
+.gm-drawer-form .v2-field{display:grid;gap:6px}
+.gm-drawer-foot{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.gm-drawer-note{margin:0;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.55}
+
+/* Lock badge: who can see this. */
+.gm-lock{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;min-height:24px;padding:3px 9px 3px 7px;border:1px solid rgba(var(--v2-info-rgb),.34);border-radius:8px;background:var(--v2-info-soft);color:var(--v2-text);font-size:11.5px;font-weight:600;line-height:1.3;white-space:nowrap}
+.gm-lock .gm-icon,.gm-lock svg{width:13px;height:13px;color:var(--v2-info)}
+.gm-lock--pastors{border-color:rgba(169,140,216,.42);background:color-mix(in srgb,var(--v2-chart-5) 14%,transparent)}
+.gm-lock--pastors .gm-icon,.gm-lock--pastors svg{color:var(--v2-chart-5)}
+
+/* A Hope draft that waits for a person. */
+.gm-draft{border:1px solid var(--v2-accent-border);border-radius:14px;background:linear-gradient(0deg,var(--v2-accent-soft),var(--v2-accent-soft)),var(--v2-surface);padding:16px 18px}
+.gm-draft+.gm-draft{margin-top:12px}
+.gm-draft-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.gm-draft-tag{display:inline-flex;align-items:center;gap:7px;color:var(--v2-accent-strong);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.gm-draft-tag .gm-icon{width:15px;height:15px}
+.gm-draft-meta{margin:8px 0 0;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
+.gm-draft-body{margin-top:10px;padding:12px 14px;border:1px solid var(--v2-hairline,var(--v2-border));border-radius:10px;background:var(--v2-surface);color:var(--v2-text);font-size:13.5px;line-height:1.6;white-space:pre-line}
+.gm-draft-body[contenteditable="true"]{border-color:var(--v2-focus);box-shadow:0 0 0 1px var(--v2-focus);outline:none}
+.gm-draft-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.gm-draft-note{margin:10px 0 0;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.6}
+.gm-draft.is-approved{border-color:rgba(var(--v2-positive-rgb),.4);background:linear-gradient(0deg,var(--v2-positive-soft),var(--v2-positive-soft)),var(--v2-surface)}
+.gm-draft.is-dismissed{opacity:.78}
+
+/* The calm "Included in Level 0X" state, drawn as a real page head and card. */
+.gm-locked-page .v2-card.gm-locked-card{max-width:760px}
+.gm-locked-card .gm-checks{margin:0}
+.gm-locked-card .gm-locked-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.gm-locked-foot{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--v2-hairline,var(--v2-border));color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
+.gm-locked-icon{width:44px;height:44px;display:grid;place-items:center;margin-bottom:16px;border-radius:12px;background:var(--v2-accent-soft);border:1px solid var(--v2-accent-border);color:var(--v2-accent-strong)}
+.gm-locked-icon svg{width:20px;height:20px}
+
+/* Hope briefing on Today (the film's briefing card), built on .v2-card.v2-briefing. */
+.gm-hope-brief{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.gm-hope-brief>.gm-hope-brief-head{grid-column:1/-1}
+.gm-hope-brief-head p{margin:6px 0 0;color:var(--v2-text);font-size:14px;line-height:1.55}
+.gm-hope-brief .v2-fact{display:flex;align-items:baseline;gap:10px;padding:12px 14px;border-radius:12px}
+.gm-hope-brief .v2-fact b{margin:0;font-family:"Gambetta",Georgia,serif;font-size:28px;font-weight:500;line-height:1;letter-spacing:-.02em;color:var(--v2-text)}
+.gm-hope-brief .v2-fact small{display:inline;margin:0;color:var(--v2-text-2);font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none}
+.gm-hope-brief a.v2-fact{color:inherit;text-decoration:none}
+.gm-hope-brief .v2-fact:hover{border-color:var(--v2-border-strong)}
+.gm-hope-brief>.gm-hope-ask{grid-column:1/-1;width:100%}
+.gm-hope-brief>.gm-hope-ask .v2-icon{color:var(--v2-accent-strong)}
+@media (max-width:860px){
+  .gm-hope-brief{gap:8px}
+  .gm-hope-brief .v2-fact{flex-direction:column;align-items:flex-start;gap:6px;padding:10px 12px}
+  .gm-hope-brief .v2-fact b{font-size:24px}
+  .gm-hope-brief .v2-fact small{font-size:11.5px;line-height:1.3}
+}
+
+/* Small things the Ministry screens need beside the real components. */
+.gm-person-inline{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.gm-owner{color:var(--v2-text-2)}
+.gm-src{color:var(--v2-fine,var(--v2-muted))}
+.gm-fold-note{margin:0;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.7}
+.gm-chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.gm-protect-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.gm-protect-list li{padding:4px 20px 4px 0;margin-right:20px;border-right:1px solid var(--v2-kpi-line,var(--v2-border))}
+.gm-protect-list li:last-child{border-right:0;margin-right:0}
+.gm-protect-list b{display:block;color:var(--v2-text);font-size:13px;font-weight:700}
+.gm-protect-list span{display:block;margin-top:4px;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
+.gm-protect-list svg{width:16px;height:16px;margin-bottom:8px;color:var(--v2-positive)}
+@media (max-width:1180px){.gm-protect-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 0}.gm-protect-list li:nth-child(2n){border-right:0;margin-right:0}}
+@media (max-width:640px){.gm-protect-list{grid-template-columns:minmax(0,1fr)}.gm-protect-list li{border-right:0;margin-right:0}}
+
+/* Charts (shared/charts.js), drawn the way Reports draws them: thin bars, quiet
+   axes, a small legend under the plot, and a table behind "View as Table". */
+.gm-chart{position:relative;min-width:0}
+.gm-chart-plot{position:relative}
+.gm-chart svg{width:100%;height:auto;overflow:visible;display:block}
+.gm-chart text{font-family:var(--v2-font);fill:var(--v2-muted);font-size:11px}
+.gm-chart .gm-ch-value{fill:var(--v2-text-2);font-weight:700;font-size:11px;font-variant-numeric:tabular-nums}
+.gm-chart .gm-ch-axis-title{fill:var(--v2-muted);font-weight:700;font-size:10px;letter-spacing:.09em;text-transform:uppercase}
+.gm-chart .gm-ch-grid{stroke:var(--v2-chart-grid);stroke-width:1}
+.gm-chart .gm-ch-axis{stroke:var(--v2-kpi-rule,var(--gm-chart-axis));stroke-width:1}
+.gm-chart .gm-ch-ref{stroke:var(--gm-chart-ref);stroke-width:1;stroke-dasharray:3 4}
+.gm-chart .gm-ch-ref-label{fill:var(--v2-text-2);font-size:10.5px;font-weight:700}
+.gm-chart .gm-ch-inner{fill:var(--gm-on-chart-1);font-weight:700;font-size:11px;font-variant-numeric:tabular-nums}
+.gm-chart .gm-ch-proj{fill:var(--v2-muted);font-weight:700;font-size:11px}
+.gm-chart .gm-ch-point{outline:none}
+.gm-chart .gm-ch-point:focus-visible .gm-ch-hit{stroke:var(--v2-focus);stroke-width:2;fill:var(--v2-hover)}
+.gm-chart .gm-ch-hit{fill:transparent}
+.gm-chart .gm-ch-point:hover .gm-ch-hit{fill:var(--v2-hover)}
+.gm-chart .gm-ch-funnel-label{fill:var(--v2-text);font-size:12px;font-weight:700}
+.gm-chart .gm-ch-funnel-rate{fill:var(--v2-muted);font-size:11px}
+.gm-chart-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:12px 0 0;padding:0;list-style:none;color:var(--v2-muted);font-size:11px}
+.gm-chart-legend li{display:inline-flex;align-items:center;gap:6px}
+.gm-chart-swatch{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
+.gm-chart-swatch--hatch{background-image:repeating-linear-gradient(45deg,currentColor 0 1.5px,transparent 1.5px 4px);border:1px solid currentColor;opacity:.85;width:10px;height:10px;flex-basis:10px}
+.gm-chart-swatch--line{height:0;border-top:2px dashed var(--gm-chart-ref);border-radius:0;width:14px;flex-basis:14px}
+.gm-chart-tip{position:absolute;z-index:5;pointer-events:none;min-width:120px;max-width:240px;padding:8px 10px;border:1px solid var(--v2-border-strong);border-radius:10px;background:var(--v2-surface-3);box-shadow:0 14px 36px rgba(var(--v2-ink-rgb),.35);color:var(--v2-text);font-size:12px;line-height:1.45;opacity:0}
+[data-theme="light"] .gm-chart-tip{background:var(--v2-surface)}
+.gm-chart-tip.is-on{opacity:1}
+.gm-chart-tip b{display:block;font-size:12px;color:var(--v2-text)}
+.gm-chart-tip span{display:flex;align-items:center;gap:6px;color:var(--v2-text-2)}
+.gm-chart-tip i{width:8px;height:8px;border-radius:2px;flex:0 0 8px}
+.gm-chart-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}
+.gm-chart-sample{color:var(--v2-fine,var(--v2-muted));font-size:11px}
+.gm-chart-toggle.v2-button{min-height:32px;font-size:11.5px}
+.gm-chart-table{margin-top:8px}
+.gm-chart-table caption{padding:0 0 8px;text-align:left;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;caption-side:top}
+.gm-chart-table .is-num{text-align:right;font-variant-numeric:tabular-nums}
+.gm-chart-empty{margin:0;padding:28px 12px;text-align:center;color:var(--v2-muted);font-size:13px;border:1px dashed var(--v2-border);border-radius:12px}
+.gm-spark{display:inline-block;vertical-align:middle}
+.gm-spark svg{display:block}
+
+/* Toasts use the real .v2-toast; the guided tour keeps its own ring and card. */
+.gm-tour-ring{position:fixed;z-index:600;border-radius:16px;box-shadow:0 0 0 2px var(--v2-accent),0 0 0 9999px rgba(var(--v2-ink-rgb),.5);pointer-events:none;opacity:0;transition:all 240ms var(--gm-ease)}
+.gm-tour-ring.is-on{opacity:1}
+.gm-tour-card{position:fixed;z-index:610;width:min(360px,calc(100vw - 24px));padding:18px 20px;border:1px solid var(--v2-border-strong);border-radius:18px;background:var(--v2-surface);box-shadow:0 14px 36px rgba(var(--v2-ink-rgb),.4);display:none;gap:8px}
+.gm-tour-card.is-on{display:grid}
+.gm-tour-card h2{margin:0;font-size:18px;font-weight:500;letter-spacing:-.02em}
+.gm-tour-text{margin:0;color:var(--v2-text-2);font-size:13.5px;line-height:1.6}
+.gm-tour-card .gm-tour-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+
+/* ==========================================================================
+   5. Bridge: pages still written with gm- classes, shown in the Genesis OS look.
+      Do not use these for new work. The component map in DESIGN.md names the
+      real v2- class for each one.
+   ========================================================================== */
+.gm-page{width:min(1360px,100%);margin:0 auto}
+.gm-page--narrow{width:min(1120px,100%)}
+.gm-eyebrow{color:var(--v2-eyebrow,var(--v2-muted));font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.gm-title{font-family:"Gambetta",Georgia,serif;font-weight:500;font-size:clamp(30px,3.3vw,45px);line-height:1.05;letter-spacing:-.055em;color:var(--v2-text);text-wrap:balance}
+.gm-headline{font-family:"Gambetta",Georgia,serif;font-weight:500;font-size:24px;line-height:1.2;letter-spacing:-.025em;text-wrap:balance}
+.gm-number{font-family:"Gambetta",Georgia,serif;font-weight:500;font-size:clamp(22px,2.2vw,30px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.gm-lede{color:var(--v2-fine,var(--v2-muted));font-size:13px;line-height:1.7;max-width:72ch}
+.gm-muted{color:var(--v2-muted)}
+.gm-text-2{color:var(--v2-text-2)}
+.gm-small{font-size:12.5px}
+.gm-num{font-variant-numeric:tabular-nums lining-nums}
+.gm-em{font-family:"Gambetta",Georgia,serif;font-style:italic;font-weight:500;color:var(--v2-accent-strong)}
+.gm-link{color:var(--v2-text);text-decoration:underline;text-decoration-color:var(--v2-accent-border);text-underline-offset:3px;font-weight:600}
+.gm-link:hover{text-decoration-color:var(--v2-accent)}
+.gm-prose{color:var(--v2-text-2);line-height:1.6}
+.gm-prose p+p{margin-top:10px}
+.gm-spacer{flex:1}
+
+.gm-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:26px}
+.gm-head>div:first-child{flex:1 1 auto;min-width:0}
+.gm-head .gm-title{margin:4px 0 6px}
+.gm-head-actions{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center}
+.gm-section{margin-top:26px}
+.gm-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+.gm-section-head h2{font-size:23px;font-weight:500;letter-spacing:-.035em}
+.gm-section-head p{color:var(--v2-fine,var(--v2-muted));font-size:13px;line-height:1.7;margin-top:2px}
+
+.gm-grid{display:grid;gap:16px}
+.gm-grid--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.gm-grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gm-grid--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gm-grid--main{grid-template-columns:minmax(0,1.85fr) minmax(320px,1fr);align-items:start}
+.gm-stack{display:flex;flex-direction:column;gap:16px}
+.gm-stack--sm{gap:8px}
+.gm-row-flex{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gm-between{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.gm-split{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:16px;align-items:start}
+.gm-divider{height:1px;background:var(--gm-border);margin:16px 0}
+
+.gm-card{position:relative;border:1px solid var(--v2-hairline,var(--v2-border));border-radius:18px;background:var(--v2-surface);box-shadow:var(--v2-card-shadow,none)}
+.gm-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 26px 12px}
+.gm-card-title{font-size:18px;font-weight:500;letter-spacing:-.025em;color:var(--v2-text)}
+.gm-card-sub{margin-top:3px;color:var(--v2-fine,var(--v2-muted));font-size:12.5px;line-height:1.6}
+.gm-card-body{padding:0 26px 24px}
+.gm-card-body--pad{padding:24px 26px}
+.gm-card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 26px;border-top:1px solid var(--v2-hairline,var(--v2-border));color:var(--v2-fine,var(--v2-muted));font-size:12px}
+.gm-card--accent{background:var(--v2-panel);border-color:var(--v2-panel-edge,var(--v2-border));overflow:hidden}
+.gm-card--accent::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:5px;border-radius:0 4px 4px 0;background:var(--v2-accent)}
+.gm-card--quiet{background:var(--v2-surface-2);box-shadow:none}
+.gm-card a.gm-card-link{color:var(--v2-text-2);font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+.gm-card a.gm-card-link:hover{color:var(--v2-text)}
+
+.gm-btn{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2);color:var(--v2-text);font-size:13px;font-weight:700;line-height:1.2;text-decoration:none;white-space:nowrap;transition:background var(--gm-motion),border-color var(--gm-motion)}
+.gm-btn:hover{background:var(--v2-surface-3)}
+.gm-btn--primary{border-color:var(--v2-accent);background:var(--v2-accent);color:var(--v2-on-accent);box-shadow:inset 0 1px 0 rgba(255,248,225,.35)}
+.gm-btn--primary:hover{border-color:var(--v2-accent-hover);background:var(--v2-accent-hover)}
+.gm-btn--quiet{border-color:var(--v2-border-strong);background:transparent;color:var(--v2-text)}
+.gm-btn--quiet:hover{background:var(--v2-hover)}
+.gm-btn--danger{border-color:rgba(var(--v2-danger-rgb),.45);background:var(--v2-danger-soft);color:var(--v2-danger)}
+.gm-btn--sm{min-height:34px;padding:5px 12px;font-size:12px;gap:6px}
+.gm-btn--lg{min-height:46px;padding:10px 18px;font-size:14px}
+.gm-btn--block{width:100%}
+.gm-icon-btn{width:40px;height:40px;display:inline-grid;place-items:center;flex:0 0 auto;padding:0;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2);color:var(--v2-text-2)}
+.gm-icon-btn:hover{background:var(--v2-surface-3);color:var(--v2-text)}
+.gm-btn-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.gm-count{min-width:20px;height:20px;display:inline-grid;place-items:center;padding:0 6px;border-radius:999px;background:var(--v2-accent-soft);color:var(--v2-accent-strong);font-size:11px;font-weight:700;font-style:normal}
+.gm-btn--primary .gm-count{background:rgba(27,23,14,.16);color:var(--v2-on-accent)}
+
+.gm-rows{list-style:none}
+.gm-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:14px 26px;border-top:1px solid var(--v2-hairline,var(--v2-border))}
+.gm-row:hover{background:var(--v2-hover)}
+.gm-row-main{min-width:0}
+.gm-row-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;font-weight:700;color:var(--v2-text)}
+.gm-row-title a{text-decoration:underline;text-decoration-color:var(--v2-border-strong);text-underline-offset:3px}
+.gm-row-title a:hover{text-decoration-color:currentColor}
+.gm-row-sub{margin-top:3px;color:var(--v2-text-2);font-size:12.5px;line-height:1.5}
+.gm-row-meta{margin-top:4px;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.gm-row-end{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.gm-row--quiet{background:var(--v2-surface-2)}
+
+.gm-avatar{--tone:var(--v2-chart-1);width:30px;height:30px;flex:0 0 30px;display:inline-grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--tone) 18%,var(--v2-surface));color:var(--v2-text);font-size:11px;font-weight:700;letter-spacing:.02em;border:1px solid color-mix(in srgb,var(--tone) 34%,transparent)}
+.gm-avatar--sm{width:24px;height:24px;flex-basis:24px;font-size:9.5px}
+.gm-avatar--lg{width:48px;height:48px;flex-basis:48px;font-size:16px}
+.gm-avatar--xl{width:68px;height:68px;flex-basis:68px;font-size:23px;font-family:"Gambetta",Georgia,serif;font-weight:500}
+.gm-avatar[data-tone="1"]{--tone:var(--v2-chart-1)}.gm-avatar[data-tone="2"]{--tone:var(--v2-chart-2)}.gm-avatar[data-tone="3"]{--tone:var(--v2-chart-3)}
+.gm-avatar[data-tone="4"]{--tone:var(--v2-chart-4)}.gm-avatar[data-tone="5"]{--tone:var(--v2-chart-5)}.gm-avatar[data-tone="6"]{--tone:var(--v2-chart-6)}
+.gm-who{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.gm-who b{font-size:13px}
+.gm-who small{display:block;color:var(--v2-muted);font-size:12px}
+
+/* Old pill classes render as the real badge. GM.pill() now writes .v2-badge itself. */
+.gm-pill{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:0 0 auto;min-height:26px;padding:5px 12px;border:1px solid var(--v2-border);border-radius:8px;background:var(--v2-surface-2);color:var(--v2-text-2);font-size:11.5px;font-weight:600;line-height:1.4;white-space:nowrap}
+.gm-pill .gm-icon{width:13px;height:13px}
+.gm-pill--gold{border-color:rgba(var(--v2-accent-rgb),.3);background:var(--v2-accent-soft);color:var(--v2-accent-strong)}
+.gm-pill--positive{color:var(--v2-positive)}
+.gm-pill--warning{color:var(--v2-warning)}
+.gm-pill--danger{color:var(--v2-danger)}
+.gm-pill--info{color:var(--v2-info)}
+.gm-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 12px;border:1px solid var(--v2-border);border-radius:999px;background:var(--v2-surface);color:var(--v2-text-2);font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap}
+.gm-chip:hover{border-color:var(--v2-border-strong);color:var(--v2-text)}
+.gm-chip[aria-pressed="true"],.gm-chip[aria-current="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft);color:var(--v2-text);font-weight:700}
+.gm-chip .gm-count{background:var(--v2-surface-3);color:var(--v2-text-2)}
+.gm-chips{display:flex;flex-wrap:wrap;gap:8px}
+.gm-tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;background:var(--v2-surface-3);color:var(--v2-text-2);font-size:11.5px;font-weight:600;white-space:nowrap}
+
+.gm-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface-2);color:var(--v2-text-2);font-size:13px;line-height:1.55}
+.gm-note .gm-icon{margin-top:1px;color:var(--v2-muted)}
+.gm-note b{color:var(--v2-text)}
+.gm-note--protect{border-color:rgba(var(--v2-positive-rgb),.3);background:var(--v2-positive-soft)}
+.gm-note--protect .gm-icon{color:var(--v2-positive)}
+.gm-note--info{border-color:rgba(var(--v2-info-rgb),.3);background:var(--v2-info-soft)}
+.gm-note--info .gm-icon{color:var(--v2-info)}
+.gm-note--warn{border-color:rgba(var(--v2-warning-rgb),.32);background:var(--v2-warning-soft)}
+.gm-note--warn .gm-icon{color:var(--v2-warning)}
+.gm-checks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.gm-checks li{display:flex;gap:10px;align-items:flex-start;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.gm-checks li .gm-icon,.gm-checks li svg{width:16px;height:16px;flex:none;margin-top:2px;color:var(--v2-positive)}
+.gm-checks li b{color:var(--v2-text)}
+
+/* Old stat tiles read as the real numbers row: columns on the page, hairlines between. */
+.gm-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;border:0;border-bottom:1px solid var(--v2-kpi-rule,var(--v2-border));border-radius:0;background:none;box-shadow:none;overflow:visible}
+.gm-stat{min-width:0;padding:4px 26px 20px;border-right:1px solid var(--v2-kpi-line,var(--v2-border));background:none;display:grid;gap:8px;align-content:start}
+.gm-stat:first-child{padding-left:0}
+.gm-stat:last-child{border-right:0}
+.gm-stat-label{color:var(--v2-text-2);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.gm-stat-value{display:flex;align-items:baseline;gap:10px}
+.gm-stat-note{color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.6}
+.gm-stat a{text-decoration:none}
+.gm-delta{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:700}
+.gm-delta--up{color:var(--v2-positive)}.gm-delta--down{color:var(--v2-danger)}
+
+.gm-field{display:grid;gap:6px}
+.gm-label{color:var(--v2-text-2);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.gm-hint{color:var(--v2-fine,var(--v2-muted));font-size:12px}
+.gm-input,.gm-select,.gm-textarea{width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-sm);background:var(--v2-surface);color:var(--v2-text);font-size:13.5px}
+.gm-textarea{min-height:96px;line-height:1.5;resize:vertical}
+.gm-input::placeholder,.gm-textarea::placeholder{color:var(--v2-muted)}
+.gm-input:focus-visible,.gm-select:focus-visible,.gm-textarea:focus-visible{border-color:var(--v2-focus);box-shadow:0 0 0 1px var(--v2-focus)}
+.gm-search{position:relative}
+.gm-search .gm-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--v2-muted);pointer-events:none}
+.gm-search .gm-input{padding-left:38px}
+.gm-check{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--v2-text-2);cursor:pointer}
+.gm-check input{width:16px;height:16px;accent-color:var(--v2-accent)}
+.gm-toggle{display:inline-flex;align-items:center;gap:10px;font-size:13px;color:var(--v2-text-2)}
+.gm-toggle input{appearance:none;width:36px;height:20px;border-radius:999px;background:var(--v2-surface-3);border:1px solid var(--v2-border-strong);position:relative;cursor:pointer}
+.gm-toggle input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--v2-text-2);transition:transform var(--gm-motion)}
+.gm-toggle input:checked{background:var(--v2-accent);border-color:var(--v2-accent)}
+.gm-toggle input:checked::after{transform:translateX(16px);background:var(--v2-on-accent)}
+
+.gm-tabs{display:flex;gap:6px;border-bottom:1px solid var(--v2-hairline,var(--v2-border));overflow-x:auto;scrollbar-width:none}
+.gm-tabs::-webkit-scrollbar{display:none}
+.gm-tab{position:relative;min-height:44px;padding:8px 12px;border:0;border-bottom:2px solid transparent;background:none;color:var(--v2-text-2);font-size:13px;font-weight:600;white-space:nowrap;text-decoration:none}
+.gm-tab:hover{color:var(--v2-text)}
+.gm-tab[aria-selected="true"],.gm-tab[aria-current="page"]{color:var(--v2-tab-on,var(--v2-text));border-bottom-color:var(--v2-tab-rule,var(--v2-accent))}
+.gm-seg{display:inline-flex;padding:3px;gap:2px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2)}
+.gm-seg button{min-height:30px;padding:3px 10px;border:0;border-radius:6px;background:transparent;color:var(--v2-text-2);font-size:12.5px;font-weight:600}
+.gm-seg button[aria-pressed="true"]{background:var(--v2-surface);color:var(--v2-text);font-weight:700;box-shadow:var(--v2-card-shadow,none)}
+
+.gm-table-wrap{overflow-x:auto;border:1px solid var(--v2-hairline,var(--v2-border));border-radius:18px;background:var(--v2-surface)}
+.gm-table{width:100%;border-collapse:collapse;font-size:13px}
+.gm-table caption{padding:14px 16px;text-align:left;color:var(--v2-fine,var(--v2-muted));font-size:12px;caption-side:top}
+.gm-table th{padding:12px 16px;border-bottom:1px solid var(--v2-hairline,var(--v2-border));color:var(--v2-text-2);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;text-align:left;white-space:nowrap;background:none}
+.gm-table td{padding:14px 16px;border-bottom:1px solid var(--v2-hairline,var(--v2-border));vertical-align:middle;color:var(--v2-text)}
+.gm-table tr:last-child td{border-bottom:0}
+.gm-table tbody tr:hover td{background:var(--v2-hover)}
+.gm-table .is-num,.gm-table th.is-num{text-align:right;font-variant-numeric:tabular-nums}
+.gm-table td.gm-muted{color:var(--v2-muted)}
+
+.gm-board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(268px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
+.gm-col{display:flex;flex-direction:column;min-width:0;border:1px solid var(--v2-hairline,var(--v2-border));border-radius:18px;background:var(--v2-surface)}
+.gm-col-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px 18px 10px;border-bottom:1px solid var(--v2-hairline,var(--v2-border))}
+.gm-col-head h3{font-size:13px;font-weight:700}
+.gm-col-head p{color:var(--v2-fine,var(--v2-muted));font-size:11.5px;margin-top:2px}
+.gm-col-body{display:flex;flex-direction:column;gap:8px;padding:10px}
+.gm-item{display:block;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface-2);color:inherit;text-decoration:none}
+.gm-item:hover{border-color:var(--v2-border-strong)}
+.gm-item-top{display:flex;align-items:center;gap:10px}
+.gm-item-name{font-size:13px;font-weight:700;line-height:1.25}
+.gm-item-src{color:var(--v2-fine,var(--v2-muted));font-size:12px}
+.gm-item-next{margin-top:10px;font-size:12.5px;color:var(--v2-text-2);line-height:1.45}
+.gm-item-next b{color:var(--v2-text)}
+.gm-item-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--v2-hairline,var(--v2-border))}
+.gm-item.is-current{border-color:var(--v2-accent-border);box-shadow:0 0 0 1px var(--v2-accent-border)}
+.gm-col-empty{padding:16px 12px;border:1px dashed var(--v2-border);border-radius:12px;color:var(--v2-muted);font-size:12.5px;text-align:center}
+
+.gm-thread{display:flex;flex-direction:column;gap:12px;padding:18px 26px}
+.gm-msg{max-width:78%;display:grid;gap:4px}
+.gm-msg-bubble{padding:10px 14px;border-radius:14px;font-size:13.5px;line-height:1.55;white-space:pre-line}
+.gm-msg-meta{color:var(--v2-fine,var(--v2-muted));font-size:11.5px}
+.gm-msg--them{align-self:flex-start}
+.gm-msg--them .gm-msg-bubble{background:var(--v2-surface-3);border-top-left-radius:4px}
+.gm-msg--us{align-self:flex-end;text-align:right}
+.gm-msg--us .gm-msg-bubble{background:var(--v2-accent-soft);border:1px solid var(--v2-accent-border);border-top-right-radius:4px;text-align:left}
+.gm-msg--note{align-self:stretch;max-width:none}
+.gm-msg--note .gm-msg-bubble{background:transparent;border:1px dashed var(--v2-border-strong);color:var(--v2-text-2)}
+.gm-msg--system{align-self:center;max-width:90%;text-align:center}
+.gm-msg--system .gm-msg-bubble{padding:6px 12px;border-radius:999px;background:var(--v2-surface-2);color:var(--v2-muted);font-size:12px}
+.gm-day{align-self:center;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.gm-composer{display:grid;gap:10px;padding:16px 26px;border-top:1px solid var(--v2-hairline,var(--v2-border));background:var(--v2-surface-2);border-radius:0 0 18px 18px}
+
+.gm-kv{display:grid;grid-template-columns:minmax(110px,150px) minmax(0,1fr);gap:8px 16px;margin:0;font-size:13px}
+.gm-kv dt{color:var(--v2-muted)}
+.gm-kv dd{margin:0;color:var(--v2-text)}
+.gm-timeline{list-style:none;position:relative;display:grid;gap:14px;padding-left:20px}
+.gm-timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--v2-border)}
+.gm-timeline li{position:relative;font-size:13px;color:var(--v2-text-2)}
+.gm-timeline li::before{content:"";position:absolute;left:-19px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--v2-surface);border:2px solid var(--v2-border-strong)}
+.gm-timeline li.is-done::before{background:var(--v2-positive);border-color:var(--v2-positive)}
+.gm-timeline li.is-current::before{background:var(--v2-accent);border-color:var(--v2-accent)}
+.gm-timeline b{color:var(--v2-text)}
+.gm-timeline small{display:block;color:var(--v2-muted);font-size:12px}
+.gm-progress{height:6px;border-radius:999px;background:var(--v2-surface-3);overflow:hidden}
+.gm-progress>span{display:block;height:100%;border-radius:999px;background:var(--v2-accent)}
+.gm-steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;list-style:none}
+.gm-steps li{display:flex;align-items:center;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap}
+.gm-steps li+li::before{content:"";width:6px;height:6px;margin:0 11px 0 9px;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);opacity:.55}
+.gm-steps li>span{padding:5px 0}
+.gm-steps li.is-done{color:var(--v2-text-2)}
+.gm-steps li.is-current{color:var(--v2-text)}
+.gm-steps li.is-current>span{box-shadow:inset 0 -2px 0 var(--v2-accent)}
+.gm-checklist{list-style:none;display:grid}
+.gm-checklist li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--v2-hairline,var(--v2-border))}
+.gm-checklist li:first-child{border-top:0}
+.gm-check-dot{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;border:1.5px solid var(--v2-border-strong);color:transparent}
+.gm-check-dot .gm-icon{width:13px;height:13px}
+.is-done>.gm-check-dot{background:var(--v2-positive);border-color:var(--v2-positive);color:var(--v2-bg)}
+.is-current>.gm-check-dot{border-color:var(--v2-accent);box-shadow:inset 0 0 0 4px var(--v2-surface),inset 0 0 0 11px var(--v2-accent)}
+.is-waiting>.gm-check-dot{border-style:dashed;border-color:var(--v2-warning)}
+
+.gm-empty{display:grid;justify-items:center;gap:10px;padding:40px 24px;text-align:center}
+.gm-empty-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:var(--v2-surface-3);color:var(--v2-text-2)}
+.gm-empty h3{font-size:16px}
+.gm-empty p{max-width:46ch;color:var(--v2-muted);font-size:13.5px}
+.gm-answer{padding:12px 14px;border-radius:12px;background:var(--v2-surface-2);border:1px solid var(--v2-border);font-size:13.5px;line-height:1.55;color:var(--v2-text-2)}
+.gm-answer b{color:var(--v2-text)}
+
+@media (max-width:1180px){
+  .gm-grid--main{grid-template-columns:minmax(0,1fr)}
+  .gm-grid--4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gm-split{grid-template-columns:minmax(240px,300px) minmax(0,1fr)}
+}
+@media (max-width:1060px){.gm-grid--3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){
+  .gm-stats{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}
+  .gm-stat{padding-inline:18px}
+  .gm-stat:nth-child(odd){padding-left:0}
+  .gm-stat:nth-child(2n){border-right:0}
+}
+@media (max-width:860px){
+  .gm-head{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:18px}
+  .gm-head-actions{justify-content:flex-start}
+  .gm-grid--2,.gm-grid--3,.gm-grid--4{grid-template-columns:minmax(0,1fr)}
+  .gm-split{grid-template-columns:minmax(0,1fr)}
+  .gm-row{padding:12px 16px;grid-template-columns:auto minmax(0,1fr)}
+  .gm-row-end{grid-column:2;justify-content:flex-start}
+  .gm-card-head{padding:18px 18px 10px}
+  .gm-card-body{padding:0 18px 18px}
+  .gm-card-body--pad{padding:18px}
+  .gm-card-foot{padding:12px 18px}
+  .gm-thread{padding:14px 18px}
+  .gm-msg{max-width:90%}
+  .gm-composer{padding:12px 18px}
+  .gm-btn{min-height:44px}
+  .gm-input,.gm-select,.gm-textarea{font-size:16px}
+  .gm-kv{grid-template-columns:minmax(0,1fr);gap:2px}
+  .gm-kv dd{margin-bottom:8px}
+  .gm-board{grid-auto-columns:minmax(84vw,1fr)}
+}
+
+/* ==========================================================================
+   6. Member app stage chrome (member pages keep their own skin in member.css).
+   ========================================================================== */
+.gm-switcher{position:relative}
+.gm-switcher-btn{display:flex;align-items:center;gap:10px;min-height:44px;max-width:300px;padding:5px 10px 5px 6px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface);color:var(--v2-text);text-align:left}
+.gm-switcher-btn:hover{border-color:var(--v2-border-strong);background:var(--v2-surface-2)}
+.gm-switcher-btn b{display:block;font-size:13.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-switcher-btn small{display:block;color:var(--v2-muted);font-size:11.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-switcher-btn>span{min-width:0}
+.gm-menu{position:absolute;left:0;top:calc(100% + 6px);z-index:80;min-width:320px;padding:6px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-md);background:var(--v2-surface-3);box-shadow:var(--gm-shadow-lg)}
+[data-theme="light"] .gm-menu{background:var(--v2-surface)}
+.gm-menu a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--v2-radius-sm);color:var(--v2-text);text-decoration:none}
+.gm-menu a:hover,.gm-menu a:focus-visible{background:var(--v2-hover)}
+.gm-menu a b{display:block;font-size:13.5px}
+.gm-menu a small{display:block;color:var(--v2-muted);font-size:12px}
+.gm-menu a[aria-current="true"]{background:var(--v2-accent-soft)}
+.gm-menu-check{margin-left:auto;color:var(--v2-accent-strong)}
+.gm-menu-sep{height:1px;margin:6px 4px;background:var(--v2-border)}
+.gm-plan{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.gm-plan-label{padding:0 8px 0 6px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.gm-plan a{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:4px 10px;border-radius:var(--v2-radius-sm);color:var(--v2-text-2);font-size:12.5px;font-weight:500;text-decoration:none;white-space:nowrap}
+.gm-plan a b{font-variant-numeric:tabular-nums;font-weight:700}
+.gm-plan a:hover{background:var(--v2-hover);color:var(--v2-text)}
+.gm-plan a[aria-current="true"]{background:var(--v2-accent);color:var(--v2-on-accent)}
+.gm-preview-label{display:inline-flex;align-items:center;gap:8px;min-height:30px;padding:4px 12px;border:1px dashed var(--v2-accent-border);border-radius:999px;color:var(--v2-text-2);font-size:12px;font-weight:500;white-space:nowrap}
+.gm-preview-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--v2-accent)}
+@media (max-width:860px){
+  .m-stagebar .gm-plan a span,.m-stagebar .gm-switcher-btn small{display:none}
+  .gm-menu{position:fixed;left:12px;right:12px;top:60px;min-width:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .gm-tour-ring{transition:none}
+}
+@media print{
+  .v2-sidebar,.v2-mobile-top,.v2-genesis-opener,.v2-fixture-badge,.v2-workspace-rail{display:none!important}
+  .v2-shell{display:block;height:auto}
+  html,body,.v2-main{height:auto;overflow:visible}
+}
+
+/* The preview strip sits above the phone menu sheet, so the sheet starts under it. */
+@media (max-width:860px){
+  body.v2-showing-sample .v2-sidebar{top:44px;height:calc(100dvh - 44px)}
+}
+/* The add drawer opens under the strip too. */
+body.v2-showing-sample .v2-drawer{top:44px;height:calc(100dvh - 44px)}
+
+/* ==========================================================================
+   7. Finishing pass (review fixes). Ministry layer only; no v2- token is redefined.
+   ========================================================================== */
+/* The account's real level, under the level switch, when the preview shows another. */
+.gm-plan-note{margin:-2px 2px 10px;color:var(--v2-muted);font-size:10.5px;line-height:1.4}
+.gm-menu-note{margin:0 9px 6px;color:var(--v2-muted);font-size:11px;line-height:1.45}
+@media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-plan-note{display:none}}
+@media (max-width:860px){.gm-plan-note{margin:0 12px 10px}}
+/* A link styled as the gold sidebar action (Level 01: Open Your Website). */
+a.v2-sidebar-action{text-decoration:none}
+
+/* The locked card can carry a dimmed picture of the screen it adds. */
+.gm-locked-card.has-thumb{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:24px;align-items:start}
+.gm-locked-page .v2-card.gm-locked-card.has-thumb{max-width:960px}
+.gm-locked-thumb{margin:0;position:relative;border:1px solid var(--v2-border);border-radius:12px;overflow:hidden;background:var(--v2-surface-2)}
+.gm-locked-thumb img{display:block;width:100%;height:auto;opacity:.55;filter:saturate(.7)}
+.gm-locked-thumb figcaption{position:absolute;left:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(13,14,16,.82);color:#f4efe8;font-size:11px;font-weight:700;letter-spacing:.04em}
+@media (max-width:1100px){.gm-locked-card.has-thumb{grid-template-columns:minmax(0,1fr)}.gm-locked-thumb{max-width:420px}}
+
+/* The fixed footer of an outreach email. */
+.gm-draft-foot{display:inline-block;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.55}
+
+/* Light theme: the next-move panel stays dark, so its eyebrow keeps the dark-theme color (5.87:1). */
+[data-theme="light"] .v2-next-move .v2-eyebrow{color:rgb(164,151,127)}
+
+/* Phones: every small control reaches a 44px tap target. */
+@media (max-width:860px){
+  .gm-plan-switch a{min-height:44px}
+  .gm-chart-toggle.v2-button{min-height:44px}
+  .gm-plan a,.m-stagebar .v2-button,.m-stagebar .gm-switcher-btn,.m-stagebar .gm-theme-btn{min-height:44px}
+  .m-stagebar .v2-icon-button,.m-stagebar .gm-tour-btn.v2-icon-button{min-width:44px}
+  .v2-segments button{min-height:44px}
+}
+
+/* The Reports numbers row: a clean 2 + 1 grid on phones, as the Deals pulse does. */
+@media (max-width:640px){
+  .v2-report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .v2-report-metrics>.v2-report-metric{padding-left:16px!important;padding-right:16px!important;margin:0!important;border-left:0!important;border-right:0!important}
+  .v2-report-metrics>.v2-report-metric:nth-child(odd):not(:last-child){border-right:1px solid var(--v2-border)!important}
+  .v2-report-metrics>.v2-report-metric:nth-child(3){grid-column:1/-1;border-top:1px solid var(--v2-border)!important}
+  .v2-report-metrics::after,.v2-report-metrics::before{display:none!important}
+}
+
+/* Wide tables stay readable on phones: they scroll sideways inside their card. */
+@media (max-width:640px){
+  .gm-wide-table .v2-table-scroll>.v2-table{min-width:600px}
+  .gm-wide-table .v2-primary-cell b,.gm-wide-table .v2-primary-cell span{white-space:normal}
+}

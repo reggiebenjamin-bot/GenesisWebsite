@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lampstand Church Brand Board (Template Preview)</title>
+<meta name="description" content="Brand board for Lampstand Church, a demo church for the Genesis Ministry Bold and Dark look: logo, color, type, photography, graphic elements, UI, voice and social posts.">
+<meta name="theme-color" content="#14110E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kiln:#14110E;--soot:#1F1A16;--soot-2:#29231D;--char:#3A332C;--char-2:#554B41;
+  --bone:#F4EEE4;--ash:#B8AD9E;--flare:#FF9A1F;--umber:#4A2E0A;--vesper:#2B2150;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --wrap:1320px;--gutter:clamp(16px,4vw,56px);--r:2px;--ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--kiln);color:var(--bone);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;font-variant-numeric:lining-nums}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--flare);outline-offset:3px}
+::selection{background:var(--flare);color:var(--kiln)}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.label{display:flex;align-items:center;gap:14px;margin:0 0 16px;font:600 12.5px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--bone)}
+.label::before{content:"";flex:none;width:26px;height:3px;background:var(--flare)}
+.label.rule::after{content:"";flex:1;height:1px;background:var(--char)}
+.disp{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:-.005em;margin:0;line-height:.88}
+.muted{color:var(--ash)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.hl{color:var(--flare)}
+.ph{overflow:hidden;background:var(--soot)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.frame{position:relative}
+.frame::before,.frame::after{content:"";position:absolute;width:26px;height:26px;z-index:2;pointer-events:none}
+.frame::before{left:-10px;top:-10px;border-left:3px solid var(--flare);border-top:3px solid var(--flare)}
+.frame::after{right:-10px;bottom:-10px;border-right:3px solid var(--flare);border-bottom:3px solid var(--flare)}
+
+/* Top bar */
+.topbar{border-bottom:1px solid var(--char)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;flex-wrap:wrap;padding-block:10px}
+.topbar b{font:900 22px/1 var(--display);text-transform:uppercase;letter-spacing:.03em}
+.topbar span{font-size:14px;color:var(--ash)}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid var(--char-2);border-radius:var(--r);font:600 10.5px/1 var(--body);letter-spacing:.13em;text-transform:uppercase;color:var(--ash);white-space:nowrap}
+.tag::before{content:"";width:6px;height:6px;background:var(--flare)}
+
+/* Sections */
+.sec{padding-block:clamp(64px,8vw,112px);border-bottom:1px solid var(--char)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:8px 28px;align-items:end;margin-bottom:clamp(32px,4vw,56px)}
+.sec-num{font:900 clamp(64px,8vw,120px)/.8 var(--display);color:var(--flare);letter-spacing:-.01em}
+.sec-head h2{font:900 clamp(40px,5vw,72px)/.88 var(--display);text-transform:uppercase;margin:0}
+.sec-head p{grid-column:2;margin:10px 0 0;color:var(--ash);max-width:40em}
+
+/* Cover */
+.cover{padding-block:clamp(48px,7vw,104px);border-bottom:1px solid var(--char)}
+.cover-grid{display:grid;grid-template-columns:7fr 5fr;gap:clamp(28px,5vw,80px);align-items:center}
+.lock-h{display:flex;align-items:center;gap:.28em;color:var(--bone)}
+.lock-h svg{height:1.05em;width:auto;flex:none}
+.lock-h .wm{font:900 1em/1 var(--display);text-transform:uppercase;letter-spacing:.03em;padding-top:.06em}
+.cover .lock-h{font-size:clamp(50px,10.4vw,150px)}
+.cover .tagline{font:800 clamp(28px,3.4vw,48px)/1 var(--display);text-transform:uppercase;margin:22px 0 0;color:var(--flare);letter-spacing:.01em}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;margin:30px 0 0;padding:20px 0 0;border-top:1px solid var(--char);list-style:none}
+.facts li{font-size:15.5px;color:var(--ash)}
+.facts b{display:block;color:var(--bone);font-weight:600;font-size:16px}
+.cover .ph{aspect-ratio:4/5}
+
+/* Logo */
+.logo-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.tile{position:relative;background:var(--soot);border:1px solid var(--char);padding:28px;min-height:280px;display:flex;flex-direction:column;justify-content:space-between}
+.tile .cap{display:flex;justify-content:space-between;gap:12px;font:600 11.5px/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ash);margin:20px 0 0}
+.t-primary{grid-column:span 7}
+.t-stack{grid-column:span 5}
+.t-marks{grid-column:span 5}
+.t-photo{grid-column:span 7;padding:0;overflow:hidden;border:0}
+.t-primary .stage,.t-stack .stage{flex:1;display:grid;place-items:center}
+.t-primary .lock-h{font-size:clamp(46px,6vw,88px)}
+.lock-v{display:flex;flex-direction:column;align-items:center;text-align:center}
+.lock-v svg{width:clamp(44px,5vw,62px);height:auto}
+.lock-v .wm{font:900 clamp(48px,5.6vw,80px)/.9 var(--display);text-transform:uppercase;letter-spacing:.03em;margin-top:14px}
+.lock-v .sub{display:flex;align-items:center;gap:10px;margin-top:10px;font:600 12px/1 var(--body);letter-spacing:.32em;text-transform:uppercase;color:var(--ash)}
+.lock-v .sub::before,.lock-v .sub::after{content:"";width:22px;height:2px;background:var(--flare)}
+.marks{flex:1;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.mk{display:grid;place-items:center;flex:none}
+.mk svg{height:56%;width:auto}
+.mk.a{width:120px;height:120px;background:var(--flare)}
+.mk.b{width:84px;height:84px;background:var(--kiln);border:1px solid var(--char)}
+.mk.c{width:56px;height:56px;background:var(--bone)}
+.mk.d{width:36px;height:36px;background:var(--vesper);border-radius:50%}
+.t-photo .ph{position:absolute;inset:0}
+.t-photo .ph img{object-position:60% 40%}
+.t-photo .shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,17,14,.9),rgba(20,17,14,0) 42%),linear-gradient(90deg,rgba(20,17,14,.92),rgba(20,17,14,.5) 55%,rgba(20,17,14,.1))}
+.t-photo .in{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;height:100%;padding:28px}
+.t-photo .lock-h{font-size:clamp(40px,4.6vw,64px)}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}
+.rule-card{border-top:3px solid var(--flare);padding:16px 0 0}
+.rule-card.no{border-top-color:var(--char-2)}
+.rule-card h4{margin:0 0 6px;font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rule-card p{margin:0;font-size:15px;color:var(--ash)}
+
+/* Color */
+.sw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.sw{border:1px solid var(--char);background:var(--soot);display:flex;flex-direction:column}
+.sw .chip{height:150px;display:flex;align-items:flex-end;padding:16px;font:900 34px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.sw .meta{padding:16px 18px 18px}
+.sw .meta b{display:block;font:800 24px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.sw .hex{font:600 13px/1 var(--body);letter-spacing:.12em;color:var(--flare);margin:8px 0 10px;display:block}
+.sw .meta p{margin:0;font-size:14.5px;color:var(--ash);line-height:1.45}
+.sw .ratio{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--char);font-size:13.5px;color:var(--bone)}
+.sw .ratio i{width:14px;height:14px;border:1px solid var(--char-2);flex:none}
+.sw.wide{grid-column:span 2}
+.prop{display:flex;height:64px;margin-top:28px;border:1px solid var(--char)}
+.prop span{display:flex;align-items:flex-end;padding:8px 10px;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.prop-cap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--ash)}
+
+/* Type */
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.spec{background:var(--soot);border:1px solid var(--char);padding:clamp(22px,3vw,36px)}
+.spec .big{font-size:clamp(120px,14vw,200px);line-height:.8;margin:6px 0 18px}
+.spec .glyphs{font-size:clamp(20px,2vw,26px);line-height:1.35;color:var(--ash);word-break:break-all;margin:0}
+.spec .name{display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--char)}
+.spec .name b{font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.spec .name span{font-size:14px;color:var(--ash)}
+.scale{grid-column:1/-1;border:1px solid var(--char)}
+.srow{display:grid;grid-template-columns:150px 1fr 190px;gap:20px;align-items:center;padding:16px 22px;border-top:1px solid var(--char)}
+.srow:first-child{border-top:0}
+.srow .k{font:600 12px/1.3 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--flare)}
+.srow .v{font-size:13.5px;color:var(--ash);text-align:right}
+.srow .s{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sample{grid-column:1/-1;display:grid;grid-template-columns:7fr 5fr;gap:clamp(24px,4vw,64px);align-items:end;background:var(--soot);border:1px solid var(--char);padding:clamp(24px,4vw,48px)}
+.sample .disp{font-size:clamp(48px,6vw,92px);color:var(--bone)}
+.sample p{color:var(--ash);margin:0 0 18px}
+.tlink{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--bone);text-decoration:none;padding-bottom:3px;background:linear-gradient(var(--flare),var(--flare)) no-repeat left bottom/100% 2px}
+.tlink .arw{color:var(--flare);transition:transform .35s var(--ease)}
+.tlink:hover .arw{transform:translateX(5px)}
+
+/* Photography */
+.photo-grid{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(120px,13vw,190px);gap:12px}
+.photo-grid figure{margin:0;position:relative}
+.photo-grid .ph{height:100%}
+.photo-grid figcaption{position:absolute;left:0;bottom:0;padding:6px 9px;background:var(--kiln);font:600 11px/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--bone)}
+.pg1{grid-column:span 3;grid-row:span 2}
+.pg2{grid-column:span 3}
+.pg3{grid-column:span 2;grid-row:span 1}
+.pg4{grid-column:span 1}
+.pg5{grid-column:span 3}
+.pg6{grid-column:span 3}
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.dd{border:1px solid var(--char);padding:22px 24px;background:var(--soot)}
+.dd h4{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.dd h4 i{display:grid;place-items:center;width:26px;height:26px;font-style:normal;font:900 16px/1 var(--body)}
+.dd.do h4 i{background:var(--flare);color:var(--kiln)}
+.dd.no h4 i{border:1.5px solid var(--char-2);color:var(--ash)}
+.dd ul{margin:0;padding:0;list-style:none}
+.dd li{position:relative;padding:8px 0 8px 22px;border-top:1px solid var(--char);font-size:15.5px;color:var(--ash)}
+.dd li:first-child{border-top:0}
+.dd li::before{content:"";position:absolute;left:0;top:18px;width:10px;height:3px;background:var(--flare)}
+.dd.no li::before{background:var(--char-2)}
+.grade{display:flex;gap:0;margin-top:18px;border:1px solid var(--char)}
+.grade div{flex:1;padding:14px 16px;font-size:13.5px;color:var(--ash);border-left:1px solid var(--char)}
+.grade div:first-child{border-left:0}
+.grade b{display:block;color:var(--bone);font-weight:600;font-size:14.5px}
+
+/* Graphic elements */
+.ge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ge{background:var(--soot);border:1px solid var(--char);display:flex;flex-direction:column}
+.ge .stage{height:220px;position:relative;overflow:hidden;display:grid;place-items:center;border-bottom:1px solid var(--char)}
+.ge .txt{padding:18px 20px 20px}
+.ge .txt b{display:block;font:800 24px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin-bottom:6px}
+.ge .txt p{margin:0;font-size:14.5px;color:var(--ash)}
+.strike-demo{width:74%}
+.strike-demo .bar{height:1px;background:var(--char-2);position:relative}
+.strike-demo .bar::after{content:"";position:absolute;left:0;right:0;top:-2px;height:5px;background:var(--flare);transform-origin:left;transform:scaleX(.18);animation:strikeLoop 3.2s cubic-bezier(.3,.6,.2,1) infinite}
+.strike-demo h5{margin:18px 0 0;font:900 34px/1 var(--display);text-transform:uppercase}
+@keyframes strikeLoop{0%{transform:scaleX(0)}35%{transform:scaleX(1)}60%,100%{transform:scaleX(.18)}}
+.nums{display:flex;gap:10px}
+.nums span{display:grid;place-items:center;min-width:64px;height:54px;padding:0 12px;background:var(--flare);color:var(--kiln);font:900 32px/1 var(--display)}
+.nums span:nth-child(2){background:var(--kiln);color:var(--flare);border:1.5px solid var(--flare)}
+.nums span:nth-child(3){background:var(--bone)}
+.vf{width:62%;aspect-ratio:4/3}
+.vf .ph{height:100%}
+.reel{width:70%;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.reel .row{display:flex;align-items:center;gap:12px;font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+.reel .row i{display:block;width:80px;height:2px;background:rgba(244,238,228,.25);position:relative;overflow:hidden}
+.reel .row i::after{content:"";position:absolute;inset:0;background:var(--flare);transform-origin:left;animation:reelLoop 4s linear infinite}
+@keyframes reelLoop{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.playtile{display:grid;place-items:center;width:84px;height:84px;background:var(--flare);color:var(--kiln)}
+.playtile svg{width:30%;margin-left:6%}
+.pat-rays{background:repeating-linear-gradient(115deg,rgba(255,154,31,.0) 0 26px,rgba(255,154,31,.16) 26px 28px),radial-gradient(120% 90% at 0% 0%,rgba(255,154,31,.22),rgba(20,17,14,0) 60%),var(--kiln)}
+.pat-lamps{background-color:var(--kiln);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Cpath d='M28 12c2.4 2.9 4 5.1 4 7.5 0 2.3-1.8 4-4 4s-4-1.7-4-4c0-2.4 1.6-4.6 4-7.5z' fill='%23FF9A1F' fill-opacity='.55'/%3E%3Crect x='26.3' y='26' width='3.4' height='12' fill='%23F4EEE4' fill-opacity='.14'/%3E%3Crect x='22' y='38' width='12' height='2.5' fill='%23F4EEE4' fill-opacity='.14'/%3E%3C/svg%3E");background-size:56px 64px}
+.pat-rules{background:repeating-linear-gradient(0deg,var(--kiln) 0 9px,rgba(244,238,228,.12) 9px 10px),var(--kiln);position:relative}
+.pat-rules::after{content:"";position:absolute;left:12%;right:30%;top:50%;height:5px;background:var(--flare)}
+.pat-word{font:900 74px/.8 var(--display);text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(244,238,228,.35);letter-spacing:.01em;text-align:center}
+
+/* UI */
+.ui-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.ui{background:var(--soot);border:1px solid var(--char);padding:26px}
+.ui h4{margin:0 0 18px;font:600 12px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--ash)}
+.u-btns{grid-column:span 7}
+.u-form{grid-column:span 5}
+.u-steps{grid-column:span 7;background:var(--flare);border-color:var(--flare);color:var(--kiln)}
+.u-steps h4{color:var(--umber)}
+.u-rows{grid-column:span 5}
+.u-bits{grid-column:span 12}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:var(--r);font:600 16px/1 var(--body);text-decoration:none;white-space:nowrap;cursor:pointer;border:1.5px solid transparent;transition:transform .3s var(--ease),background-color .25s,border-color .25s}
+.btn .arw{display:inline-block;transition:transform .35s var(--ease)}
+.btn:hover .arw{transform:translateX(5px)}
+.btn-primary{background-color:var(--flare);color:var(--kiln);overflow:hidden;isolation:isolate;
+  background-image:linear-gradient(105deg,rgba(255,226,180,0) 40%,rgba(255,236,206,.85) 50%,rgba(255,226,180,0) 60%);background-repeat:no-repeat;background-size:260% 100%;background-position:160% 0;animation:sheen 1.1s cubic-bezier(.3,.6,.2,1) .8s 1 both}
+.btn-primary:hover{transform:translateY(-2px)}
+@keyframes sheen{from{background-position:160% 0}to{background-position:-60% 0}}
+.btn-outline{background:transparent;color:var(--bone);border-color:rgba(244,238,228,.55)}
+.btn-outline:hover{border-color:var(--bone);background:rgba(244,238,228,.07)}
+.btn-sm{min-height:44px;padding:0 18px;font-size:15px}
+.brow{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.note{font-size:13.5px;color:var(--ash);margin:6px 0 0}
+.field{display:flex;gap:10px}
+.field input{flex:1;min-width:0;height:54px;padding:0 16px;background:var(--kiln);border:1.5px solid var(--char-2);border-radius:var(--r);color:var(--bone);font:500 16px var(--body)}
+.field input::placeholder{color:#8F8577}
+.u-form .lbl{display:block;font-weight:600;font-size:15px;margin:0 0 8px}
+.u-form .err input{border-color:var(--flare)}
+.u-form .errmsg{font-size:14px;color:var(--flare);margin:8px 0 0}
+.u-steps .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
+.st{position:relative;padding:26px 14px 18px;margin-inline:-14px;color:var(--kiln);text-decoration:none;display:block;background:linear-gradient(var(--kiln),var(--kiln)) no-repeat bottom/100% 0;transition:background-size .5s var(--ease)}
+.st::before{content:"";position:absolute;left:14px;right:14px;top:0;height:1px;background:rgba(20,17,14,.35)}
+.st::after{content:"";position:absolute;left:14px;right:14px;top:-1px;height:4px;background:var(--kiln);transform:scaleX(.18);transform-origin:left;transition:transform .6s var(--ease),background-color .3s}
+.st b{display:block;font:900 30px/.95 var(--display);text-transform:uppercase;margin-bottom:6px;transition:color .3s}
+.st span{font-size:15px;color:var(--umber);transition:color .3s}
+.st:hover,.st.demo{background-size:100% 100%}
+.st:hover::after,.st.demo::after{transform:scaleX(1);background:var(--flare)}
+.st:hover b,.st.demo b{color:var(--bone)}
+.st:hover span,.st.demo span{color:var(--ash)}
+.nrow{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:18px 0;border-top:1px solid var(--char);position:relative}
+.nrow::after{content:"";position:absolute;left:0;top:-1px;width:44px;height:3px;background:var(--flare)}
+.nrow .n{font:900 46px/.85 var(--display);color:var(--flare)}
+.nrow b{display:block;font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
+.nrow p{margin:0;font-size:14.5px;color:var(--ash)}
+.bits{display:flex;flex-wrap:wrap;gap:22px 34px;align-items:center}
+.bit{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.bit > small{font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ash)}
+.ann{display:inline-flex;align-items:center;height:26px;padding:0 9px;border:1px solid rgba(244,238,228,.5);border-radius:var(--r);font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;background:var(--vesper)}
+.fab{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:var(--bone);color:var(--kiln);position:relative}
+.fab svg{width:26px;height:26px}
+.fab .dot{position:absolute;top:13px;right:13px;width:10px;height:10px;border-radius:50%;background:var(--flare);border:2px solid var(--bone)}
+.pulse{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--flare)}
+.pulse svg{width:13px;margin-left:2px}
+.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--flare);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(1.8);opacity:0}}
+.sbar-demo{display:flex;align-items:center;gap:12px;width:min(390px,100%);padding:10px 14px;background:var(--kiln);border:1px solid var(--char)}
+.sbar-demo .c{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--bone);color:var(--kiln);flex:none}
+.sbar-demo .c svg{width:20px}
+.sbar-demo .t{flex:1;line-height:1.15}
+.sbar-demo .t small{display:block;font:600 10.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;color:var(--flare);margin-bottom:4px}
+.sbar-demo .t b{font:800 21px/1 var(--display);text-transform:uppercase;white-space:nowrap}
+.sbar-demo .btn{min-height:46px;padding:0 16px;font-size:15px;animation:none}
+.menu-demo{width:280px;background:var(--kiln);border:1px solid var(--char);border-top:3px solid var(--flare);padding:8px}
+.menu-demo div{position:relative;padding:10px 12px 10px 16px;font-weight:600;font-size:15px;line-height:1.25}
+.menu-demo div small{display:block;font-weight:400;font-size:13px;color:var(--ash);margin-top:2px}
+.menu-demo div.on{background:var(--soot-2)}
+.menu-demo div.on::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;background:var(--flare)}
+
+/* Voice */
+.voice-words{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-bottom:18px}
+.vw{border-top:3px solid var(--flare);padding-top:16px}
+.vw b{display:block;font:900 clamp(34px,3.4vw,48px)/.9 var(--display);text-transform:uppercase}
+.vw p{margin:10px 0 0;font-size:14.5px;color:var(--ash)}
+.say{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.say .col{border:1px solid var(--char);background:var(--soot);padding:24px}
+.say h4{margin:0 0 14px;font:800 26px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.say ul{margin:0;padding:0;list-style:none}
+.say li{padding:11px 0;border-top:1px solid var(--char);font-size:16px}
+.say li:first-child{border-top:0}
+.say .yes li{color:var(--bone)}
+.say .no li{color:var(--ash)}
+.say li em{display:block;font-style:normal;font-size:13.5px;color:var(--ash);margin-top:2px}
+.rewrite{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-top:18px;border:1px solid var(--char);padding:22px 24px}
+.rewrite .b{color:var(--ash);text-decoration:line-through;text-decoration-color:var(--char-2)}
+.rewrite .a{font:800 26px/1.05 var(--display);text-transform:uppercase}
+.rewrite .arrow{font:900 30px/1 var(--display);color:var(--flare)}
+.rewrite small{display:block;font:600 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;text-decoration:none}
+
+/* Social */
+.social-grid{display:grid;grid-template-columns:1fr 1fr 1fr .75fr;gap:18px;align-items:start}
+.post-wrap figcaption{margin-top:12px;font-size:14px;color:var(--ash)}
+.post-wrap figcaption b{display:block;color:var(--bone);font-weight:600}
+.post-wrap{margin:0}
+.post{position:relative;aspect-ratio:1;overflow:hidden;container-type:inline-size;background:var(--kiln);border:1px solid var(--char)}
+.post.story{aspect-ratio:9/16}
+.post .bg{position:absolute;inset:0}
+.post .bg img{width:100%;height:100%;object-fit:cover}
+.post .mark{position:absolute;display:flex;align-items:center;gap:2cqw;font:900 5.2cqw/1 var(--display);text-transform:uppercase;letter-spacing:.03em}
+.post .mark svg{height:6.6cqw;width:auto}
+/* Post 1: Sunday nights */
+.p1 .bg img{object-position:58% 50%}
+.p1 .shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,17,14,.96) 0%,rgba(20,17,14,.8) 50%,rgba(20,17,14,.3) 100%)}
+.p1 .copy{position:absolute;left:7cqw;right:7cqw;bottom:7cqw}
+.p1 .k{font:600 3.2cqw/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--flare);margin-bottom:3cqw;display:flex;align-items:center;gap:2.4cqw}
+.p1 .k::before{content:"";width:6cqw;height:.8cqw;background:var(--flare)}
+.p1 h3{font:900 15.5cqw/.84 var(--display);text-transform:uppercase;margin:0}
+.p1 h3 span{display:block;color:var(--flare)}
+.p1 .addr{font:500 3.6cqw/1.3 var(--body);margin-top:3.4cqw;color:var(--bone)}
+.p1 .mark{left:7cqw;top:7cqw}
+/* Post 2: quote card */
+.p2{background:var(--kiln)}
+.p2 .q{position:absolute;left:8cqw;right:8cqw;top:12cqw}
+.p2 .qm{font:900 30cqw/.6 var(--display);color:var(--flare);height:12cqw;display:block}
+.p2 blockquote{margin:0;font:800 11.4cqw/.92 var(--display);text-transform:uppercase}
+.p2 blockquote span{color:var(--flare)}
+.p2 .by{position:absolute;left:8cqw;bottom:8cqw;font:600 3.3cqw/1.35 var(--body);color:var(--ash)}
+.p2 .by b{display:block;color:var(--bone);font-size:3.8cqw}
+.p2 .strike{position:absolute;left:8cqw;right:8cqw;bottom:23cqw;height:.3cqw;background:var(--char-2)}
+.p2 .strike::after{content:"";position:absolute;left:0;top:-.5cqw;height:1.3cqw;width:22%;background:var(--flare)}
+.p2 .mark{right:8cqw;bottom:8cqw}
+.p2 .mark .wm{display:none}
+/* Post 3: carousel cover */
+.p3{background:var(--flare);color:var(--kiln);border-color:var(--flare)}
+.p3 .count{position:absolute;right:7cqw;top:7cqw;font:900 5cqw/1 var(--display)}
+.p3 h3{position:absolute;left:7cqw;right:7cqw;top:7cqw;margin:0;font:900 13.2cqw/.86 var(--display);text-transform:uppercase}
+.p3 .inset{position:absolute;left:7cqw;bottom:7cqw;width:46cqw;aspect-ratio:4/3;border:1.2cqw solid var(--kiln)}
+.p3 .inset img{width:100%;height:100%;object-fit:cover}
+.p3 .swipe{position:absolute;right:7cqw;bottom:7cqw;display:flex;align-items:center;gap:2cqw;font:800 5.4cqw/1 var(--display);text-transform:uppercase}
+.p3 .swipe i{display:block;width:10cqw;height:1cqw;background:var(--kiln);position:relative}
+.p3 .swipe i::after{content:"";position:absolute;right:-.4cqw;top:-1.6cqw;border-left:3cqw solid var(--kiln);border-top:2.1cqw solid transparent;border-bottom:2.1cqw solid transparent}
+/* Story */
+.p4 .bg{bottom:46%}
+.p4 .bg img{object-position:46% 50%}
+.p4 .shade{position:absolute;left:0;right:0;top:0;bottom:44.5%;background:linear-gradient(0deg,var(--kiln) 0%,rgba(20,17,14,.82) 30%,rgba(20,17,14,0) 62%)}
+.p4 .mark{left:8cqw;top:8cqw;font-size:8cqw}
+.p4 .mark svg{height:10cqw}
+.p4 .copy{position:absolute;left:8cqw;right:8cqw;top:41%}
+.p4 .k{font:600 4.6cqw/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--flare);margin-bottom:3cqw}
+.p4 h3{font:900 17.5cqw/.84 var(--display);text-transform:uppercase;margin:0}
+.p4 .when{font:700 6cqw/1.2 var(--body);margin-top:3.4cqw}
+.p4 .poll{position:absolute;left:8cqw;right:8cqw;bottom:14cqw;background:var(--bone);color:var(--kiln);padding:5cqw 5cqw 4cqw}
+.p4 .poll b{display:block;font:800 7cqw/1 var(--display);text-transform:uppercase;margin-bottom:3.6cqw;text-align:center}
+.p4 .poll .opts{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+.p4 .poll .opts span{display:grid;place-items:center;height:11cqw;border:.6cqw solid var(--kiln);font:700 4.4cqw/1 var(--body)}
+.p4 .poll .opts span:first-child{background:var(--flare);border-color:var(--flare)}
+.p4 .link{position:absolute;left:8cqw;right:8cqw;bottom:5.4cqw;text-align:center;font:600 4.2cqw/1 var(--body);color:var(--bone)}
+
+.foot{padding-block:40px 56px;color:var(--ash);font-size:14.5px}
+.foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 28px}
+
+/* Responsive */
+@media (max-width:1060px){
+  .social-grid{grid-template-columns:1fr 1fr}
+  .voice-words{grid-template-columns:repeat(3,1fr)}
+  .ge-grid{grid-template-columns:1fr 1fr}
+  .sw-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:860px){
+  .cover-grid,.type-grid,.sample,.say,.dodont{grid-template-columns:1fr}
+  .cover .ph{aspect-ratio:4/3}
+  .logo-grid > *,.ui-grid > *{grid-column:1/-1}
+  .rules{grid-template-columns:1fr 1fr}
+  .srow{grid-template-columns:110px 1fr}
+  .srow .v{grid-column:2;text-align:left;margin-top:-10px}
+  .photo-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}
+  .pg1{grid-column:span 2;grid-row:span 2}
+  .pg2,.pg3,.pg4,.pg5,.pg6{grid-column:span 1;grid-row:span 1}
+  .photo-grid .pg6{grid-column:span 2}
+  .grade{flex-direction:column}
+  .grade div{border-left:0;border-top:1px solid var(--char)}
+  .grade div:first-child{border-top:0}
+  .rewrite{grid-template-columns:1fr}
+  .rewrite .arrow{transform:rotate(90deg);justify-self:start}
+}
+@media (max-width:640px){
+  .sec-head{grid-template-columns:1fr}
+  .sec-head p{grid-column:1}
+  .sw-grid{grid-template-columns:1fr}
+  .sw.wide{grid-column:auto}
+  .ge-grid{grid-template-columns:1fr}
+  .voice-words{grid-template-columns:1fr 1fr}
+  .social-grid{grid-template-columns:1fr}
+  .social-grid .post-wrap:last-child{max-width:300px}
+  .rules{grid-template-columns:1fr}
+  .marks{gap:12px}
+  .mk.a{width:96px;height:96px}
+  .u-steps .cols{grid-template-columns:1fr}
+  .field{flex-direction:column}
+  .field input{flex:none}
+  .prop span{font-size:0;padding:0}
+  .tile{padding:22px;min-height:220px}
+  .tile.t-photo{padding:0;min-height:260px}
+  .t-photo .in{padding:22px}
+  .tile .cap{flex-direction:column;gap:6px}
+  .pat-word{font-size:56px}
+  .srow{grid-template-columns:1fr;gap:6px;padding:16px 18px}
+  .srow .v{grid-column:1;margin-top:0}
+  .srow .s{white-space:normal;overflow:visible}
+  .srow:nth-child(-n+3) .s.disp{font-size:44px!important}
+  .bit{width:100%}
+  .sbar-demo{padding:10px;gap:10px}
+  .sbar-demo .btn{padding:0 12px;font-size:14px}
+  .sbar-demo .t b{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mark" viewBox="0 0 32 40"><path d="M16 1.5c3.6 4.3 6 7.6 6 11.2 0 3.4-2.7 6-6 6s-6-2.6-6-6c0-3.6 2.4-6.9 6-11.2z" style="fill:var(--m-flame,#FF9A1F)"/><rect x="8" y="21" width="16" height="3" style="fill:var(--m-stand,#F4EEE4)"/><rect x="13.5" y="24" width="5" height="11" style="fill:var(--m-stand,#F4EEE4)"/><rect x="6" y="35" width="20" height="4" style="fill:var(--m-stand,#F4EEE4)"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <b>Lampstand Church</b>
+    <span>Brand board &nbsp;·&nbsp; Genesis Ministry, Bold &amp; Dark look</span>
+    <span class="tag">Template preview</span>
+  </div>
+</header>
+
+<main>
+<!-- ============ COVER ============ -->
+<section class="cover" aria-labelledby="cover-title">
+  <div class="wrap cover-grid">
+    <div>
+      <p class="label">Brand board, version 1, November 2026</p>
+      <h1 class="sr-only" id="cover-title">Lampstand Church brand board</h1>
+      <div class="lock-h" aria-hidden="true"><svg viewBox="0 0 32 40"><use href="#mark"/></svg><span class="wm">Lampstand</span></div>
+      <p class="tagline">Light for the city.</p>
+      <p class="muted" style="max-width:36em;margin:18px 0 0">A worship-led church in the Short North, Columbus, Ohio. Bold, warm and wide awake. This board sets the look and the voice so every page, post and slide feels like the same church.</p>
+      <ul class="facts">
+        <li><b>Sundays</b>10 AM &amp; 6 PM</li>
+        <li><b>Where</b>1180 Foundry Row, Columbus</li>
+        <li><b>Lead pastors</b>Andre and Talia</li>
+        <li><b>Audience</b>Students, young adults, young families</li>
+      </ul>
+    </div>
+    <div class="frame"><div class="ph"><img src="photos/hero-hands-amber.jpg" alt="A crowd worshipping with hands raised under warm amber stage light"></div></div>
+  </div>
+</section>
+
+<!-- ============ 01 LOGO ============ -->
+<section class="sec" aria-labelledby="logo-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">01</span><h2 id="logo-title">Logo lockups</h2><p>A lampstand drawn from four bars and one flame, set beside a heavy condensed wordmark. The flame is always Flare. The stand is always the text color of the ground it sits on.</p></div>
+    <div class="logo-grid">
+      <div class="tile t-primary">
+        <div class="stage"><div class="lock-h"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg><span class="wm">Lampstand</span></div></div>
+        <p class="cap"><span>Primary wordmark</span><span>Header, footer, slides</span></p>
+      </div>
+      <div class="tile t-stack">
+        <div class="stage"><div class="lock-v"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg><span class="wm">Lampstand</span><span class="sub">Columbus</span></div></div>
+        <p class="cap"><span>Stacked lockup</span><span>Merch, signs, video end card</span></p>
+      </div>
+      <div class="tile t-marks">
+        <div class="marks">
+          <span class="mk a" style="--m-flame:#14110E;--m-stand:#14110E"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg></span>
+          <span class="mk b"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg></span>
+          <span class="mk c" style="--m-stand:#14110E"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg></span>
+          <span class="mk d"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg></span>
+        </div>
+        <p class="cap"><span>Small mark</span><span>Avatar, app icon, favicon</span></p>
+      </div>
+      <div class="tile t-photo">
+        <div class="ph"><img src="photos/worship-crowd-faces.jpg" alt="Young adults singing at a Sunday night gathering, used here behind the logo"></div>
+        <div class="shade" aria-hidden="true"></div>
+        <div class="in">
+          <div class="lock-h"><svg viewBox="0 0 32 40" aria-hidden="true"><use href="#mark"/></svg><span class="wm">Lampstand</span></div>
+          <p class="cap" style="margin:0"><span>On photography</span><span>Always over a dark shade</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="rules">
+      <div class="rule-card"><h4>Clear space</h4><p>Keep space equal to the flame height on every side of the lockup.</p></div>
+      <div class="rule-card"><h4>Minimum size</h4><p>Wordmark 120px wide on screens. Mark alone 24px tall.</p></div>
+      <div class="rule-card no"><h4>Never</h4><p>Stretch, outline, add glow or drop shadow, or set the wordmark in Flare.</p></div>
+      <div class="rule-card no"><h4>Never</h4><p>Place it on a busy photo without a shade, or on the Vesper violet at small sizes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 COLOR ============ -->
+<section class="sec" aria-labelledby="color-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">02</span><h2 id="color-title">Color</h2><p>A warm near-black ground, bone white words and one flame of Flare. Vesper violet shows up once per page at most. Contrast ratios use the WCAG 2 formula; every text pair clears 4.5 to 1.</p></div>
+    <div class="sw-grid">
+      <div class="sw wide"><div class="chip" style="background:#14110E;color:#F4EEE4;border-bottom:1px solid var(--char)">Kiln</div><div class="meta"><b>Kiln</b><span class="hex">#14110E</span><p>The ground. Page background, header, footer. Warm, never pure black.</p><div class="ratio"><i style="background:#F4EEE4"></i>Bone text on Kiln: 16.30 to 1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1F1A16;color:#F4EEE4">Soot</div><div class="meta"><b>Soot</b><span class="hex">#1F1A16</span><p>Raised ground for reviews, menus, chat and cards.</p><div class="ratio"><i style="background:#F4EEE4"></i>Bone on Soot: 14.94 to 1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F4EEE4;color:#14110E">Bone</div><div class="meta"><b>Bone</b><span class="hex">#F4EEE4</span><p>All headlines and body text. The chat circle.</p><div class="ratio"><i style="background:#14110E"></i>Kiln on Bone: 16.30 to 1</div></div></div>
+      <div class="sw wide"><div class="chip" style="background:#FF9A1F;color:#14110E">Flare</div><div class="meta"><b>Flare</b><span class="hex">#FF9A1F</span><p>The one accent. Primary buttons, the changing hero word, label marks, the next steps band. Flat, never glowing, never a gradient.</p><div class="ratio"><i style="background:#14110E"></i>Kiln text on Flare: 8.86 to 1. Flare text on Kiln: 8.86 to 1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B8AD9E;color:#14110E">Ash</div><div class="meta"><b>Ash</b><span class="hex">#B8AD9E</span><p>Quiet text: paragraphs under headlines, captions, notes.</p><div class="ratio"><i style="background:#14110E"></i>Ash on Kiln: 8.52 to 1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2B2150;color:#F4EEE4">Vesper</div><div class="meta"><b>Vesper</b><span class="hex">#2B2150</span><p>Deep violet, used sparingly: the announcement bar only.</p><div class="ratio"><i style="background:#F4EEE4"></i>Bone on Vesper: 12.67 to 1</div></div></div>
+      <div class="sw wide"><div class="chip" style="background:#4A2E0A;color:#FF9A1F">Umber</div><div class="meta"><b>Umber</b><span class="hex">#4A2E0A</span><p>Quiet text on the Flare band, so titles stay loudest.</p><div class="ratio"><i style="background:#FF9A1F"></i>Umber on Flare: 5.87 to 1</div></div></div>
+      <div class="sw wide"><div class="chip" style="background:#3A332C;color:#F4EEE4">Char</div><div class="meta"><b>Char</b><span class="hex">#3A332C</span><p>Rules and borders only. Never used for text.</p><div class="ratio"><i style="background:#3A332C"></i>Lines only: 1.51 to 1 on Kiln</div></div></div>
+    </div>
+    <div class="prop" role="img" aria-label="Color proportion: Kiln 62 percent, Soot 14, Bone 10, Flare 8, Ash 3, Vesper 2, Char 1">
+      <span style="flex:62;background:#14110E;color:#B8AD9E">Kiln 62%</span>
+      <span style="flex:14;background:#1F1A16;color:#B8AD9E;border-left:1px solid #3A332C">Soot 14%</span>
+      <span style="flex:10;background:#F4EEE4;color:#14110E">Bone 10%</span>
+      <span style="flex:8;background:#FF9A1F;color:#14110E">Flare 8%</span>
+      <span style="flex:3;background:#B8AD9E"></span>
+      <span style="flex:2;background:#2B2150"></span>
+      <span style="flex:1;background:#3A332C"></span>
+    </div>
+    <p class="prop-cap"><span>Rough share of a typical page.</span><span>Ash 3%, Vesper 2%, Char 1%</span></p>
+  </div>
+</section>
+
+<!-- ============ 03 TYPE ============ -->
+<section class="sec" aria-labelledby="type-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">03</span><h2 id="type-title">Typography</h2><p>Big Shoulders Display, Black, set in caps for headlines that fill the room. Instrument Sans for everything you read. Headlines are written in sentence case and the display style sets them in caps.</p></div>
+    <div class="type-grid">
+      <div class="spec">
+        <p class="label">Display</p>
+        <p class="disp big" style="text-transform:none">Aa</p>
+        <p class="glyphs" style="font-family:var(--display);font-weight:800">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 &amp;.,?</p>
+        <div class="name"><b>Big Shoulders Display</b><span>Weights 700, 800, 900. Tracking 0 to minus 1%</span></div>
+      </div>
+      <div class="spec">
+        <p class="label">Body</p>
+        <p class="big" style="font:600 clamp(120px,14vw,200px)/.8 var(--body);margin:6px 0 18px">Aa</p>
+        <p class="glyphs">ABCDEFGHIJKLM nopqrstuvwxyz 0123456789 &amp; (@?!)</p>
+        <div class="name"><b>Instrument Sans</b><span>Weights 400, 500, 600, 700. Body 17px, line height 1.6</span></div>
+      </div>
+      <div class="scale">
+        <div class="srow"><span class="k">Hero</span><span class="s disp" style="font-size:clamp(56px,7vw,104px);line-height:.84">Light for the <span class="hl">city.</span></span><span class="v">212 / 0.84, Black</span></div>
+        <div class="srow"><span class="k">Title</span><span class="s disp" style="font-size:clamp(40px,4.6vw,72px)">Find your place</span><span class="v">116 / 0.88, Black</span></div>
+        <div class="srow"><span class="k">Title small</span><span class="s disp" style="font-size:clamp(32px,3.4vw,50px)">Get the Lampstand weekly</span><span class="v">70 / 0.90, Black</span></div>
+        <div class="srow"><span class="k">Card title</span><span class="s disp" style="font-size:34px">Plan your visit</span><span class="v">40 / 0.95, Black</span></div>
+        <div class="srow"><span class="k">Lead</span><span class="s" style="font-size:19.5px;color:var(--ash)">Three simple ways in. Pick one and we will take it from there.</span><span class="v">19.5 / 1.55, Regular</span></div>
+        <div class="srow"><span class="k">Body</span><span class="s" style="font-size:17px">They started Lampstand in a borrowed living room with eleven people.</span><span class="v">17 / 1.6, Regular</span></div>
+        <div class="srow"><span class="k">Label</span><span class="s"><span class="label" style="margin:0">Start somewhere</span></span><span class="v">12.5, 600, caps, +16%</span></div>
+      </div>
+      <div class="sample">
+        <div>
+          <p class="label">Sample setting</p>
+          <p class="disp">Every voice <span class="hl">belongs</span> in the room.</p>
+        </div>
+        <div>
+          <p>Sing loud, sit in the back, bring your questions. There is room for all of it here. Sundays at 10 AM and 6 PM on Foundry Row.</p>
+          <a class="tlink" href="#ui-title">Plan my first Sunday <span class="arw" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 PHOTOGRAPHY ============ -->
+<section class="sec" aria-labelledby="photo-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">04</span><h2 id="photo-title">Photography</h2><p>Shoot it like a live record, not a catalog. Warm stage light, real faces mid-moment, deep shadows with amber highlights. Groups over portraits.</p></div>
+    <div class="photo-grid">
+      <figure class="pg1"><div class="ph"><img src="photos/worship-crowd-faces.jpg" alt="Young adults singing with hands raised, faces lit warm" loading="lazy"></div><figcaption>Worship, faces lit</figcaption></figure>
+      <figure class="pg2"><div class="ph"><img src="photos/baptism-tank.jpg" alt="A baptism with friends cheering in warm light" loading="lazy"></div><figcaption>Big moments</figcaption></figure>
+      <figure class="pg3"><div class="ph"><img src="photos/prayer-circle-stage-lights.jpg" alt="Friends praying over a woman with a hand on her shoulder" loading="lazy" style="object-position:50% 48%"></div><figcaption>Prayer</figcaption></figure>
+      <figure class="pg4"><div class="ph"><img src="photos/candle-flame.jpg" alt="A single candle flame on black" loading="lazy" style="object-position:38% center"></div><figcaption>Texture</figcaption></figure>
+      <figure class="pg5"><div class="ph"><img src="photos/young-adults-sparklers.jpg" alt="Young adults laughing with sparklers at night" loading="lazy"></div><figcaption>Life together</figcaption></figure>
+      <figure class="pg6"><div class="ph"><img src="photos/greeting-hug-stage-lights.jpg" alt="Two friends sharing a long hug by the stage after a gathering" loading="lazy" style="object-position:50% 52%"></div><figcaption>Welcome</figcaption></figure>
+    </div>
+    <div class="grade">
+      <div><b>Light</b>Warm tungsten and stage light. Let highlights go amber.</div>
+      <div><b>Shadow</b>Deep and warm. Crush blacks toward Kiln, not blue.</div>
+      <div><b>Color</b>Slightly lower saturation, a touch more contrast.</div>
+      <div><b>Crop</b>Tight and wide. Leave dark space for type on one side.</div>
+    </div>
+    <div class="dodont">
+      <div class="dd do"><h4><i aria-hidden="true">+</i>Do</h4><ul>
+        <li>Real people mid-moment: singing, laughing, praying, serving.</li>
+        <li>Shoot from the crowd and the side of the stage, not only the back.</li>
+        <li>Adults and students as the main subject. Kids only in groups.</li>
+        <li>Keep one dark side in the frame so headlines can sit there.</li>
+        <li>Ask before posting close faces. Keep a no-photo lanyard option.</li>
+      </ul></div>
+      <div class="dd no"><h4><i aria-hidden="true">&#215;</i>Avoid</h4><ul>
+        <li>Cold blue or green LED washes and heavy haze that hides faces.</li>
+        <li>Posed lineups, stock smiles and empty-room shots.</li>
+        <li>Single-child close-ups or readable name tags on kids.</li>
+        <li>Readable logos, other church names, alcohol or brands.</li>
+        <li>Neon glows, lens-flare filters and heavy presets.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 GRAPHIC ELEMENTS ============ -->
+<section class="sec" aria-labelledby="ge-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">05</span><h2 id="ge-title">Graphic elements</h2><p>A small kit borrowed from the stage and the camera: a line that strikes like a light switching on, viewfinder corners, numbered markers and a reel line. Patterns stay in the background.</p></div>
+    <div class="ge-grid">
+      <div class="ge"><div class="stage"><div class="strike-demo"><div class="bar"></div><h5>Start here</h5></div></div><div class="txt"><b>The strike</b><p>A Flare line draws across a column, then settles to a short mark. Used on next steps, rows and labels.</p></div></div>
+      <div class="ge"><div class="stage"><div class="vf frame"><div class="ph"><img src="photos/pastors-couple-laughing.jpg" alt="The lead pastors laughing together, framed by viewfinder corners" loading="lazy" style="object-position:50% 12%"></div></div></div><div class="txt"><b>Viewfinder corners</b><p>Two Flare corners frame a key photo, once or twice per page. Never on every image.</p></div></div>
+      <div class="ge"><div class="stage"><div class="nums" aria-hidden="true"><span>01</span><span>02</span><span>03</span></div></div><div class="txt"><b>Numbered markers</b><p>Square number chips in the display face for cards, steps and carousel slides.</p></div></div>
+      <div class="ge"><div class="stage"><div class="reel"><div class="row"><i></i>Sunday nights at 6</div><span class="playtile" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z" fill="currentColor"/></svg></span></div></div><div class="txt"><b>Reel line and play tile</b><p>Video first. A thin progress line and a square Flare play tile mark anything that plays.</p></div></div>
+      <div class="ge"><div class="stage pat-rays"><span class="pat-word" aria-hidden="true">Lamps on</span></div><div class="txt"><b>Pattern: light rays</b><p>Thin Flare rays at low strength from one corner. For series art and story backgrounds.</p></div></div>
+      <div class="ge"><div class="stage pat-lamps"></div><div class="txt"><b>Pattern: lamp grid</b><p>The mark repeated small and quiet. For merch, slide backgrounds and print edges.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 UI ============ -->
+<section class="sec" aria-labelledby="ui-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">06</span><h2 id="ui-title">Buttons and UI</h2><p>Sharp corners at 2px. One filled Flare button per view, outline for the rest. Arrows only on primary buttons and text links. Nothing glows; the light stays inside the button.</p></div>
+    <div class="ui-grid">
+      <div class="ui u-btns">
+        <h4>Buttons</h4>
+        <div class="brow"><a class="btn btn-primary" href="#ui-title">Plan Your Visit <span class="arw" aria-hidden="true">→</span></a><a class="btn btn-outline" href="#ui-title">Get Directions</a></div>
+        <div class="brow"><a class="btn btn-primary btn-sm" href="#ui-title" style="animation:none">Join <span class="arw" aria-hidden="true">→</span></a><a class="btn btn-outline btn-sm" href="#ui-title">All Messages</a><a class="tlink" href="#ui-title">Ask about baptism <span class="arw" aria-hidden="true">→</span></a></div>
+        <p class="note">Primary: Flare fill, Kiln text, a sheen sweeps across once on arrival and a soft light follows the cursor. Outline: Bone at 55% border. Height 52px, small 44px. Title Case labels.</p>
+      </div>
+      <div class="ui u-form">
+        <h4>Form field</h4>
+        <label class="lbl" for="bb-email">Email address</label>
+        <div class="field"><input id="bb-email" type="email" placeholder="you@example.com"><a class="btn btn-primary" href="#ui-title" style="animation:none">Join <span class="arw" aria-hidden="true">→</span></a></div>
+        <div class="err" style="margin-top:18px"><div class="field"><input type="text" value="jordan@" aria-label="Email address with an error"></div><p class="errmsg">Please enter an email address like you@example.com.</p></div>
+      </div>
+      <div class="ui u-steps">
+        <h4>Next steps on the Flare band (hover one)</h4>
+        <div class="cols">
+          <a class="st" href="#ui-title"><b>Start here</b><span>Lunch with the pastors. One hour, and you will know where you fit.</span></a>
+          <a class="st" href="#ui-title"><b>Small groups</b><span>Living rooms all over the city, every night of the week.</span></a>
+          <a class="st" href="#ui-title"><b>Events</b><span>Night worship, serve days and summer camp.</span></a>
+          <a class="st demo" href="#ui-title"><b>Need prayer</b><span>Tell us what is heavy. Our prayer team prays that same day.</span></a>
+        </div>
+      </div>
+      <div class="ui u-rows">
+        <h4>Numbered rows</h4>
+        <div class="nrow"><span class="n">01</span><div><b>How long</b><p>About 75 minutes. Coffee before and after.</p></div></div>
+        <div class="nrow"><span class="n">02</span><div><b>Parking</b><p>Free lot behind the building, greeters at the door.</p></div></div>
+        <div class="nrow"><span class="n">03</span><div><b>Kids</b><p>Check in at the kids desk inside the main doors.</p></div></div>
+      </div>
+      <div class="ui u-bits">
+        <h4>Small parts</h4>
+        <div class="bits">
+          <div class="bit"><small>Label</small><p class="label" style="margin:0">Latest message</p></div>
+          <div class="bit"><small>Tags</small><div style="display:flex;gap:10px;align-items:center"><span class="ann">Announcement</span><span class="tag">Template preview</span></div></div>
+          <div class="bit"><small>Pulse play</small><span class="pulse" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7-12 7z" fill="#14110E"/></svg></span></div>
+          <div class="bit"><small>Chat circle</small><span class="fab" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg><span class="dot"></span></span></div>
+          <div class="bit"><small>Menu item</small><div class="menu-demo"><div>Plan Your Visit<small>What to expect on Sunday.</small></div><div class="on">Small Groups<small>Living rooms all over the city.</small></div></div></div>
+          <div class="bit"><small>Phone Sundays bar</small><div class="sbar-demo"><span class="t"><small>Sundays</small><b>10 AM &amp; 6 PM</b></span><a class="btn btn-primary" href="#ui-title">Plan Your Visit</a></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 VOICE ============ -->
+<section class="sec" aria-labelledby="voice-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">07</span><h2 id="voice-title">Voice and tone</h2><p>We sound like a friend who spots you across a loud room and waves you over. Short sentences. Plain words. Loud about Jesus, calm about everything else. No em dashes, no emojis.</p></div>
+    <div class="voice-words">
+      <div class="vw"><b>Awake</b><p>Energy without hype. We sound like Sunday night, not a sales pitch.</p></div>
+      <div class="vw"><b>Honest</b><p>We say the real thing, including what we are still figuring out.</p></div>
+      <div class="vw"><b>Warm</b><p>Every line should feel like a hand on the shoulder.</p></div>
+      <div class="vw"><b>Clear</b><p>When, where, what next. Always in the first few lines.</p></div>
+      <div class="vw"><b>Brave</b><p>We invite people to big steps: baptism, serving, leading.</p></div>
+    </div>
+    <div class="say">
+      <div class="col yes"><h4>We say</h4><ul>
+        <li>The lamp is lit and the door is open. Come loud or come quiet.<em>Welcome that sounds like a person.</em></li>
+        <li>Sundays 10 AM and 6 PM, 1180 Foundry Row.<em>Times and place, plainly.</em></li>
+        <li>Bring your questions. Bring a friend.<em>Short, two-beat invitations.</em></li>
+        <li>Here is what to expect.<em>Take the guesswork out.</em></li>
+        <li>We would love to pray with you.<em>Personal, never pushy.</em></li>
+      </ul></div>
+      <div class="col no"><h4>We avoid</h4><ul>
+        <li>Church words like fellowship opportunities or corporate worship.</li>
+        <li>Hype like epic, insane or life-changing in every post.</li>
+        <li>Guilt and pressure: you should, do not miss out.</li>
+        <li>Body copy in all caps, em dashes and emojis.</li>
+        <li>Insider names for rooms and teams nobody new would know.</li>
+      </ul></div>
+    </div>
+    <div class="rewrite">
+      <p class="b" style="margin:0"><small>Before</small>Join us this Lord's Day for a time of corporate worship and fellowship.</p>
+      <span class="arrow" aria-hidden="true">→</span>
+      <p class="a" style="margin:0"><small>After</small>Come sing with us Sunday. Coffee is on us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 SOCIAL ============ -->
+<section class="sec" aria-labelledby="social-title">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num" aria-hidden="true">08</span><h2 id="social-title">Social posts</h2><p>Three square posts and one story, built from the same kit: one photo or one color, one big caps line, the mark in a corner. Built in HTML for this board; the team rebuilds them in Canva from the same specs.</p></div>
+    <div class="social-grid">
+      <figure class="post-wrap">
+        <div class="post p1" role="img" aria-label="Square post: Sunday nights, 6 PM, at 1180 Foundry Row, over a photo of worship with hands raised">
+          <div class="bg"><img src="photos/hero-hands-amber.jpg" alt=""></div><div class="shade"></div>
+          <div class="mark"><svg viewBox="0 0 32 40"><use href="#mark"/></svg><span>Lampstand</span></div>
+          <div class="copy"><div class="k">This Sunday</div><h3>Sunday<br>nights. <span>6 PM.</span></h3><div class="addr">1180 Foundry Row, Short North</div></div>
+        </div>
+        <figcaption><b>Weekly invite</b>Square, posted Thursday. Photo plus one line.</figcaption>
+      </figure>
+      <figure class="post-wrap">
+        <div class="post p2" role="img" aria-label="Square quote card: Your light was never meant for a drawer. Talia, Lamps On part 3">
+          <div class="q"><span class="qm">&#8220;</span><blockquote>Your light was never meant for a <span>drawer.</span></blockquote></div>
+          <div class="strike"></div>
+          <div class="by"><b>Talia</b>Lamps On, part 3</div>
+          <div class="mark"><svg viewBox="0 0 32 40"><use href="#mark"/></svg><span class="wm">Lampstand</span></div>
+        </div>
+        <figcaption><b>Quote card</b>Square, posted Tuesday from Sunday's message.</figcaption>
+      </figure>
+      <figure class="post-wrap">
+        <div class="post p3" role="img" aria-label="Square carousel cover on Flare: 5 things to know before your first Sunday, swipe">
+          <h3>5 things to know before your first Sunday</h3>
+          <span class="count">1/6</span>
+          <div class="inset"><img src="photos/welcome-doors.jpg" alt=""></div>
+          <div class="swipe">Swipe <i></i></div>
+        </div>
+        <figcaption><b>Carousel cover</b>Square, six slides. Saved and shared most.</figcaption>
+      </figure>
+      <figure class="post-wrap">
+        <div class="post story p4" role="img" aria-label="Story: Baptism Sunday, December 6, 10 AM and 6 PM, with a poll asking ready to go public">
+          <div class="bg"><img src="photos/baptism-tank.jpg" alt=""></div><div class="shade"></div>
+          <div class="mark"><svg viewBox="0 0 32 40"><use href="#mark"/></svg><span>Lampstand</span></div>
+          <div class="copy"><div class="k">Sunday, December 6</div><h3>Baptism Sunday</h3><div class="when">10 AM &amp; 6 PM</div></div>
+          <div class="poll"><b>Ready to go public?</b><div class="opts"><span>Yes, sign me up</span><span>Tell me more</span></div></div>
+          <div class="link">Tap the link to sign up</div>
+        </div>
+        <figcaption><b>Story with poll</b>9 by 16, posted the week before.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Lampstand Church is a fictional demo church for the Genesis Ministry Bold &amp; Dark template.</span>
+    <span>Photos: Unsplash License, credits in photos/CREDITS.md. Fonts: Google Fonts.</span>
+  </div>
+</footer>
+</body>
+</html>

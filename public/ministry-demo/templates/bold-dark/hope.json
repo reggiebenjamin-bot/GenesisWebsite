@@ -1,0 +1,51 @@
+{
+  "look": "Bold & Dark",
+  "church": {
+    "name": "Lampstand Church",
+    "short": "Lampstand",
+    "city": "Columbus, Ohio",
+    "address": "1180 Foundry Row in the Short North",
+    "phone": "(614) 555-0142",
+    "times": "every Sunday at 10 AM and 6 PM",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=Columbus%2C+Ohio",
+    "pastors": "Andre and Talia lead Lampstand together. They started it in a borrowed living room in 2019 with eleven people and a guitar. Talia is teaching our Lamps On series right now, and you will usually find them both by the stage after the 6 PM gathering.",
+    "kids": "Yes. Lampstand Kids runs during the 10 AM gathering, from nursery through fifth grade. Check in at the kids desk just inside the main doors. Every leader is background checked, and the room is safe, happy and a little loud, like the rest of us.",
+    "students": "Middle and high school students meet Sundays at 6. They sit together at the night gathering, then hang out after with leaders who know their names. College students and twentysomethings have their own crew too.",
+    "groups": "Small groups meet in living rooms all over Columbus, every night of the week. Find one near you and come as you are. It is how a big, loud room starts to feel like family.",
+    "startHere": "So glad you found us. Come on a Sunday, at 10 AM or 6 PM, and follow the amber flags. We will meet you at the door and point you to the coffee. After a visit or two, come to Start Here: one hour of lunch with Andre and Talia, and you will know where you fit.",
+    "give": "You can give online in about a minute, once or every month. Every gift keeps the lights on, stocks our Thursday pantry and helps us buy the Foundry, our first permanent home.",
+    "watch": "Every message is on YouTube after Sunday, and the 6 PM gathering streams live each week. The latest is Shine where you are, part 3 of Lamps On, with Pastor Talia.",
+    "prayer": "We would be honored to pray with you. Tell us what is heavy, and our prayer team will pray for you that same day. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "values": "Nobody lights a lamp to hide it. We worship loud, teach honestly and keep room for every voice, then carry that light into every corner of Columbus."
+  },
+  "brand": {
+    "accent": "#FF9A1F",
+    "accentInk": "#14110E",
+    "ink": "#F4EEE4",
+    "surface": "#1F1A16",
+    "surface2": "#29231D",
+    "line": "#554B41",
+    "font": "\"Instrument Sans\", system-ui, -apple-system, \"Segoe UI\", sans-serif",
+    "radius": "2px"
+  },
+  "selectors": {
+    "hero": "section.hero",
+    "announce": "section.announce",
+    "pastors": "#about .grid",
+    "nextSteps": "#visit .cards",
+    "strip": "#strip",
+    "message": "#watch .msg-grid",
+    "reviews": ".reviews .rv-grid",
+    "newsletter": ".news .news-grid",
+    "footer": "#footer .f-times"
+  },
+  "links": {
+    "brandBoard": "brand-board.html",
+    "socialPlan": "social-plan.html"
+  },
+  "removeSelectors": ["#chat-fab", "#chat", ".sb-chat"],
+  "bottomOffset": 68,
+  "pages": {
+    "index.html": {}
+  }
+}

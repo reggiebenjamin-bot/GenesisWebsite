@@ -1,0 +1,247 @@
+/* Copied from the Genesis OS repo (v2/refine/deals.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: deals.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ===== Data type =========================================================
+ * Deal data sat at 8.5 to 10.5px under 12 to 13px controls, so the chrome
+ * outread the records. Data text is 12 to 13px here; uppercase letter-spaced
+ * labels stay at 11px. Fixed table columns truncate more at this size, which
+ * is why every truncating cell carries its full value in a title. */
+.v2-deals-page .v2-badge,.v2-deal-drawer .v2-badge,.v2-deal-record-page .v2-badge,.v2-deal-legacy-page .v2-badge{font-size:11px}
+.v2-deal-pulse .v2-pulse-item small{font-size:11px}
+/* The serif roles are set here at their shared sizes because the older
+ * component rules (.v2-pulse-item b, .v2-next-move h2, .v2-drawer-title h2,
+ * .v2-deal-recommended h2) are more specific than the role classes. */
+.v2-deal-pulse .v2-pulse-item b.v2-serif-number{margin:8px 0 4px;font-size:30px;line-height:1;letter-spacing:-.01em}
+.v2-deal-next h2.v2-serif-headline{font-size:24px;line-height:1.2;letter-spacing:-.01em}
+@media(max-width:860px){.v2-deal-pulse .v2-pulse-item b.v2-serif-number{font-size:28px}.v2-deal-next h2.v2-serif-headline{font-size:21px}}
+.v2-deal-pulse .v2-pulse-item span{font-size:12px}
+.v2-deal-list .v2-table-meta{font-size:12px}
+/* Headers fit whole at every desktop width: the table keeps a floor width and
+ * scrolls inside .v2-table-scroll below it, so the ellipsis is only a guard. */
+.v2-deal-table{min-width:860px}
+.v2-deal-table th{overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.v2-deal-table .v2-primary-cell b{font-size:13px}
+.v2-deal-table .v2-primary-cell span{font-size:12px}
+.v2-deal-attention b,.v2-deal-next-cell b,.v2-deal-owner b,.v2-deal-commit b,.v2-deal-economics b{font-size:12px}
+.v2-deal-attention small,.v2-deal-next-cell small,.v2-deal-owner small,.v2-deal-commit small,.v2-deal-economics small{font-size:12px}
+/* The cells people read as phrases, the deal, its next move and the
+ * commitment, wrap to a second line before they cut off; stage badges never
+ * break mid-name. */
+.v2-deal-table .v2-primary-cell b,.v2-deal-next-cell b,.v2-deal-commit b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.3;white-space:normal}
+.v2-deal-table .v2-badge{white-space:nowrap}
+/* The short explanatory line under a value ("No commitment date", "Execution
+ * · Unassigned") may take a second line too. Rows are already two title lines
+ * tall, so this fills that height instead of cutting fixed copy. */
+.v2-deal-attention small,.v2-deal-owner small,.v2-deal-commit small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.3;white-space:normal;overflow-wrap:anywhere}
+.v2-deal-table th:nth-child(1){width:18%}.v2-deal-table th:nth-child(2){width:14%}.v2-deal-table th:nth-child(3){width:13%}.v2-deal-table th:nth-child(4){width:18%}.v2-deal-table th:nth-child(5){width:12%}.v2-deal-table th:nth-child(6){width:13%}.v2-deal-table th:nth-child(7){width:12%}
+.v2-deal-economics.is-empty b{color:var(--v2-muted);font-weight:500}
+
+/* The title link is the row's control for keyboards and screen readers. Its
+ * ring sits inside the cell padding, so the scroll container cannot clip it. */
+.v2-deal-row-link{display:block;min-width:0;border-radius:4px;color:inherit;text-decoration:none}
+.v2-deal-row-link:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px}
+.v2-deal-table tbody tr:focus-within{background:var(--v2-surface-2)}
+
+/* Repaints after a sort, filter or search are not arrivals: badges and the
+ * open filter panel stay put. */
+.v2-main:not(.v2-page-enter) .v2-deals-page :is(.v2-badge,.v2-pill,.v2-filter-panel){animation:none}
+
+/* ===== Header actions ====================================================
+ * "Other deal systems" is quiet, opens clear of its summary at every
+ * density, and says which links stay in Genesis and which leave. */
+.v2-deal-bridges[open]>summary{border-color:var(--v2-border-strong);background:var(--v2-surface-2);color:var(--v2-text)}
+.v2-deal-bridges>div{top:calc(100% + 6px);width:236px}
+.v2-deal-bridges>div a{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
+.v2-deal-bridges>div a .v2-icon{width:13px;height:13px;flex:none;color:var(--v2-muted)}
+.v2-deal-bridges-label{padding:7px 9px 3px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.v2-deal-bridges>div a+.v2-deal-bridges-label{margin-top:5px;padding-top:9px;border-top:1px solid var(--v2-border)}
+@media(max-width:860px){.v2-deal-bridges>div{width:min(236px,calc(100vw - 32px))}}
+
+/* ===== Pipeline ==========================================================
+ * Six open stages in lifecycle order, three to a row, with the closed deals
+ * one step away underneath instead of two columns that always read 0. */
+.v2-deals-page .v2-deal-pipeline{grid-template-columns:repeat(3,minmax(0,1fr))}
+.v2-deal-pipeline-foot{display:flex;justify-content:flex-end;margin-top:10px}
+.v2-deal-pipeline-foot .v2-icon{width:14px;height:14px}
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-group>summary>span>b{font-size:13px}
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-group>summary>small{font-size:12px}
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-card b{font-size:13px}
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-card span,
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-card small,
+:is(.v2-deals-page,.v2-deal-legacy-page) .v2-stage-empty{font-size:12px}
+
+/* ===== Quick deal view ==================================================== */
+.v2-deal-drawer .v2-drawer-title h2.v2-serif-card{margin:5px 0 3px;font-size:22px;line-height:1.2;letter-spacing:-.005em}
+.v2-deal-drawer .v2-drawer-title p{font-size:12px}
+.v2-deal-drawer .v2-drawer-recommendation small{font-size:11px;text-transform:uppercase}
+.v2-deal-drawer .v2-drawer-recommendation b{font-size:13px}
+.v2-deal-drawer .v2-recommendation-reason{margin-top:-2px;font-size:12px}
+.v2-deal-drawer .v2-drawer-recommendation.is-outcome{border-left-color:var(--v2-border-strong);background:var(--v2-surface-2)}
+.v2-deal-quick-facts dt{font-size:11px}
+.v2-deal-quick-facts dd{font-size:13px}
+.v2-deal-quick-form-head>span{font-size:12px}
+.v2-deal-drawer .v2-field>span,.v2-deal-record-page .v2-field>span{font-size:11px}
+.v2-deal-drawer .v2-note-status,.v2-deal-drawer .v2-drawer-promotion span{font-size:12px}
+
+/* ===== Deal record ========================================================
+ * The record wears the shared page head under its way back. A closed deal
+ * leads with its outcome, which is not work in progress, so it has no gold
+ * edge. */
+.v2-deal-back+.v2-page-head{margin-top:12px}
+.v2-deal-recommended h2.v2-serif-card{margin:6px 0;font-size:22px;line-height:1.2;letter-spacing:-.005em}
+.v2-deal-recommended p{font-size:13px}
+.v2-deal-recommended.is-outcome::after{display:none}
+.v2-deal-record-page .v2-fact small{font-size:11px}
+.v2-deal-record-page .v2-fact b{font-size:13px}
+.v2-deal-record-page :is(.v2-muted-copy,.v2-state-inline,.v2-related-row),.v2-deal-full-save span{font-size:12px}
+.v2-deal-record-page .v2-muted-copy .v2-icon,.v2-deal-record-page .v2-full-card .v2-button .v2-icon{width:13px;height:13px}
+.v2-deal-legacy-page .v2-muted-copy{font-size:12px}
+/* A legacy board card is a link plus a stage select. The link's lines stack
+ * like the Pipeline view's cards instead of running together inline, and the
+ * select stays inside its column. */
+.v2-deal-legacy-page .v2-stage-card>a{min-width:0;display:grid;gap:3px;color:inherit;text-decoration:none}
+.v2-deal-legacy-page .v2-stage-card>a:hover b{text-decoration:underline;text-underline-offset:3px}
+.v2-deal-legacy-page .v2-stage-card>a :is(b,span,small){display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-deal-legacy-page .v2-stage-card>a span{color:var(--v2-text-2)}
+.v2-deal-legacy-page .v2-stage-card>a small{color:var(--v2-muted)}
+.v2-deal-legacy-page .v2-stage-card .v2-select{width:100%;min-width:0;margin-top:6px}
+/* The corner tip docks above the sticky save bar instead of covering the
+ * page's only visible Save. The bar sticks above .v2-main's 64px bottom
+ * padding and is 66px tall, so the tip clears it by 12px at 142px. Below
+ * 861px the bar is not sticky. */
+@media(min-width:861px){body:has(.v2-deal-full-save) .v2-tip{bottom:calc(64px + 66px + var(--v2-space-3))}}
+
+/* ===== 1023px and below ===================================================
+ * The view picker sits right under the title it controls, with no hairline
+ * of its own (the toolbar draws the one separator), at the toolbar's control
+ * height. */
+@media(max-width:1023px){
+  .v2-deals-page .v2-deal-view-picker{margin-bottom:14px;padding:0;border-bottom:0}
+  .v2-deals-page .v2-deal-view-picker .v2-select{min-height:36px}
+}
+@media(max-width:860px){
+  .v2-deal-next .v2-next-actions{grid-template-columns:1fr}
+  .v2-deal-toolbar>#v2-deal-sort{flex:1}
+  .v2-deals-page .v2-deal-pipeline{grid-template-columns:1fr}
+  .v2-mobile-deal-identity b{font-size:13px}
+  .v2-mobile-deal-why b,.v2-mobile-deal-next b{font-size:12px}
+  .v2-mobile-deal-identity small,.v2-mobile-deal-why small,.v2-mobile-deal-open{font-size:12px}
+  .v2-mobile-deal-next small{font-size:11px}
+}
+
+/* ===== Deal workflow ======================================================
+ * One deal, start to finish (deal-workflow.js): a step line from intake to
+ * closed, then the step's own panel. It sits above the record's form, because
+ * moving the deal forward is the reason to open it. The tabs are the card's
+ * own, not .v2-view-tabs, which phones hide in favour of the view picker. */
+.v2-deal-workflow-host:empty{display:none}
+.v2-deal-workflow-host{margin:14px 0}
+.v2-deal-flow{padding:20px 22px 22px;border-left:3px solid var(--v2-accent)}
+.v2-deal-flow-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.v2-deal-flow-head h2.v2-serif-card{margin:6px 0 4px;font-size:22px;line-height:1.2;letter-spacing:-.005em}
+.v2-deal-flow-head p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-deal-flow-head .v2-badge{flex:none;font-size:11px}
+
+.v2-deal-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:18px 0 4px;padding:0;list-style:none}
+.v2-deal-steps li{position:relative;display:grid;justify-items:center;gap:7px;color:var(--v2-muted);font-size:11px;font-weight:600;text-align:center}
+.v2-deal-steps li::before{content:"";position:absolute;top:5px;right:50%;left:-50%;height:2px;background:var(--v2-border)}
+.v2-deal-steps li:first-child::before{display:none}
+.v2-deal-steps li.is-done::before,.v2-deal-steps li.is-current::before{background:var(--v2-accent)}
+.v2-deal-step-dot{position:relative;z-index:1;width:12px;height:12px;border:2px solid var(--v2-border-strong);border-radius:50%;background:var(--v2-surface)}
+.v2-deal-steps li.is-done .v2-deal-step-dot{border-color:var(--v2-accent);background:var(--v2-accent)}
+.v2-deal-steps li.is-current .v2-deal-step-dot{border-color:var(--v2-accent);background:var(--v2-surface);box-shadow:0 0 0 4px rgba(var(--v2-accent-rgb),.18)}
+.v2-deal-steps li.is-done,.v2-deal-steps li.is-current{color:var(--v2-text)}
+
+.v2-deal-flow-tabs{display:flex;gap:2px;margin-top:16px;overflow-x:auto;border-bottom:1px solid var(--v2-border);scrollbar-width:none}
+.v2-deal-flow-tabs::-webkit-scrollbar{display:none}
+.v2-deal-flow-tabs button{min-width:max-content;min-height:38px;padding:8px 12px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--v2-muted);font:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:color var(--v2-motion-fast) var(--v2-ease-standard),border-color var(--v2-motion-fast) var(--v2-ease-standard)}
+.v2-deal-flow-tabs button:hover{color:var(--v2-text)}
+.v2-deal-flow-tabs button[aria-selected="true"]{border-bottom-color:var(--v2-accent);color:var(--v2-text)}
+.v2-deal-flow-tabs button:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px;border-radius:4px}
+.v2-deal-flow-panel{display:grid;gap:14px;padding-top:16px}
+
+.v2-flow-verdict{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--v2-border);border-left:3px solid var(--v2-border-strong);border-radius:var(--v2-radius-md);background:var(--v2-surface-2)}
+.v2-flow-verdict.is-workable{border-left-color:var(--v2-positive)}
+.v2-flow-verdict.is-no_exit{border-left-color:var(--v2-danger)}
+.v2-flow-verdict.is-not_yet{border-left-color:var(--v2-warning)}
+.v2-flow-verdict small{color:var(--v2-label);font-size:11px;font-weight:700;letter-spacing:var(--v2-caption-track);text-transform:uppercase}
+.v2-flow-verdict b.v2-serif-card{display:block;margin:4px 0;font-size:19px}
+.v2-flow-verdict p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-flow-verdict .v2-badge{flex:none}
+
+.v2-flow-form{display:grid;gap:12px}
+.v2-flow-form fieldset{min-width:0;margin:0;padding:0;border:0}
+.v2-flow-form legend{margin-bottom:8px;padding:0;color:var(--v2-text);font-size:13px;font-weight:600}
+.v2-deal-flow .v2-deal-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.v2-deal-flow .v2-field>span{font-size:11px}
+.v2-flow-required{color:var(--v2-accent-text);font-style:normal}
+.v2-flow-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.v2-flow-lede{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
+.v2-flow-note{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+.v2-flow-note.is-warning{color:var(--v2-warning)}
+
+.v2-flow-exits{min-width:560px}
+.v2-flow-exits th:nth-child(1){width:22%}.v2-flow-exits th:nth-child(2){width:17%}
+.v2-flow-exits th[scope="row"]{height:auto;color:var(--v2-text);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;white-space:nowrap}
+.v2-flow-exits td{height:auto;padding-top:10px;padding-bottom:10px}
+.v2-flow-exits td b{display:block;color:var(--v2-text);font-size:12px}
+.v2-flow-exits td small{display:block;margin-top:2px;color:var(--v2-muted);font-size:12px;line-height:1.45}
+.v2-flow-exits .v2-badge{font-size:11px;white-space:nowrap}
+.v2-deal-best{display:inline-block;margin-left:6px;padding:1px 7px;border:1px solid var(--v2-accent-border);border-radius:999px;background:var(--v2-accent-soft);color:var(--v2-accent-text);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;vertical-align:1px}
+
+.v2-flow-templates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.v2-flow-template{display:grid;align-content:start;gap:8px;padding:16px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-flow-template b.v2-serif-card{font-size:18px}
+.v2-flow-template p{margin:0;color:var(--v2-text-2);font-size:12px;line-height:1.5}
+.v2-flow-template .v2-button{justify-self:start;margin-top:4px}
+.v2-flow-offer-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.v2-flow-offer-head small{color:var(--v2-muted);font-size:12px}
+.v2-flow-offer-head b.v2-serif-card{display:block;margin-top:2px;font-size:19px}
+/* The exact text reads as the letter it is: paper in both themes, so the ink
+ * is fixed too rather than following the theme's light text. */
+.v2-flow-preview{overflow:hidden;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-document-paper,#f7f4ec)}
+.v2-flow-preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px;border-bottom:1px solid #e3dccb;color:#6f6858;font-size:11px;font-weight:700;letter-spacing:var(--v2-caption-track);text-transform:uppercase}
+.v2-flow-preview-head code{font-family:var(--v2-font-mono);font-size:11px;font-weight:500;letter-spacing:0;text-transform:none}
+.v2-flow-preview pre{max-height:360px;margin:0;padding:16px 18px;overflow:auto;color:#1f1b14;font-family:var(--v2-font-serif);font-size:14px;line-height:1.6;white-space:pre-wrap}
+
+.v2-flow-trail{display:grid;margin:0;padding:0;list-style:none}
+.v2-flow-trail li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 0;border-bottom:1px solid var(--v2-border)}
+.v2-flow-trail li:last-child{border-bottom:0}
+.v2-flow-trail b{color:var(--v2-text);font-size:13px}
+.v2-flow-trail span{grid-column:1;color:var(--v2-text-2);font-size:12px}
+.v2-flow-trail time{grid-column:2;grid-row:1;color:var(--v2-muted);font-size:12px;white-space:nowrap}
+
+/* ===== Revenue plans inside Deals ========================================
+ * The Deals view list takes a column, so until the page is wide enough for
+ * all five columns the plans list keeps the three people scan: the deal, its
+ * stage and the next leg to collect. Owner and exit are on the deal's panel. */
+@media(max-width:1500px){
+  .v2-plans-page .v2-mydeals-collection .v2-table :is(th,td):nth-child(2),
+  .v2-plans-page .v2-mydeals-collection .v2-table :is(th,td):nth-child(4){display:none}
+  .v2-plans-page .v2-mydeals-collection .v2-table th:nth-child(1){width:46%}
+  .v2-plans-page .v2-mydeals-collection .v2-table th:nth-child(3){width:24%}
+  .v2-plans-page .v2-mydeals-collection .v2-table th:nth-child(5){width:30%}
+}
+
+/* Where a deal is in the workflow, under its stage in the lists. */
+.v2-deal-flow-hint{display:block;margin-top:5px;color:var(--v2-accent-text);font-size:11px;font-weight:600;line-height:1.3}
+.v2-mobile-deal-identity .v2-deal-flow-hint,.v2-stage-card .v2-deal-flow-hint{margin-top:3px}
+/* Under a stage pill, the words start where the pill's words start: past its
+ * 1px border and 7px side padding, not at its outer edge. */
+.v2-badge+.v2-deal-flow-hint{padding-left:8px}
+
+@media(max-width:1023px){.v2-deal-flow .v2-deal-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:860px){
+  .v2-deal-flow{padding:17px}
+  .v2-deal-flow-head{flex-direction:column;gap:8px}
+  .v2-deal-steps li{font-size:10px}
+  .v2-deal-steps li span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .v2-deal-flow .v2-deal-form-grid,.v2-flow-templates{grid-template-columns:1fr}
+  .v2-flow-verdict{flex-direction:column;gap:8px}
+  .v2-flow-trail li{grid-template-columns:1fr}
+  .v2-flow-trail time{grid-column:1;grid-row:auto}
+}
+@media(prefers-reduced-motion:reduce){.v2-deal-flow-tabs button{transition:none}}

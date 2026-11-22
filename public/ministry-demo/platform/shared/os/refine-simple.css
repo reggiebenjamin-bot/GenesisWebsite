@@ -1,0 +1,229 @@
+/* Copied from the Genesis OS repo (v2/refine/simple.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: a simpler Genesis.
+ * Loaded last. The shared pieces behind docs/SIMPLER_DASHBOARD_IDEAS.md live
+ * here: term definitions, info bubbles, "Updated" lines, and the spacing and
+ * sizing rules that kept cards, badges and buttons from looking cramped. */
+
+/* ===== Spacing and sizing ===================================================
+ * A pill sized to its words, not stretched to fill its column. Rows line their
+ * badges up on the column's left edge instead. */
+.v2-attention-row>.v2-badge{justify-self:start;max-width:100%;white-space:nowrap}
+/* A form's button sits clear of the last field above it. */
+.v2-deal-form-grid+.v2-button,.v2-deal-form-grid+.v2-page-actions,.v2-deal-form-grid+.v2-drawer-actions{margin-top:16px}
+/* On a phone the next-move buttons sit two across under a full-width primary.
+ * A button left alone on its row takes the whole row instead of half of it. */
+@media(max-width:860px){.v2-next-actions>.v2-button:nth-child(2):last-child{grid-column:1/-1}}
+/* 861 to 1023px: with the sidebar set to show its labels, a workspace with a
+ * side rail (Deals, Leads) still squeezed the sidebar to the 72px icon strip,
+ * cutting "Today" to "Toda". The labelled sidebar keeps its 216px there too;
+ * the side rail is already hidden at this width. */
+@media (min-width:861px) and (max-width:1023px){
+  body.v2-sidebar-expanded.v2-has-workspace-rail:not(.v2-rail-collapsed) .v2-shell{grid-template-columns:216px minmax(0,1fr)}
+}
+/* A head whose only action was Ask Hawk leaves no empty row behind on a phone. */
+@media (max-width:860px){.v2-page-head>.v2-page-actions:not(:has(>:not(:is([data-acq-ask],[data-action="ask-leads"],[data-content-action="ask-hawk"],[data-deal-action="ask-hawk"],[data-mydeals-ask],[data-outreach-action="ask-hawk"],[data-report-action="ask-hawk"],[data-agent-action="ask-hawk"])))){display:none}}
+/* Settings, System health lists four agents in a strip that wraps to fit. The
+ * strip's dividers assumed three across, so the fourth agent lost its line.
+ * Each tile draws its own right and bottom line; the strip clips the ones on
+ * its outer edge, so the lines hold at any number of columns. */
+.v2-set-embed .v2-pulse{overflow:hidden}
+.v2-set-embed .v2-pulse>.v2-pulse-item{grid-column:auto;border:0!important;box-shadow:1px 0 0 var(--v2-border),0 1px 0 var(--v2-border)}
+/* Osprey's Open Capital workspace button used 9px text; it reads like every other button. */
+.v2-pulse-item>[data-capital-workspace]{padding:6px 12px;font-size:13px;text-align:center}
+/* A pulse tile styles every span as a block, which left an info button, or its
+ * words in Everything, on a line of their own. They follow the sentence. */
+.v2-pulse-item .v2-info{display:inline-flex}
+:root[data-detail="everything"] .v2-pulse-item .v2-info{display:inline}
+:root[data-detail="everything"] .v2-pulse-item .v2-info>.sr-only{display:inline}
+
+/* ===== Terms, info bubbles and freshness =================================== */
+.v2-term{border-bottom:1px dotted currentColor;cursor:help;text-decoration:none}
+.v2-term:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px;border-radius:2px}
+.v2-info{display:inline-flex;vertical-align:middle;margin-left:4px}
+.v2-info-button{width:20px;height:20px;display:inline-grid;place-items:center;padding:0;border:0;border-radius:999px;background:transparent;color:var(--v2-muted);cursor:pointer}
+.v2-info-button .v2-icon{width:15px;height:15px}
+.v2-info-button:hover,.v2-info-button[aria-expanded="true"]{background:var(--v2-surface-2);color:var(--v2-text)}
+.v2-info-button:focus-visible{outline:2px solid var(--v2-focus);outline-offset:1px}
+.v2-info-pop{position:fixed;z-index:1200;max-width:min(300px,calc(100vw - 20px));padding:9px 11px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-md);background:var(--v2-surface);box-shadow:var(--v2-shadow-md,0 12px 28px rgba(0,0,0,.28));color:var(--v2-text-2);font-size:12px;font-weight:400;line-height:1.5;letter-spacing:0;text-transform:none;white-space:normal}
+.v2-info-pop[hidden]{display:none}
+.v2-updated{color:var(--v2-muted);font-size:11px;font-weight:500;white-space:nowrap}
+
+/* ===== Incoming deals ======================================================
+ * One even gap between the blocks on the page, so "Create a deal directly"
+ * and the inbox never sit flush against the card above them. */
+.v2-intake-surface{display:flex;flex-direction:column;gap:16px}
+.v2-intake-surface>*{margin-top:0;margin-bottom:0}
+.v2-intake-inbox>.v2-section-head{align-items:end;margin-bottom:8px}
+.v2-intake-inbox-meta{display:flex;align-items:baseline;gap:8px;color:var(--v2-muted);font-size:11px;white-space:nowrap}
+.v2-intake-inbox-meta b{color:var(--v2-text-2);font-weight:600}
+.v2-intake-direct>summary{cursor:pointer}
+.v2-intake-direct form{margin-top:12px}
+.v2-intake-direct form>p{margin:0 0 14px;color:var(--v2-muted);font-size:12px}
+/* The row gives its analysis room for one line each, and the status pill its
+ * own width. */
+.v2-attention-row.v2-intake-row{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) auto minmax(150px,auto)}
+.v2-intake-row .v2-row-action.v2-intake-action{display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.v2-intake-row .v2-row-action>.v2-intake-action-text{display:grid;justify-content:end;gap:2px;text-align:right;white-space:nowrap}
+.v2-intake-action-text b{color:var(--v2-text-2);font-size:12px;font-weight:600}
+.v2-intake-action-text small{color:var(--v2-muted);font-size:11px;font-weight:500}
+.v2-intake-action>.v2-icon{width:15px;height:15px;flex:none;color:var(--v2-muted)}
+@media(max-width:980px){
+  .v2-attention-row.v2-intake-row{grid-template-columns:minmax(0,1fr) auto}
+  .v2-intake-row .v2-row-reason{grid-column:1/-1}
+  .v2-intake-row>.v2-badge{grid-column:2;grid-row:1}
+  .v2-intake-row .v2-row-action.v2-intake-action{display:flex;grid-column:1/-1;justify-content:space-between}
+  .v2-intake-row .v2-row-action>.v2-intake-action-text{display:flex;gap:10px;text-align:left}
+}
+
+/* ===== Health dot ============================================================
+ * Green is a small dot on the avatar and nothing else. Amber or red adds one
+ * line above the account naming what is not working; it opens System health. */
+.v2-avatar{position:relative}
+.v2-health-dot{width:8px;height:8px;display:inline-block;flex:none;border-radius:999px;background:var(--v2-positive)}
+.v2-health-dot[data-level="warning"],[data-level="warning"]>.v2-health-dot{background:var(--v2-warning)}
+.v2-health-dot[data-level="problem"],[data-level="problem"]>.v2-health-dot{background:var(--v2-danger)}
+.v2-avatar>.v2-health-dot{position:absolute;right:-1px;bottom:-1px;box-shadow:0 0 0 2px var(--v2-sidebar-bg,var(--v2-surface))}
+.v2-avatar>.v2-health-dot[hidden]{display:none}
+.v2-health-alert{width:100%;display:flex;align-items:center;gap:9px;margin:0 0 6px;padding:8px 10px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2);color:var(--v2-text);text-align:left;cursor:pointer}
+.v2-health-alert[hidden]{display:none}
+.v2-health-alert[data-level="problem"]{border-color:rgba(var(--v2-danger-rgb),.45)}
+.v2-health-alert[data-level="warning"]{border-color:rgba(232,149,90,.45)}
+.v2-health-alert:hover{background:var(--v2-surface-3,var(--v2-surface-2));border-color:var(--v2-border-strong)}
+.v2-health-alert:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px}
+.v2-health-copy{min-width:0;display:grid;gap:2px}
+.v2-health-copy b{overflow:hidden;font-size:12px;font-weight:600;line-height:1.25;text-overflow:ellipsis;white-space:nowrap}
+.v2-health-copy small{color:var(--v2-muted);font-size:11px;line-height:1.2}
+.v2-health-menu-item{display:flex!important;align-items:center;gap:9px}
+.v2-health-menu-item[hidden]{display:none!important}
+/* The compact icon rail has room for the dot only; its name shows as a tip. */
+@media(min-width:861px) and (max-width:1279px){
+  body:not(.v2-sidebar-expanded) .v2-health-alert{justify-content:center;padding:9px 0}
+  body:not(.v2-sidebar-expanded) .v2-health-copy{display:none}
+}
+
+/* ===== Screens that refresh themselves ======================================
+ * "Updated 2 min ago" takes the place a Refresh button used to. */
+.v2-page-actions>.v2-updated{margin-right:4px}
+.v2-agent-updated{margin:0 0 10px;text-align:right}
+.v2-report-updated{display:inline-flex;align-items:center;min-height:36px;padding:0 4px}
+.v2-acq-page .v2-page-actions>.v2-updated{align-self:center}
+
+/* ===== Detail level ==========================================================
+ * Simple, Standard or Everything (Settings, Appearance). A piece of the page
+ * that belongs to a fuller level says so with data-detail-min. */
+:root:not([data-detail="everything"]) [data-detail-min="everything"]{display:none!important}
+:root[data-detail="simple"] [data-detail-min="standard"]{display:none!important}
+
+/* ===== Decisions in Up next =================================================
+ * A decision says what kind it is, why it needs a person, and one verb. The
+ * verb stays visible on a phone, where the row's action column usually hides. */
+.v2-decision-row{cursor:pointer;text-decoration:none}
+.v2-decision-row .v2-decision-verb{color:var(--v2-accent-strong);white-space:nowrap}
+.v2-decision-note{margin:8px 2px 0;color:var(--v2-muted);font-size:11px}
+@media(max-width:980px){
+  .v2-decision-row .v2-row-action.v2-decision-verb{display:block;grid-column:1/-1;text-align:left}
+}
+
+/* ===== Changes Hawk prepared =================================================
+ * Cards under Hawk's answer, and the confirmation dialog Today opens. */
+.v2-hawk-actions{display:grid;gap:8px;margin:10px 12px}
+.v2-hawk-actions[hidden]{display:none}
+.v2-hawk-action{display:grid;gap:8px;padding:12px;border:1px solid rgba(var(--v2-accent-rgb),.35);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-hawk-action.is-blocked,.v2-hawk-action.is-incomplete{border-color:var(--v2-border)}
+.v2-hawk-action-copy{display:grid;gap:3px}
+.v2-hawk-action-copy small,.v2-hawk-confirm>small{color:var(--v2-label,var(--v2-muted));font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-hawk-action-copy b{font-size:13px}
+.v2-hawk-action-copy span{color:var(--v2-text-2);font-size:12px;line-height:1.45;white-space:pre-wrap}
+.v2-hawk-action-note{margin:0;color:var(--v2-muted);font-size:11px}
+.v2-hawk-action-note.is-error{color:var(--v2-danger)}
+.v2-hawk-action-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.v2-hawk-confirm-layer{position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:16px}
+.v2-hawk-confirm-layer[hidden]{display:none}
+.v2-hawk-confirm-scrim{position:absolute;inset:0;border:0;background:rgba(var(--v2-ink-rgb),.55)}
+.v2-hawk-confirm{position:relative;width:min(460px,100%);display:grid;gap:10px;padding:20px;border:1px solid var(--v2-border-strong);border-radius:var(--v2-radius-lg);background:var(--v2-surface);box-shadow:var(--v2-shadow-lg)}
+.v2-hawk-confirm h2{margin:0;font-size:18px}
+.v2-hawk-confirm p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5;white-space:pre-wrap}
+.v2-hawk-confirm .v2-hawk-confirm-meta{color:var(--v2-muted);font-size:12px}
+.v2-hawk-confirm .v2-hawk-action-buttons{margin-top:6px}
+/* Everything reads the fine print in place instead of behind info buttons. */
+:root[data-detail="everything"] .v2-info{display:inline;margin-left:0}
+:root[data-detail="everything"] .v2-info>.sr-only::before{content:" "}
+:root[data-detail="everything"] .v2-info-button{display:none}
+:root[data-detail="everything"] .v2-info>.sr-only{position:static!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important;color:var(--v2-muted);font-weight:400}
+
+/* A row whose last column is a real button gives that button its own width,
+ * so "Review exact draft" never wraps inside a narrow column. */
+.v2-attention-row:has(>.v2-button.v2-row-action){grid-template-columns:minmax(160px,1.1fr) minmax(200px,1.5fr) auto auto}
+.v2-attention-row>.v2-button.v2-row-action{justify-self:end;white-space:nowrap}
+@media(max-width:980px){.v2-attention-row>.v2-button.v2-row-action{display:inline-flex}}
+
+/* ===== Money plan on the deal ================================================
+ * What the deal is expected to pay, what came in and what to collect next. */
+.v2-money-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.v2-money-summary>div{padding:10px 12px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface-2)}
+.v2-money-summary dt{color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.v2-money-summary dd{margin:4px 0 0;font-size:15px;font-weight:600}
+.v2-money-legs{display:grid;gap:0;margin:0 0 14px;padding:0;list-style:none;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md)}
+.v2-money-legs li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--v2-border)}
+.v2-money-legs li:last-child{border-bottom:0}
+.v2-money-legs b{display:block;font-size:13px}
+.v2-money-legs small{color:var(--v2-muted);font-size:11px}
+.v2-money-amount{font-size:13px;font-weight:600;white-space:nowrap}
+@media(max-width:640px){.v2-money-summary{grid-template-columns:1fr}}
+
+/* ===== Reports opens on its summary ========================================= */
+.v2-report-nav-collapsed{display:flex;justify-content:flex-start;margin:0 0 10px}
+.v2-report-nav-collapsed .v2-button .v2-icon{width:14px;height:14px;margin-left:2px}
+
+/* ===== See an example ========================================================
+ * What an empty place looks like once it fills, marked as a sample. */
+.v2-example{margin-top:14px;text-align:left}
+.v2-example>summary{display:inline-flex;align-items:center;gap:6px;color:var(--v2-accent-strong);font-size:12px;font-weight:600;cursor:pointer}
+.v2-example-body{display:grid;gap:10px;max-width:520px;margin:10px auto 0;padding:12px;border:1px dashed var(--v2-border-strong);border-radius:var(--v2-radius-md);background:var(--v2-surface-2)}
+.v2-example-tag{justify-self:start}
+.v2-example-body dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px 14px;margin:0}
+.v2-example-body dt{color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.v2-example-body dd{margin:2px 0 0;font-size:13px}
+.v2-example-body p{margin:0;color:var(--v2-muted);font-size:12px}
+
+/* ===== Phones: Today is the app ==============================================
+ * One column of actions: the next move, the decisions, then Hawk with three
+ * questions to tap; the numbers follow. Other workspaces open from the menu
+ * button, so the bottom tab bar steps aside and everything it reserved room
+ * for moves down to the screen edge. The Hawk button stays. */
+.v2-today-ask{display:none}
+@media(max-width:860px){
+  .v2-today-page{display:flex;flex-direction:column}
+  .v2-today-page>.v2-page-head{order:0}
+  .v2-today-page>.v2-next-move,.v2-today-page>.v2-state{order:1;margin-bottom:0}
+  .v2-today-page>#v2-up-next-section{order:2}
+  .v2-today-page>.v2-today-ask{order:3;display:block}
+  .v2-today-page>.v2-pulse{order:4}
+  .v2-today-page>.v2-close-loops,
+  .v2-today-page>[data-agent-slot]{order:4}
+  .v2-today-page>.v2-setup-nudge{order:5}
+  .v2-today-page>[aria-label="Deal-Flow EA"]{order:6}
+  .v2-today-ask-list{display:grid;gap:8px}
+  .v2-today-ask-list .v2-button{justify-content:flex-start;gap:8px;text-align:left}
+  .v2-today-ask-list .v2-icon{width:16px;height:16px;flex:none;color:var(--v2-accent-strong)}
+
+  .v2-mobile-nav{display:none!important}
+  .v2-main{padding-bottom:calc(28px + var(--v2-hawk-clear,56px) + env(safe-area-inset-bottom))}
+  body.v2-genesis-page-open .v2-main{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  body.v2-genesis-page-open #v2-main{padding-bottom:calc(16px + var(--v2-hawk-clear,56px) + env(safe-area-inset-bottom))}
+  .v2-genesis-opener{bottom:calc(16px + env(safe-area-inset-bottom))}
+  .v2-tip{bottom:calc(20px + var(--v2-hawk-clear,56px) + env(safe-area-inset-bottom))}
+  .v2-toast-region{bottom:calc(20px + var(--v2-hawk-clear,56px) + env(safe-area-inset-bottom))}
+  .v2-deal-full-save{bottom:calc(8px + env(safe-area-inset-bottom))}
+  .v2-report-page{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+}
+
+/* ===== Chores ================================================================ */
+.v2-chore-note{margin:0 0 10px;color:var(--v2-muted);font-size:12px}
+.v2-chore-row>div:first-child{min-width:0}
+.v2-chore-row b .v2-badge{margin-left:6px;vertical-align:middle}
+.v2-chore-last{display:block;margin-top:4px;color:var(--v2-muted);font-size:11px}
+.v2-chore-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.v2-chore-days .v2-select{min-height:36px;font-size:12px}
+@media(max-width:640px){.v2-chore-row{flex-direction:column;align-items:stretch}.v2-chore-controls{justify-content:flex-start}}

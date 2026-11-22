@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lightwell Brand Board</title>
+<meta name="description" content="Brand board for Lightwell Church, a fictional demo church in Raleigh, North Carolina, in the Genesis Ministry Bright and Modern look: logo, color, type, photography, graphic elements, UI, voice and social posts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF; --cloud:#F4F7FC; --sky:#E4ECFF;
+  --cobalt:#1F4FFF; --cobalt-press:#1739CC;
+  --ink:#0B1220; --ink-2:#141C2E; --graphite:#475166; --mist:#A9B4C8;
+  --rule:#DCE2EC; --rule-strong:#C5CEDC;
+  --display:"Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body:"Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wrap:1280px; --gut:clamp(16px,4vw,56px);
+  --r:8px; --r-lg:10px;
+  --ease:cubic-bezier(.2,.8,.2,1); --ease-out:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:80px}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--white);color:var(--ink);font:400 17px/1.6 var(--body);font-variant-numeric:lining-nums;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--display);font-optical-sizing:auto;margin:0;font-weight:800;letter-spacing:-.03em;line-height:1}
+p,figure,blockquote,ul{margin:0}
+ul{padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:4px}
+.wrap{width:100%;max-width:calc(var(--wrap) + 2 * var(--gut));margin-inline:auto;padding-inline:var(--gut)}
+.sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.label{display:inline-flex;align-items:center;gap:12px;font:600 12.5px/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
+.label::before{content:"";flex:none;width:22px;height:2px;background:currentColor}
+.label.on-dark{color:var(--sky)}
+.muted{color:var(--graphite)}
+.small{font-size:14.5px;line-height:1.5}
+
+/* Top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.top .brand{display:inline-flex;align-items:center;gap:10px;font:800 21px/1 var(--display);letter-spacing:-.04em;text-decoration:none;flex:none}
+.top .brand svg{width:28px;height:28px}
+.top .doc{font:600 13px/1 var(--body);color:var(--graphite);flex:none}
+.toc{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;display:inline-flex;align-items:center;height:40px;padding:0 12px;border-radius:6px;font:500 14.5px/1 var(--body);text-decoration:none;color:var(--ink)}
+.toc a:hover{background:var(--cloud)}
+.preview-badge{flex:none;display:inline-flex;align-items:center;gap:7px;font:600 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--graphite);border:1px dashed #9AA6BA;border-radius:999px;padding:6px 10px 6px 8px;white-space:nowrap}
+.preview-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--graphite)}
+
+/* Cover */
+.cover{padding-block:clamp(40px,5vw,72px) clamp(56px,7vw,104px)}
+.cover-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;min-height:620px}
+.cover-main{position:relative;overflow:hidden;background:var(--cobalt);color:#fff;border-radius:var(--r-lg);padding:clamp(28px,4vw,56px);display:flex;flex-direction:column;justify-content:space-between;min-height:560px}
+.cover-main .label{color:var(--sky)}
+.cover-wm{display:flex;align-items:center;gap:clamp(14px,2vw,24px);margin-top:40px}
+.cover-wm svg{width:clamp(64px,8vw,112px);height:clamp(64px,8vw,112px);flex:none}
+.cover-wm span{font:800 clamp(64px,9vw,136px)/.9 var(--display);letter-spacing:-.045em}
+.cover-tag{font:700 clamp(26px,2.6vw,38px)/1.1 var(--display);letter-spacing:-.025em;margin-top:28px}
+.cover-meta{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:8px 40px;margin-top:48px;padding-top:22px;border-top:1px solid rgba(255,255,255,.35);font-size:15px}
+.cover-meta b{display:block;font:600 11.5px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--sky);margin-bottom:6px}
+.cover-shaft{position:absolute;right:-70px;bottom:-90px;width:440px;height:440px;opacity:.1;pointer-events:none}
+.cover-main > *:not(.cover-shaft){position:relative}
+.cover-side{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:20px}
+.cover-photo{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--cloud);min-height:300px}
+.cover-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.cover-note{background:var(--cloud);border-radius:var(--r-lg);padding:28px 30px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.cover-note h2{font-size:clamp(26px,2.4vw,34px);letter-spacing:-.025em}
+
+/* Sections */
+.sec{padding-block:clamp(64px,8vw,120px);border-top:1px solid var(--rule)}
+.sec-h{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 64px;align-items:end;margin-bottom:clamp(36px,4vw,56px)}
+.sec-h .num{display:block;font:800 18px/1 var(--display);color:var(--cobalt);letter-spacing:-.01em;font-variant-numeric:tabular-nums;margin-bottom:16px}
+.sec-h h2{font-size:clamp(40px,5vw,72px);letter-spacing:-.03em;line-height:.98}
+.sec-h p{max-width:36em;color:var(--graphite);font-size:18px}
+.panel{background:var(--cloud);border-radius:var(--r-lg);padding:clamp(22px,3vw,36px)}
+.panel.white{background:#fff;border:1px solid var(--rule)}
+.panel.ink{background:var(--ink);color:#fff}
+.panel.cobalt{background:var(--cobalt);color:#fff}
+.cap{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font:600 12px/1.3 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--graphite)}
+.panel.ink .cap,.panel.cobalt .cap{color:var(--sky)}
+.h4{font:700 22px/1.15 var(--display);letter-spacing:-.02em}
+
+/* Logo */
+.logo-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.lg-primary{grid-column:span 8;display:flex;flex-direction:column;justify-content:space-between;min-height:340px}
+.lg-stacked{grid-column:span 4;display:flex;flex-direction:column;justify-content:space-between}
+.lockup{display:inline-flex;align-items:center;gap:clamp(12px,1.6vw,22px)}
+.lockup svg{flex:none}
+.lockup .wm{font:800 1em/1 var(--display);letter-spacing:-.045em;padding-bottom:.04em}
+.lg-primary .lockup{font-size:clamp(58px,7.4vw,110px);margin:auto 0}
+.lg-primary .lockup svg{width:.92em;height:.92em}
+.stack{display:flex;flex-direction:column;align-items:center;text-align:center;margin:auto 0;padding-block:20px}
+.stack svg{width:76px;height:76px}
+.stack .wm{font:800 52px/1 var(--display);letter-spacing:-.045em;margin-top:16px}
+.stack .sub{font:600 11.5px/1 var(--body);letter-spacing:.32em;text-transform:uppercase;color:var(--graphite);margin-top:12px;padding-left:.32em}
+.lg-marks{grid-column:span 4;display:flex;flex-direction:column;justify-content:space-between}
+.marks{display:flex;align-items:flex-end;gap:22px;margin:auto 0;padding-block:16px}
+.marks svg:nth-child(1){width:88px;height:88px}
+.marks svg:nth-child(2){width:56px;height:56px}
+.marks svg:nth-child(3){width:32px;height:32px}
+.marks svg:nth-child(4){width:18px;height:18px}
+.lg-rev{grid-column:span 4;display:flex;flex-direction:column;justify-content:space-between;min-height:220px}
+.lg-rev .lockup{font-size:46px;margin:auto 0}
+.lg-rev .lockup svg{width:.95em;height:.95em}
+.lg-photo{grid-column:1/-1;position:relative;overflow:hidden;border-radius:var(--r-lg);min-height:220px;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,3vw,36px);color:#fff}
+.lg-photo img{position:absolute;left:0;top:0;width:150%;max-width:none;height:100%;object-fit:cover;object-position:50% 54%}
+.lg-photo::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,22,70,.35),rgba(6,22,70,0) 60%)}
+.lg-photo > *{position:relative}
+.lg-photo .lockup{font-size:clamp(40px,5vw,64px);margin:auto 0}
+.lg-photo .lockup svg{width:.95em;height:.95em}
+.lg-photo .cap{color:#fff}
+.lg-notes{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:8px}
+.note{border-top:2px solid var(--ink);padding-top:16px}
+.note h3{font:700 18px/1.2 var(--display);letter-spacing:-.015em}
+.note p{margin-top:8px;font-size:15px;line-height:1.55;color:var(--graphite)}
+.clear{position:relative;display:inline-flex;padding:22px;border:1px dashed var(--cobalt);border-radius:4px;margin-top:4px;font-size:32px}
+.clear .lockup svg{width:.95em;height:.95em}
+
+/* Color */
+.swatches{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.sw{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--rule);background:#fff;display:flex;flex-direction:column}
+.sw-chip{min-height:150px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}
+.sw-chip .aa{font:800 44px/1 var(--display);letter-spacing:-.03em}
+.sw-chip .ratio{font:600 13px/1.3 var(--body)}
+.sw-info{padding:18px 22px 20px;display:grid;gap:4px}
+.sw-info h3{font:700 20px/1.15 var(--display);letter-spacing:-.015em}
+.sw-info .hex{font:600 14px/1.3 var(--body);font-variant-numeric:tabular-nums;color:var(--ink)}
+.sw-info p{font-size:14.5px;line-height:1.5;color:var(--graphite)}
+.sw.xl{grid-column:span 6}
+.sw.xl .sw-chip{min-height:260px}
+.sw.xl .sw-chip .aa{font-size:84px}
+.sw.md{grid-column:span 3}
+.sw.sm{grid-column:span 3}
+.ratio-bar{grid-column:1/-1;margin-top:8px}
+.bar{display:flex;height:56px;border-radius:var(--r);overflow:hidden;border:1px solid var(--rule)}
+.bar span{display:flex;align-items:flex-end;padding:8px 10px;font:600 12px/1 var(--body)}
+.pairs{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:8px}
+.pair{border-radius:var(--r);padding:16px 18px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:15px;border:1px solid var(--rule)}
+.pair b{font:700 17px/1.2 var(--display)}
+
+/* Type */
+.type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.specimen{display:flex;flex-direction:column;gap:18px;min-height:420px}
+.specimen .big{font-size:clamp(120px,14vw,200px);line-height:.85;letter-spacing:-.05em}
+.specimen .disp{font-family:var(--display);font-weight:800}
+.specimen .bod{font-family:var(--body);font-weight:500;letter-spacing:-.03em}
+.specimen .meta{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.specimen .meta h3{font:700 26px/1.1 var(--display);letter-spacing:-.02em}
+.weights{display:flex;gap:18px;flex-wrap:wrap;font-size:26px}
+.chars{font-size:20px;line-height:1.5;word-break:break-all;color:var(--graphite)}
+.scale{grid-column:1/-1;border-top:1px solid var(--rule)}
+.srow{display:grid;grid-template-columns:200px minmax(0,1fr) 220px;gap:24px;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--rule)}
+.srow .k{font:600 12px/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite)}
+.srow .spec{font:500 14px/1.4 var(--body);color:var(--graphite);font-variant-numeric:tabular-nums;text-align:right}
+.srow .s{min-width:0;overflow-wrap:anywhere}
+.t-xl{font:800 clamp(52px,7.4vw,112px)/.92 var(--display);letter-spacing:-.036em}
+.t-l{font:800 clamp(40px,5vw,72px)/.98 var(--display);letter-spacing:-.03em}
+.t-m{font:800 clamp(32px,3.4vw,50px)/1.02 var(--display);letter-spacing:-.026em}
+.t-title{font:780 27px/1.15 var(--display);letter-spacing:-.024em}
+.t-lead{font-size:19px;line-height:1.55;color:var(--graphite)}
+.t-body{font-size:17px;line-height:1.6}
+.sample{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.sample .panel h3{font-size:clamp(34px,3.6vw,52px);letter-spacing:-.026em;margin-top:18px}
+.sample .panel p{margin-top:16px}
+
+/* Photography */
+.photo-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:220px;gap:16px}
+.ph{position:relative;border-radius:var(--r-lg);overflow:hidden;background:var(--cloud)}
+.ph img{width:100%;height:100%;object-fit:cover}
+.ph figcaption{position:absolute;left:12px;bottom:12px;background:#fff;color:var(--ink);font:600 12.5px/1 var(--body);padding:7px 9px;border-radius:6px}
+.ph.a{grid-column:span 6;grid-row:span 2}
+.ph.b{grid-column:span 3}
+.ph.c{grid-column:span 3}
+.ph.d{grid-column:span 3}
+.ph.e{grid-column:span 3}
+.do-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:20px}
+.do-grid h3{font:700 22px/1.15 var(--display);letter-spacing:-.02em}
+.do-grid li{position:relative;padding:10px 0 10px 30px;border-bottom:1px solid var(--rule);font-size:15.5px;line-height:1.5}
+.do-grid li:last-child{border-bottom:0}
+.do-grid li::before{content:"";position:absolute;left:2px;top:17px;width:14px;height:14px;border-radius:4px}
+.do li::before{background:var(--cobalt)}
+.avoid li::before{background:transparent;border:2px solid var(--ink);border-radius:50%}
+.avoid li::after{content:"";position:absolute;left:1px;top:23px;width:16px;height:2px;background:var(--ink);transform:rotate(-45deg)}
+.grade{display:flex;flex-direction:column;gap:14px}
+.grade .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.grade .chips span{font:600 13px/1 var(--body);padding:8px 10px;border-radius:999px;background:#fff;border:1px solid var(--rule)}
+
+/* Graphic elements */
+.el-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.el{display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:250px}
+.el.s4{grid-column:span 4}
+.el.s6{grid-column:span 6}
+.el.s8{grid-column:span 8}
+.el .demo{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.el h3{font:700 18px/1.2 var(--display);letter-spacing:-.015em}
+.el p.small{color:var(--graphite)}
+.pattern{position:relative;border-radius:var(--r);overflow:hidden;min-height:170px;background-color:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M14 0h7v30h21v7H14z' fill='%23E4ECFF'/%3E%3Crect x='30' y='12' width='8' height='8' rx='1.5' fill='%231F4FFF' fill-opacity='.18'/%3E%3C/svg%3E");background-size:56px 56px}
+.pattern.cob{background-color:var(--cobalt);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M14 0h7v30h21v7H14z' fill='%23FFFFFF' fill-opacity='.10'/%3E%3Crect x='30' y='12' width='8' height='8' rx='1.5' fill='%23E4ECFF' fill-opacity='.22'/%3E%3C/svg%3E")}
+.numrows{display:grid;gap:0}
+.numrow{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline;padding:16px 0}
+.numrow::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--rule)}
+.numrow::after{content:"";position:absolute;left:0;top:-1px;height:3px;width:28px;background:var(--cobalt)}
+.numrow .n{font:800 34px/1 var(--display);letter-spacing:-.02em;color:var(--cobalt);font-variant-numeric:tabular-nums}
+.numrow b{font:700 20px/1.2 var(--display);letter-spacing:-.015em}
+.numrow span.t{display:block;font-size:14.5px;color:var(--graphite);margin-top:4px}
+.hlx{font:800 34px/1.1 var(--display);letter-spacing:-.025em}
+.hlx span{background:linear-gradient(var(--sky),var(--sky)) no-repeat 0 90%/100% .4em}
+.prog{display:flex;gap:10px}
+.prog span{position:relative;width:64px;height:4px;border-radius:2px;background:var(--rule);overflow:hidden}
+.prog span:first-child::after{content:"";position:absolute;inset:0;background:var(--cobalt)}
+.prog span:nth-child(2)::after{content:"";position:absolute;inset:0;width:45%;background:var(--cobalt)}
+.timechip{display:grid;grid-template-columns:auto minmax(0,1fr);border-block:1px solid var(--rule)}
+.tc{display:flex;align-items:center;gap:12px;padding:14px 20px 14px 0;min-width:0}
+.tc + .tc{padding-left:20px;padding-right:0;border-left:1px solid var(--rule)}
+.tc i{flex:none;width:36px;height:36px;border-radius:var(--r);background:var(--sky);color:var(--cobalt);display:grid;place-items:center}
+.tc i svg{width:18px;height:18px}
+.tc small{display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);margin-bottom:5px}
+.tc b{display:block;font:600 16px/1.3 var(--body)}
+.radii{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap}
+.radii span{display:flex;flex-direction:column;gap:8px}
+.radii i{display:block;width:64px;height:64px;border:2px solid var(--ink);background:#fff}
+.radii small{font:600 12px/1 var(--body);color:var(--graphite)}
+
+/* Buttons and UI */
+.ui-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.ui{display:flex;flex-direction:column;gap:18px}
+.ui.s4{grid-column:span 4}
+.ui.s5{grid-column:span 5}
+.ui.s7{grid-column:span 7}
+.ui.s8{grid-column:span 8}
+.ui.s6{grid-column:span 6}
+.ui h3{font:700 18px/1.2 var(--display);letter-spacing:-.015em}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border-radius:var(--r);border:1.5px solid transparent;font:600 16px/1 var(--body);text-decoration:none;white-space:nowrap;cursor:pointer}
+.btn-primary{background:var(--cobalt);color:#fff}
+.btn-primary.hover{background:var(--cobalt-press)}
+.btn-outline{background:#fff;border-color:var(--rule-strong);color:var(--ink)}
+.btn-outline.hover{border-color:var(--ink);background:var(--cloud)}
+.btn.focus{outline:2px solid var(--cobalt);outline-offset:3px}
+.btn-sm{min-height:44px;padding:0 16px;font-size:15px}
+.btn-white{background:#fff;color:var(--cobalt)}
+.tlink{font-weight:600;color:var(--ink);text-decoration:none;background:linear-gradient(var(--cobalt),var(--cobalt)) no-repeat left bottom/100% 1.5px;padding-bottom:2px}
+.go{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--cobalt);text-decoration:none}
+.field{display:flex;gap:10px}
+.field input{flex:1;min-width:0;height:52px;padding:0 16px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font:16px var(--body)}
+.field input.focus{border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
+.mini-card{display:grid;grid-template-columns:minmax(0,1fr);border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden;background:#fff}
+.mini-card .img{aspect-ratio:16/9;overflow:hidden;position:relative}
+.mini-card .img img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.mini-card .img::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--cobalt)}
+.mini-card .body{padding:20px 22px 22px;display:grid;gap:8px}
+.mini-card h4{font-size:24px;letter-spacing:-.024em;font-weight:780}
+.mini-card p{font-size:15.5px;color:var(--graphite)}
+.annc{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--sky);border-radius:var(--r);padding:14px 18px}
+.annc .tag{font:700 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt);border:1.5px solid var(--cobalt);padding:5px 8px;border-radius:5px;margin-right:10px}
+.annc .play{display:inline-flex;align-items:center;gap:10px;font-weight:600}
+.annc .play i{width:32px;height:32px;border-radius:50%;background:var(--ink);display:grid;place-items:center}
+.annc .play i svg{width:11px;height:11px;margin-left:2px;fill:#fff}
+.phone{width:100%;max-width:340px;border:1px solid var(--rule);border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 24px 50px -30px rgba(11,18,32,.45)}
+.phone .scr{height:150px;background:var(--cloud);position:relative;overflow:hidden}
+.phone .scr img{width:100%;height:100%;object-fit:cover;opacity:.9}
+.sbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--rule)}
+.sbar .dot{width:8px;height:8px;border-radius:50%;background:var(--cobalt);flex:none}
+.sbar .info{flex:1;min-width:0}
+.sbar .info b{display:block;font-size:14.5px;line-height:1.2}
+.sbar .info span{display:block;font-size:12.5px;color:var(--graphite)}
+.sbar .chat{width:40px;height:40px;border:1.5px solid var(--rule-strong);border-radius:var(--r);display:grid;place-items:center;flex:none}
+.sbar .chat svg{width:18px;height:18px}
+.sbar .btn{min-height:40px;padding:0 12px;font-size:14px}
+.bubbles{display:flex;flex-direction:column;gap:8px;background:var(--cloud);border-radius:var(--r-lg);padding:18px}
+.bub{max-width:85%;padding:10px 13px;border-radius:12px;font-size:15px;line-height:1.45}
+.bub.bot{background:#fff;border:1px solid var(--rule);border-bottom-left-radius:4px;align-self:flex-start}
+.bub.me{background:var(--cobalt);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;min-height:38px;padding:0 14px;border:1.5px solid var(--rule-strong);border-radius:999px;background:#fff;font:600 14px/1 var(--body)}
+.fab{width:56px;height:56px;border-radius:50%;background:var(--cobalt);color:#fff;display:grid;place-items:center;box-shadow:0 14px 30px -12px rgba(11,18,32,.5)}
+.fab svg{width:24px;height:24px}
+.phone .scr .fab{position:absolute;right:12px;bottom:12px;width:44px;height:44px}
+.phone .scr .fab svg{width:19px;height:19px}
+
+/* Voice */
+.voice-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.word{border-top:3px solid var(--cobalt);padding-top:18px}
+.word h3{font:800 clamp(26px,2.4vw,34px)/1 var(--display);letter-spacing:-.025em}
+.word p{margin-top:10px;font-size:15px;line-height:1.5;color:var(--graphite)}
+.say{margin-top:40px;border:1px solid var(--rule);border-radius:var(--r-lg);overflow:hidden}
+.say-h,.say-r{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.say-h div{padding:16px 22px;font:600 12px/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase}
+.say-h div:first-child{background:var(--cobalt);color:#fff}
+.say-h div:last-child{background:var(--cloud);color:var(--graphite)}
+.say-r{border-top:1px solid var(--rule)}
+.say-r div{padding:18px 22px;font-size:16.5px;line-height:1.5}
+.say-r div:first-child{font-weight:600}
+.say-r div:last-child{color:var(--graphite);border-left:1px solid var(--rule)}
+.rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:40px}
+
+/* Social */
+.social-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.post-wrap figcaption{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font:600 13px/1.3 var(--body);color:var(--graphite)}
+.post{position:relative;aspect-ratio:1/1;container-type:inline-size;overflow:hidden;border-radius:6px;box-shadow:0 22px 46px -30px rgba(11,18,32,.5);border:1px solid var(--rule)}
+.post .mk{width:9cqw;height:9cqw}
+/* Post A: photo with headline */
+.pa{background:#fff;display:grid;grid-template-rows:58% 1fr}
+.pa .pimg{overflow:hidden}
+.pa .pimg img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.pa .ptxt{padding:5cqw 6cqw 5.5cqw;display:flex;flex-direction:column;justify-content:space-between}
+.pa .lbl{font:700 2.7cqw/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
+.pa h4{font:800 10.5cqw/.92 var(--display);letter-spacing:-.036em;margin-top:2.5cqw}
+.pa h4 span{color:var(--cobalt)}
+.pa .pfoot{display:flex;align-items:center;justify-content:space-between;gap:3cqw;font:600 3.2cqw/1.25 var(--body);color:var(--graphite)}
+.pa .pfoot .mk{width:7cqw;height:7cqw}
+/* Post B: quote card */
+.pb{background:var(--cobalt);color:#fff}
+.pb .in{position:absolute;inset:0;padding:7cqw;display:flex;flex-direction:column;justify-content:space-between}
+.pb .lbl{font:700 2.8cqw/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--sky);display:flex;align-items:center;gap:2.5cqw}
+.pb .lbl::before{content:"";width:6cqw;height:.6cqw;background:var(--sky)}
+.pb blockquote{font:750 8.4cqw/1.04 var(--display);letter-spacing:-.03em;position:relative}
+.pb .who{display:flex;align-items:center;justify-content:space-between;font:600 3.6cqw/1.2 var(--body)}
+.pb .who small{display:block;font-weight:500;color:var(--sky);font-size:3cqw;margin-top:1cqw}
+.pb .shaft{position:absolute;right:-16cqw;bottom:-18cqw;width:56cqw;height:56cqw;opacity:.12}
+/* Post C: event on photo */
+.pc{color:#fff;background:var(--ink)}
+.pc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
+.pc::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,18,32,.25) 0%,rgba(11,18,32,0) 30%,rgba(11,18,32,.82) 100%);z-index:1}
+.pc .in{position:absolute;inset:0;z-index:2;padding:6.5cqw;display:flex;flex-direction:column;justify-content:space-between}
+.pc .ptop{display:flex;justify-content:space-between;align-items:flex-start}
+.pc .date{background:#fff;color:var(--ink);border-radius:2cqw;padding:2.4cqw 3cqw;text-align:center;min-width:17cqw}
+.pc .date small{display:block;font:700 2.6cqw/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
+.pc .date b{display:block;font:800 8cqw/1 var(--display);letter-spacing:-.03em;margin-top:1cqw}
+.pc h4{font:800 11.5cqw/.9 var(--display);letter-spacing:-.036em}
+.pc p{font:500 3.6cqw/1.35 var(--body);margin-top:3cqw;max-width:80%}
+.pc .pill{display:inline-flex;margin-top:4cqw;background:var(--cobalt);color:#fff;font:600 3.4cqw/1 var(--body);padding:2.6cqw 3.6cqw;border-radius:1.6cqw}
+/* Story */
+.story-row{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:center;margin-top:48px}
+.story{position:relative;aspect-ratio:9/16;container-type:inline-size;overflow:hidden;border-radius:14px;background:var(--sky);box-shadow:0 30px 60px -34px rgba(11,18,32,.55);border:1px solid var(--rule)}
+.story .pattern{position:absolute;inset:0;border-radius:0;background-color:var(--sky);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M14 0h7v30h21v7H14z' fill='%23FFFFFF' fill-opacity='.7'/%3E%3C/svg%3E");background-size:15cqw 15cqw}
+.story .in{position:absolute;inset:0;padding:7cqw 7cqw 8cqw;display:flex;flex-direction:column;gap:4cqw}
+.story .sbars{display:flex;gap:1.6cqw}
+.story .sbars span{flex:1;height:.9cqw;border-radius:1cqw;background:rgba(11,18,32,.18)}
+.story .sbars span:first-child{background:var(--ink)}
+.story .head{display:flex;align-items:center;gap:2.6cqw;font:800 5.6cqw/1 var(--display);letter-spacing:-.04em}
+.story .head .mk{width:8cqw;height:8cqw}
+.story .head small{font:500 3.4cqw/1 var(--body);color:var(--graphite);letter-spacing:0;margin-left:1cqw}
+.story .simg{border-radius:4cqw;overflow:hidden;height:54cqw;flex:none}
+.story .simg img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.story h4{font:800 11cqw/.92 var(--display);letter-spacing:-.036em}
+.story h4 span{display:block;color:var(--cobalt);font-size:8.4cqw;margin-top:1.6cqw;letter-spacing:-.03em}
+.poll{background:#fff;border-radius:4cqw;padding:5cqw;box-shadow:0 3cqw 8cqw -4cqw rgba(11,18,32,.35);display:grid;gap:2.6cqw}
+.poll b{font:800 5.4cqw/1.1 var(--display);letter-spacing:-.025em;text-align:center}
+.poll .opt{position:relative;overflow:hidden;border-radius:2.4cqw;background:var(--cloud);padding:3cqw 3.6cqw;display:flex;justify-content:space-between;font:600 3.8cqw/1 var(--body)}
+.poll .opt i{position:absolute;left:0;top:0;bottom:0;background:var(--sky)}
+.poll .opt span{position:relative}
+.poll .opt.win{color:var(--cobalt)}
+.link-st{align-self:center;display:inline-flex;align-items:center;gap:2.4cqw;background:var(--cobalt);color:#fff;font:700 4.2cqw/1 var(--body);padding:3.4cqw 5cqw;border-radius:999px;margin-top:auto}
+.link-st svg{width:4.4cqw;height:4.4cqw}
+.specs h3{font:700 24px/1.15 var(--display);letter-spacing:-.02em}
+.specs ul{margin-top:18px}
+.specs li{display:grid;grid-template-columns:160px minmax(0,1fr);gap:16px;padding:12px 0;border-top:1px solid var(--rule);font-size:15.5px}
+.specs li b{font-weight:600}
+.specs li span{color:var(--graphite)}
+
+/* Footer */
+.foot{background:var(--ink);color:#fff;padding-block:56px}
+.foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 40px;align-items:center}
+.foot p{color:var(--mist);font-size:14.5px;max-width:52em}
+.foot .lockup{font-size:30px}
+.foot .lockup svg{width:.95em;height:.95em}
+
+/* Reveal: only after JS sets up the observer */
+.reveal-init{opacity:0;transform:translateY(16px)}
+.reveal-in{animation:rise .75s var(--ease-out) backwards}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Responsive */
+@media (max-width:1100px){
+  .toc{display:none}
+  .top .doc{margin-left:auto}
+}
+@media (max-width:980px){
+  .cover-grid{grid-template-columns:minmax(0,1fr)}
+  .cover-side{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-rows:auto}
+  .cover-photo{min-height:280px}
+  .sec-h{grid-template-columns:minmax(0,1fr)}
+  .lg-primary,.lg-stacked,.lg-marks,.lg-rev,.lg-photo{grid-column:span 6}
+  .lg-primary{grid-column:1/-1}
+  .lg-photo img{width:200%;object-position:50% 75%}
+  .lg-notes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sw.xl{grid-column:1/-1}
+  .sw.md,.sw.sm{grid-column:span 6}
+  .pairs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .type-grid,.sample{grid-template-columns:minmax(0,1fr)}
+  .srow{grid-template-columns:minmax(0,1fr);gap:6px}
+  .srow .spec{text-align:left}
+  .ph.a{grid-column:1/-1}
+  .ph.b,.ph.c,.ph.d,.ph.e{grid-column:span 6}
+  .do-grid{grid-template-columns:minmax(0,1fr)}
+  .el.s4,.el.s6,.el.s8{grid-column:span 6}
+  .ui.s4,.ui.s5,.ui.s6,.ui.s7,.ui.s8{grid-column:1/-1}
+  .voice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .social-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .story-row{grid-template-columns:minmax(0,1fr)}
+  .story{max-width:380px;width:100%;margin-inline:auto}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .top .doc{display:none}
+  .preview-badge{margin-left:auto}
+  .cover-main{min-height:0}
+  .cover-meta{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .cover-side{grid-template-columns:minmax(0,1fr)}
+  .cover-photo{min-height:240px}
+  .logo-grid > *,.lg-primary,.lg-stacked,.lg-marks,.lg-rev,.lg-photo{grid-column:1/-1}
+  .lg-primary{min-height:220px}
+  .lg-photo::before{background:linear-gradient(180deg,rgba(6,22,70,.2),rgba(6,22,70,.45))}
+  .say-h{display:none}
+  .lg-notes{grid-template-columns:minmax(0,1fr)}
+  .sw.md,.sw.sm{grid-column:1/-1}
+  .sw.xl .sw-chip .aa{font-size:64px}
+  .pairs{grid-template-columns:minmax(0,1fr)}
+  .bar span{font-size:10.5px;padding:6px}
+  .specimen{min-height:0}
+  .photo-grid{grid-auto-rows:180px}
+  .ph.a{grid-row:span 2}
+  .ph.b,.ph.c,.ph.d,.ph.e{grid-column:span 6}
+  .el.s4,.el.s6,.el.s8{grid-column:1/-1}
+  .timechip{grid-template-columns:minmax(0,1fr)}
+  .tc + .tc{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+  .field{flex-direction:column}
+  .field input{flex:none;width:100%}
+  .voice-grid{grid-template-columns:minmax(0,1fr)}
+  .say-h,.say-r{grid-template-columns:minmax(0,1fr)}
+  .say-r div:last-child{border-left:0;border-top:1px dashed var(--rule)}
+  .say-h div:last-child{display:none}
+  .say-r div:first-child::before{content:"We say";display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt);margin-bottom:6px}
+  .say-r div:last-child::before{content:"We avoid";display:block;font:600 11px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);margin-bottom:6px}
+  .rules{grid-template-columns:minmax(0,1fr)}
+  .social-grid{grid-template-columns:minmax(0,1fr)}
+  .specs li{grid-template-columns:minmax(0,1fr);gap:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal-init{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-mark" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#1F4FFF"/><path d="M11 0h6.5v26H31v6.5H11z" fill="#fff"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#E4ECFF"/></symbol>
+  <symbol id="i-mark-rev" viewBox="0 0 40 40"><rect width="40" height="40" rx="9" fill="#fff"/><path d="M11 0h6.5v26H31v6.5H11z" fill="#1F4FFF"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#9DB2FF"/></symbol>
+  <symbol id="i-shaft" viewBox="0 0 40 40"><path d="M11 0h6.5v26H31v6.5H11z" fill="#fff"/><rect x="23.5" y="8" width="7.5" height="7.5" rx="1.6" fill="#fff"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17L20 12z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="9.6" r="1.2" fill="currentColor"/><circle cx="12" cy="9.6" r="1.2" fill="currentColor"/><circle cx="15" cy="9.6" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Lightwell Church homepage preview"><svg aria-hidden="true"><use href="#i-mark"/></svg>lightwell</a>
+    <span class="doc">Brand board &middot; v1 &middot; November 2026</span>
+    <nav class="toc" aria-label="Board sections">
+      <a href="#logo">Logo</a><a href="#color">Color</a><a href="#type">Type</a><a href="#photo">Photography</a><a href="#elements">Elements</a><a href="#ui">UI</a><a href="#voice">Voice</a><a href="#social">Social</a>
+    </nav>
+    <span class="preview-badge" title="Lightwell Church is a fictional church used to preview this template.">Template preview</span>
+  </div>
+</header>
+
+<main>
+  <!-- COVER -->
+  <section class="cover" aria-labelledby="cover-title">
+    <div class="wrap cover-grid">
+      <div class="cover-main">
+        <svg class="cover-shaft" aria-hidden="true"><use href="#i-shaft"/></svg>
+        <div>
+          <p class="label">Genesis Ministry &middot; Bright &amp; Modern</p>
+          <h1 class="sr-only" id="cover-title">Lightwell Church brand board</h1>
+          <div class="cover-wm" aria-hidden="true"><svg><use href="#i-mark-rev"/></svg><span>lightwell</span></div>
+          <p class="cover-tag">Let the light in.</p>
+        </div>
+        <div class="cover-meta">
+          <div><b>Church</b>Lightwell Church</div>
+          <div><b>City</b>Raleigh, North Carolina</div>
+          <div><b>Sundays</b>9:00 &amp; 10:45 AM</div>
+        </div>
+      </div>
+      <div class="cover-side">
+        <figure class="cover-photo"><img src="photos/friends-high-five.jpg" alt="Friends sharing a high five over tea in a bright room" width="1800" height="2700"></figure>
+        <div class="cover-note">
+          <p class="label">The idea</p>
+          <h2>A lightwell is an opening that lets daylight reach the rooms below.</h2>
+          <p class="muted small">That is the job of a young church in a busy city. The brand is bright, clear and confident, with one cobalt accent, lots of white space and real people in real daylight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 LOGO -->
+  <section class="sec" id="logo" aria-labelledby="logo-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">01</span><h2 id="logo-title">Logo</h2></div>
+        <p>The mark is a lightwell seen in section. A shaft of light drops through the roof and lands as a floor, drawing an L. The small pane is the sky above. The wordmark is set lowercase in Bricolage Grotesque ExtraBold, tracked tight.</p>
+      </div>
+      <div class="logo-grid">
+        <div class="panel white lg-primary reveal">
+          <span class="lockup"><svg aria-hidden="true"><use href="#i-mark"/></svg><span class="wm">lightwell</span></span>
+          <p class="cap"><span>Primary lockup</span><span>Use first, everywhere</span></p>
+        </div>
+        <div class="panel lg-stacked reveal">
+          <div class="stack"><svg aria-hidden="true"><use href="#i-mark"/></svg><span class="wm">lightwell</span><span class="sub">Church &middot; Raleigh</span></div>
+          <p class="cap"><span>Stacked</span><span>Square spaces</span></p>
+        </div>
+        <div class="panel lg-marks reveal">
+          <div class="marks" aria-label="The mark at 88, 56, 32 and 18 pixels" role="img"><svg aria-hidden="true"><use href="#i-mark"/></svg><svg aria-hidden="true"><use href="#i-mark"/></svg><svg aria-hidden="true"><use href="#i-mark"/></svg><svg aria-hidden="true"><use href="#i-mark"/></svg></div>
+          <p class="cap"><span>Small mark</span><span>Avatars, favicon</span></p>
+        </div>
+        <div class="panel cobalt lg-rev reveal">
+          <span class="lockup"><svg aria-hidden="true"><use href="#i-mark-rev"/></svg><span class="wm">lightwell</span></span>
+          <p class="cap"><span>Reversed on cobalt</span></p>
+        </div>
+        <div class="panel ink lg-rev reveal">
+          <span class="lockup"><svg aria-hidden="true"><use href="#i-mark"/></svg><span class="wm">lightwell</span></span>
+          <p class="cap"><span>On night ink</span></p>
+        </div>
+        <div class="lg-photo reveal">
+          <img src="photos/sky-single-cloud.jpg" alt="" width="1800" height="1200" loading="lazy">
+          <span class="lockup"><svg aria-hidden="true"><use href="#i-mark-rev"/></svg><span class="wm">lightwell</span></span>
+          <p class="cap"><span>On photos: reversed mark and white type, on a calm part of the image</span></p>
+        </div>
+        <div class="lg-notes reveal">
+          <div class="note"><h3>Clear space</h3><p>Keep a margin equal to the sky pane on every side. Nothing else sits inside it.</p><span class="clear"><span class="lockup"><svg aria-hidden="true"><use href="#i-mark"/></svg><span class="wm">lightwell</span></span></span></div>
+          <div class="note"><h3>Minimum size</h3><p>Lockup 96px wide on screens, 25mm in print. The mark alone can go down to 16px.</p></div>
+          <div class="note"><h3>Color</h3><p>Cobalt mark with ink type on light grounds, and with white type on night ink. The reversed mark with white type on cobalt and on photos. Never a cobalt mark on a blue ground.</p></div>
+          <div class="note"><h3>Please do not</h3><p>Stretch, rotate, outline, add shadows or glows, swap the font, or put the mark on a busy part of a photo.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 COLOR -->
+  <section class="sec" id="color" aria-labelledby="color-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">02</span><h2 id="color-title">Color</h2></div>
+        <p>Mostly white, with deep ink for words and one vivid cobalt that does the pointing. The pale sky tint softens bands and highlights. Every text pair below passes WCAG AA for body text, and the ratios were checked with the WCAG formula.</p>
+      </div>
+      <div class="swatches">
+        <div class="sw xl reveal">
+          <div class="sw-chip" style="background:#1F4FFF;color:#fff"><span class="aa">Aa</span><span class="ratio">White text 5.80:1 &middot; AA</span></div>
+          <div class="sw-info"><h3>Lightwell Cobalt</h3><span class="hex">#1F4FFF &middot; RGB 31 79 255</span><p>The one accent. Primary buttons, links, labels, the mark and the bold next-steps band. Use it to point, not to decorate. On Cloud 5.40:1, on Sky 4.90:1.</p></div>
+        </div>
+        <div class="sw xl reveal">
+          <div class="sw-chip" style="background:#0B1220;color:#fff"><span class="aa">Aa</span><span class="ratio">White text 18.72:1 &middot; AAA</span></div>
+          <div class="sw-info"><h3>Night Ink</h3><span class="hex">#0B1220 &middot; RGB 11 18 32</span><p>All headlines and body text, and the footer ground. On White 18.72:1, on Cloud 17.44:1, on Sky 15.82:1.</p></div>
+        </div>
+        <div class="sw md reveal">
+          <div class="sw-chip" style="background:#FFFFFF;color:#0B1220;border-bottom:1px solid var(--rule)"><span class="aa">Aa</span><span class="ratio">Ink 18.72:1 &middot; AAA</span></div>
+          <div class="sw-info"><h3>Daylight White</h3><span class="hex">#FFFFFF</span><p>The main ground. Most of every page.</p></div>
+        </div>
+        <div class="sw md reveal">
+          <div class="sw-chip" style="background:#F4F7FC;color:#0B1220"><span class="aa">Aa</span><span class="ratio">Ink 17.44:1 &middot; Graphite 7.42:1</span></div>
+          <div class="sw-info"><h3>Cloud</h3><span class="hex">#F4F7FC</span><p>Second ground for alternating sections and panels.</p></div>
+        </div>
+        <div class="sw sm reveal">
+          <div class="sw-chip" style="background:#E4ECFF;color:#0B1220"><span class="aa">Aa</span><span class="ratio">Ink 15.82:1 &middot; Cobalt 4.90:1</span></div>
+          <div class="sw-info"><h3>Sky</h3><span class="hex">#E4ECFF</span><p>Pale tint for the announcement bar, highlights, icon tiles and chips.</p></div>
+        </div>
+        <div class="sw sm reveal">
+          <div class="sw-chip" style="background:#475166;color:#fff"><span class="aa">Aa</span><span class="ratio">On White 7.96:1 &middot; AAA</span></div>
+          <div class="sw-info"><h3>Graphite</h3><span class="hex">#475166</span><p>Secondary text, captions and notes. Never for headlines.</p></div>
+        </div>
+        <div class="ratio-bar reveal">
+          <div class="bar" role="img" aria-label="Usage: white 60 percent, cloud and sky 20 percent, night ink 12 percent, cobalt 8 percent">
+            <span style="flex:60;background:#fff">White 60%</span>
+            <span style="flex:20;background:#E4ECFF;color:#0B1220">Cloud + Sky 20%</span>
+            <span style="flex:12;background:#0B1220;color:#fff">Ink 12%</span>
+            <span style="flex:8;background:#1F4FFF;color:#fff">Cobalt 8%</span>
+          </div>
+          <p class="cap"><span>Roughly how much of each color a page uses</span><span>Rules #DCE2EC &middot; Mist #A9B4C8 on ink 8.96:1</span></p>
+        </div>
+        <div class="pairs reveal">
+          <div class="pair" style="background:#fff"><b style="color:#1F4FFF">Link text</b><span>Cobalt on White 5.80</span></div>
+          <div class="pair" style="background:#1F4FFF;color:#fff;border-color:#1F4FFF"><b>Button text</b><span>White on Cobalt 5.80</span></div>
+          <div class="pair" style="background:#1739CC;color:#E4ECFF;border-color:#1739CC"><b style="color:#fff">Hover panel</b><span>Sky on Cobalt Press 7.1</span></div>
+          <div class="pair" style="background:#0B1220;color:#A9B4C8;border-color:#0B1220"><b style="color:#fff">Footer</b><span>Mist on Ink 8.96</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 TYPE -->
+  <section class="sec" id="type" aria-labelledby="type-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">03</span><h2 id="type-title">Typography</h2></div>
+        <p>A heavy, characterful grotesk for headlines, tracked tight like a modern product site, and a clean, open sans for everything people read. Both are free on Google Fonts. Numbers always use lining figures.</p>
+      </div>
+      <div class="type-grid">
+        <div class="panel white specimen reveal">
+          <div class="meta"><h3>Bricolage Grotesque</h3><span class="small muted">Display &middot; 600 to 800</span></div>
+          <span class="big disp" aria-hidden="true">Aa</span>
+          <div class="weights"><span style="font:600 26px var(--display)">SemiBold</span><span style="font:700 26px var(--display)">Bold</span><span style="font:800 26px var(--display)">ExtraBold</span></div>
+          <p class="chars" style="font-family:var(--display);font-weight:700">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+        </div>
+        <div class="panel specimen reveal">
+          <div class="meta"><h3>Hanken Grotesk</h3><span class="small muted">Text &middot; 400 to 600</span></div>
+          <span class="big bod" aria-hidden="true">Aa</span>
+          <div class="weights"><span style="font:400 24px var(--body)">Regular</span><span style="font:500 24px var(--body)">Medium</span><span style="font:600 24px var(--body)">SemiBold</span></div>
+          <p class="chars" style="font-family:var(--body)">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+        </div>
+        <div class="scale reveal" role="table" aria-label="Type scale">
+          <div class="srow" role="row"><span class="k" role="cell">Display XL</span><span class="s t-xl" role="cell">Find your people.</span><span class="spec" role="cell">112 / 0.92 / -3.6% / 800</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Display L</span><span class="s t-l" role="cell">Start wherever you are</span><span class="spec" role="cell">72 / 0.98 / -3% / 800</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Display M</span><span class="s t-m" role="cell">Room for questions</span><span class="spec" role="cell">50 / 1.02 / -2.6% / 800</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Title</span><span class="s t-title" role="cell">Plan Your Visit</span><span class="spec" role="cell">27 / 1.15 / -2.4% / 780</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Lead</span><span class="s t-lead" role="cell">No pressure and no sign-up sheet at the door.</span><span class="spec" role="cell">19 / 1.55 / 400</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Body</span><span class="s t-body" role="cell">Coffee is on at 8:30 and kids check-in opens at 8:40.</span><span class="spec" role="cell">17 / 1.6 / 400</span></div>
+          <div class="srow" role="row"><span class="k" role="cell">Label</span><span class="s" role="cell"><span class="label">Next steps</span></span><span class="spec" role="cell">12.5 / caps / +14% / 600</span></div>
+        </div>
+        <div class="sample">
+          <div class="panel white reveal">
+            <p class="label">Latest message</p>
+            <h3>Room for questions</h3>
+            <p class="muted">Catch up on Sunday in the car, on a walk or during nap time. Every message is online by Monday morning.</p>
+            <p style="margin-top:24px"><a class="btn btn-outline" href="#social">All Messages</a></p>
+          </div>
+          <div class="panel cobalt reveal">
+            <p class="label on-dark">Every Sunday</p>
+            <h3 style="color:#fff">Come as you are. Leave a little lighter.</h3>
+            <p style="color:var(--sky)">Headlines in sentence case. Buttons and menu names in Title Case. Short sentences. No dashes doing the work of a comma.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 PHOTOGRAPHY -->
+  <section class="sec" id="photo" aria-labelledby="photo-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">04</span><h2 id="photo-title">Photography</h2></div>
+        <p>Daylight, real moments and groups of adults doing ordinary church things together. Clean whites and cool, open shadows. Big crops with room to breathe, set in 8 to 10px corners.</p>
+      </div>
+      <div class="photo-grid reveal">
+        <figure class="ph a"><img src="photos/worship-hands-raised.jpg" alt="People with hands raised during worship in a bright room" width="1800" height="1200" loading="lazy"><figcaption>Worship, from behind the crowd</figcaption></figure>
+        <figure class="ph b"><img src="photos/small-group-bibles.jpg" alt="Two young women reading the Bible together outside" width="1800" height="2700" loading="lazy" style="object-position:50% 58%"><figcaption>Small groups</figcaption></figure>
+        <figure class="ph c"><img src="photos/serving-donations-sorting.jpg" alt="Volunteers sorting donations in a bright room" width="1800" height="2700" loading="lazy" style="object-position:50% 66%"><figcaption>Serving</figcaption></figure>
+        <figure class="ph d"><img src="photos/prayer-hands-on-shoulders.jpg" alt="Friends praying with their hands on a young man&#39;s shoulders" width="1800" height="2700" loading="lazy" style="object-position:50% 30%"><figcaption>Prayer</figcaption></figure>
+        <figure class="ph e"><img src="photos/pastor-teaching.jpg" alt="A pastor teaching in a bright room" width="1800" height="2250" loading="lazy" style="object-position:55% 62%"><figcaption>Teaching</figcaption></figure>
+      </div>
+      <div class="do-grid">
+        <div class="panel grade reveal">
+          <h3>The grade</h3>
+          <p class="small muted">Shoot or edit toward bright daylight. Lift shadows a little, keep whites white and skin natural. No orange tint, no heavy filters, no vignettes.</p>
+          <div class="chips"><span>Daylight</span><span>Clean whites</span><span>Cool shadows</span><span>True skin</span></div>
+        </div>
+        <div class="do reveal">
+          <h3>Do</h3>
+          <ul>
+            <li>Groups of adults mid-conversation, mid-laugh, mid-song</li>
+            <li>Wide shots with real space around people</li>
+            <li>Kids in the background or in groups, never alone</li>
+            <li>Ask before you post anyone up close</li>
+          </ul>
+        </div>
+        <div class="avoid reveal">
+          <h3>Avoid</h3>
+          <ul>
+            <li>Stage-only shots with no congregation in them</li>
+            <li>Readable logos, brands or name tags</li>
+            <li>Single-child close-ups or children's faces with names</li>
+            <li>Blue overlays on faces, dark moody grades</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 GRAPHIC ELEMENTS -->
+  <section class="sec" id="elements" aria-labelledby="el-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">05</span><h2 id="el-title">Graphic elements</h2></div>
+        <p>A small kit that makes every page and post feel like Lightwell: the label line, numbered rows, the light pattern, the sky highlighter and a cobalt line that draws like a progress bar.</p>
+      </div>
+      <div class="el-grid">
+        <div class="panel white el s4 reveal">
+          <div class="demo"><span class="label">Next steps</span><span class="label" style="color:var(--ink)">Sundays in Raleigh</span></div>
+          <div><h3>Label line</h3><p class="small">A 22px rule and spaced capitals above every section title.</p></div>
+        </div>
+        <div class="panel white el s4 reveal">
+          <div class="demo numrows">
+            <div class="numrow"><span class="n">01</span><span><b>Start Here</b><span class="t">Lunch with the pastors</span></span></div>
+            <div class="numrow"><span class="n">02</span><span><b>Small Groups</b><span class="t">Living rooms across the city</span></span></div>
+          </div>
+          <div><h3>Numbered rows</h3><p class="small">Big lining numerals, a title and one line. The cobalt mark draws across, then settles short.</p></div>
+        </div>
+        <div class="panel white el s4 reveal">
+          <div class="demo"><p class="hlx">For people who are <span>still figuring it out.</span></p></div>
+          <div><h3>Sky highlighter</h3><p class="small">One phrase per headline, drawn in like a marker when it scrolls into view.</p></div>
+        </div>
+        <div class="panel white el s8 reveal">
+          <div class="demo" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div class="pattern"></div><div class="pattern cob"></div></div>
+          <div><h3>Light pattern</h3><p class="small">The L shaft from the mark, repeated on a 56px grid. Use it behind stories, event graphics and slides, never behind body text.</p></div>
+        </div>
+        <div class="panel white el s4 reveal">
+          <div class="demo"><div class="prog" aria-hidden="true"><span></span><span></span><span></span></div><div class="radii"><span><i style="border-radius:10px"></i><small>Card 10px</small></span><span><i style="border-radius:8px;height:44px;width:96px"></i><small>Button 8px</small></span><span><i style="border-radius:999px;height:36px;width:88px"></i><small>Chip pill</small></span></div></div>
+          <div><h3>Lines and corners</h3><p class="small">1px rules, a 3px cobalt progress line, 8px buttons, 10px cards and photos. Pills only for small chips.</p></div>
+        </div>
+        <div class="panel white el s6 reveal">
+          <div class="demo">
+            <div class="timechip">
+              <div class="tc"><i><svg aria-hidden="true"><use href="#i-clock"/></svg></i><span><small>Sundays</small><b>9:00 &amp; 10:45 AM</b></span></div>
+              <div class="tc"><i><svg aria-hidden="true"><use href="#i-pin"/></svg></i><span><small>Find us</small><b>1218 Brightwater Ave</b></span></div>
+            </div>
+          </div>
+          <div><h3>Time strip</h3><p class="small">Service times and the address, framed by hairlines with sky icon tiles. It goes on the first screen of every page.</p></div>
+        </div>
+        <div class="panel white el s6 reveal">
+          <div class="demo"><p style="font:800 clamp(26px,3vw,40px)/1 var(--display);letter-spacing:-.036em">Find your <span style="color:var(--cobalt)">people.</span></p><p class="small muted">people &rarr; peace &rarr; Sunday</p></div>
+          <div><h3>The changing word</h3><p class="small">One word in the hero swaps like a ticker. The old word leaves completely before the new one rises in.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 BUTTONS AND UI -->
+  <section class="sec" id="ui" aria-labelledby="ui-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">06</span><h2 id="ui-title">Buttons and UI</h2></div>
+        <p>One filled cobalt button per view, outline buttons for the rest, arrows only on primary buttons and text links. Every control is at least 44px tall on phones, and focus is always visible.</p>
+      </div>
+      <div class="ui-grid">
+        <div class="panel white ui s7 reveal">
+          <h3>Buttons</h3>
+          <div class="row"><a class="btn btn-primary" href="#ui">Plan Your Visit <span aria-hidden="true">&rarr;</span></a><a class="btn btn-outline" href="#ui">Get Directions</a></div>
+          <div class="row"><span class="btn btn-primary hover">Hover <span aria-hidden="true">&rarr;</span></span><span class="btn btn-outline hover">Hover</span><span class="btn btn-outline focus">Keyboard focus</span></div>
+          <div class="row"><span class="btn btn-primary btn-sm">Small</span><span class="btn btn-outline btn-sm">Give to Room to Grow</span><a class="tlink" href="#ui">Talk to us about baptism</a><a class="go" href="#ui">What Sunday looks like <span aria-hidden="true">&rarr;</span></a></div>
+        </div>
+        <div class="panel white ui s5 reveal">
+          <h3>Form</h3>
+          <label class="small muted" for="bb-email">Email address</label>
+          <div class="field"><input id="bb-email" class="focus" type="email" placeholder="you@example.com" value="you@example.com"><span class="btn btn-primary">Sign Up <span aria-hidden="true">&rarr;</span></span></div>
+          <p class="small" style="color:var(--cobalt);font-weight:600">Thanks. You are on the list for Thursday.</p>
+        </div>
+        <div class="ui s4 reveal">
+          <div class="mini-card">
+            <div class="img"><img src="photos/family-walking-sidewalk.jpg" alt="A family walking along a sunny sidewalk" width="1800" height="1200" loading="lazy"></div>
+            <div class="body"><h4>Plan Your Visit</h4><p>First time? Here is how Sunday works.</p><span class="go">What Sunday looks like <span aria-hidden="true">&rarr;</span></span></div>
+          </div>
+          <p class="cap"><span>Photo card, hover state</span></p>
+        </div>
+        <div class="ui s8 reveal">
+          <div class="annc"><span><span class="tag">New</span><b>Room to Grow:</b> bright new kids rooms open this spring.</span><span class="play"><i><svg aria-hidden="true"><use href="#i-play"/></svg></i>Watch the Video</span></div>
+          <p class="cap" style="margin-top:0"><span>Announcement bar</span></p>
+          <div class="row" style="align-items:flex-start;gap:20px">
+            <div class="phone" aria-label="Phone Sundays bar example" role="img">
+              <div class="scr"><img src="photos/sunday-room-chairs.jpg" alt="" width="1800" height="1200" loading="lazy"><span class="fab" aria-hidden="true"><svg><use href="#i-chat"/></svg></span></div>
+              <div class="sbar"><span class="dot"></span><span class="info"><b>Sundays</b><span>9:00 &amp; 10:45 AM</span></span><span class="btn btn-primary">Plan Your Visit</span></div>
+            </div>
+            <div style="flex:1;min-width:240px;display:grid;gap:12px">
+              <div class="bubbles"><p class="bub bot">Hi, I am Hope. What would you like to know?</p><p class="bub me">Where do I park?</p><p class="bub bot">Free lot behind the building. Look for the blue flags.</p><div class="chiprow"><span class="chip">Service times</span><span class="chip">Kids</span></div></div>
+              <div class="row"><span class="fab" aria-hidden="true"><svg><use href="#i-chat"/></svg></span><span class="small muted">Hope, the chat circle, rides just above the phone Sundays bar. The bar steps aside near a matching button and at the footer.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 VOICE -->
+  <section class="sec" id="voice" aria-labelledby="voice-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">07</span><h2 id="voice-title">Voice and tone</h2></div>
+        <p>We sound like a friend who opens the blinds and says, come on in. Warm, plain and a little bit fun. We say what time things start and where to park before we say anything clever.</p>
+      </div>
+      <div class="voice-grid reveal">
+        <div class="word"><h3>Bright</h3><p>Hopeful and light on its feet. We smile in writing.</p></div>
+        <div class="word"><h3>Honest</h3><p>Real questions get real answers, including "we are not sure."</p></div>
+        <div class="word"><h3>Welcoming</h3><p>Written for the person who has never been to church.</p></div>
+        <div class="word"><h3>Clear</h3><p>Times, places and next steps first. One idea per sentence.</p></div>
+        <div class="word"><h3>Unhurried</h3><p>No pressure, no countdowns, no guilt. Come when you are ready.</p></div>
+      </div>
+      <div class="say reveal">
+        <div class="say-h"><div>We say</div><div>We avoid</div></div>
+        <div class="say-r"><div>Come as you are. We have been getting ready for you.</div><div>All are welcome to attend our worship experience.</div></div>
+        <div class="say-r"><div>Kids check-in opens at 8:40. Every volunteer is background checked.</div><div>Our children's ministry provides age-appropriate programming.</div></div>
+        <div class="say-r"><div>Ten or so people, a living room and real conversation.</div><div>Engage in authentic biblical community.</div></div>
+        <div class="say-r"><div>Our team would love to pray with you.</div><div>Submit your prayer request via the form below.</div></div>
+        <div class="say-r"><div>Plan Your Visit</div><div>Click here to learn more!!!</div></div>
+      </div>
+      <div class="rules reveal">
+        <div class="note"><h3>Short sentences</h3><p>If a sentence needs a breath, make it two.</p></div>
+        <div class="note"><h3>No em dashes, no emojis</h3><p>Use a period or a comma. Let the words carry the warmth.</p></div>
+        <div class="note"><h3>Case</h3><p>Buttons and menu names in Title Case. Headlines and links in sentence case.</p></div>
+        <div class="note"><h3>Names</h3><p>Pastors go by first names. Say "Pastor Priya," never "Senior Leadership."</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 SOCIAL -->
+  <section class="sec" id="social" aria-labelledby="social-title">
+    <div class="wrap">
+      <div class="sec-h reveal">
+        <div><span class="num">08</span><h2 id="social-title">Social posts</h2></div>
+        <p>Three square posts and a story, built from the same parts as the website. Photo posts carry the times. Quote cards come straight from Sunday. Stories ask a question and point to one link.</p>
+      </div>
+      <div class="social-grid">
+        <figure class="post-wrap reveal">
+          <div class="post pa" role="img" aria-label="Instagram post: Find your people. Sundays at 9:00 and 10:45 AM at 1218 Brightwater Ave.">
+            <div class="pimg"><img src="photos/friends-coffee-table.jpg" alt="" width="1800" height="1200" loading="lazy" style="object-position:36% 45%"></div>
+            <div class="ptxt">
+              <div><span class="lbl">Sundays in downtown Raleigh</span><h4>Find your <span>people.</span></h4></div>
+              <div class="pfoot"><span>9:00 &amp; 10:45 AM &middot; 1218 Brightwater Ave</span><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg></div>
+            </div>
+          </div>
+          <figcaption><span>Invite post</span><span>1080 &times; 1080</span></figcaption>
+        </figure>
+        <figure class="post-wrap reveal">
+          <div class="post pb" role="img" aria-label="Quote card: You do not have to have it all figured out to walk through the door. Pastor Theo, Open Doors week 3.">
+            <svg class="shaft" aria-hidden="true"><use href="#i-shaft"/></svg>
+            <div class="in">
+            <span class="lbl">Open Doors &middot; Week 3</span>
+            <blockquote>You do not have to have it all figured out to walk through the door.</blockquote>
+            <div class="who"><span>Pastor Theo<small>Sunday, November 15</small></span><svg class="mk" aria-hidden="true"><use href="#i-mark-rev"/></svg></div>
+            </div>
+          </div>
+          <figcaption><span>Quote card from Sunday</span><span>1080 &times; 1080</span></figcaption>
+        </figure>
+        <figure class="post-wrap reveal">
+          <div class="post pc" role="img" aria-label="Event post: Baptism Sunday, December 6. Ready to go public with your faith? Sign up by November 29.">
+            <img src="photos/baptism-at-the-shore.jpg" alt="" width="1800" height="1200" loading="lazy">
+            <div class="in">
+              <div class="ptop"><span class="date"><small>Sun</small><b>Dec 6</b></span><svg class="mk" aria-hidden="true"><use href="#i-mark-rev"/></svg></div>
+              <div><h4>Baptism Sunday</h4><p>Ready to go public with your faith? Sign up by November 29.</p><span class="pill">Link in bio</span></div>
+            </div>
+          </div>
+          <figcaption><span>Event post</span><span>1080 &times; 1080</span></figcaption>
+        </figure>
+      </div>
+      <div class="story-row">
+        <figure class="reveal" style="margin:0">
+          <div class="story" role="img" aria-label="Instagram story: This Sunday, Open Doors week 4, with a poll asking Coming Sunday? and a Plan Your Visit link sticker.">
+            <div class="pattern" aria-hidden="true"></div>
+            <div class="in">
+              <div class="sbars"><span></span><span></span><span></span></div>
+              <div class="head"><svg class="mk" aria-hidden="true"><use href="#i-mark"/></svg>lightwell<small>2h</small></div>
+              <div class="simg"><img src="photos/worship-hands-raised.jpg" alt="" width="1800" height="1200" loading="lazy" style="object-position:40% 50%"></div>
+              <h4>This Sunday <span>Open Doors, week 4</span></h4>
+              <div class="poll"><b>Coming Sunday?</b><div class="opt win"><i style="width:72%"></i><span>Count me in</span><span>72%</span></div><div class="opt"><i style="width:28%"></i><span>Watching online</span><span>28%</span></div></div>
+              <span class="link-st"><svg aria-hidden="true"><use href="#i-link"/></svg>Plan Your Visit</span>
+            </div>
+          </div>
+          <figcaption class="cap"><span>Story with poll and link</span><span>1080 &times; 1920</span></figcaption>
+        </figure>
+        <div class="specs reveal">
+          <h3>How the posts are built</h3>
+          <ul>
+            <li><b>Type</b><span>Bricolage Grotesque ExtraBold for the one big line, Hanken Grotesk for the rest. Never more than 12 words on a square post.</span></li>
+            <li><b>Color</b><span>White or cobalt grounds. On photos, a night ink fade from the bottom keeps white type above 4.5:1.</span></li>
+            <li><b>Mark</b><span>Always in a corner, never centered. The reversed mark on cobalt and on photos.</span></li>
+            <li><b>Safe zones</b><span>Keep words 120px from every edge of a story so the app's buttons never cover them.</span></li>
+            <li><b>Photos</b><span>Daylight, groups, real moments. Same grade as the website.</span></li>
+            <li><b>Templates</b><span>Rebuild these four as Canva templates so any volunteer can make a post in ten minutes.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="lockup"><svg aria-hidden="true"><use href="#i-mark-rev"/></svg><span class="wm" style="font:800 1em/1 var(--display);letter-spacing:-.045em">lightwell</span></span>
+    <p>Template preview by Genesis Ministry. Lightwell Church, its pastors and its address are fictional and used only to show the Bright &amp; Modern look. Photos are from Unsplash and Pexels under their free licenses; see photos/CREDITS.md.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove("reveal-init"); e.target.classList.add("reveal-in"); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
+  const vh = window.innerHeight || 800;
+  document.querySelectorAll(".reveal").forEach((el) => {
+    if (el.getBoundingClientRect().top < vh * 0.92) { el.classList.add("reveal-in"); return; }
+    io.observe(el);
+    el.classList.add("reveal-init");
+  });
+  const catchUp = () => {
+    const h = window.innerHeight || 800;
+    document.querySelectorAll(".reveal-init").forEach((el) => {
+      if (el.getBoundingClientRect().top < h * 0.95) { el.classList.remove("reveal-init"); el.classList.add("reveal-in"); io.unobserve(el); }
+    });
+  };
+  window.addEventListener("scroll", () => requestAnimationFrame(catchUp), { passive: true });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) catchUp(); });
+})();
+</script>
+</body>
+</html>

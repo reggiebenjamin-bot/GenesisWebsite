@@ -1,0 +1,25 @@
+/* Copied from the Genesis OS repo (v2/refine/reactivation.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Reactivation approval. Same dark gold contrast as decision blocks. */
+
+.v2-op-page{max-width:760px;color:#f6f1e6;font-size:16px;line-height:1.45}
+.v2-op-page h1{margin:4px 0 8px;color:#f6f1e6;font-family:Georgia,"Iowan Old Style",serif;font-size:32px;font-weight:500;line-height:1.15}
+.v2-op-kicker{margin:0;color:#f1d898;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.v2-op-note{margin:0 0 16px;color:#f6f1e6;font-size:16px}
+.v2-op-card{margin:0 0 14px;padding:16px;border:1px solid #c9a157;border-radius:12px;background:#17181c}
+.v2-op-card h2{margin:8px 0;color:#f6f1e6;font-size:22px;line-height:1.25}
+.v2-op-meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px}
+.v2-op-pill{display:inline-flex;align-items:center;min-height:28px;padding:4px 8px;border:1px solid #f1d898;border-radius:999px;color:#f1d898;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.v2-op-subject{margin:0 0 8px;color:#f6f1e6;font-weight:700}
+.v2-op-body{margin:0;padding:12px;border-radius:10px;background:#0d0e10;color:#f6f1e6;white-space:pre-wrap}
+.v2-op-disclaimer{margin:10px 0 0;color:#f1d898;font-weight:700}
+.v2-op-actions{display:grid;gap:8px;margin-top:12px}
+.v2-op-page button{min-height:48px;padding:12px 14px;border:1px solid #f1d898;border-radius:10px;background:#c9a157;color:#1b170e;font-size:16px;font-weight:700}
+.v2-op-page button.v2-op-quiet{background:#17181c;color:#f6f1e6}
+.v2-op-help{margin:8px 0 0;color:#f6f1e6;font-size:14px}
+.v2-op-empty{padding:16px;border:1px solid #c9a157;border-radius:12px;background:#17181c;color:#f6f1e6}
+
+@media (max-width:720px){
+  .v2-op-page h1{font-size:28px}
+  .v2-op-actions{grid-template-columns:1fr}
+}

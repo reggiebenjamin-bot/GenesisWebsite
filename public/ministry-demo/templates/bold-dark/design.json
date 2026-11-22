@@ -1,0 +1,205 @@
+{
+  "look": "Bold & Dark",
+  "slug": "bold-dark",
+  "forChurches": "Youth-heavy, worship-led churches: students, young adults and young families who meet on Sunday nights as much as Sunday mornings.",
+  "church": {
+    "name": "Lampstand Church",
+    "fictional": true,
+    "nameCheck": "One web search on 2026-11-19 for \"Lampstand Church\" Columbus Ohio found no church by that exact name in Columbus.",
+    "city": "Columbus",
+    "state": "Ohio",
+    "neighborhood": "Short North",
+    "streetAddress": "1180 Foundry Row, Columbus, OH 43201",
+    "addressNote": "Foundry Row is a made-up street. The map links point to the Short North neighborhood.",
+    "phone": "(614) 555-0142",
+    "sundayTimes": [
+      "10:00 AM",
+      "6:00 PM"
+    ],
+    "sundayTimesDisplay": "Sundays 10 AM & 6 PM",
+    "timesNote": "The 10 AM gathering has Lampstand Kids (nursery to fifth grade). Students and young adults fill the 6 PM gathering, which is also live on YouTube.",
+    "pastors": [
+      "Andre",
+      "Talia"
+    ],
+    "pastorsLine": "Lead pastors Andre and Talia, a married couple who started Lampstand in a borrowed living room in 2019 with eleven people and a guitar.",
+    "tagline": "Light for the city.",
+    "heroHeadline": {
+      "line1": "Light for the",
+      "line2ChangingWord": [
+        "city.",
+        "curious.",
+        "weary.",
+        "restless."
+      ]
+    },
+    "missionLine": "Nobody lights a lamp to hide it. We gather to shine together, then carry that light into every corner of Columbus.",
+    "scriptureRoot": "Matthew 5:14-16",
+    "announcement": "We are buying the Foundry. A campaign to buy and renovate the hall the church already rents.",
+    "currentSeries": "Lamps On (part 3: Shine where you are, November 15, 2026, Talia)"
+  },
+  "palette": [
+    {
+      "name": "Kiln",
+      "hex": "#14110E",
+      "role": "Ground: page background, header, footer. Warm near-black, never pure black.",
+      "carriesText": "Bone #F4EEE4",
+      "contrast": "16.30:1",
+      "alsoCarries": "Ash #B8AD9E at 8.52:1, Flare #FF9A1F at 8.86:1"
+    },
+    {
+      "name": "Soot",
+      "hex": "#1F1A16",
+      "role": "Raised ground: reviews band, dropdown menus, chat sheet, brand board tiles.",
+      "carriesText": "Bone #F4EEE4",
+      "contrast": "14.94:1",
+      "alsoCarries": "Ash #B8AD9E at 7.81:1, Flare #FF9A1F at 8.13:1"
+    },
+    {
+      "name": "Bone",
+      "hex": "#F4EEE4",
+      "role": "All headlines and primary text; the chat circle.",
+      "carriesText": "Kiln #14110E",
+      "contrast": "16.30:1"
+    },
+    {
+      "name": "Ash",
+      "hex": "#B8AD9E",
+      "role": "Quiet text: lead paragraphs, captions, notes, footer base line.",
+      "carriesText": "Kiln #14110E",
+      "contrast": "8.52:1"
+    },
+    {
+      "name": "Flare",
+      "hex": "#FF9A1F",
+      "role": "The one accent: primary buttons, the changing hero word, label marks, the next steps band, play tiles, number chips. Flat only, never a glow or gradient.",
+      "carriesText": "Kiln #14110E",
+      "contrast": "8.86:1",
+      "alsoCarries": "Umber #4A2E0A at 5.87:1"
+    },
+    {
+      "name": "Umber",
+      "hex": "#4A2E0A",
+      "role": "Quiet text on the Flare band so titles stay loudest.",
+      "carriesText": "on Flare #FF9A1F",
+      "contrast": "5.87:1"
+    },
+    {
+      "name": "Vesper",
+      "hex": "#2B2150",
+      "role": "Deep violet used once per page: the announcement bar.",
+      "carriesText": "Bone #F4EEE4",
+      "contrast": "12.67:1",
+      "alsoCarries": "Flare #FF9A1F at 6.89:1, Ash #B8AD9E at 6.62:1"
+    },
+    {
+      "name": "Char",
+      "hex": "#3A332C",
+      "role": "Rules and borders only. Never used for text.",
+      "carriesText": "none",
+      "contrast": "1.51:1 against Kiln (lines only)"
+    }
+  ],
+  "contrastMethod": "WCAG 2.x relative luminance formula, computed with a Node script; every text pair is at least 4.5:1.",
+  "fonts": {
+    "display": {
+      "family": "Big Shoulders Display",
+      "weights": [
+        700,
+        800,
+        900
+      ],
+      "use": "Headlines, numbers, card titles, the wordmark. Set in caps by the display style (copy is written in sentence case), tracking 0 to -1%, line height 0.84 to 0.95."
+    },
+    "body": {
+      "family": "Instrument Sans",
+      "weights": [
+        400,
+        500,
+        600,
+        700
+      ],
+      "use": "Body 17px at 1.6, lead 19.5px, labels 12.5px 600 caps at +16% tracking, buttons 16px 600."
+    },
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap",
+    "scale": {
+      "hero": "52 to 212px",
+      "title": "50 to 116px",
+      "titleSmall": "42 to 70px",
+      "cardTitle": "32 to 40px",
+      "lead": "17 to 19.5px",
+      "body": "17px",
+      "label": "12.5px"
+    }
+  },
+  "shapes": {
+    "radius": "2px on buttons, fields and tags; 0 on photos and cards. The chat circle and the pulse play are the only round things.",
+    "rules": "1px Char hairlines between sections and inside lists; a 3px Flare bar before every label; label rows run a hairline to the right edge; 4 to 5px strike lines on next steps.",
+    "buttons": "One filled Flare button per view with Kiln text; outline buttons in Bone at 55% border. 52px tall, 44px small. Paired buttons share one width. Arrows on primary buttons and text links only.",
+    "signatureDetails": [
+      "Square Flare number chips (01, 02, 03)",
+      "Viewfinder corners in Flare on two key photos",
+      "A reel line (thin progress bar) for things that play",
+      "Square Flare play tiles"
+    ]
+  },
+  "motion": {
+    "character": "Stage lights switching on: quick, decisive and warm. Fast expo-out easing (cubic-bezier(.16,1,.3,1)), short staggers, hard-edged panels. Energetic but never bouncy or glowing.",
+    "pieces": [
+      "Hero photo drifts slowly (28 second push and pan) in place of a film",
+      "Hero lines rise in on load; the changing word slides out upward, then the next slides up from below, never overlapping",
+      "Sections and photos rise 30px into place as they scroll in (reveal-init then reveal-in, hidden state added only after the observer exists)",
+      "Next steps columns rise one by one and a Kiln strike line draws across each, then settles to a short mark",
+      "Hovering a next step wipes a Kiln panel up from the bottom, turns the title Bone and runs the line full width in Flare",
+      "Photo cards: the photo pushes in, a Flare bar wipes across its bottom edge and the title turns Flare",
+      "Primary buttons: a sheen sweeps across once on arrival and a soft light follows the cursor, inside the button only",
+      "Announcement play button pulses gently",
+      "Photo strip scrolls slowly, pauses on hover or focus, with a Pause Photos button",
+      "Reviews rotate every 6.5 seconds with a reel line showing time left, paused on hover or focus",
+      "Scroll progress line under the header; slight parallax on the statement band"
+    ],
+    "reducedMotion": "Everything stops: no drift, no word swap, no strip scroll, no autoplay, no reveals (content is simply shown)."
+  },
+  "photoTreatment": {
+    "grade": "Warm stage and tungsten light, amber highlights, deep warm shadows crushed toward Kiln, slightly lower saturation, a touch more contrast.",
+    "layout": "Photos are full bleed or hard-edged rectangles with no radius. Text over photos always sits on a Kiln shade on one side; on phones the photo sits above the words.",
+    "subjects": "Adults and students mid-moment: worship, greeting, prayer, baptism, serving, small groups. Kids only in groups.",
+    "source": "14 Unsplash License photos, credits in photos/CREDITS.md"
+  },
+  "logo": {
+    "concept": "A lampstand built from four flat bars with a single flame on top (Matthew 5:15, a lamp on a stand gives light to everyone in the house), beside a heavy condensed wordmark: LAMPSTAND in Big Shoulders Display Black with +3% tracking.",
+    "lockups": [
+      "Primary: mark left of the wordmark",
+      "Stacked: mark above the wordmark with COLUMBUS between two Flare dashes",
+      "Small mark: the lampstand alone on Flare, Kiln, Bone or Vesper squares and circles"
+    ],
+    "colorRule": "The flame is always Flare (or Kiln when the whole mark sits on Flare). The stand takes the text color of its ground.",
+    "clearSpace": "Equal to the flame height on all sides",
+    "minimumSize": "Wordmark 120px wide; mark 24px tall"
+  },
+  "templatePreviewBadge": "A small outlined 'Template preview' tag sits in the header beside the logo on every page and is repeated in the footer base line.",
+  "tints": [
+    {
+      "name": "Vesper tint",
+      "hex": "#D9D0E8",
+      "role": "Second line of text on the Vesper announcement bar only.",
+      "carriesText": "on Vesper #2B2150",
+      "contrast": "9.84:1"
+    },
+    {
+      "name": "Field placeholder",
+      "hex": "#8F8577",
+      "role": "Placeholder text in form fields.",
+      "carriesText": "on Soot #1F1A16 and Kiln #14110E",
+      "contrast": "4.75:1 on Soot, 5.19:1 on Kiln"
+    },
+    {
+      "name": "Soot 2",
+      "hex": "#29231D",
+      "role": "Hover ground inside menus and chat bubbles.",
+      "carriesText": "Bone #F4EEE4, Ash #B8AD9E",
+      "contrast": "13.45:1 and 7.03:1"
+    }
+  ],
+  "contrastScript": "contrast-check.mjs (run with node); every text pair is at least 4.5:1, last checked 2026-11-19."
+}

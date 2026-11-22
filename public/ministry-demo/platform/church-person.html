@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>People · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the People list and one record per person on the Genesis OS shell, with the contact card, prayer history, threads, shared gifts, private pastor notes, follow-up reminders and the guest journey. Sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* People only. Prefix: ps-. The list is the Genesis OS Deals pattern and one person is the
+     Genesis OS full record (head card, numbered steps, the side card); these only arrange them. */
+  .ps-back{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap}
+  .ps-back .v2-page-actions{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+  .ps-page .v2-drawer-recommendation>small{text-transform:uppercase;letter-spacing:.1em}
+  .ps-lockline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0}
+  .ps-lockline span.v2-muted-copy{flex:1 1 220px}
+  .ps-req .v2-evidence-row{color:var(--v2-text);font-size:13px;line-height:1.55}
+  .ps-req h3{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .ps-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .ps-attach{display:grid;gap:12px;margin-top:12px}
+  .ps-row-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .ps-gift-list{display:grid;gap:0;margin:0;padding:0;list-style:none}
+  .ps-gift-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:9px 0;border-bottom:1px solid var(--v2-border)}
+  .ps-gift-list li:last-child{border-bottom:0}
+  .ps-gift-list b{color:var(--v2-text);font-size:13px}
+  .ps-gift-list span{color:var(--v2-text-2);font-size:12px;line-height:1.5}
+  .ps-gift-list em{font-style:normal;color:var(--v2-text-2);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ps-rem li>button{flex:none;padding:0;border:0;background:none;border-radius:50%;cursor:pointer;color:inherit}
+  .ps-rem li>button .v2-rec-tick{display:grid}
+  @media (max-width:860px){.ps-rem li>button{min-width:44px;min-height:44px;display:grid;place-items:center;margin:-12px 0 -12px -12px}}
+  .ps-rem-form{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;align-items:end;margin-top:16px}
+  .ps-rem-form .v2-button{grid-column:1/-1;justify-self:start}
+  .ps-side-card p.v2-muted-copy{margin:4px 0 12px}
+  .ps-side-card .ps-row-actions{margin-top:12px}
+  .ps-foot{display:flex;align-items:flex-start;gap:10px;margin:0;color:var(--v2-fine,var(--v2-muted));font-size:12px;line-height:1.6}
+  .ps-foot svg{flex:none;margin-top:2px;color:var(--v2-positive)}
+  .ps-page a.v2-mobile-deal-row{color:inherit;text-decoration:none}
+  .ps-empty{padding:28px 12px;text-align:center;color:var(--v2-muted);font-size:13px}
+  @media (max-width:860px){
+    .ps-rem-form{grid-template-columns:minmax(0,1fr)}
+  }
+</style>
+</head>
+<body data-side="church" data-page="people" data-title="People">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page ps-page" id="ps-page">
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+
+  /* ---------- Extra sample data for this page (same shapes and ids as data.js) ---------- */
+  /* Shared with church-care.html and church-access.html: who opened, replied and was alerted. No private words. */
+  var EXTRA_ACCESS = [
+    { at: "2026-11-19T10:12", who: "s-care",  action: "Opened",  what: "Person page for Sarah N.", where: "People", item: "p-sarah" },
+    { at: "2026-11-19T10:05", who: "s-imani", action: "Opened",  what: "Thread with Abigail R.", where: "Care inbox", item: "t-01" },
+    { at: "2026-11-18T19:02", who: "s-care",  action: "Opened",  what: "Prayer request from Caleb E.", where: "Care inbox", item: "pr-04" },
+    { at: "2026-11-18T12:40", who: "s-care",  action: "Replied", what: "Thread with Sarah N.", where: "Care inbox", item: "t-06" },
+    { at: "2026-11-18T09:30", who: "s-lead",  action: "Opened",  what: "Thread with Lucia P.", where: "Care inbox", item: "t-03" },
+    { at: "2026-11-18T08:20", who: "s-owen",  action: "Opened",  what: "Prayer request from Sarah N.", where: "Care inbox", item: "pr-01" },
+    { at: "2026-11-17T16:05", who: "s-sofia", action: "Replied", what: "Prayer request from Wyatt F.", where: "Care inbox", item: "pr-02" },
+    { at: "2026-11-17T09:40", who: "s-jun",   action: "Opened",  what: "Thread with Kwame A.", where: "Care inbox", item: "t-02" },
+    { at: "2026-11-16T14:12", who: "s-care",  action: "Replied", what: "Prayer request from Fatima A.", where: "Care inbox", item: "pr-03" }
+  ];
+  var ACCESS_ITEM = { "2026-11-19T09:41|s-lead": "pr-01", "2026-11-19T09:15|s-owen": "pr-08", "2026-11-19T08:10|s-nadia": "t-05", "2026-11-18T14:02|s-nadia": "p-maya", "2026-11-18T09:00|s-care": "pr-07", "2026-11-17T21:31|s-care": "pr-07", "2026-11-16T15:40|s-imani": "t-04", "2026-11-13T13:30|s-lead": "p-diego", "2026-11-12T08:40|s-owen": "pr-06" };
+
+  /* Follow-up reminders. Guests also get one from their guest record. */
+  var REMINDERS = {
+    "p-sarah": [
+      { text: "Call Sarah about her mom, as promised", due: "2026-11-19", time: "7:00 PM", owner: "s-care", from: "Thread: Thank you for praying" },
+      { text: "Check in after Sunday", due: "2026-11-23", owner: "s-care", from: "Pastor note" },
+      { text: "Talk about serving. She asked on her gifts result.", due: "2026-11-26", owner: "s-jun", from: "Gifts" }
+    ],
+    "p-peter":  [{ text: "Check-in call", due: "2026-11-23", time: "10:00 AM", owner: "s-care", from: "Urgent request follow-up" }],
+    "p-caleb":  [{ text: "Send a card to Caleb's grandmother", due: "2026-11-20", owner: "s-care", from: "Prayer request" }],
+    "p-lucia":  [{ text: "Offer Lucia two times to meet next week", due: "2026-11-19", owner: "s-lead", from: "Thread: Time with a pastor" }],
+    "p-kwame":  [{ text: "Introduce Kwame to the setup team", due: "2026-11-20", owner: "s-jun", from: "Thread: Joining the setup team" }],
+    "p-fatima": [{ text: "Meal team drop-off for the new baby", due: "2026-11-19", time: "5:30 PM", owner: "s-care", from: "Prayer request" }],
+    "p-naomi":  [{ text: "Send-off card before the January move", due: "2026-12-14", owner: "s-lead", from: "Prayer request" }]
+  };
+  /* Private pastor notes. Pastors only. */
+  var NOTES = {
+    "p-sarah": [{ by: "s-lead", at: "2026-08-12T18:00", text: "Got the teaching job she prayed about in August. Ask how the school year is going." }],
+    "p-peter": [{ by: "s-care", at: "2026-11-18T09:20", text: "Connected with a counselor and has a plan for this week. Check in Monday morning." }],
+    "p-grace": [{ by: "s-care", at: "2026-11-09T12:00", text: "Prefers a phone call. New to the city this year after losing her husband. Go gently." }],
+    "p-lucia": [{ by: "s-lead", at: "2026-11-18T09:35", text: "Asked to talk about something at home. Offer a time this week with either pastor." }]
+  };
+  /* How long-time people first found the church, from the guest path. */
+  var JOURNEY = {
+    "p-sarah": { source: "Plan a Visit form", arrived: "2024-03-03", steps: [
+      { stage: "new", at: "2024-03-03", text: "Planned a visit on the website" },
+      { stage: "welcomed", at: "2024-03-04", text: "Welcome note from Nadia K." },
+      { stage: "visited", at: "2024-03-10", text: "First Sunday, second gathering" },
+      { stage: "start-here", at: "2024-04-07", text: "Came to Start Here" },
+      { stage: "group", at: "2024-05-14", text: "Joined the New Parents Group" },
+      { stage: "serving", at: "2024-09-08", text: "Joined Coffee and Hospitality" } ] },
+    "p-kwame": { source: "Connect card", arrived: "2023-02-19", steps: [
+      { stage: "new", at: "2023-02-19", text: "Filled a connect card" },
+      { stage: "welcomed", at: "2023-02-20", text: "Welcome call from Hector M." },
+      { stage: "visited", at: "2023-02-26", text: "Came back the next Sunday" },
+      { stage: "start-here", at: "2023-04-02", text: "Came to Start Here" },
+      { stage: "group", at: "2023-05-06", text: "Joined Men's Breakfast" } ] }
+  };
+  /* Older prayer forms that never attached themselves. A pastor attaches one only when the person asks. */
+  var OLDER = [
+    { id: "old-1", received: "2026-05-17T20:14", topic: "Family", form: "Website prayer form", typed: "s****@example.com" },
+    { id: "old-2", received: "2026-03-02T08:41", topic: "Health", form: "Website prayer form", typed: "sarah****@example.com" },
+    { id: "old-3", received: "2025-12-14T19:55", topic: "Thanksgiving", form: "Paper card, typed in", typed: "No email given" }
+  ];
+
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, viewer = ctx.viewer, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var $ = function (id) { return document.getElementById(id); };
+  var page = $("ps-page");
+  var local = {};
+  function L(pid) { return local[pid] || (local[pid] = { reminders: [], notes: [], attached: [], done: {} }); }
+  var accessAll = D.access.map(function (a) { var o = {}; for (var k in a) o[k] = a[k]; o.item = ACCESS_ITEM[a.at + "|" + a.who] || null; return o; }).concat(EXTRA_ACCESS);
+  var waitingIds = {}; GM.waitingCare().forEach(function (w) { waitingIds[w.personId] = true; });
+
+  /* ---------- Helpers ---------- */
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function norm(s) { s = String(s || "").toLowerCase(); try { s = s.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) {} return s; }
+  function monthYear(s) { var d = GM.parseDate(s); return MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function statusLabel(p) { return p.status === "member" ? "Member" : p.status === "regular" ? "Regular" : "Guest"; }
+  function attendsLabel(p) { return p.attends === "in person" ? "In person" : p.attends === "online" ? "Online" : "Exploring"; }
+  /* Shared sample people are shown under every church, so "since" never runs earlier than the church itself. */
+  function sinceDate(p) { var d = GM.parseDate(p.since); if (d.getFullYear() < c.founded) d = new Date(c.founded, d.getMonth(), d.getDate()); return d; }
+  function sinceLine(p) { return p.status === "guest" ? "Guest, first contact " + fmt.date(p.since) : statusLabel(p) + " since " + monthYear(sinceDate(p)); }
+  function shepherdOf(p) { var g = GM.guestByPerson(p.id); return p.shepherd ? GM.staff(p.shepherd) : g ? GM.staff(g.owner) : null; }
+  function reminders(p) {
+    var g = GM.guestByPerson(p.id), list = (REMINDERS[p.id] || []).slice();
+    if (g && g.next && g.due) list.unshift({ text: g.next, due: g.due, owner: g.owner, from: "Guest record" });
+    return list.concat(L(p.id).reminders).map(function (r) { r.key = r.text + "|" + r.due; return r; });
+  }
+  function openReminders(p) { var lc = L(p.id); return reminders(p).filter(function (r) { return !lc.done[r.key]; }).sort(function (a, b) { return GM.parseDate(a.due) - GM.parseDate(b.due); }); }
+  function dueText(r) { var d = fmt.due(r.due); return { text: d.text.charAt(0).toUpperCase() + d.text.slice(1) + (r.time && d.days === 0 ? ", " + r.time : ""), tone: d.tone, days: d.days }; }
+  function attendsBadge(p) { return GM.pill(attendsLabel(p), p.attends === "online" ? "info" : "neutral"); }
+  function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
+  function step(n, eyebrow, title, body, tour, id) {
+    return '<section class="v2-card v2-rec-step"' + (tour ? ' data-tour="' + tour + '"' : "") + (id ? ' id="' + id + '"' : "") + '><div class="v2-rec-step-head"><span class="v2-rec-step-n" aria-hidden="true">' + n + '</span><div><div class="v2-eyebrow">' + esc(eyebrow) + "</div><h2>" + esc(title) + '</h2></div></div><div class="v2-rec-step-body">' + body + "</div></section>";
+  }
+  function fact(label, value) { return '<div class="v2-fact"><small>' + esc(label) + "</small><b>" + esc(value) + "</b></div>"; }
+
+  var id = ctx.params.get("id");
+  if (id && GM.person(id)) paintRecord(GM.person(id)); else paintList();
+
+  /* =====================================================================
+     The People list: one record per person (the Deals pattern)
+     ===================================================================== */
+  function paintList() {
+    var people = D.people.map(function (x) { return GM.person(x.id); }).sort(function (a, b) { return a.name.localeCompare(b.name); });
+    var state = { q: "", filter: "", sort: "name" };
+    var members = people.filter(function (p) { return p.status === "member"; }).length;
+    var regulars = people.filter(function (p) { return p.status === "regular"; }).length;
+    var guests = people.filter(function (p) { return p.status === "guest"; }).length;
+
+    /* The person to check on first: the earliest open reminder outside the guest path. */
+    var pick = null, pickR = null;
+    people.filter(function (p) { return p.status !== "guest"; }).forEach(function (p) {
+      var r = openReminders(p)[0];
+      if (r && (!pickR || GM.parseDate(r.due) < GM.parseDate(pickR.due) || (r.due === pickR.due && p.id === "p-sarah"))) { pick = p; pickR = r; }
+    });
+
+    page.classList.add("v2-deals-page");
+    page.innerHTML =
+      '<header class="v2-page-head"><div><div class="v2-eyebrow">People</div><h1>Everyone</h1><p>' + people.length + " of " + D.peopleTotals.records + " people shown in this preview, one record each. Adults only, and nobody sees a directory.</p></div>" +
+        '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="Who should I check on this week?">Ask ' + esc(HOPE) + '</button><a class="v2-button v2-button-quiet" href="church-access.html">Access Record</a></div></header>' +
+      '<section class="v2-pulse v2-deal-pulse" aria-label="People summary" data-tour="person.pulse">' +
+        pulse("Members", D.peopleTotals.members, members + " of them in this sample list") +
+        pulse("Regulars", D.peopleTotals.regulars, "Here most weeks, not members yet") +
+        pulse("On the guest path", D.guests.length, "Each one has an owner in Guests") + "</section>" +
+      (pick ? '<section class="v2-card v2-next-move v2-deal-next" aria-labelledby="ps-next-title" data-tour="person.next"><div><div class="v2-eyebrow">Person to check on</div><h2 class="v2-serif-headline" id="ps-next-title">' + esc(pick.name) + "</h2><h3>" + esc(sinceLine(pick) + " · " + attendsLabel(pick)) + "</h3>" +
+        '<div class="v2-next-meta">' + GM.pill(dueText(pickR).text, dueText(pickR).tone === "neutral" ? "neutral" : dueText(pickR).tone) + GM.pill(GM.staff(pickR.owner).name, "neutral") + (waitingIds[pick.id] ? GM.pill("Care Waiting", "warning") : "") + "</div>" +
+        '<p class="v2-next-reason">' + esc(pickR.text) + '<span class="v2-next-why">Why now: ' + esc("From " + pickR.from.charAt(0).toLowerCase() + pickR.from.slice(1) + ". The reminder is due today, and the person page holds everything you need for the call.") + "</span></p></div>" +
+        '<div class="v2-next-actions"><a class="v2-button v2-button-primary" href="church-person.html?id=' + esc(pick.id) + '">' + ic("arrow") + "Open " + esc(pick.first) + "&#39;s Page</a>" +
+        '<a class="v2-button v2-button-quiet" href="church-care.html?view=messages">Open Care</a></div></section>' : "") +
+      '<div class="v2-toolbar v2-deal-toolbar" role="toolbar" aria-label="People tools">' +
+        '<label class="v2-search"><span class="sr-only">Search people by name</span><input class="v2-input" id="ps-search" type="search" placeholder="Search by name&hellip;" autocomplete="off"></label>' +
+        '<select class="v2-select v2-nselect" id="ps-filter" aria-label="Show"><option value="">Everyone</option><option value="member">Members</option><option value="regular">Regulars</option><option value="guest">Guests</option><option value="online">Online</option><option value="care">Care Waiting</option></select>' +
+        '<select class="v2-select v2-nselect" id="ps-sort" aria-label="Sort people"><option value="name">Name</option><option value="newest">Newest First</option><option value="due">Reminder Due</option></select></div>' +
+      '<div id="ps-body" data-tour="person.list"></div>' +
+      '<section class="v2-section" aria-label="How People is protected"><p class="ps-foot">' + ic("shield") + "<span>Adults only: every member app account confirmed 18 or older at first sign-in. There is no directory, so members never see each other. Opening a person page is written to the access record.</span></p></section>";
+
+    function body() {
+      var list = people.filter(function (p) {
+        if (state.filter === "online" && p.attends !== "online") return false;
+        if (state.filter === "care" && !waitingIds[p.id]) return false;
+        if (state.filter && state.filter !== "online" && state.filter !== "care" && p.status !== state.filter) return false;
+        return !state.q || norm(p.name).indexOf(state.q) >= 0;
+      });
+      if (state.sort === "newest") list.sort(function (a, b) { return GM.parseDate(b.since) - GM.parseDate(a.since); });
+      if (state.sort === "due") list.sort(function (a, b) { var ra = openReminders(a)[0], rb = openReminders(b)[0]; return (ra ? GM.parseDate(ra.due) : 9e15) - (rb ? GM.parseDate(rb.due) : 9e15); });
+      function careCell(p) {
+        var r = openReminders(p)[0], d = r && fmt.due(r.due);
+        if (waitingIds[p.id]) return GM.pill("Care Waiting", "warning");
+        if (d && d.days != null && d.days <= 0) return GM.pill(d.tone === "danger" ? "Reminder Overdue" : "Reminder Today", d.tone === "danger" ? "danger" : "priority");
+        if (r) return '<span class="v2-deal-why is-calm">' + esc(dueText(r).text) + "</span>";
+        return '<span class="v2-deal-why is-calm">Nothing waiting</span>';
+      }
+      var rows = list.map(function (p) {
+        var sh = shepherdOf(p);
+        return '<tr><td class="v2-primary-cell"><a class="v2-deal-row-link" href="church-person.html?id=' + esc(p.id) + '"><b>' + esc(p.name) + "</b></a><span>" + esc(sinceLine(p)) + "</span></td><td>" + attendsBadge(p) + "</td><td>" + careCell(p) + '</td><td class="v2-deal-owner-cell">' + esc(sh ? sh.name : "Not set") + "</td></tr>";
+      }).join("");
+      var mobile = list.map(function (p) {
+        var sh = shepherdOf(p);
+        return '<a class="v2-mobile-deal-row" href="church-person.html?id=' + esc(p.id) + '"><span class="v2-mobile-deal-identity"><b>' + esc(p.name) + "</b><small>" + esc(sinceLine(p)) + "</small></span>" +
+          '<span class="v2-mobile-deal-why">' + careCell(p) + attendsBadge(p) + '</span><span class="v2-mobile-deal-open">' + esc(sh ? sh.name : "No shepherd yet") + " " + ic("chevron") + "</span></a>";
+      }).join("");
+      $("ps-body").innerHTML = '<section class="v2-card v2-table-card v2-deal-list" aria-label="People"><div class="v2-table-meta"><span>' + list.length + " of " + people.length + " people</span><span>Open a person to see their whole record</span></div>" +
+        (list.length ? '<div class="v2-desktop-deals"><div class="v2-table-scroll"><table class="v2-table v2-deal-table"><thead><tr><th scope="col">Person</th><th scope="col">Attends</th><th scope="col">Care and reminders</th><th scope="col">Shepherd</th></tr></thead><tbody>' + rows + '</tbody></table></div></div><div class="v2-mobile-deals">' + mobile + "</div>"
+          : '<p class="ps-empty">Nobody by that name. Try a first name, or show Everyone.</p>') + "</section>";
+    }
+    $("ps-search").addEventListener("input", function () { state.q = norm(this.value.trim()); body(); });
+    $("ps-filter").addEventListener("change", function () { state.filter = this.value; body(); });
+    $("ps-sort").addEventListener("change", function () { state.sort = this.value; body(); });
+    body();
+    GM.carryLinks(page);
+
+    GM.hope.setBriefing({
+      line: GM.greeting() + ", {name}. " + people.length + " people have a record at " + c.short + ". " + (pick ? pick.name + " is the one to check on first: " + pickR.text.charAt(0).toLowerCase() + pickR.text.slice(1) + "." : ""),
+      chips: (pick ? [{ label: "Open " + pick.first + "'s Page", href: "church-person.html?id=" + pick.id, primary: true }] : []).concat([{ label: "Who Has Care Waiting?", ask: "What is waiting on us in care?" }, { label: "Open Care", href: "church-care.html" }])
+    });
+    GM.setTour([
+      { target: '[data-tour="person.pulse"]', title: "One record per person", text: "Members, regulars and guests, counted. Everyone who has signed in or written in has one page." },
+      { target: '[data-tour="person.next"]', title: "Who to check on first", text: "The earliest follow-up reminder, with the person who owns it. Nobody is forgotten." },
+      { target: '[data-tour="person.list"]', title: "Search, never browse", text: "Staff and pastors find a person by name. Members never see a directory of each other." }
+    ]);
+  }
+
+  /* =====================================================================
+     One person: the Genesis OS full record
+     ===================================================================== */
+  function paintRecord(p) {
+    var first = p.first, g = GM.guestByPerson(p.id), lc = L(p.id), sh = shepherdOf(p);
+    page.classList.add("v2-record-page");
+
+    function head() {
+      var next = openReminders(p)[0];
+      var rec = next
+        ? '<div class="v2-drawer-recommendation"><small>Next step</small><b>' + esc(next.text) + '</b><span class="v2-recommendation-reason">' + esc(dueText(next).text + " · " + GM.staff(next.owner).name + " · from " + next.from.charAt(0).toLowerCase() + next.from.slice(1)) + "</span>" +
+          '<div class="v2-drawer-actions"><button class="v2-button v2-button-primary" type="button" data-gm-action="toast" data-gm-toast="A private thread with ' + esc(first) + ' would open in Care, owned by you. Preview only.">' + ic("message") + "Send a Message</button>" +
+          '<button class="v2-button" type="button" data-ps="done-next" data-key="' + esc(next.key) + '">' + ic("check") + "Mark Done</button>" +
+          '<a class="v2-button v2-button-quiet" href="#ps-reminders">' + ic("clock") + "Add a Reminder</a></div></div>"
+        : '<div class="v2-drawer-recommendation"><small>Next step</small><b>No follow-up is set</b><span class="v2-recommendation-reason">Add a reminder so ' + esc(first) + ' is not forgotten.</span><div class="v2-drawer-actions"><a class="v2-button v2-button-primary" href="#ps-reminders">' + ic("clock") + "Add a Reminder</a></div></div>";
+      return '<section class="v2-card v2-next-move v2-rec-head v2-full-record-head" aria-labelledby="ps-name" data-tour="person.card"><div><div class="v2-eyebrow">' + esc(p.status === "guest" ? "Guest record and person page" : "Person page") + '</div><h1 class="v2-rec-name" id="ps-name">' + esc(p.name) + "</h1>" +
+        '<p class="v2-rec-where">' + esc(sinceLine(p) + " · " + attendsLabel(p) + (p.attends === "in person" ? ", " + c.times : p.attends === "online" ? ", watches the livestream" : "") + " · Prefers " + (p.contact || "Email").toLowerCase()) + "</p>" +
+        '<div class="v2-next-meta">' + GM.pill(statusLabel(p), p.status === "member" ? "gold" : "neutral") + attendsBadge(p) + (p.adultConfirmed ? GM.pill("Adult Confirmed", "positive") : GM.pill("No Member App Yet", "neutral")) + (waitingIds[p.id] ? GM.pill("Care Waiting", "warning") : "") + GM.pill("This Open Is Recorded", "neutral") + "</div></div>" +
+        '<div class="v2-next-actions" id="ps-headnext">' + rec + "</div></section>";
+    }
+
+    /* 1. Who this is */
+    function whoBody() {
+      var arrived = (JOURNEY[p.id] && JOURNEY[p.id].arrived) || (g && g.arrived) || sinceDate(p);
+      var facts = [["Email", p.email], ["Phone", p.phone || "Not given"], ["Prefers", p.contact || "Email"], ["Attends", attendsLabel(p)],
+        ["Member app", p.adultConfirmed ? "Confirmed 18 or older, " + fmt.date(p.adultConfirmed) : "No account yet"], ["First contact", fmt.dateLong(arrived)],
+        ["Shepherd", sh ? sh.name : "Not set"], ["Household", p.household || "Not shared"]];
+      var res = null; D.gifts.results.forEach(function (r) { if (r.personId === p.id) res = r; });
+      var gifts;
+      if (res && res.shared) {
+        var scores = {};
+        if (D.gifts.memberResult.personId === p.id) D.gifts.memberResult.top.forEach(function (t) { scores[t.gift] = t; });
+        gifts = '<section class="v2-record-section" data-tour="person.gifts"><h3>Gifts, shared by ' + esc(first) + " on " + esc(fmt.dateLong(res.finished)) + '</h3><p class="ps-lockline">' + GM.lock("pastors", "Pastors and named leads") + '<span class="v2-muted-copy">Shown only because ' + esc(first) + " said yes.</span></p>" +
+          '<ol class="ps-gift-list">' + res.top.map(function (k) { var gf = GM.gift(k), s = scores[k]; return "<li><span><b>" + esc(gf.name) + "</b><br>" + esc(gf.def) + "</span>" + (s ? "<em>" + s.score + " of " + s.of + "</em>" : "<em></em>") + "</li>"; }).join("") + "</ol>" +
+          '<div class="ps-tags" style="margin-top:10px">' + (res.wantsToTalk ? GM.pill("Wants to Talk About Serving", "gold") : "") + GM.pill(res.servingNow ? "Serving Now" : "Not Serving Yet", "neutral") + "</div>" +
+          '<p class="v2-muted-copy" style="margin-top:8px">Gifts to explore, never a verdict. The score is plain arithmetic from ' + esc(first) + "'s own answers. " + esc(HOPE) + ' never sets a score. <a class="gm-link" href="church-gifts.html">Gifts of Our Church</a></p></section>';
+      } else {
+        gifts = '<section class="v2-record-section" data-tour="person.gifts"><h3>Gifts</h3><div class="v2-state-inline">' + esc(first) + " has not shared gift results with the pastors. Results belong to the member, and a name shows here only after a yes.</div></section>";
+      }
+      var tags = function (arr, empty) { return arr && arr.length ? '<div class="ps-tags">' + arr.map(function (x) { return GM.pill(x, "neutral"); }).join("") + "</div>" : '<p class="v2-muted-copy">' + esc(empty) + "</p>"; };
+      return '<p class="ps-lockline">' + GM.lock("staff", "Staff and pastors") + '<span class="v2-muted-copy">The contact card. Staff and pastors can see it.</span></p>' +
+        '<div class="v2-record-grid">' + facts.map(function (f) { return fact(f[0], f[1]); }).join("") + "</div>" +
+        '<section class="v2-record-section"><h3>Serving</h3>' + tags(p.serving, "Not on a team yet.") + "</section>" +
+        '<section class="v2-record-section"><h3>Groups</h3>' + tags(p.groups, "Not in a group yet.") + "</section>" + gifts;
+    }
+
+    /* 2. Prayer and conversations */
+    function careBody() {
+      var prayers = (p.prayer || []).map(GM.prayerRequest).filter(Boolean).concat(lc.attached).sort(function (a, b) { return GM.parseDate(b.received) - GM.parseDate(a.received); });
+      var list = prayers.map(function (r) {
+        if (r.crisis) {
+          return '<section class="v2-record-section ps-req"><h3>Urgent request, handled with care ' + GM.lock("pastors") + "</h3>" +
+            '<div class="v2-drawer-recommendation"><small>' + esc(fmt.when(r.received)) + "</small><b>" + esc(first) + " was given 988 and 911 right away.</b>" +
+            '<span class="v2-recommendation-reason">' + esc(c.carePastor) + ", on call, was alerted with no private words. A follow-up call happened the next morning.</span>" +
+            '<div class="v2-drawer-actions"><a class="v2-button" href="church-care.html?id=' + esc(r.id) + '">Open in Care</a></div></div></section>';
+        }
+        var st = { "new": ["Waiting on Us", "warning"], praying: ["Praying", "info"], replied: ["Replied", "positive"], attached: ["Attached by a Pastor", "neutral"] }[r.status] || [r.status, "neutral"];
+        var replies = (r.replies || []).map(function (x) { return '<div class="v2-activity-row">' + esc(x.text) + "<small>" + esc((x.from === "member" ? first : GM.staff(x.from).name) + " · " + fmt.date(x.at)) + "</small></div>"; }).join("");
+        return '<section class="v2-record-section ps-req"><h3>' + esc(r.topic) + " " + GM.pill(st[0], st[1]) + (r.visibility === "pastors" ? GM.lock("pastors") : "") + "</h3>" +
+          '<p class="v2-muted-copy">' + esc(r.attachedNote || "Received " + fmt.dateLong(r.received)) + "</p>" +
+          (r.text ? '<div class="v2-evidence-row">' + esc(r.text) + "</div>" : "") + (replies ? '<div class="v2-rec-activity">' + replies + "</div>" : "") +
+          (String(r.id).indexOf("old-") === 0 ? "" : '<p class="v2-muted-copy" style="margin-top:6px"><a class="gm-link" href="church-care.html?id=' + esc(r.id) + '">Open in Care</a></p>') + "</section>";
+      }).join("") || '<div class="v2-state-inline">No prayer requests from ' + esc(first) + ".</div>";
+      var older = OLDER.filter(function (o) { return !lc.attached.some(function (a) { return a.id === o.id; }); });
+      var attach = '<section class="v2-record-section"><h3>Older requests</h3><p class="v2-muted-copy">Older requests never attach themselves. The email on an old form was typed and never checked, so a pastor attaches one only when ' + esc(first) + " asks.</p>" +
+        '<div class="ps-row-actions" style="margin-top:10px"><button class="v2-button" type="button" data-ps="attach-open" aria-expanded="false" aria-controls="ps-attach">' + ic("plus") + "Attach an Older Request</button></div>" +
+        '<form class="ps-attach" id="ps-attach" hidden novalidate><label class="v2-field"><span>Which request did ' + esc(first) + " ask about?</span>" +
+        '<select class="v2-select v2-nselect" id="ps-older">' + (older.length ? older.map(function (o) { return '<option value="' + o.id + '">' + esc(o.form + ", " + fmt.dateLong(o.received) + ". Topic: " + o.topic + ". Typed email: " + o.typed) + "</option>"; }).join("") : '<option value="">No Older Requests Left to Attach</option>') + "</select></label>" +
+        '<label class="gm-check"><input type="checkbox" id="ps-asked"> ' + esc(first) + " asked me to attach this</label>" +
+        '<div class="ps-row-actions"><button class="v2-button" type="submit">Attach Request</button><button class="v2-button v2-button-quiet" type="button" data-ps="attach-cancel">Cancel</button></div></form></section>';
+      var threads = (p.threads || []).map(GM.thread).filter(Boolean);
+      var tRows = threads.length ? '<div class="v2-card v2-attention-list">' + threads.map(function (t) {
+        var last = t.messages[t.messages.length - 1];
+        var st = { "waiting-on-us": ["Waiting on Us", "warning"], "waiting-on-them": ["Their Turn", "neutral"], closed: ["Closed", "neutral"], archived: ["Archived", "neutral"] }[t.status] || [t.status, "neutral"];
+        return '<a class="v2-attention-row" href="church-care.html?id=' + esc(t.id) + '"><span class="v2-row-title"><b>' + esc(t.subject) + "</b><span>" + esc(GM.fmt.plural(t.messages.length, "message") + " · last " + fmt.when(last.at)) + "</span></span>" +
+          '<span class="v2-row-reason">' + (t.kind === "private" ? GM.lock("pastors") : GM.lock("staff", "Staff and pastors")) + " " + esc(GM.staff(t.owner).name) + "</span>" + GM.pill(st[0], st[1]) + '<span class="v2-row-action">Open in Care <span aria-hidden="true">&rarr;</span></span></a>';
+      }).join("") + "</div>" : '<div class="v2-state-inline">No message threads with ' + esc(first) + " yet.</div>";
+      return '<p class="ps-lockline">' + GM.lock("prayer") + '<span class="v2-muted-copy">Prayer history is seen by pastors and the prayer team. Staff and website admins never see this part.</span></p>' +
+        list + attach + '<section class="v2-record-section"><h3>Message threads</h3>' + tRows + "</section>";
+    }
+
+    /* 3. Private pastor notes */
+    function notesBody() {
+      var notes = (p.notes ? [{ by: p.shepherd || "s-care", at: "2026-11-18T13:05", text: p.notes }] : []).concat(NOTES[p.id] || [], lc.notes).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at); });
+      return '<p class="ps-lockline">' + GM.lock("pastors") + '<span class="v2-muted-copy">Never shown to ' + esc(first) + ", staff or the prayer team. Notes are archived, never deleted.</span></p>" +
+        '<div class="v2-rec-activity">' + (notes.length ? notes.map(function (n) { return '<div class="v2-activity-row">' + esc(n.text) + "<small>" + esc(GM.staff(n.by).name + " · " + fmt.when(n.at)) + "</small></div>"; }).join("") : '<p class="v2-muted-copy">No notes yet.</p>') + "</div>" +
+        '<form class="v2-record-section" id="ps-note-form" novalidate><h3><label for="ps-note">Add a private note</label></h3><div class="v2-note-compose"><textarea class="v2-textarea" id="ps-note" placeholder="Something to remember for next time."></textarea><div><button class="v2-button" type="submit">' + ic("note") + 'Save Note</button></div><div class="v2-note-status" id="ps-note-status" role="status"></div></div></form>';
+    }
+
+    /* 4. How they found us */
+    function journeyBody() {
+      var keys = D.guestStages.map(function (s) { return s.key; });
+      function stepper(curKey, allDone) {
+        var idx = keys.indexOf(curKey);
+        return '<ol class="v2-stepper" aria-label="Guest path">' + D.guestStages.map(function (s, i) {
+          var cls = (allDone && i <= idx) || i < idx ? "is-done" : i === idx ? "is-current" : "";
+          return '<li class="' + cls + '"' + (i === idx && !allDone ? ' aria-current="step"' : "") + "><span>" + esc(s.label) + "</span></li>";
+        }).join("") + "</ol>";
+      }
+      var j = JOURNEY[p.id];
+      if (g) {
+        var d = fmt.due(g.due);
+        return stepper(g.stage) + '<div class="v2-record-grid" style="margin-top:16px">' + fact("Came from", g.source) + fact("Arrived", fmt.when(g.arrived)) + fact("Owner", GM.staff(g.owner).name) + fact("Next step", g.next + ", " + d.text.toLowerCase()) + (g.visitDate ? fact("Visit", fmt.dateLong(g.visitDate)) : "") + "</div>" +
+          '<div class="ps-row-actions" style="margin-top:14px"><a class="v2-button" href="church-guest.html?id=' + esc(g.id) + '">Open the Guest Record</a><a class="v2-button v2-button-quiet" href="church-guests.html?view=board">Guests by Stage</a></div>';
+      }
+      if (j) {
+        return stepper(j.steps[j.steps.length - 1].stage, true) + '<div class="v2-rec-activity" style="margin-top:14px">' + j.steps.map(function (s) { return '<div class="v2-activity-row"><b>' + esc(GM.stage(s.stage).label) + "</b> · " + esc(s.text) + "<small>" + esc(fmt.dateLong(s.at)) + "</small></div>"; }).join("") + "</div>" +
+          '<p class="v2-muted-copy" style="margin-top:8px">Came from ' + esc(GM.sourceText(j.source)) + ", " + esc(fmt.dateLong(j.arrived)) + ".</p>";
+      }
+      return '<div class="v2-state-inline">' + esc(first) + " was part of " + esc(c.short) + " before the guest path was set up, so there is no guest journey on file.</div>";
+    }
+
+    /* 5. Reminders, on the side */
+    function remindersCard() {
+      var all = reminders(p).sort(function (a, b) { return GM.parseDate(a.due) - GM.parseDate(b.due); });
+      var nowKey = (openReminders(p)[0] || {}).key;
+      return '<section class="v2-card v2-rec-step v2-rec-moves" id="ps-reminders" data-tour="person.reminders"><div class="v2-rec-step-head"><span class="v2-rec-step-n" aria-hidden="true">5</span><div><div class="v2-eyebrow">Next</div><h2>Follow-up reminders</h2></div></div>' +
+        (all.length ? '<ol class="v2-rec-checks ps-rem">' + all.map(function (r) {
+          var done = !!lc.done[r.key], d = dueText(r);
+          return '<li class="' + (done ? "is-done" : r.key === nowKey ? "is-now" : "") + '"><button type="button" data-ps="done" data-key="' + esc(r.key) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? "Mark not done: " : "Mark done: ") + r.text) + '"><span class="v2-rec-tick" aria-hidden="true">' + (done ? "&#10003;" : "") + "</span></button>" +
+            "<span>" + esc(r.text) + (done ? '<span class="sr-only">, done</span>' : "") + "<small>" + esc(d.text + " · " + GM.staff(r.owner).name + " · from " + r.from.charAt(0).toLowerCase() + r.from.slice(1)) + "</small></span></li>";
+        }).join("") + "</ol>" : '<p class="v2-muted-copy">No reminders. Add one so nobody is forgotten.</p>') +
+        '<form class="ps-rem-form" id="ps-rem-form" novalidate><label class="v2-field"><span>New reminder</span><input class="v2-input" id="ps-rem-text" placeholder="Call after the surgery" autocomplete="off"></label>' +
+        '<label class="v2-field"><span>Due</span><input class="v2-input" id="ps-rem-due" type="date" value="2026-11-23"></label><button class="v2-button" type="submit">' + ic("plus") + "Add Reminder</button></form>" +
+        '<p class="v2-muted-copy" style="margin-top:12px">Each reminder has an owner and a date. Due today shows on Today.</p></section>';
+    }
+    function opensCard() {
+      var ids = {}; ids[p.id] = true; (p.prayer || []).forEach(function (x) { ids[x] = true; }); (p.threads || []).forEach(function (x) { ids[x] = true; });
+      var opens = accessAll.filter(function (a) { return a.who !== "system" && (ids[a.item] || a.what.indexOf(p.name) >= 0); }).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at); }).slice(0, 4);
+      return '<section class="v2-card ps-side-card" aria-labelledby="ps-opens-title" data-tour="person.access"><h2 id="ps-opens-title">Who opened this record</h2><p class="v2-muted-copy">From the access record. Nobody can edit it.</p>' +
+        '<div class="v2-rec-activity"><div class="v2-activity-row"><b>' + esc(viewer.name) + "</b> opened this page.<small>Just now</small></div>" +
+        opens.map(function (a) { return '<div class="v2-activity-row"><b>' + esc(GM.who(a.who).name) + "</b> " + esc(a.action.toLowerCase() + ": " + a.what) + "<small>" + esc(fmt.when(a.at)) + "</small></div>"; }).join("") + "</div>" +
+        '<p class="v2-muted-copy" style="margin:12px 0 0"><a class="gm-link" href="church-access.html">Open the Access Record</a></p></section>';
+    }
+    function requestsCard() {
+      var exported = accessAll.filter(function (a) { return a.action === "Exported" && a.what.indexOf(p.name) >= 0; });
+      return '<section class="v2-card ps-side-card" aria-labelledby="ps-req-title" data-tour="person.requests"><h2 id="ps-req-title">Copy and removal</h2><p class="v2-muted-copy">Everything here belongs to ' + esc(first) + ". " + esc(first) + " can ask for a copy, or ask for it to be removed. A removal waits for the lead pastor, and nothing is erased by accident.</p>" +
+        '<div class="ps-row-actions"><button class="v2-button" type="button" data-gm-action="toast" data-gm-toast="A copy would be prepared for ' + esc(first) + ' and the export written to the access record. Preview only.">' + ic("archive") + "Prepare a Copy</button>" +
+        '<button class="v2-button v2-button-quiet" type="button" data-gm-action="toast" data-gm-toast="Removal request started. It waits for the lead pastor. Preview only.">Start a Removal Request</button></div>' +
+        '<p class="v2-muted-copy" style="margin:12px 0 0">' + esc(exported.length ? "A copy was exported on " + fmt.dateLong(exported[0].at) + " by " + GM.who(exported[0].who).name + ", at " + first + "'s request." : "No requests so far.") + "</p></section>";
+    }
+
+    function paint() {
+      var keepY = $("v2-main") ? $("v2-main").scrollTop : 0;
+      page.innerHTML =
+        '<div class="v2-page-back ps-back"><a class="v2-button v2-button-quiet" href="church-person.html">' + ic("back") + "People</a>" +
+          '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What should I know before I call ' + esc(first) + '?">Ask ' + esc(HOPE) + "</button></div></div>" +
+        head() +
+        '<div class="v2-rec-layout"><div class="v2-rec-main">' +
+          step(1, "Who this is", "Contact card", whoBody(), "person.who") +
+          step(2, "Prayer and conversations", "Prayer history and threads", careBody(), "person.prayer") +
+          step(3, "Pastors only", "Private pastor notes", notesBody(), "person.notes") +
+          step(4, "How " + first + " found us", "The guest journey", journeyBody(), "person.journey") +
+        '</div><aside class="v2-rec-side" aria-label="Follow-up and record">' + remindersCard() + opensCard() + requestsCard() + "</aside></div>";
+      GM.carryLinks(page);
+      if (tourSet) { var b = page.querySelector(".v2-page-actions"); if (b && !b.querySelector(".gm-tour-btn")) b.insertAdjacentHTML("beforeend", '<button type="button" class="v2-button v2-button-quiet gm-tour-btn" data-gm-action="start-tour">' + ic("play") + "<span>Take the Tour</span></button>"); }
+      if ($("v2-main")) $("v2-main").scrollTop = keepY;
+    }
+    var tourSet = false;
+    paint();
+
+    page.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-ps]"); if (!b) return;
+      var act = b.getAttribute("data-ps");
+      if (act === "attach-open") { var f = $("ps-attach"); f.hidden = !f.hidden; b.setAttribute("aria-expanded", String(!f.hidden)); if (!f.hidden) $("ps-older").focus(); }
+      else if (act === "attach-cancel") { $("ps-attach").hidden = true; }
+      else if (act === "done" || act === "done-next") {
+        var key = b.getAttribute("data-key"); lc.done[key] = !lc.done[key]; paint();
+        GM.toast(lc.done[key] ? "Marked done. Preview only." : "Marked not done. Preview only.");
+      }
+    });
+    page.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (e.target.id === "ps-attach") {
+        var sel = $("ps-older"), asked = $("ps-asked");
+        if (!sel.value) return;
+        if (!asked.checked) { asked.focus(); GM.toast("Attach only when " + first + " asks. Tick the box to confirm."); return; }
+        var o = OLDER.filter(function (x) { return x.id === sel.value; })[0];
+        lc.attached.push({ id: o.id, received: o.received, topic: o.topic, status: "attached", visibility: "prayer", attachedNote: o.form + ", " + fmt.dateLong(o.received) + ". Attached by " + viewer.name + " just now, at " + first + "'s request." });
+        paint(); GM.toast("Attached at " + first + "'s request and written to the access record. Preview only.");
+      } else if (e.target.id === "ps-note-form") {
+        var t = $("ps-note");
+        if (!t.value.trim()) { t.focus(); GM.toast("Write the note first."); return; }
+        lc.notes.push({ by: viewer.id, at: GM_DATA.now, text: t.value.trim() });
+        paint(); GM.toast("Note saved for pastors only. Preview only.");
+      } else if (e.target.id === "ps-rem-form") {
+        var rt = $("ps-rem-text"), rd = $("ps-rem-due");
+        if (!rt.value.trim()) { rt.focus(); GM.toast("Write the reminder first."); return; }
+        lc.reminders.push({ text: rt.value.trim(), due: rd.value || "2026-11-23", owner: viewer.id, from: "Added by you" });
+        paint(); GM.toast("Reminder added. It shows on Today when it is due. Preview only.");
+      }
+    });
+
+    var next = openReminders(p)[0];
+    GM.hope.setBriefing({
+      line: GM.greeting() + ", {name}. " + p.name + " is a " + statusLabel(p).toLowerCase() + " who attends " + attendsLabel(p).toLowerCase() + "." + (next ? " Next: " + next.text.charAt(0).toLowerCase() + next.text.slice(1) + ", " + dueText(next).text.toLowerCase() + "." : "") + " Prayer words stay on this page for pastors and the prayer team.",
+      chips: [{ label: "Send a Message", action: function () { GM.hope.close(); GM.toast("A private thread with " + first + " would open in Care, owned by you. Preview only."); }, primary: true }, { label: "Open Care", href: "church-care.html" }, { label: "Back to People", href: "church-person.html" }]
+    });
+    GM.hope.addAnswers([{ match: /know|call|before/i, answer: function () { var n = openReminders(p)[0]; return first + " prefers " + (p.contact || "email").toLowerCase() + "." + (n ? " The open reminder is: " + n.text + ", " + dueText(n).text.toLowerCase() + ", owned by " + GM.staff(n.owner).name + "." : "") + " I do not read prayer words or pastor notes aloud; they stay on the page for the people allowed to see them."; } }]);
+    GM.setTour([
+      { target: '[data-tour="person.card"]', title: "One record per person", text: "Name, how they attend, how they like to be reached, and the next step with its owner. Opening this page is written to the access record." },
+      { target: '[data-tour="person.prayer"]', title: "Prayer history, behind a lock", text: "Only pastors and the prayer team see it. Older requests never attach themselves; a pastor attaches one only when the person asks." },
+      { target: '[data-tour="person.notes"]', title: "Private pastor notes", text: "For pastors only. Never shown to the person, staff or the prayer team, and archived instead of deleted." },
+      { target: '[data-tour="person.journey"]', title: "The guest journey that led here", text: "From the first Plan a Visit form or {assistant.name} conversation to a group and a team." },
+      { target: '[data-tour="person.reminders"]', title: "Nobody is forgotten", text: "Follow-up reminders with an owner and a date. Due today shows on Today." },
+      { target: '[data-tour="person.requests"]', title: "Their information belongs to them", text: "A person can ask for a copy or for removal. Removal waits for the lead pastor, and nothing is erased by accident." }
+    ]);
+    tourSet = true;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+/* Copied from the Genesis OS repo (v2/refine/hawk-core.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Gold Hawk neural core and official Genesis G mark. No copy, no layout for the dock itself. */
+.hawk-core{
+  position:relative;
+  width:220px;
+  height:220px;
+  margin:0 auto;
+  isolation:isolate;
+}
+.hawk-core-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  pointer-events:none;
+}
+.hawk-core-mark{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:34%;
+  height:auto;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:1;
+  user-select:none;
+  filter:drop-shadow(0 0 10px rgba(241,216,152,.55));
+  transition:filter 280ms ease, transform 280ms ease;
+}
+.hawk-core[data-state="listening"] .hawk-core-mark{
+  filter:drop-shadow(0 0 16px rgba(241,216,152,calc(.7 + var(--hawk-core-level, 0) * .4)));
+}
+.hawk-core[data-state="working"] .hawk-core-mark{
+  filter:drop-shadow(0 0 14px rgba(241,216,152,.8));
+}
+.hawk-core[data-state="speaking"] .hawk-core-mark{
+  filter:drop-shadow(0 0 18px rgba(241,216,152,calc(.65 + var(--hawk-core-level, 0) * .45)));
+}
+.hawk-core--mini,
+.hawk-core--orb{
+  width:48px;
+  height:48px;
+}
+.hawk-core--orb{width:44px;height:44px;}
+.hawk-core--mini .hawk-core-mark,
+.hawk-core--orb .hawk-core-mark{width:46%;filter:drop-shadow(0 0 6px rgba(241,216,152,.7));}
+
+@media (prefers-reduced-motion: reduce){
+  .hawk-core-mark{transition:none;}
+}
+
+/* Welcome stage inside the Hawk dock / page.
+   A dedicated stage, not the 28px avatar parking slot, so the gold core
+   cannot collapse to a speck on a phone. */
+.hawk-core-stage{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  width:100%;
+  height:auto;
+  flex:0 0 auto;
+  margin:12px auto 16px;
+  cursor:pointer;
+}
+.hawk-core-stage .hawk-core-orb,
+.hawk-core-stage > .hawk-core{
+  position:relative;
+  width:168px;
+  height:168px;
+  flex:0 0 168px;
+  margin:0;
+}
+@media (min-width:861px){
+  .hawk-core-stage .hawk-core-orb,
+  .hawk-core-stage > .hawk-core{width:220px;height:220px;flex-basis:220px;}
+}
+.hawk-core-stage .hawk-core-orb .hawk-core-canvas,
+.hawk-core-stage > .hawk-core .hawk-core-canvas{
+  position:absolute;
+  inset:0;
+}
+.hawk-core-stage::before{
+  content:none;
+}
+.hawk-core-stage .hawk-core-orb::before,
+.hawk-core-stage > .hawk-core::before{
+  content:"";
+  position:absolute;
+  inset:-18%;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(201,161,87,.16) 0%, rgba(201,161,87,0) 70%);
+  pointer-events:none;
+  z-index:0;
+}
+.hawk-core-status{
+  position:static;
+  margin:10px 0 0;
+  text-align:center;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#c9a157;
+}
+.aria-welcome:has(.hawk-core-stage) > .aria-welcome__slot{
+  display:none !important;
+}
+.hawk-core-status::before{
+  content:"";
+  display:inline-block;
+  width:7px;height:7px;
+  margin-right:8px;
+  border-radius:50%;
+  background:#c9a157;
+  vertical-align:middle;
+  box-shadow:0 0 8px rgba(241,216,152,.8);
+}
+.aria-welcome{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:8px 20px 20px;
+  gap:0;
+}
+.aria-welcome .hawk-core-stage{margin-bottom:12px;}
+.hawk-briefing-line{
+  max-width:34rem;
+  margin:8px 12px 16px;
+  font-size:18px;
+  line-height:1.45;
+  color:#ece8df;
+  overflow-wrap:break-word;
+}
+.hawk-briefing-line em{
+  font-style:italic;
+  color:#f1d898;
+  font-weight:500;
+}
+.hawk-briefing-chips{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:8px;
+  margin:0 0 14px;
+}
+.hawk-chip{
+  min-height:44px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(201,161,87,.35);
+  background:#16171b;
+  color:#ece8df;
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+.hawk-chip-primary{
+  background:#c9a157;
+  color:#161308;
+  border-color:#c9a157;
+}
+.hawk-talk{
+  min-height:44px;
+  min-width:108px;
+  margin:8px 8px 12px;
+  padding:0 20px;
+  border-radius:999px;
+  border:1px solid rgba(201,161,87,.4);
+  background:#1a1b1f;
+  color:#ece8df;
+  font:inherit;
+  font-size:15px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+}
+.hawk-talk-icon{
+  width:8px;height:8px;border-radius:50%;
+  background:#f1d898;
+  box-shadow:0 0 8px rgba(241,216,152,.8);
+}
+.hawk-ok-line{
+  margin-top:auto;
+  font-size:11px;
+  line-height:1.4;
+  color:#9aa3ab;
+  max-width:28rem;
+}
+.aria-welcome__suggestions,
+.aria-welcome__greeting[hidden],
+.aria-welcome__label[hidden]{display:none !important;}
+
+/* Header orb */
+.aria-actions-row{display:flex;align-items:center;gap:10px;}
+.hawk-header-orb,
+.hawk-core--orb{
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  border-radius:50%;
+}
+.hawk-header-orb{position:relative;}
+
+/* Floating mini core. Hidden while Hawk is open (existing shell rule hides the opener). */
+.v2-genesis-opener{
+  width:48px;
+  height:48px;
+  padding:0;
+  overflow:visible;
+  border-radius:50%;
+  background:#14151a;
+  box-shadow:0 0 0 1px rgba(201,161,87,.35), 0 8px 24px rgba(0,0,0,.4);
+}
+.v2-genesis-opener .hawk-fab-core,
+.v2-genesis-opener .hawk-core--mini{
+  width:48px;
+  height:48px;
+  display:block;
+  position:relative;
+}
+.v2-genesis-opener em.v2-genesis-opener-count{z-index:2;}
+
+@media (prefers-reduced-motion: reduce){
+  .hawk-core-stage::before,
+  .hawk-core-status::before{box-shadow:none;}
+}
+
+@media (max-width: 860px){
+  .aria-welcome{padding:8px 16px 12px;}
+  .aria-welcome .hawk-core-stage{margin:8px auto 12px;}
+  .hawk-core-stage .hawk-core-orb,
+  .hawk-core-stage > .hawk-core{width:160px;height:160px;flex-basis:160px;}
+  .hawk-briefing-line{margin:6px 8px 10px;font-size:16px;}
+  .hawk-briefing-chips{margin-bottom:10px;}
+  .hawk-talk{margin:8px 0 12px;flex-shrink:0;}
+  /* The panel footer already carries the confirmation line on a phone. */
+  .hawk-ok-line{display:none;}
+}
+
+.hawk-hear{
+  min-height:44px;
+  min-width:108px;
+  margin:0 0 12px;
+  padding:0 20px;
+  border-radius:999px;
+  border:1px solid rgba(201,161,87,.28);
+  background:transparent;
+  color:#ece8df;
+  font:inherit;
+  font-size:15px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+@media (max-width: 860px){
+  .hawk-hear{margin:0 0 10px;flex-shrink:0;}
+}
+
+.hawk-voice-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin:8px 0 12px;
+  flex-shrink:0;
+}
+.hawk-voice-row .hawk-hear,
+.hawk-voice-row .hawk-talk,
+.hawk-voice-row .hawk-speak{margin:0;}
+.hawk-speak{
+  min-height:44px;
+  min-width:108px;
+  padding:0 20px;
+  border-radius:999px;
+  border:1px solid rgba(201,161,87,.28);
+  background:transparent;
+  color:#ece8df;
+  font:inherit;
+  font-size:15px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.hawk-speak[aria-pressed="true"]{
+  border-color:rgba(201,161,87,.7);
+  color:#f1d898;
+}
+.hawk-speak-hint{
+  margin:4px 0 8px;
+  font-size:13px;
+  line-height:1.4;
+  color:#c9a157;
+  text-align:center;
+}
+
+.hawk-hear,
+.hawk-talk,
+.hawk-chip{
+  white-space:nowrap;
+  flex:0 0 auto;
+}
+.hawk-speak{
+  min-width:44px;
+  width:44px;
+  padding:0;
+  white-space:nowrap;
+  flex:0 0 44px;
+}
+.hawk-speak-icon{
+  width:20px;
+  height:20px;
+  display:block;
+}
+@media (max-width: 860px){
+  .hawk-voice-row{margin:6px 0 10px; flex-wrap:wrap;}
+  .hawk-hear,.hawk-talk{min-width:0;padding:0 14px;font-size:14px;white-space:nowrap;}
+  .hawk-speak{min-width:44px;width:44px;padding:0;}
+  .hawk-briefing-chips{gap:8px;}
+  .hawk-chip{max-width:100%;}
+}
+
+
+/* Phone widths 360 and 390. The floating Hawk stays tappable and clear of
+   the last row. Actions stay on screen; nothing waits for a hover. */
+@media (max-width: 480px) {
+  html, body { overflow-x: clip; max-width: 100%; }
+  .v2-shell, .v2-main, .v2-page, .v2-today-page, .v2-agent-page,
+  .v2-genesis-panel, .hawk-briefing-chips, .hawk-voice-row, .v2-next-actions {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .v2-genesis-panel {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    box-sizing: border-box;
+    background: #0d0e10;
+  }
+  body.v2-genesis-panel-open .v2-main { visibility: hidden; }
+  .v2-command-dialog { width: calc(100% - 20px); }
+  /* The scroll area ends above the floating Hawk button, so the button
+     never sits on top of the last row. The double class beats the earlier
+     phone padding that only added empty space inside the scroller. */
+  .v2-main.v2-main {
+    height: calc(100dvh - 58px - 128px - env(safe-area-inset-bottom));
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-bottom: 20px;
+    scroll-padding-bottom: 20px;
+  }
+  body.v2-genesis-panel-open .v2-main,
+  body.v2-genesis-page-open .v2-main {
+    height: calc(100dvh - 58px - env(safe-area-inset-bottom));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  .v2-genesis-opener {
+    width: 48px;
+    height: 48px;
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  .v2-chip,
+  .v2-channel,
+  .v2-convo-channel,
+  .v2-info-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .v2-info-button { width: 44px; height: 44px; }
+  .v2-mobile-top {
+    padding-top: env(safe-area-inset-top);
+    height: calc(58px + env(safe-area-inset-top));
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+  .v2-mobile-top .v2-icon-button,
+  .v2-today-page .v2-button,
+  .v2-agent-page .v2-button,
+  .v2-agent-choice,
+  .hawk-chip,
+  .hawk-talk,
+  .hawk-hear,
+  .hawk-speak,
+  .v2-genesis-opener {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .v2-mobile-top .v2-icon-button { width: 44px; height: 44px; }
+  .v2-agent-choice { width: 100%; }
+  .hawk-chip, .hawk-hear, .hawk-talk {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+  .v2-next-actions { width: 100%; }
+  .v2-next-actions .v2-button { min-height: 44px; }
+  .v2-today-page .v2-row-action,
+  .v2-agent-page button,
+  .v2-genesis-panel button,
+  .hawk-briefing-chips button,
+  .hawk-voice-row button {
+    opacity: 1;
+    visibility: visible;
+  }
+}

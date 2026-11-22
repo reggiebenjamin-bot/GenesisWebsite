@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Give · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the member Give tab, with the church's own giving form embedded and a link to the full giving page.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member give only. Prefix: mg-. Church tokens (--m-*) only inside the phone. */
+  .mg-campaign{display:grid;gap:4px}
+  .mg-frame{margin:0;border:1.5px dashed var(--m-line-strong);border-radius:var(--m-radius-lg);background:var(--m-surface);overflow:hidden}
+  .mg-frame-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid var(--m-line);background:var(--m-surface-2);font-size:13px;font-weight:700}
+  .mg-frame-bar span:first-child{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mg-frame-bar .gm-icon{width:15px;height:15px;flex:0 0 15px;color:var(--m-accent-ink)}
+  .mg-tag{flex:0 0 auto;padding:2px 9px;border-radius:999px;border:1px solid var(--m-line-strong);color:var(--m-muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+  .mg-mock{display:grid;gap:16px;padding:18px 16px 20px}
+  .mg-mock-label{display:block;margin-bottom:8px;color:var(--m-muted);font-size:13.5px;font-weight:700}
+  .mg-opts{display:flex;flex-wrap:wrap;gap:8px}
+  .mg-opt{padding:9px 14px;border:1.5px solid var(--m-line-strong);border-radius:var(--m-btn-radius);font-size:14px;font-weight:700;color:var(--m-text)}
+  .mg-opt.is-on{border-color:var(--m-accent);background:var(--m-accent-soft)}
+  .mg-bar{height:50px;border:1.5px solid var(--m-line);border-radius:var(--m-radius);background:var(--m-surface-2)}
+  .mg-bar--short{width:62%}
+  .mg-fake-btn{height:50px;display:grid;place-items:center;border-radius:var(--m-btn-radius);background:var(--m-surface-3);color:var(--m-muted);font-size:15px;font-weight:700}
+  .mg-frame figcaption{padding:12px 16px;border-top:1px solid var(--m-line);color:var(--m-muted);font-size:13.5px;line-height:1.5}
+  .m-app .mg-out-note{margin:8px 0 0;color:var(--m-muted);font-size:13.5px;text-align:center}
+  .mg-pay{display:flex;justify-content:center;gap:8px;margin-top:10px}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  @media (min-width:1180px){
+    .mx-staged .m-stage{display:grid;grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-staged .m-caption{display:none}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px;display:grid;gap:22px;align-content:start}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px;display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  @media (max-width:760px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="give" data-title="Give">
+
+<main id="gm-main" class="m-main">
+  <p class="m-eyebrow">Give</p>
+  <h1 class="m-h1">Give to <span data-gm-text="church.short"></span></h1>
+  <p class="m-lede" id="mg-lede">Thank you for giving. It helps your church welcome people and care for them all week.</p>
+
+  <section class="m-section m-card m-card--soft mg-campaign" id="mg-campaign" aria-label="Right now at your church"></section>
+
+  <section class="m-section" aria-labelledby="mg-form-title" data-tour="give.frame">
+    <div class="m-section-head" style="display:block">
+      <h2 class="m-h2" id="mg-form-title">Give here</h2>
+      <p class="m-small m-muted" style="margin:4px 0 0">The same giving form as the church website, built in.</p>
+    </div>
+    <figure class="mg-frame" aria-labelledby="mg-cap">
+      <div class="mg-frame-bar"><span id="mg-frame-name"></span><span class="mg-tag">Placeholder</span></div>
+      <div class="mg-mock" aria-hidden="true" id="mg-mock"></div>
+      <figcaption id="mg-cap"></figcaption>
+    </figure>
+  </section>
+
+  <section class="m-section" data-tour="give.link">
+    <a class="m-btn m-btn--primary m-btn--block" id="mg-out" href="#"></a>
+    <div class="mg-pay" aria-hidden="true"><span class="m-pill">Apple Pay</span><span class="m-pill">Google Pay</span></div>
+    <p class="mg-out-note">Opens the full giving page. In this preview it opens the church website.</p>
+  </section>
+
+  <section class="m-section m-stack" data-tour="give.privacy">
+    <p class="m-note" id="mg-history"></p>
+    <ul class="m-list" id="mg-more"></ul>
+  </section>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon } } */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.innerHTML = GM.v2Icon("play") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span></a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(c.name) + "'s own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'Giving in the church&rsquo;s <em class="v2-accent-em">own form</em>',
+  sub: "The giving form {church.short} already uses, built into the app, with one tap to the full giving page.",
+  protect: [
+    ["Genesis never handles money", "The payment stays with the church's giving platform."],
+    ["No giving history here", "Receipts and statements stay with the giving platform."]
+  ],
+  land: { href: GM.church.site, label: "Open the Church Website", icon: "website" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var c = ctx.church, esc = GM.esc;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* Extra sample data: each demo church's current campaign, from its website template. No amounts, ever. */
+  var CAMPAIGN = {
+    "bright-modern": { name: "Room to Grow", text: "Bright new kids rooms open this spring." },
+    "bold-dark": { name: "The Foundry", text: "We are buying and renovating the hall the church already rents." },
+    "classic-timeless": { name: "Bell Tower Restoration", text: "The bell tower is being restored. Help us ring it again by Easter." },
+    "warm-community": { name: "The Porch Project", text: "A new kids wing and a bigger front porch are underway." }
+  };
+  var camp = CAMPAIGN[c.slug] || CAMPAIGN["bright-modern"];
+
+  $("mg-lede").textContent = "Thank you for giving. It helps " + c.name + " welcome people and care for them all week.";
+  $("mg-campaign").innerHTML = '<p class="m-eyebrow">Right now</p><h2 class="m-h3">' + esc(camp.name) + '</h2><p class="m-small" style="margin:0">' + esc(camp.text) + "</p>";
+
+  $("mg-frame-name").innerHTML = GM.icon("lock") + "<span>Secure giving form · " + esc(c.short) + "</span>";
+  $("mg-mock").innerHTML =
+    '<div><span class="mg-mock-label">Give to</span><div class="mg-opts"><span class="mg-opt is-on">General Fund</span><span class="mg-opt">' + esc(camp.name) + "</span></div></div>" +
+    '<div><span class="mg-mock-label">How often</span><div class="mg-opts"><span class="mg-opt is-on">One Time</span><span class="mg-opt">Every Week</span><span class="mg-opt">Every Month</span></div></div>' +
+    '<div><span class="mg-mock-label">Amount</span><div class="mg-bar mg-bar--short"></div></div>' +
+    '<div><span class="mg-mock-label">Payment</span><div class="mg-bar"></div></div>' +
+    '<div class="mg-fake-btn">Give</div>';
+  $("mg-cap").textContent = "Placeholder. In the live app, " + c.short + "'s own giving form loads here, from the giving platform the church already uses. Genesis never handles the payment.";
+
+  $("mg-out").href = c.site;
+  $("mg-out").innerHTML = "Open the Full Giving Page" + GM.icon("external");
+
+  $("mg-history").innerHTML = GM.icon("shield") + "<span>This app never shows your giving history. Giving stays with the church's giving platform, where you can find receipts and year-end statements.</span>";
+  $("mg-more").innerHTML =
+    '<li><div class="m-item">' + GM.icon("home") + '<span class="m-item-main"><span class="m-item-title" style="display:block">In person on Sunday</span><span class="m-item-sub" style="display:block">Giving boxes are by the doors. ' + esc(c.times) + ".</span></span></div></li>" +
+    '<li><a class="m-item" href="member-messages.html?new=1">' + GM.icon("message") + '<span class="m-item-main"><span class="m-item-title" style="display:block">A question about giving?</span><span class="m-item-sub" style="display:block">Send a message to the church office.</span></span>' + GM.icon("chevron") + "</a></li>";
+
+  GM.setTour([
+    { target: '[data-tour="give.frame"]', title: "The church's own giving form", text: "The Give tab embeds the giving form the church already uses. Genesis never handles the payment." },
+    { target: '[data-tour="give.link"]', title: "Apple Pay and Google Pay", text: "One tap opens the full giving page for wallets, recurring gifts and receipts." },
+    { target: '[data-tour="give.privacy"]', title: "No giving history here", text: "The app never shows what someone gave. That stays with the giving platform." }
+  ]);
+});
+</script>
+</body>
+</html>
