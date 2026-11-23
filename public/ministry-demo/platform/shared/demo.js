@@ -1411,6 +1411,8 @@
         [/\b(giv(e|ing)(?! (it|this|that|them) to\b)(?! to (our|my|the) (members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b/i, "give"]
       ]),
       fallback: "I am not sure about that one, and I would rather not guess. In " + poss(c.short) + " app I answer from facts the church approved, and anything personal goes to a real person: send a Message and someone from the church will answer. For this preview, try one of these.",
+      /* On a wide screen the chat stays clear of the phone, where the form and its 911 and 988 line sit. */
+      avoid: ".m-device",
       /* Tap to ask only: the questions a member can tap, each with the answer written for it. */
       questions: [
         { title: "Popular Questions", items: [

@@ -325,6 +325,7 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .nl-form input{flex:1;min-width:0;height:52px;padding:0 16px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font-size:16px}
 .nl-form input::placeholder{color:#6B7488}
 .nl-form input:focus{outline:2px solid var(--cobalt);outline-offset:2px;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
+.nl-hint{margin:10px 0 0;font-size:14px;color:var(--graphite)}
 .form-note{min-height:1.5em;margin-top:12px;font-size:15px;color:var(--cobalt);font-weight:600}
 .nl-copy .aside-link{margin-top:14px}
 
@@ -473,6 +474,8 @@ body.menu-open .hd-launch,body.menu-open .hd-invite,body.fd-open .hd-launch,body
 .fd-note a{font-weight:700;color:var(--ink);text-underline-offset:3px;white-space:nowrap}
 .fd-note.line{background:none;border:1px solid var(--rule)}
 .fd-fine{margin-top:14px;font-size:14px;color:var(--graphite)}
+.fd-note.fd-top{margin:0 0 18px}.fd-note b{font-weight:700}
+.fd a[href="tel:911"],.fd a[href="tel:988"]{position:relative}.fd a[href="tel:911"]::after,.fd a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
 .fd-done p{margin-bottom:12px}
 .fd-done .fd-big{font-size:18px;line-height:1.5}
 .fd-done .fd-big a{font-weight:700;color:var(--ink);text-underline-offset:3px;white-space:nowrap}
@@ -791,7 +794,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <a class="step" href="#/start-here"><span class="num">01</span><h3>Start Here</h3><p>New to Lightwell? Have lunch with the pastors and hear where this church is headed.</p><span class="go">Come to lunch <span class="arw" aria-hidden="true">&rarr;</span></span></a>
         <a class="step" href="#/groups"><span class="num">02</span><h3>Small Groups</h3><p>Ten or so people, a living room and real conversation. Groups meet all over the city.</p><span class="go">Find a group <span class="arw" aria-hidden="true">&rarr;</span></span></a>
         <a class="step" href="#/events"><span class="num">03</span><h3>Events</h3><p>Family nights, serve days and the occasional cookout. Here is the calendar.</p><span class="go">View the calendar <span class="arw" aria-hidden="true">&rarr;</span></span></a>
-        <a class="step" href="#prayer-request"><span class="num">04</span><h3>Need Prayer</h3><p>Big or small, bring it. Our prayer team reads every request and would love to pray with you.</p><span class="go">Send a request <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+        <a class="step" href="#prayer-request"><span class="num">04</span><h3>Need Prayer</h3><p>Big or small, bring it. On a real church site, our prayer team reads every request and would love to pray with you.</p><span class="go">Send a request <span class="arw" aria-hidden="true">&rarr;</span></span></a>
       </div>
     </div>
   </section>
@@ -902,11 +905,12 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <p class="muted">One short email every Thursday. What is happening Sunday, the latest message and one simple way to serve the city.</p>
         <form class="nl-form" novalidate>
           <label class="sr-only" for="nl-email">Email address</label>
-          <input id="nl-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <input id="nl-email" name="email" type="email" value="you@example.com" readonly aria-describedby="nl-hint" required>
           <button class="btn btn-primary" type="submit">Sign Up <span class="arw" aria-hidden="true">&rarr;</span></button>
         </form>
+        <p class="nl-hint" id="nl-hint">Demo only: a sample email is filled in. Nothing is sent.</p>
         <p class="form-note" aria-live="polite"></p>
-        <p class="aside-link">Carrying something heavy this week? <a class="tlink" href="#prayer-request">Send a prayer request</a>. A real person reads every one.</p>
+        <p class="aside-link">Carrying something heavy this week? <a class="tlink" href="#prayer-request">Send a prayer request</a>. On a real church site, a real person reads every one.</p>
       </div>
     </div>
   </section>
@@ -995,6 +999,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="fd-scroll">
+      <p class="fd-note fd-top" data-fd-help><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span></p>
       <form class="fd-form" novalidate>
         <p class="fd-lede">Tell us which Sunday. Someone will be ready to meet you at the door, show you the coffee and walk your kids to check-in.</p>
         <div class="fd-grid">
@@ -1014,7 +1019,6 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <div class="fd-field"><label for="pv-q">Anything you would like to ask? <span class="fd-opt">(optional)</span></label><textarea id="pv-q" name="question" rows="3" readonly>Where do the kids check in?</textarea></div>
         <button class="btn btn-primary fd-submit" type="submit">Plan My Visit</button>
         <p class="fd-fine">We only use this to welcome you. Demo only: sample details are filled in, and they cannot be changed here. Nothing is sent.</p>
-        <p class="fd-fine">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p>
       </form>
       <div class="fd-done" hidden>
         <p class="fd-big" data-fd-text role="status"></p>
@@ -1034,8 +1038,9 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="fd-scroll">
+      <p class="fd-note fd-top" data-fd-help><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span></p>
       <form class="fd-form" novalidate>
-        <p class="fd-lede">Big or small, bring it. A real person reads every request.</p>
+        <p class="fd-lede">Big or small, bring it. On a real church site, a real person reads every request. In this demo, nothing is sent.</p>
         <div class="fd-grid">
           <div class="fd-field"><label for="pr-name">Your name <span class="fd-opt">(optional)</span></label><input id="pr-name" name="name" type="text" value="Sarah N." readonly></div>
           <div class="fd-field"><label for="pr-email">Email <span class="fd-opt">(optional)</span></label><input id="pr-email" name="email" type="email" value="sarah.n@example.com" readonly aria-describedby="pr-email-hint pr-email-err"><p class="fd-hint" id="pr-email-hint">Only if you would like to hear back.</p><p class="fd-err" id="pr-email-err" hidden>Add your email so a pastor can reach you.</p></div>
@@ -1054,7 +1059,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
         <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-care.html?church=bright-modern&amp;view=prayer&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">&rarr;</span></a><span>See how prayer stays locked to the people the guest chose.</span></p>
       </div>
-      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:+19195550142">(919) 555-0142</a>.</span></p>
+      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>You can also call the church at (919) 555-0142.</span></p>
       <p class="fd-note line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 5.6v6.1c0 4.9 3.4 8.9 8 9.8 4.6-.9 8-4.9 8-9.8V5.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span></p>
     </div>
   </div>
@@ -1072,7 +1077,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
      "#/..." links are inner pages of the full site: in this preview they show a short note. */
   const NAV = [
     { label: "About", items: [["Who We Are", "How Lightwell got started.", "#about"], ["Our Values", "What we care about most.", "#/values"], ["What We Believe", "The short version and the long one.", "#/beliefs"]] },
-    { label: "Connect", items: [["Plan Your Visit", "Times, parking and kids.", "#plan-a-visit"], ["Get Connected", "All the ways in.", "#visit"], ["Start Here", "New here? Begin with lunch.", "#/start-here"], ["Small Groups", "Find a group near you.", "#/groups"], ["Ask About Baptism", "Baptism Sunday is December 6.", "#baptism"], ["Prayer Requests", "A real person reads every one.", "#prayer-request"], ["Contact Us", "Call, email or send a note.", "#contact"]] },
+    { label: "Connect", items: [["Plan Your Visit", "Times, parking and kids.", "#plan-a-visit"], ["Get Connected", "All the ways in.", "#visit"], ["Start Here", "New here? Begin with lunch.", "#/start-here"], ["Small Groups", "Find a group near you.", "#/groups"], ["Ask About Baptism", "Baptism Sunday is December 6.", "#baptism"], ["Prayer Requests", "On a real site, a person reads each one.", "#prayer-request"], ["Contact Us", "Call, email or send a note.", "#contact"]] },
     { label: "Ministries", items: [["All Ministries", "Something for every age.", "#/ministries"], ["Lightwell Kids", "Nursery through 5th grade.", "#/kids"], ["Students and Young Adults", "Grades 6 to 12 and twentysomethings.", "#/students"], ["Freedom", "Recovery and healing groups.", "#/freedom"], ["Serve Teams", "Find your spot on a team.", "#/serve"]] },
     { label: "Watch", href: "#message" },
     { label: "Events", href: "#/events" },
@@ -1280,7 +1285,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   nf.addEventListener("submit", (e) => {
     e.preventDefault();
     const v = $("#nl-email").value.trim();
-    note.textContent = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Thanks. You are on the list for Thursday." : "Please enter an email address like you@example.com.";
+    note.textContent = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "Demo only. Nothing was sent. On a real church site, you would be on the list for Thursday." : "Please enter an email address like you@example.com.";
   });
 
   /* Video pop-up */
@@ -1363,7 +1368,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     menuButton: ".hamburger",
     menuSheet: "#mobilemenu",
     visitDone: function (sunday, time, kids) {
-      return "Nadia from our welcome team will email you by tomorrow. We will look for you on " + sunday + " at " + time + (kids ? ", and someone will walk your kids to check-in." : ".");
+      return "On a real church site, Nadia from our welcome team would email you by tomorrow, and we would look for you on " + sunday + " at " + time + (kids ? ", with someone ready to walk your kids to check-in." : ".");
     }
   };
   var $ = function (s, r) { return (r || document).querySelector(s); };

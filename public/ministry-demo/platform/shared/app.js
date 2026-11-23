@@ -1509,13 +1509,17 @@
       '.gm-dock-link-primary{background:#f2d895;color:#08090e;border-color:#f2d895}.gm-dock-link-primary:hover{background:#f5e2ad;color:#08090e}' +
       /* Tap to ask only: the questions where the composer was, then the demo note and the 911 and 988 line. */
       '.gm-dock-qs{display:flex;flex-direction:column;gap:8px;padding:10px 4px 2px}.gm-dock-qs-row{display:flex;flex-wrap:wrap;gap:6px}' +
+      /* The questions scroll inside a cap, so the conversation always keeps most of the dock, and the demo
+         note and the 911 and 988 line under them never leave the screen. A fade shows there is more below. */
+      '.gm-dock-qs-list{display:flex;flex-direction:column;gap:8px;max-height:min(34vh,300px);overflow-y:auto;overscroll-behavior:contain}' +
+      '.gm-dock-qs-list.gm-more-below{-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}' +
       '.gm-dock-q{display:inline-flex;align-items:center;min-height:32px;padding:6px 12px;border:1px solid rgba(242,216,149,.42);border-radius:999px;background:rgba(8,9,14,.35);color:#f4efe8;font:600 12.5px/1.25 inherit;text-align:left;cursor:pointer}' +
       '.gm-dock-q:hover{border-color:#f2d895;background:rgba(242,216,149,.08)}.gm-dock-q:focus-visible,.gm-dock-more:focus-visible,.gm-dock-help a:focus-visible{outline:2px solid #f2d895;outline-offset:2px}' +
       '.gm-dock-more{align-self:flex-start;min-height:32px;padding:4px 2px;border:0;background:none;color:#f2d895;font:600 12.5px/1.2 inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}' +
-      '.gm-dock-qs-more{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow-y:auto;overscroll-behavior:contain}.gm-dock-qs-more[hidden]{display:none}' +
+      '.gm-dock-qs-more{display:flex;flex-direction:column;gap:6px}.gm-dock-qs-more[hidden]{display:none}' +
       '.gm-dock-qs-h{margin:4px 0 0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#a4977f;font-weight:700}' +
-      '.gm-dock-demo{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#b9b0a1}.gm-dock-help{margin:0;font-size:12px;line-height:1.45;color:#f4efe8}.gm-dock-help a{color:#f2d895;font-weight:700}' +
-      '@media (pointer:coarse){.gm-dock-q,.gm-dock-more{min-height:44px}}@media (max-height:500px){.gm-dock-demo{display:none}.gm-dock-qs-more{max-height:28vh}}' +
+      '.gm-dock-demo{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#b9b0a1}.gm-dock-help{margin:0;padding:7px 10px;border-radius:8px;background:rgba(242,216,149,.08);font-size:13px;line-height:1.45;color:#f4efe8}.gm-dock-help b{font-weight:700}.gm-dock-help a{position:relative;color:#f2d895;font-weight:700}.gm-dock-help a::after{content:"";position:absolute;inset:-14px -12px}' +
+      '@media (pointer:coarse){.gm-dock-q,.gm-dock-more{min-height:44px}}@media (max-height:500px){.gm-dock-demo{display:none}.gm-dock-qs-list{max-height:24vh}}' +
       '@media (pointer:coarse){.gm-dock-link{min-height:44px}}.gm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}' +
       /* Short windows (200 percent zoom, a phone on its side): the welcome keeps the line and the gold chip
          clear of the composer; the voice row and the approval line wait for a taller window. */
@@ -1527,7 +1531,7 @@
       '<div class="aria-chat-wrapper" data-avatar-character="hawk" style="--aria-avatar-size:44px"><div class="cloud-bg"><div class="cloud-bg__far"><div class="cloud-bg__blur"><div class="cloud-bg__fill"></div></div></div><div class="cloud-bg__near"><div class="cloud-bg__blur"><div class="cloud-bg__fill"></div></div></div></div>' +
       '<div class="aria-chat"><div class="aria-chat__inner"><div class="aria-scroll"><div class="aria-thread" aria-live="polite">' + welcomeHTML(b) + "</div></div>" +
       '<div class="aria-control-panel"><div class="aria-control-panel__inner">' + dockQuestionsHTML() + "</div></div>" +
-      '<div class="aria-footer"><span>' + esc(ASSISTANT.name) + " only sees what you can see, and never sends anything without a person's approval.</span></div></div></div>" +
+      '<div class="aria-footer" hidden><span>' + esc(ASSISTANT.name) + " only sees what you can see, and never sends anything without a person's approval.</span></div></div></div>" +
       "</div></div></div></div></aside></div>" +
       '<link rel="stylesheet" href="' + esc(OS) + 'refine-hawk-core.css">' +
       /* Ministry layer, after the real dock sheets: the big orb's gold G at the size the old mark showed
@@ -1553,11 +1557,21 @@
       if (act === "mic" || act === "talk") { sayInDock("Voice is not part of this preview. Tap a question below instead."); return; }
       if (act === "more") {
         var more = root.getElementById(t.getAttribute("aria-controls")), opening = more.hidden;
-        more.hidden = !opening; t.setAttribute("aria-expanded", String(opening)); t.textContent = opening ? "Fewer Questions" : "More Questions";
-        if (opening) { var f = more.querySelector("[data-q]"); if (f) f.focus(); }
+        setDockMore(opening);
+        if (opening) {
+          /* The new groups come into view at the top of the question list, then the first one takes focus. */
+          var list = root.querySelector(".gm-dock-qs-list");
+          if (list) list.scrollTop = Math.max(0, list.scrollTop + more.getBoundingClientRect().top - list.getBoundingClientRect().top - 4);
+          var f = more.querySelector("[data-q]"); if (f) f.focus({ preventScroll: true });
+          dockFade();
+        }
         return;
       }
-      if (t.hasAttribute("data-q")) { askInDock(t.getAttribute("data-q")); return; }
+      if (t.hasAttribute("data-q")) {
+        /* A tapped question closes More, so the answer has the room. */
+        setDockMore(false);
+        askInDock(t.getAttribute("data-q")); return;
+      }
       if (act === "hear") { hearBriefing(); return; }
       if (act === "speak") { toggleSpeak(t); return; }
       if (act === "orb") { focusFirstQuestion(); return; }
@@ -1576,7 +1590,23 @@
     });
     dock.chips = b.chips;
     dock.brief = b;
+    var qlist = root.querySelector(".gm-dock-qs-list");
+    if (qlist) { qlist.addEventListener("scroll", dockFade, { passive: true }); addEventListener("resize", dockFade); }
     attachDockOrbs();
+  }
+  /* More Questions open or closed: the toggle's words, its count and the list's fade. Closing takes the list back to its top. */
+  function setDockMore(open) {
+    if (!dock) return;
+    var t = dock.root.querySelector('[data-dock="more"]'), more = t && dock.root.getElementById(t.getAttribute("aria-controls"));
+    if (!t || !more) return;
+    more.hidden = !open; t.setAttribute("aria-expanded", String(open));
+    t.textContent = open ? "Fewer Questions" : "More Questions (" + more.querySelectorAll("[data-q]").length + ")";
+    if (!open) { var list = dock.root.querySelector(".gm-dock-qs-list"); if (list) list.scrollTop = 0; }
+    dockFade();
+  }
+  function dockFade() {
+    var list = dock && dock.root.querySelector(".gm-dock-qs-list");
+    if (list) list.classList.toggle("gm-more-below", list.scrollHeight - list.scrollTop - list.clientHeight > 4);
   }
   function normBriefing(b) {
     b = b || {};
@@ -1700,20 +1730,25 @@
     ].map(function (g) { return { title: g.title, more: g.more, items: g.items.map(function (q) { return q.replace(/\bHope\b/g, ASSISTANT.name); }) }; });
   }
   function dockQuestionsHTML() {
-    var groups = dockQuestions(), top = "", more = "";
+    var groups = dockQuestions(), top = "", more = "", moreCount = 0;
     var chip = function (q) { return '<button type="button" class="gm-dock-q" data-q="' + esc(q) + '">' + esc(q) + "</button>"; };
     groups.forEach(function (g) {
       var row = (g.title ? '<p class="gm-dock-qs-h">' + esc(g.title) + "</p>" : "") + '<div class="gm-dock-qs-row">' + g.items.map(chip).join("") + "</div>";
-      if (g.more) more += row; else top += row;
+      if (g.more) { more += row; moreCount += g.items.length; } else top += row;
     });
-    return '<div class="gm-dock-qs" role="group" aria-label="Questions you can ask ' + esc(ASSISTANT.name) + '">' + top +
-      (more ? '<button type="button" class="gm-dock-more" data-dock="more" aria-expanded="false" aria-controls="gm-dock-qs-more">More Questions</button><div class="gm-dock-qs-more" id="gm-dock-qs-more" hidden>' + more + "</div>" : "") +
-      '<p class="gm-dock-demo">This is a demo. ' + esc(ASSISTANT.name) + " answers sample questions here. In your church's workspace, " + esc(ASSISTANT.name) + " answers what your team types.</p>" +
-      '<p class="gm-dock-help">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></div>';
+    /* The demo note says what this demo does, and on Care that the workspace Hope comes with Shepherd. It
+       promises no typing: typing comes back later, only on a real AI with safety screening. */
+    var N = esc(ASSISTANT.name), care = GM.side === "church" && !GM.isIncluded("genesis");
+    return '<div class="gm-dock-qs" role="group" aria-label="Questions you can ask ' + N + '"><div class="gm-dock-qs-list">' + top +
+      (more ? '<button type="button" class="gm-dock-more" data-dock="more" aria-expanded="false" aria-controls="gm-dock-qs-more">More Questions (' + moreCount + ')</button><div class="gm-dock-qs-more" id="gm-dock-qs-more" hidden>' + more + "</div>" : "") +
+      "</div>" +
+      '<p class="gm-dock-demo">Demo: ' + N + " answers sample questions only." + (care ? " On the Care plan, " + N + " works on your church's website. The workspace " + N + " comes with the Shepherd plan." : "") + "</p>" +
+      '<p class="gm-dock-help"><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></div>';
   }
   function resetDock() {
     if (!dock) return;
     dock.thread.querySelectorAll(":scope > :not(.aria-welcome)").forEach(function (n) { n.remove(); });
+    setDockMore(false);
     var w = dock.thread.querySelector(".aria-welcome"); if (w) w.hidden = false;
     fitWelcome();
     focusFirstQuestion();

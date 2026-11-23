@@ -357,6 +357,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .signup input::placeholder{color:#6B6558}
 .signup input:focus-visible{outline:2px solid var(--burgundy);outline-offset:1px;border-color:var(--forest)}
 .fine{font-size:15px;color:var(--muted);margin-top:14px}
+.nl-hint{margin:10px 0 0;font-size:14.5px;color:var(--muted)}
 .form-note{min-height:1.5em;margin:12px 0 0;font-size:15.5px;color:var(--forest);font-weight:600}
 
 /* =====================================================================
@@ -507,6 +508,8 @@ body .hd-invite p{padding-right:24px}
 .fd-note.line{background:none}
 .fd-note.line svg{color:var(--brass-deep)}
 .fd-fine{margin:14px 0 0;font-size:14.5px;color:var(--muted)}
+.fd-note.fd-top{margin:0 0 18px}.fd-note b{font-weight:700}
+.fd a[href="tel:911"],.fd a[href="tel:988"]{position:relative}.fd a[href="tel:911"]::after,.fd a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
 .fd-done p{margin:0 0 12px}
 .fd-done .fd-demo{margin-top:22px}
 .fd-done .fd-big{font-family:var(--serif);font-size:21px;line-height:1.5;color:var(--forest)}
@@ -868,7 +871,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="step" href="#/start-here" data-demo><span class="num" aria-hidden="true">i.</span><h3>Start Here</h3><p>New to Calder Hill? Join the pastors for lunch on the first Sunday of the month.</p><span class="go">RSVP for lunch <span class="arw" aria-hidden="true">&rarr;</span></span></a>
       <a class="step" href="#/groups" data-demo><span class="num" aria-hidden="true">ii.</span><h3>Small Groups</h3><p>Twenty tables across Richmond, meeting in homes during the week.</p><span class="go">Find a group <span class="arw" aria-hidden="true">&rarr;</span></span></a>
       <a class="step" href="#/events" data-demo><span class="num" aria-hidden="true">iii.</span><h3>Events</h3><p>Wednesday suppers, hymn sings and Advent lessons and carols.</p><span class="go">See the calendar <span class="arw" aria-hidden="true">&rarr;</span></span></a>
-      <a class="step" href="#prayer-request"><span class="num" aria-hidden="true">iv.</span><h3>Need Prayer</h3><p>Tell us what is heavy this week. Our prayer team will pray for you by name.</p><span class="go">Ask for prayer <span class="arw" aria-hidden="true">&rarr;</span></span></a>
+      <a class="step" href="#prayer-request"><span class="num" aria-hidden="true">iv.</span><h3>Need Prayer</h3><p>Tell us what is heavy this week. On a real church site, our prayer team prays for you by name.</p><span class="go">Ask for prayer <span class="arw" aria-hidden="true">&rarr;</span></span></a>
     </div>
   </div>
 </section>
@@ -981,11 +984,12 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <h2 class="h-md" id="letter-title">The Thursday letter</h2>
       <p class="lead" style="margin-top:20px">One short email a week: what is coming up, the latest message and one good thing happening in the neighborhood.</p>
       <form class="signup" id="signup" novalidate>
-        <label><span class="sr-only">Email address</span><input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
+        <label><span class="sr-only">Email address</span><input type="email" name="email" value="you@example.com" readonly aria-describedby="nl-hint" required></label>
         <button class="btn btn-primary" type="submit">Subscribe <span class="arw" aria-hidden="true">&rarr;</span></button>
       </form>
+      <p class="nl-hint" id="nl-hint">Demo only: a sample email is filled in. Nothing is sent.</p>
       <p class="form-note" id="signup-note" role="status"></p>
-      <p class="fine">Carrying something heavy? <a class="inline-link" href="#prayer-request">Send a prayer request</a> and our prayer team will pray for you by name.</p>
+      <p class="fine">Carrying something heavy? <a class="inline-link" href="#prayer-request">Send a prayer request</a>. On a real church site, our prayer team prays for you by name.</p>
     </div>
   </div>
 </section>
@@ -1104,6 +1108,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
     <div class="fd-scroll">
+      <p class="fd-note fd-top" data-fd-help><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span></p>
       <form class="fd-form" novalidate>
         <p class="fd-lede">Tell us which Sunday. A greeter will meet you at the side door, point you to the coffee and walk you in.</p>
         <div class="fd-grid">
@@ -1124,7 +1129,6 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <div class="fd-field"><label for="pv-q">Anything you would like to ask? <span class="fd-opt">(optional)</span></label><textarea id="pv-q" name="question" rows="3" readonly>Where do the kids check in?</textarea></div>
         <button class="btn btn-primary fd-submit" type="submit">Plan My Visit</button>
         <p class="fd-fine">We only use this to welcome you. Demo only: sample details are filled in, and they cannot be changed here. Nothing is sent.</p>
-        <p class="fd-fine">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p>
       </form>
       <div class="fd-done" hidden>
         <p class="fd-big" data-fd-text role="status"></p>
@@ -1144,8 +1148,9 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <button class="fd-x" type="button" data-fd-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
     </div>
     <div class="fd-scroll">
+      <p class="fd-note fd-top" data-fd-help><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span></p>
       <form class="fd-form" novalidate>
-        <p class="fd-lede">Tell us what is heavy this week. Pastor Ruth and our prayer team will pray for you by name.</p>
+        <p class="fd-lede">Tell us what is heavy this week. On a real church site, Pastor Ruth and our prayer team would pray for you by name. In this demo, nothing is sent.</p>
         <div class="fd-grid">
           <div class="fd-field"><label for="pr-name">Your name <span class="fd-opt">(optional)</span></label><input id="pr-name" name="name" type="text" value="Sarah N." readonly></div>
           <div class="fd-field"><label for="pr-email">Email <span class="fd-opt">(optional)</span></label><input id="pr-email" name="email" type="email" value="sarah.n@example.com" readonly aria-describedby="pr-email-hint pr-email-err"><p class="fd-hint" id="pr-email-hint">Only if you would like to hear back.</p><p class="fd-err" id="pr-email-err" hidden>Add your email so a pastor can reach you.</p></div>
@@ -1164,7 +1169,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
         <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-care.html?church=classic-timeless&amp;view=prayer&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">&rarr;</span></a><span>See how prayer stays locked to the people the guest chose.</span></p>
       </div>
-      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:+18045550142">(804) 555-0142</a>.</span></p>
+      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>You can also call the church at (804) 555-0142.</span></p>
       <p class="fd-note line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 5.6v6.1c0 4.9 3.4 8.9 8 9.8 4.6-.9 8-4.9 8-9.8V5.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span></p>
     </div>
   </div>
@@ -1361,7 +1366,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   $('#signup').addEventListener('submit', function (e) {
     e.preventDefault(); var inp = $('#signup input'), note = $('#signup-note');
     if (!inp.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value)) { note.style.color = 'var(--burgundy)'; note.textContent = 'Please enter an email address like name@example.com.'; inp.focus(); return; }
-    note.style.color = ''; note.textContent = 'Thank you. Your first letter arrives Thursday.'; inp.value = '';
+    note.style.color = ''; note.textContent = 'Demo only. Nothing was sent. On a real church site, you would be on the list for Thursday.';
   });
 })();
 </script>
@@ -1376,9 +1381,9 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     menuButton: ".nav-cta .hamburger",
     menuSheet: "#msheet",
     visitDone: function (sunday, time, kids) {
-      var t = "Nadia from our welcome team will email you by tomorrow. A greeter will look for you at the side door on " + sunday + " before the " + time + " service";
+      var t = "On a real church site, Nadia from our welcome team would email you by tomorrow, and a greeter would look for you at the side door on " + sunday + " before the " + time + " service";
       if (kids && time === "9:00 AM") return t + ". Little ones are always welcome in the pews at 9:00, and Calder Kids classes meet at 11:00.";
-      return t + (kids ? ", and a teacher will walk your kids to their class." : ".");
+      return t + (kids ? ", with a teacher ready to walk your kids to their class." : ".");
     }
   };
   var $ = function (s, r) { return (r || document).querySelector(s); };

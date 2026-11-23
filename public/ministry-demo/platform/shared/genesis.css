@@ -948,3 +948,6 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 .gm-skip-frame:focus{transform:none;opacity:1}
 .ws-phone{position:relative}
 #ws-kit:focus{outline:none}
+
+/* 911 and 988: a 44px tap area around each number, without moving the words. */
+a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}

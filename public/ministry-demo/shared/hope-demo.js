@@ -23,7 +23,8 @@
       tour: [{ sel, k, h, p, focus }],   // optional; sel may also be a list (the first visible one wins)
       removeSelectors: [],         // simpler chats to remove, so there is only one assistant
       bottomOffset: 0,             // extra space when a pinned bar sits at the bottom
-      autoInvite: true             // the small "Want a tour?" card (phones: once the hero has scrolled away)
+      autoInvite: true,            // the small "Want a tour?" card (phones: once the hero has scrolled away)
+      avoid: ".m-device"           // on wide screens the chat narrows (down to 320px) to stay clear of this part
     };
 
   church.length (how long a gathering runs) and church.parking are said only when the page gives them.
@@ -106,10 +107,10 @@
   var CHURCH = !!(CH.times || CH.address);
   var FRAMED = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
   var EMBED = /[?&]embed=1(&|$)/.test(location.search);
-  /* The line under the questions. True to the product: on a church's own site Hope answers what people
-     type, through the AI service behind it, after the safety check. This public demo answers only the
-     questions it shows. */
-  var DEMO_NOTE = "This is a demo. " + AN + " answers sample questions here. On your church's site, " + AN + " answers what people type.";
+  /* The short line under the questions. It promises no typing: typing comes back later, only on a real AI
+     with safety screening (owner decision, November 23, 2026). The "Why Can't I Type a Question?" chip
+     says the rest. */
+  var DEMO_NOTE = "Demo: " + AN + " answers sample questions only.";
 
   function $(sel) { try { return sel ? document.querySelector(sel) : null; } catch (e) { return null; } }
   function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
@@ -179,18 +180,24 @@
     ".hd-chip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
     ".hd-typing{display:inline-flex;gap:5px;padding:14px 16px}.hd-typing i{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.35;animation:hdDot 1s infinite}",
     ".hd-typing i:nth-child(2){animation-delay:.15s}.hd-typing i:nth-child(3){animation-delay:.3s}",
-    ".hd-foot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hd-line)}",
     /* The questions: a group heading, the chips, and More Questions to open the rest. */
     ".hd-qs{display:flex;flex-direction:column;gap:8px;animation:hdIn .35s .05s cubic-bezier(.2,.7,.2,1) both}",
     ".hd-qs-h{margin:6px 2px 0;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.8}",
     ".hd-qs-more{display:flex;flex-direction:column;gap:8px}.hd-qs-more[hidden]{display:none}",
     ".hd-more{align-self:flex-start;font:600 13.5px/1.2 var(--hd-font);min-height:40px;padding:9px 4px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
     ".hd-more:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
-    ".hd-foot{display:flex;justify-content:center;padding:10px 12px 4px;border-top:1px solid var(--hd-line)}",
-    ".hd-note{font-size:12px;line-height:1.45;opacity:.8;text-align:center;margin:0;padding:2px 16px 4px}",
-    /* The 911 and 988 line: plain and calm, always in view under the questions. */
-    ".hd-help{font-size:12.5px;line-height:1.45;text-align:center;margin:0;padding:0 16px 10px}",
-    ".hd-help a{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
+    /* The foot: the 911 and 988 line first, as its own band, then the one-line demo note and All Questions. */
+    ".hd-foot{display:flex;flex-direction:column;border-top:1px solid var(--hd-line)}",
+    ".hd-foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 10px;padding:2px 12px 6px}",
+    ".hd-note{font-size:12px;line-height:1.45;opacity:.8;text-align:center;margin:0}",
+    ".hd-allq{font:600 12.5px/1.2 var(--hd-font);min-height:32px;padding:4px 2px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
+    ".hd-allq:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
+    /* The 911 and 988 line: plain and calm, always in view under the questions. Each number has a 44px
+       tap area without moving the words. */
+    ".hd-help{font-size:13px;line-height:1.45;text-align:center;margin:0;padding:8px 16px;background:var(--hd-surface2)}",
+    ".hd-help b{font-weight:700}",
+    ".hd-help a{position:relative;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
+    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -12px}",
     ".hd-help a:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;border-radius:3px}",
     "@keyframes hdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}",
     "@keyframes hdDot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:.9;transform:translateY(-3px)}}",
@@ -220,7 +227,7 @@
     /* The invite is a compact card above the circle, never across the first screen. */
     "  .hd-invite{left:auto;right:16px;max-width:min(300px,calc(100vw - 32px))}",
     /* Phone tap targets: 44px. */
-    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip{min-height:44px}",
+    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip,.hd-allq,.hd-more{min-height:44px}",
     "  .hd-skip{padding:8px 10px}",
     "  .hd-invite .hd-x{top:2px;right:2px;width:44px;height:44px}",
     "  .hd-invite p{padding-right:34px}",
@@ -230,7 +237,7 @@
     "}",
     /* Touch screens of any width (a tablet held in landscape): 44px targets too. */
     "@media (pointer:coarse){",
-    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip{min-height:44px}",
+    "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip,.hd-allq,.hd-more{min-height:44px}",
     "  .hd-skip{padding:8px 10px}",
     "  .hd-invite .hd-x{top:2px;right:2px;width:44px;height:44px}",
     "  .hd-invite p{padding-right:34px}",
@@ -277,7 +284,7 @@
     "  .hd-panel{top:8px;bottom:8px;height:auto}",
     "  .hd-note,.hd-head small{display:none}",
     "  .hd-head{padding:4px 8px 4px 16px}",
-    "  .hd-foot{padding:6px 8px 2px}.hd-help{padding-bottom:6px}",
+    "  .hd-help{padding:5px 12px}.hd-foot-row{padding:0 8px 2px}",
     "}",
     "@media (max-height:500px) and (max-width:640px){.hd-panel{top:0;bottom:0;border-radius:0}}",
     /* 400 percent zoom: the chat is the whole window, and the tour card drops its dots. */
@@ -318,13 +325,16 @@
        Typing comes back only on a real AI with safety screening. Under the questions, always in view:
        the demo note and the 911 and 988 line. */
     var foot = el("div", "hd-foot");
-    allQ = el("button", "hd-chip hd-allq", "All Questions"); allQ.type = "button";
-    allQ.addEventListener("click", function () { addQuestions(true); });
-    foot.appendChild(allQ);
-    var note = el("p", "hd-note", DEMO_NOTE);
     var help = el("p", "hd-help");
-    help.innerHTML = 'In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.';
-    panel.appendChild(head); panel.appendChild(body); panel.appendChild(foot); panel.appendChild(note); panel.appendChild(help);
+    help.innerHTML = '<b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.';
+    var footRow = el("div", "hd-foot-row");
+    var note = el("p", "hd-note", DEMO_NOTE);
+    /* All Questions brings the one question list to the end of the chat (never a second copy). */
+    allQ = el("button", "hd-allq", "All Questions"); allQ.type = "button";
+    allQ.addEventListener("click", function () { addQuestions(true); });
+    footRow.appendChild(note); footRow.appendChild(allQ);
+    foot.appendChild(help); foot.appendChild(footRow);
+    panel.appendChild(head); panel.appendChild(body); panel.appendChild(foot);
     document.body.appendChild(panel);
     if (CFG.launcher !== false) document.body.appendChild(launch); else launch = null;
 
@@ -360,17 +370,29 @@
   function setOpen(v, restore) {
     if (!panel) { if (v && CFG.openChat) CFG.openChat(); return; }
     if (v && !isOpen) { var a = document.activeElement; opener = a && a !== document.body && !panel.contains(a) ? a : null; }
+    if (v) fitBeside();
     isOpen = v; panel.classList.toggle("on", v); if (launch) launch.innerHTML = v ? ICON_X : ICON_CHAT;
     if (launch) launch.setAttribute("aria-expanded", v ? "true" : "false");
     panel.setAttribute("aria-modal", v && phoneChat() ? "true" : "false");
     /* Someone who has used the chat is never offered the tour invite again. */
-    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { focusOn(allQ); }, 280); }
+    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { focusOn(firstQuestion() || allQ); }, 280); }
     else if (restore) {
       var back = focusable(opener) ? opener : focusable(launch) ? launch : null;
       opener = null;
       if (back) focusOn(back);
     }
   }
+  /* A page that names a part to keep in view (the member app's phone): on a wide screen the chat narrows
+     to fit beside it, never under 320px. */
+  function fitBeside() {
+    if (!panel || !CFG.avoid) return;
+    panel.style.width = "";
+    var keep = $(CFG.avoid);
+    if (phoneChat() || !keep || !visible(keep)) return;
+    var room = window.innerWidth - 20 - 12 - keep.getBoundingClientRect().right;
+    if (room >= 320 && room < 380) panel.style.width = Math.floor(room) + "px";
+  }
+  if (CFG.avoid) addEventListener("resize", function () { if (isOpen) fitBeside(); });
   function openChat(prompt) {
     if (CFG.openChat) { CFG.openChat(prompt); return; }
     setOpen(true);
@@ -382,7 +404,7 @@
     if (!chips || !chips.length) return;
     var row = el("div", "hd-chips");
     chips.forEach(function (c) {
-      if (!c || (!c.key && !c.href && !c.go && !c.run)) return;
+      if (!c || (!c.key && !c.href && !c.go && !c.run) || fakeTel(c.href)) return;
       var b = el("button", "hd-chip" + (c.cta ? " cta" : ""), c.label); b.type = "button";
       b.addEventListener("click", function () { onChip(c); });
       row.appendChild(b);
@@ -428,7 +450,10 @@
   var TEL = CH.phone ? "tel:" + String(CH.phone).replace(/[^\d+]/g, "") : "";
   var BACK = { label: "Back to the Menu", key: "menu" };
   var DIRECTIONS = CH.mapUrl ? { label: "Get Directions", href: CH.mapUrl, cta: true } : null;
-  var CALL = TEL ? { label: "Call " + SHORT, href: TEL, go: true } : null;
+  /* A sample church's made-up 555 number is never a call button or link: nobody would answer. */
+  var FAKE_PHONE = / 555-/.test(CH.phone || "");
+  var CALL = TEL && !FAKE_PHONE ? { label: "Call " + SHORT, href: TEL, go: true } : null;
+  function fakeTel(href) { var d = String(href || "").replace(/^tel:/i, "").replace(/\D/g, "").replace(/^1(?=\d{10}$)/, ""); return /^tel:/i.test(href || "") && d.length === 10 && d.substr(3, 3) === "555"; }
   /* The church's email: church.email, or the page's own mailto link. */
   var EMAIL = CH.email || (function () { var m = $('a[href^="mailto:"]'); return m ? m.getAttribute("href").replace(/^mailto:/i, "").split("?")[0] : ""; })();
   function chips() { return [].slice.call(arguments).filter(Boolean); }
@@ -587,7 +612,11 @@
       if (/christmas|easter|good friday|maundy|thanksgiving|new year|holiday|ash wednesday|\blent\b|advent|candlelight/i.test(q || "")) return "Holiday services, like Christmas Eve and Easter, have their own times each year, and " + SHORT + " shares them ahead of time." + (CH.phone ? " You can also call " + CH.phone + " to ask." : "");
       return "I do not want to guess about that. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and someone on the team will tell you what they offer.";
     }, c: chips({ label: "Service Times", key: "times" }, CALL, BACK) },
-    kidsafe: { t: CH.kids && /background|screened/i.test(CH.kids) ? CH.kids : "I do not want to guess about that. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and someone on the team will tell you how they keep kids safe.", c: chips({ label: "Kids and Students", key: "kids" }, CALL) },
+    /* A child-safety question gets its own plain answer, never the cheerful kids answer: the checks, the
+       two-adult rule, the check-in tags, who to tell, and 911. */
+    kidsafe: { t: function () { return "Yes. Every adult who serves with kids at " + SHORT + " is background checked and trained before they serve. There are always two adults in every room, and a child goes home only with the grown-up who holds the matching check-in tag. If you have a concern about a child's safety, tell " + listOf(pastorNames()) + (CH.phone && !FAKE_PHONE ? " or call " + CH.phone : "") + ". If a child is in danger, call 911."; }, c: chips({ label: "Kids and Students", key: "kids" }, BACK) },
+    /* Why there is no box to type in (owner decision, November 23, 2026). */
+    notyping: { t: "This demo answers only the questions it shows, so every answer here was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer." + CRISIS_LINE, c: [BACK] },
     real: { t: NAME + " is a made-up church for this preview. Its times, people and stories are samples, and a real church fills every part with its own.", c: [{ label: "What Does a Church Get?", key: "package", cta: true }, { label: "Take the Tour", key: "tour" }] },
     /* plain words about who is answering */
     human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". A real person on our team follows up on anything I cannot answer" + (CH.phone ? ", and you can call us at " + CH.phone + "." : ".") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
@@ -714,12 +743,27 @@
   var QUESTIONS = (CFG.questions || (CHURCH ? QUESTIONS_CHURCH : [{ title: "Questions", items: MENU.filter(function (c) { return c && c.key && c.key !== "tour"; }) }])).map(function (g) {
     return { title: g.title || "", more: !!g.more, items: (g.items || []).map(function (x) { return Array.isArray(x) ? { label: x[0], key: x[1] } : x; }).filter(function (x) { return x && x.key && A[x.key]; }) };
   }).filter(function (g) { return g.items.length; });
+  /* Every Hope says why there is no box to type in, as the last question under More Questions. */
+  (function () {
+    var last = QUESTIONS.filter(function (g) { return g.more; }).pop() || QUESTIONS[QUESTIONS.length - 1];
+    if (last && !QUESTIONS.some(function (g) { return g.items.some(function (x) { return x.key === "notyping"; }); })) last.items.push({ label: "Why Can't I Type a Question?", key: "notyping" });
+  })();
   /* Above the questions: the tour and the guided demo, as before (never a question). */
   var Q_ACTIONS = MENU.filter(function (c) { return c && (c.key === "tour" || c.key === "startdemo"); });
-  var qsMade = 0;
+  var qsMade = 0, qsBox = null;
+  function firstQuestion() { return qsBox && qsBox.querySelector(".hd-q"); }
+  /* Brings a part of the chat to the top of its view. */
+  function toTop(n) { if (body && n) body.scrollTop = Math.max(0, body.scrollTop + n.getBoundingClientRect().top - body.getBoundingClientRect().top - 8); }
   function addQuestions(fromButton) {
     if (!body) return;
-    var box = el("div", "hd-qs"); box.setAttribute("role", "group"); box.setAttribute("aria-label", "Questions you can ask " + AN);
+    /* There is one question list. Asked for again (All Questions, Back to the Menu), it moves to the end of
+       the chat with the same chips, never a second copy. */
+    if (qsBox) {
+      body.appendChild(qsBox); toTop(qsBox);
+      if (fromButton) focusOn(firstQuestion());
+      return;
+    }
+    var box = qsBox = el("div", "hd-qs"); box.setAttribute("role", "group"); box.setAttribute("aria-label", "Questions you can ask " + AN);
     if (Q_ACTIONS.length) {
       var acts = el("div", "hd-chips");
       Q_ACTIONS.forEach(function (c) { var b = el("button", "hd-chip" + (c.cta ? " cta" : ""), c.label); b.type = "button"; b.addEventListener("click", function () { onChip(c); }); acts.appendChild(b); });
@@ -744,12 +788,13 @@
       mb.addEventListener("click", function () {
         var opening = more.hidden; more.hidden = !opening;
         mb.setAttribute("aria-expanded", String(opening)); mb.textContent = opening ? "Fewer Questions" : "More Questions";
-        if (opening) { var f = more.querySelector(".hd-q"); if (f) focusOn(f); }
+        /* The new groups come into view at the top of the chat, then the first one takes focus. */
+        if (opening) { var f = more.querySelector(".hd-q"); toTop(more); if (f) focusOn(f); }
       });
       box.appendChild(mb); box.appendChild(more);
     }
-    body.appendChild(box); scrollDown();
-    if (fromButton) { var first = box.querySelector(".hd-q"); if (first) focusOn(first); }
+    body.appendChild(box);
+    if (fromButton) { toTop(box); focusOn(firstQuestion()); } else scrollDown();
   }
   if (!CHURCH) ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "contact", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "beliefs"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = MENU.slice(0, 4); });
   /* Under the crisis reply (its words never change): numbers a phone can dial with one tap. */
@@ -783,6 +828,7 @@
 
   /* Asked first, before any page rule: who is answering, and a plain hello or thank you. */
   var FIRST = [
+    [/\bwhy can'?t (?:i|we) type\b|\bwhy (?:is there|isn'?t there) (?:no|a) (?:box|text box|place) to type\b/i, "notyping"],
     [/\b(are you|am i (talking|speaking|chatting) (to|with)) (a |an )?(real|human|person|bot|robot|ai|machine|computer)\b|\b(is this|is that) (a |an )?(real person|human|person|bot|robot|ai|machine|computer)\b|\b(talk|speak|chat) (to|with) (a |an )?(real )?(person|human|someone|somebody)\b|\breal (person|human)\b/i, "human"],
     [/^\s*(hi|hello|hey|hiya|howdy|good (morning|afternoon|evening))( there| hope)?\s*[!.?]*\s*$/i, "hello"],
     [/^\s*(thanks?|thank you|thx|ty)( so much| very much| hope)?\s*[!.?]*\s*$/i, "thanks"],
@@ -984,7 +1030,13 @@
   /* Round 5: a question about death ("What happens after we die?") gets its answer, with 988 and 911 under it. */
   function withLine(t, q) { return t && q && /\b(?:die|dies|dying|death|dead)\b/i.test(q) && String(t).indexOf("988") < 0 ? t + CRISIS_LINE : t; }
   function greet() {
-    say(val(CFG.greeting) || ("Hi, I am " + AN + ", the assistant for " + NAME + ". This is a live preview of the " + LOOK + " template from Genesis Ministry. Want a quick guided demo of the site, or tap a question below?"), null, function () { addQuestions(); });
+    /* On the first open the chat starts at the top: the greeting, the tour button, then the questions. */
+    say(val(CFG.greeting) || ("Hi, I am " + AN + ", the assistant for " + NAME + ". This is a live preview of the " + LOOK + " template from Genesis Ministry. Want a quick guided demo of the site, or tap a question below?"), null, function () {
+      addQuestions();
+      var b = body; if (!b) return;
+      var smooth = b.style.scrollBehavior; b.style.scrollBehavior = "auto"; b.scrollTop = 0; b.style.scrollBehavior = smooth;
+      if (isOpen && (document.activeElement === allQ || !panel.contains(document.activeElement))) focusOn(firstQuestion());
+    });
   }
 
   /* ------------------------------------------------------------- invite */

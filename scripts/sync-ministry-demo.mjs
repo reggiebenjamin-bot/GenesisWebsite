@@ -327,6 +327,21 @@ for (const page of pages) {
 /* ── checks ────────────────────────────────────────────────────────── */
 
 const problems = [];
+/* The sample church sites: every form is a filled-in sample that ends in
+   "Demo only. Nothing was sent.", and no confirmation promises that a real
+   person got the visitor's details (a sign-up "on the list", a staff email). */
+function demoFormProblems(file, text) {
+  if (!/^templates\/[^/]+\/index\.html$/.test(file)) return [];
+  const out = [];
+  if (!/Demo only\. Nothing was sent\./.test(text)) out.push('has no "Demo only. Nothing was sent." confirmation');
+  const promise = /You are on the list|first letter arrives|will email you by tomorrow/.exec(text);
+  if (promise) out.push(`still promises "${promise[0]}"`);
+  for (const tag of text.match(/<(?:input|textarea)\b[^>]*>/gi) || []) {
+    if (/\btype=["']?(?:radio|checkbox|hidden|submit|button)\b/i.test(tag)) continue;
+    if (!/\breadonly\b/i.test(tag)) out.push(`has a field a visitor can type in: ${tag.slice(0, 80)}`);
+  }
+  return out;
+}
 const copiedSet = new Set(files);
 for (const file of files) {
   if (!withGrowthDesk && (GROWTH_DESK_FILES.test(file) || GROWTH_DESK_PICTURES.includes(file))) {
@@ -349,6 +364,7 @@ for (const file of files) {
     if (!copiedSet.has(ref)) problems.push(`${file} points at ${ref}, which was not copied`);
   }
   for (const error of scriptErrors(file, text)) problems.push(`does not compile: ${error}`);
+  for (const why of demoFormProblems(file, text)) problems.push(`${file} ${why}`);
 }
 for (const page of pages) {
   if (!/<meta\s+[^>]*name=["']robots["'][^>]*noindex/i.test(readFileSync(join(STAGE, page), "utf8"))) {

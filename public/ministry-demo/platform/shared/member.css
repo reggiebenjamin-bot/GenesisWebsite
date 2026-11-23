@@ -53,6 +53,8 @@
 .m-lede{margin:0;color:var(--m-muted);font-size:16.5px;line-height:1.55}
 .m-muted{color:var(--m-muted)}
 .m-small{font-size:14px}
+/* 911 and 988: a 44px tap area around each number, without moving the words. */
+a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
 .m-link{color:var(--m-accent-ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .m-section{margin-top:26px}
 .m-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
