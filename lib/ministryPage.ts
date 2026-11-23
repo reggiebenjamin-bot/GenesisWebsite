@@ -483,7 +483,7 @@ export const ministryFaq = {
     {
       question: "Who sees prayer requests?",
       answer:
-        "Only your pastors and your prayer team. Hope never answers a prayer request on its own. It thanks the person and hands the request to real people.",
+        "From the Shepherd plan, only your pastors and the prayer team you name. On the Care plan, prayer forms go by email to the pastors' address only. Hope never answers a prayer request on its own. It thanks the person and hands the request to real people.",
     },
     {
       question: "What does the AI do, and what does it not do?",
