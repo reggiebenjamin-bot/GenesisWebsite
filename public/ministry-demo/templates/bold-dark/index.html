@@ -701,6 +701,8 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
@@ -797,7 +799,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <div class="mfoot">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">→</span></a>
     <p class="mtimes"><b>Sundays 10 AM &amp; 6 PM</b>1180 Foundry Row, Columbus, Ohio</p>
-    <p class="mquiet"><a href="tel:+16145550142">(614) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="mquiet"><span class="fake-tel">(614) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -1067,7 +1069,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <div>
         <h3>Reach Us</h3>
         <ul>
-          <li><a href="tel:+16145550142">(614) 555-0142</a></li>
+          <li><span class="fake-tel">(614) 555-0142</span></li>
           <li><a href="mailto:lampstand@example.org">lampstand@example.org</a></li>
           <li><button type="button" data-open-chat>Ask a Question</button></li>
           <li><a href="#prayer-request">Prayer Requests</a></li>
@@ -1095,11 +1097,11 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
 </button>
 <div class="chat" id="chat" role="dialog" aria-label="Ask Lampstand" aria-hidden="true">
   <div class="chat-head">
-    <div><b>Ask Lampstand</b><small>Preview assistant. A real person follows up.</small></div>
+    <div><b>Ask Lampstand</b><small>Preview assistant. Tap a question for a sample answer.</small></div>
     <button type="button" class="sq" id="chat-close" aria-label="Close chat"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
   </div>
   <div class="chat-body" id="chat-body">
-    <div class="bub bot">Hey, welcome to Lampstand. I can help with service times, parking, kids and more. What can I help with?</div>
+    <div class="bub bot">Hey, welcome to Lampstand. Tap a question about service times, parking, kids and more.</div>
     <div class="chips" id="chips">
       <button type="button" class="chip" data-q="times">Service Times</button>
       <button type="button" class="chip" data-q="park">Where do I park?</button>

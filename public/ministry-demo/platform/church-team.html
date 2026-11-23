@@ -165,7 +165,7 @@ GM.ready(function (ctx) {
   function paintNext() {
     if (confirmed) {
       $("tm-next").innerHTML = '<div><div class="v2-eyebrow">Roles to confirm</div><h2 class="v2-serif-headline" id="tm-next-title">Every role is confirmed</h2><h3>' + team.length + " people, " + churchSeats.length + " staff seats in use</h3>" +
-        '<div class="v2-next-meta">' + GM.pill("All confirmed", "positive") + '</div><p class="v2-next-reason">Nothing waits on you here.<span class="v2-next-why">New roles and anyone named for gift names appear here for the lead pastor to confirm.</span></p></div>' +
+        '<div class="v2-next-meta">' + GM.pill("All confirmed", "positive") + '</div><p class="v2-next-reason">Nothing waits on you here.<span class="v2-next-why">New roles and anyone named for gift names appear here for the lead pastor to confirm.</span></p><p class="v2-muted-copy gm-demo-note" id="tm-confirm-note">Demo only: this confirmation was not saved, and nothing was sent or changed. Reload the page to see the role waiting again.</p></div>' +
         '<div class="v2-next-actions"><a class="v2-button v2-button-quiet" href="church-access.html">' + ic("access") + "Open the Access Record</a></div>";
       return;
     }

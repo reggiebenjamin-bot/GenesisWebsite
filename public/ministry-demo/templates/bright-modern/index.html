@@ -643,6 +643,9 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
+.f-col .fake-tel{display:flex;color:#E9EEF7;font-size:16px}
 </style>
 </head>
 <body>
@@ -691,7 +694,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <div class="mcta">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 10:45 AM</b><span>1218 Brightwater Ave, Raleigh</span></p>
-    <p class="mquiet"><a href="tel:+19195550142">(919) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="mquiet"><span class="fake-tel">(919) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -937,7 +940,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       </nav>
       <div class="f-col">
         <h3>Reach us</h3>
-        <a href="tel:+19195550142">(919) 555-0142</a><a href="#/contact">Contact Us</a><button type="button" data-open-chat>Ask a Question</button>
+        <span class="fake-tel">(919) 555-0142</span><a href="#/contact">Contact Us</a><button type="button" data-open-chat>Ask a Question</button>
         <div class="f-social">
           <a href="#/instagram" data-demo="Instagram" aria-label="Lightwell on Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg></a>
           <a href="#/facebook" data-demo="Facebook" aria-label="Lightwell on Facebook"><svg aria-hidden="true"><use href="#i-fb"/></svg></a>
@@ -971,7 +974,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <button class="chat-x" type="button" aria-label="Close chat"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
   </div>
   <div class="chat-body" id="chat-body" aria-live="polite">
-    <p class="bub bot">Hi, I am Hope. I can help with Sunday times, kids, parking or anything else. What would you like to know?</p>
+    <p class="bub bot">Hi, I am Hope. Tap a question about Sunday times, kids or parking.</p>
     <div class="chips">
       <button class="chip" type="button" data-q="times">Service times</button>
       <button class="chip" type="button" data-q="kids">What about my kids?</button>
@@ -1334,7 +1337,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     times: "We meet every Sunday at 9:00 and 10:45 AM at 1218 Brightwater Ave. Each gathering runs about 75 minutes.",
     kids: "Lightwell Kids runs at both gatherings for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked.",
     park: "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
-    other: "Good question. A real person from our team will follow up. You can also call (919) 555-0142.",
+    other: "On a real church site, a real person from our team would help with that. In this demo, nothing is sent.",
   };
   const ask = (text, key) => {
     const me = document.createElement("p"); me.className = "bub me"; me.textContent = text; body.appendChild(me);

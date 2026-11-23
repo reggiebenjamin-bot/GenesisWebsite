@@ -1298,7 +1298,7 @@
   /* The crisis reply's numbers, one tap each, as on the church's own site and the member app. */
   function crisisLinks() {
     var links = [{ label: "Call 988", href: "tel:988", primary: true }, { label: "Text 988", href: "sms:988" }, { label: "Call 911", href: "tel:911" }];
-    if (GM.side !== "genesis" && GM.church && GM.church.phone) links.push({ label: "Call " + GM.church.short, href: "tel:" + String(GM.church.phone).replace(/[^\d+]/g, "") });
+    if (GM.side !== "genesis" && GM.church && GM.church.phone && !/ 555-/.test(GM.church.phone)) links.push({ label: "Call " + GM.church.short, href: "tel:" + String(GM.church.phone).replace(/[^\d+]/g, "") });
     return links;
   }
   function crisisAnswer() {

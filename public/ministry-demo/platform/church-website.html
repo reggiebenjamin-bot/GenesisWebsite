@@ -133,7 +133,7 @@ GM.ready(function (ctx) {
   $("ws-site-points").innerHTML = [
     "Service times, the address and one clear next step on the first screen",
     HOPE + " answers times, kids, groups, giving and next steps, day and night",
-    "Anything personal goes to a real person, and 988 and 911 sit under every answer and form",
+    "Anything personal goes to a real person, and 988 and 911 sit under " + HOPE + "'s questions and beside every form",
     "Plan a Visit, prayer and newsletter forms on every look"
   ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
   $("ws-site-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("external") + "Open Full Size</a>" +
