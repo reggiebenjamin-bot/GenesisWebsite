@@ -39,11 +39,14 @@
     "Enterprise, for more than one campus, is scoped on a call.";
   /* Where Talk With Genesis goes: one address for the whole preview (GM_DATA.genesisContact). */
   var CONTACT = (D && D.genesisContact) || (STORY && STORY.contact) || "/contact?topic=ministry-demo";
-  /* Staff seats at each plan, from the plans themselves. */
+  /* Staff seats at each plan, from the plans themselves. Everyone who signs in to the workspace, the
+     prayer team too, uses a seat; members never do. */
+  var SEAT_WHO = " Everyone who signs in to the workspace uses a staff seat, prayer team volunteers included. Members never use one.";
+  var SEAT_MORE = " More seats are available for an additional cost, quoted in writing before you sign.";
   function seatsText() {
     var lv = (D && D.levels) || [];
-    if (!lv.length) return "Staff seats depend on the plan, and more are available for an additional cost.";
-    return lv.map(function (l) { var t = String(l.seats || ""); return l.name + ": " + t.charAt(0).toLowerCase() + t.slice(1) + "."; }).join(" ") + " More seats are available for an additional cost.";
+    if (!lv.length) return "Staff seats depend on the plan." + SEAT_WHO + SEAT_MORE;
+    return lv.map(function (l) { var t = String(l.seats || ""); return l.name + ": " + t.charAt(0).toLowerCase() + t.slice(1) + "."; }).join(" ") + SEAT_WHO + SEAT_MORE;
   }
   /* One plan, in the words of LEVELS_TEXT, with its price and seats from D.levels. */
   function planText(n) {
@@ -113,7 +116,7 @@
     /* "Do you work with Breeze?" is not "does it replace", so it never starts with No. */
     worksbeside: "Genesis Ministry works beside Planning Center, Breeze, Subsplash and your giving provider, and does not replace them. Give opens your own giving page, and events, groups and kids check-in open the tool you already use. There is no live sync today: at onboarding we can import your people list from an export, so nobody is entered twice.",
     different: "Planning Center, Breeze and Subsplash keep your church's records and the tools around them. Genesis Ministry is the part guests and members meet: the website and " + AN + ", a front office where every first-time guest gets an owner and a next step, the care inbox and the member app, with a person approving every draft. It works beside the tool you use, so you keep it.",
-    /* OWNER: whether a church keeps its own domain is not decided in this preview, so Hope says where it is settled. */
+    /* A church's web address is settled during scoping, so Hope says where it is settled. */
     domain: "Your web address is settled during scoping, with a person at Genesis: which address the new site uses and how the move is handled. Choose Talk With Genesis to confirm it for your church.",
     start: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Choose Talk With Genesis to begin.",
     upgrade: "Each plan adds to the one before, so a church can start on Care and move up to Shepherd or Plus as it grows. A person at Genesis sets up the change with you.",
@@ -154,7 +157,7 @@
     newsletter: "Genesis Ministry does not send newsletters. The newsletter sign-up on your website adds each new person to Guests with an owner and a next step, and your newsletter keeps going out from the tool you use today.",
     company: "Genesis AI makes Genesis OS, and Genesis Ministry is its edition for churches. A person at Genesis walks each church through scoping, the build and launch, then keeps the platform running.",
     size: "Genesis Ministry is built for churches of about 100 to 1,000 people. A smaller church can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.",
-    /* A pastor's buying and planning questions. OWNER: the ones settled on a call wait on Reggie's terms. */
+    /* A pastor's buying and planning questions. The ones settled on a call are set in writing then. */
     keepsite: "Whether " + AN + " can be added to a website you already have is settled during scoping, with a person at Genesis. Every plan today comes with a new website in one of four looks, with " + AN + " built in. Choose Talk With Genesis to talk it through for your church.",
     givingsee: "Nobody sees giving in Genesis. Give opens your church's own giving page, and the app keeps no giving history, so no role here, not a pastor and not the prayer team, can see what anyone gives. Giving records stay with your giving provider.",
     careplan: "Care is the first plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.",
@@ -170,19 +173,59 @@
     whobuilds: "Genesis builds it with your content. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds the site with your words and photos, Launch takes it live with your staff, and the Managed Platform keeps it running.",
     hipaa: "Genesis Ministry does not claim HIPAA compliance today. HIPAA covers health care providers and insurers, and most churches are not covered by it. Prayer and care stay behind role checks the system enforces, and during scoping we share the security and backup details in writing.",
     websitecost: "The website is in every plan. Care, at $149 a month, is the website in one of four looks with " + AN + " on it, and each plan adds to that. Customization beyond the template is available for an additional cost.",
-    downgrade: "No. If a church moves down a plan, its records are kept. The screens the lower plan does not include lock, and nothing is deleted. Moving back up opens them again. A person at Genesis sets up the change with you.",
+    downgrade: "If a church moves down a plan, its records are kept. The screens the lower plan does not include lock, and nothing is deleted. Moving back up opens them again. A person at Genesis sets up the change with you.",
+    /* Trust questions a pastor asks before signing: who reports abuse, outside providers, other
+       churches, teens, prayer leaving the inbox, the lead pastor and pastors-only requests. */
+    reporting: AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your church's child protection and reporting policy, and a person handles every report. When someone writes words of crisis, " + AN + " shows them 988 and 911 right away, and from the Shepherd plan the pastor on call is alerted, with no private words.",
+    otherchurches: "No. Each church's data is kept apart, and no church sees another's.",
+    minormessage: "No. Member accounts are for adults 18 and older, so the app has no private messages between staff and teenagers. Students are cared for through their parents and the church's student ministry. If someone under 18 writes in, staff bring in a parent or guardian and follow the church's child protection policy.",
+    prayerforward: "Prayer words stay inside the Care Inbox, for the pastors and the prayer team the person chose. Alert emails carry no words, only: New request. Sign in to read. Every open is recorded. Whether a request can ever leave the inbox, by forwarding or export, is settled in writing with a person at Genesis during scoping.",
+    pastorsonly: "Yes. Every request reaches the pastors, the lead pastor included. A request marked Pastors only is read by the pastors and not by the prayer team, and every open is recorded. This comes with the Shepherd plan.",
+    oncallcover: "The pastor on call is named in Team, week by week. When that pastor is away, the lead pastor names whoever covers, and the alerts go to them, with no private words. This comes with the Shepherd plan.",
+    faithcompany: "A person at Genesis would be glad to tell you about the team and why it builds for churches, on a call.",
+    privacypolicy: "Yes. Every church's website gets its own privacy page, written with your team before launch, in plain words members can read. How Genesis handles your data is shared in writing during scoping.",
+    guestchats: "When a guest leaves a name or asks for a person, the question reaches Guests with an owner and a next step, marked as from a " + AN + " conversation. How long chats are kept is set in writing during scoping, with a person at Genesis.",
+    real: "Genesis Ministry is real software from Genesis AI. The four churches in this preview, and every person and number in them, are made up, so you can try every screen without touching anyone's real information.",
+    value: "A website builder gives you a website. Care, at $149 a month, is the website in one of four looks, built by Genesis with your content, with " + AN + " answering guests day and night from facts your church approved, plus the brand board, the social marketing plan, and Plan a Visit and prayer forms by email. Genesis keeps it running.",
+    serving: "Not through the website today. A guest who says they want to serve tells a greeter or a pastor, and from the Shepherd plan every guest has an owner and a next step, with Serving as the last stage on the guest path. Volunteer scheduling stays in the tool you use today.",
     beliefs: "Each church answers that in its own words. On a church's own site, " + AN + " shares what the church has written about its beliefs, and hands questions like this to a pastor rather than guessing.",
     giftsinfo: "The spiritual gifts conversation is a set of short statements a member answers in the app, about 10 minutes, saved after every tap. The result is gifts to explore, added up by plain arithmetic, and " + AN + " never sets a score. Who sees it: the member first. A name reaches the pastors and any gift viewers the church names only after a yes. The church's gifts picture shows counts only and stays hidden until 25 people finish. It comes with the Plus plan."
   };
-  ANSWERS.sell = "No. Genesis never sells or shares your data. " + ANSWERS.data;
+  /* Selling and outside providers: a promise a church can repeat in its own privacy notice. */
+  ANSWERS.sell = "No. Genesis never sells your data or shares it for anyone's marketing. To run the service, a few providers process it for us under contract, such as cloud hosting, email delivery and the AI service behind " + AN + ". The list is shared in writing during scoping.";
+  ANSWERS.processors = ANSWERS.sell;
+  ANSWERS.aiprayerco = ANSWERS.aiprayer;
+  /* What a pastor types to the workspace Hope. */
+  ANSWERS.chat = "In this preview, answers are scripted from sample data, and nothing you type here is sent. In your workspace, " + AN + " only sees what you can see, and never sends anything without a person's approval.";
   /* A yes or no question gets Yes or No first; "how" and "who" questions get the answer itself. */
   function yesNo(q) { return /^\s*(do|does|did|is|are|can|could|will|would|should|have|has)\b/i.test(String(q || "")); }
+  /* "Can we move down to Shepherd later?" is a yes; "Do we lose our records if we drop down?" is a no. */
+  var downAll = ANSWERS.downgrade;
+  ANSWERS.downgrade = function (q) {
+    q = String(q || "");
+    if (/\b(lose|lost|losing|delete\w*|deleting|erase\w*|wipe\w*|keep our|kept|gone|disappear\w*)\b/i.test(q)) return "No. " + downAll;
+    if (yesNo(q) && /\b(can|could|may|is it possible)\b/i.test(q)) return "Yes. A church can move down a plan. " + downAll.replace(/^If a church moves down a plan, its/, "Its");
+    return downAll;
+  };
   var trainingAll = ANSWERS.training, staffAll = ANSWERS.staffaccess;
   ANSWERS.training = function (q) { return yesNo(q) ? trainingAll : trainingAll.replace(/^Yes\. /, ""); };
   ANSWERS.staffaccess = function (q) { return /^\s*who\b/i.test(String(q || "")) ? staffAll.replace(/^No, not in the ordinary course\./, "Nobody, in the ordinary course.") : staffAll; };
   /* "Can I add one more seat?" gets a yes before the seat counts. */
   var seatsAll = ANSWERS.seats;
-  ANSWERS.seats = function (q) { return /\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(String(q || "")) ? "Yes. More seats are available for an additional cost. " + seatsAll.replace(/ More seats are available for an additional cost\.$/, "") : seatsAll; };
+  ANSWERS.seats = function (q) {
+    q = String(q || "");
+    if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q)) return "Yes." + SEAT_MORE + " " + seatsAll.replace(SEAT_MORE, "");
+    /* "Do the volunteers on our prayer team each need a staff seat?" gets Yes first. */
+    if (/\b(volunteers?|prayer team|part[- ]time|ushers?|greeters?)\b/i.test(q) && yesNo(q)) return "Yes." + SEAT_WHO + " " + seatsAll.replace(SEAT_WHO, "");
+    return seatsAll;
+  };
+  /* "Do we need Enterprise?" gets No first; "Which plan do we need for three services?" gets the answer. */
+  var oneAll = ANSWERS.onecampus;
+  ANSWERS.onecampus = function (q) {
+    q = String(q || "");
+    if ((yesNo(q) && /\benterprise\b/i.test(q)) || /\b(do|does|would|will|should|must) (we|i|our church|a church|you)\b.{0,24}\benterprise\b|\bis (it|this|that) enterprise\b/i.test(q)) return oneAll;
+    return "Any plan covers one campus, however many services it holds: Care, Shepherd or Plus. Enterprise is for a church with more than one campus, and it is scoped on a call.";
+  };
   ANSWERS.plancare = planText(1);
   ANSWERS.planshepherd = planText(2);
   ANSWERS.planplus = planText(3);
@@ -260,14 +303,17 @@
     if (n) return "For a church of about " + n + ", Care fits if you want the website and " + AN + " first, at $149 a month. Shepherd, at $299 a month, adds the guest pipeline, the Care Inbox and the member app, with " + s2 + ". A person at Genesis can confirm it with your own church in mind.";
     return base + " A smaller church can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.";
   };
-  /* Fees and price changes. OWNER: setup fees and later prices wait on Reggie; until then the plan
-     price is the plan, and anything more is in writing first. */
+  /* Fees and price changes: the plan price is the plan, and anything more is settled in writing on a
+     call first. */
   ANSWERS.fees = function (q) {
     if (/\b(go(?:es)? up|going up|increase\w*|raise\w*|rise|rising|change over time|lock\w* in|next year|after (?:the first|a|one) year|year two)\b/i.test(String(q || ""))) return PRICES + " How a price is held over time is set in writing with Genesis before you sign anything.";
     return "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. Anything more, like customization beyond the template, is quoted in writing before you sign. Any other terms are set with Genesis on a call.";
   };
   /* The Care plan's own answers: forms arrive by email, so there is no inbox, archive or list to import yet. */
   var NO_IMPORT = / ?(?:At onboarding|There is no live sync today: at onboarding) we can import your people list from a[^.]*\./;
+  /* Leaving on Care: the forms already live in the church's own email, so the export is the site. */
+  var CARE_DATA = "On the Care plan your forms live in your own email, so there is nothing of yours in a Genesis inbox to hand back. If you ever leave, we hand over your website content, " + AN + "'s approved facts and the brand board, then delete our copy once you confirm you have it.";
+  var CANCEL_TERMS = "How a plan ends is set with Genesis on a call, before you sign anything. ";
   if (CARE) {
     ANSWERS.crisis = ANSWERS.crisis01;
     ANSWERS.oncall = ANSWERS.oncall01;
@@ -276,6 +322,8 @@
     ANSWERS.importpeople = "On the Care plan there is nothing to import, because every form arrives by email. From the Shepherd plan, we can import your people list at onboarding from a Planning Center or Subsplash export, as a CSV.";
     ["pco", "pcokeep", "worksbeside"].forEach(function (k) { ANSWERS[k] = ANSWERS[k].replace(NO_IMPORT, "") + " On the Care plan there is nothing to import, because every form arrives by email."; });
     ANSWERS.archive = "On the Care plan, forms arrive by email, so they live in the pastors' mailbox and Genesis keeps no inbox of them. From the Shepherd plan, nothing pastoral is deleted: prayer, threads and pastor notes are archived, and a removal waits for the lead pastor.";
+    ANSWERS.data = "Your data is yours. " + CARE_DATA;
+    ANSWERS.cancel = CANCEL_TERMS + CARE_DATA;
   }
   /* Every Hope answers prayer for the plan asked about ("On the Care plan, who reads the prayer emails?"); the
      story pages answer a crisis for it too. */
@@ -289,6 +337,9 @@
     ANSWERS.prayer = function (q) { return careFor(q) ? ANSWERS.prayer01 : prayerStory(q); };
     ANSWERS.crisis = function (q) { return careFor(q) ? ANSWERS.crisis01 : crisisAll; };
     ANSWERS.oncall = function (q) { return careFor(q) ? ANSWERS.oncall01 : oncallAll; };
+    var dataAll = ANSWERS.data, cancelAll = ANSWERS.cancel;
+    ANSWERS.data = function (q) { return careFor(q) ? "Your data is yours. " + CARE_DATA : dataAll; };
+    ANSWERS.cancel = function (q) { return careFor(q) ? CANCEL_TERMS + CARE_DATA : cancelAll; };
   }
   /* A rule that tests with a function, with the face of a pattern. */
   function rx(fn, key) { return fnRule(function (q) { return fn(q) ? key : null; }, key); }
@@ -296,32 +347,51 @@
   /* "Do you use our prayer requests to train AI?" is about AI, never about staff training. */
   function aiTraining(q) {
     q = String(q || "");
-    if (!/\b(train\w*|learn\w*|fine[- ]?tun\w*|feed\w*)\b/i.test(q)) return false;
-    var staffOnly = /\b(train\w*|onboard\w*|teach\w*)\b.{0,20}\b(our|the|my|your)?\s?(staff|team|volunteers|people|pastors|leaders|admins?)\b|\b(staff|team|volunteers?|we|i|pastors?)\b.{0,20}\b(learn|be trained|get trained)\b|\bstaff training\b/i;
+    /* "used to improve your AI", "make the model smarter" and "fed into an AI model" are training too. */
+    if (!/\b(train\w*|learn\w*|fine[- ]?tun\w*|feed\w*|fed (into|to)|improv\w*|smarter)\b/i.test(q)) return false;
+    var staffOnly = /\b(train\w*|onboard\w*|teach\w*)\b.{0,20}\b(our|the|my|your)?\s?(staff|team|volunteers|people|pastors|leaders|admins?)\b|\b(staff|team|volunteers?|we|i|pastors?)\b.{0,20}\b(learn|be trained|get trained)\b|\bstaff training\b|\blearn (more|about|how)\b/i;
     var aiNamed = /\btrain\w*\b.{0,20}\b(ai|a\.i\.|models?|llms?)\b|\b(prayers?|messages?|data)\b.{0,60}\btrain/i;
     if (staffOnly.test(q) && !aiNamed.test(q)) return false;
     if (TRAIN_AI.test(q)) return true;
-    return /\b(prayers?|prayer requests?|requests?|messages?|threads?|data|information|records?|conversations?|notes?)\b/i.test(q) && /\btrain\w*\b.{0,30}\b(on|with|using|from)\b|\b(use|using|used|feed\w*)\b.{0,40}\b(to|for|into) (train|training|fine)/i.test(q);
+    return /\b(prayers?|prayer requests?|requests?|messages?|threads?|data|information|records?|conversations?|notes?)\b/i.test(q) && /\btrain\w*\b.{0,30}\b(on|with|using|from)\b|\b(use|using|used|feed\w*)\b.{0,40}\b(to|for|into) (train|training|fine|improve|make)/i.test(q);
   }
   function oneCampus(q) {
     q = String(q || "");
     if (/\b(more than|other than|beyond) one\b|\b(two|three|several|multiple|many|second|another|new) (campus|campuses|locations|sites)\b|\bmulti-?site\b/i.test(q)) return false;
-    return/\b(one|a single|single|1|only one|just one) (campus|location|site|building)\b|\b(two|three|four|five|several|multiple|many|\d) (sunday |weekend |worship )?(services|gatherings)\b/i.test(q) && /\b(enterprise|campus|campuses|plan|tier|multi-?site|price|cost|count|need)\b/i.test(q);
+    /* "a Spanish service and an English service at the same campus" is one campus too. */
+    return/\b(one|a single|single|1|only one|just one) (campus|location|site|building)\b|\bsame (campus|location|building)\b|\b(two|three|four|five|several|multiple|many|\d) (sunday |weekend |worship )?(services|gatherings)\b|\b\w+ service and (an? )?\w+ service\b/i.test(q) && /\b(enterprise|campus|campuses|plan|tier|multi-?site|price|cost|count|need)\b/i.test(q);
   }
   var RULES = [
     /* Trust questions first: AI training, will it replace people, does the AI read prayer, can Genesis read it, can our staff. */
     rx(aiTraining, "aitraining"),
-    [/\b(replace|replacing|take the place of|do away with)\b.{0,20}\b(staff|team|pastors?|people|volunteers|care team|prayer team|ministers?)\b|\b(instead of|without) (a |the |our |my )?(pastors?|staff|people|volunteers)\b/i, "staffreplace"],
+    /* Prayer sent to an AI company is about prayer, never only about the model. */
+    [/\bprayers?\b.{0,60}\b(openai|chat ?gpt|gpt|ai (company|companies|provider|service|model)|outside ai|another ai|an ai (company|model|service))\b|\b(openai|chat ?gpt)\b.{0,60}\bprayers?\b/i, "aiprayerco"],
+    /* "Is this chat private?" before the prayer rule hears "private". */
+    [/\b(is|are) (this|the|our|my) (chat|conversation)s? (being )?(private|recorded|saved|kept|stored|confidential|secure|monitored)\b|\b(does|do|will|can|could) (anyone|anybody|someone|somebody|a person|people|staff|the church|you|they)\b.{0,40}\b(see|sees|read|reads|watch|record|save|keep|store)\w*\b.{0,30}\b(what i (type|write|say|ask)|this chat|this conversation|my (chat|questions?))\b|\bwhat (do|does|will|happens)\b.{0,30}\b(what i (type|write|say)|this chat|this conversation)\b/i, "chat"],
+    /* Other churches and outside providers, before the data export and the model hear their words. */
+    [/\bother churches\b.{0,40}\b(see|sees|share|shared|sharing|access|data|read|information)\b|\b(share|shared|sharing|see|access)\w*\b.{0,50}\b(other|another) church(es)?\b/i, "otherchurches"],
+    [/\bthird[- ]part(y|ies)\b|\bwhich (companies|vendors|providers|services)\b|\bprocess\w* (our|the|my|your|church) data\b|\b(sub-?processors?|data processors?)\b|\boutside (ai|companies|company|vendors?|providers?|services?)\b|\bai (company|companies|provider|providers|vendor|service)\b|\b(go|goes|sent|send|sends|passed|shared?)\b.{0,30}\b(to|with) (an? )?(outside|other|third|another) (company|companies|ai|vendor|provider|service)\b/i, "processors"],
+    /* Who reports abuse: Hope reports to no one; the pastors follow the church's policy. */
+    [/\b(report\w*|notif\w*|tell|told|call\w*)\b.{0,40}\b(police|authorities|cps|child protective|law enforcement)\b|\b(police|authorities|cps)\b.{0,40}\b(report\w*|notif\w*|told|call\w*)\b|\bmandat\w* report\w*|\b(does|will|would|can) (hope|genesis|it|the app|the system)\b.{0,20}\breport\b|\bwho (at church |on staff |at the church )?(is|gets) told\b|\bwho handles\b.{0,30}\b(abuse|danger|reports?)\b|\breporting (policy|abuse)\b/i, "reporting"],
+    /* Staff messaging teenagers, prayer leaving the inbox, the lead pastor and Pastors only, guest chats, on-call cover. */
+    [/^(?!.*\bparents?\b).*\b(youth pastor|youth leaders?|staff|leaders?|pastors?|volunteers?)\b.{0,40}\b(message|messages|messaging|dm|dms|text|chat|write to)\b.{0,40}\b(teens?|teenagers?|minors?|youth group|middle school\w*|high school\w*|under ?18)\b/i, "minormessage"],
+    [/\b(forward\w*|export\w*|e-?mail\w*|send|sends|copy|copies|print\w*|download\w*)\b.{0,40}\bprayers?( requests?)?\b.{0,40}\b(personal|own|private|home|gmail|outside)\b|\bprayers?( requests?)?\b.{0,30}\b(forward\w*|export\w*)\b/i, "prayerforward"],
+    [/\b(lead|senior|executive) pastor\b.{0,60}\b(read|see|open)\w*\b.{0,40}\bprayers?\b|\bmarked pastors only\b|\bpastors only\b.{0,40}\b(lead pastor|read|see)\b/i, "pastorsonly"],
+    [/\b(chats?|conversations?|questions?)\b.{0,40}\b(guests?|visitors?|people)\b.{0,40}\b(hope|website|site)\b.{0,40}\b(saved|kept|stored|see|read|how long)\b|\b(see|read|view)\b.{0,20}\bwhat (guests?|visitors?|people) (asked|ask|typed|said)\b/i, "guestchats"],
+    [/\bon[- ]call\b.{0,60}\b(vacation|away|sick|out|off|leave|travel\w*|cover\w*|backup|back-up)\b|\bwho covers\b/i, "oncallcover"],
+    [/\b(replace|replacing|take the place of|do away with)\b.{0,20}\b(staff|team|pastors?|people|volunteers|care team|prayer team|ministers?|secretary|office manager|administrator|admins?|receptionist)\b|\b(instead of|without) (a |the |our |my )?(pastors?|staff|people|volunteers)\b/i, "staffreplace"],
     [/\b(hope|ai|a\.i\.|assistant|bot|robot|it)\b.*\b(read|reads|reading|see|sees|summar\w*|reply|replies|respond\w*|answer\w*|write|writes|draft\w*)\b.*\b(prayers?|private)\b/i, "aiprayer"],
     /* "Can Genesis staff read our prayer requests?" is about Genesis, so it comes before the staff rule. */
     [/\b(genesis|your|vendor|support) (staff|team|engineers?|employees?|people|developers?|admins?)\b.*\b(read|see|open|access)|\b(can|could|do|does|will|would) (genesis|you|your (staff|team|engineers?|company))\b.*\b(read|see|open|access)\b.*\b(prayer|care|data|messages|records?)|\b(engineers?|developers?|database|whoever runs|(person|people|someone|anyone) (who|that) runs?|hosting company|tech support)\b.{0,60}\b(read|see|open|access)\w*\b|\b(who|anyone|anybody|someone|somebody|people|staff|employees?|engineers?) (at|from|in|inside|working (at|for)) (genesis|your company|the company)\b.{0,50}\b(read|see|open|access|look)\w*|\b(read|see|open|access)\w*\b.{0,40}\b(at|from) genesis\b/i, "staffaccess"],
     /* Nobody sees giving, whatever their role: "If a deacon is on the prayer team, can he see what people give?" */
-    [/\b(see|sees|seeing|know|knows|view|views|access|look at|track|tracks)\b.{0,30}\b(what|how much|who) (people|members|someone|anyone|they|each person|families|folks|we|i|he|she|everyone)?\s?(give|gives|gave|donates?|tithes?)\b|\bgiving (history|records?|amounts?|data|totals?)\b|\bwho (gives|tithes|donates)\b|\b(see|view|access)\b.{0,20}\b(the )?(giving|donations|tithes)\b/i, "givingsee"],
+    [/\b(see|sees|seeing|know|knows|view|views|access|look at|track|tracks)\b.{0,30}\b(what|how much|who) (people|members|someone|anyone|they|each person|families|folks|we|i|he|she|everyone)?\s?(give|gives|gave|donates?|tithes?)\b|\bgiving (history|records?|amounts?|data|totals?)\b|\bwho (gives|tithes|donates)\b|\b(see|view|access)\b.{0,20}\b(the )?(giving|donations|tithes)\b|\b(giving|donation|tax|year-end|year end|contribution) (statements?|receipts?)\b/i, "givingsee"],
     /* The pastors' mailbox: on Care it carries the prayer words. */
     [/\b(read|see|open|access|check|look at|get into)\w*\b.{0,40}\b(pastors?'?s?'?|the|that|our|church|shared) (e-?mail|mailbox|email account|email inbox)\b|\bmailbox\b/i, "mailbox"],
     [/\b(staff|office( manager)?|secretary|volunteers?|admins?|ushers?|greeters?)\b.*\b(read|see|open|access)\w*\b.*\bprayers?\b/i, "prayer"],
     /* Care the plan, and the Care Inbox the screen. */
     [/\bcare\b.{0,20}\bplan\b.{0,30}\b(or|vs\.?|versus|and)\b.{0,20}\binbox\b|\binbox\b.{0,30}\b(or|vs\.?|versus|and)\b.{0,20}\bcare plan\b|\bwhat (does|is) the care inbox\b|\bwhat'?s the care inbox\b|\bcare inbox do\b|\bdifference between (the )?care( plan)? and (the )?care inbox\b/i, "careplan"],
+    /* "Is this a real church I can visit?": the churches are made up, in the workspace too. */
+    [/\b(real church|is (this|it|that) (a )?real\b|made[- ]up|fake church|actual church|does (this|the) church (really )?exist|is (lightwell|lampstand|calder hill|goldenrod)\b.{0,30}\breal)\b/i, "real"],
     /* Plan questions that name plans but ask something narrower: seats, one campus, moving down, fees, a feature. */
     rx(oneCampus, "onecampus"),
     [/\b(limit|cap|maximum|max)\b.{0,40}\b(members?|people|adults|accounts)\b|\bhow many (members|people|adults)\b.{0,30}\b(use|sign|join|have|on)\b.{0,20}\b(app|accounts?|it|this)\b|\bunlimited (members|users|accounts|people)\b/i, "memberlimit"],
@@ -333,16 +403,22 @@
     [/\b(cheapest|least expensive|lowest[- ]priced?|lowest|smallest|entry[- ]level|starter|basic|most affordable) (plan|option|tier|level|package|price)\b|\bcheapest\b/i, "cheapest"],
     /* The plans by name: two or three named together, or a plan's price, before any rule that hears "care" or "$". */
     fnRule(planPair, "levels"), fnRule(planPair, "planplus"), fnRule(planPair, "planshepherd"), fnRule(planPair, "plancare"), fnRule(planPair, "campus"),
+    [/\bgenesis\b.{0,30}\b(christian|faith-based|faith based|believers?)\b|\b(christian|faith-based) (company|business|team)\b/i, "faithcompany"],
     [/\bwho (is|are) genesis( ai)?\b|\bwhat is genesis ai\b|\bwho (makes|made|built|builds|is behind|runs|owns) (this|it|genesis|hope|the platform|genesis ministry)\b|\babout genesis ai\b|\bgeai\b/i, "company"],
     [/\b(chat ?gpt|openai|gpt|gemini|claude|llm|large language model)\b|\b(which|what) (ai|model|engine)\b|\b(built|running|based) on (an? )?(ai|model|gpt)\b|\bpowered by\b/i, "model"],
     [/\b(pretend\w*|claim\w*|act\w*|pass\w*|pose\w*) (to be |as )?(an? )?(human|person|real person)\b|\b(say|tell|admit|disclose)s? (it is|it'?s|that it is) (an? )?(ai|automated|bot|robot|machine)\b|\bknow (it is|it'?s|they are|they'?re) (talking|chatting) (to|with) (an? )?(ai|bot|robot|machine)\b/i, "nothuman"],
     [new RegExp("\\b(is|are) (" + AN_RX + "|you|it|this|the assistant) (a |an )?(real |actual )?(person|human|bot|robot|machine|ai)\\b", "i"), "nothuman"],
+    /* "Can we turn the member app off and keep only the website?" is the Care plan. */
+    [/\b(turn|switch|shut)\w* (the )?(member )?app off\b|\b(turn|switch|shut)\w* off the (member )?app\b|\bkeep (only|just) the (web ?site|site)\b|\bwithout the (member )?app\b/i, "plancare"],
     [new RegExp("\\b(turn|switch|shut)(ing)? (" + AN_RX + "|the (ai|assistant|chat(bot)?)) off\\b|\\b(turn|switch|shut)(ing)? off (" + AN_RX + "|the (ai|assistant|chat(bot)?))\\b|\\b(disable|pause)\\b.{0,12}\\b(" + AN_RX + "|the ai|the assistant)\\b|\\bwithout " + AN_RX + "\\b", "i"), "turnoff"],
     [new RegExp("\\b(" + AN_RX + "|ai|assistant|bot|it)\\b.{0,40}\\b(wrong|incorrect|false|outdated|inaccurate|mistakes?|made[- ]up|hallucinat\\w*|makes? (things|stuff) up)\\b", "i"), "wrong"],
     [/\b(minor|under ?18|under 18|underage|teen(ager)?s?|child|kid|student|young person)\b.*\b(writes?|messages?|messaged|sends?|contacts?|reaches out|emails?)\b|\bif (a|someone) (minor|teen|kid|child|under)|\b(1[0-7]|thirteen|fourteen|fifteen|sixteen|seventeen)[- ]?(year|yr)s?[- ]?old\b.*\b(writes?|messages?|messaged|emails?|contacts?|reaches|texts?|dms?|sends?)\b/i, "minor"],
     [/\b(1[0-7]|sixteen|fifteen|seventeen|fourteen|thirteen)[- ]?(year|yr)|\b(minor|teen(ager)?s?|under ?18|kids?|children|students?)\b.*\b(sign ?up|sign ?in|accounts?|join|use the app)\b/i, "age"],
+    /* "If we leave, can we get our data in a spreadsheet?" is the export, never the import. */
+    [/\b(if|when) (we|you) leave\b(?!\s+(for|because|due|church|early|the service|on|in|at)\b)|\bleave genesis\b|\bexport (our|the|my|everything|all)\b|\b(get|take) (our|my|the) data\b|\bour data back\b/i, "data"],
     [/\bimport|bring (over|in) (our|the|my) (people|members|list)|(people|member) (list|data) (from|into)|entered twice|double entry|migrat\w*|\bspreadsheets?\b|\bexcel\b|\bcsv\b/i, "importpeople"],
     [/\bhipaa\b/i, "hipaa"],
+    [/\bprivacy (policy|policies|notice|page|statement)\b/i, "privacypolicy"],
     [/\b(sell|sells|selling|sold|rent|rents|monetiz\w*)\b.{0,30}\b(data|information|info|lists?|emails?|contacts?|people)\b|\b(data|information) (is |are )?(sold|for sale)\b|\badvertis\w*|\bthird[- ]part(y|ies)\b/i, "sell"],
     [/\bhost(ed|ing)?\b|hipaa|complian\w*|gdpr|soc ?2|regulat\w*|where is (the |our )?data|stored|secure|security|backups?|encrypt\w*|servers?\b|safe is (the |our )?data|\b(is|are) (my|our|the|their) (data|information|records?|members'? (data|information)|people'?s? (data|information)) (safe|secure|protected|private)\b|\bdata (safe|safety|protection|privacy)\b|keep (our|the|my) (data|information) (safe|secure)|privacy of (our|the|my) data/i, "hosting"],
     /* Ending a plan is a buying question: how it ends, then the data export. */
@@ -354,6 +430,7 @@
     [/how long (does it|will it|to)|\bhow long\b.{0,30}\b(live|launch\w*|up and running|set ?up|built|ready to (go|use))\b|\bwhen (can|could|will|would|do) (we|i|it|our (site|website|church)) (go|be|get) (live|launched|up and running)\b|(launch|go live|get live|set ?up) (time|take|date)|\bgo-?live\b|timeline|how (soon|fast|quickly)|weeks? to launch|days to launch/i, "launch"],
     /* Staff training only. AI training is the first trust rule. */
     [/\btrain(ing|ed)? (for |of )?(our|the|my|your)?\s?(staff|team|volunteers|people|pastors|leaders|admins?)\b|\b(staff|team|volunteer|admin) training\b|\b(is there|do you (offer|provide|do)|any|what) training\b|\bhow (do|will|does) (we|our staff|the staff|staff|our team) (learn|get trained)\b|onboard (our|the) staff|walk ?through for (our|the) staff|learn (it|to use)|support after launch/i, "training"],
+    [/\b(volunteers?|people|members?|guests?)\b.{0,30}\bsign (up|on)\b.{0,30}\bserv\w*\b|\bsign[- ]?ups? (to|for) serv\w*\b|\bserv\w*\b.{0,30}\bsign[- ]?ups?\b/i, "serving"],
     [/\b(schedul\w*|rota|roster|rotation)\b.{0,30}\b(volunteers?|teams?|serving|servers|ushers|greeters|worship team|nursery)\b|\bvolunteers?\b.{0,30}\b(schedul\w*|rota|roster|rotation)\b|\bvolunteer (management|scheduling)\b/i, "schedule"],
     [/\b(android|iphone|ios|ipad|app store|play store|google play|apple store)\b|\b(mobile|phone) app\b.{0,30}\b(store|download|work|available)\b|\bdownload (the |an |our )?app\b/i, "phones"],
     [/\b(spanish|espa(ñ|n)ol|bilingual|another language|other languages?|second language|multilingual|translat\w*|korean|mandarin|chinese|vietnamese|portuguese|french|haitian|creole)\b/i, "language"],
@@ -361,7 +438,7 @@
     [/^(?!.*\b(crisis|emergenc\w*|danger\w*|suicid\w*|988|911|hurt\w*|abus\w*)\b).*(?:\b(breaks?|broken|goes down|stops working|not working|crash\w*|outage|problem|issue)\b.{0,40}\b(sunday|weekend|morning|night|after hours)\b|\bwho do (i|we) call\b|\b(tech(nical)? )?support\b.{0,30}\b(hours|sunday|weekend|24\/7|phone|number|when)\b|\bsupport (line|hours|phone|number)\b|\b24\/?7\b)/i, "support"],
     [/\battendance\b|\bheadcount\b|\bwho (came|showed up|attended)\b|\b(take|track|count)\w* (attendance|who comes)\b/i, "attendance"],
     [/\b(kids?|child(ren)?|nursery|student|youth)\b.{0,15}\bcheck[- ]?ins?\b|\bcheck[- ]?ins?\b.{0,15}\b(kids?|child(ren)?|nursery)\b|\b(do|does|can|will) (it|this|genesis( ministry)?|you) (do|handle|run|offer|include|support) (kids'? |child |children'?s? )?check[- ]?ins?\b/i, "checkin"],
-    [/\breferences?\b|\b(talk|speak|call) (to|with) (a |another |other |some )?church(es)?\b.{0,30}\b(use|using|uses|used)\b|\b(churches|anyone|who) (are |is )?(already )?using (it|this|genesis)\b|\bother churches\b.{0,30}\b(use|using)\b|\bcase stud\w*|\btestimonials?\b/i, "references"],
+    [/\breferences?\b|\b(talk|speak|call) (to|with) (a |another |other |some )?church(es)?\b.{0,30}\b(use|using|uses|used)\b|\b(churches|anyone|who) (are |is )?(already )?using (it|this|genesis)\b|\bother churches\b.{0,30}\b(use|using)\b|\bcase stud\w*|\btestimonials?\b|\bhow many churches\b/i, "references"],
     [/\bwho (builds|makes|designs|sets up|creates|writes) (the |our |my )?(web ?site|site|content|pages?)\b|\b(do|does|will) (we|i|you|genesis) (have to )?(build|make|design|write) (the |our |my )?(web ?site|site)\b|\bbuild (the|our) (web ?site|site) (ourselves|for us)\b/i, "whobuilds"],
     [/\b(web ?site|site)\b.{0,20}\b(extra|separate|cost extra|included|add-?on)\b|\b(is|are) (the )?(web ?site|site|hope) (extra|included|separate)\b|\bhow much (is|does) the (web ?site|site)\b/i, "websitecost"],
     [/\b(believe|believes|views?|position|stance|teach|teaches) (about|on)\b|\b(gay|lgbtq?\w*|same[- ]sex|homosexual\w*|transgender|affirming)\b|\bwomen (pastors?|preach\w*|elders?|leaders?|in ministry)\b|\bwomen be (pastors?|elders?)\b|\bdenomination\w*\b|\bstatement of faith\b|\bdoctrin\w*\b/i, "beliefs"],
@@ -369,6 +446,9 @@
     /* Other church tools: how Genesis differs, whether it works with them, and the web address, before "can we keep". */
     [/\b(different|differ\w*|compar\w*|vs\.?|versus|better than|instead of)\b.{0,30}\b(planning center|subsplash|pushpay|breeze|tithe\.?ly|church ?center|ccb|rock rms|elvanto|other church (software|tools?))\b|\b(planning center|subsplash|breeze|pushpay|tithe\.?ly)\b.{0,30}\b(different|differ\w*|vs\.?|versus|compar\w*|better)\b/i, "different"],
     [/\b(do|does|can|will) (you|it|this|genesis( ministry)?) (work|integrate|connect|sync|play) (well |nice(ly)? )?(with|beside|alongside|to)\b|\b(work|works|integrate|integrates|connect|connects|sync|syncs) with (planning center|subsplash|pushpay|breeze|tithe\.?ly|church ?center|ccb|rock|elvanto|realm)\b|\bintegrat(e|es|ion|ions)\b/i, "worksbeside"],
+    /* "Why pay $149 when Squarespace costs $30?" is about value; "we paid for a redesign last year" is about keeping it. */
+    [/\b(squarespace|wix|weebly|godaddy|website builders?)\b.{0,60}(\$|\b(cost|costs|cheaper|price|month)\b)|\bwhy (would|should) (i|we) pay\b/i, "value"],
+    [/\b(redesign\w*|new website|built (a|our) (web ?site|site)|paid (someone|a designer|a company))\b.{0,80}\b(last year|already|existing|throw (it )?away|keep)\b|\bthrow (it|our (current |old |existing )?(web ?site|site)) away\b/i, "keepsite"],
     /* "Can we keep our current website and just add Hope to it?" is the website, not Planning Center. */
     [new RegExp("\\b(keep|use|stay with|stick with|hold on to)\\b.{0,30}\\b(current|existing|own|old|present)\\s+(web ?site|site|page)\\b|\\b(current|existing|own|old) (web ?site|site)\\b.{0,40}\\b(add|keep|embed|plug|use)\\b|\\badd (" + AN_RX + "|it|the assistant|the chat\\w*|a chat\\w*)\\b.{0,30}\\b(to|on|into) (our|my|the) (current |existing |own |old )?(web ?site|site)\\b|\\bembed\\w*\\b|\\bplug-?ins?\\b|\\b(wordpress|squarespace|wix|ekklesia|nucleus)\\b", "i"), "keepsite"],
     [/\bdomains?\b|\bweb ?(address|site address)\b|\burl\b|\bdns\b/i, "domain"],
@@ -377,11 +457,11 @@
     [/\bon[- ]call\b|after hours|middle of the night|who (gets|is) (alerted|notified|paged)/i, "oncall"],
     [/\bcrisis|emergenc\w*|\b988\b|\b911\b|someone (is )?(hurting|in danger)|safety plan/i, "crisis"],
     [/spiritual gifts?|gifts? (conversation|assessment|test|survey|inventory|results?|picture|score|chart|names?)|my gifts|who (can |will )?(see|sees|read|reads)\b.{0,20}\bgifts?\b/i, "giftsinfo"],
-    [/access record|who (has )?opened|audit (log|trail)?|log of (who|every)|record of (who|every)|track(s|ed)? (who|every)/i, "accessrecord"],
+    [/access record|who (on staff |at church |at the church )?(has )?opened|audit (log|trail)?|log of (who|every)|record of (who|every)|track(s|ed)? (who|every)/i, "accessrecord"],
     [/who (can |will |gets to )?(see|sees|read|reads|open)|private|confidential|prayer team see|see (the |my |our )?prayer/i, "prayer"],
     [/sign ?in|log ?in|password|6[- ]?digit|sign up|members? need/i, "signin"],
     [/\btext(s|ing)?\b|\bsms\b/i, "texting"],
-    /* A guest's own unsubscribe is not Genesis's outreach to churches. */
+    /* A guest's own unsubscribe. */
     [/\b(guests?|visitors?|newcomers?|people|members?)\b.{0,30}\b(unsubscribe\w*|opt[- ]?out|stop (getting|receiving) (emails?|messages)|stop (the )?emails?)\b|\bunsubscribe\w*\b.{0,30}\b(guests?|visitors?|newcomers?)\b|\bstop guest emails\b/i, "guestunsub"],
     [/\bnewsletter sign-?ups?\b|\b(send|sends|sending|write|email|mail)\b.{0,30}\bnewsletters?\b|\bnewsletters?\b.{0,30}\b(send|sent|from here|tool)\b|\bmailchimp|constant contact|email (blasts?|campaigns?|marketing)\b/i, "newsletter"],
     [/\bhow (do|does|will|can|could) (i|we|you) (contact|reach|get in touch with) (you|genesis|someone|a person)\b/i, "call"],
@@ -390,11 +470,11 @@
     [/\bupgrad\w*\b|\b(change|switch|move) (our |the |my )?(plan|plans|tier|level)\b|\b(move|go) up (a |to (a |the )?)?(plan|tier|level)\b|\bstart (small|with care|on care|on the care plan)\b|\badd (more |the rest |features )?(later|as we grow)\b/i, "upgrade"],
     [/\bdiscount\w*|\bnon-?profit (rate|price|pricing|discount)\b|\bcoupon\w*|\bannual (price|pricing|plan|billing|discount)\b|\bpay (yearly|annually|for a year)\b|\bcheaper\b|\bspecial (price|pricing|rate|offer)\b/i, "discount"],
     [/\b(prices?|pricing|costs?|how much|fees?|dollars?|afford|budget)\b|\$|\bis (it|this|genesis( ministry)?) free\b/i, "price"],
-    [/custom\w*|our own (look|design|colou?rs|logo|fonts?)|redesign|change the (look|design)/i, "custom"],
+    [/custom\w*|our own (look|design|colou?rs|logo|fonts?)|\b(our own|use our( own)?) (photos?|pictures|images|logos?|colou?rs)\b|redesign|change the (look|design)/i, "custom"],
     [/\bget(ting)? started\b|\bhow (do|can|would|should|does) (we|i|a church|our church) (start|begin|sign up|join)( with| using)? (genesis|this|it|genesis ministry)\b|\bhow (do|can) (we|i) sign (up|our church up)\b|\bsign (us|our church) up\b/i, "start"],
     [/\b(book|schedule|set up|arrange|request) (a |an )?(call|meeting|demo|consultation|walk ?through)\b|\btalk (to|with) (genesis|sales|someone at genesis|a person at genesis)\b|\b(talk|speak|chat) (to|with) (a |an )?(real |live )?(person|human)\b|\b(talk|speak|chat) (to|with) (someone|somebody|a person) (at|from) genesis\b|\breal (person|human)\b|\bcontact genesis\b|\bget in touch\b|\b(try|see|demo|test|use) (it|this|genesis( ministry)?) (with|for|on|using) (my|our) (own )?church\b|\bwith (my|our) own (church|content|people|photos)\b/i, "call"],
-    [/\bcampus(es)?\b|multi-?sites?|multiple (locations|sites|campuses)|more than one (campus|location|site)|(second|another|new) (campus|location|site)\b/i, "campus"],
-    [/\b(work|built|made|fit|right|good) for (a )?(small|smaller|tiny|big|large|larger)\b|\b(small|smaller|tiny|big|large|larger) church(es)?\b|\bchurch(es)? (of|with) (about |around |only |just |under |over )?\d{2,5}\b|\bhow (big|small) (does|do|should|must) (a |our |the )?church\b|\bminimum size\b|\btoo (small|big)\b/i, "size"],
+    [/\bcampus(es)?\b|multi-?sites?|multiple (locations|sites|campuses)|more than one (campus|location|site)|(second|another|new) (campus|location)\b|(second|another) site\b/i, "campus"],
+    [/\b(work|built|made|fit|right|good) for (a )?(small|smaller|tiny|big|large|larger)\b|\b(small|smaller|tiny|big|large|larger) church(es)?\b|\bchurch(es)? (of|with) (about |around |only |just |under |over )?\d{2,5}\b|\bhow (big|small) (does|do|should|must) (a |our |the )?church\b|\bminimum size\b|\btoo (small|big|much)\b|\bwe (are|have) (about |around |only |just )?\d{2,4} (people|members|adults)\b|\b(the )?only (staff|employee|staff member|person on staff)\b|\bby myself\b/i, "size"],
     /* One plan named on its own: "What is the Shepherd plan?" */
     fnRule(planOne, "plancare"), fnRule(planOne, "planshepherd"), fnRule(planOne, "planplus"),
     [/\b(levels?|tiers?|includ\w*|packages?|plans|(?:care|shepherd|plus) plan|enterprise)\b|what do (we|i) get|(which|what) plans?\b/i, "levels"],
@@ -408,9 +488,13 @@
     "seats", "contract", "trial", "model", "turnoff", "nothuman", "wrong", "giving", "guestunsub", "sell", "newsletter", "company", "size",
     "worksbeside", "different", "domain", "memberlimit", "upgrade", "cancel", "discount", "plancare", "planshepherd", "planplus",
     "aitraining", "onecampus", "masstext", "keepsite", "givingsee", "mailbox", "careplan", "schedule", "permember", "phones", "language", "growth", "support",
-    "attendance", "checkin", "references", "whobuilds", "hipaa", "websitecost", "downgrade", "beliefs", "fees", "planfeature", "cheapest"];
+    "attendance", "checkin", "references", "whobuilds", "hipaa", "websitecost", "downgrade", "beliefs", "fees", "planfeature", "cheapest",
+    "aiprayerco", "processors", "otherchurches", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "value", "serving", "faithcompany", "privacypolicy"];
   /* Answers that a person at Genesis settles: Talk With Genesis sits under each one, on every Hope. */
-  var TALK_KEYS = ["call", "start", "domain", "keepsite", "language", "support", "references", "contract", "trial", "cancel", "discount", "fees", "growth", "whobuilds"];
+  var TALK_KEYS = ["call", "start", "domain", "keepsite", "language", "support", "references", "contract", "trial", "cancel", "discount", "fees", "growth", "whobuilds", "processors", "prayerforward", "guestchats", "faithcompany"];
+  /* Trust and policy answers the workspace dock gives before a screen's own answers ("Who covers when
+     the pastor on call is away?" on a person page is about on-call cover, not that person). */
+  var FIRST_KEYS = ["aitraining", "aiprayerco", "chat", "processors", "otherchurches", "sell", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover"];
   function talkChips() { return [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]; }
   function addMore(answers, a, chips) { MORE_KEYS.forEach(function (k) { if (!answers[k]) answers[k] = a(ANSWERS[k], TALK_KEYS.indexOf(k) >= 0 ? talkChips() : chips); }); return answers; }
   /* Inside a church's own screens, the on-call answer names who is on call there. */
@@ -1039,7 +1123,7 @@
       /* Talk With Genesis is a link under the answer, opening the contact page in a new tab. */
       var v = ANSWERS[r[1]], talk = TALK_KEYS.indexOf(r[1]) >= 0, link = { label: "Talk With Genesis", href: CONTACT };
       var ans = !talk ? v : typeof v === "function" ? function (q) { return { text: v(q), link: link }; } : { text: v, link: link };
-      return { match: r[0], answer: ans };
+      return { match: r[0], answer: ans, first: FIRST_KEYS.indexOf(r[1]) >= 0 };
     });
     list.unshift({ match: /^(?!.*\b(book|schedule|arrange|set up|request)\b).*\b(tours?|walk ?through|show me around|guide me|guided demo)\b/i, answer: function () {
       setTimeout(function () { GM.hope.close(); GM.demo.start(); }, 900);
@@ -1112,6 +1196,8 @@
         givingprivate: a("Give opens " + poss(c.short) + " own giving form. This app keeps no giving history, so nobody here sees what you give. Receipts stay with the church's giving provider.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         baptism: a((c.baptism || "Ask the church about baptism, and a pastor will talk it through with you first.") + " To ask, send a Message, or call the church at " + c.phone + ".", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         emails: a("Emails from the app never carry private words. They say only that you have a reply, and you sign in to read it. To change what you receive, ask the church office in Messages.", [toMessages]),
+        /* A member asking for the privacy page. */
+        privacypolicy: a(poss(c.short) + " website has a privacy page that says who sees what you share. In the app, a prayer request is read only by the people you choose, a private message only by the pastors, and every reply comes from a person.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages]),
         /* A belief question goes to a pastor, never the hard-week or crisis answer. */
         beliefs: a("Thank you for asking. That deserves a real conversation, not a quick answer from me. " + lead.name + " and " + care.name + " would be glad to talk it through with you. Send a Message and choose Something private, for a pastor, or call the church at " + c.phone + ".", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         hardship: a("I am so sorry. You do not have to carry this alone. You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". If you are in danger, call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
@@ -1123,11 +1209,14 @@
       match: [
         /* "Do you use my prayer requests to train AI?" is about AI training before it is about who reads prayer. */
         rx(aiTraining, "aitraining"),
+        /* "Do you send our prayer requests to OpenAI?" is about who reads prayer: no AI does. */
+        [/\bprayers?\b.{0,60}\b(openai|chat ?gpt|gpt|ai (company|companies|provider|service|model)|outside ai|another ai|an ai (company|model|service))\b|\b(openai|chat ?gpt)\b.{0,60}\bprayers?\b/i, "aimine"],
         /* A belief question ("What does the church believe about divorce?") is not a hard week. */
         [/\b(believe|believes|views?|position|stance|teach|teaches) (about|on)\b|\b(gay|lgbtq?\w*|same[- ]sex|transgender|affirming)\b|\bwomen (pastors?|preach\w*|elders?)\b|\bdenomination\w*\b|\bstatement of faith\b/i, "beliefs"],
         /* A hard week comes before any product answer. */
         [/\b(passed away|has died|just died|died (last|this|on|in)|funeral|griev\w*|grief|lost my (job|mom|dad|mother|father|husband|wife|son|daughter|baby|child|friend|home|house|brother|sister)|laid off|got fired|been fired|divorc\w*|miscarr\w*|cancer|diagnos\w*|in the hospital|scared|afraid|so worried|can'?t sleep)\b/i, "hardship"],
-        [/\bbapti[sz]\w*|\bimmers(ed|ion)\b|\bdunk(ed|ing)?\b/i, "baptism"],
+        /* "Baptist" is a church, not a baptism. */
+        [/\bbapti[sz](e|ed|es|ing|m|ms|mal)\b|\bimmers(ed|ion)\b|\bdunk(ed|ing)?\b/i, "baptism"],
         [new RegExp("\\b(ai|a\\.i\\.|" + AN_RX + "|bot|robot|computer|assistant|machine)\\b.{0,30}\\b(read\\w*|see\\w*|look\\w* at|answer\\w*|repl\\w*|scan\\w*|process\\w*)\\b.{0,30}\\b(prayers?|requests?)\\b", "i"), "aimine"],
         [/\b(did|has|have|is)\b.{0,40}\b(reply|replied|respond\w*|answer\w*|write back|written back|wrote back|get back|gotten back)\b|\bany (reply|replies|answer|response)\b|\bwhere (is|are|do i (see|find)) (my |the |a )?(reply|replies|answers?)\b/i, "replies"],
         [/\b(giv(e|ing)|tith\w*|donat\w*|offerings?)\b.{0,30}\b(private|see|sees|visible|history|record\w*|track\w*|know)\b|\bwho (can )?(sees?|knows?) (what|how much) i give\b/i, "givingprivate"],
@@ -1136,13 +1225,14 @@
         [/\bwho (sees|can see|will see|gets|reads)\b.{0,30}\bgifts?\b|\bgifts?\b.{0,30}\bwho (sees|can see|will see)\b|share my (gifts|results?|name)/i, "giftswho"],
         /* Removing a request comes before "my prayer request", so it is never answered with who can see it. */
         [/\b(delete|remove|erase|close|cancel|take down|withdraw)\b.{0,20}\b(my )?(account|information|info|data|profile|records?)\b|\bforget me\b|\b(delete|remove|erase|take down|withdraw|cancel)\b.{0,25}\b(prayer|request|message|post)/i, "remove"],
-        [/\b(my|our) (prayers?|prayer requests?|requests?)\b|\bwho (reads|sees|can read|can see|will read|will see) (my|what i write in my|what i) ?(prayers?|prayer requests?|requests?)\b/i, "prayerwho"],
+        [/\b(my|our) (prayers?|prayer requests?|requests?)\b(?! team)|\bwho (reads|sees|can read|can see|will read|will see) (my|what i write in my|what i) ?(prayers?|prayer requests?|requests?)\b/i, "prayerwho"],
         [/\b(talk|speak|meet|chat) (to|with) (a|my|the|our) pastor|\bwho is (my|our|the) (lead |care )?pastor|\bmy pastor\b|\bsee a pastor\b|\bpastor'?s (name|phone|number|email)/i, "pastor"],
         [/\b(need|want|would like) (someone|somebody|a person) to talk to|\bsomeone to talk to\b|\b(i'?m|i am|feeling) (so )?(lonely|struggling|overwhelmed|not ok|not okay)\b|\bhaving a (really )?hard time\b|^\s*i need help\s*[.!]?\s*$/i, "talk"],
         [/\b(what time|when) (is|are|does|do)\b.{0,30}\b(sunday|services?|gatherings?|church|worship|start)\b|\bservice times?\b|\bsunday times?\b/i, "times"],
         [/^(?!.*\b(account|sign ?(in|up)|log ?in)\b).*(\b(kids?|children|nursery|toddlers?)\b.*\b(check|room|class|sunday|program|ministry|during|go)\b|\bcheck[- ]?in\b|\bwhere do (the |my |our )?kids\b)/i, "kids"]
       ].concat(RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1] === "aiprayer" ? "aimine" : r[1] === "archive" ? "remove" : r[1] === "giving" ? "give" : r[1] === "guestunsub" ? "emails" : r[1]]; })).concat([
-        [/\b(giv(e|ing)|tith\w*|donat\w*|offerings?)\b/i, "give"]
+        /* "a privacy policy we can give to our members" is not giving. */
+        [/\b(giv(e|ing)(?! (it|this|that|them) to\b)(?! to (our|my|the) (members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b/i, "give"]
       ]),
       fallback: "I am not sure about that one, and I would rather not guess. In " + poss(c.short) + " app I answer from facts the church approved, and anything personal goes to a real person: send a Message and someone from the church will answer. For this preview, try one of these.",
       note: "Design preview. Answers are scripted from sample data.",
@@ -1427,7 +1517,8 @@
       var a = document.createElement("a");
       a.className = "gm-skip-screen"; a.href = url; a.textContent = "Skip to Next Screen";
       a.setAttribute("aria-label", "Skip to the next screen: " + nx.label.replace(/^Next: /, ""));
-      var after = card.querySelector(".v2-guide-foot") || card.querySelector(".bar");
+      /* After the card's foot (a site or member card keeps Back and Next in .hd-cfoot), as the card's own child. */
+      var after = card.querySelector(".v2-guide-foot") || card.querySelector(".hd-cfoot") || card.querySelector(".bar");
       if (after) after.insertAdjacentElement("afterend", a); else card.appendChild(a);
     }).observe(document.body, { childList: true, subtree: true });
   }

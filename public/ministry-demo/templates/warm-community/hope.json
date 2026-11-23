@@ -200,7 +200,7 @@
   },
   "matchPatterns": [
     [
-      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "\\bbapti[sz](?:e|ed|es|ing|m|ms|mal)\\b|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
       "baptism"
     ],
     [

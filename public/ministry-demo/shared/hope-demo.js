@@ -174,7 +174,7 @@
     ".hd-typing i:nth-child(2){animation-delay:.15s}.hd-typing i:nth-child(3){animation-delay:.3s}",
     ".hd-foot{display:flex;gap:8px;padding:12px;border-top:1px solid var(--hd-line)}",
     ".hd-foot input{flex:1;min-width:0;font:16px var(--hd-font);padding:11px 15px;border-radius:999px;border:1.5px solid var(--hd-line);background:var(--hd-surface);color:var(--hd-ink)}",
-    ".hd-foot input:focus{outline:none;border-color:var(--hd-accent)}",
+    ".hd-foot input:focus{outline:2px solid var(--hd-accent);outline-offset:2px;border-color:var(--hd-accent)}",
     ".hd-foot button{width:44px;height:44px;flex:none;border-radius:50%;border:0;background:var(--hd-accent);color:var(--hd-accent-ink);cursor:pointer;display:grid;place-items:center}",
     ".hd-foot button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
     ".hd-note{font-size:12px;opacity:.8;text-align:center;padding:0 16px 10px}",
@@ -183,13 +183,16 @@
     /* tour */
     ".hd-spot{position:fixed;z-index:2147482998;border-radius:var(--hd-radius);box-shadow:0 0 0 9999px rgba(10,10,12,.62),0 0 0 3px var(--hd-accent);pointer-events:none;transition:top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1),width .45s cubic-bezier(.2,.7,.2,1),height .45s cubic-bezier(.2,.7,.2,1),opacity .3s ease;opacity:0}",
     ".hd-spot.on{opacity:1}",
-    ".hd-card{position:fixed;z-index:2147482999;width:min(380px,calc(100vw - 32px));background:var(--hd-surface);color:var(--hd-ink);border-radius:var(--hd-radius);padding:20px 20px 16px;font:15px/1.55 var(--hd-font);box-shadow:0 30px 70px -20px rgba(0,0,0,.55);opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .35s cubic-bezier(.2,.7,.2,1),top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1)}",
+    /* The card never grows past the window (400 percent zoom): it scrolls inside, and its foot (Back,
+       Next, End Tour) stays in view at its bottom edge. */
+    ".hd-card{position:fixed;z-index:2147482999;width:min(380px,calc(100vw - 32px));max-height:calc(100dvh - 60px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;background:var(--hd-surface);color:var(--hd-ink);border-radius:var(--hd-radius);padding:20px 20px 16px;font:15px/1.55 var(--hd-font);box-shadow:0 30px 70px -20px rgba(0,0,0,.55);opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .35s cubic-bezier(.2,.7,.2,1),top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1)}",
     ".hd-card.on{opacity:1;transform:none}",
     ".hd-card .k{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hd-accent-text);margin:0 0 6px}",
     ".hd-card h3{font:700 19px/1.25 var(--hd-font);margin:0 0 8px}",
     ".hd-card p{margin:0 0 14px}",
     ".hd-card .hd-cnote{font-size:13px;line-height:1.5;opacity:.8;margin:-6px 0 14px}",
     ".hd-card .bar{display:flex;align-items:center;justify-content:space-between;gap:10px}",
+    ".hd-card .hd-cfoot{position:sticky;bottom:-16px;background:var(--hd-surface);padding-bottom:16px;margin-bottom:-16px}",
     ".hd-card .hd-next{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;margin-top:12px;text-decoration:none;text-align:center;line-height:1.2}",
     ".hd-dots{display:flex;gap:6px}.hd-dots i{width:7px;height:7px;border-radius:50%;background:var(--hd-line)}.hd-dots i.on{background:var(--hd-accent);width:18px;border-radius:4px}",
     ".hd-skip{background:none;border:0;color:inherit;opacity:.8;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px;border-radius:6px}",
@@ -254,6 +257,23 @@
     "  html.hd-tour-on .hd-launch{opacity:0;pointer-events:none}",
     "  html.hd-tour-on.hd-step-launch .hd-launch{opacity:1;pointer-events:auto}",
     "}",
+    /* A short window (a phone on its side, 200 percent zoom): the chat takes the window's height and
+       the note and subtitle step aside, so a reply, the crisis reply above all, has room to be read. */
+    "@media (max-height:500px){",
+    "  .hd-panel{top:8px;bottom:8px;height:auto}",
+    "  .hd-note,.hd-head small{display:none}",
+    "  .hd-head{padding:4px 8px 4px 16px}",
+    "  .hd-foot{padding:8px}",
+    "}",
+    "@media (max-height:500px) and (max-width:640px){.hd-panel{top:0;bottom:0;border-radius:0}}",
+    /* 400 percent zoom: the chat is the whole window, and the tour card drops its dots. */
+    "@media (max-height:320px){",
+    "  .hd-panel{top:0;left:0;right:0;bottom:0;width:auto;height:auto;border-radius:0}",
+    "  .hd-card .hd-dots{display:none}.hd-card h3{font-size:16px}",
+    "  .hd-card .bar,.hd-card .bar .hd-row{flex-wrap:nowrap}.hd-card .bar .hd-btn{min-height:36px;padding:6px 12px}.hd-card .hd-skip{padding:6px 2px;white-space:nowrap}",
+    /* The chat circle the Hope step rings sits under the card, so the card's Next is never covered. */
+    "  html.hd-tour-on.hd-step-launch .hd-launch{z-index:2147482990}",
+    "}",
     "@media (prefers-reduced-motion:reduce){.hd-body{scroll-behavior:auto}.hd-launch,.hd-invite,.hd-panel,.hd-msg,.hd-chips,.hd-spot,.hd-card,.hd-g,.hd-g-ring{transition:none!important;animation:none!important}.hd-typing i{animation:none}}",
   ].join("\n");
   var style = el("style"); style.id = "hope-demo-style"; style.textContent = css; document.head.appendChild(style);
@@ -291,7 +311,9 @@
 
     if (launch) launch.addEventListener("click", function () { setOpen(!isOpen); });
     closeBtn.addEventListener("click", function () { setOpen(false, true); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen && !touring) { e.preventDefault(); setOpen(false, true); } });
+    /* Escape closes the chat. Focus goes back to the circle only when it was in the chat: from the page
+       (Tab past Send), the chat steps aside and the focused part of the page keeps its place. */
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && isOpen && !touring) { e.preventDefault(); setOpen(false, panel.contains(document.activeElement)); } });
     /* On a phone the chat is a sheet over most of the screen: Tab stays inside it until it closes. */
     panel.addEventListener("keydown", function (e) {
       if (e.key !== "Tab" || !phoneChat()) return;
@@ -307,6 +329,8 @@
       /* Asked while Hope is still typing (the greeting): the question waits its turn. */
       if (busy) { if (!queued) queued = setTimeout(function () { queued = 0; if (foot.requestSubmit) foot.requestSubmit(); else foot.dispatchEvent(new Event("submit", { cancelable: true })); }, 250); return; }
       input.value = ""; addUser(q);
+      /* A phone types curly apostrophes ("don’t"): Hope reads them as straight ones everywhere. */
+      q = WORDS.plain(q);
       var key = route(q);
       if (key === "crisis") { say(CRISIS_REPLY, CRISIS_CHIPS); return; }
       if (key === "fallback") { var fb = fallback(q); say(fb.t, fb.c); return; }
@@ -359,7 +383,10 @@
       dots.remove();
       body.appendChild(from);
       body.appendChild(el("div", "hd-msg hd-bot", text));
-      addChips(chips); scrollDown(); busy = false;
+      addChips(chips); busy = false;
+      /* The new reply starts at the top of the chat, so its first words (988 and 911 in a crisis) are in
+         view even in a short window. A reply that fits leaves the chat at its end. */
+      body.scrollTop = Math.max(0, body.scrollTop + from.getBoundingClientRect().top - body.getBoundingClientRect().top - 8);
       if (done) done();
     }, wait);
   }
@@ -514,6 +541,10 @@
     }, c: function () { return chips(SHARE, messageChip(), CALL, BACK); } },
     /* "Is there hope for someone like me?" gets a yes; "Will I be judged?" gets a welcome. */
     welcome: { t: function (q) {
+      /* A faith or ethics question ("Does God still love me after an abortion?") gets a welcome and a
+         pastor, never a word for the other members or a hint at the church's answer. */
+      if (/\b(?:god|jesus|christ|lord|forgiv\w*|sin|sins|sinful|sinned|abortion|heaven|hell|saved|salvation|bible|scripture)\b/i.test(q || ""))
+        return "You are welcome here, just as you are. A question like that deserves a real conversation, not a quick answer from me. Our pastors would be glad to talk it through with you, or pray with you.";
       var also = NAME + " is full of people who once asked that same question";
       if (/\bhope for\b/i.test(q || "")) return "Yes, there is. " + also + ". You are welcome here just as you are, with nothing to figure out first. If you would like, our pastors would be glad to talk or pray with you.";
       return "You are welcome here, just as you are. " + also + ", and nobody has to have it all figured out first. If you would like, our pastors would be glad to talk or pray with you.";
@@ -538,7 +569,7 @@
     package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is " + LOOK + "), the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
-    hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and gives 988 and 911 right away when someone is in crisis. " + AN + " never makes things up.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and gives 988 and 911 right away when someone is in crisis. When " + AN + " does not know, it says so and hands the question to a person.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
     backoffice: { t: "The back office starts with the Shepherd plan, at $299 a month: Today, a front office where every first-time guest gets an owner and a next step, the care inbox for prayer and messages, the member app, and drafts that wait for approval. The Plus plan, at $499 a month, adds a page for each person, the Access Record screen, the spiritual gifts conversation with a picture of the gifts across the church, and reports.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     menu: null,
   };
@@ -550,6 +581,36 @@
   A.trial = { t: "A trial is " + ON_CALL + ". Scoping includes a guided demo in the look a church chooses, like this " + LOOK + " sample.", c: function () { return chips(talkChip(), { label: "Take the Tour", key: "tour", cta: !talkChip() }); } };
   A.cancel = { t: "How a plan ends is " + ON_CALL + ". If a church leaves, its data is its own: Genesis hands over a full export, then deletes its copy once the church confirms it has it.", c: function () { return chips(talkChip(), { label: "What Does It Cost?", key: "price" }); } };
   A.fees = { t: "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. Anything more, like customization beyond the template, is quoted in writing before a church signs.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }); } };
+  /* Buyer questions every Hope answers the same way (the words of platform/shared/demo.js ANSWERS). */
+  A.keepsite = { t: "Whether " + AN + " can be added to a website a church already has is " + ON_CALL + ". Every plan today comes with a new website in one of four looks, with " + AN + " built in.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
+  A.references = { t: "A person at Genesis can talk with a church about other churches and references, on a call.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
+  A.campus = { t: "Enterprise is for churches with more than one campus. One campus with several services is not Enterprise. Enterprise includes everything in Plus, and how the campuses share people, care and reports is scoped on a call.", c: function () { return chips(talkChip(), { label: "What Does It Cost?", key: "price" }); } };
+  A.onecampus = { t: function (q) {
+    q = String(q || "");
+    if ((/^\s*(do|does|is|are|would|will|should|can)\b/i.test(q) && /\benterprise\b/i.test(q)) || /\b(do|does|would|will|should|must) (we|i|our church|a church|you)\b.{0,24}\benterprise\b|\bis (it|this|that) enterprise\b/i.test(q))
+      return "No. One campus with several services is not Enterprise. Care, Shepherd and Plus each cover one campus, however many services it holds. Enterprise is for a church with more than one campus, and it is scoped on a call.";
+    return "Any plan covers one campus, however many services it holds: Care, Shepherd or Plus. Enterprise is for a church with more than one campus, and it is scoped on a call.";
+  }, c: [{ label: "What Does It Cost?", key: "price" }, { label: "What Does a Church Get?", key: "package" }] };
+  /* AI training, on every Hope, in the same words. */
+  A.aitraining = { t: "No. Genesis never uses prayer, messages or member data to train AI. " + AN + " answers only from facts " + (CHURCH ? SHORT : "the church") + " approved.", c: [{ label: "How Does " + AN + " Work?", key: "hope" }, BACK] };
+  /* "Does Hope read my prayer request?", "Do you share my data with third parties?" */
+  A.aiprayer = { t: "No. " + AN + " never reads prayer words, never summarizes them and never writes a reply. A prayer request goes only to the people you choose, and a person writes every reply." + CRISIS_LINE, c: [SHARE, BACK] };
+  A.processors = { t: "Genesis, which runs this website" + (CHURCH ? " for " + SHORT : "") + ", never sells what you share or passes it on for anyone's marketing. A few service providers, such as hosting and email delivery, handle it under contract only to run the site.", c: chips(CHURCH ? { label: "Who Sees My Prayer Request?", key: "prayerwho" } : talkChip(), BACK) };
+  /* "Is this chat private?", in a guest's own words. */
+  A.chat = { t: "I am an automated assistant, and nobody at " + SHORT + " watches this chat. If you leave your name or ask for a person, the welcome team sees your question so they can follow up. For anything private, use the prayer form, where you choose who reads it." + CRISIS_LINE, c: [SHARE, BACK] };
+  /* A pastor's question about abuse or danger: who acts, and the numbers. Hope reports to no one. */
+  A.reporting = { t: CHURCH
+    ? "Our pastors follow " + SHORT + "'s child protection and reporting policy, and a real person handles every report. I am an automated assistant, so please do not wait on me: if you or someone else is in danger, call 911, or call or text 988." + (CH.phone ? " You can call the church at " + CH.phone + "." : "")
+    : AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your child protection and reporting policy. When someone writes words of crisis, " + AN + " shows them 988 and 911 right away, and from the Shepherd plan the pastor on call is alerted, with no private words.", c: function () { return CHURCH ? CRISIS_CHIPS : chips(talkChip(), BACK); } };
+  /* The Care plan of a church site (the Website screen passes ?plan=1): prayer forms go by email to the
+     pastors, and there is no prayer team inbox yet. */
+  var SITE_PLAN = +(new URLSearchParams(location.search).get("plan") || 0);
+  if (CHURCH && SITE_PLAN === 1) {
+    var CARE_PRAYER = "Your request goes by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that.";
+    A.prayer = { t: "We would be honored to pray with you. " + CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerwho = { t: CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
+    A.privacy = { t: "What you share here goes only to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+  }
   /* The story pages speak for Genesis Ministry, not a church: a Sunday question points to the sample
      sites, and a buyer's questions (getting started, a call) get Genesis's own answers. */
   if (!CHURCH) {
@@ -557,7 +618,7 @@
        pastor asks is honestly not known here, with a person at Genesis one tap away. */
     var CHURCH_FACT = /\b(your|y'?all'?s?)\s+(church|service|services|sunday|sundays|gathering|pastors?|kids|children|nursery|youth|students|small groups?|groups|building|address|parking|times?|worship|location|staff|sermons?|messages?)\b|\bwhat time\b|\bwhere (is|are) (the|your) (church|service|building|parking)\b|\b(service|sunday|worship|gathering) times?\b|\bwhere (are you|is it) located\b|\bcan i (give|join|visit|come|bring|park|serve|attend|watch)\b|\b(is there|do you have) (a |an )?(nursery|kids'? (ministry|program|church)|youth group|student ministry|small groups?|parking|coffee|food pantry|bible stud(y|ies))\b|\bpray for (me|my|us)\b/i;
     var notHere = {
-      t: function (q) { return CHURCH_FACT.test(q || "") ? NOT_HERE : (CFG.fallback || "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call."); },
+      t: function (q) { return CHURCH_FACT.test(q || "") ? NOT_HERE : (CFG.fallback || "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call.") + CRISIS_LINE; },
       c: function (q) { return CHURCH_FACT.test(q || "") ? MENU.slice(0, 4) : chips(talkChip(), MENU[1], MENU[2]); }
     };
     ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "talkpastor", "wedding", "pantry", "noapp"].forEach(function (k) { A[k] = notHere; });
@@ -568,6 +629,7 @@
     A.care = { t: function (q) { return (sorry(q) || "I am sorry you are carrying that.") + " This is the Genesis Ministry preview, so no one reads this chat, but a pastor at your own church would be honored to walk with you." + CRISIS_LINE; }, c: [BACK] };
     A.welcome = { t: function (q) { return (/\bhope for\b/i.test(q || "") ? "Yes, there is." : "You are welcome, just as you are.") + " This is a software preview, so no one reads this chat, but a pastor at a church near you would be glad to talk with you." + CRISIS_LINE; }, c: [BACK] };
     A.free = A.price;
+    A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing you type here is sent anywhere, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
     A.real = { t: "Genesis Ministry is real software from Genesis AI. The four churches in this preview are made up, with sample data, so you can try every screen without touching anyone's real information.", c: function () { return chips(A.startdemo && { label: "Start the Guided Demo", key: "startdemo", cta: true }, { label: "How Do We Get Started?", key: "start" }); } };
     A.start = { t: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "See Getting Started", href: startHref(), go: true }, { label: "What Does Each Plan Include?", key: "levels" }); } };
     A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Talk With Genesis opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
@@ -586,18 +648,30 @@
   ["human", "hello", "thanks"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = k === "thanks" ? MENU.slice(0, 4) : MENU; });
   if (!CHURCH) ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "contact", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "beliefs"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = MENU.slice(0, 4); });
   /* Under the crisis reply (its words never change): numbers a phone can dial with one tap. */
-  var CRISIS_CHIPS = chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, CALL, BACK);
+  /* A sample church's made-up 555 number is never a button under the crisis reply: nobody would answer. */
+  var CRISIS_CHIPS = chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, / 555-/.test(CH.phone || "") ? null : CALL, BACK);
   /* When nothing fits, a church's own Hope offers the church's next steps, never the product. */
   var FALLBACK_CHIPS = !CHURCH ? MENU
     : A.talk ? chips({ label: "Talk to a Person", key: "talk", cta: true }, { label: "Service Times", key: "times" }, BACK)
     : chips({ label: "Talk to a Person", key: "contact", cta: true }, { label: "Service Times", key: "times" }, { label: "I Am New Here", key: "newhere" }, { label: "Kids and Students", key: "kids" }, BACK);
+  /* Someone telling about their own life ("I", "my", "we"), not asking for something ("Show me the
+     brand board"). */
+  var ABOUT_SELF = /\b(?:i|i'?m|i'?ve|i'?d|i'?ll|my|mine|myself|we|we'?re|we'?ve|our)\b/i;
+  var ASKING = /^\s*(?:please\s+)?(?:show|tell|give|send|find|let|help|take|open|walk)\s+(?:me|us)\b/i;
+  /* A buyer's question on a church site: never the made-up church's phone. */
+  var BUYER_WORDS = /\b(?:genesis|enterprise|campus(?:es)?|pricing|subscription|wordpress|squarespace|wix|references?|(?:web ?)?site like this|(?:care|shepherd|plus) plan|which plan|(?:our|my) (?:current|existing|old) (?:web ?site|site))\b/i;
+  /* When nothing fits. Every fallback ends with the crisis line, so a crisis no rule heard still sees
+     988 and 911. */
   function fallback(q) {
+    q = WORDS.plain(q);
     /* Someone who told Hope about their own life is thanked and pointed to a person. */
-    if (CHURCH && FIRST_PERSON.test(q) && !/\?\s*$/.test(q))
-      return { t: "Thank you for telling me. " + SHORT + " would want to help. " + (CH.phone ? "Call " + CH.phone + ", and a real person will hear you out." : "A real person at " + SHORT + " would be glad to hear more."), c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
-    return { t: CFG.fallback || (CHURCH
+    if (CHURCH && ABOUT_SELF.test(q) && !ASKING.test(q) && !/\?\s*$/.test(q) && !BUYER_WORDS.test(q))
+      return { t: "Thank you for telling me. " + SHORT + " would want to help. " + (CH.phone ? "Call " + CH.phone + ", and a real person will hear you out." : "A real person at " + SHORT + " would be glad to hear more.") + CRISIS_LINE, c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
+    if (CHURCH && BUYER_WORDS.test(q) && !CFG.fallback)
+      return { t: "I am not sure about that one, and I would rather not guess. It is " + ON_CALL + "." + CRISIS_LINE, c: chips(talkChip(), { label: "What Does a Church Get?", key: "package", cta: !talkChip() }, { label: "What Does It Cost?", key: "price" }) };
+    return { t: (CFG.fallback || (CHURCH
       ? "I am not sure about that one, and I would rather not guess. " + (CH.phone ? "Someone at " + SHORT + " can tell you at " + CH.phone + ", or try one of these." : "Try one of these, or ask someone at " + SHORT + " on Sunday.")
-      : "I am not sure about that one, and I would rather not guess. Try one of these."), c: CHURCH ? FALLBACK_CHIPS : chips(talkChip(), MENU[1], MENU[2], MENU[3]) };
+      : "I am not sure about that one, and I would rather not guess. Try one of these.")) + CRISIS_LINE, c: CHURCH ? FALLBACK_CHIPS : chips(talkChip(), MENU[1], MENU[2], MENU[3]) };
   }
 
   /* Asked first, before any page rule: who is answering, and a plain hello or thank you. */
@@ -606,6 +680,25 @@
     [/^\s*(hi|hello|hey|hiya|howdy|good (morning|afternoon|evening))( there| hope)?\s*[!.?]*\s*$/i, "hello"],
     [/^\s*(thanks?|thank you|thx|ty)( so much| very much| hope)?\s*[!.?]*\s*$/i, "thanks"],
   ];
+  /* "Do you use my prayer request to train AI?", "Is Hope trained on my conversations?", "Is our data
+     fed into an AI model?": AI training, before prayer or giving hears its words. Staff training
+     ("Do you train our volunteers?") and "learn more about" are not. */
+  var TRAIN_WORDS = /\b(?:train\w*|learn\w*|fine[- ]?tun\w*|feed\w*|fed (?:into|to)|improv\w*|smarter)\b/i;
+  var AI_TRAIN = { test: function (q) {
+    q = String(q || "");
+    if (!TRAIN_WORDS.test(q)) return false;
+    var staffOnly = /\b(?:train\w*|onboard\w*|teach\w*)\b.{0,20}\b(?:our|the|my|your)?\s?(?:staff|team|volunteers|people|pastors|leaders|admins?)\b|\bstaff training\b|\blearn (?:more|about|how)\b|\b(?:staff|team|volunteers?|we|i|pastors?)\b.{0,20}\b(?:learn|be trained|get trained)\b/i;
+    var aiNamed = /\btrain\w*\b.{0,20}\b(?:ai|a\.i\.|models?|llms?)\b|\b(?:prayers?|messages?|data)\b.{0,60}\btrain/i;
+    if (staffOnly.test(q) && !aiNamed.test(q)) return false;
+    if (new RegExp("\\b(?:ai|a\\.i\\.|artificial intelligence|models?|llms?|chat ?gpt|openai|gpt|algorithms?|machine learning|" + AN_RE + ")\\b", "i").test(q)) return true;
+    return /\b(?:prayers?|prayer requests?|requests?|messages?|threads?|data|information|records?|conversations?|notes?|chats?)\b/i.test(q) && /\btrain\w*\b.{0,30}\b(?:on|with|using|from)\b|\b(?:use|using|used|feed\w*|fed)\b.{0,40}\b(?:to|for|into) (?:train|training|fine|improve|make)/i.test(q);
+  } };
+  /* A buyer on a church site: Enterprise and campuses, a website like this one, and an existing website,
+     before the church's own times, pastors and services hear their words. */
+  var CAMPUS_Q = /\benterprise\b|\bmulti-?sites?\b|\b(?:more than one|multiple|several|two|three|four|second|another|new) campus(?:es)?\b|\bcampuses\b/i;
+  var ONE_CAMPUS = { test: function (q) { q = String(q || ""); return /\b(?:enterprise|plan|tier)\b/i.test(q) && !/\b(?:more than|other than|beyond) one\b|\b(?:two|three|several|multiple|many|second|another|new) (?:campus|campuses|locations|sites)\b|\bmulti-?site\b/i.test(q) && /\b(?:one|a single|single|only one|just one) (?:campus|location|site|building)\b|\bsame (?:campus|location|building)\b|\b(?:two|three|four|five|several|multiple|many|\d) (?:sunday |weekend |worship )?(?:services|gatherings)\b|\b\w+ service and (?:an? )?\w+ service\b/i.test(q); } };
+  var BUYER_PRICE = /\b(?:web ?site|site) like (?:this|yours)\b.{0,40}\b(?:cost|price|charge|pay)\w*\b|\b(?:cost|price|charge|pay)\w*\b.{0,40}\b(?:web ?site|site) like (?:this|yours)\b|\b(?:another|other|my|our) church\b.{0,60}\b(?:cost|price|pricing|charge|how much)\b|\b(?:cost|price|pricing|charge|how much)\b.{0,40}\b(?:for|to) (?:our|my|another) church\b/i;
+  var KEEP_SITE = new RegExp("\\b(?:keep|use|stay with|stick with)\\b.{0,30}\\b(?:current|existing|own|old|present)\\s+(?:web ?site|site)\\b|\\b(?:current|existing|own|old) (?:web ?site|site)\\b.{0,40}\\b(?:add|keep|embed|plug|use)\\b|\\b(?:wordpress|squarespace|wix|ekklesia|nucleus)\\b", "i");
   /* Before the page's own rules: a hurting person and "is this real" never get a product answer.
      "Will I be judged?" is a welcome; "My husband just died" or "I feel hopeless" goes to a pastor.
      On the story pages, a buyer's "how do we start" and "can we talk" come first too. */
@@ -615,7 +708,13 @@
     /* A holiday service has its own times: the regular Sunday times would read as a yes. */
     [/\b(?:christmas|easter|good friday|maundy thursday|thanksgiving|new year'?s? (?:eve|day)|ash wednesday|candlelight service)\b/i, "special"],
     [/\b(real church|is (this|it|that) (a )?real\b|made[- ]up|fake church|actual church|does (this|the) church (really )?exist|is (this|it) (a )?(sample|demo|fake))\b/i, "real"],
-  ].concat(CHURCH ? [] : [
+    [AI_TRAIN, "aitraining"],
+  ].concat(CHURCH ? [
+    [ONE_CAMPUS, "onecampus"],
+    [CAMPUS_Q, "campus"],
+    [BUYER_PRICE, "price"],
+    [KEEP_SITE, "keepsite"],
+  ] : [
     [/^(?!.*\bhow long\b).*(\bget(ting)? started\b|\bhow (do|can|would|should) (we|i) (start|begin|get going)\b|\bnext steps?\b|\bfirst steps?\b|\bwhere do (we|i) (start|begin)\b|\bhow (do|can) (we|i) sign (our church )?up\b|\bonboard\w*)/i, "start"],
     [/\b(book|schedule|set up|arrange) (a |an )?(call|meeting|demo|time|consultation|walk ?through)\b|\btalk (to|with) (genesis|sales|your team|someone at genesis|a person at genesis)\b|\b(contact|reach|email|call|phone) (genesis|you|sales|your team|someone)\b|\bget in touch\b|\bcontact (info|information|details|page)\b|\bhow (do|can) (i|we) (reach|contact) (you|genesis)\b|\b(buy|purchase)\b/i, "talk"],
   ]);
@@ -626,6 +725,7 @@
     [/\bdemos?\b(?!\s+(?:really|was|is|hit|felt|made|moved|got))|\bwalk ?through\b|\bguided (tour|demo)\b|\b(take|start) (the |a )?tour\b|\btour of (the|this) (site|page|website|template|app)\b|^\s*(a |the )?tours?\s*[.!?]*\s*$|\btours?\b(?! of (the|our|your|this) (building|church|campus|chapel|facilit\w*|grounds|sanctuary))/i, "tour"],
     [/\bwhat(?:'s| is) genesis( ministry)?\b|\bwho (makes|made|built) (this|genesis)\b|\babout genesis ministry\b|\bwhat is this\s*[?.!]*\s*$/i, "gm"],
     [/\bcontracts?\b|\b(sign|signing) (a |an )?(contract|agreement)\b/i, "contract"],
+    [/\breferences?\b|\bcase stud\w*|\b(?:churches|anyone|who) (?:are |is )?(?:already )?using (?:it|this|genesis)\b|\bhow many churches\b/i, "references"],
     [/\bdomains?\b|\bweb address\b|\bdns\b/i, "domain"],
     [/\bfree trials?\b|\btrial (period|plan|month)\b|\btry (it|this|genesis( ministry)?) (free|for free|first|out)\b/i, "trial"],
     [/\bcancel\w*\b.{0,25}\b(subscription|contract|genesis|account|service)\b|\bend (our|the|my) (subscription|contract)\b/i, "cancel"],
@@ -639,8 +739,13 @@
     [/\b(care|shepherd|plus) (plans?|tiers?)\b|\bcare\b[^.?!]{0,30}\bshepherd\b|\bshepherd\b[^.?!]{0,30}\bplus\b|\b(which|what) plans?\b/i, "package"],
   ];
   var SITE = [
+    /* "Is this chat private?", "What do you do with what I type here?", "Is this conversation recorded?" */
+    [/\b(?:is|are) (?:this|the|our|my) (?:chat|conversation)s? (?:being )?(?:private|recorded|saved|kept|stored|confidential|secure|monitored)\b|\b(?:does|do|will|can|could) (?:anyone|anybody|someone|somebody|a person|people|staff|the church|you|they)\b.{0,40}\b(?:see|sees|read|reads|watch|record|save|keep|store)\w*\b.{0,30}\b(?:what i (?:type|write|say|ask)|this chat|this conversation|my (?:chat|questions?))\b|\bwhat (?:do|does|will|happens)\b.{0,30}\b(?:what i (?:type|write|say)|this chat|this conversation)\b/i, "chat"],
+    /* Prayer and an AI company, and outside providers: plain answers, never the prayer invitation. */
+    [/\bprayers?\b.{0,60}\b(?:openai|chat ?gpt|gpt|ai (?:company|companies|provider|service|model)|outside ai|another ai|an ai)\b|\b(?:openai|chat ?gpt)\b.{0,60}\bprayers?\b|\b(?:does|do|will|can|could) (?:hope|the ai|ai|a bot|the assistant|you)\b.{0,20}\b(?:read|see|look at|scan)\w*\b.{0,30}\bprayers?\b/i, "aiprayer"],
+    [/\bthird[- ]part(?:y|ies)\b|\bwhich (?:companies|vendors|providers|services)\b|\boutside (?:ai|companies|company|vendors?|providers?)\b|\bai (?:company|companies|provider|providers|vendor|service)\b/i, "processors"],
     [/\bwho (sees|can see|reads|can read|will see|will read|gets to see|gets to read|gets) (my|a|the|our|your) (prayer|request)|\b(is|are) (my |our )?prayer( requests?)? (private|confidential|safe|secret)\b|\b(private|confidential) prayer\b|\bwho (sees|reads) (it|them|prayer requests?)\b/i, "prayerwho"],
-    [/\b(?:is|are|will) (?:my|our) (?:personal )?(?:information|info|details|data|email|forms?|requests?) (?:be )?(?:safe|private|secure|protected|kept private|shared|sold)\b|\bwhat (?:do|will) you do with (?:my|our) (?:information|info|details|email|data)\b|\b(?:do|will) you (?:share|sell) (?:my|our) (?:information|info|details|email|data)\b/i, "privacy"],
+    [/\b(?:is|are|will) (?:my|our) (?:personal )?(?:information|info|details|data|email|forms?|requests?) (?:be )?(?:safe|private|secure|protected|kept private|shared|sold)\b|\bwhat (?:do|will) you do with (?:my|our) (?:information|info|details|email|data)\b|\b(?:do|will) you (?:share|sell) (?:my|our) (?:information|info|details|email|data)\b|\bprivacy (?:policy|notice|page|statement)\b/i, "privacy"],
     /* Beliefs come before care: "What do you believe about gay marriage?" is a question, not distress. */
     [/\b(believe|believes|views?|position|stance|teach|teaches) (about|on)\b|\b(gay|lgbtq?\w*|same[- ]sex|homosexual\w*|transgender|affirming)\b|\bwomen (pastors?|preach\w*|elders?|leaders?|in ministry)\b|\bwomen be (pastors?|elders?|preachers?)\b|\b(can|do|does|are) women (preach|lead|teach|pastor)\w*\b|\bdenomination\w*\b|\bstatement of faith\b|\bdoctrin\w*\b|\bwhat (do|does) (you|your church|the church) teach\b/i, "beliefs"],
     [/\b(talk|speak|meet|chat|sit down|get coffee) (to|with) (a|the|one of the|your|our)?\s?pastors?\b|\b(see|reach|call|email|contact) (a|the|your) pastor\b|\bpastors?\b.{0,30}\b(this week|appointment|available|meet with)\b/i, "talkpastor"],
@@ -655,7 +760,8 @@
     [/\b(kids?|child ?care|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
     [/\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
     [/\b(small groups?|groups?|bible stud(y|ies)|life groups?|events?|socials?|fellowship|meet (new )?people|make friends|get connected)\b/i, "groups"],
-    [/\b(giv(e|ing)(?! up\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
+    /* "give it to our members" and "give this to the team" are not giving. */
+    [/\b(giv(e|ing)(?! up\b)(?! (?:it|this|that|them) to\b)(?! to (?:our|my|the) (?:members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
     /* A guest moved by Sunday ("the sermon hit me hard") hears gladness, not a schedule. */
     [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
     [/\b(watch\w*|live ?stream\w*|stream\w*|sermons?|podcasts?)\b|\b(service|church|gathering|worship)s? online\b|\bonline (service|church|gathering|worship)s?\b|\b(latest|last|this week'?s|sunday'?s|recent|newest) (message|sermon|teaching)\b/i, "watch"],
@@ -692,7 +798,7 @@
   });
   var MATCH = FIRST.concat(EARLY, PAGE_RULES, CHURCH ? SITE.concat(PRODUCT) : PRODUCT.concat(SITE));
   /* On the story pages a question about prayer with product words in it is about the product. */
-  var PRODUCT_WORDS = /\b(staff|team|admins?|levels?|access|private|privacy|protect\w*|locks?|locked|genesis|records?|data|volunteers?|software|platform)\b|\bwho (can |will |gets to )?(see|sees|read|reads|open|opens)\b|\b(see|sees|read|reads|open|opens) (the |our |my |a |their )?prayer|\b(does|can|will|would) hope\b|\bhope (answer|respond|repl|handl|draft|writ|read|see)\w*/i;
+  var PRODUCT_WORDS = /\b(staff|team|admins?|levels?|access|private|privacy|protect\w*|locks?|locked|genesis|records?|data|volunteers?|software|platform)\b|\bwho (can |will |gets to )?(see|sees|read|reads|open|opens)\b|\b(see|sees|read|reads|open|opens) (the |our |my |a |their )?prayer|\b(does|can|will|would) hope\b|\bhope (answer|respond|repl|handl|draft|writ|read|see)\w*|\b(read|see|open)s? (every|all|any) prayer|\b(as|i'?m|i am) (the |a )?(lead|senior|executive|associate) pastor\b|\bwho (at church |on staff |at the church )?(is|gets) (told|notified|alerted)\b|\bmarked pastors only\b/i;
 
   /* The crisis check. The words live in shared/crisis-words.js, the one list every Hope reads (the
      workspace dock too): the live church site's pattern, widened so a crisis is heard however it is
@@ -701,22 +807,24 @@
   var CRISIS = WORDS.crisis, calm = WORDS.calm;
   /* Someone else in danger, and a staff member writing about someone in the church, on every page. */
   function isCrisis(q) { q = calm(q); return CRISIS.test(q) || WORDS.staff.test(q); }
-  /* A last net before the fallback: a crisis word that no rule caught still gets the crisis reply. */
+  /* The net: a crisis word ("abuse", "danger", "pills") gets the crisis reply before any answer, so
+     "I need to report abuse by a pastor" never gets the pastors' bio. A pastor's question about how
+     abuse is handled, with no "I" or "me" in it (WORDS.policy), gets the answer on reporting instead,
+     which gives 988 and 911 too. */
   var CRISIS_NET = WORDS.net;
-  /* Where a question goes: "crisis", an answer key, or "fallback". */
+  /* Where a question goes: "crisis", an answer key, or "fallback". Curly apostrophes read as straight. */
   function route(q) {
-    q = String(q || "");
+    q = WORDS.plain(String(q || ""));
     if (isCrisis(q)) return "crisis";
-    var net = CRISIS_NET.test(calm(q));
+    if (CRISIS_NET.test(calm(q))) return WORDS.policy.test(calm(q)) && A.reporting ? "reporting" : "crisis";
     for (var i = 0; i < MATCH.length; i++) {
       if (!MATCH[i][0].test(q)) continue;
       var k = MATCH[i][1];
-      /* Someone hurting who also says a crisis word ("my dad is dying") gets the crisis reply. */
-      if (MATCH[i][0] === HURT && net) return "crisis";
       if (k === "prayer" && !CHURCH && A.prayerwho && PRODUCT_WORDS.test(q)) return "prayerwho";
       if (k === "tour" || k === "menu" || A[k]) return k;
     }
-    return net ? "crisis" : "fallback";
+    /* The last net: words that matter when nothing else fits ("I have a gun"). */
+    return WORDS.last.test(calm(q)) ? "crisis" : "fallback";
   }
 
   function onChip(c) {
@@ -744,6 +852,13 @@
     if (foldFocus) { document.removeEventListener("focusin", foldFocus, true); foldFocus = null; }
     if (invite) { invite.classList.remove("on"); var n = invite; invite = null; setTimeout(function () { n.remove(); }, GENESIS ? 0 : 400); }
   }
+  /* At the foot of the page the invite steps aside, so it never sits on the last row of links (Privacy,
+     Staff Login). The chat circle stays. */
+  if (!GENESIS) window.addEventListener("scroll", function () {
+    if (!invite || !invite.classList.contains("on")) return;
+    var se = document.scrollingElement || document.documentElement;
+    if (se.scrollTop + window.innerHeight >= se.scrollHeight - 160) hideInvite();
+  }, { passive: true });
   /* Escape puts the invite away at any width. Focus inside it goes back to the chat circle. */
   var inviteEsc = null;
   function armEscape() {
@@ -1232,6 +1347,9 @@
       var f = card.querySelector("[data-hd-focus]");
       if (f) {
         focusOn(f);
+        /* A card that scrolls inside (400 percent zoom) shows the focused control: only the card scrolls. */
+        var fr = f.getBoundingClientRect(), kr = card.getBoundingClientRect();
+        if (card.scrollHeight > card.clientHeight + 1 && (fr.bottom > kr.bottom || fr.top < kr.top)) card.scrollTop += fr.bottom > kr.bottom ? fr.bottom - kr.bottom + 8 : fr.top - kr.top - 8;
         if (document.activeElement !== f) requestAnimationFrame(function () {
           focusOn(f);
           if (document.activeElement !== f) setTimeout(function () { if (card && card.contains(f)) focusOn(f); }, 160);
@@ -1256,12 +1374,14 @@
     bar.appendChild(skip); bar.appendChild(ctr);
     card.appendChild(k); card.appendChild(h); card.appendChild(p);
     if (s.note) card.appendChild(el("p", "hd-cnote", s.note));
-    card.appendChild(dots); card.appendChild(bar);
+    /* The foot stays at the card's bottom edge when the card scrolls (a short window). */
+    var foot = el("div", "hd-cfoot");
+    foot.appendChild(dots); foot.appendChild(bar); card.appendChild(foot);
     dots.style.margin = "0 0 12px";
     if (last && nh) {
       var a = el("a", "hd-btn hd-next"); a.href = nh; a.setAttribute("data-hd-focus", "");
       a.appendChild(document.createTextNode(NEXT.label || "Continue the Demo")); a.insertAdjacentHTML("beforeend", ICON_ARROW);
-      card.appendChild(a);
+      foot.appendChild(a);
     } else nx.setAttribute("data-hd-focus", "");
     skip.addEventListener("click", function () { endTour(false); });
     bk.addEventListener("click", back); nx.addEventListener("click", next);
@@ -1604,13 +1724,13 @@
     /* The fixed crisis reply, for any Hope that shares these words (shared/app.js reads it). */
     crisisReply: crisisReply,
     /* Whether text is a crisis, by the widened check above (shared/app.js can ask it too). */
-    isCrisis: function (text) { var q = String(text || ""); return isCrisis(q) || CRISIS_NET.test(calm(q)); },
+    isCrisis: function (text) { var q = WORDS.plain(String(text || "")); return isCrisis(q) || CRISIS_NET.test(calm(q)); },
     /* Where a question would go ("crisis", an answer key or "fallback"), for the checks in
        shared/hope-check.html. It answers nothing and changes nothing. */
     route: route,
     /* The words and chips a question would get, for the same checks. It says nothing in the chat. */
     answerInfo: function (q) {
-      q = String(q || ""); var k = route(q), t, c;
+      q = WORDS.plain(String(q || "")); var k = route(q), t, c;
       if (k === "crisis") { t = CRISIS_REPLY; c = CRISIS_CHIPS; }
       else if (k === "fallback") { var fb = fallback(q); t = fb.t; c = fb.c; }
       else if (k === "tour" || k === "menu" || !A[k]) { t = k; c = MENU; }

@@ -253,7 +253,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Head, picker, numbers ---------- */
   $("cr-title").textContent = VIEWS[view];
-  $("cr-ask").textContent = "Ask " + HOPE;
+  $("cr-ask").textContent = "Ask " + HOPE; $("cr-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   if (!accessIncluded) $("cr-access").insertAdjacentHTML("beforeend", l3());
   $("cr-view").innerHTML = Object.keys(VIEWS).map(function (k) { return '<option value="' + k + '"' + (k === view ? " selected" : "") + ">" + esc(VIEWS[k]) + "</option>"; }).join("");
   $("cr-view").addEventListener("change", function () { GM.go(this.value === "waiting" ? "church-care.html" : "church-care.html?view=" + this.value); });

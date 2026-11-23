@@ -150,7 +150,7 @@ GM.ready(function (ctx) {
   /* ---------- Head ---------- */
   $("tm-sub").textContent = team.length + " people, " + churchSeats.length + " in staff seats. Only " + lead.name + " changes a role.";
   $("tm-invite-btn").innerHTML = ic("plus") + "Invite a Team Member";
-  $("tm-ask").textContent = "Ask " + HOPE;
+  $("tm-ask").textContent = "Ask " + HOPE; $("tm-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   $("tm-view").addEventListener("change", function () { GM.go(this.value === "access" ? "church-access.html" : "church-team.html"); });
 
   /* ---------- The numbers ---------- */

@@ -187,7 +187,8 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 .gm-plan-switch>span{padding:0 4px 0 6px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .gm-plan-switch a{flex:1 1 auto;min-height:30px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
 .gm-plan-switch a:hover{background:var(--v2-hover);color:var(--v2-text)}
-.gm-plan-switch a[aria-current="true"]{background:var(--v2-accent);color:var(--v2-on-accent)}
+/* The plan shown is marked like the current nav row (one gold fill in the sidebar: the action). */
+.gm-plan-switch a[aria-current="true"]{background:var(--v2-accent-soft);box-shadow:inset 0 0 0 1px rgba(var(--v2-accent-rgb),.32);color:var(--v2-text)}
 @media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-plan-switch{display:none}}
 @media (max-width:860px){.gm-plan-switch{margin:0 8px 8px}}
 /* A short window: the plan switch is one slim line, so more of the nav shows above it. */
@@ -240,6 +241,8 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-draft-body[contenteditable="true"]{border-color:var(--v2-focus);box-shadow:0 0 0 1px var(--v2-focus);outline:none}
 .gm-draft-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .gm-draft-note{margin:10px 0 0;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.6}
+/* On phones the approval promise is 12.5px, never smaller. */
+@media (max-width:640px){.gm-draft-note{font-size:12.5px}}
 .gm-draft.is-approved{border-color:rgba(var(--v2-positive-rgb),.4);background:linear-gradient(0deg,var(--v2-positive-soft),var(--v2-positive-soft)),var(--v2-surface)}
 .gm-draft.is-dismissed{opacity:.78}
 
@@ -735,6 +738,11 @@ body.v2-showing-sample.v2-genesis-panel-open .v2-genesis-layer{z-index:501}
   .v2-genesis-panel{top:0;left:0;right:0;width:100%;border-radius:0}
   body.v2-showing-sample .v2-genesis-panel{top:44px;height:calc(100dvh - 44px);min-height:0}
 }
+/* 400 percent zoom: the open dock takes the whole window, over the sample strip, so the replies have room.
+   The strip shows again when the dock closes. */
+@media (max-height:320px){
+  body.v2-showing-sample .v2-genesis-panel,.v2-genesis-panel{top:0;bottom:0;height:100dvh;min-height:0;border-radius:0}
+}
 /* Jump to opens under the sample strip, as in Genesis OS, so the strip stays lit; its dialog sits well
    below the strip, so the search field is never covered. */
 body.v2-showing-sample .v2-command-layer{top:44px}
@@ -835,6 +843,8 @@ body.gm-col-narrow .v2-full-record-head{grid-template-columns:minmax(0,1fr)}
 .v2-page-head>.v2-page-actions>.v2-button{white-space:nowrap}
 @media (min-width:861px){
   .v2-page-head>div:first-child{flex:1 1 auto;min-width:0}
+  /* Page actions stay on one row beside the title; the subline under the title wraps instead. */
+  body:not(.gm-col-tight) .v2-page-head>.v2-page-actions{flex:0 0 auto;flex-wrap:nowrap}
 }
 body.gm-col-tight .v2-next-move{grid-template-columns:minmax(0,1fr)}
 body.gm-col-tight .v2-page-head{display:block}
@@ -906,6 +916,12 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
   html.gm-skip-on.hd-tour-on .hd-card:not(:has(.hd-next)){padding-bottom:12px}
   html.gm-skip-on.hd-tour-on .hd-card .gm-skip-screen{left:auto;right:18px;top:8px;bottom:auto;min-height:32px;margin:0}
 }
+/* ...and on a touch screen held on its side the link keeps a 44px target, like every other card control. */
+@media (max-height:500px) and (min-width:641px) and (pointer:coarse){html.gm-skip-on.hd-tour-on .hd-card .gm-skip-screen{min-height:44px}}
+/* 400 percent zoom: the member card scrolls inside, so Skip to Next Screen sits in the flow at its end, never
+   over the step text; Back, Next and End Tour stay in view at the card's foot. */
+@media (max-height:320px){html.gm-skip-on .hd-card:not(:has(.hd-next)){padding-bottom:16px}html.gm-skip-on .hd-card .gm-skip-screen{position:static;margin:20px 0 0}
+  html.gm-skip-on .hd-g.v2-guide[role="dialog"]:not(:has(.hd-g-next)):not(:has([data-guide="start"])){padding-bottom:16px}html.gm-skip-on .hd-g .gm-skip-screen{position:static;margin:10px 0 0}}
 
 /* Gifts and Reports on a phone: the line about who can see the page, its lock pill and the Updated stamp
    stack, so the line is never squeezed into a narrow column. */

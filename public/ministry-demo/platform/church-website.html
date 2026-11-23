@@ -138,7 +138,8 @@ GM.ready(function (ctx) {
   ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
   $("ws-site-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("external") + "Open Full Size</a>" +
     '<button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What does each plan include?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>";
-  $("ws-frame").setAttribute("src", c.site);
+  /* The site's own Hope speaks for this plan: on Care, a prayer request goes by email to the pastors. */
+  $("ws-frame").setAttribute("src", c.site + (c.site.indexOf("?") >= 0 ? "&" : "?") + "plan=" + GM.plan);
 
   /* Try Hope on the phone: each question is asked by the site's own Hope, inside the phone frame. */
   var TRY = [["What Time Is Church?", "What time is church on Sunday?"], ["Is There Something for Kids?", "Do you have anything for kids?"], ["How Do I Join a Group?", "How do I join a small group?"], ["Can Someone Pray With Me?", "Can someone pray with me?"]];

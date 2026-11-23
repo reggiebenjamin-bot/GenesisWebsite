@@ -122,7 +122,7 @@
   D.pricingLine = "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
   /* Where "Talk With Genesis" goes, everywhere in the preview: the story pages (story/story.js reads the
      same address), the guided demo's last card and Hope's answer to "how do I book a call".
-     OWNER: confirm this address before the preview goes live. */
+     It is the one address to change if the contact page moves. */
   D.genesisContact = "/contact?topic=ministry-demo";
   D.customLine = "Customization beyond the template is available for an additional cost.";
   D.levels = [
@@ -469,12 +469,7 @@
 
   /* ================================================================== GENESIS SIDE */
 
-  D.genesisTeam = [
-    { id: "g-victor", name: "Victor N.", initials: "VN", role: "Church Partnerships", tone: 1 },
-    { id: "g-renee",  name: "Renee S.",  initials: "RS", role: "Church Support", tone: 2 },
-    { id: "g-amara",  name: "Amara O.",  initials: "AO", role: "Onboarding Lead", tone: 3 },
-    { id: "g-jordan", name: "Jordan A.", initials: "JA", role: "Site Designer", tone: 5 }
-  ];
+  D.genesisTeam = [];
 
   /* "How it runs", mirrored from geai.us. */
   D.howItRuns = [
@@ -487,22 +482,7 @@
 
   /* ------------------------------------------------------------------ sales */
   /* Plans show a plan name and its price, from D.levels. */
-  D.sales = {
-    stages: [
-      { key: "lead",      label: "Lead" },
-      { key: "discovery", label: "Discovery Call" },
-      { key: "demo",      label: "Guided Demo" },
-      { key: "proposal",  label: "Proposal" },
-      { key: "signed",    label: "Signed" }
-    ],
-    afterStages: [{ key: "onboarding", label: "Onboarding" }, { key: "managed", label: "Managed" }],
-    deals: [
-      { id: "a-lightwell",  church: "bright-modern",    name: "Lightwell Church", city: "Raleigh", state: "NC", stage: "managed", level: 2, look: "bright-modern", owner: "g-amara", since: "2026-09-14", next: "Quarterly review, and a look at the Plus plan", due: "2026-12-10", source: "Referral from a pastor friend", demo: true },
-      { id: "a-lampstand",  church: "bold-dark",        name: "Lampstand Church", city: "Columbus", state: "OH", stage: "onboarding", level: 3, look: "bold-dark", owner: "g-amara", signed: "2026-10-22", launchTarget: "2027-01-10", next: "Site build review with Pastor Talia", due: "2026-11-24", source: "Inbound from geai.us", demo: true },
-      { id: "a-goldenrod",  church: "warm-community",   name: "Goldenrod Commons Church", city: "Des Moines", state: "IA", stage: "signed", level: 2, look: "warm-community", owner: "g-victor", signed: "2026-11-12", launchTarget: "2027-02-01", next: "Kickoff call and photo checklist", due: "2026-11-20", source: "Website Check reply", demo: true },
-      { id: "a-calderhill", church: "classic-timeless", name: "Calder Hill Chapel", city: "Richmond", state: "VA", stage: "proposal", level: 3, look: "classic-timeless", owner: "g-victor", proposalSent: "2026-11-16", next: "Elder board decision", due: "2026-12-01", source: "Conference conversation", demo: true },
-    ]
-  };
+  D.sales = { stages: [], afterStages: [], deals: [] };
 
   /* The Genesis side has no drafts or summaries in the public preview. */
   D.genesisDrafts = [];

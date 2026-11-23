@@ -24,7 +24,7 @@
  *     /ministry shows, or when an old draft level is left anywhere.
  *
  * The committed public/ministry-demo/ is synced from genesis-ministry commit
- * 1beb6da (main on November 22, 2026), exported with git archive.
+ * a954071 (main on November 22, 2026), exported with git archive.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -93,6 +93,12 @@ const GROWTH_DESK_WORDS = [
   { what: 'the words "sales desk"', pattern: /\bsales[\s-]*desk\b/gi },
   { what: 'the word "suppression"', pattern: /\bsuppression\b/gi },
   { what: 'the word "prospect"', pattern: /\bprospects?\b/gi },
+  /* The sample accounts' sales words: their lead sources, a deal's next step, the Genesis team's
+     sales role and the account menu's note on a church's proposal. */
+  { what: "a sample account's lead source", pattern: /\b(?:website check reply|inbound from geai\.us)\b/gi },
+  { what: "a sample deal's next step", pattern: /\belder board decision\b/gi },
+  { what: "the Genesis team's sales role", pattern: /\bchurch partnerships\b/gi },
+  { what: "the account menu's note on a church's proposal", pattern: /\bproposal is (?:the|enterprise)\b/gi },
 ];
 /** Where GROWTH_DESK_WORDS are not checked: the copied Genesis OS design system. */
 const SHARED_DESIGN_SYSTEM = /^platform\/shared\/os\//;
@@ -471,6 +477,22 @@ export const PUBLIC_EDITS = {
     },
     { note: "the Genesis team roles use church words", find: 'role: "Sales Lead"', replace: 'role: "Church Partnerships"' },
     { note: "the Genesis team roles use church words", find: 'role: "Acquisition Seat"', replace: 'role: "Church Support"' },
+    {
+      note: "removed the sample accounts' deal stages, owners, lead sources and next steps; the lists stay empty so the guest stages still work",
+      from: "  D.sales = {\n",
+      to: "\n\n  /* The Genesis side has no drafts or summaries in the public preview. */",
+      maxLines: 20,
+      keep: /D\.(churches|levels|modules|people|guests|guestStages|howItRuns) =/,
+      replace: "  D.sales = { stages: [], afterStages: [], deals: [] };",
+    },
+    {
+      note: "removed the names and roles of Genesis's own team, which only the Genesis side showed",
+      from: "  D.genesisTeam = [\n",
+      to: '\n\n  /* "How it runs"',
+      maxLines: 8,
+      keep: /D\.(churches|levels|modules|people|guests|howItRuns) =/,
+      replace: "  D.genesisTeam = [];",
+    },
     contactPath(1),
   ],
 
@@ -587,6 +609,14 @@ export const PUBLIC_EDITS = {
       find: " +\n        '<p class=\"gm-drawer-note\">Public church contact details only. Outreach is email only, every email waits for approval and carries an unsubscribe line.</p>';",
       replace: ";",
     },
+    {
+      note: "removed the Add a Church drawer, which only the Genesis side opened, with its lead sources",
+      from: '    } else {\n      eyebrow = "Genesis"; title = "Add a church"; submit = "Add Church";',
+      to: "\n    layer.innerHTML = ",
+      maxLines: 9,
+      keep: /layer\.innerHTML|add-guest|Add a Guest/,
+      replace: "    }",
+    },
   ],
 
   /* The guided demo: tours, the demo path and the scripted answers. */
@@ -601,6 +631,11 @@ export const PUBLIC_EDITS = {
       note: "the texting answer's comment no longer names the Growth Desk",
       find: "    /* The church's own answer. The Growth Desk adds how Genesis reaches churches (below). */\n",
       replace: "    /* The church's own answer. */\n",
+    },
+    {
+      note: "the guest unsubscribe rule's comment no longer mentions Genesis's outreach",
+      find: "    /* A guest's own unsubscribe is not Genesis's outreach to churches. */\n",
+      replace: "    /* A guest's own unsubscribe. */\n",
     },
     {
       note: "removed the outreach answer, which described how Genesis finds churches",

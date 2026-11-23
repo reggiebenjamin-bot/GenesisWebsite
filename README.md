@@ -238,23 +238,25 @@ The source belongs to another team and is only read. The script:
   as it was.
 
 **The committed copy.** `public/ministry-demo/` is synced from genesis-ministry
-commit `1beb6da` (its `main` on November 22, 2026), exported with
+commit `a954071` (its `main` on November 22, 2026), exported with
 `git archive` as described below. It shows the three plans and their prices
 and the gold Genesis G. The eight posters in `public/video/ministry/` (four
-1920 by 1080 stills and four 1170 by 1560 phone stills) were retaken from it,
-so they show the gold G and the plan switcher reads Care, Shepherd and Plus.
+1920 by 1080 stills and four 1170 by 1560 phone stills) were retaken from the
+copy synced from `1beb6da`, so they show the gold G and the plan switcher reads
+Care, Shepherd and Plus. Since then the selected plan is marked like the current
+nav row instead of a gold fill; retake the posters to match it exactly.
 
 `--with-growth-desk --out <folder>` makes a private copy with the Growth Desk,
 unedited, for looking at only. The folder must be outside `public/`.
 
 The source folder is a git repository another team keeps editing. Publish a
 reviewed commit, not work in progress: export it into an empty folder and sync
-from there. The committed copy was made from the source's commit `1beb6da`:
+from there. The committed copy was made from the source's commit `a954071`:
 
 ```bash
-mkdir /tmp/gm-1beb6da
-git -C "C:/path/to/genesis-ministry" archive 1beb6da | tar -x -C /tmp/gm-1beb6da
-node scripts/sync-ministry-demo.mjs /tmp/gm-1beb6da
+mkdir /tmp/gm-a954071
+git -C "C:/path/to/genesis-ministry" archive a954071 | tar -x -C /tmp/gm-a954071
+node scripts/sync-ministry-demo.mjs /tmp/gm-a954071
 ```
 
 A folder address such as `/ministry-demo/` or `/ministry-demo/platform/`

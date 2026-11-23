@@ -198,7 +198,7 @@ GM.ready(function (ctx) {
     page.classList.add("v2-deals-page");
     page.innerHTML =
       '<header class="v2-page-head"><div><div class="v2-eyebrow">People</div><h1>Everyone</h1><p>' + people.length + " of " + D.peopleTotals.records + " people shown in this preview, one record each. Adults only, and nobody sees a directory.</p></div>" +
-        '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="Who should I check on this week?">Ask ' + esc(HOPE) + '</button><a class="v2-button v2-button-quiet" href="church-access.html">Access Record</a></div></header>' +
+        '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="Who should I check on this week?">' + GM.v2Icon("genesis") + 'Ask ' + esc(HOPE) + '</button><a class="v2-button v2-button-quiet" href="church-access.html">Access Record</a></div></header>' +
       '<section class="v2-pulse v2-deal-pulse" aria-label="People summary" data-tour="person.pulse">' +
         pulse("Members", D.peopleTotals.members, members + " of them in this sample list") +
         pulse("Regulars", D.peopleTotals.regulars, "Here most weeks, not members yet") +
@@ -409,7 +409,7 @@ GM.ready(function (ctx) {
       var keepY = $("v2-main") ? $("v2-main").scrollTop : 0;
       page.innerHTML =
         '<div class="v2-page-back ps-back"><a class="v2-button v2-button-quiet" href="church-person.html">' + ic("back") + "People</a>" +
-          '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What should I know before I call ' + esc(first) + '?">Ask ' + esc(HOPE) + "</button></div></div>" +
+          '<div class="v2-page-actions"><button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What should I know before I call ' + esc(first) + '?">' + GM.v2Icon("genesis") + 'Ask ' + esc(HOPE) + "</button></div></div>" +
         head() +
         '<div class="v2-rec-layout"><div class="v2-rec-main">' +
           step(1, "Who this is", "Contact card", whoBody(), "person.who") +

@@ -324,7 +324,7 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .nl-form{display:flex;gap:10px;margin-top:28px;max-width:540px}
 .nl-form input{flex:1;min-width:0;height:52px;padding:0 16px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;font-size:16px}
 .nl-form input::placeholder{color:#6B7488}
-.nl-form input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
+.nl-form input:focus{outline:2px solid var(--cobalt);outline-offset:2px;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
 .form-note{min-height:1.5em;margin-top:12px;font-size:15px;color:var(--cobalt);font-weight:600}
 .nl-copy .aside-link{margin-top:14px}
 
@@ -396,7 +396,7 @@ body.chat-open .chat-fab{opacity:0;pointer-events:none}
 .chip:hover{border-color:var(--cobalt);color:var(--cobalt)}
 .chat-f{display:flex;gap:8px;padding:12px;border-top:1px solid var(--rule);background:#fff}
 .chat-f input{flex:1;min-width:0;height:46px;border:1.5px solid var(--rule-strong);border-radius:var(--r);padding:0 12px;font-size:16px}
-.chat-f input:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 3px var(--sky)}
+.chat-f input:focus{outline:2px solid var(--cobalt);outline-offset:2px;border-color:var(--cobalt);box-shadow:0 0 0 3px var(--sky)}
 .chat-f button{width:46px;height:46px;border:0;border-radius:var(--r);background:var(--cobalt);color:#fff;display:grid;place-items:center;cursor:pointer}
 .chat-f button svg{width:18px;height:18px}
 @media (max-width:760px){
@@ -426,7 +426,7 @@ body.menu-open .hd-launch,body.menu-open .hd-invite,body.fd-open .hd-launch,body
   body .hd-panel{border-radius:14px 14px 0 0}
   /* The tour's Hope step (second to last dot): bring the circle back so the spotlight has something to ring, and lift the card above it */
   html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-launch{opacity:1!important;visibility:visible!important;transform:none!important}
-  html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-card{top:84px!important;bottom:auto}
+  @media (min-height:501px){html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-card{top:84px!important;bottom:auto}}
 }
 
 /* ---------- Plan a Visit and prayer forms (design preview: nothing is sent) ---------- */
@@ -450,7 +450,7 @@ body.menu-open .hd-launch,body.menu-open .hd-invite,body.fd-open .hd-launch,body
 .fd-opt{font-weight:400;color:var(--graphite)}
 .fd input[type="text"],.fd input[type="email"],.fd select,.fd textarea{width:100%;min-height:50px;padding:11px 14px;border:1.5px solid var(--rule-strong);border-radius:var(--r);background:#fff;color:var(--ink);font:400 16px/1.4 var(--body)}
 .fd textarea{min-height:104px;resize:vertical}
-.fd input:focus,.fd select:focus,.fd textarea:focus{outline:none;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
+.fd input:focus,.fd select:focus,.fd textarea:focus{outline:2px solid var(--cobalt);outline-offset:2px;border-color:var(--cobalt);box-shadow:0 0 0 4px var(--sky)}
 .fd [aria-invalid="true"]{border-color:#B42318}
 .fd-err{margin:0;color:#B42318;font-size:14.5px;font-weight:600}
 .fd-hint{color:var(--graphite);font-size:14.5px;line-height:1.45}
@@ -1430,7 +1430,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   function telText(node, text) {
     node.textContent = "";
     String(text).split(/(\b988\b|\b911\b|\(\d{3}\) \d{3}-\d{4})/).forEach(function (part, i) {
-      if (i % 2) { var a = document.createElement("a"); a.href = "tel:" + (part.length === 3 ? part : "+1" + part.replace(/\D/g, "")); a.textContent = part; node.appendChild(a); }
+      /* 988 and 911 dial; a made-up 555 number in this preview stays plain text, so nobody calls it. */
+      if (i % 2 && (part.length === 3 || !/ 555-/.test(part))) { var a = document.createElement("a"); a.href = "tel:" + (part.length === 3 ? part : "+1" + part.replace(/\D/g, "")); a.textContent = part; node.appendChild(a); }
       else if (part) node.appendChild(document.createTextNode(part));
     });
   }
@@ -1438,6 +1439,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var t = $(".fd-title", fd), done = $(".fd-done", fd);
     /* A crisis reply stands alone: no template preview link under the 988 and 911 numbers. */
     $$(".fd-demo", fd).forEach(function (d) { d.style.display = crisis ? "none" : ""; });
+    /* The preview line under a crisis reply: nothing was sent, so call or text 988 now. */
+    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. Please call or text 988 now." : n.getAttribute("data-fine"); });
     if (!t.hasAttribute("data-title")) t.setAttribute("data-title", t.textContent);
     $(".fd-form", fd).hidden = true;
     done.hidden = false;
@@ -1504,7 +1507,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         var hope = window.HopeDemo;
         if (hope && hope.isCrisis && hope.crisisReply && hope.isCrisis(text.value)) {
           setErr(mail, false);
-          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone) + (reach ? " A pastor will reach out." : " A pastor will read your request."), true);
+          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone), true);
           return;
         }
         /* A pastor can only reach out with a way to reach the person */
@@ -1777,7 +1780,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   },
   "matchPatterns": [
     [
-      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "\\bbapti[sz](?:e|ed|es|ing|m|ms|mal)\\b|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
       "baptism"
     ],
     [

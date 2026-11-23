@@ -370,8 +370,13 @@ test("the public data carries no Growth Desk sample data", { skip: !existsSync(D
   const data = read("platform/shared/data.js");
   assert.doesNotMatch(data, /D\.acquisition|outreach|Website Check"|monthly:|sourcesThisQuarter/);
   assert.match(data, /D\.genesisDrafts = \[\];/);
-  const deals = data.slice(data.indexOf("deals: ["), data.indexOf("]", data.indexOf("deals: [")));
-  assert.deepEqual([...deals.matchAll(/id: "(a-[a-z]+)"/g)].map((m) => m[1]), ["a-lightwell", "a-lampstand", "a-goldenrod", "a-calderhill"]);
+  /* The sample accounts' deals, owners and lead sources, and Genesis's own team, are cut too: the lists
+     stay empty so the guest stages and the shell still work. */
+  assert.match(data, /D\.sales = \{ stages: \[\], afterStages: \[\], deals: \[\] \};/);
+  assert.match(data, /D\.genesisTeam = \[\];/);
+  assert.doesNotMatch(data, /a-lightwell|Website Check reply|Inbound from geai\.us|Elder board decision|Church Partnerships/);
+  const app = read("platform/shared/app.js");
+  assert.doesNotMatch(app, /title = "Add a church"|Church Website Check request/);
   for (const picture of ["early-look.jpg", "four-looks.jpg", "geai-ministry-page.jpg"]) {
     assert.ok(!existsSync(join(DEMO, picture)), `${picture} is not published`);
   }

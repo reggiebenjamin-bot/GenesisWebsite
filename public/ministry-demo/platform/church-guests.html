@@ -138,7 +138,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Head and actions (one gold action per screen: the panel's) ---------- */
   $("gg-add").innerHTML = ic("plus") + "Add a Guest";
-  $("gg-ask").textContent = "Ask " + HOPE;
+  $("gg-ask").textContent = "Ask " + HOPE; $("gg-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   /* Today is seen as the lead pastor; the front office is seen as the person who welcomes guests. Say so, as Today and Care do. */
   var me = ctx.viewer || {};
   $("gg-seen").textContent = "Seen as " + me.name + ", " + me.role + (me.id === "s-nadia" ? ", who welcomes new guests." : ".");

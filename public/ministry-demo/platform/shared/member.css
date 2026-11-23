@@ -277,6 +277,8 @@ html:has(body.mx-staged){scroll-padding-top:52px}
   body.mx-staged .mx-screens{width:min(236px,calc(100% - 24px))}
 }
 @media (min-width:1180px) and (max-width:1279px){body.mx-staged .m-stage{column-gap:32px}}
+/* The three columns sit as one centred group, so the stage never leans left with an empty band on the right. */
+@media (min-width:1180px){body.mx-staged .m-stage{grid-template-columns:360px min(430px,100%) 236px;justify-content:center}}
 /* "How it protects people" beside the phone is one column at every width, so the workspace's
    two-column rule (1180px and down) never draws a stray divider beside its first item. */
 body.mx-staged .mx-card .gm-protect-list>li:nth-child(n){border-right:0;margin-right:0}

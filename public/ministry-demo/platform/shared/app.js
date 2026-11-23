@@ -737,7 +737,8 @@
     var asOther = !!vid && vid !== defId;
     var who = (asOther ? "Viewing as " : "") + (v.name || "");
     var accountCopy = side === "church"
-      ? "<b>" + esc(GM.church.name) + "</b><small>" + esc(who) + "</small>"
+      /* The short name fits the row ("Goldenrod Commons"); the button's label and title keep the full one. */
+      ? "<b>" + esc(GM.church.short || GM.church.name) + "</b><small>" + esc(who) + "</small>"
       : "<b>Genesis AI</b><small>" + esc(who) + "</small>";
     /* The plan switch. The church's real account level, when it differs, is said once: in the
        account menu, and here as a tooltip and to screen readers. */
@@ -819,6 +820,10 @@
     var nav = document.querySelector(".v2-sidebar .v2-nav");
     if (!nav) return;
     var set = function () { nav.classList.toggle("gm-nav-more", nav.scrollHeight - nav.scrollTop - nav.clientHeight > 4); };
+    /* Each screen is its own page, so the nav starts at the top: the current row is brought into view,
+       clear of the 44px fade at the foot, as Genesis OS keeps it in view. */
+    var cur = nav.querySelector('[aria-current="page"]');
+    if (cur) { var cr = cur.getBoundingClientRect(), nr = nav.getBoundingClientRect(); if (cr.bottom > nr.bottom - 44) nav.scrollTop += cr.bottom - nr.bottom + 52; }
     nav.addEventListener("scroll", set, { passive: true });
     window.addEventListener("resize", set);
     if ("ResizeObserver" in window) new ResizeObserver(function () { requestAnimationFrame(set); }).observe(nav);
@@ -1005,13 +1010,6 @@
         '<label class="v2-field"><span>Owner</span><select class="v2-select v2-nselect" name="owner">' + opt(owners) + "</select></label>" +
         '<label class="v2-field"><span>Next step</span><input class="v2-input" name="next" value="Send a welcome note"></label>' +
         '<p class="gm-drawer-note">' + esc(D.guestSettings.textingNote) + " " + esc(ASSISTANT.name) + " drafts the welcome note, and it waits for a person's approval.</p>";
-    } else {
-      eyebrow = "Genesis"; title = "Add a church"; submit = "Add Church";
-      sub = "A church that reached out or was referred. Public church details only.";
-      fields = '<label class="v2-field"><span>Church name</span><input class="v2-input" name="name" autocomplete="off" required></label>' +
-        '<label class="v2-field"><span>City and state</span><input class="v2-input" name="city" autocomplete="off" placeholder="Springfield, MO"></label>' +
-        '<label class="v2-field"><span>Website</span><input class="v2-input" name="site" type="url" autocomplete="off" placeholder="https://"></label>' +
-        '<label class="v2-field"><span>How they came to us</span><select class="v2-select v2-nselect" name="source">' + opt(["Referral from a church we serve", "They reached out", "Conference", "Church Website Check request"]) + "</select></label>";
     }
     layer.innerHTML = '<button class="v2-drawer-scrim" type="button" tabindex="-1" aria-hidden="true" data-gm-action="close-drawer" aria-label="Close"></button>' +
       '<aside class="v2-drawer" role="dialog" aria-modal="true" aria-labelledby="gm-drawer-title"><header class="v2-drawer-head"><div class="v2-drawer-title"><div><div class="v2-eyebrow">' + esc(eyebrow) + '</div><h2 id="gm-drawer-title">' + esc(title) + "</h2><p>" + esc(sub) + '</p></div><button class="v2-button v2-icon-button v2-button-quiet" type="button" data-gm-action="close-drawer" aria-label="Close">' + vIcon("close") + "</button></div></header>" +
@@ -1161,6 +1159,10 @@
     if (g) return g;
     return GM.dueFollowUps()[0] || null;
   }
+  /* A rule that hears its words only in a question about the sample data: "waiting", "today", "how many",
+     or a short question of four words or fewer ("New guests?"). */
+  var DATA_ASK = /\b(waiting|today|tonight|this week|right now|who needs|how many|summary|oldest|any new|new (guests?|people|visitors?)|list|show (me )?(the |our )?(care|guests?|prayer|messages?|new)|what('?s| is) (new|waiting|open)|status|count|arrived|came)\b/i;
+  function dataAsk(re) { return { source: re.source, test: function (t) { t = String(t || ""); return re.test(t) && (DATA_ASK.test(t) || t.trim().split(/\s+/).length <= 4); } }; }
   /* A short thank-you or "got it" gets a short reply, not the menu. */
   var THANKS = /^\s*(?:thanks?(?: you)?(?: so much| very much)?|thank you(?: so much| very much)?|thx|ty|great|perfect|got it|ok(?:ay)?|cool|nice)[\s.!,]*(?:hope)?[\s.!]*$/i;
   function thanksAnswer() { return "You are welcome. I am here whenever something needs a person."; }
@@ -1240,11 +1242,14 @@
         var d = GM.waitingDrafts("church");
         return d.length ? d.length + " drafts are waiting for approval, for " + listNames(d.map(function (x) { var p = GM.who(x.to); return p ? p.first || p.name : "a guest"; })) + ". Nothing goes out until a person approves it." : "Every draft has been handled. Nice work.";
       } },
-      { match: /care|waiting|prayer|message/i, answer: function () {
+      /* The sample counts answer a question about the data ("What is waiting in care?", "Any new guests?"),
+         never a policy question that only says "prayer" or "guest" ("If a prayer request mentions abuse,
+         does Hope report it?"). */
+      { match: dataAsk(/care|waiting|prayer|message/i), answer: function () {
         var w = GM.waitingCare();
         return w.length + " care items are waiting on us. The oldest has waited " + GM.fmt.waiting(w[0].since).replace("Waiting ", "") + ". I list counts and owners only. Prayer words stay inside the care inbox for pastors and the prayer team.";
       } },
-      { match: /guest|new|visit|welcome/i, answer: function () {
+      { match: dataAsk(/guest|new|visit|welcome/i), answer: function () {
         var n = D.guests.filter(function (g) { return g.stage === "new"; });
         return n.length + " new guests arrived this week: " + listNames(n.map(function (g) { return GM.person(g.personId).name + " from " + GM.sourceText(g.source); })) + ". Each one has an owner and a next step.";
       } },
@@ -1288,31 +1293,40 @@
     if (GM.plan >= 2 && GM.side === "church") links.push({ label: "Open Care Inbox", href: GM.url("church-care.html") });
     return { text: crisisReply(GM.church.phone) + "\n\n" + staffLine, links: links };
   }
+  /* Every fallback ends with the numbers, so a crisis no rule heard still sees 988 and 911. */
+  var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
   function rawAnswer(text) {
     text = plainText(text);
     /* The crisis rule comes before everything, on every plan and on both sides. */
     if (isCrisisText(text)) return crisisAnswer();
+    /* So does the net ("abuse", "danger", "pills"), as on the church's own site. A pastor's question about
+       how abuse is handled, with no "I" or "me" in it, goes on to the answer on reporting. */
+    if (CRISIS_NET.test(calm(text)) && !(WORDS.policy && WORDS.policy.test(calm(text)))) return crisisAnswer();
     var hopeLocked = GM.side === "church" && !GM.isIncluded("genesis");
     if (hopeLocked) {
       var product = pickAnswer(baseAnswers, text);
       if (product != null) return product;
       if (THANKS.test(text)) return thanksAnswer();
       if (crisisNet(text)) return crisisAnswer();
-      /* A buying question never gets the lock line: what each plan includes, with its price. */
-      if (/\b(plans?|tiers?|levels?|prices?|pricing|cost|pay|buy|upgrade|cancel|discount|contract|trial|sign ?up|get started|start|genesis|shepherd|plus)\b|\$/i.test(text)) {
+      /* A buying question never gets the lock line: what each plan includes, with its price. The name
+         Genesis alone ("Is Genesis a Christian company?") is not a buying question. */
+      if (/\b(plans?|tiers?|levels?|prices?|pricing|cost|pay|buy|upgrade|cancel|discount|contract|trial|sign ?up|get started|start|shepherd|plus)\b|\$/i.test(text)) {
         var plans = pickAnswer(baseAnswers, "What does each plan include?");
         if (plans != null) return plans;
       }
-      return "On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website. " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan.";
+      return "On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website. " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE;
     }
-    var found = pickAnswer(extraAnswers.concat(baseAnswers, GM.side === "genesis" ? genesisAnswers() : churchAnswers()), text);
+    /* Trust and policy answers come before a screen's own answers; then the screen's, the rest of the
+       guided demo's and the built-in ones. */
+    var first = baseAnswers.filter(function (a) { return a.first; }), rest = baseAnswers.filter(function (a) { return !a.first; });
+    var found = pickAnswer(first.concat(extraAnswers, rest, GM.side === "genesis" ? genesisAnswers() : churchAnswers()), text);
     if (found != null) return found;
     /* The last net, as on the church's own site: a crisis word no answer took still gets the reply. */
-    if (crisisNet(text)) return crisisAnswer();
+    if (crisisNet(text) || (WORDS.last && WORDS.last.test(calm(text)))) return crisisAnswer();
     return GM.side === "genesis"
       ? "In this preview I answer from the sample data."
       /* A pastor's question no answer covers gets an honest line and a person, never a list of what I can do. */
-      : { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. In this workspace I can also help with this week's summary, follow-ups due, care waiting on us and drafts waiting for approval.", link: { label: "Talk With Genesis", href: D.genesisContact } };
+      : { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. In this workspace I can also help with this week's summary, follow-ups due, care waiting on us and drafts waiting for approval." + CRISIS_LINE, link: { label: "Talk With Genesis", href: D.genesisContact } };
   }
 
   /* How Hope greets the viewer: pastors by title ("Pastor Theo"), everyone else by first name ("Nadia"). */
@@ -1479,6 +1493,11 @@
          header orb shows the gold G on a darkened centre, like the round Genesis button (genesis.css). */
       '<style>.hawk-core-mark{width:28.4%}@media (max-width:860px),(pointer:coarse){.composer__input{font-size:16px}}' +
       '@media (max-width:860px),(pointer:coarse){.aria-actions-row .icon-btn--tiny,.composer .icon-btn--small{width:44px;height:44px;min-width:44px;min-height:44px}}' +
+      /* Short windows during a conversation too (a phone on its side, 200 and 400 percent zoom): the
+         approval line and the header orb step aside so the replies have room; at 400 percent the
+         composer is one line (Enter sends) and the header is compact, so the log never shrinks to nothing. */
+      '@media (max-height:500px){.aria-footer{display:none!important}.aria-actions-row .hawk-header-orb{display:none}}' +
+      '@media (max-height:320px){.composer__toolbar{display:none!important}.aria-actions-row{min-height:0;padding-top:0;padding-bottom:0}.aria-control-panel,.aria-control-panel__inner{padding-top:0;padding-bottom:4px}}' +
       '.hawk-core .hawk-core-mark,.hawk-core[data-state] .hawk-core-mark{filter:none}.hawk-core--orb .hawk-core-mark{width:21.73px}.hawk-core--orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,rgba(8,9,14,.92) 0%,rgba(8,9,14,.88) 56%,rgba(8,9,14,.45) 72%,rgba(8,9,14,0) 88%);pointer-events:none}</style>';
     dock = { host: host, root: root, thread: root.querySelector(".aria-thread"), scroll: root.querySelector(".aria-scroll"), input: root.querySelector("textarea"), send: root.querySelector('[data-dock="send"]'), cores: [] };
     var input = dock.input;
@@ -1602,7 +1621,10 @@
     }).join("");
     if (linkHTML) linkHTML = '<p class="gm-dock-link-row">' + linkHTML + "</p>";
     dock.thread.insertAdjacentHTML("beforeend", '<div class="msg-group--anchored"><div class="msg-assistant" role="article" aria-roledescription="message"><div class="msg-assistant__stack"><div>' + rt(tidy(text)) + linkHTML + "</div></div></div></div>");
-    dock.scroll.scrollTop = dock.scroll.scrollHeight;
+    /* The reply's first words are in view (988 and 911 in a crisis), even in a short window: its top
+       goes to the top of the log, not the end of the log's padding. */
+    var reply = dock.thread.lastElementChild, sc = dock.scroll;
+    sc.scrollTop = Math.max(0, sc.scrollTop + reply.getBoundingClientRect().top - sc.getBoundingClientRect().top - 8);
   }
   function askInDock(text) {
     if (!dock || !text) return;

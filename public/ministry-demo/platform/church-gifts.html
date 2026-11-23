@@ -45,6 +45,9 @@
   @media (max-width:1180px){.gf-fit .v2-report-market-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (max-width:860px){.gf-page .v2-section-head{flex-wrap:wrap}.gf-fit .v2-report-market-list{grid-template-columns:minmax(0,1fr)}}
   @media (max-width:860px){.gf-page .v2-report-market{min-height:44px}}
+/* No tabs above this bar, as Reports has: it sits closer to the page head, and the lock pill and the stamp share one line. */
+.gf-scope{margin-top:-12px;padding-top:6px}
+.gf-scope .v2-report-scope{align-items:center}
 </style>
 </head>
 <body data-side="church" data-page="gifts" data-title="Gifts">
@@ -64,7 +67,7 @@
       </div>
     </header>
 
-    <section class="v2-report-controlbar v2-report-controlbar-plain" aria-label="Who can see this page">
+    <section class="v2-report-controlbar v2-report-controlbar-plain gf-scope" aria-label="Who can see this page">
       <p class="v2-report-scope-copy">The prayer team, other staff and website admins cannot open this page. Every view of names is recorded.</p>
       <div class="v2-report-scope"><span id="gf-lock"></span><span class="v2-report-updated"><span class="v2-updated">Updated today, 10:30 AM</span></span></div>
     </section>
@@ -174,7 +177,7 @@ GM.ready(function (ctx) {
 
   /* ---------- Head ---------- */
   $("gf-member").innerHTML = ic("device") + "See What Members See";
-  $("gf-ask").textContent = "Ask " + HOPE;
+  $("gf-ask").textContent = "Ask " + HOPE; $("gf-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   $("gf-sub").textContent = G.finished + " people have finished. A church-wide picture in counts; names only for people who said yes after seeing their own result.";
   $("gf-lock").innerHTML = GM.lock("pastors", "Pastors and people they name");
 

@@ -138,7 +138,7 @@ GM.ready(function (ctx) {
     return { title: a.what, sub: a.where };
   }
 
-  $("ac-ask").textContent = "Ask " + HOPE;
+  $("ac-ask").textContent = "Ask " + HOPE; $("ac-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   $("ac-view").addEventListener("change", function () { GM.go(this.value === "roles" ? "church-team.html" : "church-access.html"); });
 
   /* ---------- The numbers row ---------- */

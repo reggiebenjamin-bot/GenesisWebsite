@@ -185,6 +185,8 @@ button { font: inherit; color: inherit; }
 .preview-strip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex: none; }
 :root[data-theme="light"] .preview-strip { background: var(--ivory-deep); color: var(--gold-dark); border-bottom-color: rgb(118 84 38 / 0.25); }
 :root[data-theme="light"] .preview-strip::before { background: var(--gold-dark); }
+/* On phones the sample-data disclosure is 12.5px, never smaller. */
+@media (max-width: 640px) { .preview-strip { font-size: 0.78rem; letter-spacing: 0.12em; } }
 
 .site-header {
   position: sticky; top: 0; z-index: 40;
@@ -242,7 +244,10 @@ button { font: inherit; color: inherit; }
 .mobile-menu[hidden] { display: none; }
 .mobile-menu a:not(.btn) { display: flex; align-items: center; justify-content: space-between; min-height: 52px; border-bottom: 1px solid rgb(127 127 127 / 0.2); text-decoration: none; font-size: 1.05rem; }
 .mobile-menu .btn { width: 100%; margin-top: 18px; }
-@media (max-width: 1080px) { .site-nav { gap: 20px; } .brand-edition { display: none; } }
+/* On a desktop a link never breaks onto two lines: the gap narrows and the edition label steps aside first. */
+@media (min-width: 1181px) { .site-nav a { white-space: nowrap; } }
+@media (max-width: 1480px) { .site-nav { gap: 20px; } .brand-edition { display: none; } }
+@media (max-width: 1080px) { .site-nav { gap: 16px; } }
 @media (max-width: 920px) {
   .site-nav, .header-actions .btn { display: none; }
   .menu-toggle { display: inline-grid; }

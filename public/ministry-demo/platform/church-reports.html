@@ -398,6 +398,8 @@ GM.ready(function (ctx) {
     line: GM.greeting() + ", {name}. This week the median first reply is " + lastReply + " hours. " + overDay.length + " care items have waited over a day.",
     chips: [{ label: "Open Care Inbox", href: "church-care.html", primary: true }, { label: "See the Care Report", action: function () { GM.hope.close(); show("care"); } }, { label: "What Do Reports Never Show?", ask: "What do these reports never show?" }]
   });
+  /* Ask Hope carries the sparkle, as on every other screen. */
+  document.getElementById("rp-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   GM.hope.addAnswers([
     { match: /never show|private|names in|privacy/i, answer: "Reports carry counts only: no names and no private words. In the gifts picture and prayer topics, any count from 1 to 4 reads fewer than 5. The prayer team sees prayer counts only, website admins see none, and every export is written to the access record." },
     { match: /reply time|first reply|how fast|response time/i, answer: "The median first reply is " + lastReply + " hours for the week of " + M.weeks[M.weeks.length - 1] + ", against a goal of within a day. It was under the goal " + underGoal + " of the last " + replies.length + " weeks." },

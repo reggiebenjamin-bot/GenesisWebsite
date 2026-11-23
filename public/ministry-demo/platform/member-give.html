@@ -183,7 +183,7 @@ function mxStage(o) {
   tour.setAttribute("data-gm-action", "start-tour");
   tour.setAttribute("aria-label", "Take the Tour");
   tour.title = "Take the Tour";
-  tour.innerHTML = GM.v2Icon("play") + "<span>Take the Tour</span>";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
   tour.hidden = !!(GM.ctx && GM.ctx.locked);
   bar.insertBefore(tour, desk || theme || null);
 

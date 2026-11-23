@@ -469,7 +469,7 @@ body .hd-invite p{padding-right:24px}
   body:not(.sb-past) .hd-launch{opacity:0;visibility:hidden;pointer-events:none;transform:translateY(20px)}
   /* The tour's Hope step (second to last dot): bring the circle back so the spotlight has something to ring, and lift the card above it */
   html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-launch{opacity:1!important;visibility:visible!important;transform:none!important}
-  html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-card{top:84px!important;bottom:auto}
+  @media (min-height:501px){html.hd-tour-on:has(.hd-card .hd-dots i.on:nth-last-child(2)) body .hd-card{top:84px!important;bottom:auto}}
 }
 
 /* ---------- Plan a Visit and prayer forms (design preview: nothing is sent) ---------- */
@@ -1520,7 +1520,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   function telText(node, text) {
     node.textContent = "";
     String(text).split(/(\b988\b|\b911\b|\(\d{3}\) \d{3}-\d{4})/).forEach(function (part, i) {
-      if (i % 2) { var a = document.createElement("a"); a.href = "tel:" + (part.length === 3 ? part : "+1" + part.replace(/\D/g, "")); a.textContent = part; node.appendChild(a); }
+      /* 988 and 911 dial; a made-up 555 number in this preview stays plain text, so nobody calls it. */
+      if (i % 2 && (part.length === 3 || !/ 555-/.test(part))) { var a = document.createElement("a"); a.href = "tel:" + (part.length === 3 ? part : "+1" + part.replace(/\D/g, "")); a.textContent = part; node.appendChild(a); }
       else if (part) node.appendChild(document.createTextNode(part));
     });
   }
@@ -1528,6 +1529,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var t = $(".fd-title", fd), done = $(".fd-done", fd);
     /* A crisis reply stands alone: no template preview link under the 988 and 911 numbers. */
     $$(".fd-demo", fd).forEach(function (d) { d.style.display = crisis ? "none" : ""; });
+    /* The preview line under a crisis reply: nothing was sent, so call or text 988 now. */
+    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. Please call or text 988 now." : n.getAttribute("data-fine"); });
     if (!t.hasAttribute("data-title")) t.setAttribute("data-title", t.textContent);
     $(".fd-form", fd).hidden = true;
     done.hidden = false;
@@ -1594,7 +1597,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         var hope = window.HopeDemo;
         if (hope && hope.isCrisis && hope.crisisReply && hope.isCrisis(text.value)) {
           setErr(mail, false);
-          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone) + (reach ? " A pastor will reach out." : " A pastor will read your request."), true);
+          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone), true);
           return;
         }
         /* A pastor can only reach out with a way to reach the person */
@@ -1867,7 +1870,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   },
   "matchPatterns": [
     [
-      "\\bbapti[sz]\\w*|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
+      "\\bbapti[sz](?:e|ed|es|ing|m|ms|mal)\\b|\\bimmers(?:ed|ion)\\b|\\bdunk(?:ed|ing)?\\b",
       "baptism"
     ],
     [
