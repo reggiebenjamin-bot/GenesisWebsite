@@ -571,8 +571,8 @@ GM.ready(function (ctx) {
     ]
   });
   GM.hope.addAnswers([
-    { match: /who can see|privacy|private|lock/i, answer: "Prayer opens for pastors and the prayer team only. Private threads are pastors only. Staff see everyday messages. Website admins cannot read pastoral content, and every open is written to the access record." },
-    { match: /archive|delete/i, answer: "Nothing in the care inbox is deleted. It is archived: an archived conversation stays on the person's page and in the access record, and a pastor can restore it." }
+    { match: /^(?!.*\b(?:genesis|giv\w*|gives|tith\w*|openai|anthropic|ai|website|leave|leaving|phone numbers?|emails?)\b).*(?:\bwho can (?:see|open|read)\b.{0,30}\b(?:prayer|care|inbox|threads?|messages?|conversations?|requests?)\b|\bprivate (?:threads?|messages?|conversations?)\b|\block(?:ed|s)?\b|\bcare inbox\b.{0,20}\bprivate\b)/i, answer: "Prayer opens for pastors and the prayer team only. Private threads are pastors only. Staff see everyday messages. Website admins cannot read pastoral content, and every open is written to the access record." },
+    { match: /^(?!.*\b(?:genesis|giv\w*|gives|tith\w*|openai|anthropic|ai|website|leave|leaving|phone numbers?|emails?)\b).*(?:\b(?:archiv\w*|delet\w*|restor\w*)\b.{0,40}\b(?:conversations?|threads?|care|messages?|prayers?|requests?|inbox)\b|\b(?:conversations?|threads?|messages?|prayers?|requests?)\b.{0,40}\b(?:archiv\w*|delet\w*)\b)/i, answer: "Nothing in the care inbox is deleted. It is archived: an archived conversation stays on the person's page and in the access record, and a pastor can restore it." }
   ]);
 
   GM.setTour([

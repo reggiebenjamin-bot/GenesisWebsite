@@ -269,6 +269,8 @@ function mcIsCrisis(text) {
   var t = String(text || ""), C = GM.crisis || {}, H = window.HopeDemo;
   /* Harm by someone at church gets its own reply on the card (mcCard): 911, 988, help outside the church. */
   try { window.mcKind = C.safety ? C.safety(t) : null; } catch (e) { window.mcKind = null; }
+  /* Whatever the safety pre-check hears in chat, it hears here too. */
+  if (window.mcKind === "crisis" || window.mcKind === "leadersafety") return true;
   try {
     if ((C.pattern && C.pattern.test(t)) || (C.others && C.others.test(t))) return true;
     if (H && typeof H.isCrisis === "function") {
@@ -296,7 +298,7 @@ function mcCard(id, saved, what, announce) {
       '<a class="m-btn" href="tel:911">Call 911</a>' +
       (tel ? '<a class="m-btn" href="tel:' + esc(tel) + '">Call the Church</a>' : "") +
     "</div>" +
-    '<p class="m-crisis-note">' + esc(saved) + " In the live product the pastor on call is alerted now, with no private words. This is a preview, so nothing was sent.</p>" +
+    '<p class="m-crisis-note">' + esc(saved) + (leader ? " In the live product this is flagged to the safeguarding contact the church named, never to the person you wrote about. This is a preview, so nothing was sent.</p>" : " In the live product the pastor on call is alerted now, with no private words. This is a preview, so nothing was sent.</p>") +
     "</section>";
 }
 /* Bring the card into view below the app's top bar and move focus to it. */

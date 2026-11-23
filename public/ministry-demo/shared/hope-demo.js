@@ -457,7 +457,9 @@
     say("On the live site this opens a short prayer form that goes only to the pastors and the prayer team. A real person reads every one. This preview sends nothing.", [BACK]);
   }
   /* Genesis runs the site and a few providers process it: the same promise as the processors answer. */
-  var PROCESSORS_LINE = "Genesis, which runs this website" + (CHURCH ? " for " + SHORT : "") + ", never sells it or passes it on for anyone's marketing, and a few service providers, such as hosting and email delivery, handle it under contract only to run the site.";
+  /* On the member app it is the app, not the website. The AI service behind Hope is named with the rest. */
+  var IN_APP = /\/member-[\w-]+\.html$/.test(location.pathname) || !!$(".m-tabbar"), WHERE = IN_APP ? "app" : "website";
+  var PROCESSORS_LINE = "Genesis, which runs this " + WHERE + (CHURCH ? " for " + SHORT : "") + ", never sells it or passes it on for anyone's marketing, and a few service providers, such as hosting, email delivery and the AI service behind " + AN + ", handle it under contract only to run the " + (IN_APP ? "app" : "site") + ". " + (CHURCH ? "None of it is ever used to train AI." : "The named list is shared in writing during scoping, and none of it is ever used to train AI.");
   var NOT_HERE = "That is a question for a church's own website. On each of the four sample sites I answer it from that church's own facts, like times, kids and parking.";
   /* The page's way to talk with Genesis (the story pages carry a[data-contact]), and the journey's
      getting started chapter. */
@@ -543,7 +545,8 @@
     visitchange: { t: "Of course. Plans change, and nobody minds. Fill in Plan Your Visit again with the new Sunday" + (CH.phone ? ", or call us at " + CH.phone : "") + ", and the welcome team will update it.", c: chips(PLAN_VISIT, CALL, BACK) },
     /* Asked about care ("Do you offer counseling?"), or told something heavy ("My husband just died"). */
     care: { t: function (q) {
-      var open = sorry(q), line = HEAVY_LINE.test(q || "") ? CRISIS_LINE : "";
+      /* The numbers always close a care answer, so a heavy message no pattern heard still sees them. */
+      var open = sorry(q), line = CRISIS_LINE;
       if (!open) return "Our pastors would be glad to talk with you about that, and they can point you to trusted help. Share a request or call " + (CH.phone || "the church") + ", and a real person will get back to you." + line;
       return open + " You do not have to carry it alone. " + cap(listOf(pastorNames())) + " would be glad to " + (LOSS.test(q || "") ? "walk with you through this and pray with you" : "talk with you and pray with you") + ". Share a prayer request" + (CH.phone ? " or call " + CH.phone : "") + ", and a real person will get back to you." + line;
     }, c: function () { return chips(SHARE, messageChip(), CALL, BACK); } },
@@ -600,11 +603,16 @@
       return "No. One campus with several services is not Enterprise. Care, Shepherd and Plus each cover one campus, however many services it holds. Enterprise is for a church with more than one campus, and it is scoped on a call.";
     return "Any plan covers one campus, however many services it holds: Care, Shepherd or Plus. Enterprise is for a church with more than one campus, and it is scoped on a call.";
   }, c: [{ label: "What Does It Cost?", key: "price" }, { label: "What Does a Church Get?", key: "package" }] };
+  /* Round 4: giving privacy, a phone number and app messages, in the church's own voice. */
+  A.givingprivate = { t: "Genesis, which runs this " + WHERE + ", keeps no giving history, so " + AN + " and this " + WHERE + " never see what you give. Giving records stay with " + SHORT + "'s giving provider, and the church decides who on staff may see them." + (CH.phone ? " To ask who that is, call " + CH.phone + "." : ""), c: [{ label: "How Do I Give?", key: "give" }, BACK] };
+  A.texting = { t: SHORT + " follows up with guests by email. A phone number you share is used only to reach you about your visit, and it is never sold or passed on for anyone's marketing.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+  A.appmessages = { t: "In " + SHORT + "'s member app, a private message is read only by the pastors, and a prayer request only by the people you choose. " + AN + " never reads either, and other members never see them.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+  A.gmdenom = { t: "Genesis Ministry is built for churches of any denomination, and it takes no side on doctrine. " + AN + " shares only what each church has written about its beliefs. A person at Genesis would be glad to tell you about the company and its team on a call.", c: function () { return chips(talkChip(), BACK); } };
   /* AI training, on every Hope, in the same words. */
   A.aitraining = { t: "No. Genesis never uses prayer, messages or member data to train AI. " + AN + " answers only from facts " + (CHURCH ? SHORT : "the church") + " approved.", c: [{ label: "How Does " + AN + " Work?", key: "hope" }, BACK] };
   /* "Does Hope read my prayer request?", "Do you share my data with third parties?" */
   A.aiprayer = { t: "No. " + AN + " never reads prayer words, never summarizes them and never writes a reply. A prayer request goes only to the people you choose, and a person writes every reply." + CRISIS_LINE, c: [SHARE, BACK] };
-  A.processors = { t: "Genesis, which runs this website" + (CHURCH ? " for " + SHORT : "") + ", never sells what you share or passes it on for anyone's marketing. A few service providers, such as hosting and email delivery, handle it under contract only to run the site.", c: chips(CHURCH ? { label: "Who Sees My Prayer Request?", key: "prayerwho" } : talkChip(), BACK) };
+  A.processors = { t: "Genesis, which runs this " + WHERE + (CHURCH ? " for " + SHORT : "") + ", never sells what you share or passes it on for anyone's marketing. A few service providers, such as hosting, email delivery and the AI service behind " + AN + ", handle it under contract only to run the " + (IN_APP ? "app" : "site") + ". " + (CHURCH ? "None of it is ever used to train AI." : "The named list is shared in writing during scoping, and none of it is ever used to train AI."), c: chips(CHURCH ? { label: "Who Sees My Prayer Request?", key: "prayerwho" } : talkChip(), BACK) };
   /* "Is this chat private?", in a guest's own words. */
   A.chat = { t: "I am an automated assistant, and nobody at " + SHORT + " watches this chat. If you leave your name or ask for a person, the welcome team sees your question so they can follow up. For anything private, use the prayer form, where you choose who reads it." + CRISIS_LINE, c: [SHARE, BACK] };
   /* A pastor's question about abuse or danger: who acts, and the numbers. Hope reports to no one. */
@@ -688,7 +696,7 @@
     q = WORDS.plain(q);
     /* Someone who told Hope about their own life is thanked and pointed to a person. */
     if (CHURCH && ABOUT_SELF.test(q) && !ASKING.test(q) && !/\?\s*$/.test(q) && !BUYER_WORDS.test(q))
-      return { t: "Thank you for telling me. " + SHORT + " would want to help. " + (CH.phone ? "Call " + CH.phone + ", and a real person will hear you out." : "A real person at " + SHORT + " would be glad to hear more.") + CRISIS_LINE, c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
+      return { t: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. " + SHORT + " would want to help too" + (CH.phone && !/ 555-/.test(CH.phone) ? ": call " + CH.phone + ", and a real person will hear you out." : ", and a real person there would be glad to hear more."), c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
     if (CHURCH && BUYER_WORDS.test(q) && !CFG.fallback)
       return { t: "I am not sure about that one, and I would rather not guess. It is " + ON_CALL + "." + CRISIS_LINE, c: chips(talkChip(), { label: "What Does a Church Get?", key: "package", cta: !talkChip() }, { label: "What Does It Cost?", key: "price" }) };
     return { t: (CFG.fallback || (CHURCH
@@ -727,6 +735,9 @@
   var EARLY = [
     [/\bhope for (?:me|someone like me|people like me|us|my \w+)\b|\b(?:someone|people|a person) like me\b|\b(?:am i|would i be|will i be|could i be|can i be) (?:welcome|accepted|judged|wanted|allowed|loved|forgiven)\b|\btoo far gone\b|\bnot good enough\b|\btoo (?:late|broken|bad|messed up|sinful) for (?:me|someone like me|god)\b|\b(?:can|could|would|will|does|did) (?:god|jesus|christ|anyone) (?:really |still )?(?:love|forgive|accept|want|care (?:about|for)|die for) (?:me|us|someone like me)\b/i, "welcome"],
     [HURT, "care"],
+    /* Round 4: doctrine ("Can a woman be a pastor here?", "Will I go to heaven if I'm not baptized?") goes to a pastor. */
+    [/\b(?:can|may|should|could|do you let|do you allow|are) (?:a )?wom[ae]n (?:be |become |serve as |allowed to )?(?:an? )?(?:pastors?|preach\w*|lead\w*|elders?|deacons?|teach\w*)\b|\b(?:go|get|going|end up) (?:to|into|in) (?:heaven|hell)\b|\bheaven or hell\b|\b(?:am i|will i be|can i be|are you|is he|is she) saved\b|\bsalvation\b|\bis it a sin\b|\bis (?:\w+ ){1,3}a sin\b|\btheolog\w*/i, CHURCH ? "beliefs" : "denomfit"],
+    [/\bgenesis\b.{0,40}\b(?:denomination\w*|affiliat\w*)\b|\b(?:denomination\w*|affiliat\w*)\b.{0,40}\bgenesis\b/i, "gmdenom"],
     /* A holiday service has its own times: the regular Sunday times would read as a yes. */
     [/\b(?:christmas|easter|good friday|maundy thursday|thanksgiving|new year'?s? (?:eve|day)|ash wednesday|candlelight service)\b/i, "special"],
     [/\b(real church|is (this|it|that) (a )?real\b|made[- ]up|fake church|actual church|does (this|the) church (really )?exist|is (this|it) (a )?(sample|demo|fake))\b/i, "real"],
@@ -789,6 +800,10 @@
     [/\b(kids?|child ?care|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
     [/\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
     [/\b(small groups?|groups?|bible stud(y|ies)|life groups?|events?|socials?|fellowship|meet (new )?people|make friends|get connected)\b/i, "groups"],
+    /* Round 4: who sees what I give, a phone number for texts, and app messages, before giving hears "give". */
+    [/\b(?:see|sees|know|knows|private|track\w*|notice\w*|find out)\b.{0,40}\b(?:giv\w*|gave|tith\w*|donat\w*)\b|\b(?:giv\w*|gave|tith\w*|donat\w*)\b.{0,30}\b(?:private|confidential|anonymous|see|sees|know|knows)\b|\bstopped (?:giving|tithing)\b/i, "givingprivate"],
+    [/\btext (?:me|us)\b|\b(?:give|share|leave|put)\b.{0,15}\bmy (?:phone )?number\b|\btext messages?\b/i, "texting"],
+    [/\b(?:who|anyone|staff)\b.{0,30}\b(?:see|sees|read|reads)\b.{0,30}\bmessages?\b.{0,30}\b(?:app)\b|\bmessages? (?:i send )?in the app\b/i, "appmessages"],
     /* "give it to our members" and "give this to the team" are not giving. */
     [/\b(giv(e|ing)(?! up\b)(?! (?:it|this|that|them) to\b)(?! to (?:our|my|the) (?:members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
     /* A guest moved by Sunday ("the sermon hit me hard") hears gladness, not a schedule. */

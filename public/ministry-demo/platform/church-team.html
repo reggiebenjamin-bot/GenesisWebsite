@@ -386,8 +386,8 @@ GM.ready(function (ctx) {
     { match: /who can (open|see|read) prayer|prayer team|open prayer/i, answer: canPrayer.map(function (s) { return s.name; }).join(", ") + " can open prayer requests. Other staff and website admins cannot, and the system enforces it. Every open is written to the access record." },
     { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff seats are in use on the " + ctx.level.code + " plan. Genesis Support does not use a seat. " + D.pricingLine + "" },
     { match: /two.?step|sign in|password|login/i, answer: "Two-step sign in is on for all " + team.length + " people, through the church's Google account. There are no shared passwords. Members sign in with a 6-digit code by email, and adults only." },
-    { match: /step(s|ped)? down|leave|remove|end access/i, answer: "When someone steps down, access ends that day, their open care moves to " + care.name + ", nothing they wrote is deleted, and " + lead.name + " gets a plain email. Their opens stay in the access record." },
-    { match: /role|change|team/i, answer: "Only " + lead.name + " changes a role. Each change is emailed to the lead pastor with no private words and kept in the access record. " + sofia.name + "'s new Prayer Team role is waiting to be confirmed." }
+    { match: /^(?!.*\b(?:genesis|our data)\b).*(?:step(s|ped)? down|\b(?:leaves?|left|leaving) (?:the )?(?:team|staff|church)\b|\bremove\w* (?:someone|them|him|her|a (?:person|pastor|staff member|volunteer))\b|\bend\w* (?:their |his |her )?access\b)/i, answer: "When someone steps down, access ends that day, their open care moves to " + care.name + ", nothing they wrote is deleted, and " + lead.name + " gets a plain email. Their opens stay in the access record." },
+    { match: /^(?!.*\b(?:phone|numbers?|emails?|giv\w*|prayer)\b).*\b(?:roles?|change (?:a |their |his |her |someone'?s )?role|who changes)\b/i, answer: "Only " + lead.name + " changes a role. Each change is emailed to the lead pastor with no private words and kept in the access record. " + sofia.name + "'s new Prayer Team role is waiting to be confirmed." }
   ]);
 
   /* ---------- Guided tour ---------- */

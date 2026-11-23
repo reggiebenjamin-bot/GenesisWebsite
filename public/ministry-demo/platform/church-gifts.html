@@ -384,8 +384,8 @@ GM.ready(function (ctx) {
   GM.hope.addAnswers([
     { match: /common|most|top gift|near the top/i, answer: "Counting everyone who finished, " + gifts.slice(0, 3).map(function (g) { return g.name + " (" + total(g) + ")"; }).join(", ") + " are near the top for the most people. I count only; names stay in the finder, and only for people who said yes." },
     { match: /score|arithmetic|counted|ai set/i, answer: "Each answer counts 1 to 5, and a gift's statements are added up. The same answers always give the same result, and ties are shown. I never set or change a score." },
-    { match: /who can see|names|private/i, answer: "Only the pastors and the people they name can open this page, and only names of people who said yes. The prayer team, other staff and website admins cannot. Every view of names is written to the access record." },
-    { match: /serv|talk|team/i, answer: ready.length + " people who said yes want to talk about serving and are not serving yet. Their requests are in the care inbox with an owner. Team fit shows which teams match their gifts." }
+    { match: /^(?!.*\b(?:prayer|giv\w*|gives|phone|emails?|genesis)\b).*(?:\bwho can see\b.{0,30}\b(?:gifts?|this|names|page|results?)\b|\bnames\b|\bprivate\b)/i, answer: "Only the pastors and the people they name can open this page, and only names of people who said yes. The prayer team, other staff and website admins cannot. Every view of names is written to the access record." },
+    { match: /^(?!.*\b(?:genesis|prayer team|giv\w*|gives|real person|sign)\b).*(?:\bserv(?:e|es|ing)\b|\bteam fit\b|\bwant to serve\b)/i, answer: ready.length + " people who said yes want to talk about serving and are not serving yet. Their requests are in the care inbox with an owner. Team fit shows which teams match their gifts." }
   ]);
 
   /* ---------- Guided tour ---------- */
