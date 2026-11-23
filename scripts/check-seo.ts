@@ -132,6 +132,18 @@ for (const page of seoPages) {
   if (!linked) fail(page.path, "no other page links here");
 }
 
+/* A link into the Genesis Ministry demo copies points at a file that is in
+   public/. The /ministry page links a preview only once its file is there;
+   this catches a link that skips that check. */
+for (const { page, html } of rendered) {
+  for (const [, href] of html.matchAll(/href="(\/ministry-demo\/[^"]*)"/g)) {
+    const file = decode(href).split(/[?#]/)[0];
+    if (!existsSync(join(process.cwd(), "public", file))) {
+      fail(page.path, `links to ${href}, but public${file} is not there`);
+    }
+  }
+}
+
 /* robots.txt and the sitemap agree with the kind of build this is. */
 const robotsTxt = readFileSync(join(APP, "robots.txt.body"), "utf8");
 const sitemapXml = readFileSync(join(APP, "sitemap.xml.body"), "utf8");

@@ -1,0 +1,122 @@
+/* Copied from the Genesis OS repo (v2/refine/agents.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: agents.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* ----- Hawk, the chief of staff ------------------------------------------- */
+.v2-hawk-hero{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;padding:20px 22px;margin-bottom:16px}
+.v2-hawk-hero::after{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--v2-accent);pointer-events:none}
+.v2-hawk-hero-mark,.v2-channel-mark,.v2-log-avatar{display:grid;place-items:center;flex:none;border-radius:50%;font-family:var(--v2-font-serif);font-weight:500;color:var(--v2-accent-strong);border:1px solid var(--v2-accent-border);background:var(--v2-accent-soft)}
+.v2-hawk-hero-mark{width:48px;height:48px;font-size:24px}
+.v2-hawk-hero-main h2{margin:2px 0 4px}
+.v2-hawk-hero-main p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-hawk-hero-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.v2-hawk-hero-actions [aria-pressed="true"]{border-color:var(--v2-accent-border)}
+
+/* ----- Channels beside the log ----------------------------------------------- */
+.v2-channels-layout{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.3fr);gap:16px;align-items:start;margin-bottom:16px}
+.v2-hawk-channels .v2-section-head{margin-bottom:10px}
+.v2-channel-list{display:grid;gap:8px}
+.v2-channel-group{margin:10px 0 0;color:var(--v2-text-2);font-size:12px;font-weight:700}
+.v2-channel{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;width:100%;padding:12px 14px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface);color:var(--v2-text);font:inherit;text-align:left;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.v2-channel:hover{border-color:var(--v2-border-strong);background:var(--v2-surface-2)}
+.v2-channel[aria-pressed="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft)}
+.v2-channel[aria-pressed="true"]::after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--v2-accent);pointer-events:none}
+.v2-channel:focus-visible{outline:2px solid var(--v2-focus);outline-offset:2px}
+.v2-channel-mark{width:34px;height:34px;font-size:17px}
+.v2-channel-main{display:grid;gap:3px;min-width:0}
+.v2-channel-top{display:flex;align-items:center;gap:8px;min-width:0}
+.v2-channel-top b{flex:0 0 auto;font-size:14px;font-weight:700}
+/* the chip keeps its width and stays on one line, so the role is what gives
+   way in a narrow column (see the badge rule in system.css) */
+.v2-channel-role{overflow:hidden;min-width:0;color:var(--v2-muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.v2-channel-top .v2-badge{margin-left:auto}
+.v2-channel-job{color:var(--v2-text-2);font-size:12px;line-height:1.45}
+.v2-channel-last{overflow:hidden;color:var(--v2-muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.v2-channel-last time{margin-left:6px;color:var(--v2-muted)}
+
+/* ----- Team log ---------------------------------------------------------------- */
+.v2-team-log{padding:16px 18px}
+.v2-team-log .v2-section-head{margin-bottom:10px}
+.v2-log-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.v2-chip{min-height:30px;padding:4px 11px;border:1px solid var(--v2-border);border-radius:999px;background:transparent;color:var(--v2-text-2);font:500 12px var(--v2-font);cursor:pointer}
+.v2-chip:hover{border-color:var(--v2-border-strong);color:var(--v2-text)}
+.v2-chip[aria-pressed="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft);color:var(--v2-text)}
+.v2-log{display:grid;gap:0;margin:0;padding:0;list-style:none;max-height:560px;overflow:auto}
+.v2-log-entry{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:12px 2px;border-top:1px solid var(--v2-border)}
+.v2-log-entry:first-child{border-top:0}
+.v2-log-avatar{width:30px;height:30px;font-size:15px}
+.v2-log-main{min-width:0}
+.v2-log-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.v2-log-meta b{font-size:13px;font-weight:700}
+.v2-log-to{color:var(--v2-muted);font-size:12px}
+.v2-log-kind{padding:1px 7px;border-radius:999px;background:var(--v2-surface-2);color:var(--v2-text-2);font-size:11px;font-weight:500}
+.v2-log-entry.is-asks-you .v2-log-kind{background:var(--v2-accent-soft);color:var(--v2-accent-strong)}
+.v2-log-entry.is-error .v2-log-kind{background:rgba(var(--v2-danger-rgb),.14);color:var(--v2-danger)}
+.v2-log-meta time{margin-left:auto;color:var(--v2-muted);font-size:11px;font-variant-numeric:tabular-nums}
+.v2-log-main p{margin:4px 0 0;color:var(--v2-text);font-size:13px;line-height:1.5}
+.v2-log-main small{display:block;margin-top:2px;color:var(--v2-muted);font-size:12px}
+.v2-log-empty,.v2-log-foot{margin:6px 0 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+
+@media (max-width:1100px){
+  .v2-channels-layout{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .v2-hawk-hero{grid-template-columns:auto minmax(0,1fr)}
+  .v2-hawk-hero-actions{grid-column:1/-1;justify-content:flex-start}
+}
+
+/* ----- Conversations -------------------------------------------------------- */
+.v2-convo{padding:16px 18px}
+.v2-convo .v2-section-head{margin-bottom:12px}
+.v2-convo-layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:0;min-height:420px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);overflow:hidden}
+.v2-convo.is-thread-only .v2-convo-layout{grid-template-columns:minmax(0,1fr)}
+.v2-convo-list{display:flex;flex-direction:column;gap:2px;padding:10px 8px;border-right:1px solid var(--v2-border);background:var(--v2-sidebar);overflow:auto;max-height:640px}
+.v2-convo-group{margin:10px 8px 4px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-convo-group:first-child{margin-top:2px}
+.v2-convo-channel{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:8px;border:1px solid transparent;border-radius:var(--v2-radius-sm);background:transparent;color:var(--v2-text);font:inherit;text-align:left;cursor:pointer}
+.v2-convo-channel:hover{background:var(--v2-surface)}
+.v2-convo-channel[aria-pressed="true"]{border-color:var(--v2-accent-border);background:var(--v2-accent-soft)}
+.v2-convo-channel:focus-visible{outline:2px solid var(--v2-focus);outline-offset:1px}
+.v2-convo-channel-main{display:grid;gap:1px;min-width:0}
+.v2-convo-channel-main b{font-size:13px;font-weight:700}
+.v2-convo-channel-main small{color:var(--v2-muted);font-size:11px}
+.v2-convo-preview{overflow:hidden;color:var(--v2-muted);font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.v2-convo-count{min-width:22px;padding:1px 6px;border-radius:999px;background:var(--v2-surface-2);color:var(--v2-text-2);font-size:11px;text-align:center;font-variant-numeric:tabular-nums}
+.v2-convo-avatar{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--v2-border-strong);background:var(--v2-surface-2);color:var(--v2-text-2);font-family:var(--v2-font-serif);font-size:15px;font-weight:500}
+
+.v2-convo-thread{display:flex;flex-direction:column;min-width:0;background:var(--v2-surface)}
+.v2-convo-head{padding:12px 16px;border-bottom:1px solid var(--v2-border)}
+.v2-convo-head h3{margin:0;font-size:14px;font-weight:700}
+.v2-convo-head p{margin:2px 0 0;color:var(--v2-muted);font-size:12px}
+.v2-convo-messages{display:flex;flex-direction:column;gap:10px;flex:1;margin:0;padding:14px 16px;list-style:none;overflow:auto;max-height:560px}
+.v2-convo-day{display:flex;align-items:center;gap:10px;margin:6px 0 2px;color:var(--v2-muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.v2-convo-day::before,.v2-convo-day::after{content:"";flex:1;height:1px;background:var(--v2-border)}
+.v2-convo-msg{display:flex;align-items:flex-end;gap:8px;max-width:78%}
+.v2-convo-msg.is-hawk{align-self:flex-end;flex-direction:row-reverse}
+.v2-convo-msg .v2-convo-avatar{width:26px;height:26px;font-size:13px}
+.v2-convo-bubble{min-width:0;padding:8px 12px;border:1px solid var(--v2-border);border-radius:14px 14px 14px 4px;background:var(--v2-bg)}
+.v2-convo-msg.is-hawk .v2-convo-bubble{border-color:var(--v2-accent-border);border-radius:14px 14px 4px 14px;background:var(--v2-accent-soft)}
+.v2-convo-msg.is-hawk .v2-convo-avatar{border-color:var(--v2-accent-border);color:var(--v2-accent-strong);background:var(--v2-accent-soft)}
+.v2-convo-meta{display:flex;align-items:baseline;gap:8px}
+.v2-convo-meta b{font-size:12px;font-weight:700}
+.v2-convo-meta time{color:var(--v2-muted);font-size:11px;font-variant-numeric:tabular-nums}
+.v2-convo-bubble p{margin:3px 0 0;color:var(--v2-text);font-size:13px;line-height:1.5}
+.v2-convo-bubble small{display:block;margin-top:3px;color:var(--v2-muted);font-size:11px}
+.v2-convo-msg.is-error .v2-convo-bubble{border-color:rgba(var(--v2-danger-rgb),.4)}
+.v2-convo-msg.is-ask .v2-convo-meta b::after{content:"Needs the owner";margin-left:8px;padding:1px 7px;border-radius:999px;background:var(--v2-accent-soft);color:var(--v2-accent-strong);font-size:11px;font-weight:700}
+.v2-convo-empty{margin:0;padding:24px 16px;color:var(--v2-muted);font-size:13px}
+.v2-convo-foot{padding:9px 16px;border-top:1px solid var(--v2-border);color:var(--v2-muted);font-size:11px}
+
+@media (max-width:860px){
+  .v2-convo-layout{grid-template-columns:1fr}
+  .v2-convo-list{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--v2-border);max-height:none}
+  .v2-convo-group{display:none}
+  .v2-convo-channel{flex:none;width:auto;grid-template-columns:auto auto}
+  .v2-convo-preview,.v2-convo-count,.v2-convo-channel-main small{display:none}
+  .v2-convo-msg{max-width:92%}
+}
+
+/* Moved notice on the Agents page while both homes are live. */
+.v2-moved-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}

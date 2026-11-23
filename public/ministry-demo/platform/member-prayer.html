@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Prayer · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: a member asks for prayer, chooses who can see it, and sees their prayer history with replies.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member prayer only. Prefix: mp-. Church tokens (--m-*) only inside the phone. */
+  .mp-fieldset{margin:0 0 16px;padding:0;border:0}
+  .mp-fieldset legend{margin-bottom:8px;padding:0;font-size:15px;font-weight:700}
+  .mp-who{align-items:flex-start;font-weight:700}
+  .mp-who input{margin-top:2px}
+  .mp-who span{flex:1;min-width:0}
+  .mp-who small{display:block;margin-top:2px;color:var(--m-muted);font-size:14px;font-weight:500;line-height:1.45}
+  .m-app .mp-alert{margin:12px 0 0;color:var(--m-muted);font-size:14px;text-align:center}
+  .mp-alert b{color:var(--m-text)}
+  .mp-help a{color:var(--m-text);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+  .mp-req{display:grid;gap:12px;scroll-margin-top:12px}
+  .mp-req.is-target{border-color:var(--m-accent-ink);box-shadow:inset 0 0 0 1px var(--m-accent-ink)}
+  .mp-req-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+  .mp-when{color:var(--m-muted);font-size:13.5px}
+  .mp-words{margin:0;padding-left:12px;border-left:3px solid var(--m-line-strong);font-size:16px;line-height:1.55}
+  .mp-seen{display:flex;gap:8px;align-items:flex-start;margin:0;color:var(--m-muted);font-size:13.5px;line-height:1.45}
+  .mp-seen .gm-icon{flex:0 0 15px;width:15px;height:15px;margin-top:2px;color:var(--m-accent-ink)}
+  .mp-seen b{color:var(--m-text)}
+  .mp-status{margin:0;font-size:14.5px;line-height:1.5}
+  .mp-status .m-link{font-size:14.5px}
+  .mp-req .m-thread{padding-top:4px}
+  .mp-req .m-bubble{max-width:90%}
+  .mp-update{display:grid;gap:8px}
+  .mp-update[hidden]{display:none}
+  .mp-update .m-textarea{min-height:88px}
+  .mp-row{display:flex;flex-wrap:wrap;gap:8px}
+  .mp-attached{margin:0;color:var(--m-muted);font-size:13px;font-style:italic}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-caption{display:none}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="prayer" data-title="Prayer">
+
+<main id="gm-main" class="m-main">
+  <p class="m-eyebrow">Prayer</p>
+  <h1 class="m-h1">Ask for prayer</h1>
+  <p class="m-lede">On a real church site, a person at <span data-gm-text="church.short"></span> reads every request, and your pastors and the prayer team pray with you. In this demo, nothing is sent.</p>
+
+  <form class="m-section" id="mp-form" novalidate data-tour="prayer.form">
+    <div class="m-field">
+      <label class="m-label" for="mp-topic">What is it about? <span class="m-muted" style="font-weight:500">(optional)</span></label>
+      <select class="m-select" id="mp-topic" name="topic">
+        <option value="">Choose a Topic</option>
+        <option>Health</option><option>Family</option><option>Work or a Job Search</option><option>Grief or Loss</option>
+        <option>A New Baby</option><option>A Move</option><option>Thanks and Good News</option><option>Something Else</option>
+      </select>
+    </div>
+    <div class="m-field">
+      <label class="m-label" for="mp-text">What would you like us to pray for?</label>
+      <textarea class="m-textarea" id="mp-text" name="request" aria-describedby="mp-text-hint" readonly>Please pray for my job search. I have two interviews this week.</textarea>
+      <span class="m-hint" id="mp-text-hint">Demo only: a sample request is filled in, and it cannot be changed here. Nothing is sent.</span>
+    </div>
+    <p class="m-note mp-help" id="mp-help" data-tour="prayer.help"></p>
+
+    <fieldset class="mp-fieldset" data-tour="prayer.visibility">
+      <legend>Who can see this?</legend>
+      <div class="m-choices" id="mp-who"></div>
+    </fieldset>
+
+    <div class="m-field">
+      <label class="m-check" for="mp-call"><input type="checkbox" id="mp-call" name="call"><span>I would welcome a call or a message from a pastor</span></label>
+    </div>
+
+    <button type="submit" class="m-btn m-btn--primary m-btn--block">Send Prayer Request</button>
+    <p class="m-note mx-demo-sent" id="mp-sent" role="status" hidden></p>
+    <p class="mp-alert" id="mp-alert"></p>
+  </form>
+
+  <div class="m-section m-stack">
+    <p class="m-note m-note--line" id="mp-secret" data-tour="prayer.secrecy"></p>
+  </div>
+
+  <section class="m-section" aria-labelledby="mp-history-title" data-tour="prayer.history">
+    <div class="m-section-head" style="display:block">
+      <h2 class="m-h2" id="mp-history-title">My prayer requests</h2>
+      <p class="m-small m-muted" style="margin:4px 0 0">From the day you signed in, with any reply. Only you see this list.</p>
+    </div>
+    <div class="m-stack" id="mp-history"></div>
+  </section>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'Prayer with <em class="v2-accent-em">a history</em>',
+  sub: "Members ask in a few taps, choose who can see it, and keep every reply in one place. A person always replies.",
+  protect: [
+    ["They choose who sees it", "Pastors and the prayer team, or pastors only, each with the names."],
+    ["No private words in email", "Pastors get: New request. Sign in to read."],
+    ["Help on every form", "911 and 988 sit beside the form, with the church phone."],
+    ["People reply, not AI", "{assistant.name} never drafts a reply to prayer."]
+  ],
+  land: { href: "church-care.html?view=prayer", label: "See the Prayer Inbox", icon: "care", module: "care" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, c = ctx.church, esc = GM.esc, fmt = GM.fmt;
+  var $ = function (id) { return document.getElementById(id); };
+  var me = GM.member();
+
+  /* Who can read prayer at this church, by name. Pastors and the prayer team; nobody else. */
+  var prayerTeam = D.staff.filter(function (s) { return s.caps.indexOf("prayer") >= 0; }).map(function (s) { return GM.staff(s.id).name; });
+  var pastors = D.staff.filter(function (s) { return s.roleKey === "pastor"; }).map(function (s) { return GM.staff(s.id).name; });
+  function names(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+
+  /* ---------- Who can see this ---------- */
+  $("mp-who").innerHTML =
+    '<label class="m-choice mp-who"><input type="radio" name="who" value="prayer" checked><span>Pastors and the prayer team<small>' + esc(names(prayerTeam)) + "</small></span></label>" +
+    '<label class="m-choice mp-who"><input type="radio" name="who" value="pastors"><span>Pastors only<small>' + esc(names(pastors)) + ". The prayer team will not see it.</small></span></label>";
+  $("mp-alert").innerHTML = "Your pastors get an email that says only <b>“New request. Sign in to read.”</b> Your words stay here.";
+
+  /* ---------- The standing help line and the honest limit ---------- */
+  /* Tap to ask only (owner decision, November 23, 2026): the demo's forms are filled in and send nothing,
+     so no typed words ever get a reply. The same 911 and 988 line as every Hope sits beside the form. */
+  $("mp-help").innerHTML = GM.icon("call") + '<span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at ' + (/ 555-/.test(c.phone) ? esc(c.phone) : '<a href="tel:' + esc(c.phone.replace(/\D/g, "")) + '">' + esc(c.phone) + "</a>") + ".</span>";
+  $("mp-secret").innerHTML = GM.icon("shield") + "<span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span>";
+
+  /* ---------- History ---------- */
+  var mine = me.prayer.map(GM.prayerRequest).filter(Boolean).map(copy);
+  var added = [];
+  render();
+
+  /* Demo only: the request is a filled-in sample and nothing is sent or added. */
+  $("mp-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var done = $("mp-sent");
+    done.textContent = "Demo only. Nothing was sent.";
+    done.hidden = false;
+    GM.toast("Demo only. Nothing was sent.");
+  });
+
+  function render() {
+    var list = added.concat(mine.sort(function (a, b) { return GM.parseDate(b.received) - GM.parseDate(a.received); }));
+    $("mp-history").innerHTML = list.map(card).join("");
+    $("mp-history").querySelectorAll("[data-mp-update]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var box = $("mp-up-" + b.getAttribute("data-mp-update"));
+        box.hidden = !box.hidden;
+        b.setAttribute("aria-expanded", box.hidden ? "false" : "true");
+        if (!box.hidden) box.querySelector("button[type=submit]").focus();
+      });
+    });
+    /* Demo only: the update is a filled-in sample and nothing is sent or added. */
+    $("mp-history").querySelectorAll(".mp-update").forEach(function (f) {
+      f.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var done = f.querySelector(".mx-demo-sent");
+        done.textContent = "Demo only. Nothing was sent.";
+        done.hidden = false;
+        GM.toast("Demo only. Nothing was sent.");
+      });
+    });
+  }
+
+  function card(p) {
+    var seen = p.visibility === "pastors"
+      ? "<b>Pastors only:</b> " + esc(names(pastors).replace(/\.$/, "")) + "."
+      : "<b>Pastors and the prayer team:</b> " + esc(names(prayerTeam).replace(/\.$/, "")) + ". Nobody else.";
+    var churchReplied = p.replies.some(function (r) { return r.from !== "member"; });
+    var status;
+    if (p.isNew) status = "Sent just now. " + (p.crisis ? "The pastor on call will follow up." : p.wantsCall ? "A pastor will reach out, as you asked." : "The prayer team will see it soon.");
+    else if (churchReplied) status = "Replied. You can add an update any time.";
+    else status = "No reply yet. The prayer team has it and is praying.";
+    var link = (p.id === "pr-01") ? ' <a class="m-link" href="member-messages.html?id=t-06">' + esc(GM.staff("s-care").name) + " also wrote to you in Messages.</a>" : "";
+    var older = (me.adultConfirmed && p.received !== "now" && GM.parseDate(p.received) < GM.parseDate(me.adultConfirmed))
+      ? '<p class="mp-attached">Sent before you had an account. Added to your history at your request.</p>' : "";
+    return '<article class="m-card mp-req" id="' + esc(p.id) + '" tabindex="-1" aria-label="' + esc(p.topic + " prayer request") + '">' +
+      '<div class="mp-req-top"><span class="m-pill m-pill--accent">' + esc(p.topic) + '</span><span class="mp-when">Sent ' + esc(when(p.received)) + "</span></div>" +
+      '<blockquote class="mp-words">' + esc(p.text) + "</blockquote>" +
+      '<p class="mp-seen">' + GM.icon("lock") + "<span>" + seen + "</span></p>" +
+      (p.replies.length ? '<div class="m-thread">' + p.replies.map(bubble).join("") + "</div>" : "") +
+      '<p class="mp-status">' + esc(status) + link + "</p>" + older +
+      '<div class="mp-row"><button type="button" class="m-btn m-btn--sm" data-mp-update="' + esc(p.id) + '" aria-expanded="false" aria-controls="mp-up-' + esc(p.id) + '">' + GM.icon("plus") + "Add an Update</button></div>" +
+      '<form class="mp-update" id="mp-up-' + esc(p.id) + '" data-id="' + esc(p.id) + '" hidden><label class="m-label" for="mp-ta-' + esc(p.id) + '">Your update</label>' +
+      '<textarea class="m-textarea" id="mp-ta-' + esc(p.id) + '" readonly>Thank you for praying. This week went better than I hoped.</textarea>' +
+      '<p class="m-hint">Demo only: a sample update is filled in. Nothing is sent.</p><p class="m-small">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p><button type="submit" class="m-btn m-btn--primary m-btn--sm">Send Update</button>' +
+      '<p class="m-note mx-demo-sent" role="status" hidden></p></form>' +
+      "</article>";
+  }
+  function bubble(r) {
+    if (r.from === "member") return '<div class="m-bubble m-bubble--me"><p>' + esc(r.text) + "</p><small>You · " + esc(when(r.at)) + "</small></div>";
+    var s = GM.staff(r.from);
+    return '<div class="m-bubble m-bubble--church"><p>' + esc(r.text) + "</p><small>" + esc(s.name + ", " + s.role) + " · " + esc(when(r.at)) + "</small></div>";
+  }
+  function when(at) { return at === "now" ? "just now" : fmt.when(at); }
+  function copy(p) { var o = {}; for (var k in p) o[k] = p[k]; o.replies = (p.replies || []).slice(); return o; }
+
+  /* Jump to a request linked from home (member-prayer.html#pr-01) or to the form. */
+  if (location.hash) {
+    var t = document.getElementById(location.hash.slice(1));
+    if (t) setTimeout(function () { if (t.classList.contains("mp-req")) t.classList.add("is-target"); t.scrollIntoView({ block: "start" }); }, 60);
+  }
+
+  GM.setTour([
+    { target: '[data-tour="prayer.form"]', title: "Prayer in a few taps", text: "Members are already signed in, so there is no name or email to retype. The alert to pastors carries no private words." },
+    { target: '[data-tour="prayer.visibility"]', title: "They choose who sees it", text: "Pastors and the prayer team, or pastors only. Each option names the people who can read it." },
+    { target: '[data-tour="prayer.help"]', title: "Help is always on the page", text: "The standing 911 and 988 line sits beside every prayer form, with the church phone." },
+    { target: '[data-tour="prayer.secrecy"]', title: "Honest about the limits", text: "Prayer is private, but the page never promises total secrecy when someone is being harmed." },
+    { target: '[data-tour="prayer.history"]', title: "A history with replies", text: "Every request, every reply, and who can see each one. Older requests are added only when the member asks." }
+  ]);
+});
+</script>
+</body>
+</html>

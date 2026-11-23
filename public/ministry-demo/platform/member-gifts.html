@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>My Gifts · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the spiritual gifts conversation, one statement at a time, saved after every tap.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member gifts conversation only. Prefix: mq-. Church tokens (--m-*) only inside the phone. */
+  .mq-view[hidden]{display:none}
+  .mq-last{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:12px 14px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface);color:var(--m-text);text-decoration:none;font-size:14.5px;line-height:1.4}
+  .mq-last .gm-icon{flex:0 0 20px;width:20px;height:20px;color:var(--m-accent-ink)}
+  .mq-last span{flex:1}
+  .mq-expect{margin:14px 0 0}
+  .mq-actions{display:grid;gap:10px;margin-top:22px}
+  .mq-actions .m-btn--block+.m-btn--block{margin-top:0}
+  .mq-status{display:grid;gap:8px;margin-bottom:16px;padding:14px 16px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface)}
+  .mq-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:700}
+  .mq-saved{display:inline-flex;align-items:center;gap:6px;margin:0;color:var(--m-muted);font-size:13.5px;font-weight:700}
+  .mq-saved .gm-icon{width:15px;height:15px;color:var(--m-accent-ink)}
+  .mq-thread{margin-bottom:16px}
+  .mq-thread .m-bubble{max-width:88%}
+  .mq-line p{font-style:italic}
+  .mq-st small{font-weight:700;letter-spacing:.02em}
+  .mq-current{display:grid;gap:12px;scroll-margin-top:12px}
+  .mq-current:focus{outline:none}
+  .mq-current:focus-visible .m-statement{outline:2px solid var(--m-focus);outline-offset:2px}
+  .mq-label{margin:0;color:var(--m-accent-ink);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .mq-dots{display:inline-flex;gap:4px;flex:0 0 auto}
+  .mq-dots i{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;opacity:.75}
+  .mq-dots i.on{background:currentColor;opacity:1}
+  .mq-nav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:4px}
+  .mq-words .m-textarea{min-height:96px}
+  .mq-done{text-align:left}
+  .mq-done-icon{width:58px;height:58px;display:grid;place-items:center;margin:4px 0 16px;border-radius:50%;background:var(--m-accent-soft);color:var(--m-accent-ink)}
+  .mq-done-icon .gm-icon{width:28px;height:28px}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-caption{display:none}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="gifts" data-title="My Gifts">
+
+<main id="gm-main" class="m-main">
+
+  <!-- Welcome -->
+  <section class="mq-view" id="mq-welcome" aria-labelledby="mq-welcome-title">
+    <a class="mq-last" href="member-gifts-result.html" id="mq-last"></a>
+    <p class="m-eyebrow">My Gifts</p>
+    <h1 class="m-h1" id="mq-welcome-title">How has God gifted you to serve?</h1>
+    <p class="m-lede">A short conversation to help you explore your spiritual gifts, one statement at a time, in <span data-gm-text="church.shortPoss"></span> own words.</p>
+    <div class="m-card m-section" data-tour="gifts.welcome">
+      <h2 class="m-h3">What to expect</h2>
+      <ul class="m-checks mq-expect" id="mq-expect" style="margin-bottom:0"></ul>
+    </div>
+    <div class="mq-actions" data-tour="gifts.start" id="mq-start-actions"></div>
+    <p class="m-note-quiet">This preview shows a few sample statements. Each church writes and approves its own, and the full conversation has more.</p>
+  </section>
+
+  <!-- The conversation -->
+  <section class="mq-view" id="mq-talk" aria-label="Gifts conversation" hidden>
+    <div class="mq-status" data-tour="gifts.progress">
+      <div class="mq-status-row"><span id="mq-round">Round 1 of 2</span><span id="mq-count" class="m-muted"></span></div>
+      <div class="m-progress" role="progressbar" aria-label="Progress through the conversation" aria-valuemin="0" aria-valuemax="100" id="mq-bar"><span style="width:0%"></span></div>
+      <p class="mq-saved" id="mq-saved" aria-live="polite"></p>
+    </div>
+    <div class="m-thread mq-thread" id="mq-thread" data-tour="gifts.thread"></div>
+    <div id="mq-current-slot" data-tour="gifts.statement"></div>
+  </section>
+
+  <!-- In your own words -->
+  <section class="mq-view mq-words" id="mq-words" aria-labelledby="mq-words-title" hidden>
+    <div class="m-thread mq-thread"><div class="m-bubble m-bubble--church mq-line"><p>Last part. Two questions in your own words. You can skip either one.</p><small id="mq-words-from"></small></div></div>
+    <h1 class="m-h2" id="mq-words-title" style="margin-bottom:14px">In your own words</h1>
+    <form id="mq-words-form" data-tour="gifts.words">
+      <div class="m-field">
+        <label class="m-label" for="mq-w1">Where have you felt most alive serving others?</label>
+        <textarea class="m-textarea" id="mq-w1" readonly>Welcoming families at the door on Sunday mornings.</textarea>
+      </div>
+      <div class="m-field">
+        <label class="m-label" for="mq-w2">Is there something you would love to try?</label>
+        <textarea class="m-textarea" id="mq-w2" readonly>Helping with the kids' rooms once a month.</textarea>
+        <span class="m-hint">Demo only: sample words are filled in, and they cannot be changed here. Nothing is sent. Words never change a score.</span>
+        <span class="m-hint">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span>
+      </div>
+      <button type="submit" class="m-btn m-btn--primary m-btn--block">Finish</button>
+      <button type="button" class="m-btn m-btn--block" id="mq-skip">Skip and Finish</button>
+    </form>
+  </section>
+
+  <!-- Done -->
+  <section class="mq-view mq-done" id="mq-done" aria-labelledby="mq-done-title" hidden>
+    <div class="mq-done-icon" id="mq-done-icon" aria-hidden="true"></div>
+    <p class="m-eyebrow">All done</p>
+    <h1 class="m-h1" id="mq-done-title">Thank you</h1>
+    <p class="m-lede">Your gifts to explore are ready. They are a starting place for a conversation, not a verdict.</p>
+    <div class="m-section" data-tour="gifts.done">
+      <a class="m-btn m-btn--primary m-btn--block" href="member-gifts-result.html?just=1">See My Gifts to Explore</a>
+    </div>
+    <p class="m-note m-note--line m-section" id="mq-math"></p>
+  </section>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'One statement <em class="v2-accent-em">at a time</em>',
+  sub: "Five answers from Not me to That is me. It saves after every tap, and short lines in the church's voice sit between sections.",
+  protect: [
+    ["Saved after every tap", "Start in the lobby on Sunday, finish at home."],
+    ["Plain arithmetic", "Each answer counts 1 to 5. No AI sets or changes a score."],
+    ["Names only with a yes", "The church-wide picture never shows a name."]
+  ],
+  land: { href: "church-gifts.html", label: "See the Pastor's Gifts Picture", icon: "gifts", module: "gifts" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, c = ctx.church, esc = GM.esc, fmt = GM.fmt;
+  var $ = function (id) { return document.getElementById(id); };
+  var me = GM.member();
+  var SCALE = D.gifts.answerScale;   /* Not me (1) ... That is me (5) */
+  var KEY = "gm.m.gifts." + c.slug;
+
+  /* Round one: the shared sample statements, one per gift. Round two: extra sample statements
+     for the gifts near the top, written fresh for this preview. Never copied from a published test. */
+  var ROUND1 = D.gifts.statements.map(function (s) { return { key: "r1:" + s.gift, gift: s.gift, text: s.text, round: 1 }; });
+  var ROUND2 = {
+    hospitality: "I enjoy opening my home, even when it is not tidy.",
+    encouragement: "I often send a short note just to tell someone they are doing well.",
+    service: "I notice the empty coffee pot before anyone asks.",
+    mercy: "I would rather sit with someone who is grieving than try to fix it.",
+    teaching: "I like preparing ahead so I can explain something clearly.",
+    intercession: "When someone shares a need, I keep praying about it for days.",
+    administration: "I make lists, and other people are glad I do.",
+    leadership: "I can picture where a group could be in a year, and I like helping it get there."
+  };
+  var LINES = {
+    0: "Here we go. Tap the answer that fits you most days, not your best day.",
+    4: "Halfway through round one. There are no wrong answers here.",
+    8: "Thank you. Round two asks a little more about the gifts near your top, so we can tell close ones apart."
+  };
+
+  var state = load();
+  if (ctx.params.get("restart") === "1") { state = fresh(); save(); }
+  var step = ctx.params.get("step");
+  if (["welcome", "talk", "words", "done"].indexOf(step) < 0) step = "welcome";
+  /* A linked mid-conversation view for demos: seed three sample answers if nothing is saved yet. */
+  if (step === "talk" && !Object.keys(state.answers).length) {
+    state.answers["r1:hospitality"] = 5; state.answers["r1:encouragement"] = 4; state.answers["r1:service"] = 3; state.cursor = 3; save();
+  }
+  var order = ROUND1.slice();
+  if (state.r2) state.r2.forEach(function (g) { order.push({ key: "r2:" + g, gift: g, text: ROUND2[g], round: 2 }); });
+
+  /* ---------- Welcome ---------- */
+  var r = D.gifts.memberResult;
+  $("mq-last").innerHTML = GM.icon("gifts") + "<span>You finished on " + esc(fmt.dateLong(r.finished)) + ". <b>Open your gifts to explore.</b></span>" + GM.icon("chevron");
+  $("mq-expect").innerHTML = [
+    "About 10 minutes. One statement at a time.",
+    "Tap one of five answers, from “Not me” to “That is me”.",
+    "It saves after every tap. Start in the lobby, finish at home.",
+    "Two rounds. The first touches every gift. The second looks closer at the ones near your top.",
+    "An automated helper guides it, using statements your pastors wrote and approved.",
+    "Your result counts toward a church-wide picture without your name. Your pastors see your name only if you say yes at the end."
+  ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
+  renderStart();
+
+  $("mq-words-from").textContent = c.short;
+  $("mq-done-icon").innerHTML = GM.icon("check");
+  $("mq-math").innerHTML = GM.icon("info") + "<span>Your score is plain arithmetic: each answer counts 1 to 5, added up for each gift. The same answers always give the same result. No AI sets or changes it.</span>";
+
+  $("mq-words-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    /* Demo only: the words are a filled-in sample, and nothing is sent. */
+    state.words = [$("mq-w1").value.trim(), $("mq-w2").value.trim()];
+    finish();
+  });
+  $("mq-skip").addEventListener("click", function () { finish(); });
+
+  show(step);
+
+  /* ---------- Views ---------- */
+  function show(s) {
+    ["welcome", "talk", "words", "done"].forEach(function (v) { $("mq-" + v).hidden = v !== s; });
+    var p = new URLSearchParams(location.search);
+    if (s === "welcome") p.delete("step"); else p.set("step", s);
+    p.delete("restart");
+    try { history.replaceState(null, "", location.pathname + "?" + p.toString()); } catch (err) {}
+    if (s === "talk") renderTalk(false);
+    setTour(s);
+  }
+
+  function renderStart() {
+    var answered = Object.keys(state.answers).length;
+    var total = ROUND1.length + 3;
+    $("mq-start-actions").innerHTML = answered
+      ? '<button type="button" class="m-btn m-btn--primary m-btn--block" id="mq-go">Continue Where You Left Off</button><p class="m-small m-muted" style="margin:0;text-align:center">' + esc(answered >= ROUND1.length ? "Round 1 is done and saved. A short round 2 is next." : "Round 1 of 2: " + answered + " of " + ROUND1.length + " answered and saved.") + '</p><button type="button" class="m-btn m-btn--block" id="mq-over">Start Over</button>'
+      : '<button type="button" class="m-btn m-btn--primary m-btn--block" id="mq-go">Start the Conversation</button>';
+    $("mq-go").addEventListener("click", function () { show("talk"); focusCurrent(); scrollTop(); });
+    if ($("mq-over")) $("mq-over").addEventListener("click", function () { state = fresh(); order = ROUND1.slice(); save(); renderStart(); GM.toast("Cleared. You can start fresh."); });
+  }
+
+  function renderTalk(focus) {
+    if (state.cursor >= ROUND1.length && !state.r2) computeRound2();
+    if (state.cursor >= order.length) { show("words"); scrollTop(); return; }
+    var cur = order[state.cursor];
+    var html = "";
+    for (var i = 0; i < state.cursor; i++) {
+      if (LINES[i]) html += line(LINES[i]);
+      var it = order[i], v = state.answers[it.key];
+      html += '<div class="m-bubble m-bubble--church mq-st"><p>' + esc(it.text) + "</p><small>Statement " + (i < ROUND1.length ? i + 1 : i - ROUND1.length + 1) + (i < ROUND1.length ? "" : ", round 2") + "</small></div>";
+      if (v) html += '<div class="m-bubble m-bubble--me"><p>' + esc(SCALE[v - 1]) + "</p><small>Saved</small></div>";
+    }
+    if (LINES[state.cursor]) html += line(LINES[state.cursor]);
+    $("mq-thread").innerHTML = html;
+
+    var chosen = state.answers[cur.key] || 0;
+    $("mq-current-slot").innerHTML =
+      '<section class="mq-current" id="mq-current" tabindex="-1" aria-labelledby="mq-st-text">' +
+        '<p class="mq-label">' + esc(label(state.cursor)) + "</p>" +
+        '<p class="m-statement" id="mq-st-text">' + esc(cur.text) + "</p>" +
+        '<div class="m-scale" role="group" aria-label="How much is this like you?">' +
+          SCALE.map(function (s, k) {
+            return '<button type="button" aria-pressed="' + (chosen === k + 1 ? "true" : "false") + '" data-v="' + (k + 1) + '"><span>' + esc(s) + '</span><span class="mq-dots" aria-hidden="true">' + dots(k + 1) + "</span></button>";
+          }).join("") +
+        "</div>" +
+        '<div class="mq-nav"><button type="button" class="m-btn m-btn--sm" id="mq-prev"' + (state.cursor === 0 ? " disabled" : "") + ">" + GM.icon("back") + 'Previous</button><button type="button" class="m-btn m-btn--sm" id="mq-later">Finish Later</button></div>' +
+      "</section>";
+    $("mq-current-slot").querySelectorAll(".m-scale button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        state.answers[cur.key] = +b.getAttribute("data-v");
+        state.cursor++;
+        state.savedAt = Date.now();
+        save();
+        renderTalk(true);
+      });
+    });
+    $("mq-prev").addEventListener("click", function () { if (state.cursor > 0) { state.cursor--; save(); renderTalk(true); } });
+    $("mq-later").addEventListener("click", function () { GM.toast("Saved. Pick up where you left off any time from My Gifts."); });
+
+    /* Progress and the saved line */
+    var inR2 = state.cursor >= ROUND1.length;
+    var total = ROUND1.length + 3;
+    var done = Object.keys(state.answers).length;
+    $("mq-round").textContent = inR2 ? "Round 2 of 2" : "Round 1 of 2";
+    $("mq-count").textContent = inR2 ? (state.cursor - ROUND1.length + 1) + " of 3" : (state.cursor + 1) + " of " + ROUND1.length;
+    var pct = Math.round(Math.min(done, total) / total * 100);
+    $("mq-bar").setAttribute("aria-valuenow", pct);
+    $("mq-bar").firstElementChild.style.width = pct + "%";
+    $("mq-saved").innerHTML = GM.icon("check") + (focus ? "Saved just now" : done ? "Saved. " + done + " answered so far." : "Saves after every tap");
+    if (focus) focusCurrent();
+  }
+
+  function computeRound2() {
+    var scored = ROUND1.map(function (s, i) { return { gift: s.gift, v: state.answers[s.key] || 0, i: i }; })
+      .sort(function (a, b) { return b.v - a.v || a.i - b.i; });
+    state.r2 = scored.slice(0, 3).map(function (s) { return s.gift; });
+    order = ROUND1.slice();
+    state.r2.forEach(function (g) { order.push({ key: "r2:" + g, gift: g, text: ROUND2[g], round: 2 }); });
+    save();
+  }
+
+  function finish() {
+    state.finished = true; save();
+    show("done"); scrollTop();
+    GM.toast("Demo only. Nothing was sent.");
+  }
+
+  /* ---------- helpers ---------- */
+  function label(i) { return i < ROUND1.length ? "Round 1 · Statement " + (i + 1) + " of " + ROUND1.length : "Round 2 · Statement " + (i - ROUND1.length + 1) + " of 3"; }
+  function line(t) { return '<div class="m-bubble m-bubble--church mq-line"><p>' + esc(t) + "</p><small>" + esc(c.short) + "</small></div>"; }
+  function dots(n) { var s = ""; for (var k = 1; k <= 5; k++) s += "<i" + (k <= n ? ' class="on"' : "") + "></i>"; return s; }
+  function focusCurrent() { setTimeout(function () { var el = $("mq-current"); if (el) { el.focus({ preventScroll: true }); el.scrollIntoView({ block: "start" }); } }, 20); }
+  function scrollTop() { var app = document.querySelector(".m-device > .m-app"); if (app && app.scrollHeight > app.clientHeight) app.scrollTop = 0; else window.scrollTo(0, 0); }
+  function fresh() { return { answers: {}, cursor: 0, r2: null, words: null, finished: false }; }
+  function load() { try { var s = JSON.parse(sessionStorage.getItem(KEY) || "null"); if (s && s.answers) return s; } catch (e) {} return fresh(); }
+  function save() { try { sessionStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  function setTour(s) {
+    var tours = {
+      welcome: [
+        { target: '[data-tour="gifts.welcome"]', title: "Said plainly up front", text: "How long it takes, that it saves after every tap, that a helper guides it, and that names are shared only with a yes." },
+        { target: '[data-tour="gifts.start"]', title: "Pick up where they left off", text: "Start in the lobby on Sunday, finish at home. Progress is saved with the member's record." }
+      ],
+      talk: [
+        { target: '[data-tour="gifts.progress"]', title: "Saved after every tap", text: "Two rounds with clear progress. Every answer is saved the moment it is tapped." },
+        { target: '[data-tour="gifts.thread"]', title: "Feels like a text conversation", text: "Short lines in the church's voice sit between sections. Earlier answers stay visible." },
+        { target: '[data-tour="gifts.statement"]', title: "One statement at a time", text: "Five answers from Not me to That is me. Statements are written fresh for each church and approved by its pastors." }
+      ],
+      words: [
+        { target: '[data-tour="gifts.words"]', title: "In their own words", text: "Two optional questions at the end. They never change the score." }
+      ],
+      done: [
+        { target: '[data-tour="gifts.done"]', title: "Gifts to explore, not a verdict", text: "The result is plain arithmetic. Then the member decides whether pastors may see their name." }
+      ]
+    };
+    GM.setTour(tours[s]);
+    ctx.params.delete("tour");
+  }
+});
+</script>
+</body>
+</html>

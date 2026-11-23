@@ -1,0 +1,306 @@
+/* ==========================================================================
+   Genesis Ministry member app skin. Load after genesis.css.
+   Phone first: finished at 390px. On a wider screen the app sits in a
+   phone-width column on the Genesis stage.
+   Everything inside .m-app wears the selected church through --m-* tokens,
+   which shared/app.js sets from GM_DATA.churches[].theme:
+     --m-bg --m-surface --m-surface-2 --m-surface-3 --m-text --m-muted
+     --m-line --m-line-strong --m-accent --m-accent-press --m-on-accent
+     --m-accent-ink (accent as readable text) --m-accent-soft --m-focus
+     --m-display --m-body --m-display-weight --m-display-tracking --m-display-case
+     --m-radius --m-radius-lg --m-btn-radius
+   Class prefix: m-. Never use a hard-coded color inside .m-app.
+   ========================================================================== */
+
+/* --- The stage (Genesis chrome around the phone) ---------------------------- */
+.m-stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;background:radial-gradient(1200px 520px at 50% -120px,rgba(201,161,87,.10),transparent 70%),var(--gm-bg)}
+.m-stagebar{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:10px 20px;background:var(--gm-topbar-bg);border-bottom:1px solid var(--gm-border)}
+.m-stage-brand{display:flex;align-items:center;gap:10px;color:var(--gm-text);text-decoration:none;margin-right:4px}
+.m-stage-brand b{display:block;font-size:14px}
+.m-stage-brand small{display:block;color:var(--gm-muted);font-size:11.5px}
+/* On a wider screen the phone has a fixed height and scrolls inside itself, so the
+   top bar and the tabs sit where they would on a real phone. */
+.m-device{width:min(430px,100%);height:min(880px,calc(100vh - 120px));min-height:640px;margin:24px auto 12px;padding:10px;border-radius:46px;background:#050506;box-shadow:0 0 0 1px var(--gm-border-strong),var(--gm-shadow-lg)}
+[data-theme="light"] .m-device{background:#1b1917}
+.m-device>.m-app{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.m-device>.m-app::-webkit-scrollbar{display:none}
+.m-caption{margin:6px 16px 44px;color:var(--gm-muted);font-size:12.5px;text-align:center}
+
+/* --- The app ------------------------------------------------------------------ */
+.m-app{--m-display-scale:1;position:relative;min-height:840px;display:flex;flex-direction:column;border-radius:36px;overflow:clip;background:var(--m-bg);color:var(--m-text);font-family:var(--m-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.m-app[data-church="bold-dark"]{--m-display-scale:1.2}
+.m-app :focus-visible{outline:2px solid var(--m-focus);outline-offset:2px;box-shadow:none}
+.m-app a{color:inherit}
+.m-top{position:sticky;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px 12px;background:var(--m-bg);border-bottom:1px solid var(--m-line)}
+.m-church{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.m-church-mark svg{width:32px;height:32px;border-radius:8px}
+.m-church-name{font-family:var(--m-display);font-weight:var(--m-display-weight);letter-spacing:var(--m-display-tracking);text-transform:var(--m-display-case);font-size:calc(19px * var(--m-display-scale));line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-me{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:50%;background:var(--m-accent-soft);border:1px solid var(--m-line);color:var(--m-text);font-size:13px;font-weight:700}
+.m-main{flex:1;padding:22px 18px 28px;outline:none}
+.m-powered{margin-top:32px;text-align:center;color:var(--m-muted);font-size:12.5px;letter-spacing:.02em}
+.m-tabbar{position:sticky;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(10px + env(safe-area-inset-bottom));background:var(--m-surface);border-top:1px solid var(--m-line)}
+.m-tabbar a{position:relative;min-height:54px;display:grid;justify-items:center;align-content:center;gap:3px;padding:6px 2px;border-radius:12px;color:var(--m-muted);font-size:11.5px;font-weight:700;text-decoration:none}
+.m-tabbar a .gm-icon{width:23px;height:23px}
+.m-tabbar a[aria-current="page"]{color:var(--m-accent-ink)}
+.m-tabbar a[aria-current="page"]::before{content:"";position:absolute;top:-7px;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--m-accent)}
+.m-tab-lock{position:absolute;top:6px;right:calc(50% - 22px);width:13px!important;height:13px!important}
+
+/* --- Type --------------------------------------------------------------------- */
+.m-eyebrow{margin:0;color:var(--m-accent-ink);font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.m-h1{margin:6px 0 8px;font-family:var(--m-display);font-weight:var(--m-display-weight);letter-spacing:var(--m-display-tracking);text-transform:var(--m-display-case);font-size:calc(30px * var(--m-display-scale));line-height:1.08;text-wrap:balance}
+.m-h2{margin:0;font-family:var(--m-display);font-weight:var(--m-display-weight);letter-spacing:var(--m-display-tracking);text-transform:var(--m-display-case);font-size:calc(21px * var(--m-display-scale));line-height:1.15}
+.m-h3{margin:0;font-size:16.5px;font-weight:700;line-height:1.3}
+.m-lede{margin:0;color:var(--m-muted);font-size:16.5px;line-height:1.55}
+.m-muted{color:var(--m-muted)}
+.m-small{font-size:14px}
+/* 911 and 988: a 44px tap area around each number, without moving the words. */
+a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
+.m-link{color:var(--m-accent-ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.m-section{margin-top:26px}
+.m-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.m-stack{display:flex;flex-direction:column;gap:12px}
+
+/* --- Surfaces ------------------------------------------------------------------ */
+.m-card{padding:16px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface)}
+.m-card--accent{background:var(--m-accent);border-color:var(--m-accent);color:var(--m-on-accent)}
+.m-card--accent .m-muted,.m-card--accent .m-eyebrow{color:var(--m-on-accent);opacity:.88}
+.m-card--soft{background:var(--m-surface-2);border-color:transparent}
+.m-list{margin:0;padding:0;list-style:none;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface);overflow:hidden}
+.m-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-top:1px solid var(--m-line);color:inherit;text-decoration:none}
+.m-list>li:first-child>.m-item,.m-list>.m-item:first-child{border-top:0}
+a.m-item:hover{background:var(--m-surface-2)}
+.m-item-main{flex:1;min-width:0}
+.m-item-title{font-weight:700;line-height:1.35}
+.m-item-sub{margin-top:2px;color:var(--m-muted);font-size:14.5px;line-height:1.45}
+.m-item-meta{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--m-muted);font-size:13px}
+.m-item .gm-icon{color:var(--m-accent-ink);margin-top:2px}
+.m-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:var(--m-accent-soft);border:1px solid var(--m-line);color:var(--m-text);font-size:12.5px;font-weight:700}
+
+/* --- Buttons ------------------------------------------------------------------- */
+.m-btn{min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border:1.5px solid var(--m-line-strong);border-radius:var(--m-btn-radius);background:transparent;color:var(--m-text);font:inherit;font-size:15.5px;font-weight:700;line-height:1.2;text-decoration:none;cursor:pointer;transition:background 160ms ease,border-color 160ms ease}
+.m-btn:hover{background:var(--m-surface-2)}
+.m-btn--primary{border-color:var(--m-accent);background:var(--m-accent);color:var(--m-on-accent)}
+.m-btn--primary:hover{border-color:var(--m-accent-press);background:var(--m-accent-press)}
+.m-btn--block{display:flex;width:100%}
+.m-btn--block+.m-btn--block{margin-top:10px}
+.m-btn--sm{min-height:40px;padding:8px 14px;font-size:14px}
+.m-btn .gm-icon{width:19px;height:19px}
+.m-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.m-action{min-height:96px;display:grid;justify-items:center;align-content:center;gap:8px;padding:14px 6px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface);color:var(--m-text);font-size:13.5px;font-weight:700;line-height:1.25;text-align:center;text-decoration:none}
+.m-action .gm-icon{width:25px;height:25px;color:var(--m-accent-ink)}
+.m-action:hover{border-color:var(--m-line-strong)}
+
+/* --- Pills and notes -------------------------------------------------------------- */
+.m-pill{display:inline-flex;align-items:center;gap:5px;min-height:24px;padding:2px 10px;border:1px solid var(--m-line);border-radius:999px;background:var(--m-surface-2);color:var(--m-text);font-size:12.5px;font-weight:700;white-space:nowrap}
+.m-pill--accent{border-color:transparent;background:var(--m-accent-soft)}
+.m-pill .gm-icon{width:13px;height:13px}
+.m-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--m-radius);background:var(--m-surface-2);color:var(--m-text);font-size:14.5px;line-height:1.5}
+.m-note .gm-icon{flex:0 0 18px;width:18px;height:18px;margin-top:2px;color:var(--m-accent-ink)}
+.m-note--line{background:transparent;border:1px solid var(--m-line)}
+/* "Demo only. Nothing was sent.": shown after a demo form's button, hidden until then. */
+.m-note.mx-demo-sent[hidden]{display:none}
+.m-note-quiet{margin:14px 0 0;color:var(--m-muted);font-size:13.5px;text-align:center}
+
+/* --- Forms --------------------------------------------------------------------- */
+.m-field{display:grid;gap:6px;margin-bottom:16px}
+.m-label{font-size:15px;font-weight:700}
+.m-hint{color:var(--m-muted);font-size:14px}
+.m-input,.m-textarea,.m-select{width:100%;min-height:52px;padding:12px 14px;border:1.5px solid var(--m-line-strong);border-radius:var(--m-radius);background:var(--m-surface);color:var(--m-text);font:inherit;font-size:16px}
+.m-textarea{min-height:130px;line-height:1.5;resize:vertical}
+.m-input::placeholder,.m-textarea::placeholder{color:var(--m-muted)}
+.m-check{display:flex;align-items:flex-start;gap:12px;font-size:15.5px;line-height:1.45;cursor:pointer}
+.m-check input{width:22px;height:22px;flex:0 0 22px;margin:1px 0 0;accent-color:var(--m-accent)}
+.m-code{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.m-code input{width:100%;height:58px;padding:0;border:1.5px solid var(--m-line-strong);border-radius:var(--m-radius);background:var(--m-surface);color:var(--m-text);font:inherit;font-size:24px;font-weight:700;text-align:center}
+.m-choices{display:grid;gap:10px}
+.m-choice{display:flex;align-items:center;gap:12px;min-height:58px;padding:12px 16px;border:1.5px solid var(--m-line-strong);border-radius:var(--m-radius-lg);background:var(--m-surface);color:var(--m-text);font:inherit;font-size:16px;font-weight:700;text-align:left;cursor:pointer}
+.m-choice[aria-pressed="true"],.m-choice:has(input:checked){border-color:var(--m-accent);box-shadow:inset 0 0 0 1.5px var(--m-accent);background:var(--m-accent-soft)}
+.m-choice input{accent-color:var(--m-accent);width:20px;height:20px}
+
+/* --- Threads ------------------------------------------------------------------- */
+.m-thread{display:flex;flex-direction:column;gap:12px}
+.m-bubble{max-width:84%;display:grid;gap:4px}
+.m-bubble p{margin:0;padding:11px 14px;border-radius:max(16px,var(--m-radius));font-size:15.5px;line-height:1.5;white-space:pre-line}
+.m-bubble small{color:var(--m-muted);font-size:12.5px}
+.m-bubble--me{align-self:flex-end;text-align:right}
+.m-bubble--me p{background:var(--m-accent);color:var(--m-on-accent);border-bottom-right-radius:6px;text-align:left}
+.m-bubble--church{align-self:flex-start}
+.m-bubble--church p{background:var(--m-surface);border:1px solid var(--m-line);border-bottom-left-radius:6px}
+.m-day{align-self:center;color:var(--m-muted);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.m-composer{display:flex;align-items:flex-end;gap:8px;padding:10px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface)}
+.m-composer .m-textarea{min-height:52px;border:0;padding:10px;background:transparent}
+
+/* --- Gifts conversation ------------------------------------------------------------ */
+.m-progress{height:6px;border-radius:999px;background:var(--m-surface-3);overflow:hidden}
+.m-progress>span{display:block;height:100%;border-radius:999px;background:var(--m-accent-ink)}
+.m-scale{display:grid;gap:8px}
+.m-scale button{min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border:1.5px solid var(--m-line-strong);border-radius:var(--m-radius);background:var(--m-surface);color:var(--m-text);font:inherit;font-size:16px;font-weight:700;text-align:left;cursor:pointer}
+.m-scale button[aria-pressed="true"]{border-color:var(--m-accent);background:var(--m-accent);color:var(--m-on-accent)}
+.m-statement{padding:18px;border-radius:var(--m-radius-lg);background:var(--m-surface);border:1px solid var(--m-line);font-family:var(--m-display);font-weight:var(--m-display-weight);letter-spacing:var(--m-display-tracking);font-size:calc(21px * var(--m-display-scale));line-height:1.25}
+.m-app[data-church="bold-dark"] .m-statement{text-transform:none;font-family:var(--m-body);font-weight:700;font-size:20px}
+.m-gift{display:grid;gap:8px;padding:16px;border:1px solid var(--m-line);border-radius:var(--m-radius-lg);background:var(--m-surface)}
+.m-gift-rank{color:var(--m-accent-ink);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* --- Locked (Included in Level 0X) ------------------------------------------------- */
+.m-locked{padding:18px 2px 8px}
+.m-locked-icon{width:54px;height:54px;display:grid;place-items:center;margin-bottom:16px;border-radius:16px;background:var(--m-accent-soft);color:var(--m-accent-ink)}
+.m-checks{margin:16px 0 22px;padding:0;list-style:none;display:grid;gap:10px}
+.m-checks li{display:flex;align-items:flex-start;gap:10px;font-size:15.5px;line-height:1.45}
+.m-checks .gm-icon{flex:0 0 18px;width:18px;height:18px;margin-top:3px;color:var(--m-accent-ink)}
+
+/* --- Responsive -------------------------------------------------------------------- */
+@media (max-width:1100px){
+  .m-stage-brand small{display:none}
+  .m-stage-desk{display:none}
+}
+@media (max-width:760px){
+  .m-stage-brand{display:none}
+  .m-stagebar{padding:8px 12px;gap:8px}
+  .m-stagebar .gm-spacer{display:none}
+  .m-stagebar .gm-preview-label{order:5;flex:1 1 100%;justify-content:center}
+  .m-stagebar .gm-switcher{flex:1;min-width:0}
+  .m-stagebar .gm-switcher-btn{max-width:100%}
+  .m-stagebar .gm-switcher-btn small{display:none}
+  .m-stagebar .gm-menu{position:fixed;left:12px;right:12px;top:60px;min-width:0}
+  .m-stagebar .gm-plan a span{display:none}
+}
+@media (max-width:520px){
+  .m-device{width:100%;height:auto;min-height:0;margin:0;padding:0;border-radius:0;background:none;box-shadow:none}
+  .m-device>.m-app{height:auto;min-height:calc(100vh - 96px);overflow:clip;border-radius:0}
+  .m-caption{display:none}
+  .m-stagebar .gm-plan-label{display:none}
+  .m-stagebar .gm-preview-label{min-height:26px;font-size:11.5px;padding:2px 10px}
+}
+
+/* --- Finishing pass --------------------------------------------------------------- */
+/* "Powered by Genesis" always clears the sticky tab bar. */
+.m-powered{margin-bottom:12px}
+@media (max-width:520px){
+  /* A bottom safe zone, so the floating Hope circle never sits on the last words of a screen. */
+  .m-app:has(.m-tabbar) .m-main{padding-bottom:96px}
+  /* On a phone the floating Hope circle would sit on the screen's own words, so Hope moves into the
+     stage bar above the phone (.mx-hope), and the church switcher shows the church's mark only. */
+  body[data-side="member"] .hd-launch{display:none!important}
+  /* The church's name stays in the button for screen readers, so it is never announced unnamed. */
+  .m-stagebar .gm-switcher-btn>span:not(.gm-tenant-mark){position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+  .m-stagebar .gm-switcher{flex:0 0 auto}
+}
+@media (max-width:760px){body.mx-staged .m-stagebar .mx-tour{width:44px;min-width:44px;min-height:44px}}
+/* Up to 960px the church switcher shows the church's name without the city line, so the stage bar stays on one row. */
+@media (max-width:960px){body.mx-staged .m-stagebar .gm-switcher-btn small{display:none}}
+
+.mx-hope{display:none}
+@media (max-width:520px){.m-stagebar .mx-hope{display:inline-flex;min-width:44px;min-height:44px}}
+
+/* --- Round 1: tap targets and the phone stage bar ---------------------------------- */
+/* The church name in the phone's top bar is a 44px target; the padding keeps the bar's look. */
+.m-top{padding:12px 18px 8px}
+.m-top .m-church{min-height:44px}
+/* The beside-the-phone link to a church screen carries the level lock when that screen is not included. */
+.mx-about .mx-land .gm-nav-lock{display:inline-flex;margin-left:2px}
+@media (max-width:520px),(pointer:coarse){
+  /* Phones, and touch screens of any width (tablets): small links and buttons reach 44px.
+     The negative margins keep each row's spacing as it was. */
+  .m-app .m-section-head .m-link,.m-app dd .m-link{min-height:44px;display:inline-flex;align-items:center}
+  .m-app .m-section-head .m-link{min-width:44px;justify-content:flex-end;margin-block:-11px}
+  .m-app dd .m-link{margin-block:-10px}
+  .m-app .m-btn--sm{min-height:44px}
+}
+@media (pointer:coarse){
+  /* Touch screens of any width: the stage bar's brand, level links and buttons are 44px targets too. */
+  body.mx-staged .m-stage-brand,body.mx-staged .m-stagebar .v2-button,body.mx-staged .m-stagebar .gm-plan a{min-height:44px}
+  body.mx-staged .m-stagebar .gm-plan a,body.mx-staged .m-stagebar .v2-icon-button,body.mx-staged .m-stagebar .mx-tour{min-width:44px;justify-content:center}
+  /* Beside the phone: the link to the same moment in the church workspace, and the screen list. */
+  body.mx-staged .mx-land,body.mx-staged .mx-screens .v2-rail-nav a{min-height:44px}
+}
+@media (max-width:520px){
+  /* The stage bar on one row: the church and the level on the left, the actions on the right. */
+  body.mx-staged .m-stagebar{gap:6px 4px}
+  body.mx-staged .m-stagebar .gm-switcher-btn{gap:6px;padding:5px 8px 5px 6px}
+  body.mx-staged .m-stagebar .gm-plan{margin-right:auto}
+  body.mx-staged .m-stagebar .gm-plan a{min-width:44px;justify-content:center}
+}
+@media (max-width:359px){
+  /* Too narrow for one row (320px): the plan switch takes its own row, with the plan names only. The
+     prices stay hidden here, so the bar never grows wider than the screen. */
+  body.mx-staged .m-stagebar .gm-switcher{margin-right:auto}
+  body.mx-staged .m-stagebar .gm-plan{order:9;flex:1 1 100%;margin-right:0}
+  body.mx-staged .m-stagebar .gm-plan a{flex:1 1 0;padding:4px 6px;justify-content:center}
+  body.mx-staged .m-stagebar .gm-menu{top:104px}
+}
+
+/* --- Review round 1: the stage bar keeps to one row ------------------------------------ */
+/* The plan prices show from 1280px. Narrower, the plan names alone (each link's title and the plans
+   page carry the prices), so the bar never wraps between 761 and 1279px. */
+@media (max-width:1279px){
+  .m-stagebar .gm-plan a span{display:none}
+}
+/* Phones: the theme switch moves into the church menu, and the plan links are a little tighter, so the
+   church, the plan, the tour and Hope fit one row from 360px. */
+.gm-menu .gm-menu-theme{display:none}
+@media (max-width:520px){
+  body.mx-staged .m-stagebar .gm-theme-btn{display:none}
+  body.mx-staged .gm-menu .gm-menu-theme{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 10px;border:0;border-top:1px solid var(--v2-border);border-radius:0 0 var(--v2-radius-sm) var(--v2-radius-sm);background:none;color:var(--v2-text);font:inherit;font-size:13.5px;font-weight:600;text-align:left;cursor:pointer}
+  body.mx-staged .gm-menu .gm-menu-theme:hover,body.mx-staged .gm-menu .gm-menu-theme:focus-visible{background:var(--v2-hover)}
+  body.mx-staged .gm-menu .gm-menu-theme .gm-icon{width:18px;height:18px}
+  body.mx-staged .m-stagebar{padding-inline:10px}
+  body.mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+}
+
+/* --- Round 2: short screens ---------------------------------------------------------- */
+/* A phone on its side, or a page zoomed to 400 percent: the app's top bar and tabs scroll with the
+   screen instead of staying pinned, so the screen's own words keep the room. */
+@media (max-height:500px){
+  .m-app .m-top,.m-app .m-tabbar{position:static}
+  body.mx-staged .m-app .m-top{top:auto}
+}
+
+/* --- Round 3: focus never hides under a bar (WCAG 2.4.11) ---------------------------- */
+/* Whatever scrolls a field, link or card into view (Tab, scrollIntoView) leaves room for the bars
+   that stay on screen: the sample strip (44px), the app's top bar (65px) and its tabs (73px). */
+html:has(body.mx-staged){scroll-padding-top:52px}
+/* The framed phone (521px up): the app scrolls inside the frame, under its own top bar and tabs. */
+.m-device>.m-app{scroll-padding-top:73px}
+.m-device>.m-app:has(.m-tabbar){scroll-padding-bottom:85px}
+@media (max-width:520px){
+  /* Phones: the page scrolls, under the strip and the app's top bar, above the tabs. */
+  html:has(body.mx-staged){scroll-padding-top:117px}
+  html:has(body.mx-staged .m-tabbar){scroll-padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-height:500px){
+  /* The app's bars scroll with the screen here, so only the sample strip stays on top. */
+  html:has(body.mx-staged){scroll-padding-top:52px}
+  html:has(body.mx-staged .m-tabbar){scroll-padding-bottom:0}
+  .m-device>.m-app,.m-device>.m-app:has(.m-tabbar){scroll-padding-top:0;scroll-padding-bottom:0}
+}
+
+/* --- Round 3: the stage keeps a gutter at 1180px and up ------------------------------ */
+/* The member stage block in each page sets the three columns; the side columns keep 24px from the window edge. */
+@media (min-width:1180px){
+  body.mx-staged .mx-about{width:min(360px,calc(100% - 24px))}
+  body.mx-staged .mx-screens{width:min(236px,calc(100% - 24px))}
+}
+@media (min-width:1180px) and (max-width:1279px){body.mx-staged .m-stage{column-gap:32px}}
+/* The three columns sit as one centred group, so the stage never leans left with an empty band on the right. */
+@media (min-width:1180px){body.mx-staged .m-stage{grid-template-columns:360px min(430px,100%) 236px;justify-content:center}}
+/* The stage bar spans the whole window, not only the centred columns, so it keeps to one row at 1280 and
+   1440 (the stage clips the scrollbar width it would add). */
+@media (min-width:1180px){body.mx-staged .m-stage{overflow-x:clip}body.mx-staged .m-stagebar{justify-self:stretch;width:100vw;max-width:none;margin-inline:calc(50% - 50vw);box-sizing:border-box}}
+/* "How it protects people" beside the phone is one column at every width, so the workspace's
+   two-column rule (1180px and down) never draws a stray divider beside its first item. */
+body.mx-staged .mx-card .gm-protect-list>li:nth-child(n){border-right:0;margin-right:0}
+
+/* --- Round 3: the crisis reply (prayer, messages, the gifts conversation's own words) --- */
+/* Shown before anything else when someone types crisis words: the fixed reply, word for word,
+   with 988, 911 and the church phone as real call links, and what the live product does next. */
+.m-crisis{display:grid;gap:12px;padding:16px;border:2px solid var(--m-accent);border-radius:var(--m-radius-lg);background:var(--m-surface);color:var(--m-text);scroll-margin-top:12px}
+.m-crisis:focus{outline:none}
+.m-app .m-crisis:focus-visible{outline:2px solid var(--m-focus);outline-offset:3px}
+.m-app .m-crisis-head{display:flex;align-items:center;gap:10px;margin:0}
+.m-crisis-head .gm-icon{flex:0 0 20px;width:20px;height:20px;color:var(--m-accent-ink)}
+.m-app .m-crisis p{margin:0}
+.m-app .m-crisis .m-crisis-from{margin-top:-6px;color:var(--m-muted);font-size:13.5px;line-height:1.45}
+.m-crisis-reply{font-size:16px;line-height:1.55}
+.m-crisis-calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
+.m-crisis-calls .m-btn{min-height:48px;padding:10px 12px;text-align:center}
+.m-app .m-crisis-note{color:var(--m-muted);font-size:14px;line-height:1.5}

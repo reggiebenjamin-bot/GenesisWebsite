@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Welcome · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the one light first question a new member answers. Nothing is blocked whichever they pick.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member welcome only. Prefix: mw-. Church tokens (--m-*) only inside the phone. */
+  .m-app .mw-in{display:flex;align-items:center;gap:10px;margin:0 0 20px;padding:10px 14px;border-radius:var(--m-radius);background:var(--m-surface-2);font-size:14px;line-height:1.45}
+  .mw-in .gm-icon{flex:0 0 18px;color:var(--m-accent-ink)}
+  .mw-choice{align-items:flex-start;padding:14px 16px}
+  .mw-ico{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:var(--m-radius);background:var(--m-accent-soft);color:var(--m-accent-ink)}
+  .mw-ico .gm-icon{width:22px;height:22px}
+  .mw-text{flex:1;min-width:0}
+  .mw-text b{display:block;font-size:16.5px;line-height:1.3}
+  .mw-text small{display:block;margin-top:3px;color:var(--m-muted);font-size:14px;font-weight:500;line-height:1.45}
+  .mw-tick{width:24px;height:24px;flex:0 0 24px;display:grid;place-items:center;margin-top:8px;border-radius:50%;border:1.5px solid var(--m-line-strong);color:transparent}
+  .mw-tick .gm-icon{width:14px;height:14px}
+  .m-choice[aria-pressed="true"] .mw-tick{border-color:var(--m-accent-ink);background:var(--m-accent-ink);color:var(--m-surface)}
+  .mw-reply{min-height:76px;margin-top:18px}
+  .mw-reply .m-bubble{max-width:92%}
+  .mw-skip{display:block;width:100%;min-height:44px;margin-top:6px;border:0;background:none;color:var(--m-muted);font:inherit;font-size:15px;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-caption{display:none}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="welcome" data-tabbar="off" data-title="Welcome">
+
+<main id="gm-main" class="m-main">
+  <p class="mw-in" id="mw-in"></p>
+  <p class="m-eyebrow" id="mw-eyebrow">Welcome</p>
+  <h1 class="m-h1">One light question</h1>
+  <p class="m-lede">How do you usually join us? It shapes your home screen. Nothing is blocked whichever you pick, and you can change it any time.</p>
+
+  <section class="m-section" aria-label="How do you usually join us?" data-tour="welcome.choices">
+    <div class="m-choices" id="mw-choices" role="group" aria-label="How do you usually join us?"></div>
+    <div class="mw-reply" id="mw-reply" aria-live="polite"></div>
+  </section>
+
+  <div data-tour="welcome.continue">
+    <button type="button" class="m-btn m-btn--primary m-btn--block" id="mw-go">Continue to Home</button>
+    <button type="button" class="mw-skip" id="mw-skip">Skip for Now</button>
+  </div>
+
+  <p class="m-note m-note--line m-section" id="mw-note" data-tour="welcome.note"></p>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'One light question, <em class="v2-accent-em">nothing blocked</em>',
+  sub: "In person, online, or new and exploring. The answer only shapes the home screen, and members can change it any time.",
+  protect: [
+    ["Nothing is blocked", "Every answer opens the same app. Skip is always there."],
+    ["Said plainly", "Members are told their pastors can see the answer, and nobody else."]
+  ],
+  land: { href: "church-person.html?id=p-sarah", label: "See Sarah's Record", icon: "people", module: "people" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var c = ctx.church, esc = GM.esc;
+  var $ = function (id) { return document.getElementById(id); };
+  var me = GM.member();
+
+  var CHOICES = [
+    { key: "in person", icon: "home", title: "I attend in person", sub: "You will see this week's notes and service times first.",
+      reply: "Wonderful. We will put this week's notes up top. See you Sunday." },
+    { key: "online", icon: "play", title: "I join online", sub: "You will see the latest message first.",
+      reply: "Glad you are with us online. The latest message will be first on your home screen." },
+    { key: "exploring", icon: "find", title: "I am new or exploring", sub: "You will see a simple place to start. No pressure.",
+      reply: "Welcome. Take your time. Ask us anything, and nobody will rush you." }
+  ];
+  var picked = null;
+  try { picked = sessionStorage.getItem("gm.m.attends"); } catch (e) {}
+
+  $("mw-in").innerHTML = GM.icon("check") + "<span>Signed in as <b>" + esc(me.email) + "</b>. Adult account confirmed.</span>";
+  $("mw-eyebrow").textContent = "Welcome, " + me.first;
+  $("mw-choices").innerHTML = CHOICES.map(function (ch) {
+    return '<button type="button" class="m-choice mw-choice" aria-pressed="false" data-key="' + esc(ch.key) + '">' +
+      '<span class="mw-ico" aria-hidden="true">' + GM.icon(ch.icon) + '</span><span class="mw-text"><b>' + esc(ch.title) + "</b><small>" + esc(ch.sub) + "</small></span>" +
+      '<span class="mw-tick" aria-hidden="true">' + GM.icon("check") + "</span></button>";
+  }).join("");
+  $("mw-note").innerHTML = GM.icon("shield") + "<span>Your pastors can see this answer on your record. It never limits what you can use, and nobody else sees it.</span>";
+
+  var buttons = [].slice.call($("mw-choices").querySelectorAll(".m-choice"));
+  buttons.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-key"), true); }); });
+  if (picked) pick(picked, false);
+
+  function pick(key, save) {
+    picked = key;
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-key") === key ? "true" : "false"); });
+    var ch = CHOICES.filter(function (x) { return x.key === key; })[0];
+    $("mw-reply").innerHTML = ch ? '<div class="m-thread"><div class="m-bubble m-bubble--church"><p>' + esc(ch.reply) + "</p><small>" + esc(c.short) + "</small></div></div>" : "";
+    if (save) { try { sessionStorage.setItem("gm.m.attends", key); } catch (e) {} }
+  }
+
+  $("mw-go").addEventListener("click", function () { GM.go("member-home.html"); });
+  $("mw-skip").addEventListener("click", function () { GM.go("member-home.html"); });
+
+  GM.setTour([
+    { target: '[data-tour="welcome.choices"]', title: "One light question", text: "In person, online, or new and exploring. It only shapes the home screen." },
+    { target: '[data-tour="welcome.continue"]', title: "Nothing is blocked", text: "Every choice opens the same app. Members can skip it and change it later from their profile." },
+    { target: '[data-tour="welcome.note"]', title: "Said plainly", text: "Members are told who can see their answer." }
+  ]);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Gifts to Explore · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: a member's gifts to explore, never a verdict, with the sharing question and the serving button.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member gifts result only. Prefix: mr-. Church tokens (--m-*) only inside the phone. */
+  .mr-gifts{display:grid;gap:12px}
+  .mr-gift .m-h2{margin-top:2px}
+  .mr-def{margin:0;font-size:16px;line-height:1.55}
+  .mr-ref{margin:0;color:var(--m-muted);font-size:14px}
+  .mr-ref b{color:var(--m-accent-ink)}
+  .m-app .mr-teams-label{margin:4px 0 0;color:var(--m-muted);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .mr-teams{display:flex;flex-wrap:wrap;gap:6px}
+  .m-app .mr-also{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0 0;color:var(--m-muted);font-size:14px}
+  .m-app .mr-note-from{margin:10px 0 0;color:var(--m-muted);font-size:13px;font-style:italic}
+  .mr-math summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;font-weight:700;cursor:pointer;list-style:none}
+  .mr-math summary::-webkit-details-marker{display:none}
+  .mr-math summary .gm-icon{transition:transform 160ms ease}
+  .mr-math[open] summary .gm-icon{transform:rotate(90deg)}
+  .mr-math p{margin:8px 0 0;font-size:15px;line-height:1.55}
+  .mr-table{width:100%;margin-top:12px;border-collapse:collapse;font-size:15px}
+  .mr-table th,.mr-table td{padding:9px 4px;border-top:1px solid var(--m-line);text-align:left}
+  .mr-table th{color:var(--m-muted);font-size:13px;font-weight:700}
+  .mr-table .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+  .mr-share .m-h2{font-size:calc(19px * var(--m-display-scale));line-height:1.25}
+  .mr-yn{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .mr-yn .m-choice{justify-content:center;text-align:center}
+  .m-app .mr-state{margin:12px 0 0;font-size:14.5px;line-height:1.5}
+  .m-app .mr-who{margin:12px 0 0;display:flex;gap:8px;align-items:flex-start;color:var(--m-muted);font-size:13.5px;line-height:1.45}
+  .mr-who .gm-icon{flex:0 0 15px;width:15px;height:15px;margin-top:2px;color:var(--m-accent-ink)}
+  .mr-serve-done{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;border-radius:var(--m-radius-lg);background:var(--m-accent-soft);font-size:15px;line-height:1.5}
+  .mr-serve-done .gm-icon{flex:0 0 20px;width:20px;height:20px;margin-top:2px;color:var(--m-accent-ink)}
+  .mr-quiet{display:block;margin:6px auto 0;min-height:44px;padding:0 8px;border:0;background:none;color:var(--m-muted);font:inherit;font-size:14.5px;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .mr-more{display:grid;gap:10px}
+  .mr-more .m-btn--block+.m-btn--block{margin-top:0}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-caption{display:none}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="gifts" data-title="Gifts to Explore">
+
+<main id="gm-main" class="m-main">
+  <p class="m-eyebrow" id="mr-eyebrow">My Gifts</p>
+  <h1 class="m-h1">Gifts to explore</h1>
+  <p class="m-lede">These are gifts to explore, not a verdict. The order is a rough guide. Gifts are confirmed in community, as you serve.</p>
+
+  <p class="m-note m-section" id="mr-tie"></p>
+
+  <section class="m-section" aria-label="Your gifts to explore" data-tour="result.gifts">
+    <div class="mr-gifts" id="mr-gifts"></div>
+    <p class="mr-also" id="mr-also"></p>
+  </section>
+
+  <section class="m-section m-card m-card--soft" aria-labelledby="mr-note-title" data-tour="result.note">
+    <h2 class="m-h3" id="mr-note-title">A note from your pastors</h2>
+    <p style="margin:8px 0 0;font-size:15.5px;line-height:1.6" id="mr-note"></p>
+    <p class="mr-note-from">Put together from sentences your pastors wrote and approved.</p>
+  </section>
+
+  <details class="m-section m-card mr-math" data-tour="result.math">
+    <summary><span>How we added it up</span><span id="mr-chev"></span></summary>
+    <p>Each answer counts 1 for &ldquo;Not me&rdquo; up to 5 for &ldquo;That is me&rdquo;. In the full conversation, the statements for each gift add up to a score out of 25.</p>
+    <p>The same answers always give the same result. Ties are shown, not hidden. No AI sets or changes a score.</p>
+    <table class="mr-table" id="mr-table"></table>
+  </details>
+
+  <section class="m-section m-card mr-share" aria-labelledby="mr-share-q" data-tour="result.share">
+    <p class="m-eyebrow">One question</p>
+    <h2 class="m-h2" id="mr-share-q" style="margin-top:6px">May your pastors see your name with your results, so they can help you find a place to serve?</h2>
+    <div class="mr-yn" role="group" aria-labelledby="mr-share-q">
+      <button type="button" class="m-choice" aria-pressed="false" data-share="yes">Yes</button>
+      <button type="button" class="m-choice" aria-pressed="false" data-share="no">Not Yet</button>
+    </div>
+    <p class="mr-state" id="mr-share-state" aria-live="polite"></p>
+    <p class="mr-who" id="mr-who"></p>
+  </section>
+
+  <section class="m-section" aria-label="Talk about serving" data-tour="result.serve" id="mr-serve"></section>
+
+  <section class="m-section mr-more" aria-label="More">
+    <a class="m-btn m-btn--block" href="member-gifts.html?restart=1">Retake the Conversation</a>
+    <button type="button" class="m-btn m-btn--block" id="mr-email"></button>
+  </section>
+
+  <p class="m-note m-note--line m-section" id="mr-protect"></p>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'Gifts to explore, <em class="v2-accent-em">never a verdict</em>',
+  sub: "A definition, a scripture and the teams where each gift often fits. Then the member decides whether pastors may see their name.",
+  protect: [
+    ["Gifts to explore", "Never a verdict. Ties are shown, not hidden."],
+    ["Plain arithmetic", "The same answers always give the same result."],
+    ["Names only with a yes", "Asked after the result, and changeable any time."]
+  ],
+  land: { href: "church-gifts.html", label: "See the Pastor's Gifts Picture", icon: "gifts", module: "gifts" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, c = ctx.church, esc = GM.esc, fmt = GM.fmt;
+  var $ = function (id) { return document.getElementById(id); };
+  var me = GM.member();
+  var r = D.gifts.memberResult;
+  var just = ctx.params.get("just") === "1";   /* arriving straight from the conversation: nothing decided yet */
+  var KEY = "gm.m.giftsShare." + c.slug;
+
+  /* Gifts to explore: the top three scores, plus anyone tied with the third. Ties are shown, never hidden. */
+  var sorted = r.top.slice().sort(function (a, b) { return b.score - a.score; });
+  var cut = sorted[Math.min(2, sorted.length - 1)].score;
+  var top = sorted.filter(function (g) { return g.score >= cut; });
+  var rest = sorted.filter(function (g) { return g.score < cut; });
+
+  $("mr-eyebrow").textContent = "My Gifts · Finished " + fmt.dateLong(r.finished);
+  $("mr-tie").innerHTML = GM.icon("info") + "<span>" + esc(r.tieNote) + " A tie means both are worth exploring.</span>";
+
+  $("mr-gifts").innerHTML = top.map(function (g, i) {
+    var gift = GM.gift(g.gift);
+    var tied = sorted.filter(function (x) { return x.score === g.score; }).length > 1;
+    var rank = i === 0 && !tied ? "First to explore" : tied ? "Tied, also worth exploring" : "Also worth exploring";
+    return '<article class="m-gift mr-gift"><p class="m-gift-rank">' + esc(rank) + "</p>" +
+      '<h2 class="m-h2">' + esc(gift.name) + "</h2>" +
+      '<p class="mr-def">' + esc(gift.def) + "</p>" +
+      '<p class="mr-ref">Scripture <b>' + esc(gift.ref) + "</b></p>" +
+      '<p class="mr-teams-label">Teams where it often fits</p>' +
+      '<div class="mr-teams">' + gift.teams.map(function (t) { return '<span class="m-pill m-pill--accent">' + esc(t) + "</span>"; }).join("") + "</div></article>";
+  }).join("");
+  $("mr-also").innerHTML = rest.length ? "<span>Also near the top:</span>" + rest.map(function (g) { return '<span class="m-pill">' + esc(GM.gift(g.gift).name) + "</span>"; }).join("") : "";
+
+  /* The closing note: built from sentences the pastors approved. No AI writes or changes it. */
+  var SENTENCES = {
+    hospitality: "You may find joy in making room for people, especially people who are new.",
+    encouragement: "People may leave time with you a little lighter, and that matters more than you know.",
+    mercy: "You may notice who is hurting before others do. That is a gift to a church family.",
+    service: "You may love the quiet work that makes Sunday possible.",
+    teaching: "You may enjoy helping others understand and live what the Bible says."
+  };
+  $("mr-note").textContent = top.map(function (g) { return SENTENCES[g.gift] || ""; }).join(" ") + " Try serving for a season, and see where you come alive.";
+
+  $("mr-chev").innerHTML = GM.icon("chevron");
+  $("mr-table").innerHTML = "<caption class=\"gm-sr-only\">Your scores, out of 25</caption><thead><tr><th scope=\"col\">Gift</th><th scope=\"col\" class=\"num\">Score</th></tr></thead><tbody>" +
+    sorted.map(function (g) { return "<tr><td>" + esc(GM.gift(g.gift).name) + '</td><td class="num">' + esc(g.score + " of " + g.of) + "</td></tr>"; }).join("") + "</tbody>";
+
+  /* ---------- The sharing question ---------- */
+  var namesWho = D.staff.filter(function (s) { return s.caps.indexOf("giftNames") >= 0; }).map(function (s) { return GM.staff(s.id).name.replace(/ /g, " "); });
+  $("mr-who").innerHTML = GM.icon("lock") + "<span>With a yes, only " + esc(list(namesWho)) + " see your name with your gifts. They help people find a place to serve.</span>";
+  var saved = load();
+  var share = saved.share != null ? saved.share : (just ? null : (r.shared ? "yes" : null));
+  var serve = saved.serve != null ? saved.serve : (just ? false : !!r.wantsToTalk);
+  paintShare(false);
+  document.querySelectorAll("[data-share]").forEach(function (b) {
+    b.addEventListener("click", function () { share = b.getAttribute("data-share"); store(); paintShare(true); });
+  });
+  function paintShare(changed) {
+    document.querySelectorAll("[data-share]").forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-share") === share ? "true" : "false"); });
+    var when = changed ? "just now" : "on " + fmt.dateLong(r.finished);
+    $("mr-share-state").textContent = share === "yes"
+      ? "You said yes " + when + ". You can change this any time."
+      : share === "no"
+        ? "Not yet. Your pastors will not see your name. Your result still counts toward the church-wide picture, without your name."
+        : "Take your time. You can answer now or later, and change it any time.";
+    if (changed) GM.toast(share === "yes" ? "Saved. Your pastors can see your name with your gifts." : "Saved. Your name stays private.");
+  }
+
+  /* ---------- Talk about serving ---------- */
+  var lead = GM.staff("s-jun");
+  paintServe(false);
+  function paintServe(changed) {
+    $("mr-serve").innerHTML = serve
+      ? '<div class="mr-serve-done">' + GM.icon("check") + "<span>" + (changed ? "Thank you. " : "You told us on " + esc(fmt.dateLong(r.finished)) + " that you would like to talk about serving. ") + esc(lead.name) + ", who leads our serving teams, will reach out in Messages. You will get an email that says only: You have a reply.</span></div>" +
+        '<button type="button" class="mr-quiet" id="mr-unserve">I Changed My Mind</button>'
+      : '<button type="button" class="m-btn m-btn--primary m-btn--block" id="mr-serve-btn">' + GM.icon("gifts") + "I Would Like to Talk About Serving</button>" +
+        '<p class="m-note-quiet">Nothing is decided for you. Someone listens first, then suggests a team or two to try.</p>';
+    if ($("mr-serve-btn")) $("mr-serve-btn").addEventListener("click", function () {
+      serve = true; store(); paintServe(true);
+      GM.toast("Sent to " + lead.name + ". This is a preview, so nothing was sent.");
+    });
+    if ($("mr-unserve")) $("mr-unserve").addEventListener("click", function () {
+      serve = false; store(); paintServe(false);
+      GM.toast("No problem. Nobody will reach out about serving.");
+    });
+  }
+
+  $("mr-email").innerHTML = GM.icon("mail") + "Email Me a Copy";
+  $("mr-email").addEventListener("click", function () { GM.toast("A copy goes to " + me.email + " only because you asked. This is a preview, so nothing was sent."); });
+  $("mr-protect").innerHTML = GM.icon("shield") + "<span>Your result belongs to you. It stays under My Gifts and on your home screen. Prayer requests and pastor notes never feed into it.</span>";
+
+  function list(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function load() { try { return JSON.parse(sessionStorage.getItem(KEY) || "{}") || {}; } catch (e) { return {}; } }
+  function store() { try { sessionStorage.setItem(KEY, JSON.stringify({ share: share, serve: serve })); } catch (e) {} }
+
+  GM.setTour([
+    { target: '[data-tour="result.gifts"]', title: "Gifts to explore, never a verdict", text: "Each gift has the church's definition, a scripture and the teams where it often fits. Ties are shown." },
+    { target: '[data-tour="result.note"]', title: "Words the pastors approved", text: "The closing note is built from sentences the pastors wrote. No AI writes or changes it." },
+    { target: '[data-tour="result.math"]', title: "Plain arithmetic", text: "Each answer counts 1 to 5. The same answers always give the same result, and no AI sets a score." },
+    { target: '[data-tour="result.share"]', title: "Names only with a yes", text: "Asked only after the member sees their result. They can change it any time." },
+    { target: '[data-tour="result.serve"]', title: "One button to talk about serving", text: "It arrives in the care inbox for whoever leads serving, as a normal conversation with an owner." }
+  ]);
+});
+</script>
+</body>
+</html>

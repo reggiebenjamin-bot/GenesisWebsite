@@ -25,6 +25,19 @@ const nextConfig: NextConfig = {
       { source: "/classes/ai-employees/thank-you", destination: "/classes/ai-employees/thank-you/index.html" },
     ];
   },
+  /*
+   * The Genesis Ministry demo copies (public/ministry-demo/) show made up
+   * churches. Each page there also carries a robots noindex meta, and
+   * robots.txt leaves the folder crawlable so both can be read (app/robots.ts).
+   */
+  async headers() {
+    return [
+      {
+        source: "/ministry-demo/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       /* Public tool pages are retired. 301 tells search engines the move is permanent. */
@@ -32,6 +45,19 @@ const nextConfig: NextConfig = {
       { source: "/mini/:path*", destination: "/pricing", statusCode: 301 },
       { source: "/tools", destination: "/pricing", statusCode: 301 },
       { source: "/tools/:path*", destination: "/pricing", statusCode: 301 },
+      /*
+       * The Genesis Ministry demo is static files whose links are relative,
+       * so a folder address (typed, or trimmed from a shared link) is sent to
+       * the folder's index.html rather than served in place, where those links
+       * would resolve one folder too high. Temporary: the demo may move.
+       */
+      { source: "/ministry-demo", destination: "/ministry-demo/index.html", permanent: false },
+      { source: "/ministry-demo/platform", destination: "/ministry-demo/platform/index.html", permanent: false },
+      {
+        source: "/ministry-demo/templates/:look(bright-modern|bold-dark|classic-timeless|warm-community)",
+        destination: "/ministry-demo/templates/:look/index.html",
+        permanent: false,
+      },
     ];
   },
 };

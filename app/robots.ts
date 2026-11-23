@@ -1,7 +1,16 @@
 import type { MetadataRoute } from "next";
 import { siteUrl, indexable } from "@/lib/site";
 
-/* Never for crawlers: the form endpoint and the framework's internals. */
+/*
+ * Never for crawlers: the form endpoint and the framework's internals.
+ *
+ * The Genesis Ministry demo copies in /ministry-demo/ show made up churches
+ * and must never be indexed, yet they are deliberately not listed here: a
+ * crawler blocked by robots.txt never reads a page's noindex, and a blocked
+ * URL linked from /ministry can still be listed as "indexed, though blocked".
+ * Instead each demo page carries <meta name="robots" content="noindex"> and
+ * next.config.ts sends X-Robots-Tag: noindex for the whole folder.
+ */
 const PRIVATE = ["/api/", "/start/"];
 
 /*

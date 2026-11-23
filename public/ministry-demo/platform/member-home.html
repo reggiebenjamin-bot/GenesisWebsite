@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Home · Member app · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the member home screen, in the church's own brand, with sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<link rel="stylesheet" href="shared/member.css">
+<style>
+  /* Member home only. Prefix: mh-. Church tokens (--m-*) only inside the phone. */
+  .mh-hello .m-h1{margin-bottom:4px}
+  .mh-reply{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px 16px;border-radius:var(--m-radius-lg);background:var(--m-accent);color:var(--m-on-accent);text-decoration:none}
+  .m-app .mh-reply{color:var(--m-on-accent)}
+  .mh-reply:hover{background:var(--m-accent-press)}
+  .mh-reply .gm-icon{width:22px;height:22px;flex:0 0 22px}
+  .mh-reply b{display:block;font-size:15.5px;line-height:1.3}
+  .mh-reply small{display:block;font-size:13.5px;opacity:.9}
+  .mh-reply span:first-of-type{flex:1;min-width:0}
+  .m-app .mh-notes-meta{margin:4px 0 0;color:var(--m-muted);font-size:14px}
+  .m-app .mh-ref{margin:10px 0 0;color:var(--m-muted);font-size:14px}
+  .mh-ref b{color:var(--m-accent-ink)}
+  .m-app .mh-points{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:mh}
+  .mh-points li{position:relative;padding-left:32px;font-size:15.5px;line-height:1.5;counter-increment:mh}
+  .mh-points li::before{content:counter(mh);position:absolute;left:0;top:1px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--m-accent-soft);color:var(--m-text);font-size:12.5px;font-weight:700}
+  .m-app .mh-week{margin-top:14px;padding:12px 14px;border-left:3px solid var(--m-accent-ink);border-radius:0 var(--m-radius) var(--m-radius) 0;background:var(--m-surface-2);font-size:15px;line-height:1.5}
+  .mh-week b{display:block;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--m-accent-ink)}
+  .mh-more{margin-top:12px}
+  .mh-more[hidden]{display:none}
+  .mh-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .mh-dot{width:9px;height:9px;flex:0 0 9px;margin-top:8px;border-radius:50%;background:var(--m-accent-ink)}
+  .mh-gift-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .mh-give{display:flex;align-items:center;gap:14px}
+  .mh-give-icon{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:var(--m-radius);background:var(--m-accent-soft);color:var(--m-accent-ink)}
+  .mh-give-icon .gm-icon{width:24px;height:24px}
+  .mh-tools{width:100%;border:1px solid var(--m-line);font:inherit;color:inherit;cursor:pointer}
+  .mh-profile-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .mh-profile-head .m-avatar{width:46px;height:46px;flex-basis:46px;font-size:15px}
+  .mh-kv{margin:0;display:grid;font-size:15.5px}
+  .mh-kv>div{display:grid;gap:1px;padding:10px 0;border-top:1px solid var(--m-line)}
+  .mh-kv>div:first-child{border-top:0;padding-top:2px}
+  .mh-kv dt{color:var(--m-muted);font-size:13.5px}
+  .mh-kv dd{margin:0;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-weight:700;overflow-wrap:anywhere}
+  .mh-links{display:grid;gap:4px;margin-top:14px;padding-top:12px;border-top:1px solid var(--m-line)}
+  .mh-links button{min-height:44px;display:flex;align-items:center;gap:10px;padding:0;border:0;background:none;color:var(--m-text);font:inherit;font-size:15px;font-weight:700;text-align:left;cursor:pointer}
+  .mh-links .gm-icon{color:var(--m-accent-ink)}
+  /* ==== Member stage. The same block sits on every member page (prefix mx-). ====
+     Fold it into shared/member.css and shared/app.js when the foundation next touches them.
+     1. Spacing. The shared reset body[data-side="member"] :where(h1,h2,h3,h4,p,ul,ol){margin:0}
+        in genesis.css outranks single-class rules in member.css, so these restore them. */
+  .m-app .m-h1{margin:6px 0 8px}
+  .m-app p.m-section,.m-app ul.m-section{margin-top:26px}
+  .m-app .m-checks{margin:16px 0 22px}
+  .m-app .m-note-quiet{margin:14px 0 0}
+  .m-app .m-powered{margin-top:32px}
+  /* member.css sets .m-app a{color:inherit}, which outranks the colors of linked buttons and links. */
+  .m-app a.m-link{color:var(--m-accent-ink)}
+  .m-app a.m-btn--primary,.m-app a.m-card--accent{color:var(--m-on-accent)}
+  /* Inside the phone only the church's focus ring shows, as member.css intends. */
+  .m-app :focus-visible{box-shadow:none!important}
+  .m-app .m-choice[aria-pressed="true"]:focus-visible{box-shadow:inset 0 0 0 1.5px var(--m-accent)!important}
+  /* 2. The stage around the phone, in the Genesis OS shell: the sample strip, the brand
+        block, real v2 controls, and beside the phone a page head and the screen list. */
+  body.mx-staged{padding-top:44px}
+  .mx-staged .m-stage{min-height:calc(100vh - 44px);background:var(--v2-bg)}
+  .mx-staged .m-stagebar{min-height:64px;padding:10px 20px;gap:10px 12px;background:var(--v2-sidebar);border-bottom:1px solid var(--v2-border)}
+  .mx-staged .m-stagebar .gm-preview-label{display:none}
+  .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
+  .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
+  .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
+  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
+  @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
+  .mx-about,.mx-screens{display:none}
+  /* From 700px the stage also shows what this screen protects and the member app's screens:
+     under the phone (700 to 919px), beside it in one column (920 to 1179px), on both sides (1180px up). */
+  @media (min-width:700px){
+    .mx-staged .m-stage{display:grid;align-items:start;align-content:start}
+    .mx-staged .m-stagebar{grid-column:1/-1}
+    .mx-staged .m-caption{display:none}
+    .mx-about{display:grid;gap:22px;align-content:start}
+    .mx-screens{display:grid;gap:10px;padding:16px 10px 14px}
+    .mx-about .v2-page-head{margin:0}
+    .mx-about .v2-serif-title{margin:6px 0 10px;font-size:34px;line-height:1.12}
+    .mx-about .v2-page-head p{font-size:14px;line-height:1.6;color:var(--v2-text-2)}
+    .mx-card{display:grid;gap:14px;padding:20px 22px}
+    .mx-card .gm-protect-list{grid-template-columns:1fr;gap:14px}
+    .mx-card .gm-protect-list li{margin:0;padding:0 0 14px;border-right:0;border-bottom:1px solid var(--v2-border)}
+    .mx-card .gm-protect-list li:last-child{padding-bottom:0;border-bottom:0}
+    .mx-about .mx-land{justify-self:start}
+    .mx-screens>.v2-eyebrow{padding:0 10px}
+    .mx-screens .v2-rail-nav{padding:0}
+    .mx-screens .v2-rail-nav .gm-nav-lock{display:inline-flex}
+    .mx-screens .mx-fine{margin:4px 10px 0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  }
+  @media (min-width:700px) and (max-width:919px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) minmax(0,440px) 236px minmax(0,1fr);column-gap:20px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2/4;grid-row:2}
+    .mx-about{grid-column:2;grid-row:3;margin-top:12px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:12px}
+  }
+  @media (min-width:920px) and (max-width:1179px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,380px) minmax(0,1fr);grid-template-rows:auto auto 1fr;column-gap:44px;padding-bottom:88px}
+    .mx-staged .m-device{grid-column:2;grid-row:2/4}
+    .mx-about{grid-column:3;grid-row:2;margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:3;margin-top:22px}
+  }
+  @media (min-width:1180px){
+    .mx-staged .m-stage{grid-template-columns:minmax(0,1fr) min(430px,100%) minmax(0,1fr);column-gap:48px}
+    .mx-staged .m-device{grid-column:2;grid-row:2}
+    .mx-about{grid-column:1;grid-row:2;justify-self:end;width:min(360px,100%);margin-top:44px}
+    .mx-screens{grid-column:3;grid-row:2;justify-self:start;width:min(236px,100%);margin-top:44px}
+  }
+  @media (max-width:860px){.mx-staged .m-stagebar .gm-menu{top:112px}}
+  /* Below 1180px Take the Tour is an icon button (its name stays), so the stage bar never wraps. */
+  @media (max-width:1179px){
+    .mx-staged .m-stagebar .mx-tour span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+    .mx-staged .m-stagebar .mx-tour{width:40px;padding:0}
+  }
+  @media (max-width:520px){
+    .mx-staged .m-stagebar{min-height:0;padding:8px 12px;gap:6px}
+    .mx-staged .m-stagebar .gm-plan a{padding:4px 8px}
+    .mx-staged .m-device{height:auto;margin:0}
+    .mx-staged .m-top{top:44px}
+  }
+  /* ==== end member stage ==== */
+</style>
+</head>
+<body data-side="member" data-page="home" data-title="Home">
+
+<main id="gm-main" class="m-main">
+  <section class="mh-hello" data-tour="home.hello" aria-labelledby="mh-greeting">
+    <p class="m-eyebrow" id="mh-day">Today</p>
+    <h1 class="m-h1" id="mh-greeting">Welcome home</h1>
+    <p class="m-lede" id="mh-lede">Everything between you and your church, in one place.</p>
+    <div id="mh-reply-slot"></div>
+  </section>
+
+  <section class="m-section" aria-label="Ways to reach your church" data-tour="home.actions">
+    <div class="m-actions" id="mh-actions"></div>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-notes-title" data-tour="home.notes">
+    <div class="m-section-head"><h2 class="m-h2">This week's notes</h2></div>
+    <article class="m-card" id="mh-notes"></article>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-prayer-title" data-tour="home.prayer">
+    <div class="m-section-head"><h2 class="m-h2" id="mh-prayer-title">My prayer requests</h2><a class="m-link m-small" href="member-prayer.html">See All</a></div>
+    <ul class="m-list" id="mh-prayer"></ul>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-msg-title" data-tour="home.messages">
+    <div class="m-section-head"><h2 class="m-h2" id="mh-msg-title">My messages</h2><a class="m-link m-small" href="member-messages.html">See All</a></div>
+    <ul class="m-list" id="mh-messages"></ul>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-give-title">
+    <a class="m-card mh-give" href="member-give.html" style="text-decoration:none">
+      <span class="mh-give-icon" aria-hidden="true" id="mh-give-icon"></span>
+      <span style="flex:1;min-width:0"><span class="m-h3" id="mh-give-title" style="display:block">Give</span><span class="m-muted m-small" id="mh-give-sub">Give through the church's own giving form.</span></span>
+      <span id="mh-give-chev" aria-hidden="true"></span>
+    </a>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-tools-title" data-tour="home.tools">
+    <button type="button" class="m-card mh-give mh-tools" data-gm-action="toast" data-gm-toast="This opens your church's own events, groups and kids check-in page, in Planning Center or Subsplash. It is not part of this preview.">
+      <span class="mh-give-icon" aria-hidden="true" id="mh-tools-icon"></span>
+      <span style="flex:1;min-width:0;text-align:left"><span class="m-h3" id="mh-tools-title" style="display:block">Events, Groups, Kids Check-In</span><span class="m-muted m-small">Opens the tool your church already uses.</span></span>
+      <span id="mh-tools-chev" aria-hidden="true"></span>
+    </button>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-gifts-title" id="mh-gifts-wrap" hidden>
+    <div class="m-section-head"><h2 class="m-h2" id="mh-gifts-title">My gifts</h2><a class="m-link m-small" href="member-gifts-result.html">Open</a></div>
+    <div class="m-card" id="mh-gifts"></div>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-profile-title" data-tour="home.profile">
+    <div class="m-section-head"><h2 class="m-h2" id="mh-profile-title">My profile</h2><button type="button" class="m-btn m-btn--sm" data-gm-action="toast" data-gm-toast="Profile editing opens here. This is a preview, so nothing was changed.">Edit</button></div>
+    <div class="m-card" id="mh-profile"></div>
+  </section>
+
+  <p class="m-note m-note--line m-section" id="mh-privacy" style="margin-top:22px"></p>
+
+  <noscript><p class="m-note">This design preview needs JavaScript to show its sample data.</p></noscript>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+/* ==== Member stage. The same function sits on every member page (prefix mx-). ====
+   Dresses the stage the shell draws around the phone in the Genesis OS shell: the real sample
+   strip, the brand block, v2 buttons and Take the Tour, and on wide screens a page head with
+   what this screen protects (left) and the member app's screens (right). The phone is untouched.
+   o = { title (HTML with em.v2-accent-em), sub, protect: [[bold, line], ...], land: { href, label, icon, module } }
+   land.module: the plan module of the screen it opens; outside the plan shown, the link carries the plan lock. */
+function mxStage(o) {
+  "use strict";
+  var body = document.body, stage = document.querySelector(".m-stage");
+  if (!stage || body.classList.contains("mx-staged")) return;
+  var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
+  body.classList.add("mx-staged");
+  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+
+  var bar = stage.querySelector(".m-stagebar");
+  var brand = bar.querySelector(".m-stage-brand");
+  if (brand) { brand.querySelector("b").textContent = "Genesis"; brand.querySelector("small").textContent = "Member App"; }
+  var desk = bar.querySelector(".m-stage-desk");
+  if (desk) desk.className = "v2-button m-stage-desk";
+  var theme = bar.querySelector(".gm-theme-btn");
+  if (theme) theme.className = "v2-button v2-icon-button v2-button-quiet gm-theme-btn";
+  var tour = document.createElement("button");
+  tour.type = "button";
+  tour.className = "v2-button v2-button-quiet gm-tour-btn mx-tour";
+  tour.setAttribute("data-gm-action", "start-tour");
+  tour.setAttribute("aria-label", "Take the Tour");
+  tour.title = "Take the Tour";
+  tour.innerHTML = GM.v2Icon("help") + "<span>Take the Tour</span>";
+  tour.hidden = !!(GM.ctx && GM.ctx.locked);
+  bar.insertBefore(tour, desk || theme || null);
+
+  var SCREENS = [
+    ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
+    ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
+  ];
+  var nav = SCREENS.map(function (s) {
+    var code = D.levels[GM.moduleLevel(s[2]) - 1].code, locked = !GM.isIncluded(s[2]);
+    return '<a href="' + s[0] + '"' + (s[0] === here ? ' aria-current="page"' : "") + "><span>" + esc(s[1]) + "</span>" +
+      (locked ? '<em class="gm-nav-lock" title="Included in ' + esc(code) + '">' + GM.icon("lock") + esc(code) + '</em><span class="sr-only">, included in ' + esc(code) + "</span>" : "") + "</a>";
+  }).join("");
+  var landLock = "";
+  if (o.land && o.land.module && !GM.isIncluded(o.land.module)) {
+    var landCode = D.levels[GM.moduleLevel(o.land.module) - 1].code;
+    landLock = '<em class="gm-nav-lock" title="Included in ' + esc(landCode) + '" aria-hidden="true">' + GM.icon("lock") + esc(landCode.replace("Level ", "L")) + '</em><span class="sr-only">, included in ' + esc(landCode) + "</span>";
+  }
+  var protect = (o.protect || []).map(function (p) { return "<li><b>" + esc(GM.fill(p[0])) + "</b><span>" + esc(GM.fill(p[1])) + "</span></li>"; }).join("");
+  var about = '<aside class="mx-about" aria-labelledby="mx-about-title">' +
+    '<header class="v2-page-head"><div><div class="v2-eyebrow">Member app · ' + esc(c.short) + "</div>" +
+    '<h2 class="v2-serif-title" id="mx-about-title">' + o.title + "</h2><p>" + esc(GM.fill(o.sub)) + "</p></div></header>" +
+    (protect ? '<section class="v2-card mx-card" aria-label="How this screen protects people"><div class="v2-eyebrow">How it protects people</div><ul class="gm-protect-list">' + protect + "</ul></section>" : "") +
+    (o.land ? '<a class="v2-button mx-land" href="' + esc(o.land.href) + '">' + GM.v2Icon(o.land.icon || "arrow") + "<span>" + esc(o.land.label) + "</span>" + landLock + "</a>" : "") +
+    "</aside>";
+  var screens = '<nav class="v2-card mx-screens" aria-label="Member app screens"><div class="v2-eyebrow">Member app screens</div><div class="v2-rail-nav">' + nav + "</div>" +
+    '<p class="mx-fine">Every screen wears ' + esc(GM.poss(c.name)) + " own brand. Powered by Genesis.</p></nav>";
+  var device = stage.querySelector(".m-device");
+  device.insertAdjacentHTML("afterend", about + screens);
+}
+</script><!-- end member stage -->
+<script>
+mxStage({
+  title: 'A home for <em class="v2-accent-em">every member</em>',
+  sub: "This week's notes, their prayer requests with replies, their messages and Give, with three clear buttons. All in {church.namePoss} own brand.",
+  protect: [
+    ["Only their own things", "No member directory. Members never see each other."],
+    ["Who can see each request", "A lock and the names on every prayer request."],
+    ["Their information stays theirs", "A copy or removal, any time they ask."]
+  ],
+  land: { href: "church-person.html?id=p-sarah", label: "See Sarah's Record", icon: "people", module: "people" }
+});
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church;
+  var $ = function (id) { return document.getElementById(id); };
+  var me = GM.member();
+
+  /* Extra sample data for this page: this week's sermon notes for each demo church.
+     Titles and series match each church's website template. Notes are written fresh. */
+  var NOTES = {
+    "bright-modern": { series: "Open Doors", part: "Week 3", title: "Room for questions", slot: 0, ref: "John 20:24-29", length: "36 min",
+      points: ["Thomas brought his doubts into the room, and Jesus met him there.", "Honest questions are welcome here. Faith grows when it is allowed to ask.", "Peace came before the answers. Jesus said peace first."],
+      more: ["Thomas was not pushed out for asking. He was still with the others a week later, and that is where Jesus found him.", "Doubt is not the opposite of faith. Sometimes it is how faith learns to stand on its own feet."],
+      week: "Bring one honest question to God this week, out loud or on paper." },
+    "bold-dark": { series: "Lamps On", part: "Part 3", title: "Shine where you are", slot: 1, ref: "Matthew 5:14-16", length: "41 min",
+      points: ["A lamp does not choose the room. It shines where it is set.", "Your street, your shift and your table are places God can use.", "Good works point past us, to the Father."],
+      more: ["Jesus did not say you will become the light someday. He said you are the light, right now.", "Hiding the lamp is easy. Setting it on a stand takes a little courage every day."],
+      week: "Pick one ordinary place and ask how you can be light there." },
+    "classic-timeless": { series: "Songs for the Road", part: "Week 4", title: "Lift up your eyes", slot: 1, ref: "Psalm 121", length: "33 min",
+      points: ["This psalm was sung on the road, by people who were tired.", "Our help comes from the Lord, who made heaven and earth.", "He keeps our going out and our coming in, every step."],
+      more: ["The hills could not help the travelers. They looked past the hills to the One who made them.", "The Lord who keeps Israel does not sleep. We can."],
+      week: "Read Psalm 121 each morning this week before you leave the house." },
+    "warm-community": { series: "Love Thy Neighbor", part: "Part 2", title: "Casseroles and courage", slot: 0, ref: "Luke 10:30-37", length: "38 min",
+      points: ["The Samaritan saw, came near and stayed long enough to help.", "Love often looks like a meal, a ride or a knock on the door.", "Courage is choosing to cross the road anyway."],
+      more: ["The others in the story were not cruel. They were busy. Busy is the road most of us walk.", "Mercy is rarely convenient. It is almost always a casserole away."],
+      week: "Name one neighbor and do one small, kind thing for them." }
+  };
+  var n = NOTES[c.slug] || NOTES["bright-modern"];
+  var speaker = "Pastor " + c.pastors[n.slot];
+
+  /* Per-tab memory from the welcome question (member-welcome.html). */
+  var attends = sGet("gm.m.attends") || me.attends;
+
+  /* ---------- Greeting and the new reply ---------- */
+  var hr = GM.now.getHours();
+  $("mh-day").textContent = fmt.day();
+  $("mh-greeting").textContent = (hr < 12 ? "Good morning, " : hr < 17 ? "Good afternoon, " : "Good evening, ") + me.first;
+  $("mh-lede").textContent = attends === "online"
+    ? "Glad you are with us online. This week's message and your notes are below."
+    : attends === "exploring"
+      ? "Take your time. Everything here is yours, and nobody will rush you."
+      : "Here is your week at " + c.short + ", and everything between you and your church.";
+
+  var t6 = GM.thread("t-06");
+  var last = t6.messages[t6.messages.length - 1];
+  var from = GM.staff(last.from);
+  $("mh-reply-slot").innerHTML = '<a class="mh-reply" href="member-messages.html?id=t-06" data-tour="home.reply">' + GM.icon("message") +
+    "<span><b>You have a reply from " + esc(from.name) + "</b><small>" + esc(t6.subject) + " · " + esc(dayWord(last.at)) + "</small></span>" + GM.icon("chevron") + "</a>";
+
+  /* ---------- Three buttons ---------- */
+  $("mh-actions").innerHTML =
+    '<a class="m-action" href="member-prayer.html#mp-form">' + GM.icon("prayer") + "<span>Ask for Prayer</span></a>" +
+    '<a class="m-action" href="member-messages.html?new=1">' + GM.icon("message") + "<span>Send a Message</span></a>" +
+    '<a class="m-action" href="member-messages.html?new=serving">' + GM.icon("gifts") + "<span>Talk About Serving</span></a>";
+
+  /* ---------- This week's notes ---------- */
+  var watchFirst = attends === "online";
+  /* Each site names its message section in its own words: #message on Lightwell and Calder Hill, #watch on Lampstand and Goldenrod. */
+  var watchAnchor = ({ "bold-dark": "#watch", "warm-community": "#watch" })[c.slug] || "#message";
+  $("mh-notes").innerHTML =
+    '<p class="m-eyebrow">' + esc(n.series + " · " + n.part) + "</p>" +
+    '<h3 class="m-h2" id="mh-notes-title" style="margin-top:6px">' + esc(n.title) + "</h3>" +
+    '<p class="mh-notes-meta">' + esc(speaker + " · " + fmt.dateLong("2026-11-15") + " · " + n.length) + "</p>" +
+    '<p class="mh-ref">Scripture <b>' + esc(n.ref) + "</b></p>" +
+    '<ol class="mh-points">' + n.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ol>" +
+    '<div class="mh-more" id="mh-more" hidden><ol class="mh-points" start="4">' + n.more.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ol></div>" +
+    '<p class="mh-week"><b>For this week</b>' + esc(n.week) + "</p>" +
+    '<div class="mh-btns">' +
+      '<a class="m-btn m-btn--sm' + (watchFirst ? " m-btn--primary" : "") + '" href="' + esc(c.site) + watchAnchor + '">' + GM.icon("play") + "Watch the Message</a>" +
+      '<button type="button" class="m-btn m-btn--sm' + (watchFirst ? "" : " m-btn--primary") + '" id="mh-more-btn" aria-expanded="false" aria-controls="mh-more">Read All Notes</button>' +
+    "</div>";
+  $("mh-more-btn").addEventListener("click", function () {
+    var open = $("mh-more").hidden;
+    $("mh-more").hidden = !open;
+    this.setAttribute("aria-expanded", open ? "true" : "false");
+    this.textContent = open ? "Show Less" : "Read All Notes";
+  });
+
+  /* ---------- My prayer requests ---------- */
+  var mine = me.prayer.map(GM.prayerRequest).filter(Boolean).sort(function (a, b) { return GM.parseDate(b.received) - GM.parseDate(a.received); });
+  $("mh-prayer").innerHTML = mine.map(function (p) {
+    var replied = p.replies && p.replies.some(function (r) { return r.from !== "member"; });
+    var status = replied ? "Replied" : "The prayer team has it";
+    return '<li><a class="m-item" href="member-prayer.html#' + esc(p.id) + '">' + GM.icon("prayer") +
+      '<span class="m-item-main"><span class="m-item-title" style="display:block">' + esc(p.topic) + '</span><span class="m-item-sub" style="display:block">' + esc(status) + " · Sent " + esc(fmt.date(p.received)) + "</span>" +
+      '<span class="m-item-meta">' + lockPill(p.visibility) + "</span></span></a></li>";
+  }).join("");
+
+  /* ---------- My messages ---------- */
+  $("mh-messages").innerHTML = me.threads.map(GM.thread).filter(Boolean).map(function (t) {
+    var lastMsg = t.messages[t.messages.length - 1];
+    var unread = t.id === "t-06";
+    var who = t.owner ? GM.staff(t.owner) : null;
+    var state = t.status === "closed" ? "Closed" : unread ? "New reply" : "Open";
+    return '<li><a class="m-item" href="member-messages.html?id=' + esc(t.id) + '">' + (unread ? '<span class="mh-dot" aria-hidden="true"></span>' : GM.icon("message")) +
+      '<span class="m-item-main"><span class="m-item-title" style="display:block">' + esc(t.subject) + (unread ? '<span class="gm-sr-only">, unread</span>' : "") + "</span>" +
+      '<span class="m-item-sub" style="display:block">With ' + esc(who ? who.name : c.short) + " · " + esc(fmt.when(lastMsg.at)) + "</span>" +
+      '<span class="m-item-meta"><span class="m-pill' + (unread ? " m-pill--accent" : "") + '">' + esc(state) + "</span>" + (t.kind === "private" ? lockPill("pastors") : "") + "</span></span></a></li>";
+  }).join("");
+
+  /* ---------- Give ---------- */
+  $("mh-give-icon").innerHTML = GM.icon("give");
+  $("mh-give-title").textContent = "Give to " + c.short;
+  $("mh-give-sub").textContent = "Through the church's own giving form.";
+  $("mh-give-chev").innerHTML = GM.icon("chevron");
+  $("mh-tools-icon").innerHTML = GM.icon("today");
+  $("mh-tools-chev").innerHTML = GM.icon("external");
+
+  /* ---------- My gifts (Plus only) ---------- */
+  if (GM.isIncluded("member-gifts")) {
+    var r = D.gifts.memberResult;
+    $("mh-gifts-wrap").hidden = false;
+    $("mh-gifts").innerHTML = '<p class="m-small m-muted" style="margin:0">Gifts to explore, from ' + esc(fmt.dateLong(r.finished)) + "</p>" +
+      '<div class="mh-gift-row">' + r.top.slice(0, 3).map(function (g) { return '<span class="m-pill m-pill--accent">' + esc(GM.gift(g.gift).name) + "</span>"; }).join("") + "</div>" +
+      '<p class="m-small" style="margin:10px 0 0">A rough guide, not a verdict. Gifts are confirmed as you serve.</p>';
+  }
+
+  /* ---------- Profile ---------- */
+  var attendText = attends === "online" ? "I join online" : attends === "exploring" ? "I am new or exploring" : "I attend in person";
+  $("mh-profile").innerHTML =
+    '<div class="mh-profile-head"><span class="m-avatar" aria-hidden="true">' + esc(me.initials) + '</span><div><p class="m-h3" style="margin:0">' + esc(me.name) + '</p><p class="m-small m-muted" style="margin:0">' + esc(c.name) + "</p></div></div>" +
+    '<dl class="mh-kv">' +
+      "<div><dt>Email</dt><dd>" + esc(me.email) + "</dd></div>" +
+      "<div><dt>Phone</dt><dd>" + esc(me.phone) + "</dd></div>" +
+      "<div><dt>Best way to reach me</dt><dd>" + esc(me.contact) + "</dd></div>" +
+      '<div><dt>How I join</dt><dd><span>' + esc(attendText) + '</span><a class="m-link" href="member-welcome.html" style="font-size:14px">Change</a></dd></div>' +
+      "<div><dt>Adult account</dt><dd>Confirmed " + esc(fmt.dateLong(me.adultConfirmed)) + "</dd></div>" +
+    "</dl>" +
+    '<div class="mh-links">' +
+      '<button type="button" data-gm-action="toast" data-gm-toast="Your request for a copy goes to the pastors. This is a preview, so nothing was sent.">' + GM.icon("mail") + "Ask for a Copy of My Information</button>" +
+      '<button type="button" data-gm-action="toast" data-gm-toast="Your removal request goes to the pastors, who confirm it with you. This is a preview, so nothing was sent.">' + GM.icon("archive") + "Ask to Remove My Information</button>" +
+    "</div>";
+
+  $("mh-privacy").innerHTML = GM.icon("shield") + "<span>Only you see this page. Members never see each other's information, and there is no directory.</span>";
+
+  /* ---------- Guided tour ---------- */
+  GM.setTour([
+    { target: '[data-tour="home.hello"]', title: "A home for each member", text: "Members sign in with a code and land here, in {church.namePoss} own colors and type. The reply notice opens the thread." },
+    { target: '[data-tour="home.actions"]', title: "Three clear buttons", text: "Ask for prayer, send a message, or talk about serving. Each one lands in the right inbox with an owner." },
+    { target: '[data-tour="home.notes"]', title: "This week's notes", text: "The sermon notes for this Sunday, with a link to watch the message on the church website." },
+    { target: '[data-tour="home.prayer"]', title: "Prayer with a history", text: "Each member sees their own requests, any reply, and exactly who can see each one." },
+    { target: '[data-tour="home.profile"]', title: "Their information stays theirs", text: "Adults only, confirmed once. Members can ask for a copy of their information or ask to have it removed." }
+  ]);
+
+  function lockPill(kind) {
+    var label = kind === "pastors" ? "Pastors only" : "Pastors and prayer team";
+    return '<span class="m-pill" title="Who can see this">' + GM.icon("lock") + esc(label) + "</span>";
+  }
+  function dayWord(at) {
+    var w = fmt.when(at);
+    return w.indexOf("Today") === 0 ? "Today" : w.indexOf("Yesterday") === 0 ? "Yesterday" : w.split(",")[0];
+  }
+  function sGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+});
+</script>
+</body>
+</html>

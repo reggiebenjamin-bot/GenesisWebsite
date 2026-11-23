@@ -1,0 +1,95 @@
+/* Copied from the Genesis OS repo (v2/refine/deals-board.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Deals board (v2/deals-board.js). Scoped to .v2-db-page and .v2-db-drawer and
+   built on the shared v2 tokens, so it follows the light and dark looks the
+   rest of Genesis uses. No colours of its own beyond the status tokens. */
+
+.v2-db-page{min-width:0;max-width:1180px}
+.v2-db-page .v2-page-head{margin-bottom:10px}
+.v2-db-note{margin:0 0 14px;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+.v2-db-muted{margin:0;color:var(--v2-muted);font-size:13px;line-height:1.5}
+.v2-db-warn{margin:0 0 14px;padding:10px 14px;border:1px solid rgba(var(--v2-warning-rgb),.35);border-radius:var(--v2-radius-md);background:var(--v2-warning-soft);color:var(--v2-text);font-size:13px}
+.v2-db-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* Tabs: the shared view tabs, with a quiet count beside each label. */
+.v2-db-tabs{margin-bottom:16px}
+.v2-db-tabs button{min-height:44px;padding:10px 14px;font-size:13px}
+.v2-db-tab-count{margin-left:7px;color:var(--v2-muted);font-family:var(--v2-font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+
+/* Temperature tiles: four across, two by two on narrow screens. */
+.v2-db-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface);box-shadow:var(--v2-card-shadow)}
+.v2-db-tile{min-width:0;padding:14px 16px;border-right:1px solid var(--v2-border)}
+.v2-db-tile:last-child{border-right:0}
+.v2-db-tile small{display:flex;align-items:center;gap:7px;color:var(--v2-eyebrow);font-family:var(--v2-font-mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.v2-db-tile small::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--v2-border-strong)}
+.v2-db-tile-hot small::before{background:var(--v2-danger)}
+.v2-db-tile-warm small::before{background:var(--v2-warning)}
+.v2-db-tile-new small::before{background:var(--v2-accent)}
+.v2-db-tile b{display:block;margin-top:4px;color:var(--v2-text);font-family:var(--v2-font-serif);font-size:30px;font-weight:500;line-height:1.15;font-variant-numeric:tabular-nums}
+.v2-db-tile span{display:block;margin-top:2px;color:var(--v2-muted);font-size:12px;line-height:1.35}
+
+/* List beside the stage chart on wide screens, stacked below 1100px. */
+.v2-db-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:16px;align-items:start}
+.v2-db-card{min-width:0;padding:16px 18px}
+.v2-db-card .v2-section-head{margin-bottom:10px}
+.v2-db-card .v2-section-head h2{margin:0;font-family:var(--v2-font-serif);font-size:19px;font-weight:500}
+.v2-db-card .v2-section-head small{color:var(--v2-muted);font-family:var(--v2-font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;text-align:right}
+
+/* Stage bars: one series, brand gold, the count as a direct label. */
+.v2-db-pipeline{margin:12px 0 6px;color:var(--v2-eyebrow);font-family:var(--v2-font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.v2-db-pipeline:first-child{margin-top:0}
+.v2-db-bars{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.v2-db-bar{display:grid;grid-template-columns:minmax(90px,40%) minmax(0,1fr) 40px;align-items:center;gap:10px;min-height:28px;font-size:13px}
+.v2-db-bar-label{min-width:0;overflow:hidden;color:var(--v2-text-2);text-overflow:ellipsis;white-space:nowrap}
+.v2-db-bar-track{display:block;height:12px;border-radius:0 4px 4px 0;background:var(--v2-surface-3)}
+.v2-db-bar-fill{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--v2-accent)}
+.v2-db-bar-value{color:var(--v2-text);font-family:var(--v2-font-mono);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.v2-db-bar:hover .v2-db-bar-fill{background:var(--v2-accent-hover)}
+
+/* Deal rows: three lines, a full width tap target of at least 64px. */
+.v2-db-list{display:grid;margin:0;padding:0;list-style:none;border-top:1px solid var(--v2-hairline)}
+.v2-db-list>li{border-bottom:1px solid var(--v2-hairline)}
+.v2-db-row{display:grid;gap:3px;width:100%;min-height:64px;padding:12px 10px;border:0;border-radius:var(--v2-radius-sm);background:transparent;color:var(--v2-text);font:inherit;text-align:left;cursor:pointer}
+.v2-db-row:hover{background:var(--v2-surface-2)}
+.v2-db-row:focus-visible{outline:2px solid var(--v2-focus);outline-offset:-2px}
+.v2-db-row-static{cursor:default}
+.v2-db-row-static:hover{background:transparent}
+.v2-db-row-line1{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.v2-db-row-line1 b{min-width:0;overflow:hidden;font-size:15px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+.v2-db-row-line2{min-width:0;overflow:hidden;color:var(--v2-text-2);font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.v2-db-row-line3{min-width:0;color:var(--v2-muted);font-size:12.5px;overflow-wrap:anywhere}
+.v2-db-more{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--v2-muted);font-size:12.5px}
+.v2-db-more .v2-button{min-height:44px}
+
+/* Temperature badges: status tokens, always with the word. */
+.v2-db-tag{flex:none;font-family:var(--v2-font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.v2-db-tag-hot{border-color:rgba(var(--v2-danger-rgb),.4);background:var(--v2-danger-soft);color:var(--v2-danger)}
+.v2-db-tag-warm{border-color:rgba(var(--v2-warning-rgb),.4);background:var(--v2-warning-soft);color:var(--v2-warning)}
+.v2-db-tag-new{border-color:var(--v2-accent-border);background:var(--v2-accent-soft);color:var(--v2-accent-text)}
+.v2-db-tag-dead{color:var(--v2-muted)}
+
+/* States: the shared v2 state card, warmed for the permission wait. */
+.v2-db-state{margin-bottom:16px}
+.v2-db-state-warning{border-color:rgba(var(--v2-warning-rgb),.35)}
+
+/* Deal detail in the shared drawer. */
+.v2-db-drawer .v2-next-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.v2-db-reason{color:var(--v2-text-2);font-size:13px}
+.v2-db-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+.v2-db-facts .v2-fact b{overflow-wrap:anywhere}
+.v2-db-message{margin-top:6px;padding:10px 12px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2);color:var(--v2-text);font-size:13.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+
+@media (max-width:1100px){
+  .v2-db-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .v2-db-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .v2-db-tile:nth-child(2){border-right:0}
+  .v2-db-tile:nth-child(-n+2){border-bottom:1px solid var(--v2-border)}
+  .v2-db-tile b{font-size:26px}
+  .v2-db-card{padding:14px 12px}
+  .v2-db-row{padding:12px 6px}
+  .v2-db-bar{grid-template-columns:minmax(80px,42%) minmax(0,1fr) 34px}
+  .v2-db-facts{grid-template-columns:minmax(0,1fr)}
+  .v2-db-tabs button{padding:10px 12px}
+}

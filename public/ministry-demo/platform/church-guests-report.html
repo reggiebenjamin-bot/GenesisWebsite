@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Guest Report · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the guest report on the Genesis OS Reports pattern. The guest path by stage, guests by source by month, time to first contact and the second visit rate. Counts only, sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Guest report only. Prefix: gr-. The page is the Genesis OS Reports pattern
+     (v2-report-page, control bar, metrics, the one diagnostic panel, chart cards). */
+    .gr-page .v2-viz-pair>.v2-card{display:flex;flex-direction:column;min-width:0}
+  .gr-page .v2-viz-pair>.v2-card>.gm-chart{margin-top:auto}
+  .gr-steps th[scope="row"] b{display:block;font-weight:inherit;white-space:nowrap}
+  .gr-steps th[scope="row"] .gr-from{display:block;color:var(--v2-muted);font-size:11px}
+  .gr-steps thead th{white-space:nowrap}
+  .gr-steps td{white-space:nowrap}
+  /* The step table keeps its columns apart: in a narrow card it scrolls inside its own frame instead of printing one column over the next. */
+  .gr-steps{min-width:300px}
+  .gr-steps thead th:nth-child(1){width:32%}
+  .gr-steps thead th:nth-child(2){width:26%}
+  .gr-steps thead th:nth-child(3){width:17%}
+  .gr-steps thead th:nth-child(4){width:25%}
+  .gr-steps tbody tr:last-child th{border-bottom:0}
+  .gr-page .v2-report-updated{white-space:nowrap}
+  .gr-steps .is-num{text-align:right;font-variant-numeric:tabular-nums}
+  .gr-foot{display:flex;align-items:flex-start;gap:10px;margin:0;color:var(--v2-fine);font-size:12px;line-height:1.6}
+  .gr-foot svg{flex:none;margin-top:2px;color:var(--v2-positive)}
+  .gr-scope{display:flex;align-items:center;gap:8px}
+  .gr-scope svg{flex:none;color:var(--v2-positive)}
+  /* A narrow page (the Hope dock open, or a small window) keeps the three numbers on one row, each starting at the column's edge,
+     instead of wrapping two and one with the last one indented. */
+  .gr-page{container-type:inline-size}
+  /* Two chart cards under about 340px each (the Hope dock open beside a laptop window) stack, one chart per row. */
+  @container (max-width:700px){.gr-page .v2-viz-pair{grid-template-columns:minmax(0,1fr)}}
+  @media (min-width:861px){
+    @container (min-width:440px) and (max-width:660px){
+      .gr-page .v2-report-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .gr-page .v2-report-metric{padding-left:16px;padding-right:16px}
+      .gr-page .v2-report-metric:first-child{padding-left:0}
+    }
+    @container (max-width:439px){
+      .gr-page .v2-report-metrics{grid-template-columns:minmax(0,1fr)}
+      .gr-page .v2-report-metric{padding:12px 0;border-right:0}
+      .gr-page .v2-report-metric+.v2-report-metric{border-top:1px solid var(--v2-kpi-line,var(--v2-border))}
+    }
+  }
+  @media (max-width:600px){.gr-page .v2-report-metric{padding-left:0;border-right:0}.gr-page .v2-report-metric+.v2-report-metric{padding-top:16px;border-top:1px solid var(--v2-kpi-line,var(--v2-border))}}
+  @media print{
+    .v2-page-actions,.gm-chart-toggle,.v2-view-picker{display:none!important}
+    .v2-card{break-inside:avoid}
+  }
+</style>
+</head>
+<body data-side="church" data-page="guests" data-module="reports" data-locked="custom" data-title="Guest Report" data-viewer="s-nadia">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page v2-report-page gr-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow">Guests</div>
+        <h1>Guest Report</h1>
+        <p id="gr-sub">How guests find their way, from the first hello to a place to serve.</p>
+      </div>
+      <div class="v2-page-actions">
+        <a class="v2-button" href="church-reports.html">All Reports</a>
+        <button class="v2-button v2-button-quiet" type="button" id="gr-print">Print Report</button>
+      </div>
+    </header>
+
+    <!-- On phones the second-level column becomes this picker, as in Genesis OS -->
+    <label class="v2-view-picker v2-deal-view-picker"><span>View</span><select class="v2-select v2-nselect" id="gr-view" aria-label="View"></select></label>
+
+    <!-- What the numbers cover, as the Reports control bar says it -->
+    <section class="v2-report-controlbar v2-report-controlbar-plain" aria-label="Report basis" data-tour="report.privacy">
+      <p class="v2-report-scope-copy gr-scope" id="gr-scope"></p>
+      <div class="v2-report-scope"><span class="v2-report-updated" id="gr-updated"></span></div>
+    </section>
+
+    <div class="v2-report-body" id="gr-body">
+      <section class="v2-report-metrics" aria-label="Guests at a glance" data-tour="report.glance" id="gr-glance"></section>
+      <!-- The one dark panel on the screen: the biggest drop on the guest path -->
+      <section class="v2-report-diagnostic" aria-labelledby="gr-move-title" data-tour="report.move" id="gr-move"></section>
+    </div>
+
+    <div class="v2-viz-pair" data-tour="report.path">
+      <section class="v2-card" aria-labelledby="gr-c1-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Guest path by stage, last 90 days</div><h2 id="gr-c1-title">From the first hello to serving</h2></div></div>
+        <div id="gr-funnel"></div>
+      </section>
+      <section class="v2-card" aria-labelledby="gr-c2-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Where guests come from, last 90 days</div><h2 id="gr-c2-title">Plan a Visit leads the way</h2></div></div>
+        <div id="gr-sources"></div>
+      </section>
+    </div>
+
+    <section class="v2-card" aria-labelledby="gr-c3-title" data-tour="report.sources">
+      <div class="v2-viz-head"><div><div class="v2-eyebrow">Guests by source, by month</div><h2 id="gr-c3-title">Every way in, month by month</h2></div></div>
+      <div id="gr-by-month"></div>
+    </section>
+
+    <div class="v2-viz-pair" data-tour="report.speed">
+      <section class="v2-card" aria-labelledby="gr-c4-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Time to first contact, median hours</div><h2 id="gr-c4-title">A first hello within hours, not days</h2></div></div>
+        <div id="gr-speed-line"></div>
+      </section>
+      <section class="v2-card" aria-labelledby="gr-c5-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Time to first contact, last 90 days</div><h2 id="gr-c5-title">How soon a person said hello</h2></div></div>
+        <div id="gr-speed-buckets"></div>
+      </section>
+    </div>
+
+    <div class="v2-viz-pair" data-tour="report.return">
+      <section class="v2-card" aria-labelledby="gr-c6-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Second visit rate</div><h2 id="gr-c6-title">Coming back within six weeks</h2></div></div>
+        <div id="gr-return"></div>
+      </section>
+      <section class="v2-card" aria-labelledby="gr-c7-title">
+        <div class="v2-viz-head"><div><div class="v2-eyebrow">Each step of the path, last 90 days</div><h2 id="gr-c7-title">How long each step takes</h2></div></div>
+        <div class="v2-table-scroll">
+          <table class="v2-table v2-table-static gr-steps">
+            <caption class="sr-only">How long each step of the guest path takes, last 90 days. Sample data.</caption>
+            <thead><tr><th scope="col">Step</th><th scope="col" class="is-num">Reached</th><th scope="col" class="is-num">Kept</th><th scope="col" class="is-num">Typical</th></tr></thead>
+            <tbody id="gr-steps"></tbody>
+          </table>
+        </div>
+        <p class="v2-muted-copy">Kept is the share of guests from the step before. Typical time is the median. Every guest keeps an owner and a next step at every stage. Sample data.</p>
+      </section>
+    </div>
+
+    <section class="v2-card" aria-labelledby="gr-c8-title" data-tour="report.closed">
+      <div class="v2-viz-head"><div><div class="v2-eyebrow">Closed with a reason, last twelve months</div><h2 id="gr-c8-title">Why guests left the path</h2></div></div>
+      <div id="gr-closed"></div>
+      <p class="v2-muted-copy">Closing asks for a reason, archives the guest and stops follow-up. Nothing is deleted. A guest who asks us to stop is never contacted again.</p>
+    </section>
+
+    <section class="v2-section" aria-label="How this report protects people">
+      <p class="gr-foot" id="gr-foot"></p>
+    </section>
+
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, m = D.metrics, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ================================================================
+     Extra sample data for this report. Counts only, no names.
+     Each month's sources add up to D.metrics.newGuests.
+     ================================================================ */
+  var SOURCE_NAMES = D.guestSources;
+  var BY_SOURCE = {
+    "Plan a Visit form": [4, 5, 4, 5, 6, 4, 3, 3, 7, 6, 6, 3],
+    "Hope conversation": [2, 3, 3, 3, 3, 3, 3, 3, 5, 5, 4, 3],
+    "Connect card":      [3, 4, 4, 3, 5, 3, 2, 2, 5, 2, 3, 1],
+    "Event sign-up":     [1, 2, 1, 2, 2, 1, 1, 1, 3, 2, 1, 1],
+    "Newsletter":        [1, 2, 1, 1, 2, 1, 1, 0, 1, 2, 1, 1]
+  };
+  var FIRST_CONTACT_HOURS = [30, 28, 31, 26, 24, 27, 29, 25, 22, 11, 8, 6];
+  var CONTACT_BUCKETS = [{ label: "Under 4 hours", value: 14 }, { label: "4 to 24 hours", value: 22 }, { label: "1 to 2 days", value: 13 }, { label: "2 to 4 days", value: 3 }, { label: "Over 4 days", value: 1 }];
+  var RETURN = { months: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"], monthsLong: ["June 2026", "July 2026", "August 2026", "September 2026", "October 2026", "November 2026"], firstVisits: [6, 6, 14, 12, 10, 6], cameBack: [2, 2, 6, 6, 4, null] };
+  var STEP_TIMES = ["7 hours", "6 days", "3 weeks", "12 days", "5 weeks"];
+  var MEDIAN_FIRST_CONTACT = 7;
+  /* Source names as the report says them: the assistant's name comes from one constant. */
+  function sourceLabel(s) { return s === "Hope conversation" ? HOPE + " conversation" : s; }
+
+  /* ---------- Head, the phone view picker and the basis line ---------- */
+  $("gr-sub").textContent = "How guests find their way at " + c.short + ", from the first hello to a place to serve.";
+  $("gr-print").addEventListener("click", function () { window.print(); });
+  var VIEWS = [["attention", "Needs You", "church-guests.html"], ["all", "All Guests", "church-guests.html?view=all"], ["board", "By Stage", "church-guests.html?view=board"], ["drafts", "Drafts Waiting", "church-guests.html?view=drafts"], ["quiet", "Gone Quiet", "church-guests.html?view=quiet"], ["report", "Guest Report", "church-guests-report.html"]];
+  $("gr-view").innerHTML = VIEWS.map(function (v) { return '<option value="' + v[0] + '"' + (v[0] === "report" ? " selected" : "") + ">" + esc(v[1]) + "</option>"; }).join("");
+  $("gr-view").addEventListener("change", function () { var v = this.value; VIEWS.forEach(function (x) { if (x[0] === v && v !== "report") GM.go(x[2]); }); });
+  $("gr-scope").innerHTML = ic("shield") + "<span>Counts only. No names, no prayer and no private words. Last 12 months, sized for " + esc(c.short) + ", " + esc(c.size.charAt(0).toLowerCase() + c.size.slice(1)) + ".</span>";
+  $("gr-updated").innerHTML = "<span class=\"v2-updated\">Updated today, " + esc(fmt.time(D.now)) + "</span>";
+
+  /* ---------- Below Plus: the real page head, then the calm locked card ---------- */
+  if (ctx.locked) {
+    $("gr-sub").textContent = GM.isIncluded("guests") ? "The guest report comes with the Plus plan. Guests, the board and welcome notes are all here on the " + GM.level().code + " plan." : "The guest report comes with the Plus plan. Guests and the board come with the Shepherd plan.";
+    $("gr-print").remove();
+    var pg = document.querySelector(".gr-page");
+    Array.prototype.slice.call(pg.children).forEach(function (ch) { if (!ch.matches(".v2-page-head,.v2-view-picker,noscript")) ch.remove(); });
+    pg.insertAdjacentHTML("beforeend", GM.lockedState("reports", { title: "The guest report", thumb: "guests-report" }));
+    /* The card shows the Guest Report's own picture (locked-guests-report-<slug>.jpg), never the Reports
+       summary's, so any other picture is taken off. */
+    var lockCard = pg.querySelector(".gm-locked-card"), lockImg = lockCard && lockCard.querySelector(".gm-locked-thumb img");
+    if (lockImg && !/locked-guests-report[-.]/.test(lockImg.getAttribute("src") || "")) { lockImg.closest("figure").remove(); lockCard.classList.remove("has-thumb"); }
+    pg.classList.add("gm-locked-page");
+    GM.carryLinks();
+    return;
+  }
+
+  /* ---------- The numbers ---------- */
+  var year = m.newGuests.reduce(function (a, b) { return a + b; }, 0);
+  var path = m.guestPathFall, total90 = path[0].value;
+  var rv = RETURN.cameBack.slice(0, 4).reduce(function (a, b) { return a + b; }, 0), fv = RETURN.firstVisits.slice(0, 4).reduce(function (a, b) { return a + b; }, 0);
+  var rate = Math.round((rv / fv) * 100);
+  function metric(label, value, note) { return '<div class="v2-report-metric"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + "</b><span>" + esc(note) + "</span></div>"; }
+  $("gr-glance").innerHTML =
+    metric("New guests, 12 months", year, "About " + Math.round(year / 12) + " a month. " + m.newGuests[11] + " so far in November.") +
+    metric("Time to first contact", MEDIAN_FIRST_CONTACT + " hours", "Median, last 90 days. " + m.welcomedWithin48h + "% welcomed within 48 hours.") +
+    metric("Second visit rate", rate + "%", rv + " of " + fv + " first-time visitors came back within six weeks.");
+
+  /* ---------- The one move: the biggest drop on the path ---------- */
+  var drops = path.slice(1).map(function (s, i) { return { from: path[i], to: s, gap: path[i].value - s.value }; });
+  /* Visited to Start Here: the widest drop guests can be invited across (New to Welcomed is the follow-up itself, in the numbers above). */
+  var leak = drops.filter(function (d) { return d.from.label === "Visited"; })[0];
+  var visitedNow = D.guests.filter(function (g) { return GM.stage(g.stage).label === leak.from.label; });
+  $("gr-move").innerHTML =
+    '<div><div class="v2-eyebrow">Highest-impact move</div><h2 class="v2-serif-headline" id="gr-move-title">' + esc(leak.from.label) + ", not yet at " + esc(leak.to.label) + "</h2>" +
+    '<p class="v2-report-diagnostic-count"><b class="v2-serif-number">' + leak.gap + "</b> to invite <span>of " + leak.from.value + " who visited this fall</span></p>" +
+    "<p>A personal invitation is what closes this gap. The next Start Here is Sunday, December 6, and " + esc(HOPE) + " can draft each invitation for a person to approve.</p>" +
+    '<div class="v2-report-composition"><span><b>' + visitedNow.length + "</b> on the board now</span><span><b>" + visitedNow.filter(function (g) { return fmt.due(g.due).days <= 0; }).length + "</b> due or overdue</span><span><b>0</b> without an owner</span></div></div>" +
+    '<div class="v2-report-diagnostic-actions"><a class="v2-button v2-button-primary" href="church-guests.html?view=board">' + ic("arrow") + "Open By Stage</a>" +
+    '<button class="v2-button" type="button" data-gm-action="ask-hope" data-gm-prompt="Who visited but has not come to Start Here?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button></div>";
+  GM.hope.addAnswers([{ match: /start here|not come|visited but/i, answer: function () {
+    return "Of " + leak.from.value + " guests who visited since September, " + leak.gap + " have not come to Start Here yet. " + visitedNow.length + " are on the board now: " +
+      visitedNow.map(function (g) { return GM.person(g.personId).name + " (" + GM.staff(g.owner).name + ")"; }).join(", ") + ". The next Start Here is Sunday, December 6.";
+  } }]);
+
+  /* ---------- The guest path and the sources ---------- */
+  GMCharts.funnel("#gr-funnel", {
+    title: "Guest path by stage, last 90 days",
+    summary: "Of " + total90 + " guests in the last 90 days, " + path.slice(1).map(function (s) { return s.value + " " + (s.label === "Welcomed" ? "were welcomed" : s.label === "Visited" ? "visited" : s.label === "Start Here" ? "came to Start Here" : s.label === "In a Group" ? "joined a group" : "are serving"); }).join(", ") + ".",
+    labels: path.map(function (s) { return s.label; }),
+    series: [{ name: "Guests", values: path.map(function (s) { return s.value; }) }],
+    unit: { one: "guest", many: "guests" }, categoryTitle: "Stage"
+  });
+  GMCharts.bar("#gr-sources", {
+    title: "Where guests come from, last 90 days",
+    summary: "Plan a Visit forms brought the most guests, then " + HOPE + " conversations and connect cards.",
+    horizontal: true, shareOfTotal: true,
+    labels: m.guestSources90.map(function (s) { return sourceLabel(s.label); }),
+    series: [{ name: "Guests", values: m.guestSources90.map(function (s) { return s.value; }) }],
+    unit: { one: "guest", many: "guests" }, xTitle: "Guests, last 90 days", categoryTitle: "Source"
+  });
+
+  /* ---------- By source, by month ---------- */
+  GMCharts.stackedBar("#gr-by-month", {
+    title: "New guests by source, by month",
+    summary: "New guests each month for the last twelve months, split by source. August was the busiest month with 21. November has 9 so far.",
+    labels: m.months, fullLabels: m.monthsLong,
+    series: SOURCE_NAMES.map(function (n) { return { name: sourceLabel(n), values: BY_SOURCE[n] }; }),
+    unit: { one: "guest", many: "guests" }, yTitle: "Guests", xTitle: "Month", categoryTitle: "Month", height: 230
+  });
+
+  /* ---------- Time to first contact ---------- */
+  GMCharts.line("#gr-speed-line", {
+    title: "Time to first contact, median hours by month",
+    summary: "The median wait for a first hello was about a day through August, then fell to " + FIRST_CONTACT_HOURS[11] + " hours by November, once " + HOPE + " began drafting welcome notes for a person to approve.",
+    labels: m.months, fullLabels: m.monthsLong,
+    series: [{ name: "Median hours", values: FIRST_CONTACT_HOURS, notes: m.newGuests.map(function (n) { return n + " new guests"; }) }],
+    reference: { value: 24, label: "Goal: within a day" },
+    unit: { one: "hour", many: "hours" }, yTitle: "Hours", xTitle: "Month", categoryTitle: "Month", height: 200
+  });
+  GMCharts.bar("#gr-speed-buckets", {
+    title: "Time to first contact, last 90 days",
+    summary: "Of " + total90 + " guests, 36 heard from a person within a day and 49 within two days.",
+    horizontal: true, shareOfTotal: true,
+    labels: CONTACT_BUCKETS.map(function (b) { return b.label; }),
+    series: [{ name: "Guests", values: CONTACT_BUCKETS.map(function (b) { return b.value; }) }],
+    unit: { one: "guest", many: "guests" }, xTitle: "Guests, last 90 days", categoryTitle: "Time to first contact"
+  });
+
+  /* ---------- Coming back ---------- */
+  GMCharts.bar("#gr-return", {
+    title: "First visits and second visits, by month",
+    summary: "June to September, " + rv + " of " + fv + " first-time visitors came back within six weeks, " + rate + " percent. October is still counting, and November is too soon to tell.",
+    labels: RETURN.months, fullLabels: RETURN.monthsLong,
+    series: [{ name: "First visits", values: RETURN.firstVisits }, { name: "Came back within six weeks", values: RETURN.cameBack }],
+    unit: { one: "guest", many: "guests" }, yTitle: "Guests", xTitle: "Month of first visit", categoryTitle: "Month of first visit", height: 200
+  });
+
+  /* ---------- Closed with a reason ---------- */
+  var closed = D.closedByReason12, closedTotal = closed.reduce(function (t, x) { return t + x.value; }, 0);
+  GMCharts.bar("#gr-closed", {
+    title: "Guests closed with a reason, last twelve months",
+    summary: closedTotal + " guests were closed with a reason in twelve months: " + closed.map(function (x) { return x.value + " " + x.label.toLowerCase(); }).join(", ") + ". Each one was archived, not deleted.",
+    labels: closed.map(function (x) { return x.label; }),
+    series: [{ name: "Guests closed", values: closed.map(function (x) { return x.value; }) }],
+    unit: { one: "guest", many: "guests" }, horizontal: true, xTitle: "Guests closed", categoryTitle: "Reason", yMax: 12
+  });
+
+  /* ---------- Step times ---------- */
+  $("gr-steps").innerHTML = path.slice(1).map(function (s, i) {
+    var prev = path[i];
+    return '<tr><th scope="row"><b>' + esc(s.label) + '</b> <span class="gr-from">from ' + esc(prev.label) + '</span></th><td class="is-num">' + s.value + " of " + prev.value + '</td><td class="is-num">' + Math.round((s.value / prev.value) * 100) + '%</td><td class="is-num">' + esc(STEP_TIMES[i]) + "</td></tr>";
+  }).join("");
+
+  $("gr-foot").innerHTML = ic("shield") + '<span>No names, prayer or private words appear in reports. Sources come from the form or card a guest filled in; nothing is tracked on the website, and ' + esc(HOPE) + ' keeps no conversations. Prayer, care and reply times live in the <a class="gm-link" href="church-reports.html">care reports</a>, and every guest on the <a class="gm-link" href="church-guests.html?view=board">board</a> has an owner and a next step.</span>';
+
+  GM.hope.setBriefing({
+    /* About 80 characters, as Genesis OS writes its greeting: the greeting and the two numbers a front office watches. */
+    line: GM.greeting() + ", {name}. " + year + " new guests in 12 months, a first hello in about " + MEDIAN_FIRST_CONTACT + " hours.",
+    chips: [{ label: "Open By Stage", href: "church-guests.html?view=board", primary: true }, { label: "Who Has Not Come to Start Here?", ask: "Who visited but has not come to Start Here?" }, { label: "All Reports", href: "church-reports.html" }]
+  });
+
+  /* ---------- Guided tour ---------- */
+  GM.setTour([
+    { target: '[data-tour="report.privacy"]', title: "Counts only", text: "Reports never show names, prayer or private words. Nothing is tracked on the website." },
+    { target: '[data-tour="report.glance"]', title: "The front office in three numbers", text: "New guests this year, how fast a person says hello, and how many come back for a second visit." },
+    { target: '[data-tour="report.move"]', title: "The one move that matters most", text: "The biggest drop on the guest path, with the guests behind it and the next step. One click opens the board." },
+    { target: '[data-tour="report.path"]', title: "The guest path by stage", text: "Where recent guests are now, from New to Serving, with the share kept at each step and where they came from." },
+    { target: '[data-tour="report.sources"]', title: "Where guests come from", text: "Plan a Visit, {assistant.name}, connect cards, events and the newsletter, month by month. Use it to see what is working." },
+    { target: '[data-tour="report.speed"]', title: "A first hello, sooner", text: "The median wait fell from about a day to a few hours once {assistant.name} began drafting welcome notes for a person to approve." },
+    { target: '[data-tour="report.return"]', title: "Coming back", text: "A second visit is the best sign a guest felt at home. Each step of the path shows how many kept going and how long it took." }
+  ]);
+});
+</script>
+</body>
+</html>

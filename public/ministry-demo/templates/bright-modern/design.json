@@ -1,0 +1,130 @@
+{
+  "template": "Bright and Modern",
+  "slug": "bright-modern",
+  "forChurches": "Church plants and young families",
+  "lookInOneLine": "White space, heavy grotesk type, big daylight photos and one cobalt accent: crisp and confident like a modern product site, but warm.",
+  "church": {
+    "name": "Lightwell Church",
+    "shortName": "Lightwell",
+    "fictional": true,
+    "nameCheck": "Web search on 2026-11-19 for \"Lightwell Church\" Raleigh NC returned no church by that name.",
+    "city": "Raleigh",
+    "state": "North Carolina",
+    "stateCode": "NC",
+    "streetAddress": "1218 Brightwater Ave",
+    "postalCode": "27603",
+    "addressNote": "Street address is made up.",
+    "phone": "(919) 555-0142",
+    "phoneNote": "555-01xx numbers are reserved for fiction.",
+    "sundayTimes": ["9:00 AM", "10:45 AM"],
+    "sundayTimesLine": "Sundays 9:00 & 10:45 AM",
+    "kidsNote": "Kids check-in opens 20 minutes before each gathering.",
+    "pastors": ["Theo", "Priya"],
+    "pastorsLine": "Pastors Theo and Priya",
+    "planted": 2023,
+    "tagline": "Let the light in.",
+    "heroHeadline": { "line1": "Find your", "changingWord": ["people.", "peace.", "Sunday."] },
+    "missionLine": "A young church in the middle of Raleigh for people who are still figuring it out. So, all of us.",
+    "statementBand": "Come as you are. Leave a little lighter.",
+    "announcement": "Room to Grow: bright new kids' rooms open this spring.",
+    "currentSeries": "Open Doors",
+    "assistantName": "Hope",
+    "neighborhoods": ["Five Points", "Oakwood", "Boylan Heights", "Glenwood South", "Warehouse District"]
+  },
+  "palette": [
+    { "name": "Daylight White", "hex": "#FFFFFF", "role": "Main ground, most of every page", "carries": [
+      { "text": "Night Ink #0B1220", "contrast": "18.72:1" },
+      { "text": "Graphite #475166", "contrast": "7.96:1" },
+      { "text": "Lightwell Cobalt #1F4FFF", "contrast": "5.80:1" } ] },
+    { "name": "Cloud", "hex": "#F4F7FC", "role": "Second ground for alternating sections, panels and the chat body", "carries": [
+      { "text": "Night Ink #0B1220", "contrast": "17.44:1" },
+      { "text": "Graphite #475166", "contrast": "7.42:1" },
+      { "text": "Lightwell Cobalt #1F4FFF", "contrast": "5.40:1" } ] },
+    { "name": "Sky", "hex": "#E4ECFF", "role": "Pale sky tint: announcement bar, headline highlighter, icon tiles, avatars, input focus ring, story ground", "carries": [
+      { "text": "Night Ink #0B1220", "contrast": "15.82:1" },
+      { "text": "Graphite #475166", "contrast": "6.73:1" },
+      { "text": "Lightwell Cobalt #1F4FFF", "contrast": "4.90:1" } ] },
+    { "name": "Lightwell Cobalt", "hex": "#1F4FFF", "role": "The one vivid accent: primary buttons, links, labels, the mark, the next-steps band, quote cards", "carries": [
+      { "text": "White #FFFFFF", "contrast": "5.80:1" },
+      { "text": "Sky #E4ECFF", "contrast": "4.90:1" } ] },
+    { "name": "Cobalt Press", "hex": "#1739CC", "role": "Hover and pressed state of cobalt; the panel that wipes up behind a next-step column", "carries": [
+      { "text": "White #FFFFFF", "contrast": "8.42:1" },
+      { "text": "Sky #E4ECFF", "contrast": "7.11:1" } ] },
+    { "name": "Night Ink", "hex": "#0B1220", "role": "Headlines, body text, footer ground", "carries": [
+      { "text": "White #FFFFFF", "contrast": "18.72:1" },
+      { "text": "Sky #E4ECFF", "contrast": "15.82:1" },
+      { "text": "Mist #A9B4C8", "contrast": "8.96:1" } ] },
+    { "name": "Graphite", "hex": "#475166", "role": "Secondary text, captions, notes. Never headlines.", "carries": [
+      { "text": "on White", "contrast": "7.96:1" } ] },
+    { "name": "Mist", "hex": "#A9B4C8", "role": "Secondary text on Night Ink only", "carries": [
+      { "text": "on Night Ink", "contrast": "8.96:1" },
+      { "text": "on Ink Raised #141C2E", "contrast": "8.14:1" } ] },
+    { "name": "Rule", "hex": "#DCE2EC", "role": "1px hairlines and card borders (not text)", "carries": [] },
+    { "name": "Rule Strong", "hex": "#C5CEDC", "role": "Outline button and input borders (not text)", "carries": [] },
+    { "name": "Ink Raised", "hex": "#141C2E", "role": "The giant decorative wordmark at the foot of the footer (not text that must be read)", "carries": [] }
+  ],
+  "contrastMethod": "WCAG 2.x relative luminance formula, computed with a short Node script. Every body text pair is 4.5:1 or better.",
+  "fonts": {
+    "display": { "family": "Bricolage Grotesque", "weightsUsed": [650, 700, 780, 800], "notes": "Variable font with an optical size axis (font-optical-sizing: auto). Headlines tracked tight, -2.4% to -3.6%. Wordmark at -4.5%. Line height 0.92 to 1.05." },
+    "body": { "family": "Hanken Grotesk", "weightsUsed": [400, 500, 600], "notes": "Body 17px / 1.6, lead 19px / 1.55, labels 12.5px caps +14%. Lining figures everywhere. Chosen in review over Instrument Sans, which the Bold and Dark look also uses, so no two looks share a body face." },
+    "googleFontsUrl": "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap",
+    "scale": [
+      { "name": "Display XL (hero)", "size": "clamp(52px, 7.4vw, 112px)", "lineHeight": 0.92, "tracking": "-0.036em", "weight": 800 },
+      { "name": "Display L (section titles)", "size": "clamp(40px, 5vw, 72px)", "lineHeight": 0.98, "tracking": "-0.03em", "weight": 800 },
+      { "name": "Display M (titles that share a row)", "size": "clamp(32px, 3.4vw, 50px)", "lineHeight": 1.02, "tracking": "-0.026em", "weight": 800 },
+      { "name": "Title (cards, columns)", "size": "24px to 30px", "lineHeight": 1.15, "tracking": "-0.024em", "weight": 780 },
+      { "name": "Lead", "size": "19px", "lineHeight": 1.55, "weight": 400 },
+      { "name": "Body", "size": "17px", "lineHeight": 1.6, "weight": 400 },
+      { "name": "Label", "size": "12.5px caps", "tracking": "0.14em", "weight": 600 }
+    ]
+  },
+  "shapes": {
+    "radius": { "buttons": "8px", "inputs": "8px", "cards": "10px", "photos": "10px", "chips": "999px (pills for small chips only)", "logoMark": "9 of 40 units" },
+    "rules": "1px #DCE2EC hairlines between items and around cards; 1.5px borders on outline buttons and inputs",
+    "accentLines": "Label line 22px x 2px cobalt; next-step and numbered-row marks 3px that draw full width then settle to 14%; 3px cobalt line under card photos on hover; 2px scroll progress line under the header",
+    "shadows": "Neutral ink shadows only, used on floating things (dropdown, chat, hero chip). No colored glows."
+  },
+  "motion": {
+    "character": "Crisp and quick, like good product UI. Short rises on a firm ease-out, cobalt lines that draw like a progress bar, a ticker-style word swap, and one slow daylight drift on the hero photo. Nothing bounces, nothing glows.",
+    "easing": "cubic-bezier(.16,1,.3,1) for arrivals, cubic-bezier(.2,.8,.2,1) for hovers",
+    "pieces": [
+      "Scroll reveal: blocks rise 18px and fade in over 0.8s. JS adds reveal-init only after the observer exists, then swaps to reveal-in.",
+      "Next-step columns and cards arrive one by one, 0.09s apart.",
+      "Accent line draws across each column (0 to full) and settles to a short 14% mark.",
+      "Hover: a Cobalt Press panel wipes up behind a next-step column; the title nudges 4px; the arrow slides.",
+      "Primary buttons: one light sheen when they first scroll into view, and a soft light that follows the cursor inside the button.",
+      "Hero word swaps like a ticker: the old word exits up and is fully gone before the new one rises in.",
+      "Announcement play button: a cobalt ring pulses gently outward.",
+      "Hero photo drifts and zooms slowly over 28 seconds in place of a film.",
+      "Mission highlighter draws in behind one phrase.",
+      "Photo strip scrolls slowly (80s loop), pauses on hover, and has a Pause Motion button that stops every moving part.",
+      "Reviews rotate on a 6.5s progress line under the quote that pauses on hover or focus. The old review is gone before the next one rises in, so they never overlap.",
+      "Statement band sky drifts 56px with scroll (parallax).",
+      "Header hairline appears on scroll with a cobalt reading-progress line."
+    ],
+    "reducedMotion": "Under prefers-reduced-motion every animation and transition stops, the hero word stays on 'people.', the strip becomes a still, scrollable row, and reviews only change by button."
+  },
+  "photoTreatment": {
+    "source": "Unsplash License stock photos (no Unsplash+) plus one Pexels License photo, credited in photos/CREDITS.md",
+    "grade": "Bright daylight, clean whites, cool open shadows, true skin. No orange tint, heavy filters or vignettes.",
+    "subjects": "Groups of adults in real moments: friends over coffee, worship in a bright room, greeting, small group, prayer, volunteers sorting donations, baptism, a pastor teaching.",
+    "framing": "Big crops with room around people, set in 10px corners. The hero bleeds to the right edge of the screen on desktop and sits first on phones.",
+    "textOnPhotos": "Only on the statement band (deep blue sky) and social posts, always over a night ink fade so white type stays above 4.5:1.",
+    "cropsToAvoidText": "pastor-teaching.jpg is cropped below projected slide words; families-greeting-lobby.jpg is cropped right of the letters on the glass."
+  },
+  "logo": {
+    "concept": "A lightwell seen in section. A shaft of light drops through the roof of a rounded cobalt square and lands as a floor, drawing a white L. A small sky-tint pane at top right is the sky above.",
+    "mark": "40 x 40 rounded square (radius 9), cobalt #1F4FFF; white L made of a 6.5-unit shaft from the top edge and a 6.5-unit floor; Sky #E4ECFF pane 7.5 units square.",
+    "wordmark": "lightwell, lowercase, Bricolage Grotesque 800, tracking -4.5%",
+    "lockups": ["Primary horizontal: mark + wordmark", "Stacked: mark above wordmark, CHURCH · RALEIGH in spaced caps below", "Small mark alone for avatars and favicon (down to 16px)", "Reversed: white square with cobalt L on cobalt, ink or photos"],
+    "clearSpace": "Equal to the sky pane on every side",
+    "builtIn": "Inline SVG symbol plus live type, so it scales cleanly and edits easily"
+  },
+  "files": {
+    "homepage": "index.html",
+    "brandBoard": "brand-board.html",
+    "socialPlan": "social-plan.md",
+    "photos": "photos/ (14 JPEGs at 1800px wide, quality 80) and photos/CREDITS.md",
+    "screenshots": "shots/desktop and shots/mobile"
+  }
+}

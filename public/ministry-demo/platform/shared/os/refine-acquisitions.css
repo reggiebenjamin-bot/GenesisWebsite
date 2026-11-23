@@ -1,0 +1,135 @@
+/* Copied from the Genesis OS repo (v2/refine/acquisitions.css). Do not edit here: refresh with
+   node tools/sync-os.mjs <repo>. Comments are scrubbed of em dashes and private names. */
+/* Genesis V2 refinement layer: acquisitions.
+ * Loaded after styles.css. Owned by one workstream at a time; shared tokens,
+ * type roles and the brick motif live in styles.css, not here. */
+
+/* The page head is the shared one now; the sections under it keep one 16px
+ * rhythm, and the head's own margin is trimmed so the gap under it stays 20px
+ * like every other workspace. */
+.v2-acq-page{display:flex;flex-direction:column;gap:16px;padding-bottom:32px}
+.v2-acq-page>.v2-page-head{margin-bottom:4px}
+.v2-acq-page>.v2-loading,.v2-acq-page>.v2-state{margin:0}
+
+/* The window picker sits beside the title at its own width at every size. A
+ * full-width select at 768px read as a form field, not a filter. */
+.v2-acq-window,.v2-acq-window select{width:auto}
+.v2-acq-window select{min-width:150px}
+/* On desktop the header controls share the select's compact 34px height, so
+ * Ask Hawk does not stand taller than the picker beside it. */
+@media (min-width:861px){
+  .v2-acq-page .v2-page-actions .v2-button{min-height:34px;font-size:12px}
+}
+
+/* One quiet label style for stat captions and the buyer panel. Labels are not
+ * gold: gold is kept for the one Claim that matters and the phase in progress. */
+.v2-acq-label{display:block;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+
+/* Stat numerals are the point of their card, so they take the serif number
+ * role. The caption stays sans. */
+.v2-acq-stats .v2-stat{gap:0}
+.v2-acq-stats .v2-serif-number{margin:8px 0 4px;color:var(--v2-text)}
+@media (min-width:561px) and (max-width:860px){
+  .v2-acq-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .v2-acq-stats .v2-stat{padding:10px 12px}
+}
+
+/* Archivo was never loaded, so these fell back anyway; name the real face. */
+.v2-acq-lane-head h2{font-family:inherit;font-size:14px;font-weight:700}
+.v2-acq-lane-count{color:var(--v2-text-2);background:var(--v2-surface-2);border-color:var(--v2-border)}
+.v2-acq-kind{font-family:inherit;font-size:10px;font-weight:700;letter-spacing:.13em}
+
+.v2-acq-title h3{margin:0;overflow:hidden;color:var(--v2-text);font-size:14px;font-weight:700;line-height:1.35;letter-spacing:-.012em;text-overflow:ellipsis;white-space:nowrap}
+.v2-acq-title small{font-size:12px}
+
+/* The hot edge is the inset brick from styles.css; the border under it stays
+ * the same 1px hairline as the card's other three sides. */
+.v2-acq-card.is-hot{border-left-color:var(--v2-border)}
+
+/* Inset pieces sit on the second surface so the text reply reads as a quote
+ * inside the card rather than more card. Its edge is neutral: the gold edge
+ * already belongs to the first-time caller. */
+.v2-acq-chip{background:var(--v2-surface-2);font-size:11px;font-weight:500;letter-spacing:0}
+.v2-acq-quote{background:var(--v2-surface-2);border-left-color:var(--v2-border-strong)}
+.v2-acq-note{margin:0;color:var(--v2-muted);font-size:12px;line-height:1.5}
+.v2-acq-note .v2-pill{margin-right:6px}
+
+/* Phase progress inside a card: the shared stepper, one size down so five
+ * steps fit a half-width lane. */
+.v2-acq-stepper{gap:2px 0}
+.v2-acq-stepper li{font-size:10px;letter-spacing:.08em}
+.v2-acq-stepper li+li::before{width:5px;height:5px;margin:0 8px 0 6px}
+
+.v2-acq-meta{margin-right:auto;color:var(--v2-muted);font-size:11px;font-variant-numeric:tabular-nums}
+.v2-acq-owner{font-family:inherit;font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--v2-text)}
+.v2-acq-owner-by{color:var(--v2-muted);font-weight:500}
+
+/* Desktop footers use the compact control height the phase select already has.
+ * Touch sizes (44px at 860px and below) are left alone. */
+@media (min-width:861px){
+  .v2-acq-foot .v2-button{min-height:34px;font-size:12px}
+}
+
+/* A card here is not a click target; only its buttons are. It stays still
+ * under the pointer, and pressing Claim no longer drops the whole card. */
+.v2-acq-card:hover,.v2-acq-card:active{transform:none}
+.v2-acq-page .v2-card:hover{box-shadow:var(--v2-shadow-sm)}
+
+/* The one-shot ring on a card that just moved. The retired-entrance rule sets
+ * animation:none on every card once the operator has interacted, which would
+ * swallow the ring too; this is the same specificity, declared later. */
+.v2-main .v2-acq-card.v2-attn{animation:v2-attn-ring 900ms var(--v2-ease-settle) 1}
+/* Pills pop in with the page on arrival only. A repaint after a Buyers toggle,
+ * a claim or a window change must not replay that pop on every card. */
+.v2-main:not(.v2-page-enter) .v2-acq-page .v2-pill,
+.v2-main:not(.v2-page-enter) .v2-acq-page .v2-badge{animation:none}
+
+/* Suggested buyers: who, what kind, and a way to reach them. */
+.v2-acq-buyers-head{margin:6px 0 0;color:var(--v2-text-2);font-size:12px}
+.v2-acq-buyers li{grid-template-columns:minmax(0,1fr) auto;align-items:center;background:var(--v2-surface-2)}
+.v2-acq-buyer{min-width:0;display:grid;gap:1px}
+.v2-acq-buyer b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v2-acq-buyers .v2-acq-buyer small{grid-column:auto;overflow:hidden;color:var(--v2-muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.v2-acq-buyer-links{display:flex;gap:12px}
+.v2-acq-link{color:var(--v2-text-2);font-size:12px;font-weight:500;text-decoration:underline;text-decoration-color:var(--v2-border-strong);text-underline-offset:3px}
+.v2-acq-link:hover{color:var(--v2-text);text-decoration-color:currentColor}
+
+/* Neutral replies, folded under the board. */
+.v2-acq-other{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.v2-acq-other-list{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:10px;align-items:start}
+
+/* ===== Between companies ==================================================
+ * lead-transfers.js. Under the board it scopes: what corporate sent and where
+ * it stands, and what was sent to this company. A preview is a short fact
+ * list with no contact details; accepted leads open their contact details. */
+.v2-transfer-board{display:grid;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid var(--v2-border)}
+.v2-transfer-board-head h2{margin:0;font-size:15px;font-weight:700}
+.v2-transfer-board-head p{margin:3px 0 0;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+.v2-transfer-group{display:grid;gap:8px}
+.v2-transfer-group h3{margin:0;color:var(--v2-text);font-size:13px;font-weight:600}
+.v2-transfer-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.v2-transfer-card{display:grid;align-content:start;gap:10px;padding:15px 16px}
+.v2-transfer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.v2-transfer-head small{display:block;color:var(--v2-muted);font-size:12px}
+.v2-transfer-head b{display:block;margin-top:2px;color:var(--v2-text);font-size:14px}
+.v2-transfer-quote{margin:0;padding-left:10px;border-left:2px solid var(--v2-accent);color:var(--v2-text-2);font-size:13px;line-height:1.5}
+.v2-transfer-facts{display:grid;gap:5px;margin:0}
+.v2-transfer-facts>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px}
+.v2-transfer-facts dt{color:var(--v2-muted);font-size:12px}
+.v2-transfer-facts dd{margin:0;color:var(--v2-text);font-size:12.5px;overflow-wrap:anywhere}
+.v2-transfer-facts.is-contact{padding:10px 12px;border:1px solid var(--v2-accent-border);border-radius:var(--v2-radius-sm);background:var(--v2-accent-soft)}
+.v2-transfer-actions{display:flex;flex-wrap:wrap;gap:8px}
+.v2-transfer-note{margin:0;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+.v2-transfer-list{display:grid;margin:0;padding:0;list-style:none;border:1px solid var(--v2-border);border-radius:var(--v2-radius-md);background:var(--v2-surface)}
+.v2-transfer-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid var(--v2-border)}
+.v2-transfer-row:last-child{border-bottom:0}
+.v2-transfer-row b{display:block;color:var(--v2-text);font-size:13px}
+.v2-transfer-row small{display:block;margin-top:2px;color:var(--v2-muted);font-size:12px}
+.v2-transfer-row-actions{display:flex;flex:none;align-items:center;gap:8px}
+.v2-transfer-lead .v2-transfer-form{display:grid;gap:10px;margin-top:8px}
+.v2-transfer-lead .v2-field>span{font-size:11px}
+.v2-transfer-preview{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface-2)}
+.v2-transfer-history{display:grid;gap:6px;margin:8px 0;padding:0;list-style:none}
+.v2-transfer-history li{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px}
+.v2-transfer-history .v2-badge,.v2-transfer-row .v2-badge,.v2-transfer-head .v2-badge{flex:none;white-space:nowrap}
+@media(max-width:860px){.v2-transfer-row{flex-direction:column;align-items:flex-start}.v2-transfer-cards{grid-template-columns:1fr}}

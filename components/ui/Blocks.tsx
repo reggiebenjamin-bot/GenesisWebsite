@@ -12,10 +12,12 @@ import styles from "./Blocks.module.css";
 
 /* ── sheets ─────────────────────────────────────────────────────────── */
 
-type Surface = "paper" | "ink";
+type Surface = "paper" | "ivory" | "ink";
 
 const surfaces: Record<Surface, string> = {
   paper: "bg-paper text-ink",
+  /* The warmer light surface, for a band that should feel closer to home. */
+  ivory: "bg-ivory text-ink",
   ink: "bg-ink text-ivory",
 };
 

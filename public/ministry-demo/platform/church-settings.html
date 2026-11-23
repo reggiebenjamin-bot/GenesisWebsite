@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Settings · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: church settings. The tools the church already uses, how follow-up and alerts travel, when Genesis may sign in, and the church's data. Sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Settings only. Prefix: st-. Real v2- settings rows do the work; these only arrange them. */
+  .st-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+  .st-two>.v2-card{min-width:0}
+  .st-page .v2-section-head{margin-bottom:12px}
+  .st-limit{display:flex;gap:10px;align-items:flex-start;margin:12px 0 0;color:var(--v2-text-2);font-size:12.5px;line-height:1.6}
+  .st-limit svg{flex:none;margin-top:2px;color:var(--v2-info)}
+  .st-page .v2-set-control .v2-select{min-width:200px}
+  @media (max-width:1100px){.st-two{grid-template-columns:minmax(0,1fr)}}
+  /* The page column decides, not the window: with the Hope dock open the two cards stack, so no row runs to four lines or more. */
+  .st-page{container-type:inline-size}
+  @container (max-width:900px){.st-two{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:640px){.st-page .v2-set-row{flex-wrap:wrap}.st-page .v2-set-control .v2-select{min-width:0;width:100%}}
+  /* The export action never breaks over two lines; on phones and in a narrow column it sits under its copy, as Genesis OS keeps actions from wrapping. */
+  #st-data>.v2-section-head .v2-button{flex:none;white-space:nowrap}
+  @media (max-width:860px){#st-data>.v2-section-head{flex-direction:column;align-items:flex-start;gap:12px}}
+  body.gm-col-narrow #st-data>.v2-section-head{flex-direction:column;align-items:flex-start;gap:12px}
+</style>
+</head>
+<body data-side="church" data-page="settings" data-title="Settings">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page st-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow" id="st-eyebrow">Settings</div>
+        <h1>Settings</h1>
+        <p id="st-sub">The tools your church already uses, how follow-up and alerts travel, and when Genesis may sign in.</p>
+      </div>
+      <div class="v2-page-actions"><a class="v2-button v2-button-quiet" href="church-team.html" id="st-head-action">Team Roles</a></div>
+    </header>
+
+    <section class="v2-card" aria-labelledby="st-tools-title" data-tour="settings.tools" id="st-tools"></section>
+
+    <div class="st-two">
+      <section class="v2-card" aria-labelledby="st-alerts-title" data-tour="settings.alerts" id="st-alerts"></section>
+      <section class="v2-card" aria-labelledby="st-support-title" data-tour="settings.support" id="st-support"></section>
+    </div>
+
+    <section class="v2-card" aria-labelledby="st-data-title" data-tour="settings.data" id="st-data"></section>
+
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, c = ctx.church, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var $ = function (id) { return document.getElementById(id); };
+  var lead = GM.staff("s-lead"), care = GM.staff("s-care");
+  var connect = GM.isIncluded("care");
+  /* Care is the website, the brand board, the social plan, Hope on the site and forms by email.
+     Nothing here may describe the member app, the care inbox or people records as if they were on. */
+  var L1 = !connect, FROM2 = GM.pill("From Shepherd", "neutral");
+
+  $("st-eyebrow").textContent = "Settings · " + c.short;
+  /* Care has no Team Roles screen, so the head offers the plans instead of a locked page. */
+  if (L1) { $("st-head-action").setAttribute("href", GM.levelsHref); $("st-head-action").textContent = "Compare Plans"; }
+  function rows(list) { return '<div class="v2-set-panel">' + list.map(function (r) { return '<div class="v2-set-row"><div><b>' + esc(r[0]) + "</b><p>" + esc(r[1]) + '</p></div><div class="v2-set-control">' + r[2] + "</div></div>"; }).join("") + "</div>"; }
+  function sw(id, label, on) { return '<label class="v2-switch"><input type="checkbox" id="' + id + '"' + (on ? " checked" : "") + ' aria-label="' + esc(label) + '"><span></span><em>' + (on ? "On" : "Off") + "</em></label>"; }
+  function sel(id, label, opts) { return '<select class="v2-select v2-nselect" id="' + id + '" aria-label="' + esc(label) + '">' + opts.map(function (o) { return "<option>" + esc(o) + "</option>"; }).join("") + "</select>"; }
+
+  /* ---------- Works with your tools ---------- */
+  $("st-tools").innerHTML = '<div class="v2-section-head"><div><h2 id="st-tools-title">Works with your tools</h2><p>Genesis Ministry sits beside the tools ' + esc(c.short) + " already uses. Nobody is entered twice.</p></div>" + GM.pill("Connected", "positive") + "</div>" +
+    rows([
+      ["Giving", L1 ? "The website's Give link opens your own giving page. Genesis never handles a payment." : "Give opens your own giving page. Genesis never handles a payment, and the app keeps no giving history.", sel("st-give", "Giving provider", ["Subsplash", "Pushpay", "Planning Center Giving"])],
+      ["Events and groups", L1 ? "The website opens your events and groups page in the tool you already use." : "The website and the member app open your events and groups page in the tool you already use.", sel("st-events", "Events and groups", ["Planning Center Church Center", "Subsplash"])],
+      ["Kids check-in", L1 ? "Check-in stays where it is today. The website and " + HOPE + " tell families how it works, and kids' names are never kept here." : "Check-in stays where it is today. The member app links to it; kids' names are never kept here.", sel("st-kids", "Kids check-in", ["Planning Center Check-Ins", "Subsplash"])],
+      L1 ? ["People import", "From the Shepherd plan, your people are imported once at onboarding from a Planning Center export. On the Care plan forms go to your email, so there is nothing to import.", FROM2]
+         : ["People import", "Imported once at onboarding from a Planning Center export, as a CSV. Records also grow as people sign in.", GM.pill("Imported Sep 8", "positive")],
+      ["Planning Center sync", "A live two-way sync, so a change in one place shows in the other.", GM.pill("On the roadmap", "neutral")]
+    ]);
+
+  /* ---------- Follow-up and alerts ---------- */
+  $("st-alerts").innerHTML = '<div class="v2-section-head"><div><h2 id="st-alerts-title">Follow-up and alerts</h2><p>Changes are emailed to ' + esc(lead.name) + ".</p></div></div>" +
+    rows((L1 ? [
+      ["Plan a Visit forms", "Each one arrives by email at " + c.email + ", and your team replies from there.", GM.pill("Email", "neutral")],
+      ["Guest texting", "From the Shepherd plan, and only if you turn it on. Guest follow-up starts by email.", FROM2],
+      ["Pastor on call", "From the Shepherd plan. On the Care plan, crisis words on the website get 988 and 911 right away, and forms go by email to the address you chose.", FROM2]
+    ] : [
+      ["Guest follow-up", "By email. A guest can stop guest emails with one click.", GM.pill("Email", "neutral")],
+      ["Guest texting", D.guestSettings.textingNote, sw("st-texting", "Guest texting", false)],
+      ["Pastor on call", care.name + " this week. An email and a phone notification, with no private words: Urgent request. Sign in to read. This is staff alerting, separate from guest texting.", GM.pill(care.name, "info")]
+    ]).concat([
+      ["Alert wording", connect ? "New request. Sign in to read. Nothing else, so a shared family email gives nothing away." : "On the Care plan forms arrive by email with their words. The Shepherd plan changes alerts to: New request. Sign in to read.", GM.pill(connect ? "No private words" : "Care plan", connect ? "positive" : "warning")]
+    ]));
+
+  /* ---------- Genesis support ---------- */
+  $("st-support").innerHTML = '<div class="v2-section-head"><div><h2 id="st-support-title">When Genesis may sign in</h2><p>Only when you ask.</p></div></div>' +
+    rows([
+      ["Support session", "Off. Open one when you want Genesis to look at something with you. It closes after an hour, and it is recorded where you can see it.", sw("st-support-sw", "Genesis support session", false)],
+      ["Sessions in the last 90 days", "None.", GM.pill("0", "neutral")],
+      ["Website admins", "Genesis Support runs the system and settings and cannot read pastoral content.", GM.lock("staff", "No pastoral content")]
+    ]) +
+    '<p class="st-limit">' + ic("info") + (L1
+      ? "<span><b>On the Care plan.</b> Prayer and Plan a Visit forms arrive in your email and are not kept in a Genesis inbox. The Shepherd plan adds the locked inbox and a record of every open.</span></p>"
+      : "<span><b>An honest limit.</b> Genesis engineers who run the database could technically reach it. The rule, the record and our support policy are the promise.</span></p>");
+
+  /* ---------- Your data ---------- */
+  $("st-data").innerHTML = '<div class="v2-section-head"><div><h2 id="st-data-title">Your data is yours</h2><p>Export it any time. If you ever leave, we hand over a full export, then delete our copy once you confirm you have it.</p></div>' +
+    '<button class="v2-button" type="button" data-gm-action="toast" data-gm-toast="' + esc(L1 ? "A full export of your website content and approved facts would be prepared and emailed to the lead pastor. This is a preview, so nothing was exported." : "A full export would be prepared and emailed to the lead pastor, and the export would be recorded. This is a preview, so nothing was exported.") + '">' + ic("archive") + "Export Everything</button></div>" +
+    rows([
+      L1 ? ["What an export holds", "Your website content, the brand board, the social plan and the facts " + HOPE + " answers from. People, guests and care history come with the Shepherd plan.", GM.pill("Full export", "neutral")]
+         : ["What an export holds", "People, guests, care history, team roles and the record of who opened what.", GM.pill("Full export", "neutral")],
+      ["Where it runs", "A managed cloud database. Hosting and backup details are shared in writing during scoping.", GM.pill("In writing", "neutral")],
+      ["Facts " + HOPE + " may use", "31 facts approved by " + c.short + ", from service times to kids check-in. " + HOPE + " answers only from these.", '<a class="v2-button v2-button-quiet" href="church-website.html">Open the Website</a>']
+    ]);
+
+  ["st-texting", "st-support-sw"].forEach(function (id) {
+    if (!$(id)) return;
+    $(id).addEventListener("change", function () {
+      var box = this;
+      GM.toast(id === "st-texting" ? "Texting would turn on for guest follow-up, and " + lead.name + " would be emailed. This is a preview, so it stays off." : "A support session would open for one hour and be recorded. This is a preview, so it stays off.");
+      setTimeout(function () { box.checked = false; }, 600);
+    });
+  });
+  GM.carryLinks();
+
+  /* On the Care plan the dock keeps its own Care greeting (Preview Shepherd, Compare Plans): Hope in the workspace comes with the Shepherd plan. */
+  if (!L1) GM.hope.setBriefing({
+    /* About 80 characters, as Genesis OS writes its greeting. */
+    line: GM.greeting() + ", {name}. Giving and check-in stay with your tools. Texting is off.",
+    chips: [{ label: "Open Team Roles", href: "church-team.html", primary: true }, { label: "Can You Import Our People?", ask: "Can we import our people from Planning Center?" }, { label: "What If We Leave?", ask: "What happens to our data if we leave?" }]
+  });
+  GM.setTour([
+    { target: '[data-tour="settings.tools"]', title: "Works with your tools", text: "Giving, events and kids check-in stay where they are." },
+    { target: '[data-tour="settings.alerts"]', title: "Follow-up and alerts", text: "Email first, texting off, and alerts with no private words." },
+    { target: '[data-tour="settings.support"]', title: "When Genesis may sign in", text: "Only in a support session you open." },
+    { target: '[data-tour="settings.data"]', title: "Your data is yours", text: "Export it any time." }
+  ]);
+});
+</script>
+</body>
+</html>

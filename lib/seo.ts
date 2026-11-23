@@ -173,7 +173,7 @@ export const seoPages: readonly SeoPage[] = [
     description:
       "Book a no-cost Genesis consultation to review your current systems, the manual work creating the most drag, and the right scope and next step.",
     label: "Contact",
-    image: socialImage("contact", "Contact Genesis AI — book a consultation for your operation"),
+    image: socialImage("contact", "Contact Genesis AI: book a consultation"),
     lastModified: REBUILD,
     changeFrequency: "yearly",
     priority: 0.6,
@@ -241,6 +241,17 @@ export const seoPages: readonly SeoPage[] = [
     label: "Enterprise",
     image: null,
     lastModified: "2026-11-05",
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    path: "/ministry",
+    title: "Church Websites and Care Software",
+    description:
+      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, a guest pipeline and a private care inbox. Plans from $149 a month.",
+    label: "Ministry",
+    image: null,
+    lastModified: "2026-11-21",
     changeFrequency: "monthly",
     priority: 0.7,
   },

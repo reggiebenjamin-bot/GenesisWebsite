@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Today · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: the church's Today screen on the Genesis OS shell. What needs a person today, with sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Today only. Prefix: td-. Real v2- classes do the work; these only arrange them. */
+  .td-later{order:5}
+  .td-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .td-grid3 .v2-card{display:flex;flex-direction:column;gap:10px}
+  .td-grid3 .v2-card p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.6}
+  .td-grid3 .v2-card .v2-button{align-self:flex-start;margin-top:auto}
+  .td-card-head{display:flex;align-items:center;gap:12px}
+  .td-card-head h2{margin:0}
+  .td-draft-more{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+  .td-draft-more p{margin:0}
+  .td-quiet{background:var(--v2-surface-2)}
+  /* The quiet rows carry a short sentence, not a name: it wraps inside its own column instead of printing over the next one. */
+  .td-quiet .v2-row-title b,.td-quiet .v2-row-title span{white-space:normal;overflow:visible;text-overflow:clip}
+  .td-season .gm-chart{margin-top:6px}
+  .td-seen{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 12px}
+  .td-seen .v2-muted-copy{font-size:12px}
+  @media (pointer:coarse){#td-roles button{min-width:44px}}
+  @media (max-width:1100px){.td-grid3{grid-template-columns:minmax(0,1fr)}}
+  /* Care Home follows its own column, not the window, so Hope's panel at 1280 never squeezes the cards. */
+  #td-page{container-type:inline-size}
+  @container (max-width:900px){.td-grid3{grid-template-columns:minmax(0,1fr)}}
+  @container (max-width:760px){.td-grid3 ~ .v2-pulse{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .td-grid3 ~ .v2-pulse .v2-pulse-item span{overflow-wrap:anywhere}
+  .td-grid3 .v2-card .v2-button{white-space:nowrap}
+  @media (max-width:860px){
+    .td-tenant{display:none}
+    .td-draft-more{flex-direction:column;align-items:flex-start}
+    .td-draft-more .v2-button{white-space:nowrap}
+  }
+</style>
+</head>
+<body data-side="church" data-page="today" data-locked="custom" data-title="Today">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page v2-page-narrow v2-today-page" id="td-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow" id="td-date">Today</div>
+        <h1 id="td-greeting">Good morning</h1>
+        <p id="td-lede">Here is what needs a person today. Start at the top.</p>
+      </div>
+      <div class="v2-page-actions" id="td-actions"></div>
+    </header>
+
+      <!-- Hope's briefing: the counts that matter, and one question to ask -->
+      <section class="v2-card v2-briefing gm-hope-brief" aria-labelledby="td-brief-title" data-tour="today.hope" id="td-brief"></section>
+
+      <!-- The one panel on the screen: the most important guest or care item -->
+      <section class="v2-card v2-next-move" aria-labelledby="td-next-title" data-tour="today.next" id="td-next"></section>
+      <div class="v2-today-lead-controls v2-phone-sticky" role="group" aria-label="Today review" id="td-controls"></div>
+
+      <!-- The numbers row -->
+      <section class="v2-pulse v2-stat-grid" aria-label="Today at a glance" data-tour="today.glance" id="td-pulse"></section>
+
+      <!-- The rest of the ranked list -->
+      <section class="v2-section v2-up-next" id="v2-up-next-section" aria-labelledby="td-up-title" data-tour="today.upnext">
+        <div class="v2-section-head"><div><h2 id="td-up-title">Up next</h2><p>The rest of today's list. Guests and care, most important first.</p></div><a href="church-guests.html">Open Guests</a></div>
+        <div class="v2-card v2-attention-list" id="td-up"></div>
+      </section>
+
+      <!-- Phone only, as in Genesis OS: three questions for Hope -->
+      <section class="v2-section v2-today-ask" aria-labelledby="td-ask-title">
+        <div class="v2-section-head"><div><h2 id="td-ask-title">Ask <span data-gm-text="assistant.name">Hope</span></h2><p>Tap a question. Answers come from your own records, in counts and owners only.</p></div></div>
+        <div class="v2-today-ask-list" id="td-ask"></div>
+      </section>
+
+      <!-- Drafts that wait for a person -->
+      <section class="v2-section td-later" aria-labelledby="td-drafts-title" data-tour="today.drafts">
+        <div class="v2-section-head"><div><h2 id="td-drafts-title">Waiting for your approval</h2><p id="td-drafts-sub">Hope drafted these. Nothing goes out until a person approves it.</p></div><a href="church-guests.html?view=drafts">See All Drafts</a></div>
+        <div class="v2-card" id="td-drafts"></div>
+      </section>
+
+      <!-- Care waiting on us: topics only, and only for the roles that may see them -->
+      <section class="v2-section td-later" aria-labelledby="td-care-title" data-tour="today.care">
+        <div class="v2-section-head"><div><h2 id="td-care-title">Care waiting on us</h2><p id="td-care-sub">Oldest first. Today shows topics only; prayer words stay in the care inbox.</p></div><a href="church-care.html">Open Care Inbox</a></div>
+        <div class="td-seen" data-tour="today.seen">
+          <div class="v2-segments" role="group" aria-label="See Today as each role" id="td-roles">
+            <button type="button" data-role="pastor" aria-pressed="true">Pastor</button>
+            <button type="button" data-role="prayer" aria-pressed="false">Prayer Team</button>
+            <button type="button" data-role="staff" aria-pressed="false">Staff</button>
+          </div>
+          <span class="v2-muted-copy" id="td-seen" aria-live="polite"></span>
+        </div>
+        <div class="v2-card v2-attention-list" id="td-care"></div>
+      </section>
+
+      <!-- This season: counts only, in their own section so the charts are visible at rest -->
+      <section class="v2-section td-later td-season" aria-labelledby="td-season-title" data-tour="today.season">
+        <div class="v2-section-head"><div><h2 id="td-season-title">This season</h2><p>How guests find us and where they are now. Counts only.</p></div><a href="church-reports.html">Open Reports</a></div>
+        <div class="v2-viz-pair">
+          <section class="v2-card" aria-labelledby="td-c1-title">
+            <div class="v2-viz-head"><div><div class="v2-eyebrow">New guests by month</div><h2 id="td-c1-title">November is on pace</h2></div></div>
+            <div id="td-chart-guests"></div>
+          </section>
+          <section class="v2-card" aria-labelledby="td-c2-title">
+            <div class="v2-viz-head"><div><div class="v2-eyebrow">Where this fall's guests are now</div><h2 id="td-c2-title">From first contact to serving</h2></div></div>
+            <div id="td-chart-path"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Protecting people, visible on purpose -->
+      <section class="v2-section td-later" aria-labelledby="td-protect-title" data-tour="today.protect">
+        <div class="v2-section-head"><div><h2 id="td-protect-title">How this workspace protects people</h2><p id="td-protect-sub">On for every church on the Shepherd and Plus plans.</p></div></div>
+        <div class="v2-card"><ul class="gm-protect-list" id="td-protect"></ul></div>
+      </section>
+
+    <noscript><p class="v2-muted-copy">This design preview needs JavaScript to show its sample data.</p></noscript>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, fmt = GM.fmt, c = ctx.church, viewer = ctx.viewer, HOPE = GM.assistant.name;
+  var $ = function (id) { return document.getElementById(id); };
+  var ic = GM.v2Icon;
+
+  $("td-date").innerHTML = "Today · " + esc(fmt.day()) + '<span class="td-tenant"> · ' + esc(c.name) + "</span>";
+  $("td-greeting").innerHTML = esc(GM.greeting()) + ', <em class="v2-accent-em">' + esc(viewer.name) + "</em>";
+
+  /* ---------- Care: the Welcome home, with the calm locked state for Today ---------- */
+  if (ctx.locked) {
+    $("td-greeting").innerHTML = 'Your website is <em class="v2-accent-em">welcoming people</em>';
+    $("td-lede").textContent = "On the Care plan, " + HOPE + " answers questions on your website, and Plan a Visit and prayer forms arrive by email. The Today view and the guest pipeline come with the Shepherd plan.";
+    /* On the Care plan this screen is the church's Home (the sidebar row reads Home too). One gold action on
+       this screen: Preview the Shepherd Plan in the locked card. Open Your Website is already in the sidebar. */
+    $("td-date").innerHTML = "Home · " + esc(fmt.day()) + '<span class="td-tenant"> · ' + esc(c.name) + "</span>";
+    $("td-actions").innerHTML = "";
+    var pg = $("td-page");
+    Array.prototype.slice.call(pg.children).forEach(function (ch) { if (!ch.matches(".v2-page-head,noscript")) ch.remove(); });
+    pg.querySelector(".v2-page-head").insertAdjacentHTML("afterend",
+      '<div class="td-grid3">' +
+        card(c.name + " website", c.look + " look. Service times and the address sit on the first screen, built for phones first, with " + HOPE + " answering questions.", '<a class="v2-button" href="church-website.html">See the Website Package</a>') +
+        card("Brand board", "Logo, colors, type and voice, so a volunteer can make a slide or a post that looks like " + c.short + ".", '<a class="v2-button" href="' + esc(c.brandBoard) + '">Open Brand Board</a>') +
+        card("Social marketing plan", "One Sunday message turned into a week of posts, with sample captions and what to measure.", '<a class="v2-button" href="' + esc(c.socialPlan) + '">Open Social Plan</a>') +
+      "</div>" +
+      '<section class="v2-pulse" aria-label="This week on the Care plan">' +
+        pulse(HOPE + " conversations", "38", "On your website this week") +
+        pulse("Plan a Visit forms", "4", "Sent to " + c.email) +
+        pulse("Prayer forms", "3", "Sent only to the pastors' address. The words are in that email. The Shepherd plan keeps prayer inside a locked inbox, and the email says only: New request. Sign in to read.") +
+        pulse("Newsletter sign-ups", "6", "Added to your list") +
+      "</section>" + GM.lockedState("today", { title: "The Today view" }));
+    GM.carryLinks();
+    return;
+  }
+
+  /* ---------- The ranked list: guests and care, most important first ---------- */
+  var guestsNew = D.guests.filter(function (g) { return g.stage === "new"; });
+  var waiting = GM.waitingCare();
+  var due = GM.dueFollowUps();
+  var overdue = due.filter(function (g) { return fmt.due(g.due).tone === "danger"; });
+  var queue = [];
+  function addGuest(id) { var g = GM.guest(id); if (g && !queue.some(function (q) { return q.id === id; })) queue.push({ type: "guest", id: id, g: g }); }
+  addGuest("g-01");                                   /* a visit on Sunday and a welcome draft ready */
+  addGuest("g-09");                                   /* a personal call from a pastor, overdue */
+  if (waiting[0]) queue.push({ type: "care", id: waiting[0].id, w: waiting[0] });
+  addGuest("g-04"); addGuest("g-02"); addGuest("g-06"); addGuest("g-08");
+  if (waiting[1]) queue.push({ type: "care", id: waiting[1].id, w: waiting[1] });
+  var pos = 0;
+
+  function guestCard(q) {
+    var g = q.g, p = GM.person(g.personId), owner = GM.staff(g.owner), d = fmt.due(g.due);
+    var draftReady = g.draft && GM.draftStatus(g.draft) === "waiting";
+    var visit = g.visitDate ? " · visiting " + fmt.weekdayLong(g.visitDate) : "";
+    return '<div><div class="v2-eyebrow">Your next move</div><h2 id="td-next-title" class="v2-serif-headline">' + esc(p.name) + "</h2><h3>" + esc(g.source) + visit + " · " + esc(GM.stage(g.stage).label) + "</h3>" +
+      '<div class="v2-next-meta">' + GM.pill(g.stage === "new" ? "New guest" : GM.stage(g.stage).label, "gold") + (draftReady ? GM.pill(HOPE + " draft ready", "neutral") : "") + GM.pill(d.tone === "danger" ? (d.text.charAt(0).toUpperCase() + d.text.slice(1)) : d.text, d.tone === "neutral" ? "neutral" : d.tone) + "</div>" +
+      '<p class="v2-next-reason">' + esc(g.next) + '<span class="v2-next-why">Why now: ' + esc(whyNow(g)) + "</span></p></div>" +
+      '<div class="v2-next-actions">' +
+        '<button class="v2-button v2-button-premium" type="button" data-gm-action="ask-hope" data-gm-prompt="Why is ' + esc(p.first) + ' first today?" aria-label="Ask ' + esc(HOPE) + ' why this is first">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>" +
+        (draftReady
+          ? '<a class="v2-button v2-button-primary" href="church-guest.html?id=' + esc(g.id) + '#draft">' + ic("send") + "Review Welcome Note</a>"
+          : '<a class="v2-button v2-button-primary" href="church-guest.html?id=' + esc(g.id) + '">' + ic(g.next.toLowerCase().indexOf("call") >= 0 ? "phone" : "send") + esc(g.next.toLowerCase().indexOf("call") >= 0 ? "Call " + p.first : "Follow Up") + "</a>") +
+        '<div class="v2-next-contact"><button class="v2-button v2-button-quiet" type="button" data-gm-action="toast" data-gm-toast="Email opened for ' + esc(p.first) + '. This is a preview, so nothing was sent.">' + ic("mail") + 'Email</button><button class="v2-button v2-button-quiet" type="button" data-gm-action="toast" data-gm-toast="Call logged for ' + esc(p.first) + '. Preview only.">' + ic("phone") + "Call</button></div>" +
+        '<a class="v2-button v2-button-quiet" href="church-guest.html?id=' + esc(g.id) + '">' + ic("arrow") + "Open Guest</a>" +
+      "</div>";
+  }
+  function careCard(q) {
+    var w = q.w, p = GM.person(w.personId), owner = GM.staff(w.owner);
+    var hours = Math.round((GM.now - GM.parseDate(w.since)) / 3600000);
+    var kind = w.type === "prayer" ? "Prayer request" : "Message";
+    return '<div><div class="v2-eyebrow">Your next move</div><h2 id="td-next-title" class="v2-serif-headline">' + esc(p.name) + "</h2><h3>" + esc(kind) + " · " + esc(w.label) + " · received " + esc(fmt.when(w.since)) + "</h3>" +
+      '<div class="v2-next-meta">' + (w.type === "prayer" ? GM.lock(w.visibility) : GM.lock(w.visibility === "pastors" ? "pastors" : "staff", w.visibility === "pastors" ? "Pastors only" : "Staff")) + GM.pill(fmt.waiting(w.since), hours >= 24 ? "warning" : "neutral") + "</div>" +
+      '<p class="v2-next-reason">Reply in the care inbox<span class="v2-next-why">Why now: ' + esc(fmt.waiting(w.since).toLowerCase() + (waiting[0] && waiting[0].id === w.id ? ", the longest in care" : "")) + " · " + esc(owner.name) + " owns it · the words stay in the care inbox</span></p></div>" +
+      '<div class="v2-next-actions">' +
+        '<button class="v2-button v2-button-premium" type="button" data-gm-action="ask-hope" data-gm-prompt="What is waiting in care?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>" +
+        '<a class="v2-button v2-button-primary" href="church-care.html?id=' + esc(w.id) + '">' + ic("care") + "Open in Care Inbox</a>" +
+        '<a class="v2-button v2-button-quiet" href="church-person.html?id=' + esc(p.id) + '">' + ic("arrow") + "Open Person</a>" +
+      "</div>";
+  }
+  function paintNext() {
+    var q = queue[pos];
+    $("td-next").innerHTML = q.type === "guest" ? guestCard(q) : careCard(q);
+    $("td-controls").innerHTML = '<p class="v2-muted-copy">Person ' + (pos + 1) + " of " + queue.length + '. Skip moves it to later.</p><div class="v2-next-actions v2-action-pair"><button class="v2-button" type="button" id="td-nextbtn">Next</button><button class="v2-button v2-button-quiet" type="button" id="td-skip">Skip for Now</button></div>';
+    $("td-nextbtn").onclick = function () { pos = (pos + 1) % queue.length; paintNext(); };
+    $("td-skip").onclick = function () { var x = queue.splice(pos, 1)[0]; queue.push(x); if (pos >= queue.length) pos = 0; paintNext(); GM.toast("Moved to later today."); };
+    paintUpNext();
+    GM.carryLinks($("td-next"));
+  }
+  function paintUpNext() {
+    var rest = queue.filter(function (_, i) { return i !== pos; }).slice(0, 5);
+    $("td-up").innerHTML = rest.map(function (q) {
+      if (q.type === "guest") {
+        var g = q.g, p = GM.person(g.personId), d = fmt.due(g.due);
+        var verb = g.next;
+        var title = /^Send a welcome note/.test(verb) ? "Welcome " + p.name : /^Invite/.test(verb) ? "Invite " + p.name : /call/i.test(verb) ? "Call " + p.name : /^Welcome/.test(verb) ? "Welcome " + p.name : "Follow up with " + p.name;
+        return '<a class="v2-attention-row" href="church-guest.html?id=' + esc(g.id) + '"><span class="v2-row-title"><b>' + esc(title) + "</b><span>" + esc(String(g.source).replace(/^Hope /, HOPE + " ")) + "</span></span>" +
+          '<span class="v2-row-reason">' + esc(g.next) + " · " + esc(GM.staff(g.owner).name) + "</span>" + GM.pill(d.tone === "danger" ? "Overdue" : d.tone === "warning" ? "Today" : "Soon", d.tone === "danger" ? "danger" : d.tone === "warning" ? "priority" : "neutral") +
+          '<span class="v2-row-action">' + esc(g.draft && GM.draftStatus(g.draft) === "waiting" ? "Review Draft" : "Open Guest") + ' <span aria-hidden="true">→</span></span></a>';
+      }
+      var w = q.w, pp = GM.person(w.personId);
+      return '<a class="v2-attention-row" href="church-care.html?id=' + esc(w.id) + '"><span class="v2-row-title"><b>Reply to ' + esc(pp.name) + "</b><span>" + esc(w.type === "prayer" ? "Prayer, " + w.label : "Message, " + w.label) + "</span></span>" +
+        '<span class="v2-row-reason">Waiting on us · ' + esc(GM.staff(w.owner).name) + "</span>" + GM.pill(fmt.waiting(w.since).replace("Waiting ", ""), (GM.now - GM.parseDate(w.since)) / 3600000 >= 24 ? "warning" : "neutral") +
+        '<span class="v2-row-action">Open Thread <span aria-hidden="true">→</span></span></a>';
+    }).join("");
+  }
+
+  /* ---------- Hope's briefing ---------- */
+  var draftsWaiting = GM.waitingDrafts("church");
+  var first = GM.person(queue[0].g ? queue[0].g.personId : queue[0].w.personId);
+  /* As the Genesis OS briefing does, the card carries facts the numbers row does not: the goal, the year
+     so far and what needs a person's judgment. The counts live once, in the numbers row below. Ask Hope
+     is already on the panel, in the sidebar and on the round button, so the card has no fourth one. */
+  var replyGoal = D.metrics.replyGoalHours === 24 ? "Within a day" : "Within " + D.metrics.replyGoalHours + " hours";
+  $("td-brief").innerHTML =
+    '<div class="gm-hope-brief-head"><div class="v2-eyebrow" id="td-brief-title">' + esc(HOPE) + " briefing</div><p>" + esc(HOPE) + " checked " + esc(poss(c.short)) + " week and put today's list in order, most important first. Start with " + esc(noDot(first.name)) + ".</p></div>" +
+    '<div class="v2-fact"><small>Care reply goal</small><b>' + esc(replyGoal) + "</b></div>" +
+    '<div class="v2-fact"><small>In the member app</small><b>' + esc(String(D.metrics.adultsInMemberApp)) + " adults</b></div>" +
+    '<a class="v2-fact" href="church-guests.html?view=drafts"><small>Needs your judgment</small><b>' + draftsWaiting.length + (draftsWaiting.length === 1 ? " draft" : " drafts") + "</b></a>";
+
+  /* ---------- The numbers row ---------- */
+  $("td-pulse").innerHTML =
+    pulse("New guests", guestsNew.length, "Since Sunday. Each one has an owner.") +
+    pulse("Care waiting on us", waiting.length, "Oldest " + fmt.waiting(waiting[0].since).replace("Waiting ", "") + ".") +
+    pulse("Follow-ups due", due.length, overdue.length + " overdue. The rest are due today.") +
+    pulse("Welcomed within 48 hours", D.metrics.welcomedWithin48h + "%", "Of guests in the last 90 days.");
+
+  /* ---------- Ask Hope (phone) ---------- */
+  $("td-ask").innerHTML = ["What should I do first today?", "Who needs a follow-up today?", "What is waiting on us in care?"].map(function (q) {
+    return '<button class="v2-button" type="button" data-gm-action="ask-hope" data-gm-prompt="' + esc(q) + '">' + ic("genesis") + esc(q) + "</button>";
+  }).join("");
+
+  /* ---------- Drafts waiting ---------- */
+  function paintDrafts() {
+    var w = GM.waitingDrafts("church");
+    var show = w[0] || D.drafts[0];
+    $("td-drafts-sub").textContent = w.length ? HOPE + " drafted " + w.length + (w.length === 1 ? " note" : " notes") + ". Nothing goes out until a person approves it." : "Every draft is handled. New ones appear here as guests arrive.";
+    $("td-drafts").innerHTML = GM.draft(show) + '<div class="td-draft-more"><p class="v2-muted-copy">' + (w.length > 1 ? (w.length - 1) + " more waiting: " + noDot(w.slice(1).map(function (d) { return GM.who(d.to).name; }).join(", ")) + "." : "Drafts are labeled and never sent on their own.") + '</p><a class="v2-button v2-button-quiet" href="church-guests.html?view=drafts">Review All</a></div>';
+    GM.paintDrafts($("td-drafts"));
+    GM.carryLinks($("td-drafts"));
+  }
+  paintDrafts();
+  document.addEventListener("gm:draft", function () { var dn = GM.waitingDrafts("church").length; $("td-brief").querySelector('a[href*="drafts"] b').textContent = dn + (dn === 1 ? " draft" : " drafts"); paintNext(); });
+
+  /* ---------- Care waiting on us (topics only), seen as each role ---------- */
+  var ROLES = {
+    pastor: { viewer: "s-lead", can: function () { return true; } },
+    prayer: { viewer: "s-owen", can: function (w) { return w.type === "prayer" && w.visibility === "prayer"; } },
+    staff:  { viewer: "s-imani", can: function (w) { return w.type === "thread" && w.visibility === "staff"; } }
+  };
+  var crisis = D.prayer.filter(function (p) { return p.crisis; })[0];
+  function paintCare(role) {
+    var R = ROLES[role], rv = GM.staff(R.viewer);
+    var seen = waiting.filter(R.can), hidden = waiting.length - seen.length;
+    var rows = seen.map(function (w) {
+      var p = GM.person(w.personId), owner = GM.staff(w.owner);
+      var hours = (GM.now - GM.parseDate(w.since)) / 3600000;
+      var lock = w.type === "prayer" ? GM.lock(w.visibility) : (w.visibility === "pastors" ? GM.lock("pastors") : GM.pill("Everyday question", "neutral"));
+      return '<a class="v2-attention-row td-care-row" href="church-care.html?id=' + esc(w.id) + '"><span class="v2-row-title"><b>' + esc(p.name) + "</b><span>" + esc(w.type === "prayer" ? "Prayer: " + w.label : "Message: " + w.label) + "</span></span>" +
+        '<span class="v2-row-reason">' + lock + "</span>" + GM.pill(fmt.waiting(w.since).replace("Waiting ", ""), hours >= 24 ? "warning" : "neutral") +
+        '<span class="v2-row-action">' + esc(owner.name) + ' <span aria-hidden="true">→</span></span></a>';
+    });
+    if (role === "staff") rows.push('<div class="v2-attention-row td-care-row td-quiet is-static"><span class="v2-row-title"><b>Prayer requests</b><span>Staff never see prayer, here or anywhere</span></span><span class="v2-row-reason">' + GM.lock("prayer") + "</span>" + GM.pill("Hidden", "neutral") + '<span class="v2-row-action"></span></div>');
+    if (role === "prayer") rows.push('<div class="v2-attention-row td-care-row td-quiet is-static"><span class="v2-row-title"><b>Messages</b><span>The prayer team sees prayer and nothing more</span></span><span class="v2-row-reason">' + GM.lock("staff", "Pastors and staff") + "</span>" + GM.pill("Hidden", "neutral") + '<span class="v2-row-action"></span></div>');
+    if (crisis && role === "pastor") rows.push('<a class="v2-attention-row td-care-row td-quiet" href="church-care.html?id=' + esc(crisis.id) + '"><span class="v2-row-title"><b>An urgent request</b><span>' + esc(fmt.weekdayLong(crisis.received)) + " night. Shown 988 and 911 right away. " + esc(c.carePastor) + ", on call, got an email and a phone notification with no private words. A follow-up call happened the next morning.</span></span>" +
+      '<span class="v2-row-reason">' + GM.lock("pastors") + "</span>" + GM.pill("Cared for", "positive") +
+      '<span class="v2-row-action">' + esc(c.carePastor) + ' <span aria-hidden="true">→</span></span></a>');
+    $("td-care").innerHTML = rows.join("");
+    $("td-seen").textContent = "Seen as " + rv.name + ", " + rv.role + ". " + (role === "pastor" ? "Pastors see every item, topics only." : hidden + " of " + waiting.length + " items are hidden from this role.");
+    document.querySelectorAll("#td-roles [data-role]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-role") === role)); });
+    GM.carryLinks($("td-care"));
+  }
+  $("td-roles").addEventListener("click", function (e) { var b = e.target.closest("[data-role]"); if (b) paintCare(b.getAttribute("data-role")); });
+  paintCare("pastor");
+  $("td-protect-sub").textContent = "On for every church that keeps care in the workspace, on the Shepherd and Plus plans.";
+
+  /* ---------- Charts ---------- */
+  var m = D.metrics, done = m.newGuests.slice(0, 11);
+  var avg = Math.round(done.reduce(function (a, b) { return a + b; }, 0) / done.length);
+  var projected = {}; projected[m.currentMonthIndex] = 14;
+  GMCharts.bar("#td-chart-guests", {
+    title: "New guests by month",
+    summary: "New guests each month for the last twelve months. November has " + m.newGuests[m.currentMonthIndex] + " so far and is on pace for about 14. The twelve-month average is " + avg + ".",
+    labels: m.months, fullLabels: m.monthsLong,
+    series: [{ name: "New guests", values: m.newGuests, projected: projected }],
+    unit: { one: "guest", many: "guests" }, yTitle: "Guests", xTitle: "Month", categoryTitle: "Month",
+    reference: { value: avg, label: "Average " + avg },
+    projectedLabel: "November, projected", height: 190
+  });
+  GMCharts.funnel("#td-chart-path", {
+    title: "Where this fall's guests are now",
+    summary: "Of 53 guests since September 1, 49 were welcomed, 32 visited, 15 came to Start Here, 10 joined a group and 6 are serving. Guests now open in Guests are the ones with a next step today.",
+    labels: m.guestPathFall.map(function (s) { return s.label; }),
+    series: [{ name: "Guests", values: m.guestPathFall.map(function (s) { return s.value; }) }],
+    unit: { one: "guest", many: "guests" }, categoryTitle: "Step"
+  });
+
+  /* ---------- Protecting people ---------- */
+  var rules = [
+    ["Prayer stays private", "Only pastors and the prayer team can open prayer."],
+    ["Alerts carry no words", "Emails say \"New request. Sign in to read.\""],
+    GM.isIncluded("access")
+      ? ["A record of who looked", 'Every open is written to the <a class="gm-link" href="church-access.html">access record</a>.']
+      : ["Every open is recorded", "Every open, reply and archive is recorded. The Plus plan adds the Access Record screen to search and export it."],
+    ["Archive, not delete", "Nothing pastoral is ever erased by accident."],
+    ["Email first", "Guest follow-up goes by email. Texting is off unless the church turns it on."]
+  ];
+  $("td-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + r[1] + "</span></li>"; }).join("");
+
+  paintNext();
+  GM.carryLinks();
+
+  /* ---------- Hope in the dock: the same briefing ---------- */
+  GM.hope.setBriefing({
+    name: viewer.name,
+    /* About 80 characters, as Genesis OS writes its greeting: the greeting, one count, one "Start with". */
+    line: GM.greeting() + ", {name}. " + guestsNew.length + " new guests and " + waiting.length + " care items. Start with " + noDot(first.name) + ".",
+    chips: [{ label: "Welcome " + first.first, href: "church-guest.html?id=g-01#draft", primary: true }, { label: "Open Guests", href: "church-guests.html" }, { label: "See Care Waiting", href: "church-care.html" }]
+  });
+
+  /* ---------- Hope answers "what first" from this screen's own queue, so it names the same person as the panel ---------- */
+  var WHY = {
+    "g-01": "She is visiting Sunday with her husband and two kids, and she asked where the kids check in.",
+    "g-09": "She visited on " + fmt.date(GM.guest("g-09").visitDate) + " and asked for a phone call."
+  };
+  function qPerson(q) { return GM.person(q.type === "guest" ? q.g.personId : q.w.personId); }
+  function task(g) { return /welcome note/i.test(g.next) ? "the welcome note" : /call/i.test(g.next) ? "the call" : "the next step"; }
+  function lead(q) {
+    var p = qPerson(q);
+    if (q.type === "care") {
+      var o = GM.staff(q.w.owner).name;
+      return p.name + "'s " + (q.w.type === "prayer" ? "prayer request" : "message") + " has waited " + fmt.waiting(q.w.since).replace("Waiting ", "") + ", the longest in care. " + o + " owns it, and the words stay in the care inbox.";
+    }
+    var g = q.g, d = fmt.due(g.due), owner = GM.staff(g.owner).name;
+    var draft = g.draft && GM.draftStatus(g.draft) === "waiting" ? " " + HOPE + " drafted the note, and it waits for a person to approve it." : "";
+    return noDot(p.name) + ". " + (WHY[g.id] || g.note) + " " + owner + " owns " + task(g) + ", and it is " + d.text.toLowerCase() + "." + draft;
+  }
+  function then(q) {
+    var p = qPerson(q);
+    if (q.type === "care") return "Then " + p.name + "'s " + (q.w.type === "prayer" ? "prayer request" : "message") + " in care, which has waited " + fmt.waiting(q.w.since).replace("Waiting ", "") + ".";
+    var g = q.g;
+    return "Then " + p.name + ": " + task(g) + " is " + fmt.due(g.due).text.toLowerCase() + ", and " + GM.staff(g.owner).name + " owns it.";
+  }
+  GM.hope.addAnswers([{
+    match: /\bwhy is .+ first\b|\b(what|who) (should|do) (i|we) (do |see |call )?first\b|\bwhat first\b|\bdo first\b|\bwhere (should|do) (i|we) start\b|\bwho is first\b/i,
+    answer: function (text) {
+      var m = /why is (.+?) first/i.exec(text || ""), cur = queue[pos];
+      if (m) {
+        var asked = m[1].trim().toLowerCase();
+        queue.forEach(function (q) { var p = qPerson(q); if (p && (p.first.toLowerCase() === asked || noDot(p.name).toLowerCase() === noDot(asked))) cur = q; });
+      }
+      var i = queue.indexOf(cur), next = queue[(i + 1) % queue.length];
+      var opener = cur.type === "care" ? "Start with care. " : (i === 0 ? "Start with " : "Next is ");
+      return opener + lead(cur) + (next && next !== cur ? " " + then(next) : "");
+    }
+  }]);
+
+  /* ---------- Guided tour hooks ---------- */
+  GM.setTour([
+    { target: '[data-tour="today.hope"]', title: "{assistant.name} reads the week first", text: "Today's list in order, with who comes first. Beside it: the first reply goal, adults in the member app and the drafts that need your judgment." },
+    { target: '[data-tour="today.next"]', title: "Your next move", text: "One guest or care item at a time, most important first, with an owner and a reason. Next and Skip work through the list." },
+    { target: '[data-tour="today.glance"]', title: "The day at a glance", text: "New guests, care waiting on us and follow-ups due. Each number opens the list behind it." },
+    { target: '[data-tour="today.drafts"]', title: "{assistant.name} drafts, a person decides", text: "Welcome notes are labeled and wait for approval. Nothing goes out on its own." },
+    { target: '[data-tour="today.care"]', title: "Care, oldest first", text: "Topics only on Today. Prayer words stay in the care inbox, visible to pastors and the prayer team." },
+    { target: '[data-tour="today.protect"]', title: "Protecting people is built in", text: "Private prayer, alerts with no private words, a record of who looked, archive instead of delete, and email-first follow-up." }
+  ]);
+
+  function noDot(t) { return String(t).replace(/[.]$/, ""); }
+  /* A name that ends in s takes only an apostrophe: Goldenrod Commons' week. */
+  function poss(n) { if (GM.poss) return GM.poss(n); n = String(n || ""); return /s$/i.test(n) ? n + "'" : n + "'s"; }
+  /* Why now, written as short fragments the way Genesis OS writes it: what we know, who owns it, how it goes. */
+  function whyNow(g) {
+    var PROPER = /^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Start Here|Pastor|Thanksgiving|Hope)\b/;
+    var p = GM.person(g.personId), owner = GM.staff(g.owner);
+    var parts = String(GM.fill ? GM.fill(g.note || "") : g.note || "").replace(/\bHope\b/g, HOPE).split(/\.\s+/).map(function (x, i) {
+      x = x.replace(/\.$/, "").trim();
+      return i && !PROPER.test(x) && x.indexOf(HOPE) !== 0 && /^[A-Z][a-z]/.test(x) ? x.charAt(0).toLowerCase() + x.slice(1) : x;
+    }).filter(Boolean);
+    var byPhone = /call/i.test(g.next) || p.contact === "Phone call";
+    parts.push(owner.name + " owns it", byPhone ? "a person calls, as asked" : "follow-up goes by email");
+    return parts.join(" · ");
+  }
+  function pulse(label, value, note) {
+    return '<div class="v2-pulse-item"><small>' + esc(label) + "</small><b>" + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>";
+  }
+  function card(title, text, action) {
+    return '<section class="v2-card"><div class="td-card-head"><h2>' + esc(title) + "</h2></div><p>" + esc(text) + "</p>" + action + "</section>";
+  }
+});
+</script>
+</body>
+</html>
