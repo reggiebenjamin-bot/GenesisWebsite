@@ -624,6 +624,9 @@
   A.messagesprivate = { t: "What you share with " + SHORT + " never goes to anyone in your family. A prayer request goes only to the pastors and the people they trust to pray. If someone at home can open your email or phone, keep that in mind before you write. If you are not safe at home, call 911, or call or text 988.", c: [SHARE, BACK] };
   A.confidential = { t: "A pastor can talk with you about what stays private and the few things they must report to keep someone safe." + (CH.phone ? " Call " + CH.phone + " to find a time." : "") + " If anyone is in danger right now, call 911, or call or text 988.", c: function () { return chips(CALL, BACK); } };
   A.careplan = { t: "Care is the first Genesis Ministry plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
+  /* Round 5: prayer is never printed or read aloud, and an age answer for a teenager on a church site. */
+  A.prayerpublic = { t: function () { return "Your request is never printed or read aloud, and other members never see it. " + (CHURCH && +(new URLSearchParams(location.search).get("plan") || 0) === 1 ? "It goes by email to " + listOf(pastorNames()) + "." : "Only the people you choose read it: " + listOf(pastorNames().concat("our prayer team")) + ", or the pastors only.") + CRISIS_LINE; }, c: [SHARE, BACK] };
+  if (CHURCH && !A.age) A.age = { t: "You are welcome here. Accounts and private messages are for adults 18 and older, so the best way to reach the student team is in person at Students, or with a parent or guardian" + (CH.phone ? " by calling " + CH.phone : "") + ". If you are ever not safe, call 911, or call or text 988.", c: [{ label: "Students", key: "students" }, BACK] };
   /* The Care plan of a church site (the Website screen passes ?plan=1): prayer forms go by email to the
      pastors, and there is no prayer team inbox yet. */
   var SITE_PLAN = +(new URLSearchParams(location.search).get("plan") || 0);
@@ -696,7 +699,7 @@
     q = WORDS.plain(q);
     /* Someone who told Hope about their own life is thanked and pointed to a person. */
     if (CHURCH && ABOUT_SELF.test(q) && !ASKING.test(q) && !/\?\s*$/.test(q) && !BUYER_WORDS.test(q))
-      return { t: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. " + SHORT + " would want to help too" + (CH.phone && !/ 555-/.test(CH.phone) ? ": call " + CH.phone + ", and a real person will hear you out." : ", and a real person there would be glad to hear more."), c: chips({ label: "Talk to a Person", key: A.talk ? "talk" : "contact", cta: true }, { label: SHARE.label, run: SHARE.run }, BACK) };
+      return { t: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. " + SHORT + " would want to help too" + (CH.phone && !/ 555-/.test(CH.phone) ? ": call " + CH.phone + ", and a real person will hear you out." : ", and a real person there would be glad to hear more."), c: chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, { label: "Talk to a Person", key: A.talk ? "talk" : "contact" }, BACK) };
     if (CHURCH && BUYER_WORDS.test(q) && !CFG.fallback)
       return { t: "I am not sure about that one, and I would rather not guess. It is " + ON_CALL + "." + CRISIS_LINE, c: chips(talkChip(), { label: "What Does a Church Get?", key: "package", cta: !talkChip() }, { label: "What Does It Cost?", key: "price" }) };
     return { t: (CFG.fallback || (CHURCH
@@ -734,6 +737,9 @@
      On the story pages, a buyer's "how do we start" and "can we talk" come first too. */
   var EARLY = [
     [/\bhope for (?:me|someone like me|people like me|us|my \w+)\b|\b(?:someone|people|a person) like me\b|\b(?:am i|would i be|will i be|could i be|can i be) (?:welcome|accepted|judged|wanted|allowed|loved|forgiven)\b|\btoo far gone\b|\bnot good enough\b|\btoo (?:late|broken|bad|messed up|sinful) for (?:me|someone like me|god)\b|\b(?:can|could|would|will|does|did) (?:god|jesus|christ|anyone) (?:really |still )?(?:love|forgive|accept|want|care (?:about|for)|die for) (?:me|us|someone like me)\b/i, "welcome"],
+    /* Round 5: the afterlife, the Bible on a subject, tongues and the rapture are doctrine for a pastor,
+       never the condolence or the values blurb. */
+    [/\bwhat happens (?:after|when) (?:we|you|i|people|they|someone) (?:die|dies)\b|\bafter ?life\b|\b(?:where do (?:we|you|people|i|they) go|is there (?:life|anything)) (?:after|when) (?:we|you|i|people|they) (?:die|dies)\b|\bspeaking in tongues\b|\brapture\b|\bwhat (?:does )?(?:the )?bible says?\b|\bbible says? about\b|\b(?:does|do) (?:this|the|your) church believe in\b/i, "beliefs"],
     [HURT, "care"],
     /* Round 4: doctrine ("Can a woman be a pastor here?", "Will I go to heaven if I'm not baptized?") goes to a pastor. */
     [/\b(?:can|may|should|could|do you let|do you allow|are) (?:a )?wom[ae]n (?:be |become |serve as |allowed to )?(?:an? )?(?:pastors?|preach\w*|lead\w*|elders?|deacons?|teach\w*)\b|\b(?:go|get|going|end up) (?:to|into|in) (?:heaven|hell)\b|\bheaven or hell\b|\b(?:am i|will i be|can i be|are you|is he|is she) saved\b|\bsalvation\b|\bis it a sin\b|\bis (?:\w+ ){1,3}a sin\b|\btheolog\w*/i, CHURCH ? "beliefs" : "denomfit"],
@@ -743,6 +749,19 @@
     [/\b(real church|is (this|it|that) (a )?real\b|made[- ]up|fake church|actual church|does (this|the) church (really )?exist|is (this|it) (a )?(sample|demo|fake))\b/i, "real"],
     [AI_TRAIN, "aitraining"],
   ].concat(CHURCH ? [
+    /* Round 5: a guest's or member's privacy question, before a page's own rules or the kids, students,
+       times and pastors answers hear one of its words. A key a page has no answer for passes it on. */
+    [/\b(?:is|are) (?:an? |the )?(?:ai|a\.i\.|hope|bot|robot|computer|assistant|machine)\b.{0,15}\b(?:reading|seeing|watching|reads|sees|listening)\b|\b(?:ai|a\.i\.|bot|robot|assistant)\b.{0,20}\b(?:read|reads|reading|see|sees|seeing|open|opens)\b.{0,30}\b(?:messages?|prayers?|requests?|what i (?:write|send|type))\b/i, "aimine"],
+    [/\b(?:is|are) (?:an? |the )?(?:ai|a\.i\.|hope|bot|robot|computer|assistant|machine)\b.{0,15}\b(?:reading|seeing|watching|reads|sees|listening)\b|\b(?:ai|a\.i\.|bot|robot|assistant)\b.{0,20}\b(?:read|reads|reading|see|sees|seeing|open|opens)\b.{0,30}\b(?:messages?|prayers?|requests?|what i (?:write|send|type))\b/i, "aiprayer"],
+    [/\b(?:bulletin|out loud|aloud|read (?:it )?(?:out|on sunday)|on sunday|other members|anyone else|everyone|public(?:ly)?|announce\w*|on the screen|prayer wall)\b.{0,40}\b(?:prayers?|requests?|asked for prayer)\b|\b(?:prayers?|requests?|asked for prayer)\b.{0,40}\b(?:bulletin|out loud|aloud|other members|anyone else|everyone|public(?:ly)?|announce\w*|on the screen|prayer wall)\b/i, "prayerpublic"],
+    [/\bprayer team only\b|\bmark\w* (?:it|my request|my prayer)?\s?(?:for )?(?:the )?prayer team\b/i, "prayerwho"],
+    [/\b(?:compan(?:y|ies)|outside (?:the church|company|companies)|third[- ]part\w*|vendors?)\b.{0,40}\b(?:see|sees|read|reads|get|gets|access|have)\b|\b(?:see|sees|read|reads|access)\b.{0,40}\b(?:outside (?:the church|company)|a company|any company|third[- ]part\w*)\b/i, "processors"],
+    [/\b(?:hide|private)\b.{0,20}\b(?:my )?(?:profile|name|phone|number|email|address)\b|\b(?:who|anyone|staff|other members)\b.{0,30}\b(?:see|sees|get|gets|has|have)\b.{0,30}\bmy (?:phone|number|cell|email|address|contact)\w*/i, "contactsee"],
+    [/\bwho\b.{0,30}\b(?:see|sees|get|gets|has|have)\b.{0,30}\bmy (?:phone|number|cell|email|address|contact)\w*/i, "privacy"],
+    [/\b(?:i'?m|i am|im|she'?s|he'?s|they'?re|my (?:son|daughter|kid|child) is) (?:only )?1[0-7]\b(?=.{0,60}\b(?:message|messaging|account|sign|app|log ?in|text|dm)\b)|\b(?:1[0-7]|\d) ?(?:years? old|yo)\b.{0,40}\b(?:message|account|sign|use|app|join)\b|\bteen\w*\b.{0,30}\b(?:use|account|sign|on (?:their|his|her) own)\b|\b(?:keep|store|collect|have)\w*\b.{0,20}\b(?:my )?(?:children|kids|child)'?s? (?:info\w*|data|details|records?)\b/i, "age"],
+    [/\b(?:keep|track|stor|know|use|collect|sav)\w*\b.{0,20}\bmy (?:location|whereabouts)\b|\blocation (?:tracking|data|services)\b|\btrack\w* (?:me|where i)\b/i, "location"],
+    [/\b(?:office|staff|admins?|anyone|someone|volunteers?)\b.{0,30}\b(?:see|sees|read|reads|open|opens|access)\b.{0,30}\bmy (?:private )?messages?\b/i, "messageswho"],
+    [/\b(?:office|staff|admins?|anyone|someone|volunteers?)\b.{0,30}\b(?:see|sees|read|reads|open|opens|access)\b.{0,30}\bmy (?:private )?messages?\b/i, "appmessages"],
     [ONE_CAMPUS, "onecampus"],
     [CAMPUS_Q, "campus"],
     [BUYER_PRICE, "price"],
@@ -777,7 +796,7 @@
     [/\b(?:care|shepherd|plus) (?:plans?|tiers?|levels?)\b|\bstaff seats?\b|\b(?:shepherd|plus)\b.{0,30}\b(?:include|includes|cost|costs|price|seats?|reports?|plans?|tiers?)\b|\bdowngrad\w*/i, "package"],
     [/\bcare\b.{0,20}\bplan\b.{0,30}\b(?:or|vs\.?|versus|and)\b.{0,20}\binbox\b|\binbox\b.{0,30}\b(?:or|vs\.?|versus|and)\b.{0,20}\bcare plan\b|\bwhat (?:does|is) the care inbox\b|\bdifference between (?:the )?care(?: plan)? and (?:the )?care inbox\b/i, "careplan"],
     [/\b(?:keep|hide|hid|block|private|secret)\w*\b.{0,40}\bprayers?(?: requests?)?\b.{0,40}\bfrom (?:the )?(?:other |another |my |our |a |one |certain )?(?:pastors?|lead pastor|senior pastor|staff|prayer team|elders?)\b/i, "prayerfromstaff"],
-    [/\b(?:husband|wife|spouse|partner|boyfriend|girlfriend|parents?|mom|dad|mother|father|family|kids|children|roommate|anyone (?:at|in) my (?:home|house))\b.{0,40}\b(?:see|sees|read|reads|find|finds|know|knows|get into|look at|check)\w*\b.{0,40}\b(?:messages?|prayers?|requests?|emails?|what i (?:write|wrote|send|share|type))\b/i, "messagesprivate"],
+    [/\b(?:husband|wife|spouse|partner|boyfriend|girlfriend|parents?|mom|dad|mother|father|family|kids|children(?!'?s? ministry)|roommate|anyone (?:at|in) my (?:home|house))\b.{0,40}\b(?:see|sees|read|reads|find|finds|know|knows|get into|look at|check)\w*\b.{0,40}\b(?:messages?|prayers?|requests?|emails?|what i (?:write|wrote|send|share|type))\b/i, "messagesprivate"],
     [/\b(?:illegal|a crime)\b|\b(?:have to|must|required to|need to|obligated to) report\b.{0,40}\b(?:i|me|tell|share|say)\b|\bkeep (?:it|this|what i (?:say|tell|share)) (?:private|secret|confidential|between us)\b|\bconfidential(?:ity)?\b.{0,30}\b(?:pastor|counsel\w*|talk|tell)\b/i, "confidential"],
     /* "Is this chat private?", "What do you do with what I type here?", "Is this conversation recorded?" */
     [/\b(?:is|are) (?:this|the|our|my) (?:chat|conversation)s? (?:being )?(?:private|recorded|saved|kept|stored|confidential|secure|monitored)\b|\b(?:does|do|will|can|could) (?:anyone|anybody|someone|somebody|a person|people|staff|the church|you|they)\b.{0,40}\b(?:see|sees|read|reads|watch|record|save|keep|store)\w*\b.{0,30}\b(?:what i (?:type|write|say|ask)|this chat|this conversation|my (?:chat|questions?))\b|\bwhat (?:do|does|will|happens)\b.{0,30}\b(?:what i (?:type|write|say)|this chat|this conversation)\b/i, "chat"],
@@ -797,8 +816,8 @@
     [/\b(cost|pay|charge|fee)s?\b.*\b(attend|come|coming|visit|church|sunday|service)\b|\bis (it|church|sunday|this|coming) free\b|\bdo (i|we) (have to|need to) (pay|give)\b/i, "free"],
     [/\bbackground[- ]?check\w*|\b(?:volunteers?|leaders?|teachers?|workers?|staff) (?:are |get |been )?(?:screened|vetted)\b/i, "kidsafe"],
     [/\bvolunteer\w*|\bserve teams?\b|\b(?:how (?:can|do|could) (?:i|we)|(?:i|we) (?:want|would like|'d like) to|can (?:i|we)|ways to|where (?:can|do) (?:i|we)) (?:serve|help out|get involved)\b|\bget involved\b/i, "serve"],
-    [/\b(kids?|child ?care|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
-    [/\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
+    [/^(?!.*\b(?:see|sees|share|shares|store|stores|storing|keep|keeps|track|tracks|read|reads|reading|open|opens|access|hide|know|knows)\b.{0,40}\b(?:info\w*|data|details|records?|messages?|prayers?|requests?|location|number|email)\b).*\b(kids?|child ?care|child\w*|nursery|bab(y|ies)|toddlers?|vbs|vacation bible)\b/i, "kids"],
+    [/^(?!.*\b(?:see|sees|share|shares|store|stores|storing|keep|keeps|track|tracks|read|reads|reading|open|opens|access|hide|know|knows)\b.{0,40}\b(?:info\w*|data|details|records?|messages?|prayers?|requests?|location|number|email)\b).*\b(students?|youth|teens?|teenagers?|middle school|high school|young adults?|college)\b/i, "students"],
     [/\b(small groups?|groups?|bible stud(y|ies)|life groups?|events?|socials?|fellowship|meet (new )?people|make friends|get connected)\b/i, "groups"],
     /* Round 4: who sees what I give, a phone number for texts, and app messages, before giving hears "give". */
     [/\b(?:see|sees|know|knows|private|track\w*|notice\w*|find out)\b.{0,40}\b(?:giv\w*|gave|tith\w*|donat\w*)\b|\b(?:giv\w*|gave|tith\w*|donat\w*)\b.{0,30}\b(?:private|confidential|anonymous|see|sees|know|knows)\b|\bstopped (?:giving|tithing)\b/i, "givingprivate"],
@@ -817,7 +836,7 @@
     [/\bwhat time\b|\bwhen (?:is|does|do|are) (?:church|the service|services|sunday|worship|the gathering|gatherings|it start|things start|you meet)\b/i, "times"],
     [/\b(phone( number)?|telephone|call (you|the church|someone|the office)|contact|e-?mail|reach (you|someone|the church|the office)|office hours)\b|\bwhat'?s (your|the) number\b|\b(your|the) number\b/i, "contact"],
     [/\bhow long (?:have|has) (?:you|y'?all|the church|this church|[a-z]+(?: [a-z]+)? church) (?:all )?been\b|\b(?:when|what year) (?:was|were|did) (?:you|y'?all|the church|this church|it) (?:get )?(?:founded|started|start|begin|planted|built)\b|\bhow old is (?:the|your|this) church\b|\bfounded\b|\b(?:church'?s|your) history\b|\bbeen around\b/i, "history"],
-    [/\b(pastors?|leaders?|who runs|who leads|who preaches|staff)\b/i, "pastors"],
+    [/^(?!.*\b(?:see|sees|share|shares|store|stores|storing|keep|keeps|track|tracks|read|reads|reading|open|opens|access|hide|know|knows)\b.{0,40}\b(?:info\w*|data|details|records?|messages?|prayers?|requests?|location|number|email)\b).*\b(pastors?|leaders?|who runs|who leads|who preaches|staff)\b/i, "pastors"],
     [/\babout (your|the|this) church\b|\btell me about (you|yourselves|it)\b|\bwhat (kind|type|sort) of church\b|\bwhat is (your|the) church like\b|\b(believ\w*|beliefs?|values?|mission|denomination\w*|theology)\b/i, "values"],
     [/\b(park|parking|parked|garage)\b/i, "parking"],
     /* A first-time guest's questions go to the welcome, not only the times. */
@@ -842,7 +861,7 @@
   });
   var MATCH = FIRST.concat(EARLY, PAGE_RULES, CHURCH ? SITE.concat(PRODUCT) : PRODUCT.concat(SITE));
   /* On the story pages a question about prayer with product words in it is about the product. */
-  var PRODUCT_WORDS = /\b(staff|team|admins?|levels?|access|private|privacy|protect\w*|locks?|locked|genesis|records?|data|volunteers?|software|platform)\b|\bwho (can |will |gets to )?(see|sees|read|reads|open|opens)\b|\b(see|sees|read|reads|open|opens) (the |our |my |a |their )?prayer|\b(does|can|will|would) hope\b|\bhope (answer|respond|repl|handl|draft|writ|read|see)\w*|\b(read|see|open)s? (every|all|any) prayer|\b(as|i'?m|i am) (the |a )?(lead|senior|executive|associate) pastor\b|\bwho (at church |on staff |at the church )?(is|gets) (told|notified|alerted)\b|\bmarked pastors only\b/i;
+  var PRODUCT_WORDS = /\b(staff|team|admins?|directors?|deacons?|elders?|teachers?|ministry leaders?|levels?|access|private|privacy|protect\w*|locks?|locked|genesis|records?|data|volunteers?|software|platform)\b|\bwho (can |will |gets to )?(see|sees|read|reads|open|opens)\b|\b(see|sees|read|reads|open|opens) (the |our |my |a |their )?prayer|\b(does|can|will|would) hope\b|\bhope (answer|respond|repl|handl|draft|writ|read|see)\w*|\b(read|see|open)s? (every|all|any) prayer|\b(as|i'?m|i am) (the |a )?(lead|senior|executive|associate) pastor\b|\bwho (at church |on staff |at the church )?(is|gets) (told|notified|alerted)\b|\bmarked pastors only\b/i;
 
   /* The crisis check. The words live in shared/crisis-words.js, the one list every Hope reads (the
      workspace dock too): the live church site's pattern, widened so a crisis is heard however it is
@@ -864,14 +883,16 @@
     var safe = WORDS.safety(q);
     if (safe === "crisis" || safe === "leadersafety") return safe;
     if (safe === "policy") return A.reporting ? "reporting" : "crisis";
+    /* Round 5: the last net comes before any topic too ("I have a gun", "he touched my son"), so a word
+       like "kids" or "times" in the same message never takes it to a cheerful answer. */
+    if (WORDS.last.test(calm(q))) return "crisis";
     for (var i = 0; i < MATCH.length; i++) {
       if (!MATCH[i][0].test(q)) continue;
       var k = MATCH[i][1];
       if (k === "prayer" && !CHURCH && A.prayerwho && PRODUCT_WORDS.test(q)) return "prayerwho";
       if (k === "tour" || k === "menu" || A[k]) return k;
     }
-    /* The last net: words that matter when nothing else fits ("I have a gun"). */
-    return WORDS.last.test(calm(q)) ? "crisis" : "fallback";
+    return "fallback";
   }
 
   function onChip(c) {
@@ -884,8 +905,10 @@
   function answer(key, q) {
     if (key === "tour") { say(CFG.tourIntro || "Great. I will walk you through the page one section at a time. Use Next to move on, or press Escape any time to stop.", null, function () { setTimeout(startTour, REDUCE ? 50 : 600); }); return; }
     if (key === "menu" || !A[key]) { say("Here are a few things I can help with.", MENU); return; }
-    say(val(A[key].t, q), val(A[key].c, q));
+    say(withLine(val(A[key].t, q), q), val(A[key].c, q));
   }
+  /* Round 5: a question about death ("What happens after we die?") gets its answer, with 988 and 911 under it. */
+  function withLine(t, q) { return t && q && /\b(?:die|dies|dying|death|dead)\b/i.test(q) && String(t).indexOf("988") < 0 ? t + CRISIS_LINE : t; }
   function greet() {
     say(val(CFG.greeting) || ("Hi, I am " + AN + ", the assistant for " + NAME + ". This is a live preview of the " + LOOK + " template from Genesis Ministry. Want a quick guided demo of the site, or do you have a question?"), MENU);
   }
@@ -1785,7 +1808,7 @@
       else if (k === "leadersafety") { t = LEADER_REPLY; c = LEADER_CHIPS; }
       else if (k === "fallback") { var fb = fallback(q); t = fb.t; c = fb.c; }
       else if (k === "tour" || k === "menu" || !A[k]) { t = k; c = MENU; }
-      else { t = val(A[k].t, q); c = val(A[k].c, q); }
+      else { t = withLine(val(A[k].t, q), q); c = val(A[k].c, q); }
       return { key: k, text: t, chips: (c || []).filter(Boolean).map(function (x) { return x.label; }) };
     }
   };

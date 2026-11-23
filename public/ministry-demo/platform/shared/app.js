@@ -1233,7 +1233,8 @@
           : g.next.charAt(0).toUpperCase() + g.next.slice(1) + " is " + GM.fmt.due(g.due).text.toLowerCase() + ".";
         return "Start with " + noDot(p.name) + ". " + why + (lp ? " Then " + lp.name + ": " + late.next.charAt(0).toLowerCase() + late.next.slice(1) + ", " + GM.fmt.due(late.due).text.toLowerCase() + ". " + GM.staff(late.owner).name + " owns it." : "");
       } },
-      { match: /follow|due|overdue/i, answer: function () {
+      /* "Follow-ups due", never "someone keeps following me". */
+      { match: /\bfollow[- ]?ups?\b|\bdue\b|\boverdue\b/i, answer: function () {
         var due = GM.dueFollowUps();
         return due.length + " follow-ups are due today or overdue. " + due.slice(0, 4).map(function (g) { var p = GM.person(g.personId); return p.name + " (" + g.next.toLowerCase() + ", " + GM.fmt.due(g.due).text.toLowerCase() + ")"; }).join("; ") + (due.length > 4 ? "; and " + (due.length - 4) + " more." : ".");
       } },
@@ -1270,7 +1271,7 @@
       } },
       { match: /this week|week\b/i, answer: function () { return GM.fill(D.summaries[0].body); } },
       { match: /price|cost|pricing|custom/i, answer: D.pricingLine + " Enterprise, for more than one campus, is scoped on a call. Every look is filled with your church's content, photos and colors, and changes beyond the template are available for an additional cost." },
-      { match: /level|plan|includ|what do (we|i) get|package/i, answer: D.pricingLine + " Care is the website in one of four looks, a brand board, a social marketing plan and " + ASSISTANT.name + " on the website. The Shepherd plan adds this workspace, the guest pipeline, the member app and the care inbox. The Plus plan adds person pages, the Access Record screen, the gifts picture and reports." },
+      { match: /\b(?:levels?|plans?(?! to\b)|tiers?|includ\w*|packages?|pricing)\b|\bwhat do (?:we|i) get\b/i, answer: D.pricingLine + " Care is the website in one of four looks, a brand board, a social marketing plan and " + ASSISTANT.name + " on the website. The Shepherd plan adds this workspace, the guest pipeline, the member app and the care inbox. The Plus plan adds person pages, the Access Record screen, the gifts picture and reports." },
       { match: /hope|assistant|ai\b/i, answer: "On your website I answer from facts your team approved: times, kids, next steps, giving. In this workspace I draft welcome notes and summaries, and a person approves everything. I never draft a reply to prayer or a personal message, and I never set a gifts score." }
     ];
   }
@@ -1315,6 +1316,14 @@
     if (GM.side === "genesis") return { text: WORDS.leaderReply(""), links: links };
     return { text: WORDS.leaderReply("") + "\n\nIf this is about someone in your church, do not handle it alone or only inside the church: call 911 if anyone is in danger, and follow your child protection and reporting policy.", links: links };
   }
+  /* Round 5: a first-person statement no answer took ("I need to get out", "I can't anymore") is someone
+     telling about their life, not asking about the product: the numbers, one tap each, and no sales link. */
+  var SELF_WORDS = /\b(?:i|i'?m|im|i'?ve|i'?d|i'?ll|my|myself|we'?re)\b/i;
+  var PRODUCT_ASK = /\b(?:genesis|hope|plans?|price|cost|workspace|dashboard|guests?|care inbox|inbox|drafts?|reports?|seats?|team|roles?|app|website|site|screen|export|data|settings?|members?|staff|volunteers?|summary|follow[- ]?ups?)\b/i;
+  function aboutSelf(t) { t = String(t || ""); return SELF_WORDS.test(t) && !/\?\s*$/.test(t) && !/^\s*(?:how|what|which|who|where|when|why|can|could|do|does|did|is|are|will|would|should|show|tell|give|open|help me (?:find|see|with))\b/i.test(t) && !PRODUCT_ASK.test(t); }
+  function selfAnswer() {
+    return { text: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. Please reach a person you trust today.", links: [{ label: "Call 988", href: "tel:988", primary: true }, { label: "Text 988", href: "sms:988" }, { label: "Call 911", href: "tel:911" }] };
+  }
   /* Every fallback ends with the numbers, so a crisis no rule heard still sees 988 and 911. */
   var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
   function rawAnswer(text) {
@@ -1326,6 +1335,8 @@
     var safe = safetyOf(text);
     if (safe === "crisis") return crisisAnswer();
     if (safe === "leadersafety") return leaderAnswer();
+    /* Round 5: the last net before any topic answer too ("I have a gun"), never after it. */
+    if (WORDS.last && WORDS.last.test(calm(text))) return crisisAnswer();
     var hopeLocked = GM.side === "church" && !GM.isIncluded("genesis");
     if (hopeLocked) {
       var product = pickAnswer(baseAnswers, text);
@@ -1338,6 +1349,8 @@
         var plans = pickAnswer(baseAnswers, "What does each plan include?");
         if (plans != null) return plans;
       }
+      /* Someone telling about their own life gets the numbers, never a sales call. */
+      if (aboutSelf(text)) return selfAnswer();
       /* An honest line and a person, as on every other plan. */
       return { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website, and " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE, link: { label: "Talk With Genesis", href: D.genesisContact } };
     }
@@ -1348,6 +1361,7 @@
     if (found != null) return found;
     /* The last net, as on the church's own site: a crisis word no answer took still gets the reply. */
     if (crisisNet(text) || (WORDS.last && WORDS.last.test(calm(text)))) return crisisAnswer();
+    if (GM.side !== "genesis" && aboutSelf(text)) return selfAnswer();
     return GM.side === "genesis"
       ? "In this preview I answer from the sample data."
       /* A pastor's question no answer covers gets an honest line and a person, never a list of what I can do. */
