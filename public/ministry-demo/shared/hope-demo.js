@@ -333,6 +333,7 @@
       q = WORDS.plain(q);
       var key = route(q);
       if (key === "crisis") { say(CRISIS_REPLY, CRISIS_CHIPS); return; }
+      if (key === "leadersafety") { say(LEADER_REPLY, LEADER_CHIPS); return; }
       if (key === "fallback") { var fb = fallback(q); say(fb.t, fb.c); return; }
       answer(key, q);
     });
@@ -396,6 +397,9 @@
      never improvised. A page with no church (the story pages) ends after "You are not alone." */
   function crisisReply(phone) { return WORDS.reply(phone); }
   var CRISIS_REPLY = crisisReply(CH.phone);
+  /* Harm by someone at church gets its own fixed reply (shared/crisis-words.js): 911, 988 and help
+     outside the church, never only the church's own people. A made-up 555 number is never offered. */
+  var LEADER_REPLY = WORDS.leaderReply(/ 555-/.test(CH.phone || "") ? "" : CH.phone);
   /* Each sample church's own parking words, from its site. A page can give church.parking instead. */
   var PARKING = {
     "Lightwell Church": "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
@@ -452,6 +456,8 @@
     }
     say("On the live site this opens a short prayer form that goes only to the pastors and the prayer team. A real person reads every one. This preview sends nothing.", [BACK]);
   }
+  /* Genesis runs the site and a few providers process it: the same promise as the processors answer. */
+  var PROCESSORS_LINE = "Genesis, which runs this website" + (CHURCH ? " for " + SHORT : "") + ", never sells it or passes it on for anyone's marketing, and a few service providers, such as hosting and email delivery, handle it under contract only to run the site.";
   var NOT_HERE = "That is a question for a church's own website. On each of the four sample sites I answer it from that church's own facts, like times, kids and parking.";
   /* The page's way to talk with Genesis (the story pages carry a[data-contact]), and the journey's
      getting started chapter. */
@@ -515,7 +521,9 @@
       return w;
     }, c: [{ label: "Service Times", key: "times" }] },
     prayer: { t: CH.prayer || "We would be honored to pray with you. Share your request and our pastors and prayer team will stand with you." + CRISIS_LINE, c: [SHARE, BACK] },
-    prayerwho: { t: "Only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + CRISIS_LINE, c: [SHARE, BACK] },
+    /* A sample site with no plan says only what every plan keeps; from the Shepherd plan (?plan=2 or 3) the
+       reader choice is added below. */
+    prayerwho: { t: "Prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + CRISIS_LINE, c: [SHARE, BACK] },
     pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service Times", key: "times" }] },
     values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I Am New Here", key: "newhere" }] },
     contact: { t: CH.phone ? "You can call " + NAME + " at " + CH.phone + (EMAIL ? " or email " + EMAIL : "") + ", and someone on the team will help." : "Someone on the team would be glad to help. The fastest way is to plan a visit or share a request on this site.", c: chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK) },
@@ -551,7 +559,8 @@
     }, c: [SHARE, { label: "I Am New Here", key: "newhere" }, { label: "Service Times", key: "times" }] },
     moved: { t: function () { return "I am so glad it spoke to you. " + cap(listOf(pastorNames())) + " would love to hear what stood out, and you are always welcome back on Sunday."; }, c: function () { return chips({ label: "Watch a Message", key: "watch", cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK); } },
     /* What a guest asks that the page already says. */
-    privacy: { t: "What you share here goes only to the people at " + SHORT + " who need it. Plan Your Visit reaches the welcome team. A prayer request is read only by " + listOf(pastorNames().concat("our prayer team")) + ", and you choose who may read it.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] },
+    /* Who handles what a guest shares: the church, and Genesis with its providers, as the processors answer says. */
+    privacy: { t: "What you share here goes to the people at " + SHORT + " who need it. Plan Your Visit reaches the welcome team, and a prayer request goes only to " + listOf(pastorNames().concat("our prayer team")) + ". " + PROCESSORS_LINE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] },
     serve: { t: "We would love that. Most people start serving after a Sunday or two. Tell a greeter or one of the pastors you would like to help, and they will help you find a team that fits.", c: [{ label: "I Am New Here", key: "newhere", cta: true }, { label: "Service Times", key: "times" }] },
     history: { t: function () { var y = foundedYear(), p = CH.pastors || ""; return (y && p.indexOf(y) < 0 ? NAME + " has been gathering since " + y + ". " : "") + (p || "Our pastors would love to tell you the story on a Sunday."); }, c: [{ label: "I Am New Here", key: "newhere" }, { label: "Service Times", key: "times" }] },
     special: { t: function (q) {
@@ -566,7 +575,7 @@
     thanks: { t: "You are welcome. Anything else I can help with?", c: null },
     /* questions a church leader asks about the product */
     /* The same plan contents as the plan cards and the workspace Hope (platform/shared/demo.js LEVELS_TEXT). */
-    package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks (this one is " + LOOK + "), the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
+    package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks " + (CFG.look && CFG.look !== "Genesis Ministry" ? " (this one is " + LOOK + ")" : "") + ", the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and gives 988 and 911 right away when someone is in crisis. When " + AN + " does not know, it says so and hands the question to a person.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
@@ -602,6 +611,11 @@
   A.reporting = { t: CHURCH
     ? "Our pastors follow " + SHORT + "'s child protection and reporting policy, and a real person handles every report. I am an automated assistant, so please do not wait on me: if you or someone else is in danger, call 911, or call or text 988." + (CH.phone ? " You can call the church at " + CH.phone + "." : "")
     : AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your child protection and reporting policy. When someone writes words of crisis, " + AN + " shows them 988 and 911 right away, and from the Shepherd plan the pastor on call is alerted, with no private words.", c: function () { return CHURCH ? CRISIS_CHIPS : chips(talkChip(), BACK); } };
+  /* Keeping a request from one pastor, who reads a member's messages at home, and what a pastor must report. */
+  A.prayerfromstaff = { t: "A prayer request reaches all of our pastors, " + listOf(pastorNames()) + ", so it cannot be kept from one of them. If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+  A.messagesprivate = { t: "What you share with " + SHORT + " never goes to anyone in your family. A prayer request goes only to the pastors and the people they trust to pray. If someone at home can open your email or phone, keep that in mind before you write. If you are not safe at home, call 911, or call or text 988.", c: [SHARE, BACK] };
+  A.confidential = { t: "A pastor can talk with you about what stays private and the few things they must report to keep someone safe." + (CH.phone ? " Call " + CH.phone + " to find a time." : "") + " If anyone is in danger right now, call 911, or call or text 988.", c: function () { return chips(CALL, BACK); } };
+  A.careplan = { t: "Care is the first Genesis Ministry plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
   /* The Care plan of a church site (the Website screen passes ?plan=1): prayer forms go by email to the
      pastors, and there is no prayer team inbox yet. */
   var SITE_PLAN = +(new URLSearchParams(location.search).get("plan") || 0);
@@ -609,7 +623,11 @@
     var CARE_PRAYER = "Your request goes by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that.";
     A.prayer = { t: "We would be honored to pray with you. " + CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
     A.prayerwho = { t: CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
-    A.privacy = { t: "What you share here goes only to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+    A.privacy = { t: "What you share here goes to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER + " " + PROCESSORS_LINE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+    A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+  } else if (CHURCH && SITE_PLAN >= 2) {
+    A.prayerwho = { t: "Only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerfromstaff = { t: "When you share a request, you can choose Pastors only, so the prayer team does not read it. It still reaches every pastor, " + listOf(pastorNames()) + ". If you would rather talk with just one of them, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   }
   /* The story pages speak for Genesis Ministry, not a church: a Sunday question points to the sample
      sites, and a buyer's questions (getting started, a call) get Genesis's own answers. */
@@ -617,9 +635,11 @@
     /* A church's own fact ("What time is your service?") belongs to a church's site. Anything else a
        pastor asks is honestly not known here, with a person at Genesis one tap away. */
     var CHURCH_FACT = /\b(your|y'?all'?s?)\s+(church|service|services|sunday|sundays|gathering|pastors?|kids|children|nursery|youth|students|small groups?|groups|building|address|parking|times?|worship|location|staff|sermons?|messages?)\b|\bwhat time\b|\bwhere (is|are) (the|your) (church|service|building|parking)\b|\b(service|sunday|worship|gathering) times?\b|\bwhere (are you|is it) located\b|\bcan i (give|join|visit|come|bring|park|serve|attend|watch)\b|\b(is there|do you have) (a |an )?(nursery|kids'? (ministry|program|church)|youth group|student ministry|small groups?|parking|coffee|food pantry|bible stud(y|ies))\b|\bpray for (me|my|us)\b/i;
+    /* A question about Hope itself ("How do I know Hope won't make up a service time?") is not a church fact. */
+    var churchFact = function (q) { q = String(q || ""); return CHURCH_FACT.test(q) && !new RegExp("\\bhow (?:do|can|would) (?:i|we) know\\b|\\b(?:will|does|would|could|can|won'?t|doesn'?t) " + AN_RE + "\\b|\\bmake (?:things|stuff|it|something|answers?|facts?|\\w+ times?) up\\b|\\bmade[- ]up\\b", "i").test(q); };
     var notHere = {
-      t: function (q) { return CHURCH_FACT.test(q || "") ? NOT_HERE : (CFG.fallback || "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call.") + CRISIS_LINE; },
-      c: function (q) { return CHURCH_FACT.test(q || "") ? MENU.slice(0, 4) : chips(talkChip(), MENU[1], MENU[2]); }
+      t: function (q) { return churchFact(q) ? NOT_HERE : (CFG.fallback || "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call.") + CRISIS_LINE; },
+      c: function (q) { return churchFact(q) ? MENU.slice(0, 4) : chips(talkChip(), MENU[1], MENU[2]); }
     };
     ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "talkpastor", "wedding", "pantry", "noapp"].forEach(function (k) { A[k] = notHere; });
     A.beliefs = { t: "Each church answers that in its own words. On a church's own site, " + AN + " shares what the church has written and hands questions like this to a pastor rather than guessing.", c: null };
@@ -649,7 +669,9 @@
   if (!CHURCH) ["times", "parking", "newhere", "kids", "students", "groups", "give", "watch", "pastors", "values", "contact", "visitchange", "serve", "history", "special", "kidsafe", "privacy", "beliefs"].forEach(function (k) { if (A[k] && !A[k].c) A[k].c = MENU.slice(0, 4); });
   /* Under the crisis reply (its words never change): numbers a phone can dial with one tap. */
   /* A sample church's made-up 555 number is never a button under the crisis reply: nobody would answer. */
-  var CRISIS_CHIPS = chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, / 555-/.test(CH.phone || "") ? null : CALL, BACK);
+  var CRISIS_CHIPS = chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, / 555-/.test(CH.phone || "") ? null : CALL, !CHURCH && A.crisisinfo ? { label: "How Does " + AN + " Handle a Crisis?", key: "crisisinfo" } : null, BACK);
+  /* Under the reply for harm by someone at church: the numbers only, never only the church. */
+  var LEADER_CHIPS = chips({ label: "Call 911", href: "tel:911", go: true, cta: true }, { label: "Call 988", href: "tel:988", go: true }, { label: "Text 988", href: "sms:988", go: true }, BACK);
   /* When nothing fits, a church's own Hope offers the church's next steps, never the product. */
   var FALLBACK_CHIPS = !CHURCH ? MENU
     : A.talk ? chips({ label: "Talk to a Person", key: "talk", cta: true }, { label: "Service Times", key: "times" }, BACK)
@@ -739,13 +761,20 @@
     [/\b(care|shepherd|plus) (plans?|tiers?)\b|\bcare\b[^.?!]{0,30}\bshepherd\b|\bshepherd\b[^.?!]{0,30}\bplus\b|\b(which|what) plans?\b/i, "package"],
   ];
   var SITE = [
+    /* Round 3: a buyer's plan question ("Does the Shepherd plan include staff seats?") is the plans, never
+       the pastors; a request kept from one pastor, family reading messages, and what a pastor must report. */
+    [/\b(?:care|shepherd|plus) (?:plans?|tiers?|levels?)\b|\bstaff seats?\b|\b(?:shepherd|plus)\b.{0,30}\b(?:include|includes|cost|costs|price|seats?|reports?|plans?|tiers?)\b|\bdowngrad\w*/i, "package"],
+    [/\bcare\b.{0,20}\bplan\b.{0,30}\b(?:or|vs\.?|versus|and)\b.{0,20}\binbox\b|\binbox\b.{0,30}\b(?:or|vs\.?|versus|and)\b.{0,20}\bcare plan\b|\bwhat (?:does|is) the care inbox\b|\bdifference between (?:the )?care(?: plan)? and (?:the )?care inbox\b/i, "careplan"],
+    [/\b(?:keep|hide|hid|block|private|secret)\w*\b.{0,40}\bprayers?(?: requests?)?\b.{0,40}\bfrom (?:the )?(?:other |another |my |our |a |one |certain )?(?:pastors?|lead pastor|senior pastor|staff|prayer team|elders?)\b/i, "prayerfromstaff"],
+    [/\b(?:husband|wife|spouse|partner|boyfriend|girlfriend|parents?|mom|dad|mother|father|family|kids|children|roommate|anyone (?:at|in) my (?:home|house))\b.{0,40}\b(?:see|sees|read|reads|find|finds|know|knows|get into|look at|check)\w*\b.{0,40}\b(?:messages?|prayers?|requests?|emails?|what i (?:write|wrote|send|share|type))\b/i, "messagesprivate"],
+    [/\b(?:illegal|a crime)\b|\b(?:have to|must|required to|need to|obligated to) report\b.{0,40}\b(?:i|me|tell|share|say)\b|\bkeep (?:it|this|what i (?:say|tell|share)) (?:private|secret|confidential|between us)\b|\bconfidential(?:ity)?\b.{0,30}\b(?:pastor|counsel\w*|talk|tell)\b/i, "confidential"],
     /* "Is this chat private?", "What do you do with what I type here?", "Is this conversation recorded?" */
     [/\b(?:is|are) (?:this|the|our|my) (?:chat|conversation)s? (?:being )?(?:private|recorded|saved|kept|stored|confidential|secure|monitored)\b|\b(?:does|do|will|can|could) (?:anyone|anybody|someone|somebody|a person|people|staff|the church|you|they)\b.{0,40}\b(?:see|sees|read|reads|watch|record|save|keep|store)\w*\b.{0,30}\b(?:what i (?:type|write|say|ask)|this chat|this conversation|my (?:chat|questions?))\b|\bwhat (?:do|does|will|happens)\b.{0,30}\b(?:what i (?:type|write|say)|this chat|this conversation)\b/i, "chat"],
     /* Prayer and an AI company, and outside providers: plain answers, never the prayer invitation. */
     [/\bprayers?\b.{0,60}\b(?:openai|chat ?gpt|gpt|ai (?:company|companies|provider|service|model)|outside ai|another ai|an ai)\b|\b(?:openai|chat ?gpt)\b.{0,60}\bprayers?\b|\b(?:does|do|will|can|could) (?:hope|the ai|ai|a bot|the assistant|you)\b.{0,20}\b(?:read|see|look at|scan)\w*\b.{0,30}\bprayers?\b/i, "aiprayer"],
     [/\bthird[- ]part(?:y|ies)\b|\bwhich (?:companies|vendors|providers|services)\b|\boutside (?:ai|companies|company|vendors?|providers?)\b|\bai (?:company|companies|provider|providers|vendor|service)\b/i, "processors"],
     [/\bwho (sees|can see|reads|can read|will see|will read|gets to see|gets to read|gets) (my|a|the|our|your) (prayer|request)|\b(is|are) (my |our )?prayer( requests?)? (private|confidential|safe|secret)\b|\b(private|confidential) prayer\b|\bwho (sees|reads) (it|them|prayer requests?)\b/i, "prayerwho"],
-    [/\b(?:is|are|will) (?:my|our) (?:personal )?(?:information|info|details|data|email|forms?|requests?) (?:be )?(?:safe|private|secure|protected|kept private|shared|sold)\b|\bwhat (?:do|will) you do with (?:my|our) (?:information|info|details|email|data)\b|\b(?:do|will) you (?:share|sell) (?:my|our) (?:information|info|details|email|data)\b|\bprivacy (?:policy|notice|page|statement)\b/i, "privacy"],
+    [/\b(?:is|are|will) (?:my|our) (?:personal )?(?:information|info|details|data|email|forms?|requests?) (?:be )?(?:safe|private|secure|protected|kept private|shared|sold)\b|\bwhat (?:do|will) you do with (?:my|our) (?:information|info|details|email|data)\b|\b(?:do|does|will|would) (?:you|they|the church|this church|your church|genesis|y'?all)\b.{0,20}\b(?:share|sell|give away|pass on)\b.{0,10}\b(?:my|our) (?:personal )?(?:information|info|details|email|e-mail|data|phone number|address)\b|\bprivacy (?:policy|notice|page|statement)\b/i, "privacy"],
     /* Beliefs come before care: "What do you believe about gay marriage?" is a question, not distress. */
     [/\b(believe|believes|views?|position|stance|teach|teaches) (about|on)\b|\b(gay|lgbtq?\w*|same[- ]sex|homosexual\w*|transgender|affirming)\b|\bwomen (pastors?|preach\w*|elders?|leaders?|in ministry)\b|\bwomen be (pastors?|elders?|preachers?)\b|\b(can|do|does|are) women (preach|lead|teach|pastor)\w*\b|\bdenomination\w*\b|\bstatement of faith\b|\bdoctrin\w*\b|\bwhat (do|does) (you|your church|the church) teach\b/i, "beliefs"],
     [/\b(talk|speak|meet|chat|sit down|get coffee) (to|with) (a|the|one of the|your|our)?\s?pastors?\b|\b(see|reach|call|email|contact) (a|the|your) pastor\b|\bpastors?\b.{0,30}\b(this week|appointment|available|meet with)\b/i, "talkpastor"],
@@ -806,7 +835,7 @@
      so "suicide", "suicidal" and "overdosed" all match. */
   var CRISIS = WORDS.crisis, calm = WORDS.calm;
   /* Someone else in danger, and a staff member writing about someone in the church, on every page. */
-  function isCrisis(q) { q = calm(q); return CRISIS.test(q) || WORDS.staff.test(q); }
+  function isCrisis(q) { var s = WORDS.safety(q); return s === "crisis" || s === "leadersafety"; }
   /* The net: a crisis word ("abuse", "danger", "pills") gets the crisis reply before any answer, so
      "I need to report abuse by a pastor" never gets the pastors' bio. A pastor's question about how
      abuse is handled, with no "I" or "me" in it (WORDS.policy), gets the answer on reporting instead,
@@ -815,8 +844,11 @@
   /* Where a question goes: "crisis", an answer key, or "fallback". Curly apostrophes read as straight. */
   function route(q) {
     q = WORDS.plain(String(q || ""));
-    if (isCrisis(q)) return "crisis";
-    if (CRISIS_NET.test(calm(q))) return WORDS.policy.test(calm(q)) && A.reporting ? "reporting" : "crisis";
+    /* The safety pre-check (shared/crisis-words.js) runs first, on every Hope: a disclosure of danger
+       or harm never reaches a topic rule, whatever words it shares with one ("pastor", "staff"). */
+    var safe = WORDS.safety(q);
+    if (safe === "crisis" || safe === "leadersafety") return safe;
+    if (safe === "policy") return A.reporting ? "reporting" : "crisis";
     for (var i = 0; i < MATCH.length; i++) {
       if (!MATCH[i][0].test(q)) continue;
       var k = MATCH[i][1];
@@ -1724,7 +1756,10 @@
     /* The fixed crisis reply, for any Hope that shares these words (shared/app.js reads it). */
     crisisReply: crisisReply,
     /* Whether text is a crisis, by the widened check above (shared/app.js can ask it too). */
-    isCrisis: function (text) { var q = WORDS.plain(String(text || "")); return isCrisis(q) || CRISIS_NET.test(calm(q)); },
+    isCrisis: function (text) { var q = WORDS.plain(String(text || "")); return isCrisis(q) || (WORDS.safety(q) !== "policy" && CRISIS_NET.test(calm(q))); },
+    /* Which safety reply a text gets: "crisis", "leadersafety", "policy" or null (shared/crisis-words.js). */
+    safety: function (text) { return WORDS.safety(WORDS.plain(String(text || ""))); },
+    leaderReply: function () { return LEADER_REPLY; },
     /* Where a question would go ("crisis", an answer key or "fallback"), for the checks in
        shared/hope-check.html. It answers nothing and changes nothing. */
     route: route,
@@ -1732,6 +1767,7 @@
     answerInfo: function (q) {
       q = WORDS.plain(String(q || "")); var k = route(q), t, c;
       if (k === "crisis") { t = CRISIS_REPLY; c = CRISIS_CHIPS; }
+      else if (k === "leadersafety") { t = LEADER_REPLY; c = LEADER_CHIPS; }
       else if (k === "fallback") { var fb = fallback(q); t = fb.t; c = fb.c; }
       else if (k === "tour" || k === "menu" || !A[k]) { t = k; c = MENU; }
       else { t = val(A[k].t, q); c = val(A[k].c, q); }

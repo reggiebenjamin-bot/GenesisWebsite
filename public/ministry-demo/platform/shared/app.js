@@ -819,11 +819,21 @@
   function watchNav() {
     var nav = document.querySelector(".v2-sidebar .v2-nav");
     if (!nav) return;
-    var set = function () { nav.classList.toggle("gm-nav-more", nav.scrollHeight - nav.scrollTop - nav.clientHeight > 4); };
-    /* Each screen is its own page, so the nav starts at the top: the current row is brought into view,
-       clear of the 44px fade at the foot, as Genesis OS keeps it in view. */
+    var set = function () { nav.classList.toggle("gm-nav-more", nav.scrollHeight - nav.scrollTop - nav.clientHeight > 4); nav.classList.toggle("gm-nav-top", nav.scrollTop > 4); };
+    /* Each screen is its own page, so the nav starts at the top. When the current row would sit under the
+       44px fade at the foot, its group label scrolls to the top (never a half row under the action
+       button), as far as keeps the row itself clear of the foot. */
     var cur = nav.querySelector('[aria-current="page"]');
-    if (cur) { var cr = cur.getBoundingClientRect(), nr = nav.getBoundingClientRect(); if (cr.bottom > nr.bottom - 44) nav.scrollTop += cr.bottom - nr.bottom + 52; }
+    if (cur) {
+      var cr = cur.getBoundingClientRect(), nr = nav.getBoundingClientRect();
+      if (cr.bottom > nr.bottom - 44) {
+        var grp = cur.closest(".v2-nav-group") || cur, gr = grp.getBoundingClientRect();
+        var top = nav.scrollTop + gr.top - nr.top - 8, rowTop = nav.scrollTop + cr.top - nr.top;
+        /* The row must end above the fade: if the group is too tall, scroll only as far as the row needs. */
+        if (rowTop + cur.offsetHeight - top > nav.clientHeight - 44) top = rowTop + cur.offsetHeight - nav.clientHeight + 52;
+        nav.scrollTop = Math.max(0, top);
+      }
+    }
     nav.addEventListener("scroll", set, { passive: true });
     window.addEventListener("resize", set);
     if ("ResizeObserver" in window) new ResizeObserver(function () { requestAnimationFrame(set); }).observe(nav);
@@ -918,9 +928,12 @@
     var ws = [];
     var all = cfg.work.concat(cfg.intelligence, (cfg.system || []).filter(function (it) { return it.href; }));
     all.forEach(function (it, i) {
+      /* The same names and locks as the sidebar (navLink): on Care, Today is Home, and Ask Hope says its plan. */
+      if (it.key === "today" && side === "church" && GM.plan === 1) it = Object.assign({}, it, { label: "Home", module: null, hint: "Your website and its forms" });
       var lk = it.module && side === "church" && !GM.isIncluded(it.module);
       ws.push({ label: it.label, hint: lk ? "Included in " + D.levels[GM.moduleLevel(it.module) - 1].code : (it.hint || ""), href: it.href });
-      if (i === cfg.work.length - 1) ws.push({ label: "Ask " + ASSISTANT.name, hint: "Open " + ASSISTANT.name + " beside this screen", action: "open-hope" });
+      var hopeLk = side === "church" && !GM.isIncluded("genesis");
+      if (i === cfg.work.length - 1) ws.push({ label: "Ask " + ASSISTANT.name, hint: hopeLk ? "Included in " + D.levels[GM.moduleLevel("genesis") - 1].code : "Open " + ASSISTANT.name + " beside this screen", action: "open-hope" });
     });
     groups.push({ name: "Workspaces", items: ws });
     var views = [];
@@ -1134,8 +1147,8 @@
   function plainText(t) { return String(t == null ? "" : t).replace(/[\u2018\u2019\u02bc\u2032]/g, "'"); }
   /* Before anything else, on every plan and on both sides. */
   function isCrisisText(t) {
-    t = calm(plainText(t));
-    return CRISIS.test(t) || CRISIS_OTHERS.test(t);
+    var s = WORDS.safety(plainText(t));
+    return s === "crisis" || s === "leadersafety";
   }
   /* Before a fallback: the site's full check (it includes the last net), or our own net. */
   function crisisNet(t) {
@@ -1145,7 +1158,9 @@
   }
   /* The fixed reply, from ../shared/crisis-words.js: one source of the words. */
   function crisisReply(phone) { return WORDS.reply(phone); }
-  window.HOPE_CRISIS = { pattern: CRISIS, others: CRISIS_OTHERS, net: CRISIS_NET, test: isCrisisText, reply: crisisReply };
+  /* Which safety reply a text gets, before any topic: "crisis", "leadersafety", "policy" or null. */
+  function safetyOf(t) { return WORDS.safety(plainText(t)); }
+  window.HOPE_CRISIS = { pattern: CRISIS, others: CRISIS_OTHERS, net: CRISIS_NET, test: isCrisisText, reply: crisisReply, safety: safetyOf, leaderReply: function (phone) { return WORDS.leaderReply(phone); } };
   GM.crisis = window.HOPE_CRISIS;
   function listNames(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   /* A name that ends with an initial ("Maya T.") never doubles the period in a sentence. */
@@ -1293,15 +1308,24 @@
     if (GM.plan >= 2 && GM.side === "church") links.push({ label: "Open Care Inbox", href: GM.url("church-care.html") });
     return { text: crisisReply(GM.church.phone) + "\n\n" + staffLine, links: links };
   }
+  /* Harm by someone at church: the separate fixed reply, with 911 and 988 and help outside the church,
+     never only the church's own people. In the workspace a staff line follows. */
+  function leaderAnswer() {
+    var links = [{ label: "Call 911", href: "tel:911", primary: true }, { label: "Call 988", href: "tel:988" }, { label: "Text 988", href: "sms:988" }];
+    if (GM.side === "genesis") return { text: WORDS.leaderReply(""), links: links };
+    return { text: WORDS.leaderReply("") + "\n\nIf this is about someone in your church, do not handle it alone or only inside the church: call 911 if anyone is in danger, and follow your child protection and reporting policy.", links: links };
+  }
   /* Every fallback ends with the numbers, so a crisis no rule heard still sees 988 and 911. */
   var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
   function rawAnswer(text) {
     text = plainText(text);
-    /* The crisis rule comes before everything, on every plan and on both sides. */
-    if (isCrisisText(text)) return crisisAnswer();
-    /* So does the net ("abuse", "danger", "pills"), as on the church's own site. A pastor's question about
-       how abuse is handled, with no "I" or "me" in it, goes on to the answer on reporting. */
-    if (CRISIS_NET.test(calm(text)) && !(WORDS.policy && WORDS.policy.test(calm(text)))) return crisisAnswer();
+    /* The safety pre-check (../shared/crisis-words.js) comes before everything, on every plan and on
+       both sides: danger, self-harm, abuse or harm by anyone, a church leader included, never reaches a
+       topic answer. A question about how abuse is handled, with no disclosure in it, goes on to the
+       answer on reporting. */
+    var safe = safetyOf(text);
+    if (safe === "crisis") return crisisAnswer();
+    if (safe === "leadersafety") return leaderAnswer();
     var hopeLocked = GM.side === "church" && !GM.isIncluded("genesis");
     if (hopeLocked) {
       var product = pickAnswer(baseAnswers, text);
@@ -1314,7 +1338,8 @@
         var plans = pickAnswer(baseAnswers, "What does each plan include?");
         if (plans != null) return plans;
       }
-      return "On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website. " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE;
+      /* An honest line and a person, as on every other plan. */
+      return { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website, and " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE, link: { label: "Talk With Genesis", href: D.genesisContact } };
     }
     /* Trust and policy answers come before a screen's own answers; then the screen's, the rest of the
        guided demo's and the built-in ones. */

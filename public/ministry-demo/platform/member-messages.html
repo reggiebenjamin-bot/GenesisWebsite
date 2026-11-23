@@ -290,6 +290,8 @@ function mxStage(o) {
 function mcIsCrisis(text) {
   "use strict";
   var t = String(text || ""), C = GM.crisis || {}, H = window.HopeDemo;
+  /* Harm by someone at church gets its own reply on the card (mcCard): 911, 988, help outside the church. */
+  try { window.mcKind = C.safety ? C.safety(t) : null; } catch (e) { window.mcKind = null; }
   try {
     if ((C.pattern && C.pattern.test(t)) || (C.others && C.others.test(t))) return true;
     if (H && typeof H.isCrisis === "function") {
@@ -303,7 +305,9 @@ function mcIsCrisis(text) {
 function mcCard(id, saved, what, announce) {
   "use strict";
   var c = GM.church, esc = GM.esc, tel = String(c.phone || "").replace(/\D/g, "");
-  var reply = GM.crisis && GM.crisis.reply ? GM.crisis.reply(c.phone)
+  var leader = window.mcKind === "leadersafety" && GM.crisis && GM.crisis.leaderReply;
+  if (leader) tel = "";
+  var reply = leader ? GM.crisis.leaderReply("") : GM.crisis && GM.crisis.reply ? GM.crisis.reply(c.phone)
     : window.HopeDemo && window.HopeDemo.crisisReply ? window.HopeDemo.crisisReply(c.phone) : "";
   return '<section class="m-crisis" id="' + id + '" tabindex="-1" aria-labelledby="' + id + '-h">' +
     '<h2 class="m-h3 m-crisis-head" id="' + id + '-h">' + GM.icon("call") + "<span>Help right now</span></h2>" +

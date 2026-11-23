@@ -46,7 +46,7 @@
     WHO + AUX + " " + HARMS + " (?:her|him|them|my " + PERSON + ")\\b|" + WHO + AUX + " " + BEATS + " (?:her|him|them|my " + PERSON + ")\\b" + BEAT_NOT + "|" + WHO + AUX + " " + TOUCHES + " (?:her|him|them|my " + PERSON + ")\\b" + TOUCH_NOT + "|took too many pills|can(?:'?t|not| not) go on (?:anymore|any more|like this|living)|(?:my " + PERSON + "|she|he|they) (?:wants?|is going|is planning|plans|tried|tries) to (?:die|kill|hurt|end)|(?:my " + PERSON + "|she|he|they) (?:overdosed|took pills)|(?:nobody|no one|no-one)(?: would| will|'d)?(?: even)? miss (?:him|her|them)\\b|wants? to disappear|wanted to disappear|touch(?:ed|es|ing) (?:my|our|her|his|their) " + PERSON + " (?:inappropriately|sexually|in a (?:bad|sexual|wrong|private) way)|(?:will|going to|gonna|might|could) (?:hurt|harm|kill) (?:the|my|our|her|his|their) (?:kids|children|baby|babies|" + KIN + ")\\b|(?:molest\\w*|raped|sexually (?:abused|assaulted)) (?:my|our|her|him|them)\\b)", "i");
   /* Everyday words that only sound like danger. They are set aside before every check, so a guest
      who is moved, or joking, never gets the crisis reply. */
-  var CALM = /\b(?:(?:dying|die|died|dies) (?:to (?:self|ourselves|sin|our old)|for (?:us|me|you|him|her|them|our sins|my sins|the world|sinners))|(?:dying|die) to (?:try|see|know|meet|hear|visit|come|go|get|find|have|join|check|taste|sing|worship)|to die for|die[- ]?hard|di(?:e|ed|ing) (?:of |from )?laugh\w*|dying of laughter|(?:could|would|'d) (?:die|kill) for (?:a|an|some|one)\b|kill(?:ing|ed)? it|kill(?:ing)? time|killers?|(?:this|that|it|the \w+|my (?:back|feet|knees?|head|neck|legs?|job|work|boss|schedule|commute|allergies))(?: \w+)? (?:has been|have been|is|are|was|were|'s|keeps?) killing me)\b/gi;
+  var CALM = /\b(?:touch(?:ed|es|ing)? (?:my|our) (?:heart|hearts|soul|souls|spirit)|touch(?:ed|es|ing)? (?:me|us) (?:deeply|so deeply|so much)|(?:dying|die|died|dies) (?:to (?:self|ourselves|sin|our old)|for (?:us|me|you|him|her|them|our sins|my sins|the world|sinners))|(?:dying|die) to (?:try|see|know|meet|hear|visit|come|go|get|find|have|join|check|taste|sing|worship)|to die for|die[- ]?hard|di(?:e|ed|ing) (?:of |from )?laugh\w*|dying of laughter|(?:could|would|'d) (?:die|kill) for (?:a|an|some|one)\b|kill(?:ing|ed)? it|kill(?:ing)? time|killers?|(?:this|that|it|the \w+|my (?:back|feet|knees?|head|neck|legs?|job|work|boss|schedule|commute|allergies))(?: \w+)? (?:has been|have been|is|are|was|were|'s|keeps?) killing me)\b/gi;
   /* plain() first: a curly apostrophe ("don’t") never hides a crisis. */
   function calm(q) { return plain(q).replace(CALM, " "); }
   /* A staff member writing about someone else ("a member told me she wants to die",
@@ -70,5 +70,69 @@
     return "I am so glad you told me, and I am sorry you are carrying this. I am an automated assistant, so please reach a person right now. Call or text 988, the Suicide and Crisis Lifeline, any time, day or night. If you are in immediate danger, call 911. You are not alone." +
       (phone ? " Our pastors would be honored to walk with you, and you can call the church at " + phone + "." : "");
   }
-  window.HOPE_WORDS = { PERSON: PERSON, crisis: CRISIS, others: OTHERS, staff: STAFF, net: NET, last: LAST, policy: POLICY, calm: calm, plain: plain, reply: reply };
+  /* ==== The safety pre-check. Every Hope calls safety() first, before any topic rule, so a word like
+     "pastor", "times" or "staff" can never send a disclosure of harm to a cheerful topic answer. ==== */
+  /* Someone harming themselves: the fixed crisis reply, even when a leader is named too. */
+  var SELF = /\b(?:suicid\w*|kill(?:ing)? (?:myself|my self)|end(?:ing)? (?:my|my own) life|take my (?:own )?life|want(?:ed)? to die|wanna die|hurt(?:ing)? myself|harm(?:ing)? myself|self[- ]?harm\w*|cut(?:s|ting)? myself|overdos\w*|better off dead|(?:don'?t|do not) want to (?:live|be alive|be here))\b/i;
+  /* A person at church: a church role ("the youth pastor", "one of the volunteers"), or someone met
+     there ("a man at church", "someone from small group"). */
+  var PLACE = "(?:church|youth group|youth|small group|life group|bible study|kids'? church|children'?s ministry|sunday school|camp|choir|worship team|ministry|retreat|vbs|service)";
+  var CHURCH_WHO = "(?:(?:a|an|the|my|our|their|her|his|that|this|one of (?:the|our|my)) " + ROLE +
+    "|(?:someone|somebody|a (?:man|woman|guy|member|person|adult|leader|volunteer|teacher)|an (?:adult|elder|usher|older man|older woman)|one of the (?:men|women|leaders|adults|members|volunteers)|people|a few people) (?:at|from|in|on) (?:the |our |my |this |that )?" + PLACE +
+    "|(?:the |our |my |a |one of the )?church (?:leaders?|staff(?: members?)?|members?|volunteers?|elders?|workers?))";
+  var LHARM = "(?:hurt|hurts|hurting|harmed|harms|harming|abus(?:e|es|ed|ing)|touch(?:ed|es|ing)|grop(?:ed|es|ing)|grab(?:bed|s|bing)|fondl(?:ed|es|ing)|molest(?:ed|s|ing)?|rap(?:ed|es|ing)|assault(?:ed|s|ing)|attack(?:ed|s|ing)|hit|hits|hitting|beat|beats|beating|slap(?:ped|s|ping)|kick(?:ed|s|ing)|punch(?:ed|es|ing)|chok(?:ed|es|ing)|threaten(?:ed|s|ing)?|harass(?:ed|es|ing)?|groom(?:ed|s|ing)|stalk(?:ed|s|ing)|kiss(?:ed|es|ing)|forc(?:ed|es|ing)|scar(?:es|ed|ing)|frighten(?:s|ed|ing)?|intimidat(?:es|ed|ing)|exposed (?:himself|herself) to|sent (?:nude|naked|sexual|explicit|inappropriate) \\w+ to|(?:did|does|has done|is doing|was doing|tried to do) (?:something|things|stuff) (?:illegal|inappropriate|sexual|wrong|bad|weird) (?:to|with))";
+  var LOBJ = "(?:me|us|(?:my|our) (?!heart|hearts|soul|souls|spirit|faith|life|lives)\\w+|her|him|them|myself)\\b(?! up\\b| a lot\\b| (?:deeply|so much|so deeply|hard|in my heart|my heart)\\b)";
+  /* Only a place may sit between the person and the harm ("a leader at church touched my son"), so
+     "the pastor's sermon really hit me" stays a sermon. */
+  var LOC = "(?: (?:at|from|in|on|of) (?:the |our |my |this |that )?[\\w']+(?: [\\w']+)?)?" + AUX;
+  var LEADER = new RegExp(
+    "\\b" + CHURCH_WHO + "\\b" + LOC + " " + LHARM + " " + LOBJ +
+    "|\\b" + CHURCH_WHO + "\\b.{0,60}?\\b(?:and|then|who|he|she|they)" + AUX + " " + LHARM + " " + LOBJ +
+    "|\\b" + CHURCH_WHO + "\\b" + LOC + " (?:is|was|has been|keeps being|gets|can be) (?:abusive|violent|inappropriate|threatening|dangerous|creepy)\\b" +
+    "|\\b" + CHURCH_WHO + "\\b" + LOC + " (?:makes?|made|making|keeps making) (?:me|us|my \\w+) (?:feel )?(?:unsafe|uncomfortable|scared|afraid|nervous)\\b" +
+    "|\\b" + CHURCH_WHO + "\\b" + LOC + " sent (?:me|us|my \\w+) (?:nude|naked|sexual|explicit|inappropriate)\\w*" +
+    "|\\b(?:afraid|scared|terrified|frightened) (?:of|around|to be (?:around|alone with)) " + CHURCH_WHO + "\\b" +
+    "|\\b(?:don'?t|do not|never|no longer|can'?t|cannot) feel safe (?:around|with|near) " + CHURCH_WHO + "\\b" +
+    "|\\b(?:don'?t|do not|never|no longer|can'?t|cannot) feel safe (?:at|in) (?:the |our |my |this )?" + PLACE + "\\b" +
+    "|\\b(?:abus\\w*|harass\\w*|touched|groped|molested|raped|assaulted|threatened|hurt|harmed|groomed|attacked|inappropriate\\w*)\\b.{0,30}?\\bby (?:" + CHURCH_WHO + "|(?:a|an|the|my|our|one of the) " + ROLE + ")\\b" +
+    "|\\b(?:was|were|got|been|being|get|gets) (?:sexually |physically )?(?:abused|touched|groped|molested|raped|assaulted|harassed|groomed|threatened|attacked) (?:at|in|during) (?:the |our |my |this )?" + PLACE + "\\b", "i");
+  /* A disclosure the crisis pattern above may not word: not feeling safe, fear of a person at home,
+     threats, stalking, an abusive or violent person, being forced. */
+  var DISCLOSE = new RegExp(
+    "\\b(?:i|we) (?:don'?t|do not|never|no longer|can'?t|cannot) feel safe (?:at home|in (?:my|our) (?:home|house|marriage|family)|(?:with|around|near) (?:him|her|them|my \\w+|our \\w+)|any ?more|(?=\\s*[.!?]*$))" +
+    "|\\b(?:i'?m|i am|we'?re|we are|i feel|i get) (?:so |really |very )?(?:afraid|scared|terrified|frightened) (?:of|around) (?:him|her|them|my \\w+|our \\w+)\\b(?! (?:the dark|heights|spiders|dogs|public speaking|crowds)\\b)" +
+    "|\\b(?:i'?m|i am|we'?re|we are) (?:so |really |very )?(?:afraid|scared|terrified|frightened) (?:that )?(?:my|our) (?:" + KIN + "|ex|step\\w+) (?:will|would|might|could|is going to|gonna) (?:find out|hurt|hit|kill|beat|see|catch|follow|find|take|kick|get (?:mad|angry|violent)|be (?:mad|angry))\\b" +
+    "|\\b" + WHO + AUX + " (?:threaten(?:s|ed|ing)?|forc(?:es|ed|ing)|stalk(?:s|ed|ing)) (?:me|us|my|to)\\b" +
+    "|\\b" + WHO + AUX + " (?:won'?t|will not|doesn'?t|does not) let (?:me|us) (?:leave|go out|go anywhere|see (?:my|anyone|friends|family)|talk to (?:anyone|my)|have (?:a phone|money|my phone))\\b" +
+    "|\\b(?:my|our) (?:" + KIN + "|ex|step\\w+)" + AUX + " (?:is|was|has been|gets|can be|keeps being|becomes) (?:abusive|violent|dangerous|threatening)\\b" +
+    "|\\b(?:i'?m|i am|we'?re|we are|i was|i live|we live) (?:in|with) (?:an? )?(?:abusive|violent|dangerous) (?:relationship|marriage|home|house|husband|wife|partner|boyfriend|girlfriend|family|parents?|dad|mom|father|mother)\\b" +
+    "|\\b(?:someone|somebody|a man|a woman|he|she|they)" + AUX + " (?:following|stalking|threatening) (?:me|us)\\b" +
+    "|\\b(?:i'?m|i am|i was|we'?re|we are) being (?:stalked|followed|threatened|harassed|hurt|abused|watched|groomed)\\b" +
+    "|\\b(?:forced|made) me (?:to )?(?:have sex|do (?:sexual )?things|touch)\\b|\\bsexual(?:ly)? harass\\w*", "i");
+  /* A pastor's or guest's question with no disclosure in it ("How does the church handle abuse
+     reports?"): it keeps the reporting answer, which gives 988 and 911. */
+  var POLICY_MORE = /^(?!.*\b(?:i|i'?m|im|i'?ve|i'?d|i'?ll|me|my|myself|mine)\b).*(?:\b(?:polic(?:y|ies)|procedures?|protocols?|guidelines?)\b.*\?|\b(?:accused|allegations?|alleged)\b|\bhow (?:do|does|will|would|should) (?:you|the church|your church|a church|churches|genesis|hope|staff|pastors|the pastors)\b.{0,30}\b(?:handle|respond|deal|treat|process)\w*\b)/i;
+  /* Someone else named ("someone", "she", "her") keeps a safety reply: it may be about a real person. */
+  var THIRD = /\b(?:he|she|they|him|her|them|his|their|someone|somebody)\b/i;
+  function isPolicy(t) { return (POLICY.test(t) || POLICY_MORE.test(t)) && !DISCLOSE.test(t); }
+  /* What comes before any topic answer: "crisis" (the fixed reply), "leadersafety" (harm by someone at
+     church: 911, 988 and help outside the church), "policy" (a question about how harm is handled) or
+     null (no safety words; topic routing goes on). When in doubt it chooses a safety reply. */
+  function safety(text) {
+    var t = calm(text);
+    if (!/\S/.test(t)) return null;
+    if (SELF.test(t)) return "crisis";
+    if (LEADER.test(t) && !isPolicy(t)) return "leadersafety";
+    if (isPolicy(t) && !THIRD.test(t) && !STAFF.test(t)) return CRISIS.test(t) || NET.test(t) || LEADER.test(t) ? "policy" : null;
+    if (CRISIS.test(t) || STAFF.test(t) || DISCLOSE.test(t)) return "crisis";
+    if (NET.test(t)) return isPolicy(t) ? "policy" : "crisis";
+    return null;
+  }
+  /* The reply for harm by someone at church: never only the church's own people. It has 911 and 988,
+     and says plainly that help outside the church is always open. */
+  function leaderReply(phone) {
+    return "I am so sorry, and thank you for telling me. What happened is not your fault. I am an automated assistant, so please reach a person you trust right now. If you or anyone else is in immediate danger, call 911. You can call or text 988, the Suicide and Crisis Lifeline, any time, day or night. You do not have to go through anyone at the church to get help: you can go to the police, or to a person you trust outside the church." +
+      (phone ? " If you also want to tell someone at the church, call " + phone + " and ask for a person who is not involved." : "");
+  }
+  window.HOPE_WORDS = { PERSON: PERSON, crisis: CRISIS, others: OTHERS, staff: STAFF, net: NET, last: LAST, policy: POLICY, leader: LEADER, disclose: DISCLOSE, calm: calm, plain: plain, reply: reply, leaderReply: leaderReply, safety: safety };
 })();
