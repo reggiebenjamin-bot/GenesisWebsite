@@ -133,7 +133,7 @@ GM.ready(function (ctx) {
   $("ws-site-points").innerHTML = [
     "Service times, the address and one clear next step on the first screen",
     HOPE + " answers times, kids, groups, giving and next steps, day and night",
-    "Anything personal goes to a real person, and crisis words get 988 and 911 right away",
+    "Anything personal goes to a real person, and 988 and 911 sit under every answer and form",
     "Plan a Visit, prayer and newsletter forms on every look"
   ].map(function (t) { return "<li>" + GM.icon("check") + "<span>" + esc(t) + "</span></li>"; }).join("");
   $("ws-site-actions").innerHTML = '<a class="v2-button" href="' + esc(c.site) + '">' + ic("external") + "Open Full Size</a>" +
@@ -141,8 +141,9 @@ GM.ready(function (ctx) {
   /* The site's own Hope speaks for this plan: on Care, a prayer request goes by email to the pastors. */
   $("ws-frame").setAttribute("src", c.site + (c.site.indexOf("?") >= 0 ? "&" : "?") + "plan=" + GM.plan);
 
-  /* Try Hope on the phone: each question is asked by the site's own Hope, inside the phone frame. */
-  var TRY = [["What Time Is Church?", "What time is church on Sunday?"], ["Is There Something for Kids?", "Do you have anything for kids?"], ["How Do I Join a Group?", "How do I join a small group?"], ["Can Someone Pray With Me?", "Can someone pray with me?"]];
+  /* Try Hope on the phone: each button taps the same question chip in the site's own Hope, inside the
+     phone frame, so the phone shows exactly what a visitor's tap shows (tap to ask only, nothing typed). */
+  var TRY = [["What Time Are Services?", "times"], ["Is There Child Care?", "kids"], ["How Do I Join a Small Group?", "groups"], ["Can Someone Pray With Me?", "prayer"]];
   $("ws-try-copy").textContent = "Tap a question. " + HOPE + " answers on the site, from facts " + c.short + " approved.";
   $("ws-try-list").innerHTML = TRY.map(function (t, i) { return '<button class="v2-button" type="button" data-ws-try="' + i + '">' + ic("genesis") + esc(t[0]) + "</button>"; }).join("");
   function siteHope(fn) {
@@ -158,7 +159,7 @@ GM.ready(function (ctx) {
     var b = e.target.closest("[data-ws-try]"); if (!b) return;
     var q = TRY[Number(b.getAttribute("data-ws-try"))][1], frame = $("ws-frame"), r = frame.getBoundingClientRect();
     if (r.top < 0 || r.bottom > window.innerHeight) frame.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    siteHope(function (h) { h.ask(q); });
+    siteHope(function (h) { if (!h.tap || !h.tap(q)) h.open(); });
   });
 
   $("ws-brand-copy").textContent = "Logo, colors, type and voice for " + c.short + ", so a volunteer can make a slide or a post that looks right the first time.";

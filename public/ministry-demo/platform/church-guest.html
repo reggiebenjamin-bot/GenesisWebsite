@@ -33,6 +33,7 @@
   .gu-path-row .v2-field{flex:0 1 240px}
   .gu-edit{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:end}
   .gu-edit-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+  .gu-edit-note{grid-column:1/-1;margin:0}
   .gu-tl-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .gu-tl-top b{color:var(--v2-text)}
   .gu-tl .v2-activity-row p{margin:4px 0 0}
@@ -126,9 +127,10 @@
             <ol class="v2-stepper" id="gu-steps" aria-label="Guest path, New to Serving"></ol>
             <div class="v2-record-grid" id="gu-next"></div>
             <form class="gu-edit" id="gu-edit" hidden aria-label="Change the next step">
-              <label class="v2-field"><span>Next step</span><input class="v2-input" id="gu-edit-next" type="text" required></label>
+              <label class="v2-field"><span>Next step</span><input class="v2-input" id="gu-edit-next" type="text" readonly aria-describedby="gu-edit-note"></label>
               <label class="v2-field"><span>Owner</span><select class="v2-select v2-nselect" id="gu-edit-owner"></select></label>
               <label class="v2-field"><span>Due date</span><input class="v2-input" id="gu-edit-due" type="date" required></label>
+              <p class="gu-edit-note v2-muted-copy" id="gu-edit-note">Demo only: the next step is a sample from the guest path, and it cannot be typed here. Nothing is saved.</p>
               <div class="gu-edit-actions"><button type="submit" class="v2-button">Save Next Step</button><button type="button" class="v2-button v2-button-quiet" id="gu-edit-cancel">Cancel</button></div>
             </form>
             <form class="gu-path-row" id="gu-move" aria-label="Move this guest to another stage">
@@ -566,8 +568,10 @@ GM.ready(function (ctx) {
     GM.toast("Moved to Welcomed. Next step: " + S.next + ". Preview only.");
   }
   var ownerIds = ["s-lead", "s-care", "s-nadia", "s-hector", "s-jun"];
+  var editNext = "";
   function openEdit(nextText) {
-    $("gu-edit-next").value = nextText || S.next;
+    editNext = nextText || S.next;
+    $("gu-edit-next").value = editNext;
     $("gu-edit-owner").innerHTML = ownerIds.map(function (id) { var s = GM.staff(id); return '<option value="' + id + '"' + (id === S.owner ? " selected" : "") + ">" + esc(s.name + ", " + s.role) + "</option>"; }).join("");
     $("gu-edit-due").value = S.due;
     $("gu-edit").hidden = false;
@@ -617,14 +621,15 @@ GM.ready(function (ctx) {
   $("gu-edit").addEventListener("submit", function (e) {
     e.preventDefault();
     var newOwner = $("gu-edit-owner").value;
-    S.next = $("gu-edit-next").value.trim() || S.next;
+    /* The next step is a read-only sample (gu-edit-next), so nothing a visitor types is ever shown back. */
+    S.next = editNext || S.next;
     S.due = $("gu-edit-due").value || S.due;
     if (newOwner !== S.owner) S.events.push([nowISO(), "Owner changed to " + GM.staff(newOwner).name, "", SYS]);
     S.owner = newOwner;
     S.events.push([nowISO(), "Next step set: " + S.next, "Due " + fmt.date(S.due) + ". Owner " + GM.staff(S.owner).name + ".", SYS]);
     $("gu-edit").hidden = true;
     renderAll();
-    GM.toast("Saved. Preview only.");
+    GM.toast("Demo only: shown on this page, and nothing was saved.");
   });
 
   /* ---------- 3. The welcome note ---------- */

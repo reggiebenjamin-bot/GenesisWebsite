@@ -1017,11 +1017,13 @@
       eyebrow = "Front office"; title = "Add a guest"; submit = "Add a Guest";
       sub = "A first-time guest you met in person or on the phone. They start at New with an owner and a next step.";
       var owners = D.staff.filter(function (s) { return s.roleKey !== "admin" && s.caps.indexOf("guests") >= 0 || s.pastorSlot != null; }).map(function (s) { return GM.staff(s.id).name; });
-      fields = '<label class="v2-field"><span>Name</span><input class="v2-input" name="name" autocomplete="off" placeholder="First name and last initial" required></label>' +
-        '<label class="v2-field"><span>Email</span><input class="v2-input" name="email" type="email" autocomplete="off" placeholder="name@example.com"></label>' +
+      /* Demo only: the free-text fields are read-only samples, so nothing typed is ever shown back. */
+      fields = '<label class="v2-field"><span>Name</span><input class="v2-input" name="name" autocomplete="off" value="Jordan R." readonly></label>' +
+        '<label class="v2-field"><span>Email</span><input class="v2-input" name="email" type="email" autocomplete="off" value="jordan.r@example.com" readonly></label>' +
         '<label class="v2-field"><span>How they found us</span><select class="v2-select v2-nselect" name="source">' + D.guestSources.concat(["Met on a Sunday"]).map(function (x) { return '<option value="' + esc(x) + '">' + esc(titleSource(x)) + "</option>"; }).join("") + "</select></label>" +
         '<label class="v2-field"><span>Owner</span><select class="v2-select v2-nselect" name="owner">' + opt(owners) + "</select></label>" +
-        '<label class="v2-field"><span>Next step</span><input class="v2-input" name="next" value="Send a welcome note"></label>' +
+        '<label class="v2-field"><span>Next step</span><input class="v2-input" name="next" value="Send a welcome note" readonly></label>' +
+        '<p class="gm-drawer-note gm-demo-note">Demo only: sample details are filled in, and they cannot be changed here. Nothing is saved.</p>' +
         '<p class="gm-drawer-note">' + esc(D.guestSettings.textingNote) + " " + esc(ASSISTANT.name) + " drafts the welcome note, and it waits for a person's approval.</p>";
     }
     layer.innerHTML = '<button class="v2-drawer-scrim" type="button" tabindex="-1" aria-hidden="true" data-gm-action="close-drawer" aria-label="Close"></button>' +
@@ -1658,7 +1660,9 @@
     return '<div class="aria-welcome" data-hook="welcome-screen"><div class="hawk-core-stage"' + (size ? "" : " hidden") + '><div class="hawk-core hawk-core-orb" data-dock="orb" role="button" tabindex="0" aria-label="Ask ' + esc(ASSISTANT.name) + '" style="width:' + os + 'px;height:' + os + 'px;flex:0 0 ' + os + 'px"><img class="hawk-core-mark" src="' + esc(MARK) + '" alt="" aria-hidden="true" decoding="async" draggable="false"></div><div class="hawk-core-status"' + (size && size < 120 ? " hidden" : "") + '>Standing by</div></div>' +
       '<p class="hawk-briefing-line">' + line + "</p>" +
       '<div class="hawk-briefing-chips">' + (b.chips || []).map(function (c, i) { return '<button type="button" class="hawk-chip' + (c.primary ? " hawk-chip-primary" : "") + '" data-chip="' + i + '">' + esc(c.label) + "</button>"; }).join("") + "</div>" +
-      '<div class="hawk-voice-row"><button type="button" class="hawk-hear" data-dock="hear" aria-label="Hear this briefing">Hear Briefing</button><button type="button" class="hawk-talk" data-dock="talk" aria-label="Talk to ' + esc(ASSISTANT.name) + '"><span class="hawk-talk-icon" aria-hidden="true"></span><span>Talk</span></button>' + speakButton() + "</div>" +
+      /* Tap to ask only: no composer, so no Talk, mic or Spoken Replies. Hear the Sample Briefing reads the
+         sample line above aloud with the browser's own voice, and nothing else. */
+      '<div class="hawk-voice-row"><button type="button" class="hawk-hear" data-dock="hear" aria-label="Hear the sample briefing, read aloud by this browser">Hear the Sample Briefing</button></div>' +
       '<p class="hawk-ok-line">' + esc(ASSISTANT.name) + " never sends anything without a person's OK.</p></div>";
   }
   function attachDockOrbs() {
@@ -2035,11 +2039,9 @@
     if (!f) return;
     e.preventDefault();
     var kind = f.getAttribute("data-gm-drawer-form");
-    var nm = (f.querySelector('[name="name"]') || {}).value || "";
     closeDrawer();
-    GM.toast(kind === "add-guest"
-      ? (nm ? nm + " was added to New. " : "Guest added to New. ") + "This is a preview, so nothing was saved."
-      : (nm ? nm + " was added as a lead. " : "Church added as a lead. ") + "This is a preview, so nothing was saved.");
+    /* Nothing typed is ever echoed back: the toast says only that nothing was saved. */
+    GM.toast("Demo only. Nothing was saved.");
   });
   document.addEventListener("auxclick", function (e) { var a = e.target.closest("a[href]"); if (a) carry(a); });
   document.addEventListener("keydown", function (e) {

@@ -1135,7 +1135,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <div class="fd-field"><label for="pv-email">Email</label><input id="pv-email" name="email" type="email" value="maya.t@example.com" readonly required aria-describedby="pv-email-err"><p class="fd-err" id="pv-email-err" hidden>Please enter an email address like you@example.com.</p></div>
         </div>
         <div class="fd-field"><label for="pv-sunday">Which Sunday?</label>
-          <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select>
+          <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select><script>/* The next three Sundays from today, so the sample visit is never in the past. */(function(){var s=document.getElementById("pv-sunday");if(!s)return;var M=["January","February","March","April","May","June","July","August","September","October","November","December"],d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+(7-d.getDay())%7);var o="";for(var i=0;i<3;i++){o+="<option"+(i?"":" selected")+">Sunday, "+M[d.getMonth()]+" "+d.getDate()+"</option>";d.setDate(d.getDate()+7);}s.innerHTML=o;})();</script>
         </div>
         <fieldset class="fd-set"><legend>Which service?</legend>
           <div class="fd-choices"><label class="fd-choice"><input type="radio" name="time" value="9:00 AM">9:00 AM</label><label class="fd-choice"><input type="radio" name="time" value="10:45 AM" checked>10:45 AM</label></div>
@@ -1671,7 +1671,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     "startHere": "So glad you found us. Come any Sunday at 9:00 or 10:45. Coffee is on from 8:30, and the yellow umbrellas out front mark the way in. After church, come to Start Here: lunch with the pastors and a plate of something good.",
     "give": "Every gift helps feed local families, builds the Porch Project and keeps the lights on for our neighbors. You can give online in about a minute, once or every month.",
     "watch": "Every message is online by Sunday afternoon. The latest is Casseroles and courage, part two of our Love Thy Neighbor series with Pastor Marcus.",
-    "prayer": "We would be honored to pray with you. Tell us what is heavy right now, and the people you choose will pray for you this week, by name. A real person reads every request. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "prayer": "On a real church site, a real person reads every request, and the people you choose would pray for you this week, by name. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency.",
     "values": "Love God, love the block, and keep the porch light on. We are ordinary people on ordinary streets, learning to follow Jesus right here in Beaverdale."
   },
   "brand": {

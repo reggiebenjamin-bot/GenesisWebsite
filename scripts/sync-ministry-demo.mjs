@@ -73,7 +73,11 @@
  *     "pricing set with Genesis";
  *   - a copied page, stylesheet or platform script points at a local file
  *     that was not copied;
- *   - a copied script, or a page's inline script, does not compile.
+ *   - a copied script, or a page's inline script, does not compile;
+ *   - a field a visitor could type in on a church site or a brand board is not
+ *     a read-only sample, the member sign-in email is not the read-only sample
+ *     you@example.com (so a typed email is never shown back), or the member
+ *     messages' 911 and 988 line is not before the message box (demoFormProblems).
  * It prints every file left out and every edit made.
  *
  * Every run also writes the four look cards' screenshots,
@@ -330,7 +334,41 @@ const problems = [];
 /* The sample church sites: every form is a filled-in sample that ends in
    "Demo only. Nothing was sent.", and no confirmation promises that a real
    person got the visitor's details (a sign-up "on the list", a staff email). */
+function readonlyProblems(text) {
+  const out = [];
+  for (const tag of text.match(/<(?:input|textarea)\b[^>]*>/gi) || []) {
+    if (/\btype=["']?(?:radio|checkbox|hidden|submit|button)\b/i.test(tag)) continue;
+    if (!/\breadonly\b/i.test(tag)) out.push(`has a field a visitor can type in: ${tag.slice(0, 80)}`);
+  }
+  return out;
+}
 function demoFormProblems(file, text) {
+  /* The brand boards' sample email fields are read-only samples that say so. */
+  if (/^templates\/[^/]+\/brand-board\.html$/.test(file)) {
+    const out = readonlyProblems(text);
+    if (!/Demo only: a sample email is filled in\. Nothing is sent\./.test(text)) out.push('has no "Demo only: a sample email is filled in." note');
+    return out;
+  }
+  /* The member sign-in never shows a typed email back: the email is the read-only
+     sample you@example.com, and step 2 says nothing was sent. */
+  if (file === "platform/member-signin.html") {
+    const out = [];
+    const input = /<input\b[^>]*\bid="ms-email-input"[^>]*>/i.exec(text);
+    if (!input || !/\breadonly\b/i.test(input[0]) || !/\bvalue="you@example\.com"/i.test(input[0])) out.push("has a sign-in email a visitor can type in (it must be the read-only sample you@example.com)");
+    if (!/Demo only: a sample email is filled in\. Nothing is sent\./.test(text)) out.push('has no "Demo only: a sample email is filled in. Nothing is sent." note');
+    if (!/Demo only\. Nothing was sent\. On a real church site, we would email a <span class="ms-nw">6-digit<\/span> code to <b id="ms-sent-to">you@example\.com<\/b>\./.test(text)) out.push("step 2 does not say Demo only. Nothing was sent. On a real church site, we would email a 6-digit code to you@example.com.");
+    if (/We sent a\b|"Code sent to " \+/.test(text)) out.push('still says "We sent a" code, or shows a typed email in a toast');
+    return out;
+  }
+  /* Member messages: the 911 and 988 line comes before the message box in the
+     new message form and in the reply. */
+  if (file === "platform/member-messages.html") {
+    const out = [];
+    const help = text.indexOf('id="mm-urgent-2"'), box = text.indexOf('id="mm-text-in"');
+    if (help < 0 || box < 0 || help > box) out.push("the 911 and 988 line is not before the new message box");
+    if (!/mm-foot"\)\.innerHTML = '<p class="m-note mm-help" id="mm-reply-help"/.test(text)) out.push("the 911 and 988 line is not first in the reply");
+    return out;
+  }
   if (!/^templates\/[^/]+\/index\.html$/.test(file)) return [];
   const out = [];
   if (!/Demo only\. Nothing was sent\./.test(text)) out.push('has no "Demo only. Nothing was sent." confirmation');

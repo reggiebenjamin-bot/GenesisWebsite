@@ -77,7 +77,8 @@
       topInset: 0 | function (scroller) { return px; },   room to keep clear at the top
       keepParams: ["church", "plan"]
 
-  window.HopeDemo: open(), tour(), end(), ask(text) (a fixed question from the page's own code), isTouring(), crisisReply(phone) (the fixed crisis
+  window.HopeDemo: open(), tour(), end(), ask(text) (a fixed question from the page's own code), tap(key) (taps the
+  question chip for that answer, as a visitor would), isTouring(), crisisReply(phone) (the fixed crisis
   reply, the one source of its words) and route(text) (where a question goes, for shared/hope-check.html,
   the answer check that lists the questions every Hope must get right).
 
@@ -496,7 +497,7 @@
       }
       location.href = href; return;
     }
-    say("On the live site this opens a short prayer form that goes only to the pastors and the prayer team. A real person reads every one. This preview sends nothing.", [BACK]);
+    say("On a real church site, this opens a short prayer form that goes only to the pastors and the prayer team, and a real person reads every one. In this demo, nothing is sent." + CRISIS_LINE, [BACK]);
   }
   /* Genesis runs the site and a few providers process it: the same promise as the processors answer. */
   /* On the member app it is the app, not the website. The AI service behind Hope is named with the rest. */
@@ -526,6 +527,8 @@
   function listOf(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   var SHARE = { label: "Share a Prayer Request", run: sharePrayer, cta: true };
   var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
+  /* Said after what a real church site would do: the demo sends nothing. */
+  var DEMO_NOTE = " In this demo, nothing is sent.";
   /* The member app's Messages tab, when the page has one. */
   function messageChip() { var m = $('.m-tabbar a[href*="member-messages"]'); return m ? { label: "Send a Message", href: m.href, go: true } : null; }
 
@@ -564,18 +567,20 @@
       if (/\blive ?stream\w*|\bstream\w* live\b|\bwatch\w* live\b|\blive online\b|\bstreamed\b/i.test(q || "") && !/\blive\b/i.test(w)) return "Sundays are not streamed live right now. " + w;
       return w;
     }, c: [{ label: "Service Times", key: "times" }] },
-    prayer: { t: CH.prayer || "We would be honored to pray with you. Share your request and our pastors and prayer team will stand with you." + CRISIS_LINE, c: [SHARE, BACK] },
+    /* Every prayer answer says what a real church site does, that the demo sends nothing, and ends with 988 and 911. */
+    prayer: { t: CH.prayer || "On a real church site, our pastors and prayer team would be honored to pray with you: share your request, and a real person reads it." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] },
     /* A sample site with no plan says only what every plan keeps; from the Shepherd plan (?plan=2 or 3) the
        reader choice is added below. */
     prayerwho: { t: "Prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + CRISIS_LINE, c: [SHARE, BACK] },
     pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service Times", key: "times" }] },
     values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I Am New Here", key: "newhere" }] },
-    contact: { t: CH.phone ? "You can call " + NAME + " at " + CH.phone + (EMAIL ? " or email " + EMAIL : "") + ", and someone on the team will help." : "Someone on the team would be glad to help. The fastest way is to plan a visit or share a request on this site.", c: chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK) },
+    /* A made-up 555 number is never offered to call: the answer says what a real church site gives instead. */
+    contact: { t: FAKE_PHONE ? "On a real church site, I would give you the church's own phone number and email here, and someone on the team would help. " + NAME + " is a made-up church, so its number is a sample and nobody would answer." + DEMO_NOTE + CRISIS_LINE : CH.phone ? "You can call " + NAME + " at " + CH.phone + (EMAIL ? " or email " + EMAIL : "") + ", and someone on the team will help." : "Someone on the team would be glad to help. The fastest way is to plan a visit or share a request on this site.", c: chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, PLAN_VISIT && { label: PLAN_VISIT.label, href: PLAN_VISIT.href, go: true }, BACK) },
     /* "Can I talk to a pastor this week?" gets a way to reach them, not only their story. */
-    talkpastor: { t: function () { return cap(listOf(pastorNames())) + " would be glad to talk with you. " + (CH.phone ? "Call " + CH.phone + " and the office will find a time with you" : "Ask on Sunday and the team will find a time with you") + ", or share a prayer request and choose Pastors only."; }, c: function () { return chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, SHARE, BACK); } },
+    talkpastor: { t: function () { if (FAKE_PHONE) return "On a real church site, " + listOf(pastorNames()) + " would be glad to talk with you: call the church office to find a time, or share a prayer request and choose Pastors only." + DEMO_NOTE + CRISIS_LINE; return cap(listOf(pastorNames())) + " would be glad to talk with you. " + (CH.phone ? "Call " + CH.phone + " and the office will find a time with you" : "Ask on Sunday and the team will find a time with you") + ", or share a prayer request and choose Pastors only."; }, c: function () { return chips(CALL && { label: CALL.label, href: CALL.href, go: true, cta: true }, SHARE, BACK); } },
     /* Beliefs deserve a person, not a guess and never the care or crisis path. */
     beliefs: { t: function () { return "Thank you for asking. That deserves a real conversation, not a quick answer from me. " + cap(listOf(pastorNames())) + " would be glad to talk it through with you" + (CH.phone ? ". Call " + CH.phone + " to find a time." : "."); }, c: function () { return chips({ label: "What We Believe", key: "values" }, { label: "Talk to a Pastor", key: "talkpastor", cta: true }, BACK); } },
-    wedding: { t: "I do not want to guess about weddings. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and the pastors will talk it through with you.", c: chips(CALL, BACK) },
+    wedding: { t: FAKE_PHONE ? "I do not want to guess about weddings. On a real church site, you would ask the church office, and the pastors would talk it through with you." + DEMO_NOTE + CRISIS_LINE : "I do not want to guess about weddings. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and the pastors will talk it through with you.", c: chips(CALL, BACK) },
     /* Groceries or help with a bill: the church's own pantry when its page names one, and a person either way. */
     pantry: { t: function (q) {
       var page = ""; try { page = ((document.querySelector("main") || document.body).innerText || "") + " " + (CH.give || ""); } catch (e) {}
@@ -609,7 +614,11 @@
     serve: { t: "We would love that. Most people start serving after a Sunday or two. Tell a greeter or one of the pastors you would like to help, and they will help you find a team that fits.", c: [{ label: "I Am New Here", key: "newhere", cta: true }, { label: "Service Times", key: "times" }] },
     history: { t: function () { var y = foundedYear(), p = CH.pastors || ""; return (y && p.indexOf(y) < 0 ? NAME + " has been gathering since " + y + ". " : "") + (p || "Our pastors would love to tell you the story on a Sunday."); }, c: [{ label: "I Am New Here", key: "newhere" }, { label: "Service Times", key: "times" }] },
     special: { t: function (q) {
-      if (/christmas|easter|good friday|maundy|thanksgiving|new year|holiday|ash wednesday|\blent\b|advent|candlelight/i.test(q || "")) return "Holiday services, like Christmas Eve and Easter, have their own times each year, and " + SHORT + " shares them ahead of time." + (CH.phone ? " You can also call " + CH.phone + " to ask." : "");
+      var holiday = /christmas|easter|good friday|maundy|thanksgiving|new year|holiday|ash wednesday|\blent\b|advent|candlelight/i.test(q || "");
+      if (FAKE_PHONE) return (holiday
+        ? "Holiday services, like Christmas Eve and Easter, have their own times each year. On a real church site, " + SHORT + " shares them ahead of time, and the church office answers questions."
+        : "I do not want to guess about that. On a real church site, you would ask the church office, and someone on the team would tell you what they offer.") + DEMO_NOTE + CRISIS_LINE;
+      if (holiday) return "Holiday services, like Christmas Eve and Easter, have their own times each year, and " + SHORT + " shares them ahead of time." + (CH.phone ? " You can also call " + CH.phone + " to ask." : "");
       return "I do not want to guess about that. Please ask " + SHORT + (CH.phone ? " at " + CH.phone : "") + ", and someone on the team will tell you what they offer.";
     }, c: chips({ label: "Service Times", key: "times" }, CALL, BACK) },
     /* A child-safety question gets its own plain answer, never the cheerful kids answer: the checks, the
@@ -627,7 +636,8 @@
     package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks " + (CFG.look && CFG.look !== "Genesis Ministry" ? " (this one is " + LOOK + ")" : "") + ", the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
-    hope: { t: "On your live site, " + AN + " answers questions day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and gives 988 and 911 right away when someone is in crisis. When " + AN + " does not know, it says so and hands the question to a person.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    /* What a real church site does, in honest terms: this demo screens no typed words, because nobody can type here. */
+    hope: { t: "On a real church site, " + AN + " answers guests day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and shows 988 and 911 under every answer. When " + AN + " does not know, it says so and hands the question to a person. In this demo, every answer was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
     backoffice: { t: "The back office starts with the Shepherd plan, at $299 a month: Today, a front office where every first-time guest gets an owner and a next step, the care inbox for prayer and messages, the member app, and drafts that wait for approval. The Plus plan, at $499 a month, adds a page for each person, the Access Record screen, the spiritual gifts conversation with a picture of the gifts across the church, and reports.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     menu: null,
   };
@@ -664,7 +674,7 @@
   /* A pastor's question about abuse or danger: who acts, and the numbers. Hope reports to no one. */
   A.reporting = { t: CHURCH
     ? "Our pastors follow " + SHORT + "'s child protection and reporting policy, and a real person handles every report. I am an automated assistant, so please do not wait on me: if you or someone else is in danger, call 911, or call or text 988." + (CH.phone ? " You can call the church at " + CH.phone + "." : "")
-    : AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your child protection and reporting policy. When someone writes words of crisis, " + AN + " shows them 988 and 911 right away, and from the Shepherd plan the pastor on call is alerted, with no private words.", c: function () { return CHURCH ? CRISIS_CHIPS : chips(talkChip(), BACK); } };
+    : AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your child protection and reporting policy. On a real church site, every " + AN + " answer and every form shows 988 and 911, and from the Shepherd plan a prayer request or message that sounds like someone is in danger alerts the pastor on call, with no private words. In this demo, nothing is checked or sent.", c: function () { return CHURCH ? CRISIS_CHIPS : chips(talkChip(), BACK); } };
   /* Keeping a request from one pastor, who reads a member's messages at home, and what a pastor must report. */
   A.prayerfromstaff = { t: "A prayer request reaches all of our pastors, " + listOf(pastorNames()) + ", so it cannot be kept from one of them. If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   A.messagesprivate = { t: "What you share with " + SHORT + " never goes to anyone in your family. A prayer request goes only to the pastors and the people they trust to pray. If someone at home can open your email or phone, keep that in mind before you write. If you are not safe at home, call 911, or call or text 988.", c: [SHARE, BACK] };
@@ -678,7 +688,7 @@
   var SITE_PLAN = +(new URLSearchParams(location.search).get("plan") || 0);
   if (CHURCH && SITE_PLAN === 1) {
     var CARE_PRAYER = "Your request goes by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that.";
-    A.prayer = { t: "We would be honored to pray with you. " + CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayer = { t: "On a real church site, the pastors would be honored to pray with you. " + CARE_PRAYER + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
     A.prayerwho = { t: CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
     A.privacy = { t: "What you share here goes to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER + " " + PROCESSORS_LINE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
     A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
@@ -702,7 +712,7 @@
     A.beliefs = { t: "Each church answers that in its own words. On a church's own site, " + AN + " shares what the church has written and hands questions like this to a pastor rather than guessing.", c: null };
     A.moved = { t: "I am glad it spoke to you. A person at Genesis would be glad to walk you through it with your own church in mind.", c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
     /* Someone hurting on a page with no church: kind words, the crisis line and a way back, no product. */
-    A.prayer = { t: "I am sorry you are carrying that. This is the Genesis Ministry preview, so no prayer team reads this chat, but your own church's pastors would be honored to pray with you." + CRISIS_LINE, c: [BACK] };
+    A.prayer = { t: "I am sorry you are carrying that. On a real church site, its pastors and prayer team would be honored to pray with you. This is the Genesis Ministry preview, so no one reads this chat, and nothing is sent." + CRISIS_LINE, c: [BACK] };
     A.care = { t: function (q) { return (sorry(q) || "I am sorry you are carrying that.") + " This is the Genesis Ministry preview, so no one reads this chat, but a pastor at your own church would be honored to walk with you." + CRISIS_LINE; }, c: [BACK] };
     A.welcome = { t: function (q) { return (/\bhope for\b/i.test(q || "") ? "Yes, there is." : "You are welcome, just as you are.") + " This is a software preview, so no one reads this chat, but a pastor at a church near you would be glad to talk with you." + CRISIS_LINE; }, c: [BACK] };
     A.free = A.price;
@@ -733,6 +743,8 @@
     { title: "Popular Questions", items: [
       ["What Time Are Services?", "times"], ["Where Do I Park?", "parking"], ["I Am New Here. What Should I Expect?", "newhere"],
       ["Is There Child Care?", "kids"], ["Can I Talk to a Pastor?", "talkpastor"], ["Who Sees My Prayer Request?", "prayerwho"]] },
+    { title: "Prayer", more: true, items: [
+      ["Can Someone Pray With Me?", "prayer"]] },
     { title: "Kids and Groups", more: true, items: [
       ["Are Volunteers Background Checked?", "kidsafe"], ["Is There a Youth Group?", "students"], ["How Do I Join a Small Group?", "groups"]] },
     { title: "Sundays and Giving", more: true, items: [
@@ -1188,7 +1200,7 @@
     { sel: SEL.message, k: "Messages", h: "Your latest message, updated for you", p: "On the live site this pulls the newest message from YouTube automatically, so the home page is never out of date." },
     { sel: SEL.reviews, k: "Trust", h: "Kind words from your own people", p: "Short quotes from your own members rotate here, shared with their permission. A neighbor's words can turn a maybe into a visit." },
     { sel: SEL.newsletter, k: "Stay connected", h: "Grow a list you own", p: "A simple newsletter sign-up, so people who are not ready to visit can still hear from you. A prayer request opens a short form too, where each person chooses who may read it, with 988 and 911 right on it." },
-    { sel: ".hd-launch", k: AN, h: "An assistant that never sleeps", p: "That is me. On your site I answer questions from your church's own facts, point people to the prayer form, where they choose who reads it, and give 988 and 911 right away when someone is in crisis." },
+    { sel: ".hd-launch", k: AN, h: "An assistant that never sleeps", p: "That is me. On a real church site I answer guests from the church's own facts, point people to the prayer form, where they choose who reads it, and show 988 and 911 under every answer. In this demo, you tap a question and get an answer written ahead of time." },
     /* The ring goes on the footer's times, address and directions where one block holds all three. */
     { sel: SEL.footer ? ["footer div.f-times", "footer .ft-sundays", "#footer div.f-times", SEL.footer] : SEL.footer, k: "Every page", h: "Built around your Sunday", p: "Times, address and directions sit in the footer of every page, and on phones a slim bar keeps them one tap away.", focus: FOOTER_FOCUS, place: "beside-focus" },
   ];
@@ -1909,6 +1921,23 @@
       if (!panel) { openChat(q); return; }
       setOpen(true);
       (function trySend() { if (busy) { setTimeout(trySend, 200); return; } respond(String(q || "")); })();
+    },
+    /* Tap to ask, from the page's own buttons (the Website screen's Try Hope): opens Hope and taps the
+       question chip for this answer, as a visitor would. Returns false when this Hope has no such chip. */
+    tap: function (key) {
+      var item = null;
+      QUESTIONS.forEach(function (g) { g.items.forEach(function (it) { if (!item && it.key === key) item = it; }); });
+      if (!item) return false;
+      openChat();
+      var tries = 0;
+      (function press() {
+        var chip = qsBox && qsBox.querySelector('[data-hope-q="' + key + '"]');
+        if (busy || !chip) { if (++tries < 60) setTimeout(press, 100); return; }
+        var more = chip.closest(".hd-qs-more");
+        if (more && more.hidden) { var mb = qsBox.querySelector(".hd-more"); if (mb) mb.click(); }
+        chip.click();
+      })();
+      return true;
     },
     isTouring: function () { return touring; },
     /* The element the current tour step points at (null when no tour runs), for the placement checks. */

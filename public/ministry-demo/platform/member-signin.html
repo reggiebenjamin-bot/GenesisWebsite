@@ -143,8 +143,8 @@
     <form class="ms-form m-section" id="ms-email-form" novalidate data-tour="signin.email">
       <div class="m-field">
         <label class="m-label" for="ms-email-input">Email address</label>
-        <input class="m-input" id="ms-email-input" type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required aria-describedby="ms-email-hint">
-        <span class="m-hint" id="ms-email-hint">First time? Signing in creates your account.</span>
+        <input class="m-input" id="ms-email-input" type="email" name="email" autocomplete="off" value="you@example.com" readonly aria-describedby="ms-email-hint">
+        <span class="m-hint" id="ms-email-hint">Demo only: a sample email is filled in. Nothing is sent.</span>
       </div>
       <p class="ms-error" id="ms-email-error" role="alert" hidden>Please enter your email address.</p>
       <button type="submit" class="m-btn m-btn--primary m-btn--block">Email Me a Code</button>
@@ -168,7 +168,7 @@
     <ol class="ms-steps" aria-label="Step 2 of 3"><li class="is-done"></li><li class="is-done"></li><li></li></ol>
     <p class="m-eyebrow">Step 2 of 3</p>
     <h1 class="m-h1" id="ms-code-title">Check your email</h1>
-    <p class="m-lede">We sent a <span class="ms-nw">6-digit</span> code to <b id="ms-sent-to"></b>. It works for 10 minutes.</p>
+    <p class="m-lede" id="ms-code-lede">Demo only. Nothing was sent. On a real church site, we would email a <span class="ms-nw">6-digit</span> code to <b id="ms-sent-to">you@example.com</b>.</p>
 
     <form class="ms-form m-section" id="ms-code-form" novalidate data-tour="signin.code">
       <fieldset class="ms-code-wrap">
@@ -178,7 +178,7 @@
       <p class="m-hint" style="margin:8px 0 16px">In this preview, any six digits work.</p>
       <p class="ms-error" id="ms-code-error" role="alert" hidden>Please enter all six digits.</p>
       <button type="submit" class="m-btn m-btn--primary m-btn--block">Sign In</button>
-      <button type="button" class="m-btn m-btn--block" data-gm-action="toast" data-gm-toast="A new code is on its way. This is a preview, so nothing was sent.">Send a New Code</button>
+      <button type="button" class="m-btn m-btn--block" data-gm-action="toast" data-gm-toast="Demo only. Nothing was sent.">Send a New Code</button>
     </form>
 
     <div class="m-card ms-mail" data-tour="signin.mail">
@@ -297,8 +297,10 @@ GM.ready(function (ctx) {
 
   $("ms-mark").innerHTML = c.mark;
   $("ms-adult-icon").outerHTML = GM.icon("user");
-  $("ms-email-input").value = me.email;
-  $("ms-back-1").innerHTML = GM.icon("back") + "Use a Different Email";
+  /* Demo only: the email is a read-only sample, so nothing a visitor types is ever shown back. */
+  var SAMPLE = "you@example.com";
+  $("ms-email-input").value = SAMPLE;
+  $("ms-back-1").innerHTML = GM.icon("back") + "Back";
   $("ms-back-2").innerHTML = GM.icon("back") + "Back";
   $("ms-keep").innerHTML = [
     "Your email, to sign you in and to tell you when you have a reply.",
@@ -341,12 +343,10 @@ GM.ready(function (ctx) {
   /* ---------- Steps ---------- */
   $("ms-email-form").addEventListener("submit", function (e) {
     e.preventDefault();
-    var v = $("ms-email-input").value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { $("ms-email-error").hidden = false; $("ms-email-input").setAttribute("aria-invalid", "true"); $("ms-email-input").focus(); return; }
-    $("ms-email-error").hidden = true; $("ms-email-input").removeAttribute("aria-invalid");
+    $("ms-email-error").hidden = true;
     via = "email";
-    $("ms-sent-to").textContent = v;
-    GM.toast("Code sent to " + v + ". This is a preview, so nothing was sent.");
+    $("ms-sent-to").textContent = SAMPLE;
+    GM.toast("Demo only. Nothing was sent.");
     show("code", true);
   });
   $("ms-google").addEventListener("click", function () {
@@ -374,12 +374,12 @@ GM.ready(function (ctx) {
 
   var start = ctx.params.get("step");
   if (STEPS.indexOf(start) < 0) start = "email";
-  $("ms-sent-to").textContent = me.email;
+  $("ms-sent-to").textContent = SAMPLE;
   show(start, false);
 
   function show(step, focus) {
     STEPS.forEach(function (s) { $("ms-" + s).hidden = s !== step; });
-    $("ms-via").innerHTML = GM.icon("check") + "<span>" + (via === "google" ? "Signed in with Google as " : "Code accepted for ") + "<b>" + esc($("ms-sent-to").textContent || me.email) + "</b></span>";
+    $("ms-via").innerHTML = GM.icon("check") + "<span>" + (via === "google" ? "Signed in with Google as " : "Code accepted for ") + "<b>" + esc(SAMPLE) + "</b></span>";
     $("ms-back-2").setAttribute("data-ms-go", via === "google" ? "email" : "code");
     var p = new URLSearchParams(location.search);
     if (step === "email") p.delete("step"); else p.set("step", step);

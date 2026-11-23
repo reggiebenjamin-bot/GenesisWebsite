@@ -1142,7 +1142,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <div class="fd-field"><label for="pv-email">Email</label><input id="pv-email" name="email" type="email" value="maya.t@example.com" readonly required aria-describedby="pv-email-err"><p class="fd-err" id="pv-email-err" hidden>Please enter an email address like you@example.com.</p></div>
         </div>
         <div class="fd-field"><label for="pv-sunday">Which Sunday?</label>
-          <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select>
+          <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select><script>/* The next three Sundays from today, so the sample visit is never in the past. */(function(){var s=document.getElementById("pv-sunday");if(!s)return;var M=["January","February","March","April","May","June","July","August","September","October","November","December"],d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+(7-d.getDay())%7);var o="";for(var i=0;i<3;i++){o+="<option"+(i?"":" selected")+">Sunday, "+M[d.getMonth()]+" "+d.getDate()+"</option>";d.setDate(d.getDate()+7);}s.innerHTML=o;})();</script>
         </div>
         <fieldset class="fd-set" aria-describedby="pv-time-hint"><legend>Which gathering?</legend>
           <div class="fd-choices"><label class="fd-choice"><input type="radio" name="time" value="10 AM" checked>10 AM</label><label class="fd-choice"><input type="radio" name="time" value="6 PM">6 PM</label></div>
@@ -1718,7 +1718,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     "startHere": "So glad you found us. Come on a Sunday, at 10 AM or 6 PM, and follow the amber flags. We will meet you at the door and point you to the coffee. After a visit or two, come to Start Here: one hour of lunch with Andre and Talia, and you will know where you fit.",
     "give": "You can give online in about a minute, once or every month. Every gift keeps the lights on, stocks our Thursday pantry and helps us buy the Foundry, our first permanent home.",
     "watch": "Every message is on YouTube after Sunday, and the 6 PM gathering streams live each week. The latest is Shine where you are, part 3 of Lamps On, with Pastor Talia.",
-    "prayer": "We would be honored to pray with you. Tell us what is heavy, and the people you choose will pray for you that same day. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "prayer": "On a real church site, the people you choose would pray for you that same day: tell us what is heavy, and we would be honored to pray with you. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency.",
     "values": "Nobody lights a lamp to hide it. We worship loud, teach honestly and keep room for every voice, then carry that light into every corner of Columbus."
   },
   "brand": {

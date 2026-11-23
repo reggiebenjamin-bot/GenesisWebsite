@@ -353,8 +353,9 @@ GM.ready(function (ctx) {
       '<aside class="v2-drawer" role="dialog" aria-modal="true" aria-labelledby="tm-drawer-title"><header class="v2-drawer-head"><div class="v2-drawer-title"><div><div class="v2-eyebrow">Team</div><h2 id="tm-drawer-title">Invite a team member</h2><p>Church email addresses only. Two-step sign in is required from the first day.</p></div>' +
       '<button class="v2-button v2-icon-button v2-button-quiet" type="button" data-gm-action="close-drawer" aria-label="Close">' + ic("close") + "</button></div></header>" +
       '<div class="v2-drawer-body"><form class="gm-drawer-form" id="tm-invite-form" novalidate>' +
-        '<label class="v2-field"><span>Name</span><input class="v2-input" name="name" autocomplete="off" placeholder="First name and last initial"></label>' +
-        '<label class="v2-field"><span>Church email</span><input class="v2-input" name="email" type="email" autocomplete="off" placeholder="name@church.example"></label>' +
+        '<label class="v2-field"><span>Name</span><input class="v2-input" name="name" autocomplete="off" value="Jordan R." readonly></label>' +
+        '<label class="v2-field"><span>Church email</span><input class="v2-input" name="email" type="email" autocomplete="off" value="jordan.r@church.example" readonly></label>' +
+        '<p class="gm-drawer-note gm-demo-note">Demo only: a sample name and email are filled in, and they cannot be changed here. Nothing is sent.</p>' +
         '<label class="v2-field"><span>Role</span><select class="v2-select v2-nselect" name="role" id="tm-inv-role">' + roleOptions("staff") + '</select><small class="v2-muted-copy" id="tm-inv-hint"></small></label>' +
         '<label class="v2-field"><span>Gift names</span><select class="v2-select v2-nselect" name="gifts"><option>Cannot See Gift Names</option><option>Named to See Gift Names</option></select></label>' +
         '<p class="gm-drawer-note">' + esc(open + " of " + seatsAllowed + " staff seats are open. " + lead.name + " is emailed when the invitation is accepted, and it is written to the access record.") + "</p>" +
@@ -365,7 +366,7 @@ GM.ready(function (ctx) {
     $("tm-invite-form").addEventListener("submit", function (e) {
       e.preventDefault();
       layer.querySelector('[data-gm-action="close-drawer"]').click();
-      GM.toast("This is a preview, so nothing was sent.");
+      GM.toast("Demo only. Nothing was sent.");
     });
     requestAnimationFrame(function () { layer.dataset.open = "true"; var f = layer.querySelector("input"); if (f) f.focus(); });
   });

@@ -104,11 +104,11 @@
     /* A church on the Care plan has no prayer inbox yet: the form goes by email, words and all. */
     prayer01: "On the Care plan, prayer forms go by email to the pastors' address only, and the words are in that email. From the Shepherd plan, prayer stays in a locked inbox for the pastors and the prayer team, and the email says only: New request. Sign in to read. Staff and website admins cannot open it there, and every open is recorded.",
     staffreplace: "No. Genesis is software. It supports your pastors and care teams and never replaces them. A person approves every draft and writes every reply to prayer.",
-    aiprayer: "No. " + AN + " never reads prayer words or private messages, never summarizes them and never drafts a reply. It sees only that a request is waiting, its topic, its owner and how long it has waited. The one automatic check is for crisis words, which shows the person 988 and 911 right away. From the Shepherd plan it also alerts the pastor on call, with no private words.",
-    crisis: "If a message or a prayer request sounds like someone is in danger, the person sees 988 and 911 right away. From the Shepherd plan, the pastor on call also gets an email and a phone notification that carry no private words, and a pastor follows up and sets the next check-in. " + AN + " never handles it alone.",
+    aiprayer: "No. " + AN + " never reads prayer words or private messages, never summarizes them and never drafts a reply. It sees only that a request is waiting, its topic, its owner and how long it has waited. On a real church site, the one automatic check is for crisis words in a prayer request or message, which shows the person 988 and 911 right away, and from the Shepherd plan alerts the pastor on call, with no private words. In this demo, nothing is checked or sent.",
+    crisis: "On a real church site, a prayer request or message that sounds like someone is in danger shows the person 988 and 911 right away, and every " + AN + " answer and form shows them too. From the Shepherd plan, the pastor on call also gets an email and a phone notification that carry no private words, and a pastor follows up and sets the next check-in. " + AN + " never handles it alone. In this demo, nothing is checked or sent. Typing to " + AN + " comes back later, only on a real AI service with a safety check before any answer.",
     /* What the Care plan does in a crisis: the reply on the website, and the form in the pastors' email. No pastor on call yet. */
-    crisis01: "If someone writes words of crisis on the website, " + AN + " shows them 988 and 911 right away, in a reply written by people. On the Care plan nobody is paged: a prayer form still reaches the pastors' email, words and all. The Shepherd plan adds a pastor on call who is alerted, with no private words.",
-    oncall01: "The pastor on call comes with the Shepherd plan. On the Care plan, " + AN + " shows anyone in crisis 988 and 911 right away, and a prayer form reaches the pastors' email, words and all. From Shepherd, a pastor named in Team is alerted by email and phone, with no private words.",
+    crisis01: "On a real church site, every " + AN + " answer and every form shows 988 and 911, and the crisis reply is written by people, never improvised. On the Care plan nobody is paged: a prayer form still reaches the pastors' email, words and all. The Shepherd plan adds a pastor on call who is alerted, with no private words. In this demo, nothing is checked or sent.",
+    oncall01: "The pastor on call comes with the Shepherd plan. On the Care plan, every " + AN + " answer and form on a real church site shows 988 and 911, and a prayer form reaches the pastors' email, words and all. From Shepherd, a pastor named in Team is alerted by email and phone, with no private words.",
     /* AI training: never on prayer, messages or member data. */
     aitraining: "No. Genesis never uses prayer, messages or member data to train AI. " + AN + " answers only from facts your church approved.",
     ai: AN + " drafts and summarizes, and a person approves everything before it goes out. " + AN + " answers only from facts the church approved, never writes a reply to prayer or a private message, never sets a gifts score, and only sees what the signed-in person can see.",
@@ -142,7 +142,7 @@
     campus: "Enterprise is for churches with more than one campus. One campus with several services is not Enterprise. Enterprise includes everything in Plus, and how your campuses share people, care and reports is scoped with you on a call.",
     onecampus: "No. One campus with several services is not Enterprise. Care, Shepherd and Plus each cover one campus, however many services it holds. Enterprise is for a church with more than one campus, and it is scoped on a call.",
     accessrecord: "From the Shepherd plan, every open, reply, change and archive of prayer and private threads is written down. It names the record, never what it says, and nobody can edit it. A mistake is corrected with a new entry, and a blocked try is recorded too. The Plus plan adds the Access Record screen to search and export it.",
-    oncall: "From the Shepherd plan, each church names a pastor on call in Team. When a message or prayer request sounds like someone is in danger, the person sees 988 and 911 right away, and the pastor on call gets an email and a phone notification with no private words. A pastor follows up and sets the next check-in.",
+    oncall: "From the Shepherd plan, each church names a pastor on call in Team. On a real church site, when a message or prayer request sounds like someone is in danger, the person sees 988 and 911 right away, and the pastor on call gets an email and a phone notification with no private words. A pastor follows up and sets the next check-in.",
     /* What a pastor asks before booking a call. */
     call: "Choose Talk With Genesis, and a person at Genesis will set up a call. They walk you through it with your own church in mind: the look, your content and the plan that fits.",
     seats: seatsText(),
@@ -176,7 +176,7 @@
     downgrade: "If a church moves down a plan, its records are kept. The screens the lower plan does not include lock, and nothing is deleted. Moving back up opens them again. A person at Genesis sets up the change with you.",
     /* Trust questions a pastor asks before signing: who reports abuse, outside providers, other
        churches, teens, prayer leaving the inbox, the lead pastor and pastors-only requests. */
-    reporting: AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your church's child protection and reporting policy, and a person handles every report. When someone writes words of crisis, " + AN + " shows them 988 and 911 right away, and from the Shepherd plan the pastor on call is alerted, with no private words.",
+    reporting: AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your church's child protection and reporting policy, and a person handles every report. On a real church site, every " + AN + " answer and form shows 988 and 911, and from the Shepherd plan a prayer request or message that sounds like someone is in danger alerts the pastor on call, with no private words. In this demo, nothing is checked or sent.",
     otherchurches: "No. Each church's data is kept apart, and no church sees another's.",
     minormessage: "No. Member accounts are for adults 18 and older, so the app has no private messages between staff and teenagers. Students are cared for through their parents and the church's student ministry. If someone under 18 writes in, staff bring in a parent or guardian and follow the church's child protection policy.",
     prayerforward: "Prayer words stay inside the Care Inbox, for the pastors and the prayer team the person chose. Alert emails carry no words, only: New request. Sign in to read. Every open is recorded. Whether a request can ever leave the inbox, by forwarding or export, is settled in writing with a person at Genesis during scoping.",
@@ -205,6 +205,9 @@
   ANSWERS.prayerfromstaff = "A request marked Pastors only is read by the pastors and not by the prayer team, and staff and website admins cannot open prayer at all. It still reaches every pastor, the lead pastor included, so it cannot be kept from one pastor, and every open is recorded. This comes with the Shepherd plan. On the Care plan, prayer forms go by email to the pastors' address, words and all.";
   ANSWERS.prayerfromstaff01 = "On the Care plan, prayer forms go by email to the pastors' address, words and all, so whoever reads that mailbox can read every request. From the Shepherd plan, a request can be marked Pastors only, which keeps it from the prayer team, and every open is recorded.";
   ANSWERS.prayernotify = "Alert emails about prayer say only: New request. Sign in to read. They carry no name and no words. From the Shepherd plan, that alert goes to the pastors and the prayer team the person chose. On the Care plan, the prayer form itself goes by email to the pastors' address, words and all.";
+  /* "Will the email a member gets show the text of their prayer request?" is about the member's own email,
+     never the pastors' (the Care plan's own words are below). */
+  ANSWERS.memberemail = "No. The email a member gets never carries the words of a prayer request or a message. It says only that there is a reply, and the member signs in to read it. Alerts to the pastors and the prayer team say only: New request. Sign in to read.";
   ANSWERS.hopeprays = AN + " never prays for anyone, never reads prayer words and never writes a reply to prayer. A prayer request goes to the people the person chose, and a person prays and replies.";
   ANSWERS.contactsee = "Who sees a person's phone number and email is set by each staff member's role in Team, such as the pastors and whoever follows up with guests. Prayer is separate: only the pastors and the prayer team can read it, and every open is recorded.";
   ANSWERS.givingfees = "Genesis takes no cut of donations. Give opens your church's own giving page, from the provider you already use, and that provider's own processing fees are the only ones on a gift. Genesis never handles a payment.";
@@ -212,7 +215,7 @@
   ANSWERS.madeup = AN + " is built not to make things up. It answers only from facts your church approved, and when it does not know, it says so and hands the question to a person. Your team can fix a fact in minutes, and " + AN + " uses the new one from then on.";
   ANSWERS.soc2 = "I would rather not guess about SOC 2. A person at Genesis can tell you where that stands, and the hosting and security details are shared in writing during scoping. What I can say: Genesis Ministry runs on a managed cloud database, staff sign in with two steps, and prayer stays behind role checks the system enforces.";
   ANSWERS.denomfit = "Genesis Ministry does not take a side on doctrine. " + AN + " shares only what your church has written and approved about its beliefs, and hands questions of faith to a pastor rather than answering them itself.";
-  ANSWERS.advice = AN + " does not give pastoral, legal, medical or financial advice. It answers practical questions from facts your church approved, and it hands anything personal to a real person. If someone is in crisis, it shows them 988 and 911 right away.";
+  ANSWERS.advice = AN + " does not give pastoral, legal, medical or financial advice. It answers practical questions from facts your church approved, and it hands anything personal to a real person. On a real church site, 988 and 911 sit under every answer.";
   ANSWERS.sermon = AN + " does not write sermons, and it never writes a reply to prayer. In the workspace it drafts small things for a person to approve, like welcome notes and follow-up notes. The preaching stays yours.";
   ANSWERS.confidential = "A pastor can talk with you about what stays private and the few things they must report to keep someone safe. If anyone is in danger right now, call 911, or call or text 988.";
   ANSWERS.aiprayerco = ANSWERS.aiprayer;
@@ -388,6 +391,11 @@
     if (!careFor(q)) return notifyAll;
     return (yesNo(q) && /\b(?:show|shows|include\w*|contain\w*|have|has|carry|carries|words?|text of)\b/i.test(String(q || "")) ? "Yes. " : "") + "On the Care plan the prayer form goes by email to the pastors' address, words and all. From the Shepherd plan the alert says only: New request. Sign in to read.";
   };
+  var memberMailAll = ANSWERS.memberemail;
+  ANSWERS.memberemail = function (q) {
+    if (!careFor(q)) return memberMailAll;
+    return "Not from Genesis. On the Care plan there is no member app, so a member hears back only when a pastor writes to them by hand. The prayer form itself goes by email to the pastors' address, words and all. From the Shepherd plan, the email a member gets says only that there is a reply, and they sign in to read it.";
+  };
   /* Texting is guest follow-up only, and on the Care plan it is not there yet. "No." comes first only
      when the question asks whether Care has texting. */
   var textAll = ANSWERS.texting;
@@ -457,6 +465,7 @@
     [/\bexport\w*\b.{0,40}\b(?:chats?|conversations?|chat history)\b|\b(?:chats?|conversations?|chat history)\b.{0,30}\bexport\w*/i, "chatexport"],
     [/\b(?:giv\w*|tith\w*|donat\w*)\b.{0,40}\bwithout\b.{0,30}\b(?:pastors?|church|anyone|staff|elders?)\b|\bwithout\b.{0,30}\b(?:pastors?|church|anyone|staff)\b.{0,20}\b(?:knowing|seeing|finding out)\b/i, "givingsee"],
     [/\b(?:greeters?|ushers?|volunteers?|leaders?|staff)\b.{0,30}\b(?:access|see|view)\w*\b.{0,30}\b(?:list|guests?|first[- ]time|people|records|directory)\b/i, "contactsee"],
+    [/\b(?:e-?mails?|notif\w*|alerts?)\b.{0,20}\b(?:a |the |our )?(?:members?|guests?|visitors?|people|person|they|she|he) (?:gets?|receives?|sees?)\b|\b(?:members?|guests?|visitors?)\b.{0,15}\b(?:gets?|receives?)\b.{0,15}\be-?mails?\b/i, "memberemail"],
     [/\btext of\b.{0,30}\b(?:prayers?|requests?)\b|\b(?:e-?mails?)\b.{0,40}\b(?:show|shows|include\w*|contain\w*|have|has)\b.{0,40}\b(?:prayers?|requests?)\b|\b(?:notif\w*|alerts?|lock ?screen|push)\b.{0,40}\b(?:show|shows|display\w*|include\w*|reveal\w*|say|says)\b.{0,30}\bprayers?|\block ?screen\b.{0,40}\bprayers?|\bprayers?\b.{0,40}\block ?screen/i, "prayernotify"],
     [new RegExp("\\b(?:" + AN_RX + "|the ai|ai|it|the assistant)\\b.{0,30}\\b(?:decide|decides|choose|chooses|pick|picks|assign\\w*)\\b.{0,40}\\b(?:on its own|by itself|automatically|without (?:a person|anyone|us|asking))\\b|\\b(?:" + AN_RX + "|the ai|ai)\\b.{0,20}\\b(?:decide|decides|choose|chooses)\\b.{0,30}\\b(?:who|which)\\b", "i"), "autoreply"],
     [/^(?!.*\b(?:jesus|christ|god|lord|savior)\b).*\b(?:died|passed away|passed on|funeral|lost my (?:mom|dad|mother|father|husband|wife|son|daughter|baby|child|grandma|grandmother|grandpa|grandfather|brother|sister|friend))\b/i, "grief"],
@@ -619,13 +628,13 @@
     "aitraining", "onecampus", "masstext", "keepsite", "givingsee", "mailbox", "careplan", "schedule", "permember", "phones", "language", "growth", "support",
     "attendance", "checkin", "references", "whobuilds", "hipaa", "websitecost", "downgrade", "beliefs", "fees", "planfeature", "cheapest",
     "aiprayerco", "processors", "otherchurches", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "value", "serving", "faithcompany", "privacypolicy",
-    "prayerfromstaff", "prayernotify", "hopeprays", "contactsee", "givingfees", "autoreply", "madeup", "soc2", "denomfit", "advice", "sermon", "confidential", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "texting",
+    "prayerfromstaff", "prayernotify", "memberemail", "hopeprays", "contactsee", "givingfees", "autoreply", "madeup", "soc2", "denomfit", "advice", "sermon", "confidential", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "texting",
     "multisite", "sharelogin", "prayeranon", "prayerwall", "pastornotes", "legalrequest", "freeplan", "bibletrans", "websiteown", "exportterms", "chatexport", "grief", "textwho", "minortext"];
   /* Answers that a person at Genesis settles: Talk With Genesis sits under each one, on every Hope. */
   var TALK_KEYS = ["call", "start", "domain", "keepsite", "language", "support", "references", "contract", "trial", "cancel", "discount", "fees", "growth", "whobuilds", "processors", "prayerforward", "guestchats", "faithcompany", "soc2"];
   /* Trust and policy answers the workspace dock gives before a screen's own answers ("Who covers when
      the pastor on call is away?" on a person page is about on-call cover, not that person). */
-  var FIRST_KEYS = ["givingsee", "model", "staffaccess", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "aitraining", "aiprayerco", "chat", "processors", "otherchurches", "sell", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "prayerfromstaff", "prayernotify", "hopeprays", "contactsee", "confidential", "sermon"];
+  var FIRST_KEYS = ["givingsee", "model", "staffaccess", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "aitraining", "aiprayerco", "chat", "processors", "otherchurches", "sell", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "prayerfromstaff", "prayernotify", "memberemail", "hopeprays", "contactsee", "confidential", "sermon"];
   function talkChips() { return [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]; }
   function addMore(answers, a, chips) { MORE_KEYS.forEach(function (k) { if (!answers[k]) answers[k] = a(ANSWERS[k], TALK_KEYS.indexOf(k) >= 0 ? talkChips() : chips); }); return answers; }
   /* Inside a church's own screens, the on-call answer names who is on call there. */
@@ -1277,6 +1286,8 @@
     function a(text, chips) { return { t: text, c: chips || chipsAbout.slice(0, 3) }; }
     /* Who reads what a member writes, in the member's own words, from the church's own team. */
     var lead = GM.staff("s-lead"), care = GM.staff("s-care");
+    /* A sample church's made-up 555 number is never offered to call (as on every Hope). */
+    var FAKE_PHONE = / 555-/.test(c.phone || "");
     var pastors = [lead, care].map(function (x) { return x.name; });
     var team = D.staff.filter(function (x) { return x.roleKey === "prayer"; }).map(function (x) { return x.name; });
     var giftNames = D.staff.filter(function (x) { return x.caps.indexOf("giftNames") >= 0; }).map(function (x) { return GM.staff(x.id).name; });
@@ -1311,7 +1322,7 @@
         messageswho: a("A question for the church office is read by the church staff, who reply, usually within a day. Something private, for a pastor, is read only by " + listNames(pastors) + ". Every reply comes from a person.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         giftswho: a("Only you, unless you say yes. With a yes, " + listNames(giftNames) + " see your name with your gifts. The church's gifts picture shows counts only, never names.", [{ label: "How Is It Added Up?", key: "giftsinfo" }]),
         aimine: a("No. " + AN + " never reads or answers prayer. Only the people you chose can read it, and a person writes every reply.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        pastor: a(lead.name + " leads " + c.name + ", and " + care.name + " cares for the church family. To reach one of them, send a Message and choose Something private, for a pastor. Or call the church at " + c.phone + ".", [toMessages]),
+        pastor: a(lead.name + " leads " + c.name + ", and " + care.name + " cares for the church family. " + (FAKE_PHONE ? "On a real church site, you would reach one of them by sending a Message and choosing Something private, for a pastor. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency." : "To reach one of them, send a Message and choose Something private, for a pastor. Or call the church at " + c.phone + "."), [toMessages]),
         talk: a("You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". If you are in danger, call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         remove: a("On Home, choose Ask to Remove My Information, and a pastor confirms it with you. Nothing is thrown away by accident before then, and you can also ask for a copy first.", [toHome]),
         kids: a(c.kidsCheckIn + " The church website has the rest, from ages to what to expect on a first Sunday.", [{ label: "What Time Is Sunday?", key: "times" }]),
@@ -1327,7 +1338,7 @@
         /* Everyday member questions: a reply, giving, baptism, emails, and a hard week. */
         replies: a("Replies are in Messages and under each prayer request. Right now " + care.name + " has replied to you in Messages.", [{ label: "Open Messages", href: GM.url("member-messages.html"), go: true, cta: true }, { label: "Who Reads My Messages?", key: "messageswho" }]),
         givingprivate: a("Give opens " + poss(c.short) + " own giving form. This app keeps no giving history, so nobody here sees what you give. Receipts stay with the church's giving provider.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        baptism: a((c.baptism || "Ask the church about baptism, and a pastor will talk it through with you first.") + " To ask, send a Message, or call the church at " + c.phone + ".", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
+        baptism: a((c.baptism || "Ask the church about baptism, and a pastor will talk it through with you first.") + (FAKE_PHONE ? " On a real church site, you would ask by sending a Message, and a pastor would reply. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency." : " To ask, send a Message, or call the church at " + c.phone + "."), [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         emails: a("Emails from the app never carry private words. They say only that you have a reply, and you sign in to read it. To change what you receive, ask the church office in Messages.", [toMessages]),
         /* A member asking for the privacy page. */
         privacypolicy: a(poss(c.short) + " website has a privacy page that says who sees what you share. In the app, a prayer request is read only by the people you choose, a private message only by the pastors, and every reply comes from a person.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages]),
@@ -1406,7 +1417,7 @@
         [/\b(need|want|would like) (someone|somebody|a person) to talk to|\bsomeone to talk to\b|\b(i'?m|i am|feeling) (so )?(lonely|struggling|overwhelmed|not ok|not okay)\b|\bhaving a (really )?hard time\b|^\s*i need help\s*[.!]?\s*$/i, "talk"],
         [/\b(what time|when) (is|are|does|do)\b.{0,30}\b(sunday|services?|gatherings?|church|worship|start)\b|\bservice times?\b|\bsunday times?\b/i, "times"],
         [/^(?!.*\b(account|sign ?(in|up)|log ?in)\b).*(\b(kids?|children|nursery|toddlers?)\b.*\b(check|room|class|sunday|program|ministry|during|go)\b|\bcheck[- ]?in\b|\bwhere do (the |my |our )?kids\b)/i, "kids"]
-      ].concat(RULES.map(function (r) { return [r[0], r[1] === "data" ? "mydata" : /^(?:pco|pcokeep|worksbeside|importpeople)$/.test(r[1]) ? "memberpco" : r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1] === "aiprayer" ? "aimine" : r[1] === "archive" ? "remove" : r[1] === "giving" ? "give" : r[1] === "guestunsub" ? "emails" : r[1]]; })).concat([
+      ].concat(RULES.map(function (r) { return [r[0], r[1] === "data" ? "mydata" : /^(?:pco|pcokeep|worksbeside|importpeople)$/.test(r[1]) ? "memberpco" : r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1] === "aiprayer" ? "aimine" : r[1] === "archive" ? "remove" : r[1] === "giving" ? "give" : r[1] === "guestunsub" || r[1] === "memberemail" ? "emails" : r[1]]; })).concat([
         /* "a privacy policy we can give to our members" is not giving. */
         [/\b(giv(e|ing)(?! (it|this|that|them) to\b)(?! to (our|my|the) (members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b/i, "give"]
       ]),

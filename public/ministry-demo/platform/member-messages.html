@@ -42,6 +42,10 @@
   .mm-send .gm-icon{width:22px;height:22px}
   .m-app .mm-urgent{margin:8px 4px 0;color:var(--m-muted);font-size:13px;line-height:1.45}
   .mm-urgent a{color:var(--m-text);font-weight:800}
+  /* The 911 and 988 line comes first in every message form, as on the prayer form and the church sites. */
+  .m-app .mm-help{margin:0 0 16px}
+  .mm-foot .mm-help{margin:0 0 12px}
+  .mm-help a{color:var(--m-text);font-weight:800;text-decoration:underline;text-underline-offset:3px}
   .mm-closed{display:grid;gap:10px;justify-items:start;font-size:15px}
   .mm-mail{padding:0;overflow:hidden}
   .mm-mail-head{display:grid;gap:2px;padding:12px 16px;border-bottom:1px solid var(--m-line);background:var(--m-surface-2);font-size:13.5px}
@@ -185,9 +189,10 @@
     <a class="mm-back" href="member-messages.html" id="mm-back"></a>
     <p class="m-eyebrow">New message</p>
     <h1 class="m-h1" id="mm-compose-title">Send a message</h1>
-    <p class="m-lede" id="mm-compose-lede">A person at <span data-gm-text="church.short"></span> reads every message and replies here.</p>
+    <p class="m-lede" id="mm-compose-lede">On a real church site, a person at <span data-gm-text="church.short"></span> reads every message and replies here. In this demo, nothing is sent.</p>
 
     <form class="m-section" id="mm-form" novalidate data-tour="messages.new">
+      <p class="m-note mm-help" id="mm-urgent-2" data-mm-help></p>
       <fieldset class="mm-fieldset">
         <legend>Who is it for?</legend>
         <div class="m-choices" id="mm-to"></div>
@@ -204,7 +209,7 @@
       </div>
       <button type="submit" class="m-btn m-btn--primary m-btn--block">Send Message</button>
       <p class="m-note mx-demo-sent" id="mm-sent" role="status" hidden></p>
-      <p class="mm-urgent" id="mm-urgent-2" style="text-align:center"></p>
+      <p class="mm-shield" id="mm-shield-2"></p>
     </form>
   </div>
 
@@ -294,6 +299,8 @@ GM.ready(function (ctx) {
   var me = GM.member();
   /* The same 911 and 988 line as every Hope. The demo's message boxes are filled in and send nothing. */
   var urgent = 'In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.';
+  /* It sits first in each form, above the box, so it is in view on a phone before anyone reads the sample. */
+  var help = GM.icon("call") + "<span>" + urgent + "</span>";
   /* Said plainly on every message screen, the same as on the prayer form. Each church reviews this wording for its own state. */
   var shield = GM.icon("shield") + "<span>We keep this private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span>";
 
@@ -387,11 +394,12 @@ GM.ready(function (ctx) {
     if (t.status === "closed") {
       $("mm-foot").innerHTML = '<div class="mm-closed"><span>This conversation is closed. You can start a new one any time.</span><a class="m-btn m-btn--sm" href="member-messages.html?new=1">' + GM.icon("plus") + "New Message</a></div>";
     } else {
-      $("mm-foot").innerHTML = '<form class="m-composer mm-composer" id="mm-reply-form" novalidate><label class="gm-sr-only" for="mm-reply">Reply to ' + esc(who.name) + " (demo only: a sample reply is filled in)</label>" +
+      $("mm-foot").innerHTML = '<p class="m-note mm-help" id="mm-reply-help" data-mm-help>' + help + "</p>" +
+        '<form class="m-composer mm-composer" id="mm-reply-form" novalidate><label class="gm-sr-only" for="mm-reply">Reply to ' + esc(who.name) + " (demo only: a sample reply is filled in)</label>" +
         '<textarea class="m-textarea" id="mm-reply" rows="1" readonly>Thank you. That helps a lot.</textarea>' +
         '<button type="submit" class="mm-send" aria-label="Send Reply">' + GM.icon("send") + "</button></form>" +
         '<p class="m-note mx-demo-sent" id="mm-reply-sent" role="status" hidden></p>' +
-        '<p class="mm-urgent">' + urgent + "</p>" + '<p class="mm-shield">' + shield + "</p>";
+        '<p class="mm-shield">' + shield + "</p>";
       /* Demo only: the reply is a filled-in sample and nothing is sent or added. */
       $("mm-reply-form").addEventListener("submit", function (e) {
         e.preventDefault();
@@ -414,7 +422,7 @@ GM.ready(function (ctx) {
     $("mm-threads").hidden = true; $("mm-compose").hidden = false;
     var serving = kind === "serving";
     $("mm-compose-title").textContent = serving ? "Talk about serving" : "Send a message";
-    if (serving) $("mm-compose-lede").textContent = "Tell us a little about what you enjoy. " + serveLead.name + " helps people find a team that fits, and will reply here.";
+    if (serving) $("mm-compose-lede").textContent = "On a real church site, " + serveLead.name + " reads every message about serving, helps people find a team that fits and replies here. In this demo, nothing is sent.";
     var TO = [
       { key: "office", title: "A question for the church office", sub: "Service times, the building, events. Church staff reply, usually within a day.",
         note: GM.fill("For everyday questions, staff may start from a reply {assistant.name} drafts. A person always reads it and sends it.") },
@@ -436,7 +444,8 @@ GM.ready(function (ctx) {
     /* Demo only: a filled-in sample that cannot be changed here. */
     $("mm-subject-in").value = serving ? "I would like to talk about serving" : "A question about Sunday";
     $("mm-text-in").value = serving ? GM.fill("I love making people feel welcome, and Sundays after {church.visitGathering} work best.") : "Is there a place near the back to sit with a stroller?";
-    $("mm-urgent-2").innerHTML = urgent + '<span class="mm-shield">' + shield + "</span>";
+    $("mm-urgent-2").innerHTML = help;
+    $("mm-shield-2").innerHTML = shield;
 
     $("mm-form").addEventListener("submit", function (e) {
       e.preventDefault();
