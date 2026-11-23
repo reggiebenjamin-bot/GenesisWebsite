@@ -490,6 +490,11 @@ export function MinistryProtection() {
               <div>
                 <h3 className="text-[clamp(1.15rem,1.6vw,1.35rem)] leading-snug font-medium tracking-[-0.015em] text-ivory">
                   {rule.title}
+                  {"plan" in rule ? (
+                    <span className="ml-2 inline-block align-[3px] font-mono text-[0.72rem] font-semibold tracking-[0.14em] text-gold uppercase">
+                      {rule.plan}
+                    </span>
+                  ) : null}
                 </h3>
                 <p className="mt-2 max-w-[52ch] text-[0.95rem] leading-relaxed text-muted-light">{rule.body}</p>
               </div>

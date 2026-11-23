@@ -292,8 +292,11 @@ test("the structured data carries the three plans at the prices the cards print"
 test("the business pricing page points churches to the Ministry plans", () => {
   const pricing = readFileSync(join(process.cwd(), "app", "(marketing)", "pricing", "page.tsx"), "utf8");
   /* The same sentence as the plan cards, the demo and Hope: all three plans with their prices. */
-  assert.match(pricing, /For churches: \{ministryPriceAnswer\}/);
+  assert.match(pricing, /\{ministryPriceAnswer\} Enterprise, for more than one campus, is scoped on a call\./);
   assert.match(pricing, /href="\/ministry#levels">See the Ministry Plans</);
+  /* Its own card with its own heading, so the business setup lines below never read as a church's. */
+  assert.match(pricing, /Genesis Ministry, for churches/);
+  assert.doesNotMatch(pricing.slice(pricing.indexOf("pricing-churches-title"), pricing.indexOf("</aside>")), /setup/i);
   assert.doesNotMatch(pricing, /set with Genesis on a call|Ministry Levels/);
   assert.match(seoPage("/ministry").description, /Plans from \$149 a month\./);
 });
@@ -392,6 +395,13 @@ test("the protection rules do not promise more than the product does", () => {
   const [prayer, approval] = ministryProtection.rules;
   assert.doesNotMatch(prayer.body, /Nobody else\.$/);
   assert.match(prayer.body, /in your church/);
+  /* Each rule says which plan keeps it, as the demo hub does: the Care plan has no locked prayer
+     inbox, no person pages and no access record. */
+  const record = ministryProtection.rules[4];
+  assert.equal("plan" in prayer ? prayer.plan : "", "From Shepherd");
+  assert.match(prayer.body, /On the Care plan, prayer forms go by email to the pastors' address only\./);
+  assert.equal("plan" in record ? record.plan : "", "From Plus");
+  assert.match(record.body, /recorded from the Shepherd plan/);
   /* Hope answers on the website and the crisis reply goes out on its own; the rule says so. */
   assert.match(approval.body, /Hope's answers/);
   assert.match(approval.body, /crisis reply/);

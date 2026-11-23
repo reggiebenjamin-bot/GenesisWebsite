@@ -277,7 +277,8 @@ export const ministryProtection = {
   rules: [
     {
       title: "Prayer stays with your pastors and prayer team.",
-      body: "Only your pastors and the prayer team you choose can see prayer requests. Nobody else in your church can open them.",
+      plan: "From Shepherd",
+      body: "Only your pastors and the prayer team you choose can see prayer requests. Nobody else in your church can open them. On the Care plan, prayer forms go by email to the pastors' address only.",
     },
     {
       title: "A person approves every draft.",
@@ -293,7 +294,8 @@ export const ministryProtection = {
     },
     {
       title: "Every person has one private record.",
-      body: "Each person has one page, not copies in five places. An access record shows who opened it and when.",
+      plan: "From Plus",
+      body: "Each person has one page, not copies in five places. Every open is recorded from the Shepherd plan, and the Plus plan adds the Access Record screen to search it.",
     },
   ],
   footnote: "Hope is not a counselor and not an emergency service. Your people are the care.",
