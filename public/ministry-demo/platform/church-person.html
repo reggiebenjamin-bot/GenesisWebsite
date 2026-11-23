@@ -347,7 +347,7 @@ GM.ready(function (ctx) {
       var notes = (p.notes ? [{ by: p.shepherd || "s-care", at: "2026-11-18T13:05", text: p.notes }] : []).concat(NOTES[p.id] || [], lc.notes).sort(function (a, b) { return GM.parseDate(b.at) - GM.parseDate(a.at); });
       return '<p class="ps-lockline">' + GM.lock("pastors") + '<span class="v2-muted-copy">Never shown to ' + esc(first) + ", staff or the prayer team. Notes are archived, never deleted.</span></p>" +
         '<div class="v2-rec-activity">' + (notes.length ? notes.map(function (n) { return '<div class="v2-activity-row">' + esc(n.text) + "<small>" + esc(GM.staff(n.by).name + " · " + fmt.when(n.at)) + "</small></div>"; }).join("") : '<p class="v2-muted-copy">No notes yet.</p>') + "</div>" +
-        '<form class="v2-record-section" id="ps-note-form" novalidate><h3><label for="ps-note">Add a private note</label></h3><div class="v2-note-compose"><textarea class="v2-textarea" id="ps-note" placeholder="Something to remember for next time."></textarea><div><button class="v2-button" type="submit">' + ic("note") + 'Save Note</button></div><div class="v2-note-status" id="ps-note-status" role="status"></div></div></form>';
+        '<form class="v2-record-section" id="ps-note-form" novalidate><h3><label for="ps-note">Add a private note</label></h3><div class="v2-note-compose"><textarea class="v2-textarea" id="ps-note" readonly aria-label="Add a private note (demo only: a sample note is filled in)">Asked about the grief group. Mention it when we talk next.</textarea><div><button class="v2-button" type="submit">' + ic("note") + 'Save Note</button></div><div class="v2-note-status" id="ps-note-status" role="status"></div></div></form>';
     }
 
     /* 4. How they found us */
@@ -383,7 +383,7 @@ GM.ready(function (ctx) {
           return '<li class="' + (done ? "is-done" : r.key === nowKey ? "is-now" : "") + '"><button type="button" data-ps="done" data-key="' + esc(r.key) + '" aria-pressed="' + done + '" aria-label="' + esc((done ? "Mark not done: " : "Mark done: ") + r.text) + '"><span class="v2-rec-tick" aria-hidden="true">' + (done ? "&#10003;" : "") + "</span></button>" +
             "<span>" + esc(r.text) + (done ? '<span class="sr-only">, done</span>' : "") + "<small>" + esc(d.text + " · " + GM.staff(r.owner).name + " · from " + r.from.charAt(0).toLowerCase() + r.from.slice(1)) + "</small></span></li>";
         }).join("") + "</ol>" : '<p class="v2-muted-copy">No reminders. Add one so nobody is forgotten.</p>') +
-        '<form class="ps-rem-form" id="ps-rem-form" novalidate><label class="v2-field"><span>New reminder</span><input class="v2-input" id="ps-rem-text" placeholder="For example: Check in next week" autocomplete="off"></label>' +
+        '<form class="ps-rem-form" id="ps-rem-form" novalidate><label class="v2-field"><span>New reminder</span><input class="v2-input" id="ps-rem-text" value="Check in next week" readonly></label>' +
         '<label class="v2-field"><span>Due</span><input class="v2-input" id="ps-rem-due" type="date" value="' + sampleTomorrow() + '"></label><button class="v2-button" type="submit">' + ic("plus") + "Add Reminder</button></form>" +
         '<p class="v2-muted-copy" style="margin-top:12px">Each reminder has an owner and a date. Due today shows on Today.</p></section>';
     }
@@ -447,12 +447,12 @@ GM.ready(function (ctx) {
         var t = $("ps-note");
         if (!t.value.trim()) { t.focus(); GM.toast("Write the note first."); return; }
         lc.notes.push({ by: viewer.id, at: GM_DATA.now, text: t.value.trim() });
-        paint(); GM.toast("Note saved for pastors only. Preview only.");
+        paint(); GM.toast("Demo only. The sample note shows here, and nothing was sent.");
       } else if (e.target.id === "ps-rem-form") {
         var rt = $("ps-rem-text"), rd = $("ps-rem-due");
         if (!rt.value.trim()) { rt.focus(); GM.toast("Write the reminder first."); return; }
         lc.reminders.push({ text: rt.value.trim(), due: rd.value || "2026-11-23", owner: viewer.id, from: "Added by you" });
-        paint(); GM.toast("Reminder added. It shows on Today when it is due. Preview only.");
+        paint(); GM.toast("Demo only. The sample reminder shows here, and nothing was sent.");
       }
     });
 

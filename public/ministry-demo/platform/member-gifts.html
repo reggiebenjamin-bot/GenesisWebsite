@@ -31,7 +31,6 @@
   .mq-line p{font-style:italic}
   .mq-st small{font-weight:700;letter-spacing:.02em}
   .mq-current{display:grid;gap:12px;scroll-margin-top:12px}
-  .mq-done .m-crisis{margin-bottom:22px}
   .mq-current:focus{outline:none}
   .mq-current:focus-visible .m-statement{outline:2px solid var(--m-focus);outline-offset:2px}
   .mq-label{margin:0;color:var(--m-accent-ink);font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
@@ -162,12 +161,13 @@
     <form id="mq-words-form" data-tour="gifts.words">
       <div class="m-field">
         <label class="m-label" for="mq-w1">Where have you felt most alive serving others?</label>
-        <textarea class="m-textarea" id="mq-w1" placeholder="Optional"></textarea>
+        <textarea class="m-textarea" id="mq-w1" readonly>Welcoming families at the door on Sunday mornings.</textarea>
       </div>
       <div class="m-field">
         <label class="m-label" for="mq-w2">Is there something you would love to try?</label>
-        <textarea class="m-textarea" id="mq-w2" placeholder="Optional"></textarea>
-        <span class="m-hint">Your words are kept with your result. They never change your score.</span>
+        <textarea class="m-textarea" id="mq-w2" readonly>Helping with the kids' rooms once a month.</textarea>
+        <span class="m-hint">Demo only: sample words are filled in, and they cannot be changed here. Nothing is sent. Words never change a score.</span>
+        <span class="m-hint">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span>
       </div>
       <button type="submit" class="m-btn m-btn--primary m-btn--block">Finish</button>
       <button type="button" class="m-btn m-btn--block" id="mq-skip">Skip and Finish</button>
@@ -176,7 +176,6 @@
 
   <!-- Done -->
   <section class="mq-view mq-done" id="mq-done" aria-labelledby="mq-done-title" hidden>
-    <div id="mq-crisis-slot" hidden></div>
     <div class="mq-done-icon" id="mq-done-icon" aria-hidden="true"></div>
     <p class="m-eyebrow">All done</p>
     <h1 class="m-h1" id="mq-done-title">Thank you</h1>
@@ -256,60 +255,6 @@ function mxStage(o) {
 }
 </script><!-- end member stage -->
 <script>
-/* ==== Crisis check. The same block sits on every member screen where someone types (prefix mc-). ====
-   Before a prayer request, an update, a message or the gifts conversation's own words are added, the
-   words get the check every Hope uses: the shell's (GM.crisis) and the church assistant's
-   (HopeDemo.isCrisis in ../shared/hope-demo.js, with its last-chance word check). A crisis gets the
-   fixed reply first, word for word (GM.crisis.reply), with 988, 911 and the church phone as call links.
-   A prayer request often carries ordinary words that the last-chance check alone would hear ("my mom
-   is dying", "he was killed in a crash", "a dangerous surgery"), so that check reads the words without
-   those three. Every crisis phrase still counts with them in it ("I keep thinking about dying"). */
-function mcIsCrisis(text) {
-  "use strict";
-  var t = String(text || ""), C = GM.crisis || {}, H = window.HopeDemo;
-  /* Harm by someone at church gets its own reply on the card (mcCard): 911, 988, help outside the church. */
-  try { window.mcKind = C.safety ? C.safety(t) : null; } catch (e) { window.mcKind = null; }
-  /* Whatever the safety pre-check hears in chat, it hears here too. */
-  if (window.mcKind === "crisis" || window.mcKind === "leadersafety") return true;
-  try {
-    if ((C.pattern && C.pattern.test(t)) || (C.others && C.others.test(t))) return true;
-    if (H && typeof H.isCrisis === "function") {
-      return !!H.isCrisis(t.replace(/\b(?:is|are|was|were|be|been|being) dying\b|\b(?:was|were|got|been|being) killed\b|\bdangerous\b/gi, " "));
-    }
-  } catch (e) {}
-  return false;
-}
-/* The card: id, where the words are now ("Your request is saved below."), what was written when no AI
-   reads it ("request", "message"; empty leaves the line out) and whether to announce it (the first time). */
-function mcCard(id, saved, what, announce) {
-  "use strict";
-  var c = GM.church, esc = GM.esc, tel = String(c.phone || "").replace(/\D/g, "");
-  var leader = window.mcKind === "leadersafety" && GM.crisis && GM.crisis.leaderReply;
-  if (leader) tel = "";
-  var reply = leader ? GM.crisis.leaderReply("") : GM.crisis && GM.crisis.reply ? GM.crisis.reply(c.phone)
-    : window.HopeDemo && window.HopeDemo.crisisReply ? window.HopeDemo.crisisReply(c.phone) : "";
-  return '<section class="m-crisis" id="' + id + '" tabindex="-1" aria-labelledby="' + id + '-h">' +
-    '<h2 class="m-h3 m-crisis-head" id="' + id + '-h">' + GM.icon("call") + "<span>Help right now</span></h2>" +
-    '<p class="m-crisis-from">A fixed reply written by people.' + (what ? " It shows because of words in your " + esc(what) + "." : "") + "</p>" +
-    '<div' + (announce ? ' role="alert"' : "") + '><p class="m-crisis-reply">' + esc(reply) + "</p></div>" +
-    '<div class="m-crisis-calls">' +
-      '<a class="m-btn m-btn--primary" href="tel:988">Call 988</a>' +
-      '<a class="m-btn" href="sms:988">Text 988</a>' +
-      '<a class="m-btn" href="tel:911">Call 911</a>' +
-      (tel ? '<a class="m-btn" href="tel:' + esc(tel) + '">Call the Church</a>' : "") +
-    "</div>" +
-    '<p class="m-crisis-note">' + esc(saved) + (leader ? " In the live product this is flagged to the safeguarding contact the church named, never to the person you wrote about. This is a preview, so nothing was sent.</p>" : " In the live product the pastor on call is alerted now, with no private words. This is a preview, so nothing was sent.</p>") +
-    "</section>";
-}
-/* Bring the card into view below the app's top bar and move focus to it. */
-function mcReveal(el) {
-  "use strict";
-  if (!el) return;
-  try { el.scrollIntoView({ block: "start" }); } catch (e) { el.scrollIntoView(); }
-  el.focus({ preventScroll: true });
-}
-</script><!-- end crisis check -->
-<script>
 mxStage({
   title: 'One statement <em class="v2-accent-em">at a time</em>',
   sub: "Five answers from Not me to That is me. It saves after every tap, and short lines in the church's voice sit between sections.",
@@ -377,11 +322,11 @@ GM.ready(function (ctx) {
 
   $("mq-words-form").addEventListener("submit", function (e) {
     e.preventDefault();
+    /* Demo only: the words are a filled-in sample, and nothing is sent. */
     state.words = [$("mq-w1").value.trim(), $("mq-w2").value.trim()];
-    /* Crisis words come first, even here: the fixed reply opens the last screen, and the words are still kept. */
-    finish(mcIsCrisis(state.words.join(". ")));
+    finish();
   });
-  $("mq-skip").addEventListener("click", function () { finish(false); });
+  $("mq-skip").addEventListener("click", function () { finish(); });
 
   show(step);
 
@@ -393,7 +338,6 @@ GM.ready(function (ctx) {
     p.delete("restart");
     try { history.replaceState(null, "", location.pathname + "?" + p.toString()); } catch (err) {}
     if (s === "talk") renderTalk(false);
-    if (s === "words") $("mq-w1").value = (state.words && state.words[0]) || "";
     setTour(s);
   }
 
@@ -467,14 +411,10 @@ GM.ready(function (ctx) {
     save();
   }
 
-  function finish(crisis) {
+  function finish() {
     state.finished = true; save();
-    var slot = $("mq-crisis-slot");
-    slot.innerHTML = crisis ? mcCard("mq-crisis", "Your answers are saved with your result.", "", true) : "";
-    slot.hidden = !crisis;
     show("done"); scrollTop();
-    if (crisis) { mcReveal($("mq-crisis")); return; }
-    GM.toast("Saved to your record. This is a preview, so nothing left this browser tab.");
+    GM.toast("Demo only. Nothing was sent.");
   }
 
   /* ---------- helpers ---------- */

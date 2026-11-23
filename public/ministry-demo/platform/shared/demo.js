@@ -1411,7 +1411,17 @@
         [/\b(giv(e|ing)(?! (it|this|that|them) to\b)(?! to (our|my|the) (members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b/i, "give"]
       ]),
       fallback: "I am not sure about that one, and I would rather not guess. In " + poss(c.short) + " app I answer from facts the church approved, and anything personal goes to a real person: send a Message and someone from the church will answer. For this preview, try one of these.",
-      note: "Design preview. Answers are scripted from sample data.",
+      /* Tap to ask only: the questions a member can tap, each with the answer written for it. */
+      questions: [
+        { title: "Popular Questions", items: [
+          ["Who Sees My Prayer Requests?", "prayerwho"], ["Who Reads My Messages?", "messageswho"], ["Can I Talk to a Pastor?", "pastor"],
+          ["What Happens in a Crisis?", "crisisinfo"], ["Does " + AN + " Answer Prayer Requests?", "aimine"], ["What Do Members Need to Sign In?", "signin"]] },
+        { title: "My Information", more: true, items: [
+          ["Who Sees My Gifts?", "giftswho"], ["Can Other Members See My Phone Number?", "contactsee"], ["Who Sees What I Give?", "givingprivate"],
+          ["Can I Get a Copy of My Data?", "mydata"], ["How Do I Remove My Information?", "remove"]] },
+        { title: "Sundays", more: true, items: [
+          ["What Time Is Sunday?", "times"], ["Where Do Kids Check In?", "kids"], ["How Do I Get Baptized?", "baptism"]] }
+      ],
       tour: function () { return compile(tour); },
       tourIntro: "Here is the guided demo of this screen, one part at a time. Use Next to move on, or press Escape to stop.",
       next: nx,
@@ -1553,7 +1563,7 @@
       tourTitle: t.title,
       church: { name: "Genesis Ministry", short: "Genesis Ministry" },
       brand: { accent: "#f2d895", accentInk: "#08090e", accentText: "#f2d895", ink: "#f4efe8", surface: "#101929", surface2: "#172237", line: "rgba(244,239,232,.18)", font: '"Satoshi", ui-sans-serif, system-ui, Arial, sans-serif', radius: "10px", buttonRadius: "6px" },
-      greeting: "Hi, I am " + AN + ". This is the Genesis Ministry design preview, with sample data. Want a short tour of this page, or do you have a question?",
+      greeting: "Hi, I am " + AN + ". This is the Genesis Ministry design preview, with sample data. Want a short tour of this page, or tap a question below?",
       menu: [
         { label: "Take the Tour", key: "tour", cta: true },
         { label: "Start the Guided Demo", key: "startdemo" },
@@ -1586,7 +1596,16 @@
       }, a, more),
       match: RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1]]; }),
       fallback: "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call, and the guided demo shows every screen with sample data. For now, try one of these.",
-      note: "Design preview. Answers are scripted from sample data.",
+      /* Tap to ask only: the questions a visitor can tap, each with the answer written for it. */
+      questions: [
+        { title: "Popular Questions", items: [
+          ["What Is Genesis Ministry?", "platform"], ["What Does It Cost?", "price"], ["What Does Each Plan Include?", "levels"],
+          ["Who Sees Prayer Requests?", "prayerwho"], ["What Happens in a Crisis?", "crisisinfo"], ["How Is the AI Limited?", "ai"]] },
+        { title: "How It Works", more: true, items: [
+          ["Does It Replace Planning Center?", "pco"], ["Is Our Data Safe?", "hosting"], ["How Do Members Sign In?", "signin"], ["Can We Customize It?", "custom"]] },
+        { title: "Getting Started", more: true, items: [
+          ["How Do We Get Started?", "start"], ["Does It Work for a Small Church?", "size"], ["Is There a Free Trial?", "trial"]] }
+      ],
       tour: function () { var phone = window.innerWidth <= 640; return t.steps.map(function (s) { return { sel: phone && s.phoneSel ? s.phoneSel : s.sel, h: s.h, p: s.p, k: GUIDE + " · " + t.title, place: s.place }; }); },
       next: function () { return { label: "Start the Guided Demo", href: demoHref(), tour: false }; },
       finale: { text: t.done, chips: [{ label: "Take the Tour Again", key: "tour" }].concat(more) },

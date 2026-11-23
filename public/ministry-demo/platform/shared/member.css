@@ -95,6 +95,8 @@ a.m-item:hover{background:var(--m-surface-2)}
 .m-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--m-radius);background:var(--m-surface-2);color:var(--m-text);font-size:14.5px;line-height:1.5}
 .m-note .gm-icon{flex:0 0 18px;width:18px;height:18px;margin-top:2px;color:var(--m-accent-ink)}
 .m-note--line{background:transparent;border:1px solid var(--m-line)}
+/* "Demo only. Nothing was sent.": shown after a demo form's button, hidden until then. */
+.m-note.mx-demo-sent[hidden]{display:none}
 .m-note-quiet{margin:14px 0 0;color:var(--m-muted);font-size:13.5px;text-align:center}
 
 /* --- Forms --------------------------------------------------------------------- */

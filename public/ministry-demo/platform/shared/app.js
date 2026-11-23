@@ -1438,7 +1438,7 @@
   function fitWelcome() {
     if (!dock || !dock.brief) return;
     var w = dock.thread.querySelector(".aria-welcome");
-    var comp = dock.root.querySelector(".composer");
+    var comp = dock.root.querySelector(".gm-dock-qs");
     if (!w || w.hidden || !comp || !comp.getClientRects().length) return;
     var chips = w.querySelector(".hawk-briefing-chips"), line = w.querySelector(".hawk-briefing-line");
     var bs = chips ? [].slice.call(chips.querySelectorAll(".hawk-chip")) : [];
@@ -1488,8 +1488,6 @@
     newChat: '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M11.995 4.999c3.86 0 7 3.14 7 7v.28c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-.28c0-3.04-2.46-5.5-5.5-5.5s-5.5 2.46-5.5 5.5c0 1.14.34 2.19.93 3.07.14.2.16.46.08.69l-.55 1.43 1.86-.44c.18-.04.37-.02.54.07.78.43 1.69.68 2.65.68h.26c.41 0 .75.34.75.75 0 .39-.29.71-.67.75h-.34c-1.11 0-2.17-.26-3.11-.73l-2.97.71a.741.741 0 0 1-.74-.24.753.753 0 0 1-.14-.76l.92-2.41a6.995 6.995 0 0 1-.97-3.57c0-3.86 3.14-7 7-7Zm4.01 8c.41 0 .75.34.75.75v1.5h1.5c.41 0 .75.34.75.75s-.34.75-.75.75h-1.5v1.5c0 .41-.34.75-.75.75s-.75-.34-.75-.75v-1.5h-1.5c-.41 0-.75-.34-.75-.75s.34-.75.75-.75h1.5v-1.5c0-.41.34-.75.75-.75Z"/></svg>',
     history: '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12.219 5.002c3.66.11 6.7 3.18 6.78 6.84a7 7 0 0 1-7 7.16c-3.58 0-6.53-2.68-6.95-6.15-.05-.45.3-.85.75-.85.37 0 .7.27.74.64.31 2.73 2.65 4.86 5.46 4.86a5.51 5.51 0 0 0 5.36-6.74c-.45-2.04-2.1-3.69-4.14-4.13a5.488 5.488 0 0 0-5.453 1.87h1.483c.41 0 .75.34.75.75s-.34.75-.75.75h-3.25c-.55 0-1-.45-1-1v-3.25c0-.41.34-.75.75-.75s.75.34.75.75v1.923a6.962 6.962 0 0 1 5.72-2.673Z"/><path d="M11.845 8.976a.75.75 0 0 1 .75.75v2.268l2.436 1.088a.751.751 0 0 1-.611 1.37l-2.88-1.287a.75.75 0 0 1-.445-.685V9.726a.75.75 0 0 1 .75-.75Z"/></svg>',
     close: '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 8" width="8" height="8" aria-hidden="true"><path d="M6.636.246a.775.775 0 0 1 1.097 0 .778.778 0 0 1 0 1.1L5.101 3.98l2.672 2.692a.778.778 0 0 1 0 1.1.775.775 0 0 1-1.098 0L4.003 5.08 1.325 7.764a.775.775 0 0 1-1.098 0 .778.778 0 0 1 0-1.1l2.679-2.683L.292 1.327a.778.778 0 0 1 0-1.1.775.775 0 0 1 1.098 0l2.613 2.655L6.636.246Z"/></svg>',
-    mic: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="9.25" y="3.75" width="5.5" height="10.5" rx="2.75"/><path d="M5.75 11.5a6.25 6.25 0 0 0 12.5 0M12 17.75v2.5" stroke-linecap="round"/></svg>',
-    send: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.53 4.47a.75.75 0 0 0-1.06 0l-5.5 5.5a.75.75 0 1 0 1.06 1.06l4.22-4.22V19a.75.75 0 0 0 1.5 0V6.81l4.22 4.22a.75.75 0 1 0 1.06-1.06l-5.5-5.5Z"/></svg>',
     speakOn: '<svg class="hawk-speak-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9h3.2L12 5.2v13.6L7.2 15H4V9z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M16 8.6a4.8 4.8 0 0 1 0 6.8M18.4 6.2a8 8 0 0 1 0 11.6"/></svg>',
     speakOff: '<svg class="hawk-speak-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9h3.2L12 5.2v13.6L7.2 15H4V9z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M15 9l6 6M21 9l-6 6"/></svg>'
   };
@@ -1509,8 +1507,15 @@
       '.gm-dock-link-row{margin:10px 0 0;display:flex;flex-wrap:wrap;gap:8px}.gm-dock-link{display:inline-flex;align-items:center;min-height:32px;padding:0 14px;border:1px solid rgba(242,216,149,.42);border-radius:999px;color:#f2d895;font-weight:600;font-size:13px;text-decoration:none}' +
       '.gm-dock-link:hover{border-color:#f2d895;background:rgba(242,216,149,.08)}.gm-dock-link:focus-visible{outline:2px solid #f2d895;outline-offset:2px}' +
       '.gm-dock-link-primary{background:#f2d895;color:#08090e;border-color:#f2d895}.gm-dock-link-primary:hover{background:#f5e2ad;color:#08090e}' +
-      /* The composer shows focus with a ring, not only the caret (the Genesis OS glow is too faint alone). */
-      '.composer__field:focus-within{outline:2px solid #f2d895;outline-offset:2px}' +
+      /* Tap to ask only: the questions where the composer was, then the demo note and the 911 and 988 line. */
+      '.gm-dock-qs{display:flex;flex-direction:column;gap:8px;padding:10px 4px 2px}.gm-dock-qs-row{display:flex;flex-wrap:wrap;gap:6px}' +
+      '.gm-dock-q{display:inline-flex;align-items:center;min-height:32px;padding:6px 12px;border:1px solid rgba(242,216,149,.42);border-radius:999px;background:rgba(8,9,14,.35);color:#f4efe8;font:600 12.5px/1.25 inherit;text-align:left;cursor:pointer}' +
+      '.gm-dock-q:hover{border-color:#f2d895;background:rgba(242,216,149,.08)}.gm-dock-q:focus-visible,.gm-dock-more:focus-visible,.gm-dock-help a:focus-visible{outline:2px solid #f2d895;outline-offset:2px}' +
+      '.gm-dock-more{align-self:flex-start;min-height:32px;padding:4px 2px;border:0;background:none;color:#f2d895;font:600 12.5px/1.2 inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}' +
+      '.gm-dock-qs-more{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow-y:auto;overscroll-behavior:contain}.gm-dock-qs-more[hidden]{display:none}' +
+      '.gm-dock-qs-h{margin:4px 0 0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#a4977f;font-weight:700}' +
+      '.gm-dock-demo{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#b9b0a1}.gm-dock-help{margin:0;font-size:12px;line-height:1.45;color:#f4efe8}.gm-dock-help a{color:#f2d895;font-weight:700}' +
+      '@media (pointer:coarse){.gm-dock-q,.gm-dock-more{min-height:44px}}@media (max-height:500px){.gm-dock-demo{display:none}.gm-dock-qs-more{max-height:28vh}}' +
       '@media (pointer:coarse){.gm-dock-link{min-height:44px}}.gm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}' +
       /* Short windows (200 percent zoom, a phone on its side): the welcome keeps the line and the gold chip
          clear of the composer; the voice row and the approval line wait for a taller window. */
@@ -1521,8 +1526,7 @@
       '<div class="aria-actions-row__group"><button class="icon-btn icon-btn--tiny" type="button" data-dock="new" aria-label="New conversation" title="New conversation">' + DOCK_ICONS.newChat + '</button><button class="icon-btn icon-btn--tiny" type="button" data-dock="history" aria-label="Conversation history" title="Conversation history">' + DOCK_ICONS.history + '</button><button class="icon-btn icon-btn--tiny" type="button" data-dock="close" aria-label="Close" title="Close">' + DOCK_ICONS.close + "</button></div></div>" +
       '<div class="aria-chat-wrapper" data-avatar-character="hawk" style="--aria-avatar-size:44px"><div class="cloud-bg"><div class="cloud-bg__far"><div class="cloud-bg__blur"><div class="cloud-bg__fill"></div></div></div><div class="cloud-bg__near"><div class="cloud-bg__blur"><div class="cloud-bg__fill"></div></div></div></div>' +
       '<div class="aria-chat"><div class="aria-chat__inner"><div class="aria-scroll"><div class="aria-thread" aria-live="polite">' + welcomeHTML(b) + "</div></div>" +
-      '<div class="aria-control-panel"><div class="aria-control-panel__inner"><div class="composer-shell"><div class="composer-scale"><div class="composer-lift"><form class="composer" data-dock="form"><div class="composer__frame"><div class="composer__stack"><div class="composer__field"><div class="composer__inputwrap"><textarea class="composer__input" rows="1" placeholder="What deserves attention here?" aria-label="Ask ' + esc(ASSISTANT.name) + '"></textarea></div></div>' +
-      '<div class="composer__toolbar"><div class="composer__toolbar-left"></div><div class="composer__toolbar-right"><button class="icon-btn icon-btn--small" type="button" data-dock="mic" aria-label="Dictate" title="Dictate">' + DOCK_ICONS.mic + '</button><button class="icon-btn icon-btn--small icon-btn--primary" type="submit" aria-label="Send" title="Send" data-dock="send" disabled data-state="idle">' + DOCK_ICONS.send + "</button></div></div></div></div></form></div></div></div>" +
+      '<div class="aria-control-panel"><div class="aria-control-panel__inner">' + dockQuestionsHTML() + "</div></div>" +
       '<div class="aria-footer"><span>' + esc(ASSISTANT.name) + " only sees what you can see, and never sends anything without a person's approval.</span></div></div></div>" +
       "</div></div></div></div></aside></div>" +
       '<link rel="stylesheet" href="' + esc(OS) + 'refine-hawk-core.css">' +
@@ -1538,22 +1542,25 @@
       '@media (max-height:500px){.aria-footer{display:none!important}.aria-actions-row .hawk-header-orb{display:none}}' +
       '@media (max-height:320px){.composer__toolbar{display:none!important}.aria-actions-row{min-height:0;padding-top:0;padding-bottom:0}.aria-control-panel,.aria-control-panel__inner{padding-top:0;padding-bottom:4px}}' +
       '.hawk-core .hawk-core-mark,.hawk-core[data-state] .hawk-core-mark{filter:none}.hawk-core--orb .hawk-core-mark{width:21.73px}.hawk-core--orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,rgba(8,9,14,.92) 0%,rgba(8,9,14,.88) 56%,rgba(8,9,14,.45) 72%,rgba(8,9,14,0) 88%);pointer-events:none}</style>';
-    dock = { host: host, root: root, thread: root.querySelector(".aria-thread"), scroll: root.querySelector(".aria-scroll"), input: root.querySelector("textarea"), send: root.querySelector('[data-dock="send"]'), cores: [] };
-    var input = dock.input;
-    input.addEventListener("input", function () { dock.send.disabled = !input.value.trim(); input.style.height = "auto"; input.style.height = Math.min(160, input.scrollHeight) + "px"; });
-    input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitDock(); } });
-    root.addEventListener("submit", function (e) { e.preventDefault(); submitDock(); });
+    dock = { host: host, root: root, thread: root.querySelector(".aria-thread"), scroll: root.querySelector(".aria-scroll"), qs: root.querySelector(".gm-dock-qs"), cores: [] };
     root.addEventListener("click", function (e) {
-      var t = e.target.closest("[data-dock],[data-chip]");
+      var t = e.target.closest("[data-dock],[data-chip],[data-q]");
       if (!t) return;
       var act = t.getAttribute("data-dock");
       if (act === "close") { closeHope(); return; }
       if (act === "new") { resetDock(); return; }
       if (act === "history") { GM.toast("Conversation history is not part of this preview."); return; }
-      if (act === "mic" || act === "talk") { sayInDock("Voice is not part of this preview. Type a question instead."); return; }
+      if (act === "mic" || act === "talk") { sayInDock("Voice is not part of this preview. Tap a question below instead."); return; }
+      if (act === "more") {
+        var more = root.getElementById(t.getAttribute("aria-controls")), opening = more.hidden;
+        more.hidden = !opening; t.setAttribute("aria-expanded", String(opening)); t.textContent = opening ? "Fewer Questions" : "More Questions";
+        if (opening) { var f = more.querySelector("[data-q]"); if (f) f.focus(); }
+        return;
+      }
+      if (t.hasAttribute("data-q")) { askInDock(t.getAttribute("data-q")); return; }
       if (act === "hear") { hearBriefing(); return; }
       if (act === "speak") { toggleSpeak(t); return; }
-      if (act === "orb") { input.focus(); return; }
+      if (act === "orb") { focusFirstQuestion(); return; }
       var chip = t.getAttribute("data-chip");
       if (chip != null) {
         var c = (dock.chips || [])[+chip];
@@ -1565,7 +1572,7 @@
     });
     root.addEventListener("keydown", function (e) {
       var orb = e.target.closest && e.target.closest('[data-dock="orb"]');
-      if (orb && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); input.focus(); }
+      if (orb && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); focusFirstQuestion(); }
     });
     dock.chips = b.chips;
     dock.brief = b;
@@ -1674,18 +1681,42 @@
     setTimeout(function () { var a = answerFor(text); setDockState("idle"); appendAssistant(a); speakReply(a && typeof a === "object" ? a.text : a); }, reduce ? 50 : 650);
   }
   function sayInDock(text) { if (!dock) return; var w = dock.thread.querySelector(".aria-welcome"); if (w) w.hidden = true; appendAssistant(text); }
-  function submitDock() {
-    var v = dock.input.value.trim();
-    if (!v) return;
-    dock.input.value = ""; dock.send.disabled = true; dock.input.style.height = "auto";
-    askInDock(v);
+  function focusFirstQuestion() { var q = dock && dock.qs && dock.qs.querySelector("[data-q]"); if (q) q.focus({ preventScroll: true }); }
+  /* Tap to ask only (owner decision, November 23, 2026): the public demo has no box to type in. A
+     visitor taps a question, and the dock answers that exact question with the answer it already has
+     (answerFor). Typing comes back only on a real AI with safety screening. Each question is checked by
+     shared/hope-check.html. The first group shows; More Questions opens the rest. */
+  function dockQuestions() {
+    if (GM.side === "genesis") return [{ title: "", items: ["How much does it cost?", "What does each plan include?"] }];
+    if (!GM.isIncluded("genesis")) return [
+      { title: "", items: ["How much does it cost?", "What does each plan include?", "Does Care include text messaging?", "Can we add one more staff seat on Care?"] },
+      { title: "On the Care Plan", more: true, items: ["Will the email a member gets show the text of their prayer request?", "Can the office manager see guest phone numbers on Care?", "Can two staff members share one login?", "Can we import people from Planning Center?"] },
+      { title: "Data and Trust", more: true, items: ["Is Genesis HIPAA compliant?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
+    ];
+    return [
+      { title: "", items: ["Who should I call first today?", "What is waiting in care?", "What follow-ups are overdue?", "What does each plan include?"] },
+      { title: "Care and Privacy", more: true, items: ["Who can see how much each family gives?", "Who can see members' phone numbers?", "If a prayer request mentions abuse, does Hope report it to the police?", "Does Hope learn from our members' private messages?", "Can Hope write my sermon?"] },
+      { title: "Plans and Data", more: true, items: ["How much does it cost?", "Can we keep Planning Center?", "Do you share our data with third parties?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
+    ].map(function (g) { return { title: g.title, more: g.more, items: g.items.map(function (q) { return q.replace(/\bHope\b/g, ASSISTANT.name); }) }; });
+  }
+  function dockQuestionsHTML() {
+    var groups = dockQuestions(), top = "", more = "";
+    var chip = function (q) { return '<button type="button" class="gm-dock-q" data-q="' + esc(q) + '">' + esc(q) + "</button>"; };
+    groups.forEach(function (g) {
+      var row = (g.title ? '<p class="gm-dock-qs-h">' + esc(g.title) + "</p>" : "") + '<div class="gm-dock-qs-row">' + g.items.map(chip).join("") + "</div>";
+      if (g.more) more += row; else top += row;
+    });
+    return '<div class="gm-dock-qs" role="group" aria-label="Questions you can ask ' + esc(ASSISTANT.name) + '">' + top +
+      (more ? '<button type="button" class="gm-dock-more" data-dock="more" aria-expanded="false" aria-controls="gm-dock-qs-more">More Questions</button><div class="gm-dock-qs-more" id="gm-dock-qs-more" hidden>' + more + "</div>" : "") +
+      '<p class="gm-dock-demo">This is a demo. ' + esc(ASSISTANT.name) + " answers sample questions here. In your church's workspace, " + esc(ASSISTANT.name) + " answers what your team types.</p>" +
+      '<p class="gm-dock-help">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></div>';
   }
   function resetDock() {
     if (!dock) return;
     dock.thread.querySelectorAll(":scope > :not(.aria-welcome)").forEach(function (n) { n.remove(); });
     var w = dock.thread.querySelector(".aria-welcome"); if (w) w.hidden = false;
     fitWelcome();
-    dock.input.focus();
+    focusFirstQuestion();
   }
   function hearBriefing() {
     var line = dock && dock.root.querySelector(".hawk-briefing-line");
@@ -1746,7 +1777,7 @@
     /* And once the panel and the composer have finished easing in, so the fit uses where they settle. */
     setTimeout(fitWelcome, 800);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(fitWelcome, 0); });
-    setTimeout(function () { if (dock) { if (prompt) askInDock(prompt); dock.input.focus({ preventScroll: true }); } }, 30);
+    setTimeout(function () { if (dock) { if (prompt) askInDock(prompt); focusFirstQuestion(); } }, 30);
   }
   function closeHope() {
     var layer = document.getElementById("v2-genesis-layer");
@@ -1779,6 +1810,8 @@
       attachDockOrbs();
       requestAnimationFrame(fitWelcome);
     },
+    /* The questions the dock shows ([{ title, more, items: ["text"] }]), for shared/hope-check.html. */
+    questions: function () { return dockQuestions(); },
     addAnswers: function (list, where) { if (where === "base") baseAnswers = baseAnswers.concat(list || []); else extraAnswers = (list || []).concat(extraAnswers); },
     answer: answerFor
   };
@@ -1953,13 +1986,8 @@
       case "close-nav": setNav(false); break;
       case "approve-draft": if (draftEl) { setDraftStatus(draftEl.getAttribute("data-draft-id"), "approved"); GM.toast("Approved. This is a preview, so nothing was sent."); } break;
       case "dismiss-draft": if (draftEl) { setDraftStatus(draftEl.getAttribute("data-draft-id"), "dismissed"); } break;
-      case "edit-draft": if (draftEl) {
-        var b = draftEl.querySelector(".gm-draft-body");
-        var editing = b.getAttribute("contenteditable") === "true";
-        b.setAttribute("contenteditable", editing ? "false" : "true");
-        act.textContent = editing ? "Edit" : "Done Editing";
-        if (!editing) b.focus(); else GM.toast("Draft updated. It still waits for approval.");
-      } break;
+      /* Demo only: the public demo has no box to type in, so a draft is not edited here. */
+      case "edit-draft": if (draftEl) GM.toast("Demo only. Editing is off in this demo, and nothing was sent. In your workspace, a person edits every draft before it goes out."); break;
       case "toast": GM.toast(act.getAttribute("data-gm-toast") || "Preview only. Nothing was sent."); break;
       case "start-tour": e.preventDefault(); setNav(false); closeMenus(); GM.startTour(); break;
       case "tour-next": if (tourIndex < tourSteps.length - 1) { tourIndex++; showTourStep(); } else endTour(); break;

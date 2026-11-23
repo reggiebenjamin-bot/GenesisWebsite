@@ -423,10 +423,12 @@ GM.ready(function (ctx) {
 
     var draftUp = draftWaiting(it);
     var compose = '<form class="v2-thread-compose" id="cr-compose" data-tour="care.reply" novalidate><label for="cr-reply">' + esc((it.crisis ? "Write to " : "Reply to ") + p.first + ", as " + rv.name) + "</label>" +
-      '<div><textarea class="v2-textarea" id="cr-reply" rows="2" placeholder="' + esc(it.type === "prayer" ? "Write a short, personal reply." : "Write a reply.") + '"></textarea>' +
+      /* Demo only (tap to ask, November 23, 2026): a sample reply, read-only, and nothing is sent. */
+      '<div><textarea class="v2-textarea" id="cr-reply" rows="2" readonly aria-describedby="cr-status">' + esc(it.type === "prayer" ? "Praying for you this week. Can I call you Tuesday?" : "Thank you for writing. I will call you this week.") + '</textarea>' +
       '<span class="cr-send">' + (state.role === "pastor" ? '<button class="v2-button v2-button-quiet" type="button" data-cr="note">' + ic("note") + "Add Pastor Note</button>" : "") +
       '<button class="v2-button' + (draftUp ? "" : " v2-button-primary") + '" type="submit">' + ic("send") + "Send Reply</button></span></div>" +
-      '<p id="cr-status" role="status">' + esc(p.first) + " gets an email that says only: You have a reply. Sign in to read. Your words stay here.</p></form>";
+      '<p id="cr-status" role="status">' + "Demo only: a sample reply is filled in, and nothing is sent. In a real workspace, " + esc(p.first) + " gets an email that says only: You have a reply. Sign in to read.</p>" +
+      '<p class="cr-help">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></form>';
 
     pane.innerHTML = head + see + '<div class="v2-thread-messages" id="cr-messages" aria-live="polite" aria-label="Conversation, oldest first">' +
       (it.crisis ? crisisHTML(it) : "") + messagesHTML(it) + hopeHTML(it) + "</div>" + compose;
@@ -519,7 +521,7 @@ GM.ready(function (ctx) {
       var ta = $("cr-reply");
       if (!ta.value.trim()) { ta.focus(); GM.toast("Write the note first. Pastor notes are seen by pastors only."); return; }
       it.local.push({ k: "out", note: true, at: GM_DATA.now, text: ta.value.trim(), meta: roleViewer().name + ", just now" });
-      paintPane(); GM.toast("Pastor note saved to this thread. Only pastors see it. Preview only.");
+      paintPane(); GM.toast("Demo only. The sample note shows here for pastors only, and nothing was sent.");
     }
   });
   $("cr-pane").addEventListener("submit", function (e) {
@@ -530,7 +532,7 @@ GM.ready(function (ctx) {
     it.local.push({ k: "out", at: GM_DATA.now, text: ta.value.trim(), meta: roleViewer().name, preview: true });
     if (it.waiting) { it.waiting = false; it.status = "replied-now"; }
     paintHead(); paintList(); paintPane();
-    GM.toast("This is a preview, so nothing was sent.");
+    GM.toast("Demo only. Nothing was sent.");
   });
   $("cr-pane").addEventListener("change", function (e) {
     if (e.target.id !== "cr-owner") return;

@@ -1103,11 +1103,6 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <button type="button" class="chip" data-q="wear">What should I wear?</button>
     </div>
   </div>
-  <form class="chat-form" id="chat-form">
-    <label class="sr-only" for="chat-in">Type a question</label>
-    <input id="chat-in" type="text" placeholder="Type a question" autocomplete="off">
-    <button class="btn btn-primary" type="submit">Send</button>
-  </form>
 </div>
 
 <!-- ============ MODAL ============ -->
@@ -1138,8 +1133,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <form class="fd-form" novalidate>
         <p class="fd-lede">Tell us which Sunday and we will be at the door. Follow the amber flags, and we will walk your kids to check-in and point you to the coffee.</p>
         <div class="fd-grid">
-          <div class="fd-field"><label for="pv-name">Your name</label><input id="pv-name" name="name" type="text" autocomplete="name" value="Maya T." required aria-describedby="pv-name-err"><p class="fd-err" id="pv-name-err" hidden>Please add your name.</p></div>
-          <div class="fd-field"><label for="pv-email">Email</label><input id="pv-email" name="email" type="email" autocomplete="email" value="maya.t@example.com" required aria-describedby="pv-email-err"><p class="fd-err" id="pv-email-err" hidden>Please enter an email address like you@example.com.</p></div>
+          <div class="fd-field"><label for="pv-name">Your name</label><input id="pv-name" name="name" type="text" value="Maya T." readonly required aria-describedby="pv-name-err"><p class="fd-err" id="pv-name-err" hidden>Please add your name.</p></div>
+          <div class="fd-field"><label for="pv-email">Email</label><input id="pv-email" name="email" type="email" value="maya.t@example.com" readonly required aria-describedby="pv-email-err"><p class="fd-err" id="pv-email-err" hidden>Please enter an email address like you@example.com.</p></div>
         </div>
         <div class="fd-field"><label for="pv-sunday">Which Sunday?</label>
           <select id="pv-sunday" name="sunday"><option selected>Sunday, November 22</option><option>Sunday, November 29</option><option>Sunday, December 6</option></select>
@@ -1151,14 +1146,15 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <fieldset class="fd-set"><legend>Are kids coming with you?</legend>
           <div class="fd-choices"><label class="fd-choice"><input type="radio" name="kids" value="yes" checked>Yes</label><label class="fd-choice"><input type="radio" name="kids" value="no">No</label></div>
         </fieldset>
-        <div class="fd-field" data-fd-kids><label for="pv-ages">Their ages <span class="fd-opt">(optional)</span></label><input id="pv-ages" name="ages" type="text" value="4 and 7" aria-describedby="pv-ages-hint"><p class="fd-hint" id="pv-ages-hint">So the right room is ready. We never ask for kids' names here.</p></div>
-        <div class="fd-field"><label for="pv-q">Anything you would like to ask? <span class="fd-opt">(optional)</span></label><textarea id="pv-q" name="question" rows="3">Where do the kids check in?</textarea></div>
+        <div class="fd-field" data-fd-kids><label for="pv-ages">Their ages <span class="fd-opt">(optional)</span></label><input id="pv-ages" name="ages" type="text" value="4 and 7" readonly aria-describedby="pv-ages-hint"><p class="fd-hint" id="pv-ages-hint">So the right room is ready. We never ask for kids' names here.</p></div>
+        <div class="fd-field"><label for="pv-q">Anything you would like to ask? <span class="fd-opt">(optional)</span></label><textarea id="pv-q" name="question" rows="3" readonly>Where do the kids check in?</textarea></div>
         <button class="btn btn-primary fd-submit" type="submit">Plan My Visit</button>
-        <p class="fd-fine">We only use this to welcome you. Design preview: sample details are filled in, and nothing is sent.</p>
+        <p class="fd-fine">We only use this to welcome you. Demo only: sample details are filled in, and they cannot be changed here. Nothing is sent.</p>
+        <p class="fd-fine">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p>
       </form>
       <div class="fd-done" hidden>
         <p class="fd-big" data-fd-text role="status"></p>
-        <p class="fd-fine">Design preview: nothing was sent.</p>
+        <p class="fd-fine">Demo only. Nothing was sent.</p>
         <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
         <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-guest.html?church=bold-dark&amp;id=g-01&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">→</span></a><span>Open this visit the way the welcome team sees it in Genesis Ministry.</span></p>
       </div>
@@ -1177,24 +1173,24 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <form class="fd-form" novalidate>
         <p class="fd-lede">Our prayer team reads every request and prays that same day.</p>
         <div class="fd-grid">
-          <div class="fd-field"><label for="pr-name">Your name <span class="fd-opt">(optional)</span></label><input id="pr-name" name="name" type="text" autocomplete="name"></div>
-          <div class="fd-field"><label for="pr-email">Email <span class="fd-opt">(optional)</span></label><input id="pr-email" name="email" type="email" autocomplete="email" aria-describedby="pr-email-hint pr-email-err"><p class="fd-hint" id="pr-email-hint">Only if you would like to hear back.</p><p class="fd-err" id="pr-email-err" hidden>Add your email so a pastor can reach you.</p></div>
+          <div class="fd-field"><label for="pr-name">Your name <span class="fd-opt">(optional)</span></label><input id="pr-name" name="name" type="text" value="Sarah N." readonly></div>
+          <div class="fd-field"><label for="pr-email">Email <span class="fd-opt">(optional)</span></label><input id="pr-email" name="email" type="email" value="sarah.n@example.com" readonly aria-describedby="pr-email-hint pr-email-err"><p class="fd-hint" id="pr-email-hint">Only if you would like to hear back.</p><p class="fd-err" id="pr-email-err" hidden>Add your email so a pastor can reach you.</p></div>
         </div>
-        <div class="fd-field"><label for="pr-text">What would you like us to pray for?</label><textarea id="pr-text" name="request" rows="4" required aria-describedby="pr-text-hint pr-text-err"></textarea><p class="fd-hint" id="pr-text-hint">Write as much or as little as you like.</p><p class="fd-err" id="pr-text-err" hidden>Please write a few words so we know how to pray.</p></div>
+        <div class="fd-field"><label for="pr-text">What would you like us to pray for?</label><textarea id="pr-text" name="request" rows="4" readonly aria-describedby="pr-text-hint">Please pray for my mom. She starts treatment next week.</textarea><p class="fd-hint" id="pr-text-hint">Demo only: a sample request is filled in, and it cannot be changed here. Nothing is sent.</p><p class="fd-err" id="pr-text-err" hidden>Please write a few words so we know how to pray.</p></div>
         <fieldset class="fd-set"><legend>Who can see this?</legend>
           <div class="fd-stack"><label class="fd-choice"><input type="radio" name="who" value="team" checked><span>Pastors and the prayer team<small>Pastor Andre, Pastor Talia and the prayer team.</small></span></label><label class="fd-choice"><input type="radio" name="who" value="pastors"><span>Pastors only<small>Pastor Andre and Pastor Talia. The prayer team will not see it.</small></span></label></div>
         </fieldset>
         <label class="fd-tick" for="pr-call"><input type="checkbox" id="pr-call" name="call"><span>I would welcome a call or an email from a pastor</span></label>
         <button class="btn btn-primary fd-submit" type="submit">Send Prayer Request</button>
-        <p class="fd-fine">Design preview: nothing is sent.</p>
+        <p class="fd-fine">Demo only: nothing is sent.</p>
       </form>
       <div class="fd-done" hidden>
         <p class="fd-big" data-fd-text role="status"></p>
-        <p class="fd-fine">Design preview: nothing was sent.</p>
+        <p class="fd-fine">Demo only. Nothing was sent.</p>
         <div class="fd-actions"><button class="btn btn-primary" type="button" data-fd-close>Done</button></div>
         <p class="fd-demo"><span class="k">Template preview</span><a href="../../platform/church-care.html?church=bold-dark&amp;view=prayer&amp;tour=1" data-out>See Where This Lands <span aria-hidden="true">→</span></a><span>See how prayer stays locked to the people the guest chose.</span></p>
       </div>
-      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>If you or someone else is in danger, call <a href="tel:911">911</a>. To talk with someone now, call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:+16145550142">(614) 555-0142</a>.</span></p>
+      <p class="fd-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg><span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:+16145550142">(614) 555-0142</a>.</span></p>
       <p class="fd-note line"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 4 5.6v6.1c0 4.9 3.4 8.9 8 9.8 4.6-.9 8-4.9 8-9.8V5.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span></p>
     </div>
   </div>
@@ -1432,7 +1428,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     chat.setAttribute('aria-hidden', open ? 'false' : 'true');
     fab.setAttribute('aria-expanded', open ? 'true' : 'false');
     body.classList.toggle('chat-open', open);
-    if (open) setTimeout(function () { doc.getElementById('chat-in').focus({ preventScroll: true }); }, 60);
+    if (open) setTimeout(function () { var c = doc.querySelector('#chips .chip'); if (c) c.focus({ preventScroll: true }); }, 60);
     updateBar();
   };
   fab.addEventListener('click', function () { setChat(!chat.classList.contains('open')); });
@@ -1442,11 +1438,6 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   doc.getElementById('chips').addEventListener('click', function (e) {
     var c = e.target.closest('.chip'); if (!c) return;
     say('me', Q[c.dataset.q]); setTimeout(function () { say('bot', A[c.dataset.q]); }, 380);
-  });
-  doc.getElementById('chat-form').addEventListener('submit', function (e) {
-    e.preventDefault(); var inp = doc.getElementById('chat-in'); var v = inp.value.trim(); if (!v) return;
-    say('me', v); inp.value = '';
-    setTimeout(function () { say('bot', 'Great question. Someone from our welcome team will get back to you today. In the meantime, Sundays are 10 AM and 6 PM.'); }, 420);
   });
   doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && chat.classList.contains('open')) { setChat(false); fab.focus(); } });
 
@@ -1635,19 +1626,11 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         var who = ($('input[name="who"]:checked', fd) || {}).value;
         var fn2 = firstName($("#pr-name").value), thanks = "Thank you" + (fn2 ? ", " + fn2 : "") + ".";
         var reach = EMAIL.test(mail.value.trim());
-        /* Crisis words come before anything else: the same fixed reply Hope gives, word for word, with
-           the church phone. Nothing is asked of the person first. */
-        var hope = window.HopeDemo;
-        if (hope && hope.isCrisis && hope.crisisReply && hope.isCrisis(text.value)) {
-          setErr(mail, false);
-          finish(fd, "Please reach someone now.", hope.crisisReply(SITE.phone), true);
-          return;
-        }
         /* A pastor can only reach out with a way to reach the person */
         if (setErr(mail, call.checked && !reach)) { mail.focus(); return; }
         finish(fd, thanks,
-          (who === "pastors" ? "Our pastors will pray for you today, and only they will read it." : "Our pastors and the prayer team will pray for you today.") +
-          (call.checked ? " A pastor will reach out, as you asked." : ""));
+          "On a real church site, " + (who === "pastors" ? "only the pastors would read this request and pray for you " : "the pastors and the prayer team would pray for you ") + "today." +
+          (call.checked ? " A pastor would reach out, as you asked." : ""));
       }
     });
     fd.addEventListener("click", function (e) { if (e.target === fd || (e.target.closest && e.target.closest("[data-fd-close]"))) closeForm(); });

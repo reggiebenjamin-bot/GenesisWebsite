@@ -21,8 +21,6 @@
   .mp-who input{margin-top:2px}
   .mp-who span{flex:1;min-width:0}
   .mp-who small{display:block;margin-top:2px;color:var(--m-muted);font-size:14px;font-weight:500;line-height:1.45}
-  .m-app .mp-error{margin:-8px 0 14px;color:var(--m-accent-ink);font-size:14.5px;font-weight:700}
-  .mp-error[hidden]{display:none}
   .m-app .mp-alert{margin:12px 0 0;color:var(--m-muted);font-size:14px;text-align:center}
   .mp-alert b{color:var(--m-text)}
   .mp-help a{color:var(--m-text);font-weight:800;text-decoration:underline;text-underline-offset:3px}
@@ -144,10 +142,9 @@
     </div>
     <div class="m-field">
       <label class="m-label" for="mp-text">What would you like us to pray for?</label>
-      <textarea class="m-textarea" id="mp-text" name="request" aria-describedby="mp-text-hint"></textarea>
-      <span class="m-hint" id="mp-text-hint">Write as much or as little as you like.</span>
+      <textarea class="m-textarea" id="mp-text" name="request" aria-describedby="mp-text-hint" readonly>Please pray for my job search. I have two interviews this week.</textarea>
+      <span class="m-hint" id="mp-text-hint">Demo only: a sample request is filled in, and it cannot be changed here. Nothing is sent.</span>
     </div>
-    <p class="mp-error" id="mp-error" role="alert" hidden>Please write a few words so we know how to pray.</p>
 
     <fieldset class="mp-fieldset" data-tour="prayer.visibility">
       <legend>Who can see this?</legend>
@@ -159,6 +156,7 @@
     </div>
 
     <button type="submit" class="m-btn m-btn--primary m-btn--block">Send Prayer Request</button>
+    <p class="m-note mx-demo-sent" id="mp-sent" role="status" hidden></p>
     <p class="mp-alert" id="mp-alert"></p>
   </form>
 
@@ -166,8 +164,6 @@
     <p class="m-note mp-help" id="mp-help" data-tour="prayer.help"></p>
     <p class="m-note m-note--line" id="mp-secret" data-tour="prayer.secrecy"></p>
   </div>
-
-  <div class="m-section" id="mp-crisis-slot" hidden></div>
 
   <section class="m-section" aria-labelledby="mp-history-title" data-tour="prayer.history">
     <div class="m-section-head" style="display:block">
@@ -246,60 +242,6 @@ function mxStage(o) {
 }
 </script><!-- end member stage -->
 <script>
-/* ==== Crisis check. The same block sits on every member screen where someone types (prefix mc-). ====
-   Before a prayer request, an update, a message or the gifts conversation's own words are added, the
-   words get the check every Hope uses: the shell's (GM.crisis) and the church assistant's
-   (HopeDemo.isCrisis in ../shared/hope-demo.js, with its last-chance word check). A crisis gets the
-   fixed reply first, word for word (GM.crisis.reply), with 988, 911 and the church phone as call links.
-   A prayer request often carries ordinary words that the last-chance check alone would hear ("my mom
-   is dying", "he was killed in a crash", "a dangerous surgery"), so that check reads the words without
-   those three. Every crisis phrase still counts with them in it ("I keep thinking about dying"). */
-function mcIsCrisis(text) {
-  "use strict";
-  var t = String(text || ""), C = GM.crisis || {}, H = window.HopeDemo;
-  /* Harm by someone at church gets its own reply on the card (mcCard): 911, 988, help outside the church. */
-  try { window.mcKind = C.safety ? C.safety(t) : null; } catch (e) { window.mcKind = null; }
-  /* Whatever the safety pre-check hears in chat, it hears here too. */
-  if (window.mcKind === "crisis" || window.mcKind === "leadersafety") return true;
-  try {
-    if ((C.pattern && C.pattern.test(t)) || (C.others && C.others.test(t))) return true;
-    if (H && typeof H.isCrisis === "function") {
-      return !!H.isCrisis(t.replace(/\b(?:is|are|was|were|be|been|being) dying\b|\b(?:was|were|got|been|being) killed\b|\bdangerous\b/gi, " "));
-    }
-  } catch (e) {}
-  return false;
-}
-/* The card: id, where the words are now ("Your request is saved below."), what was written when no AI
-   reads it ("request", "message"; empty leaves the line out) and whether to announce it (the first time). */
-function mcCard(id, saved, what, announce) {
-  "use strict";
-  var c = GM.church, esc = GM.esc, tel = String(c.phone || "").replace(/\D/g, "");
-  var leader = window.mcKind === "leadersafety" && GM.crisis && GM.crisis.leaderReply;
-  if (leader) tel = "";
-  var reply = leader ? GM.crisis.leaderReply("") : GM.crisis && GM.crisis.reply ? GM.crisis.reply(c.phone)
-    : window.HopeDemo && window.HopeDemo.crisisReply ? window.HopeDemo.crisisReply(c.phone) : "";
-  return '<section class="m-crisis" id="' + id + '" tabindex="-1" aria-labelledby="' + id + '-h">' +
-    '<h2 class="m-h3 m-crisis-head" id="' + id + '-h">' + GM.icon("call") + "<span>Help right now</span></h2>" +
-    '<p class="m-crisis-from">A fixed reply written by people.' + (what ? " It shows because of words in your " + esc(what) + "." : "") + "</p>" +
-    '<div' + (announce ? ' role="alert"' : "") + '><p class="m-crisis-reply">' + esc(reply) + "</p></div>" +
-    '<div class="m-crisis-calls">' +
-      '<a class="m-btn m-btn--primary" href="tel:988">Call 988</a>' +
-      '<a class="m-btn" href="sms:988">Text 988</a>' +
-      '<a class="m-btn" href="tel:911">Call 911</a>' +
-      (tel ? '<a class="m-btn" href="tel:' + esc(tel) + '">Call the Church</a>' : "") +
-    "</div>" +
-    '<p class="m-crisis-note">' + esc(saved) + (leader ? " In the live product this is flagged to the safeguarding contact the church named, never to the person you wrote about. This is a preview, so nothing was sent.</p>" : " In the live product the pastor on call is alerted now, with no private words. This is a preview, so nothing was sent.</p>") +
-    "</section>";
-}
-/* Bring the card into view below the app's top bar and move focus to it. */
-function mcReveal(el) {
-  "use strict";
-  if (!el) return;
-  try { el.scrollIntoView({ block: "start" }); } catch (e) { el.scrollIntoView(); }
-  el.focus({ preventScroll: true });
-}
-</script><!-- end crisis check -->
-<script>
 mxStage({
   title: 'Prayer with <em class="v2-accent-em">a history</em>',
   sub: "Members ask in a few taps, choose who can see it, and keep every reply in one place. A person always replies.",
@@ -329,8 +271,9 @@ GM.ready(function (ctx) {
   $("mp-alert").innerHTML = "Your pastors get an email that says only <b>“New request. Sign in to read.”</b> Your words stay here.";
 
   /* ---------- The standing help line and the honest limit ---------- */
-  var line = esc(D.crisisLine).replace("911", '<a href="tel:911">911</a>').replace("988", '<a href="tel:988">988</a>');
-  $("mp-help").innerHTML = GM.icon("call") + "<span>" + line + ' You can also call the church at <a href="tel:' + esc(c.phone.replace(/\D/g, "")) + '">' + esc(c.phone) + "</a>.</span>";
+  /* Tap to ask only (owner decision, November 23, 2026): the demo's forms are filled in and send nothing,
+     so no typed words ever get a reply. The same 911 and 988 line as every Hope sits beside the form. */
+  $("mp-help").innerHTML = GM.icon("call") + '<span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at <a href="tel:' + esc(c.phone.replace(/\D/g, "")) + '">' + esc(c.phone) + "</a>.</span>";
   $("mp-secret").innerHTML = GM.icon("shield") + "<span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span>";
 
   /* ---------- History ---------- */
@@ -338,23 +281,14 @@ GM.ready(function (ctx) {
   var added = [];
   render();
 
+  /* Demo only: the request is a filled-in sample and nothing is sent or added. */
   $("mp-form").addEventListener("submit", function (e) {
     e.preventDefault();
-    var text = $("mp-text").value.trim();
-    if (!text) { $("mp-error").hidden = false; $("mp-text").setAttribute("aria-invalid", "true"); $("mp-text").focus(); return; }
-    $("mp-error").hidden = true; $("mp-text").removeAttribute("aria-invalid");
-    var who = (document.querySelector('input[name="who"]:checked') || {}).value || "prayer";
-    /* Crisis words come first: the fixed reply shows right away, and the request is still kept. */
-    var crisis = mcIsCrisis(text);
-    added.unshift({ id: "pr-new-" + (added.length + 1), personId: me.id, received: "now", topic: $("mp-topic").value || "Prayer request", visibility: who, status: "sent", text: text, replies: [], wantsCall: $("mp-call").checked, isNew: true, crisis: crisis });
-    $("mp-form").reset();
-    render();
-    if (crisis) { showCrisis("Your request is saved in your history below."); return; }
-    GM.toast("Sent to " + (who === "pastors" ? "your pastors" : "your pastors and the prayer team") + ". This is a preview, so nothing was sent.");
-    var first = document.querySelector("#mp-history .mp-req");
-    if (first) { first.classList.add("is-target"); first.scrollIntoView({ block: "start" }); first.focus({ preventScroll: true }); }
+    var done = $("mp-sent");
+    done.textContent = "Demo only. Nothing was sent.";
+    done.hidden = false;
+    GM.toast("Demo only. Nothing was sent.");
   });
-  $("mp-text").addEventListener("input", function () { if (this.value.trim()) $("mp-error").hidden = true; });
 
   function render() {
     var list = added.concat(mine.sort(function (a, b) { return GM.parseDate(b.received) - GM.parseDate(a.received); }));
@@ -364,32 +298,19 @@ GM.ready(function (ctx) {
         var box = $("mp-up-" + b.getAttribute("data-mp-update"));
         box.hidden = !box.hidden;
         b.setAttribute("aria-expanded", box.hidden ? "false" : "true");
-        if (!box.hidden) box.querySelector("textarea").focus();
+        if (!box.hidden) box.querySelector("button[type=submit]").focus();
       });
     });
+    /* Demo only: the update is a filled-in sample and nothing is sent or added. */
     $("mp-history").querySelectorAll(".mp-update").forEach(function (f) {
       f.addEventListener("submit", function (e) {
         e.preventDefault();
-        var id = f.getAttribute("data-id"), ta = f.querySelector("textarea"), v = ta.value.trim();
-        if (!v) { ta.focus(); return; }
-        var r = added.concat(mine).filter(function (x) { return x.id === id; })[0];
-        var crisis = mcIsCrisis(v);
-        r.replies.push({ from: "member", at: "now", text: v });
-        if (crisis) r.crisis = true;
-        render();
-        if (crisis) { showCrisis("Your update is saved with your request below."); return; }
-        GM.toast("Update added. This is a preview, so nothing was sent.");
-        var art = $(id); if (art) art.focus({ preventScroll: true });
+        var done = f.querySelector(".mx-demo-sent");
+        done.textContent = "Demo only. Nothing was sent.";
+        done.hidden = false;
+        GM.toast("Demo only. Nothing was sent.");
       });
     });
-  }
-
-  /* The fixed crisis reply, above the history. It is drawn fresh each time, so it is announced each time. */
-  function showCrisis(saved) {
-    var slot = $("mp-crisis-slot");
-    slot.innerHTML = mcCard("mp-crisis", saved, "request", true);
-    slot.hidden = false;
-    mcReveal($("mp-crisis"));
   }
 
   function card(p) {
@@ -412,7 +333,9 @@ GM.ready(function (ctx) {
       '<p class="mp-status">' + esc(status) + link + "</p>" + older +
       '<div class="mp-row"><button type="button" class="m-btn m-btn--sm" data-mp-update="' + esc(p.id) + '" aria-expanded="false" aria-controls="mp-up-' + esc(p.id) + '">' + GM.icon("plus") + "Add an Update</button></div>" +
       '<form class="mp-update" id="mp-up-' + esc(p.id) + '" data-id="' + esc(p.id) + '" hidden><label class="m-label" for="mp-ta-' + esc(p.id) + '">Your update</label>' +
-      '<textarea class="m-textarea" id="mp-ta-' + esc(p.id) + '" placeholder="How is it going?"></textarea><button type="submit" class="m-btn m-btn--primary m-btn--sm">Send Update</button></form>' +
+      '<textarea class="m-textarea" id="mp-ta-' + esc(p.id) + '" readonly>Thank you for praying. This week went better than I hoped.</textarea>' +
+      '<p class="m-hint">Demo only: a sample update is filled in. Nothing is sent.</p><button type="submit" class="m-btn m-btn--primary m-btn--sm">Send Update</button>' +
+      '<p class="m-note mx-demo-sent" role="status" hidden></p><p class="m-small">In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></form>' +
       "</article>";
   }
   function bubble(r) {
