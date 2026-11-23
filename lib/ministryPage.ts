@@ -282,7 +282,7 @@ export const ministryProtection = {
     },
     {
       title: "A person approves every draft.",
-      body: "Genesis AI drafts welcome notes, replies and posts, and none of them goes out until someone on your team approves it. Only two things are sent without a person: Hope's answers from your approved facts, and the fixed crisis reply.",
+      body: "Genesis AI drafts welcome notes, follow up notes and posts, and none of them goes out until someone on your team approves it. Only two things are sent without a person: Hope's answers from your approved facts, and the fixed crisis reply.",
     },
     {
       title: "Hope answers only from your approved facts.",
