@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { preload } from "react-dom";
 import "./globals.css";
 import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
 import {
@@ -97,7 +98,17 @@ const offerPathScript = `(function(){try{var d=document.documentElement,v=${JSON
   OFFER_PATH_STORAGE_KEY,
 )})}if(v.indexOf(p)>-1)d.setAttribute(${JSON.stringify(OFFER_PATH_ATTRIBUTE)},p)}catch(e){}})();`;
 
+/* Satoshi weights used above the fold. 300 is the light hero headline
+   weight; without it the H1 re-wraps when the font swaps in (layout shift).
+   preload() lets React emit each hint once, where hand-written <link> tags in
+   <head> were emitted twice. */
+const SATOSHI_PRELOADS = [300, 400, 500, 700].map((weight) => `/fonts/satoshi-${weight}.woff2`);
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  for (const href of SATOSHI_PRELOADS) {
+    preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  }
+
   return (
     <html
       lang="en"
@@ -106,29 +117,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       // The inline script below may change the path attribute before React hydrates.
       suppressHydrationWarning
     >
-      <head>
-        <link
-          rel="preload"
-          href="/fonts/satoshi-400.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/satoshi-500.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/satoshi-700.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-      </head>
       <body>
         <OfferPathBootstrap script={offerPathScript} />
         {children}
