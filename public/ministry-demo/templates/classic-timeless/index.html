@@ -720,6 +720,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         </div>
       </div>
       <a href="#message">Watch</a>
+      <a href="#/notes">Notes</a>
       <a href="#/events" data-demo>Events</a>
       <a href="#/give" data-demo="give">Give</a>
     </nav>
@@ -755,6 +756,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="sub" href="#/ministries" data-demo data-close>All Ministries</a><a class="sub" href="#/kids" data-demo data-close>Calder Kids</a><a class="sub" href="#/youth" data-demo data-close>Youth and Young Adults</a><a class="sub" href="#/mended" data-demo data-close>Mended</a><a class="sub" href="#/serve" data-demo data-close>Serving Teams</a>
     </details>
     <a href="#message" data-close>Watch</a>
+    <a href="#/notes" data-close>Notes</a>
     <a href="#/events" data-demo data-close>Events</a>
     <a href="#/give" data-demo="give" data-close>Give</a>
   </nav>
@@ -926,7 +928,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <p class="msg-date">Sunday, November 15, 2026</p>
       <p class="msg-meta"><span>Psalm 121</span><span>Pastor Ruth</span></p>
       <p>Missed a Sunday, or want to send a message to a friend? Here is the latest from our fall series, Songs for the Road.</p>
-      <div class="actions"><a class="btn btn-outline" href="#/watch" data-demo>All Messages</a></div>
+      <div class="actions"><a class="btn btn-outline" href="#/notes">All Sermon Notes</a></div>
     </div>
     <button type="button" class="player reveal" data-modal="message" aria-label="Play the message Lift up your eyes, from November 15, 2026">
       <span class="frame">
@@ -1035,6 +1037,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <li><a href="#/beliefs" data-demo>What We Believe</a></li>
           <li><a href="#/ministries" data-demo>Ministries</a></li>
           <li><a href="#message">Watch</a></li>
+          <li><a href="#/notes">Sermon Notes</a></li>
           <li><a href="#/events" data-demo>Events</a></li>
           <li><a href="#/give" data-demo="give">Give</a></li>
         </ul>
@@ -1372,6 +1375,23 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   });
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--ink);--nv-muted:var(--muted);--nv-accent:var(--forest);--nv-accent-ink:var(--brass-deep);--nv-on-accent:var(--ivory);--nv-surface:var(--ivory);--nv-line:var(--rule);--nv-line-strong:var(--brass);--nv-display:var(--serif);--nv-body:var(--sans);--nv-verse-font:var(--serif);--nv-r:2px;--nv-r-lg:2px}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+
+.nv-head{background:var(--vellum);border-bottom:3px double var(--rule)}
+.nv-title{font-weight:500}
+.nv-chip{border-radius:2px}
+</style>
+<script>window.NOTES_SITE = {"slug":"classic-timeless","times":"Sundays at 9:00 and 11:00 AM","address":"1418 Calder Hill Road, Richmond","cls":{"wrap":"wrap","label":"label","h1":"h-md","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1536,7 +1556,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

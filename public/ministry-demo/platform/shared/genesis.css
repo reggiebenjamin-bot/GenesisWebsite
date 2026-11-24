@@ -695,7 +695,7 @@ a.v2-sidebar-action{text-decoration:none}
 /* Light theme: the dark preview pictures sit on a dark ground at near full strength, never muddy grey. */
 [data-theme="light"] .gm-locked-thumb{background:#0d0e10}
 [data-theme="light"] .gm-locked-thumb img{opacity:.85;filter:none}
-.gm-locked-thumb figcaption{position:absolute;left:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(13,14,16,.82);color:#f4efe8;font-size:11px;font-weight:700;letter-spacing:.04em}
+.gm-locked-thumb figcaption{position:absolute;left:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(13,14,16,.82);color:#f4efe8;font-size:12px;font-weight:700;letter-spacing:.04em}
 @media (max-width:1100px){.gm-locked-card.has-thumb{grid-template-columns:minmax(0,1fr)}.gm-locked-thumb{max-width:420px}}
 
 /* The fixed footer of an outreach email. */
@@ -953,3 +953,31 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 
 /* 911 and 988: a 44px tap area around each number, without moving the words. */
 a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
+
+/* ==========================================================================
+   Sermon notes review (November 24): small type, even pairs, and a phone on its side.
+   ========================================================================== */
+/* The plan lock badge ("Shepherd", "Plus", "Included in Shepherd") keeps a 12px floor everywhere. */
+.gm-nav-lock{font-size:12px;letter-spacing:.01em}
+/* A locked screen's two actions are one even pair (stacked full width under 480px). */
+.gm-locked-card .gm-locked-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:440px}
+.gm-locked-card .gm-locked-actions .v2-button{width:100%;margin:0;justify-content:center;text-align:center}
+@media (max-width:480px){.gm-locked-card .gm-locked-actions{grid-template-columns:minmax(0,1fr);max-width:none}}
+/* A phone held on its side (844 by 390): the sample strip is 28px, the top bar 48px, and the work area
+   takes the rest of the screen, so a workspace screen keeps most of the 390px for its own words. */
+@media (max-height:500px) and (orientation:landscape) and (max-width:960px){
+  .v2-fixture-badge{height:28px!important;min-height:28px!important;font-size:12px}
+  body.v2-showing-sample .v2-shell{height:calc(100dvh - 28px);margin-top:28px}
+  body.v2-showing-sample .v2-drawer{top:28px;height:calc(100dvh - 28px)}
+  body.v2-showing-sample .v2-sidebar{top:28px;height:calc(100dvh - 28px)}
+}
+@media (max-height:500px) and (orientation:landscape) and (max-width:860px){
+  .v2-mobile-top{height:48px!important}
+  body.v2-showing-sample .v2-main{height:calc(100dvh - 28px - 48px)!important}
+  body.v2-showing-sample .v2-genesis-scrim{top:28px}
+  /* The page's back link and Take the Tour share one row from 600px wide. */
+  .v2-page-head:has(.v2-page-back){display:flex!important;align-items:center;justify-content:space-between;gap:10px}
+  .v2-page-head:has(.v2-page-back) .v2-page-actions{margin-top:0!important}
+}
+/* The Notes screens and the publish sheet: eyebrows, badges, pulse labels and the stepper keep a 12px floor. */
+body[data-page="notes"] .v2-eyebrow,body[data-page="notes"] .v2-badge,body[data-page="notes"] .v2-pulse-item small,body[data-page="notes"] .v2-view-picker>span,body[data-page="notes"] .v2-stepper li{font-size:12px;letter-spacing:.06em}

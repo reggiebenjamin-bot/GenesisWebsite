@@ -365,6 +365,9 @@
     edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
     sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
     play: '<path d="M8 5v14l11-7z"/>',
+    upload: '<path d="M12 15V4m-4.5 4.5L12 4l4.5 4.5"/><path d="M5 14v5h14v-5"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    book: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
     "hide-rail": '<path d="M4 5h16v14H4zM9 5v14M16 9l-3 3 3 3"/>'
   };
   /* For page content: gm-icon sizes. For shell parts: the real .v2-icon. */
@@ -488,7 +491,7 @@
       "</section>";
   };
   /* A dimmed picture of the real screen inside the locked card, so the calm state also shows what it adds. */
-  var LOCKED_THUMB = { today: "today", guests: "guests", care: "care", people: "people", access: "access", gifts: "gifts", reports: "reports", team: "team" };
+  var LOCKED_THUMB = { today: "today", guests: "guests", care: "care", people: "people", access: "access", gifts: "gifts", reports: "reports", team: "team", devotionals: "devotionals" };
   function lockedPage(key, item) {
     var m = D.modules[key] || { label: item ? item.label : "This" };
     var lv = D.levels[(m.level || 3) - 1];
@@ -566,6 +569,13 @@
             { key: "archived", label: "Archived", href: "church-care.html?view=archived" }
           ] },
         { key: "people", label: "People", href: "church-person.html", icon: "people", module: "people", hint: "One record per person" },
+        { key: "notes", label: "Notes", href: "church-notes.html", icon: "note", module: "notes", hint: "Sermon notes and daily devotionals", match: ["note"],
+          views: [
+            { key: "all", label: "All Notes", href: "church-notes.html", also: ["church-note.html"] },
+            { key: "sermons", label: "Sermon Notes", href: "church-notes.html?view=sermons" },
+            { key: "devotionals", label: "Devotionals", href: "church-notes.html?view=devotionals", module: "devotionals" },
+            { key: "scheduled", label: "Scheduled", href: "church-notes.html?view=scheduled" }
+          ] },
         { key: "website", label: "Website", href: "church-website.html", icon: "website", module: "website", hint: "The website, brand board, social plan and form emails" }
       ],
       intelligence: [
@@ -1729,13 +1739,14 @@
   function dockQuestions() {
     if (GM.side === "genesis") return [{ title: "", items: ["How much does it cost?", "What does each plan include?"] }];
     if (!GM.isIncluded("genesis")) return [
-      { title: "", items: ["How much does it cost?", "What does each plan include?", "Does Care include text messaging?", "Can we add one more staff seat on Care?"] },
+      { title: "", items: ["How much does it cost?", "What does each plan include?", "Does Care include text messaging?", "Can we add one more staff seat on Care?", "Do sermon notes come with Care?", "Is there a devotional today?"] },
       { title: "On the Care Plan", more: true, items: ["Will the email a member gets show the text of their prayer request?", "Can the office manager see guest phone numbers on Care?", "Can two staff members share one login?", "Can we import people from Planning Center?"] },
       { title: "Data and Trust", more: true, items: ["Is Genesis HIPAA compliant?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
     ];
     return [
       { title: "", items: ["Who should I call first today?", "What is waiting in care?", "What follow-ups are overdue?", "What does each plan include?"] },
-      { title: "Care and Privacy", more: true, items: ["Who can see how much each family gives?", "Who can see members' phone numbers?", "If a prayer request mentions abuse, does Hope report it to the police?", "Does Hope learn from our members' private messages?", "Can Hope write my sermon?"] },
+      { title: "Care and Privacy", more: true, items: ["Who can see how much each family gives?", "Who can see members' phone numbers?", "If a prayer request mentions abuse, does Hope report it to the police?", "Does Hope learn from our members' private messages?"] },
+      { title: "Notes", more: true, items: ["What was Sunday's message about?", "Is there a devotional today?", "What is scheduled to go out?", "Can Hope write my sermon?"] },
       { title: "Plans and Data", more: true, items: ["How much does it cost?", "Can we keep Planning Center?", "Do you share our data with third parties?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
     ].map(function (g) { return { title: g.title, more: g.more, items: g.items.map(function (q) { return q.replace(/\bHope\b/g, ASSISTANT.name); }) }; });
   }
@@ -2134,6 +2145,9 @@
     if (GM.side !== "member") { syncRailRestore(item || {}); }
     /* The guided demo: tours for every screen, the demo path and the scripted answers. */
     GM.sharedPath = SHARED;
+    /* The sermon notes and devotionals (one source for the sites, the workspace and the member app), before
+       the guided demo builds its answers from them. Pages that draw notes load it with their own script tag. */
+    if (!window.GM_NOTES) loadScript(SHARED + "../../shared/notes-data.js", function () {});
     loadScript(SHARED + "demo.js", function () {});
   }
 

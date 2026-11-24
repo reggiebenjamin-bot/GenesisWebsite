@@ -31,9 +31,17 @@
   .mh-points li::before{content:counter(mh);position:absolute;left:0;top:1px;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--m-accent-soft);color:var(--m-text);font-size:12.5px;font-weight:700}
   .m-app .mh-week{margin-top:14px;padding:12px 14px;border-left:3px solid var(--m-accent-ink);border-radius:0 var(--m-radius) var(--m-radius) 0;background:var(--m-surface-2);font-size:15px;line-height:1.5}
   .mh-week b{display:block;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--m-accent-ink)}
-  .mh-more{margin-top:12px}
-  .mh-more[hidden]{display:none}
+  .m-app a.mh-devo{display:grid;gap:6px;text-decoration:none}
+  .mh-devo .m-eyebrow{margin:0}
+  .m-app .mh-devo-title{display:block;margin:0;color:var(--m-on-accent)}
+  .mh-devo-verse{font-size:15px;line-height:1.5;opacity:.95}
+  .mh-devo-go{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-weight:700;font-size:15px}
+  .mh-devo-go .gm-icon{width:18px;height:18px}
+  .mh-optin button[aria-pressed] b{font-weight:700}
   .mh-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .m-app .mh-btns .m-btn{flex:1 1 180px}
+  .m-app .mh-btns .mh-follow{flex-basis:100%}
+  .m-app .mh-devo-first{margin-top:18px}
   .mh-dot{width:9px;height:9px;flex:0 0 9px;margin-top:8px;border-radius:50%;background:var(--m-accent-ink)}
   .mh-gift-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
   .mh-give{display:flex;align-items:center;gap:14px}
@@ -147,7 +155,12 @@
     <div class="m-actions" id="mh-actions"></div>
   </section>
 
-  <section class="m-section" aria-labelledby="mh-notes-title" data-tour="home.notes">
+  <section class="m-section" aria-labelledby="mh-devo-head" data-tour="home.devotional" id="mh-devo-wrap">
+    <div class="m-section-head"><h2 class="m-h2" id="mh-devo-head">Today's devotional</h2></div>
+    <a class="m-card m-card--accent mh-devo" id="mh-devo" href="member-devotional.html"></a>
+  </section>
+
+  <section class="m-section" aria-labelledby="mh-notes-title" data-tour="home.notes" id="mh-notes-wrap">
     <div class="m-section-head"><h2 class="m-h2">This week's notes</h2></div>
     <article class="m-card" id="mh-notes"></article>
   </section>
@@ -196,6 +209,7 @@
 <script src="shared/data.js"></script>
 <script src="shared/charts.js"></script>
 <script src="../shared/crisis-words.js"></script>
+<script src="../shared/notes-data.js"></script>
 <script src="shared/app.js"></script>
 <script>
 /* ==== Member stage. The same function sits on every member page (prefix mx-). ====
@@ -231,7 +245,8 @@ function mxStage(o) {
 
   var SCREENS = [
     ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
-    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-notes.html", "Sunday's Notes", "member-app"],
+    ["member-devotional.html", "Devotional", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
     ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
     ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
   ];
@@ -275,28 +290,12 @@ GM.ready(function (ctx) {
   var $ = function (id) { return document.getElementById(id); };
   var me = GM.member();
 
-  /* Extra sample data for this page: this week's sermon notes for each demo church.
-     Titles and series match each church's website template. Notes are written fresh. */
-  var NOTES = {
-    "bright-modern": { series: "Open Doors", part: "Week 3", title: "Room for questions", slot: 0, ref: "John 20:24-29", length: "36 min",
-      points: ["Thomas brought his doubts into the room, and Jesus met him there.", "Honest questions are welcome here. Faith grows when it is allowed to ask.", "Peace came before the answers. Jesus said peace first."],
-      more: ["Thomas was not pushed out for asking. He was still with the others a week later, and that is where Jesus found him.", "Doubt is not the opposite of faith. Sometimes it is how faith learns to stand on its own feet."],
-      week: "Bring one honest question to God this week, out loud or on paper." },
-    "bold-dark": { series: "Lamps On", part: "Part 3", title: "Shine where you are", slot: 1, ref: "Matthew 5:14-16", length: "41 min",
-      points: ["A lamp does not choose the room. It shines where it is set.", "Your street, your shift and your table are places God can use.", "Good works point past us, to the Father."],
-      more: ["Jesus did not say you will become the light someday. He said you are the light, right now.", "Hiding the lamp is easy. Setting it on a stand takes a little courage every day."],
-      week: "Pick one ordinary place and ask how you can be light there." },
-    "classic-timeless": { series: "Songs for the Road", part: "Week 4", title: "Lift up your eyes", slot: 1, ref: "Psalm 121", length: "33 min",
-      points: ["This psalm was sung on the road, by people who were tired.", "Our help comes from the Lord, who made heaven and earth.", "He keeps our going out and our coming in, every step."],
-      more: ["The hills could not help the travelers. They looked past the hills to the One who made them.", "The Lord who keeps Israel does not sleep. We can."],
-      week: "Read Psalm 121 each morning this week before you leave the house." },
-    "warm-community": { series: "Love Thy Neighbor", part: "Part 2", title: "Casseroles and courage", slot: 0, ref: "Luke 10:30-37", length: "38 min",
-      points: ["The Samaritan saw, came near and stayed long enough to help.", "Love often looks like a meal, a ride or a knock on the door.", "Courage is choosing to cross the road anyway."],
-      more: ["The others in the story were not cruel. They were busy. Busy is the road most of us walk.", "Mercy is rarely convenient. It is almost always a casserole away."],
-      week: "Name one neighbor and do one small, kind thing for them." }
-  };
-  var n = NOTES[c.slug] || NOTES["bright-modern"];
-  var speaker = "Pastor " + c.pastors[n.slot];
+  /* This week's notes and today's devotional: one source for the site, the workspace and the app
+     (../shared/notes-data.js, GM_NOTES). */
+  var N = window.GM_NOTES, NC = N.church(c.slug) || N.church("bright-modern");
+  var n = NC.sermons[0];
+  var speaker = N.speaker(n, c.pastors);
+  var devo = N.todays(c.slug);
 
   /* Per-tab memory from the welcome question (member-welcome.html). */
   var attends = sGet("gm.m.attends") || me.attends;
@@ -325,26 +324,42 @@ GM.ready(function (ctx) {
 
   /* ---------- This week's notes ---------- */
   var watchFirst = attends === "online";
-  /* Each site names its message section in its own words: #message on Lightwell and Calder Hill, #watch on Lampstand and Goldenrod. */
-  var watchAnchor = ({ "bold-dark": "#watch", "warm-community": "#watch" })[c.slug] || "#message";
+  /* Sunday morning (or the demo's ?day=sun): Follow Along is the one gold button, for members sitting down. */
+  var SUNDAY = GM.ctx.params.get("day") === "sun" || N.weekday(N.today) === "Sunday";
+  var followHref = GM.url("member-notes.html", SUNDAY ? { id: n.id, day: "sun", follow: "1" } : { id: n.id, follow: "1" });
+  /* Each site names its message section in its own words (NC.watch): #message on Lightwell and Calder Hill, #watch on Lampstand and Goldenrod. */
   $("mh-notes").innerHTML =
     '<p class="m-eyebrow">' + esc(n.series + " · " + n.part) + "</p>" +
     '<h3 class="m-h2" id="mh-notes-title" style="margin-top:6px">' + esc(n.title) + "</h3>" +
-    '<p class="mh-notes-meta">' + esc(speaker + " · " + fmt.dateLong("2026-11-15") + " · " + n.length) + "</p>" +
-    '<p class="mh-ref">Scripture <b>' + esc(n.ref) + "</b></p>" +
+    '<p class="mh-notes-meta">' + esc(speaker + " · " + N.dateLong(n.date) + " · " + n.length) + "</p>" +
+    '<p class="mh-ref">Scripture <b>' + N.refHTML(n.ref) + "</b></p>" +
     '<ol class="mh-points">' + n.points.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ol>" +
-    '<div class="mh-more" id="mh-more" hidden><ol class="mh-points" start="4">' + n.more.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ol></div>" +
     '<p class="mh-week"><b>For this week</b>' + esc(n.week) + "</p>" +
     '<div class="mh-btns">' +
-      '<a class="m-btn m-btn--sm' + (watchFirst ? " m-btn--primary" : "") + '" href="' + esc(c.site) + watchAnchor + '">' + GM.icon("play") + "Watch the Message</a>" +
-      '<button type="button" class="m-btn m-btn--sm' + (watchFirst ? "" : " m-btn--primary") + '" id="mh-more-btn" aria-expanded="false" aria-controls="mh-more">Read All Notes</button>' +
+      '<a class="m-btn' + (watchFirst && !SUNDAY ? " m-btn--primary" : "") + '" href="' + esc(c.site + NC.watch) + '">' + GM.icon("play") + "Watch the Message</a>" +
+      '<a class="m-btn' + (watchFirst || SUNDAY ? "" : " m-btn--primary") + '" id="mh-read" href="member-notes.html?id=' + esc(n.id) + '">' + GM.icon("note") + "Read the Notes</a>" +
+      '<a class="m-btn mh-follow' + (SUNDAY ? " m-btn--primary" : "") + '" id="mh-follow" href="' + esc(followHref) + '">' + GM.icon("note") + "Follow Along</a>" +
     "</div>";
-  $("mh-more-btn").addEventListener("click", function () {
-    var open = $("mh-more").hidden;
-    $("mh-more").hidden = !open;
-    this.setAttribute("aria-expanded", open ? "true" : "false");
-    this.textContent = open ? "Show Less" : "Read All Notes";
-  });
+
+  /* ---------- Today's devotional ---------- */
+  if (devo) {
+    $("mh-devo").innerHTML = '<p class="m-eyebrow">' + esc(N.dateLong(devo.date)) + "</p>" +
+      '<span class="m-h2 mh-devo-title">' + esc(devo.title) + "</span>" +
+      '<span class="mh-devo-verse"><b>' + N.refHTML(devo.verses[0].ref) + "</b> " + esc(firstLine(devo.verses[0].text)) + "</span>" +
+      '<span class="mh-devo-go">Read Today\'s Devotional ' + GM.icon("chevron") + "</span>";
+  } else $("mh-devo-wrap").hidden = true;
+  /* The verse's first clause, never ending on a colon or semicolon: a cut verse ends in an ellipsis. */
+  function firstLine(t) {
+    t = String(t); var m = t.match(/^[^:;.?]*[:;.?]/), x = m ? m[0] : t, cut = x.length < t.length;
+    if (x.length > 90) { x = x.slice(0, 88).replace(/\s+\S*$/, ""); cut = true; }
+    x = x.replace(/[\s:;,]+$/, "");
+    return cut && !/[.?!]$/.test(x) ? x + "..." : x;
+  }
+  /* On a Sunday morning, today's notes come first on Home, so a member can open them as they sit down. */
+  /* On a weekday morning today's devotional comes right under the greeting, before the reply and the three buttons. */
+  var nw = $("mh-notes-wrap"), dw = $("mh-devo-wrap");
+  if (SUNDAY) { if (nw && dw) dw.parentNode.insertBefore(nw, dw); if (GM.ctx.params.get("day") === "sun") { dw.hidden = true; $("mh-day").textContent = "Demo: Sunday, " + N.dateLong(n.date).replace(/^Sunday, /, "") + ", " + NC.sundayAt; } }
+  else if (dw && !dw.hidden && GM.now.getHours() < 12) { var slot = $("mh-reply-slot"); slot.parentNode.insertBefore(dw, slot); dw.classList.add("mh-devo-first"); }
 
   /* ---------- My prayer requests ---------- */
   var mine = me.prayer.map(GM.prayerRequest).filter(Boolean).sort(function (a, b) { return GM.parseDate(b.received) - GM.parseDate(a.received); });
@@ -396,17 +411,28 @@ GM.ready(function (ctx) {
       '<div><dt>How I join</dt><dd><span>' + esc(attendText) + '</span><a class="m-link" href="member-welcome.html" style="font-size:14px">Change</a></dd></div>' +
       "<div><dt>Adult account</dt><dd>Confirmed " + esc(fmt.dateLong(me.adultConfirmed)) + "</dd></div>" +
     "</dl>" +
+    '<div class="mh-links mh-optin" role="group" aria-label="Email choices">' +
+      optBtn("devo", "Devotionals by email", true) + optBtn("notes", "Sunday notes by email", false) +
+    "</div>" +
     '<div class="mh-links">' +
       '<button type="button" data-gm-action="toast" data-gm-toast="Your request for a copy goes to the pastors. This is a preview, so nothing was sent.">' + GM.icon("mail") + "Ask for a Copy of My Information</button>" +
       '<button type="button" data-gm-action="toast" data-gm-toast="Your removal request goes to the pastors, who confirm it with you. This is a preview, so nothing was sent.">' + GM.icon("archive") + "Ask to Remove My Information</button>" +
     "</div>";
 
+  function optBtn(k, label, on) { return '<button type="button" data-mh-opt="' + k + '" aria-pressed="' + on + '">' + GM.icon("mail") + "<span>" + esc(label) + ": <b>" + (on ? "On" : "Off") + "</b></span></button>"; }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-mh-opt]"); if (!b) return;
+    var on = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", String(on)); b.querySelector("b").textContent = on ? "On" : "Off";
+    GM.toast("Demo only. Nothing was changed.");
+  });
   $("mh-privacy").innerHTML = GM.icon("shield") + "<span>Only you see this page. Members never see each other's information, and there is no directory.</span>";
 
   /* ---------- Guided tour ---------- */
   GM.setTour([
     { target: '[data-tour="home.hello"]', title: "A home for each member", text: "Members sign in with a code and land here, in {church.namePoss} own colors and type. The reply notice opens the thread." },
     { target: '[data-tour="home.actions"]', title: "Three clear buttons", text: "Ask for prayer, send a message, or talk about serving. Each one lands in the right inbox with an owner." },
+    { target: '[data-tour="home.devotional"]', title: "Today's devotional", text: "A short reading each morning, shaped from the pastor's own words." },
     { target: '[data-tour="home.notes"]', title: "This week's notes", text: "The sermon notes for this Sunday, with a link to watch the message on the church website." },
     { target: '[data-tour="home.prayer"]', title: "Prayer with a history", text: "Each member sees their own requests, any reply, and exactly who can see each one." },
     { target: '[data-tour="home.profile"]', title: "Their information stays theirs", text: "Adults only, confirmed once. Members can ask for a copy of their information or ask to have it removed." }

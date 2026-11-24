@@ -261,7 +261,7 @@ export const ministryPlatform = {
       id: "memberApp",
       eyebrow: "Member app",
       title: "Your church, on every member's phone.",
-      body: "Members see what is coming up, reach a person on staff and send a prayer request from their phone. What they send lands in the care inbox, with the right people.",
+      body: "Members see what is coming up, read Sunday's notes and the day's devotional, reach a person on staff and send a prayer request from their phone. What they send lands in the care inbox, with the right people.",
       points: ["What is coming up", "Messages to staff", "Prayer requests, kept private"],
       filmLabel:
         "Silent looping film of the member app with sample data: a member opens the app, sees the week ahead and sends a prayer request.",
@@ -340,7 +340,7 @@ export const ministryLevels = {
   eyebrow: "Choose your plan",
   title: "Start where your church is.",
   aside:
-    "Every plan includes the website, the brand board, the social marketing plan and Hope. Prices are monthly, for one campus.",
+    "Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes. Prices are monthly, for one campus.",
   /** Printed beside each price, as on the edition Levels. */
   priceUnit: "per month",
   levels: [
@@ -357,6 +357,7 @@ export const ministryLevels = {
         "Hope on your website",
         "Plan a Visit and prayer forms by email",
         "Newsletter sign up",
+        "Sunday sermon notes on your website",
       ],
       action: { label: "Book a Consultation", href: consult("ministry-care") },
     },
@@ -374,6 +375,7 @@ export const ministryLevels = {
         "Care inbox",
         "Team roles, with your prayer team named",
         "Hope drafts that wait for approval",
+        "Daily devotionals, in the member app and by email",
       ],
       action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
     },
@@ -497,7 +499,7 @@ export const ministryFaq = {
     },
     {
       question: "What does Genesis Ministry cost?",
-      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan and Hope. More than one campus? Enterprise is scoped with you on a call.`,
+      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes on your website. Shepherd and Plus add daily devotionals, the member app and email to members who opt in. More than one campus? Enterprise is scoped with you on a call.`,
     },
     {
       question: "What does customization cost?",

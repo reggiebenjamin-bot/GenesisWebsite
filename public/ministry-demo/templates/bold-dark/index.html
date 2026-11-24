@@ -750,6 +750,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         </div></div>
       </div>
       <a href="#watch">Watch</a>
+      <a href="#/notes">Notes</a>
       <a href="#next">Events</a>
       <a href="#/give" data-demo="give">Give</a>
     </nav>
@@ -793,6 +794,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="sub" href="#/serve">Serve Teams</a>
     </details>
     <a href="#watch">Watch</a>
+    <a href="#/notes">Notes</a>
     <a href="#next">Events</a>
     <a href="#/give" data-demo="give">Give</a>
   </nav>
@@ -953,7 +955,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <h2 class="title-sm" id="msg-title">Shine where you are</h2>
       <p class="msg-meta"><span>November 15, 2026</span><span>Talia</span><span>38 min</span></p>
       <p class="body-copy"><b>Lamps On, part 3.</b> Catch up on Sunday night, or send it to the friend who needs it this week.</p>
-      <a class="btn btn-outline" href="#/messages">All Messages</a>
+      <a class="btn btn-outline" href="#/notes">All Sermon Notes</a>
     </div>
     <div class="player-col reveal">
       <button type="button" class="player" data-modal="message" aria-label="Play the latest message, Shine where you are, from November 15, 2026">
@@ -1063,7 +1065,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <li><a href="#watch">Latest Message</a></li>
           <li><a href="#watch">Live Sundays at 6</a></li>
           <li><a href="#/podcast">Podcast</a></li>
-          <li><a href="#/sermon-notes">Sermon Notes</a></li>
+          <li><a href="#/notes">Sermon Notes</a></li>
         </ul>
       </div>
       <div>
@@ -1386,7 +1388,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   var modal = doc.getElementById('modal'), mclose = doc.getElementById('modal-close'), lastFocus = null;
   var M = {
     campaign: { img: 'photos/foundry-hall.jpg', label: 'The Foundry Project', title: 'Make the Foundry home', text: 'On the live site, the church’s campaign film plays right here.', cta: 'Give to the Foundry', href: '#/give', demo: 'give' },
-    message: { img: 'photos/candle-flame.jpg', label: 'Lamps On, part 3', title: 'Shine where you are', text: 'On the live site, the newest YouTube message from the church plays right here.', cta: 'All Messages', href: '#/messages' }
+    message: { img: 'photos/candle-flame.jpg', label: 'Lamps On, part 3', title: 'Shine where you are', text: 'On the live site, the newest YouTube message from the church plays right here.', cta: 'All Sermon Notes', href: '#/notes' }
   };
   var mcta = doc.getElementById('modal-cta');
   var openModal = function (key, from) {
@@ -1492,6 +1494,23 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   setInterval(checkPast, 400);
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--bone);--nv-muted:var(--ash);--nv-accent:var(--flare);--nv-on-accent:var(--kiln);--nv-surface:var(--soot);--nv-line:var(--char);--nv-line-strong:var(--char-2);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--body);--nv-r:var(--r);--nv-r-lg:var(--r)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv .nv-h1,.nv h2,.nv-title,.nv-date b{text-transform:uppercase;letter-spacing:.01em}
+.nv-title{font-size:clamp(26px,3vw,36px)}
+.nv-verse p{font-size:clamp(20px,2vw,23px)}
+.nv-head{border-bottom:1px solid var(--char)}
+</style>
+<script>window.NOTES_SITE = {"slug":"bold-dark","times":"Sundays at 10 AM and 6 PM","address":"1180 Foundry Row, Columbus","cls":{"wrap":"wrap","label":"label","h1":"title-sm","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1656,7 +1675,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

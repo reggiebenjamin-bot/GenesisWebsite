@@ -125,7 +125,7 @@ a:hover > .go,a:focus-visible > .go,a.go:hover,a.go:focus-visible,.card:hover .g
 .menu-panel a:hover::after,.menu-panel a:focus-visible::after{opacity:1;transform:translate(0,-50%)}
 .nav-cta{display:flex;align-items:center;gap:8px;margin-left:12px}
 .nav-cta .btn{min-height:46px;padding:0 20px;font-size:15px}
-.hamburger{display:none;width:44px;height:44px;border:1px solid var(--rule);border-radius:var(--r);background:#fff;align-items:center;justify-content:center;cursor:pointer}
+.hamburger{display:none;width:46px;height:46px;border:1px solid var(--rule);border-radius:var(--r);background:#fff;align-items:center;justify-content:center;cursor:pointer}
 .hamburger svg{width:22px;height:22px}
 
 /* Phone menu: a full sheet under the header */
@@ -351,7 +351,7 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .f-bottom a::before{content:"";position:absolute;inset:-13px -6px}
 .f-bottom a:hover{color:#fff}
 .f-bottom .sep{margin-inline:8px;opacity:.6}
-.f-word{display:block;font:800 clamp(110px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
+.f-word{display:block;font:800 clamp(80px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
 
 /* ---------- Phone Sundays bar ---------- */
 .sbar{display:none}
@@ -853,7 +853,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <h2 class="h-md" id="msg-title" style="margin-top:var(--label-gap)">Room for questions</h2>
         <p class="msg-meta">Open Doors, week 3&nbsp;&middot; Pastor Theo&nbsp;&middot; November&nbsp;15,&nbsp;2026</p>
         <p class="muted">Catch up on Sunday in the car, on a walk or during nap time. Every message is online by Monday morning.</p>
-        <a class="btn btn-outline" href="#/messages">All Messages</a>
+        <a class="btn btn-outline" href="#/notes">All Sermon Notes</a>
       </div>
       <button class="player reveal" type="button" aria-label="Play the message Room for questions" data-modal="Room for questions" data-modal-sub="The message video plays here on the live site." data-modal-img="photos/pastor-teaching.jpg">
         <img src="photos/pastor-teaching.jpg" alt="" width="1800" height="2250" loading="lazy">
@@ -932,7 +932,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       </div>
       <nav class="f-col" aria-label="Explore">
         <h3>Explore</h3>
-        <a href="#plan-a-visit">Plan Your Visit</a><a href="#about">Who We Are</a><a href="#/beliefs">What We Believe</a><a href="#message">Watch</a><a href="#/events">Events</a><a href="#/give" data-demo="give">Give</a>
+        <a href="#plan-a-visit">Plan Your Visit</a><a href="#about">Who We Are</a><a href="#/beliefs">What We Believe</a><a href="#message">Watch</a><a href="#/notes">Sermon Notes</a><a href="#/events">Events</a><a href="#/give" data-demo="give">Give</a>
       </nav>
       <nav class="f-col" aria-label="Connect">
         <h3>Connect</h3>
@@ -1083,6 +1083,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     { label: "Connect", items: [["Plan Your Visit", "Times, parking and kids.", "#plan-a-visit"], ["Get Connected", "All the ways in.", "#visit"], ["Start Here", "New here? Begin with lunch.", "#/start-here"], ["Small Groups", "Find a group near you.", "#/groups"], ["Ask About Baptism", "Baptism Sunday is December 6.", "#baptism"], ["Prayer Requests", "On a real site, a person reads each one.", "#prayer-request"], ["Contact Us", "Call, email or send a note.", "#contact"]] },
     { label: "Ministries", items: [["All Ministries", "Something for every age.", "#/ministries"], ["Lightwell Kids", "Nursery through 5th grade.", "#/kids"], ["Students and Young Adults", "Grades 6 to 12 and twentysomethings.", "#/students"], ["Freedom", "Recovery and healing groups.", "#/freedom"], ["Serve Teams", "Find your spot on a team.", "#/serve"]] },
     { label: "Watch", href: "#message" },
+    { label: "Notes", href: "#/notes" },
     { label: "Events", href: "#/events" },
     { label: "Give", href: "#/give", demo: "give" },
   ];
@@ -1360,6 +1361,22 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   onScroll();
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--ink);--nv-muted:var(--graphite);--nv-accent:var(--cobalt);--nv-on-accent:#fff;--nv-surface:var(--cloud);--nv-line:var(--rule);--nv-line-strong:var(--rule-strong);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--display);--nv-r:var(--r);--nv-r-lg:var(--r-lg)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv .nv-h1,.nv h2,.nv-title{letter-spacing:-.025em;font-weight:700}
+.nv-head{background:var(--cloud)}
+.nv-today{background:var(--sky);border-color:transparent}
+</style>
+<script>window.NOTES_SITE = {"slug":"bright-modern","times":"Sundays at 9:00 and 10:45 AM","address":"1218 Brightwater Ave, Raleigh","cls":{"wrap":"wrap","label":"label","h1":"h-md","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1522,7 +1539,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

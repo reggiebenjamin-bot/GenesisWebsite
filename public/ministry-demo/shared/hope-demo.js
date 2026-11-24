@@ -103,7 +103,10 @@
   var AN = CFG.assistantName || "Hope";
   var GUIDE = CFG.guideName || AN;
   var GENESIS = CFG.skin === "genesis";
-  var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Motion is off for reduced motion, and under an automated check (a webdriver, or this page inside
+     shared/hope-check.html), so a scroll lands at once and the check reads the same result in any browser. */
+  var CHECKED = !!navigator.webdriver || (function () { try { return window.top !== window && /hope-check.html$/.test(window.top.location.pathname); } catch (e) { return false; } })();
+  var REDUCE = CHECKED || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   /* A page that is not a church site (the Genesis Ministry story pages) has no times or address. */
   var CHURCH = !!(CH.times || CH.address);
   var FRAMED = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
@@ -169,7 +172,7 @@
     ".hd-dot{width:9px;height:9px;border-radius:50%;background:var(--hd-accent);display:inline-block;margin-right:10px;vertical-align:middle}",
     ".hd-head button{width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
     ".hd-head button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:-3px}",
-    ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}",
+    ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:" + (CHECKED ? "auto" : "smooth") + "}",
     ".hd-msg{max-width:88%;padding:10px 14px;border-radius:16px;white-space:pre-line;animation:hdIn .35s cubic-bezier(.2,.7,.2,1) both}",
     ".hd-bot{background:var(--hd-surface2);border-bottom-left-radius:6px;align-self:flex-start}",
     ".hd-user{background:var(--hd-accent);color:var(--hd-accent-ink);border-bottom-right-radius:6px;align-self:flex-end}",
@@ -191,7 +194,7 @@
     ".hd-foot{display:flex;flex-direction:column;border-top:1px solid var(--hd-line)}",
     ".hd-foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 10px;padding:2px 12px 6px}",
     ".hd-note{font-size:12px;line-height:1.45;opacity:.8;text-align:center;margin:0}",
-    ".hd-allq{font:600 12.5px/1.2 var(--hd-font);min-height:32px;padding:4px 2px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
+    ".hd-allq{font:600 12.5px/1.2 var(--hd-font);min-height:44px;padding:4px 2px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
     ".hd-allq:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
     /* The 911 and 988 line: plain and calm, always in view under the questions. Each number has a 44px
        tap area without moving the words. */
@@ -386,7 +389,7 @@
     if (launch) launch.setAttribute("aria-expanded", v ? "true" : "false");
     panel.setAttribute("aria-modal", v && phoneChat() ? "true" : "false");
     /* Someone who has used the chat is never offered the tour invite again. */
-    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { focusOn(firstQuestion() || allQ); }, 280); }
+    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || a === allQ || a === panel || !panel.contains(a)) focusOn(firstQuestion() || allQ); }, 280); }
     else if (restore) {
       var back = focusable(opener) ? opener : focusable(launch) ? launch : null;
       opener = null;
@@ -733,6 +736,21 @@
     A.contact = A.talk;
     A.human.c = function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }, { label: "Take the Tour", key: "tour" }); };
   }
+  /* Sermon notes and devotionals on a church's own site (../shared/notes-data.js, GM_NOTES, loaded by the
+     site's Notes block). Sunday notes come with every plan; the daily devotional with the Shepherd plan. */
+  var NOTES_PLAN = (function () { try { return +(new URLSearchParams(location.search).get("plan") || sessionStorage.getItem("gm.plan") || 3); } catch (e) { return 3; } })();
+  var NOTES_CH = CHURCH && window.GM_NOTES ? window.GM_NOTES.byName(NAME) || window.GM_NOTES.byName(SHORT) : null;
+  if (NOTES_CH) {
+    var NOTES_N = window.GM_NOTES, NOTES_S = NOTES_CH.sermons[0], NOTES_D = NOTES_N.todays(NOTES_CH.slug);
+    var READ_NOTES = { label: "Read Sunday's Notes", href: "#/notes/" + NOTES_S.id, go: true, cta: true };
+    A.sunday = { t: "Sunday's message was “" + NOTES_S.title + "”, " + NOTES_S.part.toLowerCase() + " of " + NOTES_S.series + ", with " + NOTES_N.speaker(NOTES_S, NOTES_CH.pastors) + ", from " + NOTES_S.ref + ". " + NOTES_S.points[0] + " The notes, with questions for small groups, are on the Notes page.",
+      c: [READ_NOTES, { label: "Watch Sunday's Message", href: NOTES_CH.watch, go: true }, BACK] };
+    A.devotional = NOTES_PLAN >= 2 && NOTES_D
+      ? { t: "Yes. Today's devotional is " + NOTES_D.title + ", from " + NOTES_D.verses[0].ref + ": a verse, a short reading and a prayer. A new one goes up each morning at 6.", c: [{ label: "Read Today's Devotional", href: "#/notes/today", go: true, cta: true }, { label: "What Was Sunday's Message About?", key: "sunday" }, BACK] }
+      : { t: "Sunday's notes are on the Notes page every week. Daily devotionals are not on this site yet. Demo: daily devotionals come with the Shepherd plan.", c: [READ_NOTES, BACK] };
+  }
+  /* Writing a sermon or a devotional: Hope never does. (The story pages and the member app have their own words.) */
+  if (CHURCH) A.sermon = { t: AN + " does not write sermons or devotionals. On a real church site, the pastors bring their own outline, file, video or voice memo, and " + AN + " shapes only those words into the notes on this site. It adds no teaching of its own, and nothing goes out until a pastor taps Publish or Schedule.", c: chips(NOTES_CH ? { label: "What Was Sunday's Message About?", key: "sunday" } : null, BACK) };
   if (CFG.answers) for (var ak in CFG.answers) if (Object.prototype.hasOwnProperty.call(CFG.answers, ak)) A[ak] = CFG.answers[ak];
   var MENU = CFG.menu && CFG.menu.length ? CFG.menu : [
     { label: "Take the Tour", key: "tour", cta: true },
@@ -758,6 +776,7 @@
     { title: "Kids and Groups", more: true, items: [
       ["Are Volunteers Background Checked?", "kidsafe"], ["Is There a Youth Group?", "students"], ["How Do I Join a Small Group?", "groups"]] },
     { title: "Sundays and Giving", more: true, items: [
+      ["What Was Sunday's Message About?", "sunday"], ["Is There a Devotional Today?", "devotional"],
       ["What Should I Wear?", "wear"], ["Can I Watch Online?", "watch"], ["How Do I Give Online?", "give"]] },
     { title: "About This Demo", more: true, items: [
       ["What Does a Church Get?", "package"], ["What Does It Cost?", "price"], ["Can We Customize It?", "custom"]] }
@@ -968,7 +987,11 @@
     /* "give it to our members" and "give this to the team" are not giving. */
     [/\b(giv(e|ing)(?! up\b)(?! (?:it|this|that|them) to\b)(?! to (?:our|my|the) (?:members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
     /* A guest moved by Sunday ("the sermon hit me hard") hears gladness, not a schedule. */
-    [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
+    [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|devotionals?|reading|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
+    /* Writing a sermon or devotional, Sunday's message and today's devotional, before "watch" hears "message". */
+    [/^\s*(?:please\s+)?(?:(?:can|could|will|would)\s+you\s+)?(?:write|draft|create|prepare)\b.{0,20}\b(?:my |our |the |a |his |her |this |next )?(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:can|could|will|would|does|do|should|is)\s+(?:you|hope|genesis|it|ai|an? ai|the (?:ai|assistant|bot))\b.{0,20}\b(?:write|writes|writing|draft|drafts|drafting|create|creates|prepare|prepares)\b.{0,20}\b(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:hope|genesis|ai)\s+(?:writes?|wrote|drafts?|drafted)\b.{0,20}\b(?:sermons?|devotionals?)\b|\bsermons?\b.{0,20}\b(?:written|drafted) by (?:hope|genesis|ai|you|a computer|a robot)\b|\bwho (?:writes|wrote|prepares|drafts) (?:the |your |our )?(?:sermons?|devotionals?)\b/i, "sermon"],
+    [/\b(?:what|tell me)\b.{0,30}\b(?:sunday'?s|last sunday'?s|last week'?s|this week'?s|the)\s+(?:message|sermon)\b.{0,20}\babout\b|\bsermon notes?\b|\bnotes from (?:sunday|the sermon)\b|\bprepare for (?:the |this |sunday'?s )?(?:sunday )?(?:message|sermon)\b|\b(?:sermon|message)s?\b.{0,20}\bwritten down\b/i, "sunday"],
+    [/^(?!.*\b(?:plans?|shepherd|plus|cost\w*)\b).*\b(?:devotionals?|daily (?:reading|verse))\b/i, "devotional"],
     [/\b(watch\w*|live ?stream\w*|stream\w*|sermons?|podcasts?)\b|\b(service|church|gathering|worship)s? online\b|\bonline (service|church|gathering|worship)s?\b|\b(latest|last|this week'?s|sunday'?s|recent|newest) (message|sermon|teaching)\b/i, "watch"],
     [/\b(pray\w*|hurting|sick|struggl\w*|hospital\w*|surgery|cancer)\b/i, "prayer"],
     /* A holiday or another language: the regular Sunday times would read as a yes. */
@@ -1122,8 +1145,17 @@
     var r = a.getBoundingClientRect(), w = Math.min(300, window.innerWidth - 32), right = window.innerWidth - 16, bottom = window.innerHeight - 88;
     return r.right > right - w && r.bottom > bottom - 190 && r.top < bottom;
   }
+  /* A reader who came to a church site's Notes page (#/notes) to read is not interrupted: the invite waits
+     until the page is left, and folds away if someone goes to the notes while it is up. */
+  function onNotes() { return !GENESIS && /^#\/notes/.test(location.hash || ""); }
+  if (!GENESIS) window.addEventListener("hashchange", function () { if (onNotes() && invite) hideInvite(); });
   function showInvite() {
     if (isOpen || touring || store(INVITE_KEY)) return;
+    if (onNotes()) {
+      var later = function () { if (onNotes()) return; window.removeEventListener("hashchange", later); setTimeout(showInvite, 1500); };
+      window.addEventListener("hashchange", later);
+      return;
+    }
     if (inviteWouldCover()) { if (window.innerHeight >= 500) setTimeout(showInvite, 3000); return; }
     /* An open menu sheet or one of the site's own forms keeps the screen: the invite waits. */
     if (document.body.classList.contains("menu-open") || document.body.classList.contains("fd-open")) { setTimeout(showInvite, 1500); return; }

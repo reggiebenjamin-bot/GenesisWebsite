@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Sunday's Notes · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: a pastor brings an outline, a file, a video link or a voice memo, Hope shapes only those words into sermon notes, and nothing goes out until the pastor taps Schedule.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* The notes editor only. Prefix: ne-. Arrangement only, on the Genesis OS classes. */
+  .ne-top{display:flex!important;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .ne-top .v2-page-actions,.ne-top .v2-page-back{margin:0!important;padding:0!important}
+  .ne-head{display:grid;gap:12px}
+  .ne-head h1{margin:0}
+  .ne-head p{margin:0;color:var(--v2-text-2);font-size:14px;line-height:1.55}
+  .ne-page .v2-stepper li{font-size:12px;letter-spacing:.06em}
+  .ne-ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0}
+  #ne-ways-title{margin:4px 0 0;font-size:20px}
+  .ne-ways .v2-button{width:100%;min-height:48px;justify-content:center;margin:0;white-space:normal;text-align:center;line-height:1.25}
+  .ne-ways .v2-button[aria-pressed="true"]{border-color:var(--v2-accent);box-shadow:inset 0 0 0 1px var(--v2-accent);color:var(--v2-text)}
+  @media (min-width:861px){.ne-ways{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  /* On a phone the four ways and Shape come first, with no scrolling: a tighter head card. */
+  @media (max-width:480px){#ne-in-full>.v2-eyebrow{display:none}#ne-ways-title{margin:0}.ne-head{gap:8px}.ne-ways{gap:8px;margin-top:12px}.ne-ways .v2-button{min-height:44px}.ne-act{margin-top:10px}}
+  .ne-panel{display:grid;gap:10px;margin-top:14px}
+  .ne-panel .v2-input{font-size:16px}
+  .ne-field-label{display:block;margin:0 0 6px;color:var(--v2-text-2);font-size:13px;font-weight:700}
+  /* The outline is read-only sample text, so it shows as plain lines that scroll with the page. */
+  .ne-outline{margin:0;padding:10px 12px 10px 40px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface);font-size:15px;line-height:1.55;color:var(--v2-text)}
+  .ne-outline li{padding:2px 0}
+  .ne-outline li::marker{color:var(--v2-muted);font-size:13px}
+  .ne-outline li[hidden]{display:none}
+  .ne-more-lines{justify-self:start;margin:0}
+  .ne-chip{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface);font-size:14px}
+  .ne-chip b{display:block}
+  .ne-chip small{color:var(--v2-muted)}
+  .ne-wave{display:flex;align-items:center;gap:3px;height:34px}
+  .ne-wave i{display:block;width:4px;border-radius:2px;background:var(--v2-text-2);opacity:.7}
+  .ne-transcript{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px;line-height:1.5;color:var(--v2-text-2)}
+  .ne-transcript b{color:var(--v2-muted);font-weight:700;margin-right:8px;font-variant-numeric:tabular-nums}
+  .ne-act{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:14px}
+  .ne-act .v2-button{margin:0;width:100%;justify-content:center}
+  @media (min-width:600px){.ne-act{grid-template-columns:minmax(0,320px)}}
+  .ne-fixed{display:flex;gap:10px;align-items:flex-start;margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
+  .ne-fixed svg{flex:none;margin-top:2px;color:var(--v2-positive)}
+  .ne-sum{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .ne-sum p{display:flex;align-items:center;gap:8px;margin:0;color:var(--v2-text-2);font-size:14px;line-height:1.45}
+  .ne-sum p svg{flex:none;width:18px;height:18px;color:var(--v2-muted)}
+  .ne-sum .v2-button{margin:0;flex:none}
+  .ne-shaping{display:flex;align-items:center;gap:12px}
+  .ne-preview{display:grid;gap:18px}
+  .ne-preview-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .ne-preview-top p{margin:0;color:var(--v2-text-2);font-size:13px}
+  .ne-saved{display:inline-flex;align-items:center;gap:6px;color:var(--v2-muted);font-size:12.5px}
+  .ne-saved svg{width:15px;height:15px;color:var(--v2-positive)}
+  .ne-field{display:grid;gap:8px}
+  .ne-field>h3{margin:0;color:var(--v2-muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .ne-lines{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+  .ne-line{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:start;padding:10px 12px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface)}
+  .ne-line.is-edited{border-color:var(--v2-accent)}
+  .ne-line-text{margin:0;font-size:15px;line-height:1.5;color:var(--v2-text);overflow-wrap:anywhere}
+  .ne-src{display:block;margin-top:4px;color:var(--v2-muted);font-size:12px}
+  .ne-wrote{display:block;margin:6px 0 0;padding:6px 0 0 10px;border-left:2px solid var(--v2-border);color:var(--v2-text-2);font-size:13px;line-height:1.5;quotes:none;overflow-wrap:anywhere}
+  .ne-wrote b{color:var(--v2-muted);font-weight:700}
+  .ne-line>.v2-icon-button{width:44px;height:44px;min-height:44px;margin:-4px -4px 0 0}
+  .ne-n{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:50%;background:var(--v2-surface-2,rgba(255,255,255,.08));font-size:12px;font-weight:700;vertical-align:1px}
+  .ne-fold{grid-column:1/-1;display:grid;gap:10px;margin-top:8px;padding-top:10px;border-top:1px solid var(--v2-border)}
+  .ne-fold[hidden]{display:none}
+  .ne-fold label{display:grid;gap:6px;color:var(--v2-text-2);font-size:13px;font-weight:700}
+  .ne-ta{width:100%;min-height:88px;max-height:60vh;font:inherit;font-size:16px;font-weight:400;line-height:1.5;resize:vertical;field-sizing:content;box-sizing:border-box}
+  .ne-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ne-two .v2-button,.ne-fold-btns .v2-button{margin:0;min-height:44px;width:100%;justify-content:center}
+  .ne-fold-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ne-fold-btns .v2-button:only-child,.ne-fold-btns .v2-button:last-child:nth-child(odd){grid-column:1/-1}
+  .ne-fold p{margin:0;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+  .ne-help{margin:0;font-size:13px;line-height:1.5;color:var(--v2-text)}
+  .ne-help a{display:inline-flex;align-items:center;min-height:44px;color:inherit;font-weight:700}
+  .ne-verse{margin:0;padding:12px 14px;border-left:3px solid var(--v2-accent);border-radius:0 12px 12px 0;background:var(--v2-surface)}
+  .ne-verse b{display:block;font-size:13px}
+  .ne-verse q{display:block;margin:6px 0;font-family:"Gambetta",Georgia,serif;font-size:19px;line-height:1.45;quotes:none}
+  .ne-verse small{color:var(--v2-muted);font-size:12px}
+  .ne-trans{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:6px 10px;font-size:13px;color:var(--v2-text-2)}
+  .ne-trans .v2-select{min-height:44px;font-size:14px}
+  .ne-trans small{grid-column:1/-1;color:var(--v2-muted);font-size:12px;line-height:1.5}
+  .ne-meta{margin:0;color:var(--v2-text-2);font-size:14px}
+  .ne-see{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+  .ne-see .v2-button{margin:0;width:100%;justify-content:center}
+  .ne-see .v2-button:only-child{grid-column:1/-1}
+  .ne-putback{margin:8px 0 0}
+  .ne-checks-foot{display:grid;gap:12px;margin-top:14px}
+  /* The one action of each step stays in view: Shape on Bring It In, Publish or Schedule on Review. */
+  .ne-bar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;position:sticky;bottom:0;z-index:20;margin-top:4px;padding:12px 0;background:var(--v2-bg);border-top:1px solid var(--v2-border)}
+  .ne-bar[hidden],body.ne-typing .ne-bar{display:none}
+  .ne-bar .v2-button{margin:0;width:100%;min-height:48px;justify-content:center}
+  @media (min-width:861px){.ne-bar{grid-template-columns:minmax(0,360px)}}
+  /* Phones held upright: the bar is pinned at the foot, and its right end is kept free for the round Hope
+     button, which sits inside the bar, so Hope never covers a line, a pencil or a button. */
+  @media (max-width:860px) and (min-height:501px){
+    .ne-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:10px 76px calc(10px + env(safe-area-inset-bottom,0px)) 16px;background:var(--v2-sidebar)}
+    body.ne-bar-on .v2-main{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important;scroll-padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+    body.ne-bar-on .v2-genesis-opener{bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
+    body.ne-typing .v2-genesis-opener{display:none!important}
+  }
+  /* Phones on their side: the bar sits at the end of the draft instead of over it, and a 64px gutter on the
+     right keeps every line, pencil and select clear of the round Hope button. */
+  @media (max-height:500px){
+    .ne-page{padding-right:64px!important}
+    .ne-bar{position:static;padding:12px 0 4px;background:transparent}
+    .ne-bar .v2-button{min-height:44px}
+  }
+  @media (min-width:861px) and (min-height:501px){body.ne-bar-on .v2-genesis-opener{bottom:96px!important}}
+  /* Start Over is a quiet link that asks first, never an equal twin of Publish. */
+  .ne-restart-row{display:grid;gap:10px}
+  .ne-restart-row>.v2-button{justify-self:start;margin:0;min-height:44px}
+  .ne-confirm{display:grid;gap:10px;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface)}
+  .ne-confirm p{margin:0;font-size:14px;line-height:1.5;color:var(--v2-text)}
+  .ne-confirm[hidden]{display:none}
+  /* Lines the pastor removed, kept under their section with Put It Back. */
+  .ne-removed{display:grid;gap:6px;margin:0;padding:8px 12px;border:1px dashed var(--v2-border);border-radius:12px;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+  .ne-removed q{quotes:none;color:var(--v2-text-2)}
+  .ne-removed .v2-button{justify-self:start;margin:0;min-height:44px}
+  /* What Hope read from the file: the pastor's own lines or paragraphs, first three, then Show All. */
+  .ne-read{display:grid;gap:8px}
+  .ne-outline li b{display:block;font-size:13px;color:var(--v2-text-2);letter-spacing:.02em}
+  .ne-t{color:var(--v2-muted);font-size:13px;font-variant-numeric:tabular-nums}
+  .ne-note{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
+  .ne-panel .v2-field>span{font-size:12.5px}
+  .ne-chip small{font-size:13px}
+  .ne-private{display:flex;gap:8px;align-items:flex-start;margin:14px 0 0;color:var(--v2-text-2);font-size:13px;line-height:1.55}
+  .ne-private svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--v2-positive)}
+  /* The passage the pastor prints: a choice among passages the pastor named, printed word for word. */
+  .ne-passages{display:grid;gap:8px}
+  .ne-passages .v2-button{margin:0;width:100%;min-height:44px;justify-content:flex-start;text-align:left;white-space:normal;line-height:1.35}
+  .ne-passages .v2-button[aria-pressed="true"]{border-color:var(--v2-accent);box-shadow:inset 0 0 0 1px var(--v2-accent)}
+  .ne-passages small{display:block;color:var(--v2-text-2);font-size:12.5px;font-weight:400}
+  .ne-passage-btn{justify-self:start;margin:0;min-height:44px}
+  .gm-checks li.ne-info>svg{color:var(--v2-muted)}
+  /* The stepper fits one row on a phone with its short labels. */
+  .ne-step-short{display:none}
+  @media (max-width:480px){.ne-step-long{display:none}.ne-step-short{display:inline}.ne-page .v2-stepper{flex-wrap:nowrap}.ne-page .v2-stepper li{letter-spacing:.03em}.ne-page .v2-stepper li+li::before{margin:0 8px 0 6px}}
+  .ne-check-by{display:grid;gap:8px}
+  .ne-check-by .v2-button{justify-self:start;margin:0;min-height:44px}
+  /* The publish sheet: its two actions are pinned at the foot of the drawer, so they never scroll away. */
+  .ne-sheet .v2-drawer-body{padding-bottom:20px}
+  .ne-sheet .v2-drawer-title p{font-size:13px;color:var(--v2-text-2)}
+  .ne-sheet .v2-drawer-title .ne-sheet-what{display:block;margin-top:4px;color:var(--v2-text);font-weight:700}
+  .ne-sheet .v2-field{margin:0}
+  .ne-sheet form{display:grid;gap:18px}
+  .ne-opts{display:grid;gap:8px;margin:0;padding:0;border:0;min-width:0}
+  .ne-opts legend{margin-bottom:8px;color:var(--v2-muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .ne-opts .ne-services{margin:-2px 0 4px;color:var(--v2-text-2);font-size:13px}
+  .ne-opt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:start;min-height:44px;padding:10px 12px;border:1px solid var(--v2-border);border-radius:12px;cursor:pointer}
+  .ne-opt input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--v2-accent)}
+  .ne-opt b{font-size:14px}
+  .ne-opt small{grid-column:2;color:var(--v2-muted);font-size:12.5px;line-height:1.5}
+  .ne-opt small a{display:inline-flex;align-items:center;min-height:44px}
+  .ne-opt.is-off{cursor:default;color:var(--v2-text-2)}
+  .ne-opt .gm-nav-lock{display:inline-flex;margin:4px 0 0}
+  .ne-opt .ne-lock-line{display:block}
+  .ne-pick{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
+  .ne-pick[hidden]{display:none}
+  .ne-pick-f{display:grid;gap:4px;font-size:12.5px;color:var(--v2-text-2)}
+  .ne-pick .v2-select{min-height:44px;font-size:16px}
+  .ne-who{display:flex;gap:8px;align-items:flex-start;margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.5}
+  .ne-who svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--v2-positive)}
+  .ne-mail{display:grid;gap:8px;padding:14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface);font-size:13.5px;line-height:1.55}
+  .ne-mail p{margin:0}
+  .ne-mail .ne-mail-k{color:var(--v2-muted);font-size:12px}
+  .ne-mail .ne-mail-btn{justify-self:start;padding:8px 14px;border-radius:8px;background:var(--v2-text);color:var(--v2-bg);font-weight:700;font-size:13px}
+  .ne-sheet-foot{flex:none;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--v2-border);background:var(--v2-sidebar)}
+  .ne-sheet-foot .v2-button{width:100%;margin:0;justify-content:center;min-height:48px}
+  @media (min-width:481px){.ne-sheet-foot{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-height:500px){.ne-sheet-foot{grid-template-columns:repeat(2,minmax(0,1fr));padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}.ne-sheet-foot .v2-button{min-height:44px}}
+  /* On its side the sheet's head is one line: the title and the quoted note title; the promise moves into the body. */
+  .ne-sheet-promise{display:none;margin:0;color:var(--v2-text-2);font-size:13px}
+  @media (max-height:500px){
+    .ne-sheet .v2-drawer-head{padding-top:8px;padding-bottom:8px}
+    .ne-sheet .v2-drawer-title .v2-eyebrow,.ne-sheet .v2-drawer-title .ne-sheet-sub{display:none}
+    .ne-sheet .v2-drawer-title h2{display:inline;font-size:18px}
+    .ne-sheet .v2-drawer-title p{display:inline;margin:0}
+    .ne-sheet .v2-drawer-title .ne-sheet-what{display:inline;margin:0 0 0 8px}
+    .ne-sheet-promise{display:block}
+    .ne-sheet form{gap:12px}
+  }
+  .ne-done-links,.ne-done-quiet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .ne-done-links .v2-button,.ne-done-quiet .v2-button{margin:0;width:100%;justify-content:center}
+  .ne-done-links .v2-button:only-child,.ne-done-quiet .v2-button:last-child:nth-child(odd){grid-column:1/-1}
+  .ne-done-quiet{margin-top:8px}
+  .ne-video-added{display:grid;gap:6px;margin:12px 0 0}
+  .ne-video-added .v2-input{font-size:16px}
+  @media (max-width:480px){
+    .ne-done-links,.ne-done-quiet,.ne-see{grid-template-columns:minmax(0,1fr)}
+  }
+  /* Narrow phones: the pencil sits in the corner, so the words and the scripture keep the full width. */
+  @media (max-width:400px){
+    .ne-line{display:block;padding-right:56px}
+    .ne-line>.v2-icon-button{position:absolute;top:4px;right:4px;margin:0}
+    .ne-line .ne-fold{margin-right:-44px}
+    .ne-verse{padding:10px 12px}
+    .ne-line[data-ne-line^="verse"]{padding-right:12px}
+    .ne-line[data-ne-line^="verse"] .ne-verse b{min-height:36px;padding-right:44px}
+    .ne-verse q{font-size:17px;line-height:1.45}
+  }
+</style>
+</head>
+<body data-side="church" data-page="notes" data-title="Sunday's Notes">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page v2-record-page ne-page" id="ne-page">
+
+    <header class="v2-page-head ne-top">
+      <div class="v2-page-back"><a class="v2-button v2-button-quiet v2-home-link" href="church-notes.html" id="ne-back">All Notes</a></div>
+      <div class="v2-page-actions" id="ne-page-actions"></div>
+    </header>
+
+    <section class="v2-card ne-head" aria-labelledby="ne-title" id="ne-head">
+      <div class="v2-eyebrow" id="ne-eyebrow">Notes · Sermon notes</div>
+      <h1 id="ne-title">Sunday, November 22</h1>
+      <p id="ne-sub"></p>
+      <ol class="v2-stepper" id="ne-steps" aria-label="From your words to Sunday's notes"></ol>
+    </section>
+
+    <div id="ne-locked" hidden></div>
+
+    <!-- Step 1: four ways in. The samples are filled in; nothing is uploaded, recorded or fetched. -->
+    <section class="v2-card" aria-labelledby="ne-ways-title" data-tour="note.ways" id="ne-in">
+      <div id="ne-in-full">
+        <div class="v2-eyebrow">Bring it in</div>
+        <h2 id="ne-ways-title">Your words, any way you have</h2>
+        <div class="ne-ways" role="group" aria-label="Ways to bring it in" id="ne-ways"></div>
+        <div class="ne-act" id="ne-in-act"></div>
+        <div class="ne-panel" id="ne-panel" aria-label="What you brought"></div>
+      </div>
+      <div class="ne-sum" id="ne-in-sum" hidden></div>
+    </section>
+
+    <!-- Step 2: shaping -->
+    <section class="v2-card" aria-live="polite" id="ne-shape" hidden>
+      <div class="ne-shaping"><span class="v2-badge v2-badge-priority" id="ne-shape-pill">Shaping</span><p class="v2-muted-copy" style="margin:0" id="ne-shape-say"></p></div>
+    </section>
+
+    <!-- Step 3: the shaped preview, every line with where it came from, the pastor's own wording and an Edit -->
+    <section class="v2-card ne-preview" aria-labelledby="ne-preview-title" data-tour="note.lines" id="ne-preview" hidden></section>
+
+    <section class="v2-card" aria-labelledby="ne-checks-title" data-tour="note.checks" id="ne-checks-card" hidden>
+      <div class="v2-eyebrow">Checked before it can go out</div>
+      <h2 id="ne-checks-title">Only your words</h2>
+      <ul class="gm-checks" id="ne-checks"></ul>
+      <div class="ne-checks-foot" id="ne-checks-foot"></div>
+    </section>
+
+    <div class="ne-bar" data-tour="note.sheet" id="ne-review-act" hidden></div>
+
+    <!-- Done -->
+    <section class="v2-card v2-next-move" aria-labelledby="ne-done-title" data-tour="note.done" id="ne-done" hidden></section>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="../shared/notes-data.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, c = ctx.church, HOPE = GM.assistant.name, ic = GM.v2Icon, P = ctx.params;
+  var N = window.GM_NOTES, NC = N.church(c.slug);
+  var $ = function (id) { return document.getElementById(id); };
+  var SHEP = GM.isIncluded("devotionals");
+  /* Team Roles (from Shepherd) let a pastor allow someone else to publish, or hand the draft to a colleague to check. */
+  var TEAM = GM.isIncluded("team");
+  var REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Which note ---------- */
+  var devoDraft = NC.devotionals.filter(function (d) { return d.status === "draft"; })[0];
+  var note = P.get("id") ? N.find(c.slug, P.get("id")) : null;
+  if (!note) note = P.get("new") === "devotional" ? devoDraft : NC.draft;
+  var DEVO = note.kind === "devotional";
+  var DRAFT = note.status === "draft";
+  var MS = !!note.manuscript;
+  if (DEVO) { document.body.setAttribute("data-title", "Devotional"); document.title = document.title.replace(/^Sunday's Notes/, "Devotional"); }
+  var pastor = N.speaker(note, c.pastors), pastorFirst = pastor.replace(/^Pastor /, "");
+  var other = "Pastor " + (note.speaker === "care" || note.by === "care" ? c.pastors[0] : c.pastors[1]);
+  var services = NC.services || [];
+  var file = note.file || { name: "sample-notes.docx", pages: 1 };
+  /* The way it really came in keeps its day; a different way the pastor picks here is a sample, attached just now. */
+  function came() { return way === note.way ? (note.came || "this week") : "just now"; }
+  function decided() { return N.decision(note.id); }
+  function decide(state, when) { try { if (state) sessionStorage.setItem("gm.notes." + note.id, state + (when ? "@" + when : "")); else sessionStorage.removeItem("gm.notes." + note.id); } catch (e) {} }
+  function shortWhen(w) { return String(w).replace(/^(\w+), \w+ \d+ at /, "$1 at ").replace(/:00 (AM|PM)/, " $1"); }
+
+  $("ne-back").innerHTML = ic("back") + "All Notes";
+  $("ne-eyebrow").textContent = "Notes · " + (DEVO ? "Devotional" : "Sermon notes");
+
+  /* ---------- Care: a new devotional is the calm locked card ---------- */
+  if (DEVO && !SHEP) {
+    $("ne-title").textContent = "New devotional";
+    $("ne-sub").textContent = "Sunday notes on your website come with every plan. Daily devotionals come with the Shepherd plan.";
+    $("ne-steps").hidden = true;
+    $("ne-in").hidden = true;
+    $("ne-locked").hidden = false;
+    $("ne-locked").innerHTML = GM.lockedState("devotionals", { title: "Daily devotionals" });
+    return;
+  }
+
+  /* ---------- State ---------- */
+  /* Upload comes first: a Word or PDF file the night before is the most common habit. */
+  var WAYS = [
+    { key: "file", label: "Upload a Word or PDF", icon: "upload" },
+    { key: "outline", label: "Type or Paste", icon: "note" },
+    { key: "video", label: "Paste a Video Link", icon: "link" },
+    { key: "memo", label: "Record a Voice Memo", icon: "mic" }
+  ];
+  var src = note.src || {};
+  var way = WAYS.some(function (w) { return w.key === P.get("way"); }) ? P.get("way") : (note.way || (DEVO ? "memo" : "outline"));
+  /* The words as written (outline, file) or as spoken (voice memo, the run-through video's captions). */
+  var raw = N.rawFor(note, way);
+  function setWay(w) { way = w; raw = N.rawFor(note, way); }
+  function spoken() { return N.spokenWay(way); }
+  var step = DRAFT ? (/^(?:scheduled|published)$/.test(decided().state) ? "done" : (["in", "shape", "review", "sheet", "done"].indexOf(P.get("step")) >= 0 ? P.get("step") : "in")) : "done";
+  if (step === "shape") step = "review";
+  if (step === "done" && DRAFT && !decided().state) step = "review";
+  var readOpen = false, memoOpen = way === "memo" && DEVO;
+  var MODEL_KEY = "gm.notes.model." + note.id;
+  var model;
+  /* A manuscript paragraph is long, so "You wrote" shows only the sentences the shaped line came from. */
+  var SMALL = { they: 1, them: 1, what: 1, when: 1, that: 1, this: 1, with: 1, were: 1, have: 1, your: 1, from: 1, then: 1, will: 1, said: 1 };
+  function keyWords(t) { return String(t).toLowerCase().replace(/[’']/g, "").split(/[^a-z0-9]+/).filter(function (w) { return w.length > 3 && !SMALL[w]; }); }
+  function sentences(t) { return (String(t).match(/[^.?!]+[.?!]+|[^.?!]+$/g) || [String(t)]).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function trimTo(par, text) {
+    var want = keyWords(text), ss = sentences(par);
+    var scored = ss.map(function (x, i) { var k = keyWords(x); return { i: i, x: x, n: want.filter(function (w) { return k.indexOf(w) >= 0; }).length }; }).filter(function (o) { return o.n > 0; });
+    if (!scored.length) return par;
+    scored.sort(function (a, b) { return b.n - a.n || a.i - b.i; });
+    return scored.slice(0, 2).sort(function (a, b) { return a.i - b.i; }).map(function (o) { return o.x; }).join(" ");
+  }
+  function rawText(s, text) { return N.srcList(s).map(function (i) { var r = raw[i]; return r ? (MS && text ? trimTo(r.text, text) : r.text) : ""; }).filter(Boolean).join(" / "); }
+  function L(text, s) { return { text: text, src: s, alt: rawText(s, text), edited: false }; }
+  function vlist(list, srcs) { return list.map(function (v, i) { return { ref: v.ref, text: v.text, src: srcs ? srcs[i] : 0 }; }); }
+  function fresh() {
+    if (DEVO) return {
+      title: L(note.title, src.title),
+      verses: vlist(note.verses, src.verses || []), passage: 0,
+      paras: note.paras.map(function (t, i) { return L(t, (src.paras || [])[i]); }),
+      prayer: L(note.prayer, src.prayer), removed: []
+    };
+    return {
+      title: L(note.title, src.title),
+      verses: vlist(note.verses, src.verses || []), passage: 0,
+      points: note.points.map(function (t, i) { return L(t, (src.points || [])[i]); }),
+      questions: note.questions.map(function (t, i) { return L(t, (src.questions || [])[i]); }),
+      week: L(note.week, src.week),
+      more: (note.more || []).map(function (t) { return L(t, null); }), removed: []
+    };
+  }
+  /* The shaped notes stay for this tab, so Preview on Phone and Preview on Website show them and come back to them. */
+  function saveModel() { try { sessionStorage.setItem(MODEL_KEY, JSON.stringify(model)); } catch (e) {} }
+  function loadModel() { try { var m = JSON.parse(sessionStorage.getItem(MODEL_KEY) || "null"); return m && m.title && m.verses ? m : null; } catch (e) { return null; } }
+  function dropModel() { try { sessionStorage.removeItem(MODEL_KEY); } catch (e) {} }
+  model = (DRAFT && step !== "in" && loadModel()) || fresh();
+  model.removed = model.removed || [];
+
+  /* ---------- Where a line came from, in the words of the way it came in ---------- */
+  function and(list) { return list.length < 2 ? list.join("") : list.slice(0, -1).join(", ") + " and " + list[list.length - 1]; }
+  function unit(many) { return MS ? (many ? "paragraphs " : "paragraph ") : (many ? "lines " : "line "); }
+  function fromText(s) {
+    var list = N.srcList(s).filter(function (i) { return raw[i]; });
+    if (!list.length) return "From " + pastor + "'s own words";
+    var many = list.length > 1;
+    var nums = and(list.map(function (i) { return String(i + 1); }));
+    var times = and(list.map(function (i) { return raw[i].t; }));
+    if (way === "outline") return (MS ? "From what you pasted, " : "From your outline, ") + unit(many) + nums;
+    if (way === "file") return "From " + file.name + ", " + unit(many) + nums;
+    if (way === "video") return "From your " + VID + " captions, at " + times;
+    return "From your voice memo, at " + times;
+  }
+  /* A sermon draft's video is the pastor's run-through before Sunday; a devotional's is the pastor reading it. */
+  var VID = DEVO ? "video's" : "run-through video's";
+  var KIND = /\.pdf$/.test(file.name) ? "PDF" : "Word";
+  var WAY_NAME = { outline: MS ? "what you pasted" : "your outline", file: "your " + KIND + " file", video: "your " + VID + " captions", memo: "your voice memo" };
+  var WAY_DID = { outline: "typed", file: "uploaded", video: "linked", memo: "recorded" };
+  var WAY_SHORT = { outline: "outline", file: KIND === "PDF" ? "PDF" : "Word file", video: "run-through video", memo: "voice memo" };
+
+  /* ---------- Head ---------- */
+  function paintHead() {
+    $("ne-title").textContent = DRAFT && step !== "done" ? N.dateLong(note.date) : note.title;
+    $("ne-sub").textContent = DEVO
+      ? "Devotional for " + N.dateLong(note.date) + " · From " + pastor + "'s " + WAY_SHORT[way]
+      : note.series + ", " + note.part.toLowerCase() + " · " + pastor + " · " + N.dateLong(note.date) + (note.length ? " · " + note.length : "");
+    /* On a phone the four steps keep one row with short labels. */
+    var STEPS = [["Bring It In", "Words"], ["Shape", "Shape"], ["Review", "Review"], ["Publish", "Publish"]];
+    var cur = { "in": 0, shape: 1, review: 2, sheet: 3, done: 4 }[step];
+    $("ne-steps").innerHTML = STEPS.map(function (s, i) {
+      var cls = i < cur ? "is-done" : i === cur ? "is-current" : "";
+      var lab = s[0] === s[1] ? esc(s[0]) : '<span class="ne-step-long">' + esc(s[0]) + '</span><span class="ne-step-short">' + esc(s[1]) + "</span>";
+      return "<li" + (cls ? ' class="' + cls + '"' : "") + (i === cur ? ' aria-current="step"' : "") + "><span>" + lab + (i < cur ? '<span class="sr-only">, done</span>' : "") + "</span></li>";
+    }).join("");
+  }
+
+  /* ---------- Step 1: four ways in ---------- */
+  /* The pastor's own words as Hope read them: the first three lines (or paragraphs), then Show All. */
+  function readList(id, labelText) {
+    var lines = raw.map(function (r, i) {
+      return "<li" + (readOpen || i < 3 ? "" : " hidden") + ">" + (r.h ? "<b>" + esc(r.h) + "</b>" : "") + (spoken() && r.t ? '<span class="ne-t">' + esc(r.t) + "</span> " : "") + N.refsHTML(r.text) + "</li>";
+    }).join("");
+    return '<div class="ne-read"><span class="ne-field-label" id="' + id + '-label">' + esc(labelText) + "</span>" +
+      '<ol class="ne-outline" id="' + id + '" aria-labelledby="' + id + '-label">' + lines + "</ol>" +
+      (raw.length > 3 ? '<button type="button" class="v2-button v2-button-quiet ne-more-lines" data-ne-lines aria-expanded="' + readOpen + '" aria-controls="' + id + '">' + (readOpen ? "Show Fewer" : "Show All " + raw.length + (MS ? " Paragraphs" : " Lines")) + "</button>" : "") + "</div>";
+  }
+  function paintWays() {
+    $("ne-ways").innerHTML = WAYS.map(function (w) {
+      return '<button type="button" class="v2-button" data-ne-way="' + w.key + '" aria-pressed="' + (w.key === way) + '">' + ic(w.icon) + "<span>" + esc(w.label) + "</span></button>";
+    }).join("");
+    var p = "";
+    if (way === "outline") {
+      p = readList("ne-outline", pastorFirst + "'s " + (DEVO ? "notes" : MS ? "manuscript, pasted in" : "outline")) +
+        '<p class="ne-note" id="ne-outline-note">Demo only: ' + esc(pastor) + "'s sample " + (DEVO ? "notes are" : MS ? "manuscript is" : "outline is") + " filled in, and nothing can be typed here.</p>";
+    } else if (way === "file") {
+      p = '<div class="ne-chip" id="ne-file">' + GM.icon("report") + "<div><b>" + esc(file.name) + "</b><small>" + esc(file.pages + (file.pages === 1 ? " page" : " pages") + " · " + KIND + " · attached") + "</small></div></div>" +
+        readList("ne-file-read", "What " + HOPE + " read from " + file.name) +
+        '<p class="ne-note">Word or PDF. Demo only: a sample file is attached. Nothing was uploaded.</p>';
+    } else if (way === "video") {
+      p = '<label class="v2-field"><span>Your ' + (DEVO ? "video" : "run-through video") + ' link</span><input class="v2-input" id="ne-video" type="url" readonly value="' + esc(note.video || "") + '" aria-describedby="ne-video-note"></label>' +
+        '<p class="ne-note" id="ne-video-note">' + (DEVO ? "A video of you reading it. " + esc(HOPE) + " reads its captions to shape the devotional. Members never see this link." : "A recording of your run-through before Sunday. " + esc(HOPE) + " reads its captions to shape the notes. Members never see this link: the message's own video is added after Sunday.") + " Demo only: a sample link is filled in.</p>" +
+        readList("ne-captions", "The captions " + HOPE + " read");
+    } else {
+      var bars = [12, 22, 30, 18, 26, 34, 20, 14, 28, 32, 16, 24, 30, 12, 22, 26, 18, 30, 24, 14, 20, 28, 16, 10];
+      p = '<div class="ne-chip">' + GM.icon("play") + '<div style="flex:1;min-width:0"><b>' + esc(pastor) + "'s voice memo</b><small>" + esc(note.memo || "1:30") + '</small><div class="ne-wave" aria-hidden="true">' + bars.map(function (h) { return '<i style="height:' + h + 'px"></i>'; }).join("") + "</div></div></div>" +
+        '<button type="button" class="v2-button ne-more-lines" data-ne-memo aria-expanded="' + (memoOpen ? "true" : "false") + '" aria-controls="ne-transcript">' + ic("play") + (memoOpen ? "Hide the Words" : "Play the Sample Memo") + "</button>" +
+        '<ol class="ne-transcript" id="ne-transcript"' + (memoOpen ? "" : " hidden") + ">" + raw.map(function (r) { return "<li><b>" + esc(r.t) + "</b>" + N.refsHTML(r.text) + "</li>"; }).join("") + "</ol>" +
+        '<p class="ne-note">Demo only: a sample memo is used. Nothing was recorded.</p>';
+    }
+    /* Where the pastor's material goes, in the product's own approved words (see LAUNCH.md). */
+    p += '<p class="ne-private">' + GM.icon("shield") + "<span>On a real church site, what you bring stays in " + esc(GM.poss(c.short)) + " workspace, and the AI service behind " + esc(HOPE) + " never trains on it.</span></p>";
+    $("ne-panel").innerHTML = p;
+    $("ne-in-act").hidden = true;
+    /* After shaping, the card folds to one line: where the words came from, with Change. */
+    var full = step === "in";
+    $("ne-in-full").hidden = !full;
+    $("ne-in-sum").hidden = full;
+    $("ne-in-sum").innerHTML = '<p>' + ic(WAYS.filter(function (w) { return w.key === way; })[0].icon) + "<span>From " + esc(WAY_NAME[way]) + ", " + esc(WAY_DID[way] + " " + came()) + "</span></p>" +
+      (DRAFT && step !== "done" ? '<button type="button" class="v2-button v2-button-quiet" data-ne-change>Change</button>' : "");
+  }
+
+  /* ---------- Step 3: the preview ---------- */
+  var openEdit = "", passagesOpen = false;
+  function same(a, b) { var n = function (s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }; return n(a) === n(b); }
+  function lineRow(field, i, l, label, opts) {
+    opts = opts || {};
+    var key = field + ":" + i, isOpen = openEdit === key, id = "ne-fold-" + field + "-" + i;
+    var num = opts.num ? '<span class="ne-n" aria-hidden="true">' + opts.num + "</span>" : "";
+    var btns = [];
+    if (l.alt && !same(l.alt, l.text)) btns.push('<button type="button" class="v2-button" data-ne-act="alt" data-ne-f="' + field + '" data-ne-i="' + i + '">Use My Wording</button>');
+    if (opts.removable) btns.push('<button type="button" class="v2-button" data-ne-act="remove" data-ne-f="' + field + '" data-ne-i="' + i + '">' + ic("archive") + "Remove This Line</button>");
+    if (opts.movable) {
+      btns.push('<button type="button" class="v2-button" data-ne-act="up" data-ne-f="' + field + '" data-ne-i="' + i + '"' + (opts.first ? " disabled" : "") + ">Move Up</button>");
+      btns.push('<button type="button" class="v2-button" data-ne-act="down" data-ne-f="' + field + '" data-ne-i="' + i + '"' + (opts.last ? " disabled" : "") + ">Move Down</button>");
+    }
+    var srcLine = l.edited ? "Edited by you" + (N.srcList(l.src).length ? " · " + fromText(l.src).replace(/^From /, "from ") : "") : fromText(l.src);
+    /* Written words are "You wrote"; a voice memo or a video's captions are "You said". */
+    var wrote = l.alt && (l.edited || !same(l.alt, l.text)) ? '<q class="ne-wrote"><b>' + (spoken() ? "You said:" : "You wrote:") + "</b> " + N.refsHTML(l.alt) + "</q>" : "";
+    var help = l.help ? '<p class="ne-help" role="note">In danger or crisis? <a href="tel:911">Call 911</a>, or <a href="tel:988">call</a> or <a href="sms:988">text 988</a>.</p>' : "";
+    var fold = isOpen
+      ? '<div class="ne-fold" id="' + id + '"><label for="ne-ta-' + field + "-" + i + '">Change the words<textarea class="v2-textarea ne-ta" id="ne-ta-' + field + "-" + i + '" rows="3" maxlength="400" data-ne-ta="' + key + '">' + esc(l.text) + "</textarea></label>" +
+        '<div class="ne-two"><button type="button" class="v2-button v2-button-quiet" data-ne-save="' + key + '">' + ic("check") + "Save</button>" + '<button type="button" class="v2-button v2-button-quiet" data-ne-cancel="' + key + '">Cancel</button></div>' +
+        (btns.length ? '<div class="ne-fold-btns">' + btns.join("") + "</div>" : "") +
+        "<p>Demo only. Your edit stays on this screen and its previews. Nothing was sent.</p></div>"
+      : '<div class="ne-fold" id="' + id + '" hidden></div>';
+    return '<li class="ne-line' + (l.edited ? " is-edited" : "") + '" data-ne-line="' + key + '"><div><p class="ne-line-text">' + num + esc(l.text) + '</p><span class="ne-src">' + esc(srcLine) + "</span>" + wrote + help + "</div>" +
+      '<button type="button" class="v2-button v2-icon-button v2-button-quiet" data-ne-edit="' + key + '" aria-expanded="' + isOpen + '" aria-controls="' + id + '" aria-label="Edit ' + esc(label) + '">' + ic("edit") + "</button>" + fold + "</li>";
+  }
+  /* A removed line waits under its section, with Put It Back. */
+  function removedHTML(field) {
+    return model.removed.map(function (x, k) { return { x: x, k: k }; }).filter(function (o) { return o.x.f === field; }).map(function (o) {
+      return '<div class="ne-removed" data-ne-removed="' + o.k + '"><span>Removed: <q>' + esc(o.x.line.text) + '</q></span><button type="button" class="v2-button v2-button-quiet" data-ne-restore="' + o.k + '">' + ic("plus") + "Put It Back</button></div>";
+    }).join("");
+  }
+  function verseBlock(v, i) {
+    var named = N.srcList(v.src).filter(function (x) { return raw[x]; });
+    var where = named.length ? "Named in " + WAY_NAME[way] + (way === "outline" || way === "file" ? ", " + unit(named.length > 1) + and(named.map(function (x) { return String(x + 1); })) : ", at " + and(named.map(function (x) { return raw[x].t; }))) : "From " + pastor + "'s own words";
+    var isOpen = openEdit === "verse:" + i;
+    return '<li class="ne-line" data-ne-line="verse:' + i + '"><div><blockquote class="ne-verse"><b>' + N.refHTML(v.ref) + "</b><q>" + esc(v.text) + "</q><small>" + esc(N.translation) + '</small></blockquote><span class="ne-src">' + esc(where) + " · printed word for word</span></div>" +
+      '<button type="button" class="v2-button v2-icon-button v2-button-quiet" data-ne-edit="verse:' + i + '" aria-expanded="' + isOpen + '" aria-controls="ne-fold-verse-' + i + '" aria-label="About scripture ' + (i + 1) + '">' + ic("edit") + "</button>" +
+      '<div class="ne-fold" id="ne-fold-verse-' + i + '"' + (isOpen ? "" : " hidden") + "><p>" + esc(HOPE) + " prints the verses " + esc(WAY_NAME[way]) + " names, word for word from the " + esc(N.translation) + ". Scripture is never reworded." + (note.passages && note.passages.length ? " To print another passage you named, use Change the Passage below." : "") + "</p></div></li>";
+  }
+  function passageOpts() {
+    var asShaped = { label: note.verses.map(function (v) { return v.ref; }).join(" and "), note: "As " + HOPE + " shaped it", verses: note.verses, first: true };
+    return [asShaped].concat(note.passages || []);
+  }
+  function passagesHTML() {
+    if (!note.passages || !note.passages.length) return "";
+    var opts = passageOpts(), cur = model.passage || 0;
+    return '<button type="button" class="v2-button v2-button-quiet ne-passage-btn" data-ne-passage aria-expanded="' + passagesOpen + '" aria-controls="ne-passages">' + ic("book") + "Change the Passage</button>" +
+      '<div class="ne-passages" id="ne-passages" role="group" aria-label="Which passage to print"' + (passagesOpen ? "" : " hidden") + ">" +
+      opts.map(function (o, k) { return '<button type="button" class="v2-button" data-ne-pick="' + k + '" aria-pressed="' + (k === cur) + '">' + esc(o.label) + "<small>" + esc(o.note) + "</small></button>"; }).join("") +
+      '<p class="ne-note">Every choice is a passage you named, printed word for word from the ' + esc(N.translation) + ". Demo only. Nothing was sent.</p></div>";
+  }
+  function transRow() {
+    return '<div class="ne-trans"><label for="ne-trans">Translation</label><select class="v2-select" id="ne-trans" aria-describedby="ne-trans-note">' + N.translations.map(function (t) { var kjv = t === N.translation; return "<option" + (kjv ? " selected" : " disabled") + ">" + esc(t + (kjv ? "" : " (church license)")) + "</option>"; }).join("") + "</select>" +
+      '<small id="ne-trans-note">' + esc(N.translation) + ", public domain in the United States. Other translations follow your church's own license and are set up with your church. Demo only: the " + esc(N.translation) + " is printed here.</small></div>";
+  }
+  function allLines() {
+    var m = model, list = [m.title];
+    if (DEVO) list = list.concat(m.paras, [m.prayer]); else list = list.concat(m.points, m.questions, [m.week], m.more || []);
+    return list;
+  }
+  function countLines() { return allLines().length + model.verses.length; }
+  function edits() { return allLines().filter(function (l) { return l.edited; }).length; }
+  /* Everything Start Over would undo: edits, removed lines, a story put back and a passage changed. */
+  function changes() { return edits() + model.removed.length + (putBack() ? 1 : 0) + (model.passage ? 1 : 0); }
+  var left = DEVO ? null : note.leftOut;
+  function putBack() { return !!(left && (model.more || []).some(function (l) { return N.srcList(l.src).indexOf(left.line) >= 0; })); }
+  function scriptureHead() {
+    var k = N.keyLabel({ ref: note.ref, verses: model.verses });
+    return k ? '<p class="ne-note">Passage: ' + N.refHTML(note.ref) + ". Printed here: the " + esc(k.toLowerCase()) + ", labelled " + esc(k) + " for members.</p>" : "";
+  }
+  function paintPreview() {
+    var m = model, h = "", live = DRAFT && step !== "done";
+    h += '<div class="ne-preview-top">' + GM.pill(live ? "Waiting for your tap" : "Shaped", "gold") + (live ? '<span class="ne-saved" role="status">' + GM.icon("check") + "Saved as a draft</span>" : "") + "<p>Shaped by " + esc(HOPE) + " from " + esc(WAY_NAME[way]) + '.</p></div><h2 class="sr-only" id="ne-preview-title">The shaped ' + (DEVO ? "devotional" : "notes") + "</h2>";
+    h += '<div class="ne-field"><h3>Title</h3><ul class="ne-lines">' + lineRow("title", 0, m.title, "the title") + "</ul></div>";
+    var scripture = '<div class="ne-field"><h3>Scripture</h3>' + transRow() + scriptureHead() + '<ul class="ne-lines">' + m.verses.map(verseBlock).join("") + "</ul>" + (live ? passagesHTML() : "") + "</div>";
+    if (DEVO) {
+      h += '<p class="ne-meta">' + esc(N.dateLong(note.date)) + " · From " + esc(pastor) + "</p>";
+      h += scripture;
+      h += '<div class="ne-field"><h3>The reading</h3><ul class="ne-lines">' + m.paras.map(function (l, i) { return lineRow("paras", i, l, "paragraph " + (i + 1), { removable: m.paras.length > 1, movable: true, first: i === 0, last: i === m.paras.length - 1 }); }).join("") + "</ul>" + removedHTML("paras") + "</div>";
+      h += '<div class="ne-field"><h3>A prayer for today</h3><ul class="ne-lines">' + lineRow("prayer", 0, m.prayer, "the prayer") + "</ul></div>";
+    } else {
+      h += '<p class="ne-meta">' + esc(note.series + ", " + note.part.toLowerCase()) + " · " + esc(pastor) + " · " + esc(N.dateLong(note.date)) + "</p>";
+      h += scripture;
+      h += '<div class="ne-field"><h3>Key points</h3><ul class="ne-lines">' + m.points.map(function (l, i) { return lineRow("points", i, l, "key point " + (i + 1), { num: i + 1, removable: m.points.length > 1, movable: true, first: i === 0, last: i === m.points.length - 1 }); }).join("") + "</ul>" + removedHTML("points") + "</div>";
+      if (m.more && m.more.length || removedHTML("more")) h += '<div class="ne-field"><h3>From the message</h3><ul class="ne-lines">' + (m.more || []).map(function (l, i) { return lineRow("more", i, l, "the line from the message", { removable: true }); }).join("") + "</ul>" + removedHTML("more") + "</div>";
+      h += '<div class="ne-field"><h3>For small groups</h3><ul class="ne-lines">' + m.questions.map(function (l, i) { return lineRow("questions", i, l, "question " + (i + 1), { removable: m.questions.length > 1, movable: true, first: i === 0, last: i === m.questions.length - 1 }); }).join("") + "</ul>" + removedHTML("questions") + "</div>";
+      h += '<div class="ne-field"><h3>For this week</h3><ul class="ne-lines">' + lineRow("week", 0, m.week, "for this week") + "</ul></div>";
+      /* The run-through video only shapes the notes. Members get the message's own video, added after Sunday. */
+      h += '<div class="ne-field"><h3>The video</h3><p class="ne-meta">' + (N.videoAdded(note.id) ? "Linked after Sunday: " + esc(note.posted) : "Added after Sunday, when the message is online. It plays on the website from the message section.") + (way === "video" ? " Your run-through video only shaped these notes. Members never see that link." : "") + "</p></div>";
+    }
+    $("ne-preview").innerHTML = h;
+    /* While a line is being changed, the pinned bar and the round Hope button step aside for the keyboard. */
+    document.body.classList.toggle("ne-typing", !!openEdit && openEdit.indexOf("verse") !== 0);
+    paintChecks();
+    var ta = document.querySelector(".ne-ta"); if (ta) grow(ta);
+  }
+  function paintChecks() {
+    var n = countLines(), k = edits(), back = putBack();
+    var items = [
+      { t: k ? "Every line comes from " + WAY_NAME[way] + " or your own edits (" + n + " of " + n + ", " + k + " edited by you)" : "Every line comes from " + WAY_NAME[way] + " (" + n + " of " + n + ")" },
+      { t: "Scripture printed word for word from the " + N.translation },
+      { t: "No new teaching added" }
+    ];
+    /* What Hope left out is the pastor's choice to make, so it reads as information, not as a passed check. */
+    if (left && !back) items.push({ t: "One thing left out: " + left.text + ". It stays in the message.", put: true, info: true });
+    else if (left && back) items.push({ t: "Nothing left out. The " + left.text.replace(/^the /, "") + " is back in, in your own words." });
+    else items.push({ t: "Nothing left out. Every line is from " + WAY_NAME[way] + "." });
+    if (MS && way !== "memo" && way !== "video") {
+      var cited = {}; ["title", "verses", "points", "questions", "week"].forEach(function (f) { [].concat(src[f]).forEach(function (s) { N.srcList(s).forEach(function (i) { cited[i] = 1; }); }); });
+      if (left) cited[left.line] = 1;
+      var rest = raw.filter(function (r, i) { return !cited[i]; }).length;
+      if (rest) items.push({ t: "The rest of your manuscript stays in the message: " + rest + " paragraphs that explain and illustrate it. The notes keep only the lines they came from.", info: true });
+    }
+    $("ne-checks").innerHTML = items.map(function (x) {
+      return "<li" + (x.info ? ' class="ne-info"' : "") + ">" + GM.icon(x.info ? "info" : "check") + "<span>" + esc(x.t) + (x.put ? '<br><button type="button" class="v2-button ne-putback" data-ne-putback>' + ic("plus") + "Put It Back</button>" : "") + "</span></li>";
+    }).join("");
+    var see = '<button type="button" class="v2-button" data-ne-see="site">' + ic("website") + "Preview on Website</button>" + (SHEP ? '<button type="button" class="v2-button" data-ne-see="phone">' + ic("device") + "Preview on Phone</button>" : "");
+    $("ne-checks-foot").innerHTML = '<p class="ne-fixed">' + ic("shield") + "<span>" + esc(HOPE) + " shapes only your words. It never writes a " + (DEVO ? "devotional or a sermon" : "sermon") + " and never adds teaching.</span></p>" +
+      '<div><div class="v2-eyebrow">See it as members will</div><div class="ne-see">' + see + "</div></div>" +
+      (DRAFT && step === "review" ? '<div class="ne-restart-row"><button type="button" class="v2-button v2-button-quiet" id="ne-restart" aria-expanded="false" aria-controls="ne-confirm">Start Over</button>' +
+        '<div class="ne-confirm" id="ne-confirm" role="group" aria-labelledby="ne-confirm-q" hidden><p id="ne-confirm-q"></p><div class="ne-two"><button type="button" class="v2-button" data-ne-keep>Keep My Edits</button><button type="button" class="v2-button" data-ne-restart-yes>Start Over</button></div></div></div>' : "");
+  }
+  function grow(ta) { if (!ta) return; ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 2, Math.round(window.innerHeight * 0.6)) + "px"; }
+  /* The pinned bar holds the one action of the step: Shape My Notes, then Publish or Schedule. */
+  function paintBar() {
+    var bar = $("ne-review-act");
+    if (step === "in") { if (!$("ne-shape-btn")) bar.innerHTML = '<button type="button" class="v2-button v2-button-primary" id="ne-shape-btn">' + ic("sparkle") + "Shape My " + (DEVO ? "Devotional" : "Notes") + "</button>"; }
+    else if (!$("ne-publish")) bar.innerHTML = '<button type="button" class="v2-button v2-button-primary" id="ne-publish">' + ic("clock") + "Publish or Schedule</button>";
+  }
+
+  /* ---------- Step 4: the publish and schedule sheet (the real Genesis OS drawer) ---------- */
+  function optIn() { var share = D.notesSettings.emailOptIn[DEVO ? "devotionals" : "notes"]; return Math.round(c.sizeNumber * share / 10) * 10; }
+  function lockRow(title, note2) {
+    return '<div class="ne-opt is-off"><input type="checkbox" disabled aria-label="' + esc(title) + ', included in Shepherd"><span><b>' + esc(title) + '</b><span class="ne-lock-line"><em class="gm-nav-lock" title="Included in Shepherd">' + GM.icon("lock") + "Included in Shepherd</em></span></span><small>" + esc(note2) + ' <a class="gm-link" href="' + esc(GM.sameWith("plan", "2")) + '">Preview the Shepherd Plan</a></small></div>';
+  }
+  function mailPreview() {
+    var first = DEVO ? model.paras[0] && model.paras[0].text : model.points[0] && model.points[0].text;
+    return '<div class="ne-mail"><p class="ne-mail-k">From ' + esc(c.name) + "</p><p><b>" + esc((DEVO ? "Today's devotional: " : "Sunday's notes: ") + model.title.text) + "</b></p>" +
+      "<p>" + esc(first || "") + '</p><span class="ne-mail-btn" aria-hidden="true">Read the ' + (DEVO ? "Devotional" : "Notes") + "</span>" +
+      '<p class="ne-mail-k">You get this because you chose email for ' + (DEVO ? "devotionals" : "sermon notes") + " in the " + esc(c.short) + " app. Change it in My Profile. Unsubscribe with one click.</p></div>";
+  }
+  function addDays(iso, n) { var p = iso.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2] + n, 12); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  /* When it can go out: before the first service (the default), after the last, a different time, or now. */
+  function whenOpts() {
+    var day = N.dateLong(note.date);
+    if (DEVO) return [
+      { v: "first", when: day + " at 6:00 AM", b: day + " at 6:00 AM", s: "Devotionals go out at 6 AM by default, before the day starts." },
+      { v: "after", when: N.dateLong(addDays(note.date, -1)) + " at 8:00 PM", b: N.dateLong(addDays(note.date, -1)) + " at 8:00 PM", s: "The evening before, for members who read at night." }
+    ];
+    var first = services[0] || "9:00 AM", last = services[services.length - 1] || first;
+    return [
+      { v: "first", when: day + " at " + NC.sundayAt, b: day + " at " + NC.sundayAt, s: "30 minutes before the " + first + " service. Members can open these as they sit down." },
+      { v: "after", when: day + " at " + NC.afterLast, b: day + " at " + NC.afterLast, s: "After the " + last + " service, if you keep the points for the pulpit." }
+    ];
+  }
+  var PICK_DAYS = [-1, 0, 1], PICK_TIMES = ["6:00 AM", "7:00 AM", "8:00 AM", "8:30 AM", "9:30 AM", "12:00 PM", "1:00 PM", "5:00 PM", "8:00 PM"];
+  var drawerReturn = null, sheetWhen = "";
+  function openSheet() {
+    var layer = $("v2-drawer-layer");
+    if (!layer) return;
+    drawerReturn = document.activeElement;
+    document.body.classList.remove("ne-bar-on");
+    var texting = D.guestSettings.textingEnabled;
+    var textRow = !SHEP ? lockRow("Text message", "Texting to members who opt in comes with the Shepherd plan.")
+      : texting ? '<label class="ne-opt"><input type="checkbox" name="text"><span><b>Text message</b></span><small>To members who opted in to texts. Off unless you check it.</small></label>'
+      : '<div class="ne-opt is-off"><input type="checkbox" disabled aria-label="Text message, texting is off"><span><b>Text message</b></span><small>Texting is off for ' + esc(c.short) + '. <a class="gm-link" href="' + esc(GM.url("church-settings.html")) + '">Turn It On in Settings</a></small></div>';
+    var rows = '<label class="ne-opt"><input type="checkbox" checked disabled><span><b>' + (DEVO ? "Today's devotional on the church website" : "The church website's Notes page") + "</b></span><small>" + (DEVO ? "On the Notes page, for that morning." : "Always, on every plan. Searchable by title and scripture.") + "</small></label>" +
+      (SHEP ? '<label class="ne-opt"><input type="checkbox" checked name="app"><span><b>Member app home and reader</b></span><small>' + (DEVO ? "Today's devotional card and the devotional reader." : "This week's notes on Home, and the notes reader.") + "</small></label>" +
+              '<label class="ne-opt"><input type="checkbox" checked name="email"><span><b>Email to members who chose it</b></span><small>About ' + optIn() + " members chose email for " + (DEVO ? "devotionals" : "sermon notes") + ". Nobody else gets one.</small></label>"
+            : lockRow("Member app home and reader", "The member app comes with the Shepherd plan.") + lockRow("Email to members who chose it", "Email delivery comes with the Shepherd plan.")) + textRow;
+    var opts = whenOpts();
+    var whenRows = opts.map(function (o, i) {
+      return '<label class="ne-opt"><input type="radio" name="when" value="' + o.v + '"' + (i === 0 ? " checked" : "") + ' data-when="' + esc(o.when) + '"><span><b>' + (i === 0 ? "Schedule: " : "") + esc(o.b) + "</b></span><small>" + esc(o.s) + "</small></label>";
+    }).join("") +
+      '<label class="ne-opt"><input type="radio" name="when" value="pick"><span><b>Pick a Different Time</b></span><small>Choose the day and the time.</small>' +
+        '<span class="ne-pick" id="ne-pick" hidden><span class="ne-pick-f"><span aria-hidden="true">Day</span><select class="v2-select" id="ne-pick-day" aria-label="Day">' + PICK_DAYS.map(function (n) { var iso = addDays(note.date, n); return '<option value="' + iso + '"' + (n === 0 ? " selected" : "") + ">" + esc(N.dateLong(iso)) + "</option>"; }).join("") + "</select></span>" +
+        '<span class="ne-pick-f"><span aria-hidden="true">Time</span><select class="v2-select" id="ne-pick-time" aria-label="Time">' + PICK_TIMES.map(function (t) { return "<option" + (t === (DEVO ? "6:00 AM" : NC.sundayAt) ? " selected" : "") + ">" + t + "</option>"; }).join("") + "</select></span></span></label>" +
+      '<label class="ne-opt"><input type="radio" name="when" value="now"><span><b>Publish Now</b></span><small>It goes up on the website straight away.</small></label>';
+    /* Who may publish: with Team Roles (Shepherd and Plus) the pastor can allow someone else; on Care, a signed-in pastor. */
+    var who = TEAM ? "Saved as a draft. Only " + pastor + " or someone " + pastorFirst + " allows can publish it." : "Saved as a draft. Only a pastor signed in to this workspace can publish it.";
+    var checkBy = TEAM ? '<div class="ne-check-by"><button type="button" class="v2-button" data-ne-checkby aria-controls="ne-checkby-note" aria-expanded="false">' + ic("send") + "Send to " + esc(other) + " to Check</button>" +
+      '<p class="ne-note" id="ne-checkby-note" role="status" hidden>Demo only. Nothing was sent. On a real church site, ' + esc(other) + " reads the draft and can edit any line, and " + esc(pastor) + " still taps Publish or Schedule.</p></div>" : "";
+    layer.innerHTML = '<button class="v2-drawer-scrim" type="button" tabindex="-1" aria-hidden="true" data-ne-close aria-label="Close"></button>' +
+      '<aside class="v2-drawer ne-sheet" role="dialog" aria-modal="true" aria-labelledby="ne-sheet-title"><header class="v2-drawer-head"><div class="v2-drawer-title"><div><div class="v2-eyebrow">' + (DEVO ? "Devotional" : "Sunday's notes") + '</div><h2 id="ne-sheet-title">Publish or schedule</h2><p><span class="ne-sheet-sub">Nothing goes out until you tap.</span><span class="ne-sheet-what">“' + esc(model.title.text) + "” · " + esc(pastor) + "</span></p></div>" +
+      '<button class="v2-button v2-icon-button v2-button-quiet" type="button" data-ne-close aria-label="Close">' + ic("close") + "</button></div></header>" +
+      '<div class="v2-drawer-body"><form class="gm-drawer-form" id="ne-sheet-form" novalidate>' +
+        '<p class="ne-sheet-promise">Nothing goes out until you tap.</p>' +
+        '<p class="ne-who">' + GM.icon("shield") + "<span>" + esc(who) + "</span></p>" + checkBy +
+        '<fieldset class="ne-opts"><legend>When</legend>' + (DEVO ? "" : '<p class="ne-services">Services: Sundays ' + esc(and(services)) + "</p>") + whenRows + "</fieldset>" +
+        '<fieldset class="ne-opts"><legend>Where it goes</legend>' + rows + "</fieldset>" +
+        '<p class="gm-drawer-note">' + esc(HOPE) + ' answers "' + (DEVO ? "Is there a devotional today?" : "What was Sunday's message about?") + '" with a link to it.</p>' +
+        '<details class="v2-today-fold"><summary><span>See the email members get</span><small>' + (SHEP ? "Only members who chose it" : "With the Shepherd plan") + "</small></summary>" + mailPreview() + "</details>" +
+      "</form></div>" +
+      '<footer class="ne-sheet-foot"><button class="v2-button v2-button-primary" type="submit" form="ne-sheet-form" id="ne-sheet-go"></button><button class="v2-button v2-button-quiet" type="button" data-ne-close>Not Yet</button></footer></aside>';
+    layer.hidden = false;
+    var go = $("ne-sheet-go");
+    function pickWhen() { return N.dateLong($("ne-pick-day").value) + " at " + $("ne-pick-time").value; }
+    function current() {
+      var r = layer.querySelector('input[name="when"]:checked') || {};
+      return r.value === "now" ? "" : r.value === "pick" ? pickWhen() : r.getAttribute("data-when");
+    }
+    function paintGo() {
+      var r = layer.querySelector('input[name="when"]:checked') || {};
+      $("ne-pick").hidden = r.value !== "pick";
+      sheetWhen = current();
+      go.innerHTML = r.value === "now" ? ic("send") + "<span>Publish Now</span>" : ic("clock") + "<span>Schedule for " + esc(shortWhen(sheetWhen)) + "</span>";
+    }
+    layer.querySelectorAll('input[name="when"]').forEach(function (r) { r.addEventListener("change", paintGo); });
+    ["ne-pick-day", "ne-pick-time"].forEach(function (id) { $(id).addEventListener("change", paintGo); });
+    paintGo();
+    $("ne-sheet-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var now = (layer.querySelector('input[name="when"]:checked') || {}).value === "now";
+      decide(now ? "published" : "scheduled", now ? "" : current());
+      saveModel();
+      closeSheet(true);
+      setStep("done");
+    });
+    requestAnimationFrame(function () { layer.dataset.open = "true"; var f = layer.querySelector('input[name="when"]'); if (f) f.focus(); });
+  }
+  function closeSheet(quiet) {
+    var layer = $("v2-drawer-layer");
+    if (!layer || layer.hidden) return;
+    layer.dataset.open = "false";
+    setTimeout(function () { if (layer.dataset.open !== "true") { layer.hidden = true; layer.innerHTML = ""; } }, 180);
+    if (!quiet && step === "sheet") { step = "review"; syncUrl(); paintHead(); barOn(); }
+    if (!quiet && drawerReturn && drawerReturn.focus) drawerReturn.focus({ preventScroll: true });
+  }
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("#v2-drawer-layer [data-ne-close]")) closeSheet(false);
+    var cb = e.target.closest("#v2-drawer-layer [data-ne-checkby]");
+    if (cb) { $("ne-checkby-note").hidden = false; cb.setAttribute("aria-expanded", "true"); GM.toast("Demo only. Nothing was sent."); }
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && step === "sheet") { closeSheet(false); } });
+
+  /* ---------- Done ---------- */
+  function paintDone() {
+    var d = decided(), status = DRAFT ? (d.state === "published" ? "published" : "scheduled") : note.status;
+    var when = d.when || N.dateLong(note.date) + " at " + N.defaultAt(note);
+    var head = status === "published" ? (DRAFT ? "Published now" : "Published " + N.dateLong(note.date) + " at " + N.defaultAt(note)) : "Scheduled for " + when;
+    var siteHref = c.site + "?church=" + encodeURIComponent(c.slug) + "&plan=" + GM.plan + "#/notes/" + (DEVO && note.date === N.today ? "today" : note.id);
+    var links = '<a class="v2-button v2-button-primary" href="' + esc(siteHref) + '">' + ic("website") + "See It on the Website</a>" +
+      (SHEP ? '<a class="v2-button" href="' + esc(GM.url(DEVO ? "member-devotional.html" : "member-notes.html", DEVO ? { day: note.date } : { id: note.id })) + '">' + ic("device") + "See It in the Member App</a>" : "");
+    /* Every way in, the run-through video included, gets the message's own video only after Sunday. */
+    var video = !DEVO && DRAFT;
+    var vAdded = video && N.videoAdded(note.id);
+    var where = DEVO ? "It goes to the website's Notes page, the member app and members who chose email." : SHEP ? "It goes to the website's Notes page, the member app and members who chose email." : "It goes to the website's Notes page. The member app and email come with the Shepherd plan.";
+    $("ne-done").innerHTML = '<div><div class="v2-eyebrow">' + (DEVO ? "Devotional" : "Sunday's notes") + '</div><h2 class="v2-serif-headline" id="ne-done-title">' + esc(head) + "</h2><h3>" + esc(model.title.text) + " · " + esc(pastor) + "</h3>" +
+      '<div class="v2-next-meta">' + (status === "published" ? GM.pill("Published", "positive") : GM.pill("Scheduled " + shortWhen(when).replace(/^(\w{3})\w* at /, "$1 "), "info")) + (video && !vAdded ? GM.pill("Video not linked yet", "neutral") : "") + "</div>" +
+      '<p class="v2-next-reason">Demo only. Nothing was sent.<span class="v2-next-why">' + esc(where) + "</span></p>" +
+      (vAdded ? '<div class="ne-video-added"><label class="v2-field"><span>The message\'s video link</span><input class="v2-input" type="url" readonly value="' + esc(note.posted) + '"></label><p class="v2-muted-copy ne-note">Demo only: a sample link for Sunday\'s message is added. ' + esc(HOPE) + "'s answer about Sunday links the video now.</p></div>" : "") +
+      (SHEP ? '<details class="v2-today-fold"><summary><span>The email members get</span><small>Only members who chose it</small></summary>' + mailPreview() + "</details>" : "") +
+      "</div>" +
+      '<div class="v2-next-actions"><div class="ne-done-links">' + links + "</div>" +
+      '<div class="ne-done-quiet">' + (video && !vAdded ? '<button type="button" class="v2-button" data-ne-video>' + ic("link") + "Add the Video Link</button>" : "") + (status === "scheduled" && DRAFT ? '<button type="button" class="v2-button v2-button-quiet" data-ne-undo>Unschedule</button>' : "") + '<button type="button" class="v2-button v2-button-quiet" data-gm-action="toast" data-gm-toast="Demo only. Nothing was changed.">' + ic("archive") + "Archive</button></div></div>";
+  }
+
+  /* ---------- Steps ---------- */
+  function syncUrl() { try { var u = new URL(location.href); u.searchParams.set("step", step); if (way !== note.way) u.searchParams.set("way", way); else u.searchParams.delete("way"); history.replaceState(history.state, "", u.pathname + u.search + u.hash); } catch (e) {} }
+  function barOn() { var on = DRAFT && (step === "in" || step === "review"); if (on) paintBar(); document.body.classList.toggle("ne-bar-on", on); $("ne-review-act").hidden = !on; }
+  function show() {
+    var rev = step === "review" || step === "sheet", done = step === "done";
+    $("ne-in").hidden = false;
+    $("ne-shape").hidden = step !== "shape";
+    $("ne-preview").hidden = !(rev || (done && !DRAFT));
+    $("ne-checks-card").hidden = !rev;
+    $("ne-done").hidden = !done;
+    $("ne-review-act").innerHTML = "";
+    paintHead(); paintWays();
+    if (rev || (done && !DRAFT)) paintPreview();
+    if (done && !DRAFT) { $("ne-preview").querySelectorAll("[data-ne-edit]").forEach(function (b) { b.remove(); }); var tp = $("ne-preview").querySelector(".ne-preview-top"); if (tp) tp.innerHTML = GM.pill(note.status === "published" ? "Published" : "Scheduled", note.status === "published" ? "positive" : "info") + "<p>Shaped by " + esc(HOPE) + " from " + esc(pastor) + "'s own words.</p>"; $("ne-in").hidden = true; }
+    if (done) { model = (DRAFT && loadModel()) || model; model.removed = model.removed || []; paintDone(); }
+    barOn();
+    if (step === "sheet") openSheet();
+  }
+  function setStep(s) { step = s; syncUrl(); show(); var t = s === "done" ? $("ne-done") : s === "review" ? $("ne-preview") : s === "in" ? $("ne-in") : null; if (t) { t.setAttribute("tabindex", "-1"); try { t.focus({ preventScroll: true }); t.scrollIntoView({ block: "start", behavior: REDUCE ? "auto" : "smooth" }); } catch (e) {} } }
+  function shape() {
+    step = "shape"; show();
+    $("ne-shape-say").textContent = "Shaping from " + WAY_NAME[way] + ". Only your words, every line checked.";
+    setTimeout(function () { saveModel(); setStep("review"); }, REDUCE ? 0 : 600);
+  }
+  function refocus(sel) { var b = document.querySelector(sel); if (b) b.focus(); }
+  function restart() { model = fresh(); dropModel(); openEdit = ""; passagesOpen = false; setStep("in"); GM.toast("Started over from what you brought."); }
+
+  /* ---------- Taps ---------- */
+  document.addEventListener("input", function (e) { if (e.target.matches && e.target.matches(".ne-ta")) grow(e.target); });
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    var w = t.closest("[data-ne-way]");
+    if (w) { setWay(w.getAttribute("data-ne-way")); memoOpen = false; readOpen = false; syncUrl(); paintWays(); refocus('[data-ne-way="' + way + '"]'); return; }
+    if (t.closest("[data-ne-lines]")) { readOpen = !readOpen; paintWays(); refocus("[data-ne-lines]"); return; }
+    if (t.closest("[data-ne-memo]")) { memoOpen = !memoOpen; paintWays(); refocus("[data-ne-memo]"); if (memoOpen) GM.toast("Demo only: a sample memo is used. Nothing was recorded."); return; }
+    if (t.closest("[data-ne-change]")) { setStep("in"); refocus('[data-ne-way="' + way + '"]'); return; }
+    if (t.closest("#ne-shape-btn")) { model = fresh(); openEdit = ""; passagesOpen = false; shape(); return; }
+    if (t.closest("#ne-publish")) { step = "sheet"; syncUrl(); paintHead(); barOn(); openSheet(); return; }
+    /* Start Over asks first whenever it would throw away the pastor's own changes. */
+    if (t.closest("#ne-restart")) {
+      var n = changes();
+      if (!n) { restart(); return; }
+      $("ne-confirm-q").textContent = "Start over? Your " + n + (n === 1 ? " change" : " changes") + " will be lost.";
+      $("ne-confirm").hidden = false; $("ne-restart").setAttribute("aria-expanded", "true"); refocus("[data-ne-keep]"); return;
+    }
+    if (t.closest("[data-ne-keep]")) { $("ne-confirm").hidden = true; $("ne-restart").setAttribute("aria-expanded", "false"); refocus("#ne-restart"); return; }
+    if (t.closest("[data-ne-restart-yes]")) { restart(); return; }
+    if (t.closest("[data-ne-undo]")) { decide(""); GM.toast("Demo only. Nothing was changed."); setStep("review"); return; }
+    if (t.closest("[data-ne-video]")) { try { sessionStorage.setItem("gm.notes.video." + note.id, "1"); } catch (x) {} paintDone(); GM.toast("Demo only. Nothing was sent."); return; }
+    if (t.closest("[data-ne-putback]")) { model.more = model.more || []; model.more.push(L(left.shaped, left.line)); saveModel(); paintPreview(); GM.toast("Put back, in your own words."); refocus('[data-ne-edit="more:' + (model.more.length - 1) + '"]'); return; }
+    var rs = t.closest("[data-ne-restore]");
+    if (rs) {
+      var k = +rs.getAttribute("data-ne-restore"), x = model.removed[k];
+      if (x) { var lst = model[x.f] = model[x.f] || []; var at = Math.min(x.i, lst.length); lst.splice(at, 0, x.line); model.removed.splice(k, 1); saveModel(); paintPreview(); GM.toast("Put back."); refocus('[data-ne-edit="' + x.f + ":" + at + '"]'); }
+      return;
+    }
+    if (t.closest("[data-ne-passage]")) { passagesOpen = !passagesOpen; paintPreview(); refocus("[data-ne-passage]"); return; }
+    var pk = t.closest("[data-ne-pick]");
+    if (pk) {
+      var o = passageOpts()[+pk.getAttribute("data-ne-pick")];
+      model.passage = +pk.getAttribute("data-ne-pick");
+      model.verses = vlist(o.verses, o.first ? (src.verses || []) : null);
+      saveModel(); paintPreview(); refocus('[data-ne-pick="' + model.passage + '"]');
+      GM.toast("Printed word for word. Demo only. Nothing was sent.");
+      return;
+    }
+    var see = t.closest("[data-ne-see]");
+    if (see) {
+      saveModel();
+      var back = "church-note.html?id=" + note.id + "&step=review" + (way !== note.way ? "&way=" + way : "");
+      try { sessionStorage.setItem("gm.notes.back", GM.url(back)); } catch (x2) {}
+      if (see.getAttribute("data-ne-see") === "phone") GM.go(DEVO ? "member-devotional.html?preview=" + encodeURIComponent(note.id) : "member-notes.html?preview=1&id=" + encodeURIComponent(note.id));
+      else location.href = c.site + "?church=" + encodeURIComponent(c.slug) + "&plan=" + GM.plan + "#/notes/preview/" + note.id;
+      return;
+    }
+    var ed = t.closest("[data-ne-edit]");
+    if (ed) { var key0 = ed.getAttribute("data-ne-edit"); openEdit = openEdit === key0 ? "" : key0; paintPreview(); var ta = document.querySelector('[data-ne-ta="' + key0 + '"]'); if (ta) { ta.focus(); try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (x3) {} } else refocus('[data-ne-edit="' + key0 + '"]'); return; }
+    var sv = t.closest("[data-ne-save]"), cn = t.closest("[data-ne-cancel]");
+    if (sv || cn) {
+      var key = (sv || cn).getAttribute(sv ? "data-ne-save" : "data-ne-cancel"), parts = key.split(":"), f0 = parts[0], i0 = +parts[1];
+      var it = Array.isArray(model[f0]) ? model[f0][i0] : model[f0];
+      if (sv && it) {
+        var val = String(($('ne-ta-' + f0 + "-" + i0) || {}).value || "").replace(/\s+/g, " ").trim();
+        if (val && val !== it.text) { it.text = val; it.edited = true; it.help = !!(window.HOPE_WORDS && HOPE_WORDS.safety && HOPE_WORDS.safety(val)); saveModel(); GM.toast("Saved. Demo only. Nothing was sent."); }
+      }
+      openEdit = ""; document.body.classList.remove("ne-typing"); paintPreview(); refocus('[data-ne-edit="' + key + '"]'); return;
+    }
+    var a = t.closest("[data-ne-act]");
+    if (a) {
+      var f = a.getAttribute("data-ne-f"), i = +a.getAttribute("data-ne-i"), act = a.getAttribute("data-ne-act");
+      var list = Array.isArray(model[f]) ? model[f] : null, item = list ? list[i] : model[f];
+      if (act === "alt") { item.text = item.alt; item.edited = true; openEdit = ""; }
+      if (act === "remove" && list) { model.removed.push({ f: f, i: i, line: list.splice(i, 1)[0] }); openEdit = ""; document.body.classList.remove("ne-typing"); }
+      if ((act === "up" || act === "down") && list) { var j = act === "up" ? i - 1 : i + 1; if (j >= 0 && j < list.length) { var x4 = list[i]; list[i] = list[j]; list[j] = x4; openEdit = f + ":" + j; i = j; } }
+      saveModel(); paintPreview();
+      if (act === "remove") { refocus('[data-ne-restore="' + (model.removed.length - 1) + '"]'); GM.toast("Line removed. Put It Back is just below its section."); }
+      else refocus('[data-ne-edit="' + (openEdit || (f + ":" + Math.max(0, Math.min(i, (list || [0]).length - 1)))) + '"]');
+    }
+  });
+
+  show();
+
+  GM.hope.setBriefing({
+    line: GM.greeting() + ", {name}. " + (DRAFT ? pastor + "'s " + WAY_SHORT[note.way || way] + " is in. Shape it, check each line, then tap Schedule." : "This note is " + note.status + "."),
+    chips: [{ label: "What Is Scheduled?", ask: "What is scheduled to go out?", primary: true }, { label: "Can " + HOPE + " Write It?", ask: "Can " + HOPE + " write my sermon?" }]
+  });
+  GM.setTour([
+    { target: '[data-tour="note.ways"]', title: "Four ways in", text: "Upload a Word or PDF, type or paste, paste a video link or record a voice memo." },
+    { target: '[data-tour="note.lines"]', title: "Only the pastor's words", text: "Every line shows where it came from and what the pastor wrote or said." },
+    { target: '[data-tour="note.checks"]', title: "Nothing new added", text: "Scripture word for word, translation named." },
+    { target: '[data-tour="note.sheet"]', title: "Nothing goes out without the tap", text: "Publish now or schedule it." }
+  ]);
+});
+</script>
+</body>
+</html>

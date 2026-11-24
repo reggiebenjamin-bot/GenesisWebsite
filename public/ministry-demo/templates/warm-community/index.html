@@ -598,7 +598,7 @@ body.fd-open{overflow:hidden}
   .nav{height:70px}
   .brand .mark{width:40px;height:40px}
   .wm-1{font-size:24px}
-  .wm-2{font-size:9.5px;letter-spacing:.22em}
+  .wm-2{font-size:12px;letter-spacing:.12em}
   .hero{padding-top:14px}
   .hero h1{font-size:clamp(58px,16.5vw,72px)}
   .hero-photo{aspect-ratio:1.12/1;border-radius:28px}
@@ -743,6 +743,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         </div>
       </div>
       <a href="#watch">Watch</a>
+      <a href="#/notes">Notes</a>
       <a href="#/events">Events</a>
       <a href="#/give" data-demo="give">Give</a>
     </nav>
@@ -776,6 +777,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="sub" href="#/ministries">All Ministries</a><a class="sub" href="#/kids">Kids</a><a class="sub" href="#/youth">Youth and Young Adults</a><a class="sub" href="#/restore">Restore</a><a class="sub" href="#/serve">Serve Teams</a>
     </details>
     <a href="#watch">Watch</a>
+    <a href="#/notes">Notes</a>
     <a href="#/events">Events</a>
     <a href="#/give" data-demo="give">Give</a>
   </nav>
@@ -965,7 +967,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <h2 class="msg-title" id="msg-title">Casseroles and courage</h2>
           <p class="msg-meta"><span>November 15, 2026</span><span>Pastor Marcus</span></p>
           <p class="copy">Part two of our Love Thy Neighbor series. Missed Sunday, or want to pass it along to a friend? Grab a coffee and catch up here.</p>
-          <div class="actions"><a class="btn btn-light" href="#/messages">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></div>
+          <div class="actions"><a class="btn btn-light" href="#/notes">All Sermon Notes <span class="arw" aria-hidden="true">&rarr;</span></a></div>
         </div>
       </div>
     </div>
@@ -1060,6 +1062,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <li><a href="#/ministries">Ministries</a></li>
           <li><a href="#about">Who We Are</a></li>
           <li><a href="#watch">Watch</a></li>
+          <li><a href="#/notes">Sermon Notes</a></li>
           <li><a href="#/beliefs">What We Believe</a></li>
           <li><a href="#/events">Events</a></li>
           <li><a href="#visit">Get Connected</a></li>
@@ -1447,6 +1450,24 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   new MutationObserver(paint).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--cocoa);--nv-muted:var(--cocoa-soft);--nv-accent:var(--leaf-deep);--nv-on-accent:#fff;--nv-surface:var(--paper);--nv-line:var(--line);--nv-line-strong:rgba(58,38,24,.3);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--body);--nv-r:var(--r-sm);--nv-r-lg:var(--r-lg)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv-head{background:var(--sage)}
+.nv-band{box-shadow:var(--shadow-sm)}
+.nv-today{background:var(--sky)}
+.nv-title{font-weight:600}
+.nv-verse{border-radius:var(--r-sm)}
+</style>
+<script>window.NOTES_SITE = {"slug":"warm-community","times":"Sundays at 9:00 and 10:45 AM","address":"3120 Wrenfield Ave, Des Moines","cls":{"wrap":"wrap","label":"eyebrow","h1":"h-sm","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1609,7 +1630,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

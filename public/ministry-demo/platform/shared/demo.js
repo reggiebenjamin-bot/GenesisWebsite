@@ -216,7 +216,10 @@
   ANSWERS.soc2 = "I would rather not guess about SOC 2. A person at Genesis can tell you where that stands, and the hosting and security details are shared in writing during scoping. What I can say: Genesis Ministry runs on a managed cloud database, staff sign in with two steps, and prayer stays behind role checks the system enforces.";
   ANSWERS.denomfit = "Genesis Ministry does not take a side on doctrine. " + AN + " shares only what your church has written and approved about its beliefs, and hands questions of faith to a pastor rather than answering them itself.";
   ANSWERS.advice = AN + " does not give pastoral, legal, medical or financial advice. It answers practical questions from facts your church approved, and it hands anything personal to a real person. On a real church site, 988 and 911 sit under every answer.";
-  ANSWERS.sermon = AN + " does not write sermons, and it never writes a reply to prayer. In the workspace it drafts small things for a person to approve, like welcome notes and follow-up notes. The preaching stays yours.";
+  ANSWERS.sermon = "No. " + AN + " does not write sermons or devotionals, and it never writes a reply to prayer. It shapes notes and devotionals from the pastor's words only. A pastor brings their own outline, manuscript, run-through video or voice memo, and " + AN + " shapes only those words into a notes page (the title, the scripture printed with its translation named, three or four key points and small-group questions) or a short daily devotional (a verse, a few short paragraphs and a prayer). It adds no teaching of its own, and nothing goes out until the pastor taps Publish or Schedule. The preaching stays yours.";
+  /* Sermon notes and devotionals (../../shared/notes-data.js): shaped only from the pastor's own words. */
+  ANSWERS.notes = "A pastor brings Sunday's outline, a Word or PDF file, the message's video link or a voice memo, and " + AN + " shapes only those words into a notes page: the title, the scripture printed with its translation named, three or four key points, questions for small groups and the video. The pastor checks every line, then taps Publish or Schedule, 30 minutes before the first service on Sunday by default. " + AN + " never writes a sermon and adds no teaching. Sunday notes on the website come with every plan. Daily devotionals, notes in the member app and email to members who chose it come with the Shepherd plan, $299 a month.";
+  ANSWERS.devotionals = "Sunday notes on the website come with every plan, the Care plan included. The Shepherd plan, $299 a month, adds daily devotionals shaped from the pastor's own words (a verse, a few short paragraphs and a prayer, out at 6 AM), the notes and a devotional reader in the member app, and email to members who chose it. Texting goes only to members who opt in, and only if the church turns texting on. The Plus plan, $499 a month, includes all of it.";
   ANSWERS.confidential = "A pastor can talk with you about what stays private and the few things they must report to keep someone safe. If anyone is in danger right now, call 911, or call or text 988.";
   ANSWERS.aiprayerco = ANSWERS.aiprayer;
   /* What a pastor types to the workspace Hope. */
@@ -492,7 +495,10 @@
     [/\b(keep|hide|hid|block|private|secret)\w*\b.{0,40}\bprayers?( requests?)?\b.{0,40}\bfrom (the )?(other |another |my |our |a |one |certain )?(pastors?|lead pastor|senior pastor|staff|prayer team|elders?|deacons?)\b|\bprayers?( requests?)?\b.{0,30}\b(hidden|kept|private|secret) from (the )?(other |my |our |a )?(pastors?|lead pastor|staff|prayer team)\b/i, "prayerfromstaff"],
     [/\b(notif\w*|alerts?|alert emails?|emails?)\b.{0,40}\bprayers?( requests?)?\b.{0,30}\b(say|says|show|shows|include|includes|contain|contains|look like|go to|goes to|sent|send)\b|\bprayers?( requests?)?\b.{0,40}\b(notif\w*|alerts?|alert emails?)\b|\bwho (gets|is) (notified|alerted|emailed)\b.{0,30}\bprayer/i, "prayernotify"],
     [new RegExp("\\b(does|will|can|could|would) (" + AN_RX + "|the ai|ai|it|the assistant|the bot)\\b.{0,15}\\bpray(?!er)\\b", "i"), "hopeprays"],
-    [/\b(write|writes|writing|draft|drafts|prepare|prepares|create|creates)\b.{0,20}\b(my |our |the |a |his |her )?(sermons?|homil\w*|devotionals?|bible stud(y|ies)|sunday (message|teaching))\b|\bsermons?\b.{0,20}\b(written|drafted)\b/i, "sermon"],
+    [/^\s*(?:please\s+)?(?:(?:can|could|will|would)\s+you\s+)?(?:write|draft|create|prepare)\b.{0,20}\b(?:my |our |the |a |his |her |this |next )?(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:can|could|will|would|does|do|should|is)\s+(?:you|hope|genesis|it|ai|an? ai|the (?:ai|assistant|bot))\b.{0,20}\b(?:write|writes|writing|draft|drafts|drafting|create|creates|prepare|prepares)\b.{0,20}\b(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:hope|genesis|ai)\s+(?:writes?|wrote|drafts?|drafted)\b.{0,20}\b(?:sermons?|devotionals?)\b|\bsermons?\b.{0,20}\b(?:written|drafted) by (?:hope|genesis|ai|you|a computer|a robot)\b|\bwho (?:writes|wrote|prepares|drafts) (?:the |your |our )?(?:sermons?|devotionals?)\b/i, "sermon"],
+    /* Sermon notes and devotionals: what a plan includes first, then how the notes work. */
+    [/\b(?:devotionals?|sermon notes?)\b.{0,40}\b(?:plans?|shepherd|plus|care|include\w*|come with|cost\w*)\b|\b(?:shepherd|plus|care)(?: plan)?\b.{0,40}\b(?:add|include)\w*\b.{0,20}\b(?:notes|devotionals?)\b/i, "devotionals"],
+    [/\bsermon notes?\b|\bnotes page\b|\bhow do (?:the )?(?:sunday )?notes work\b/i, "notes"],
     [/\b(percent\w*|cut|fee|fees|take|takes|charge|charges)\b.{0,25}\b(of|on|from) (the |our |each |every |a )?(donations?|giving|gifts?|tithes?|offerings?)\b|\b(donations?|giving|gifts?|tithes?)\b.{0,20}\b(fee|fees|percent\w*|cut)\b/i, "givingfees"],
     /* Round 4: support signing in, removing access, marketing, giving records, who exports, group texting and texting costs. */
     [/\b(genesis|support)\b.{0,30}\b(log|sign)s? ?(in|into|on)\b|\b(log|sign)s? ?(in|into)\b.{0,30}\bwithout (asking|telling|us|our)\b/i, "staffaccess"],
@@ -629,7 +635,7 @@
     "attendance", "checkin", "references", "whobuilds", "hipaa", "websitecost", "downgrade", "beliefs", "fees", "planfeature", "cheapest",
     "aiprayerco", "processors", "otherchurches", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "value", "serving", "faithcompany", "privacypolicy",
     "prayerfromstaff", "prayernotify", "memberemail", "hopeprays", "contactsee", "givingfees", "autoreply", "madeup", "soc2", "denomfit", "advice", "sermon", "confidential", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "texting",
-    "multisite", "sharelogin", "prayeranon", "prayerwall", "pastornotes", "legalrequest", "freeplan", "bibletrans", "websiteown", "exportterms", "chatexport", "grief", "textwho", "minortext"];
+    "multisite", "sharelogin", "prayeranon", "prayerwall", "pastornotes", "legalrequest", "freeplan", "bibletrans", "websiteown", "exportterms", "chatexport", "grief", "textwho", "minortext", "notes", "devotionals"];
   /* Answers that a person at Genesis settles: Talk With Genesis sits under each one, on every Hope. */
   var TALK_KEYS = ["call", "start", "domain", "keepsite", "language", "support", "references", "contract", "trial", "cancel", "discount", "fees", "growth", "whobuilds", "processors", "prayerforward", "guestchats", "faithcompany", "soc2"];
   /* Trust and policy answers the workspace dock gives before a screen's own answers ("Who covers when
@@ -698,6 +704,9 @@
     { key: "church-access", label: "The Access Record", module: "access", plans: [3] },
     { key: "church-gifts", label: "Gifts", module: "gifts" },
     { key: "church-reports", label: "Reports", module: "reports" },
+    /* Every plan: the pastor's own words shaped into Sunday's notes (Care puts them on the website; Shepherd and Plus
+       add the member app where Sarah reads them). */
+    { key: "church-note", href: "church-note.html?new=sermon&step=review", label: "Sunday's Notes", module: "notes" },
     { key: "member-home", label: "The Member App", module: "member-app" },
     { key: "member-prayer", label: "Member Prayer", module: "member-app" },
     { key: "member-messages", label: "Member Messages", module: "member-app", plans: [2] },
@@ -748,7 +757,11 @@
     "member-messages:new": "member-give",
     "member-give": "member-gifts",
     "member-gifts:words": "member-gifts:done",
-    "member-gifts:done": "member-gifts-result"
+    "member-gifts:done": "member-gifts-result",
+    "church-notes": "church-note",
+    "church-note": "church-website",
+    "member-notes": "member-devotional",
+    "member-devotional": "member-prayer"
   };
   var EXTRA = {
     "church-website": { label: "The Website", module: "website" },
@@ -761,7 +774,11 @@
     "member-welcome": { label: "The First Question", module: "member-app" },
     "member-messages:new": { href: "member-messages.html?new=1", label: "A New Message", module: "member-app" },
     "member-give": { label: "Give", module: "member-app" },
-    "member-gifts:done": { href: "member-gifts.html?step=done", label: "The Last Step", module: "member-gifts" }
+    "member-gifts:done": { href: "member-gifts.html?step=done", label: "The Last Step", module: "member-gifts" },
+    "church-notes": { label: "Notes", module: "notes" },
+    "church-note": { href: "church-note.html?new=sermon&step=review", label: "Sunday's Notes", module: "notes" },
+    "member-notes": { label: "Sunday's Notes", module: "member-app" },
+    "member-devotional": { label: "Today's Devotional", module: "member-app" }
   };
   function pathIndex(key) { for (var i = 0; i < PATH.length; i++) if (PATH[i].key === key) return i; return -1; }
   function hrefOf(e) { return e.href || e.key.split(":")[0] + ".html"; }
@@ -782,7 +799,8 @@
     "church-care": "the care inbox", "church-person:record": "a person's page", "church-gifts": "the gifts picture", "church-reports": "Reports",
     "member-home": "the member app", "member-prayer": "prayer in the member app", "member-messages": "messages in the member app", "member-give": "Give",
     "member-gifts": "the gifts conversation", "member-gifts:talk": "the gifts conversation", "member-gifts-result": "Gifts to Explore",
-    "church-team": "Team Roles", "church-access": "the access record"
+    "church-team": "Team Roles", "church-access": "the access record",
+    "church-note": "Sunday's notes", "church-notes": "Notes", "member-notes": "Sunday's notes in the member app", "member-devotional": "the devotional reader"
   };
   function sayOf(e) { return SAY[e.key] || String(e.label || "").replace(/^The /, "the "); }
   function cap(t) { t = String(t || ""); return t.charAt(0).toUpperCase() + t.slice(1); }
@@ -1048,6 +1066,7 @@
     "member-home": { title: "Home", done: "That is Sarah's home: her own prayer, her own messages and three clear buttons, in {church.short}'s colors.", steps: [
       { sel: T("home.hello"), h: "Now the same week from Sarah's side", p: "Sarah signs in with a code and lands here, in {church.short}'s colors. {church.carePastor}'s reply is waiting for her." },
       { sel: T("home.actions"), h: "Three clear buttons", p: "Ask for Prayer, Send a Message and Talk About Serving. Each one reaches the right person." },
+      { sel: T("home.devotional"), h: "Sarah's morning", p: "Today's devotional from {church.carePastor} is waiting, and Sunday's notes are one tap away. {assistant} shaped both from the pastors' own words, and nothing went out until a pastor tapped Schedule.", module: "devotionals" },
       { sel: T("home.prayer"), h: "Their own prayer requests", p: "Each with its status and a lock that shows exactly who can see it." },
       { sel: T("home.profile"), h: "Their information stays theirs", p: "Adult account confirmed with the date, and Ask for a Copy or Ask to Remove My Information.", focus: ".mh-kv > div:last-child, .mh-links",
         phone: { focus: ".mh-links" } },
@@ -1124,6 +1143,65 @@
       { sel: T("result.note"), h: "Words the pastors approved", p: "The closing note is built only from sentences the pastors wrote." },
       { sel: T("result.share"), h: "Sharing is their choice", p: "Yes or Not Yet, naming exactly who would see their name." },
       { sel: T("result.serve"), h: "One step toward serving", p: "I Would Like to Talk About Serving reaches the serving teams lead in Messages." }
+    ] },
+    /* ---------------- Sermon notes and devotionals (shaped only from the pastor's own words) ---------------- */
+    "church-notes": function () {
+      if (GM.ctx && GM.ctx.locked) return null;
+      if (P.get("view") === "devotionals" && !GM.isIncluded("devotionals")) return { title: "Devotionals", done: "Daily devotionals come with the Shepherd plan. Sunday notes on the website come with every plan.", steps: [
+        { sel: ".gm-locked-card", h: "Devotionals come with the Shepherd plan", p: "A short reading each morning from the pastor's own words, the member app reader and email to members who chose it. Sunday notes on the website are already part of every plan." }
+      ] };
+      var NN0 = window.GM_NOTES, NC0 = NN0 && GM.church ? NN0.church(GM.church.slug) : null, dr0 = NC0 ? NC0.draft : null;
+      var WAY0 = { outline: "typed outline", file: dr0 && dr0.manuscript ? "Word manuscript" : "Word file", video: "run-through video", memo: "voice memo" };
+      var cameLine = dr0 ? "The pastor's own " + WAY0[dr0.way] + " came in " + dr0.came + "." : "The pastor's own words came in this week.";
+      var at0 = NC0 ? NN0.shortTime(NC0.sundayAt) : "30 minutes before the first service";
+      return { title: "Notes", done: "That is Notes. The pastor's own words, shaped into Sunday notes and daily devotionals, and nothing goes out without a tap.", steps: [
+        { sel: T("notes.pulse"), h: "Notes at a glance", p: "Sunday notes published, what is scheduled to go out, and today's devotional." },
+        { sel: T("notes.next"), h: "Sunday's notes, waiting for the pastor", p: cameLine + " One gold action shapes it, and nothing goes out until a person taps Schedule." },
+        { sel: T("notes.list"), h: "Every note in one list", p: "Sunday notes and daily devotionals, each with where it goes and when. Devotionals go out at 6 AM, Sunday notes at " + at0 + ", 30 minutes before the first service.", module: "devotionals", lockLabel: "Devotionals" },
+        { sel: T("notes.protect"), h: "Shaped, never written", p: "{assistant} shapes only the pastor's own words, prints scripture word for word with its translation named, and emails only members who chose it." }
+      ] };
+    },
+    "church-note": function () {
+      var Q = new URLSearchParams(location.search), NN = window.GM_NOTES, NC2 = NN && GM.church ? NN.church(GM.church.slug) : null;
+      var devo = Q.get("new") === "devotional";
+      if (devo && !GM.isIncluded("devotionals")) return { title: "New devotional", done: "Daily devotionals come with the Shepherd plan. Sunday notes on the website come with every plan.", steps: [
+        { sel: ".gm-locked-card", h: "Devotionals come with the Shepherd plan", p: "A short daily reading from the pastor's own words, the member app reader and email to members who chose it. Sunday notes are already part of every plan." }
+      ] };
+      /* Which note: a devotional speaks of today's devotional at 6 AM, Sunday's notes of the time before the first service. */
+      var note = NN && NC2 ? (Q.get("id") ? NN.find(GM.church.slug, Q.get("id")) : null) || (devo ? NC2.devotionals.filter(function (d) { return d.status === "draft"; })[0] : NC2.draft) : null;
+      var DEVO = !!(note && note.kind === "devotional") || devo;
+      var shep = GM.isIncluded("devotionals");
+      var at = DEVO ? "6 AM" : (NC2 ? NN.shortTime(NC2.sundayAt) : "8:30 AM");
+      var what = DEVO ? "today's devotional" : "Sunday's notes", What = DEVO ? "The devotional" : "Sunday's notes";
+      var reach = shep ? "the website's Notes page, the member app and members who chose email" : "the website's Notes page";
+      var dec = note && NN ? NN.decision(note.id) : { state: "" };
+      var step = Q.get("step") || "";
+      if (note && note.status !== "draft") return { title: DEVO ? "A devotional" : "Sunday's notes", done: "That is a note already out, shaped from the pastor's own words.", steps: [
+        { sel: T("note.lines"), h: DEVO ? "A devotional, already out" : "Notes, already out", p: "Shaped from the pastor's own words, with the scripture printed word for word and its translation named." }
+      ] };
+      if (step === "done" || dec.state) {
+        var published = dec.state === "published";
+        return { title: DEVO ? "Today's devotional" : "Sunday's notes", done: (published ? "Published with the tap" : "Scheduled, and still nothing sent until " + (dec.when || "then")) + ". That is how notes go out in Genesis Ministry.", steps: [
+          { sel: T("note.done"), h: published ? "Published, with the tap" : "Scheduled, with the tap", p: (published ? What + " went up just now on " : What + " go" + (DEVO ? "es" : "") + " out " + (dec.when ? "on " + dec.when : "at " + at) + " to ") + reach + "." + (shep ? "" : " The member app and email are included in Shepherd.") + " In this demo, nothing was sent." }
+        ] };
+      }
+      return { title: DEVO ? "Today's devotional" : "Sunday's notes", done: DEVO ? "That is the pastor's voice memo turned into a short reading. Only the pastor's words, every line checked, and nothing out without the tap." : "That is a pastor's own words turned into Sunday's notes. Only the pastor's words, every line checked, and nothing out without the tap.", steps: [
+        { sel: T("note.ways"), h: "Four ways in", p: "Upload the Word or PDF file, type or paste the outline, paste the message's video link or record a voice memo." },
+        { sel: [T("note.lines"), "#ne-in"], h: "Only the pastor's words", p: DEVO ? "{assistant} shapes the pastor's voice memo into a short reading: a title, the verse, three short paragraphs and a prayer. Every line shows where it came from and what the pastor said, and any line can be edited." : "{assistant} shapes them into a title, the scripture, three or four key points and small-group questions. Every line shows where it came from and what the pastor wrote, and any line can be edited." },
+        { sel: [T("note.checks"), "#ne-in"], h: "Nothing new added", p: "Scripture is printed word for word, with its translation named. No new teaching, ever. Preview on " + (shep ? "Phone or Website" : "Website") + " shows it as members will see it." },
+        { sel: [T("note.sheet"), "#ne-in"], h: "Nothing goes out without the tap", p: "Publish now or schedule it: " + (DEVO ? "6 AM for " + what : at + " on Sunday, 30 minutes before the first service, for " + what) + ", or a time the pastor picks. " + (shep ? "The website, the member app and email to members who chose it." : "The website's Notes page. The member app and email are included in Shepherd.") }
+      ] };
+    },
+    "member-notes": { title: "Sunday's notes", done: "That is Sunday's notes in the member app: the pastor's own points, the scripture with its translation, and questions for small groups.", steps: [
+      { sel: T("mnotes.head"), h: "Sunday's notes, one tap from Home", p: "The message Sarah heard on Sunday, with the series, the speaker and the length." },
+      { sel: T("mnotes.scripture"), h: "Scripture, word for word", p: "Printed as written, with its translation named." },
+      { sel: T("mnotes.points"), h: "The pastor's own points", p: "Shaped from the pastor's own notes. {assistant} adds no teaching of its own." },
+      { sel: T("mnotes.questions"), h: "For small groups", p: "Three questions to talk over, and one thing to try this week." }
+    ] },
+    "member-devotional": { title: "Today's devotional", done: "That is the devotional reader: one short reading a morning, from the care pastor's own words.", steps: [
+      { sel: T("mdev.days"), h: "One reading each morning", p: "Monday through Sunday. Today's is open, and the next ones arrive at 6 AM." },
+      { sel: T("mdev.reading"), h: "A verse and a few paragraphs", p: "Scripture word for word with its translation named, then a short reading in the pastor's own words." },
+      { sel: T("mdev.prayer"), h: "A prayer for today", p: "One line to pray, and email only for members who chose it." }
     ] }
   };
 
@@ -1168,7 +1246,8 @@
     "church-person:record": ["person.card", "person.prayer", "person.notes"],
     "church-gifts": ["gifts.chart", "gifts.finder"],
     "church-reports": ["reports.glance", "reports.protect"],
-    "member-home": ["home.hello", "home.prayer"],
+    "member-home": ["home.hello", "home.devotional", "home.prayer"],
+    "church-note": ["note.ways", "note.sheet"],
     "member-prayer": ["prayer.form", "prayer.visibility"],
     "member-messages": ["messages.thread", "messages.email"],
     "member-give": ["give.frame"],
@@ -1272,6 +1351,34 @@
       return "Starting the guided demo of this screen. Use Next to move on, or press Escape to stop.";
     } });
     return list;
+  }
+
+  /* Sunday's notes and today's devotional for the church shown (../../shared/notes-data.js, GM_NOTES). */
+  function notesNow() {
+    var N = window.GM_NOTES, slug = GM.church && GM.church.slug, c = N && N.church(slug);
+    return { s: c ? c.sermons[0] : null, d: N ? N.todays(slug) : null, say: function (x) { return N.speaker(x, GM.church.pastors); } };
+  }
+  /* The workspace dock: Sunday's message, today's devotional, what is scheduled, and whether notes come with Care. */
+  function notesDockAnswers() {
+    var link = function () { return [{ label: "Open the Notes", href: GM.url("church-notes.html") }]; };
+    var shepherd = function () { return GM.isIncluded("devotionals"); };
+    var SHEPHERD_LINE = "Daily devotionals, the member app and email delivery come with the Shepherd plan, $299 a month.";
+    return [
+      { first: true, match: /^(?!.*\b(?:write|draft)\w*\b).*\b(?:what|tell me)\b.{0,30}\b(?:sunday'?s|last sunday'?s|last week'?s|this week'?s|the)\s+(?:message|sermon)\b.{0,20}\babout\b/i, answer: function () {
+        var n = notesNow(); if (!n.s) return null;
+        return { text: "Sunday's message was “" + n.s.title + "”, " + n.s.part.toLowerCase() + " of " + n.s.series + ", with " + n.say(n.s) + ", from " + n.s.ref + ". " + (shepherd() ? "The notes are on your website and in the member app." : "The notes are on your website's Notes page.") + " The video is linked from the notes.", links: link().concat([{ label: "Watch Sunday's Message", href: GM.church.site + (GM_NOTES.church(GM.church.slug) || {}).watch }]) }; } },
+      { first: true, match: /^(?!.*\b(?:write|draft)\w*\b).*(?:\bis there (?:a |any )?devotional\b|\btoday'?s devotional\b|\bdevotionals?\b.{0,20}\b(?:today|this morning)\b)/i, answer: function () {
+        var n = notesNow();
+        if (!shepherd()) return { text: "Not on the Care plan. Sunday notes on your website come with every plan, so this Sunday's notes can go up on your Notes page. " + SHEPHERD_LINE, links: [{ label: "Preview the Shepherd Plan", href: GM.sameWith ? GM.sameWith("plan", "2") : "church-notes.html?plan=2" }] };
+        if (!n.d) return null;
+        return { text: "Yes. Today's devotional, " + n.d.title + " from " + n.d.verses[0].ref + ", went out at 6 AM to the member app and to members who chose email. Friday and Saturday are scheduled.", links: link() }; } },
+      { first: true, match: /\b(?:what is|what'?s|anything)\b.{0,20}\bscheduled\b|\bscheduled to go out\b/i, answer: function () {
+        var tapped = false; try { tapped = /^scheduled/.test(sessionStorage.getItem("gm.notes." + (notesNow().s ? GM_NOTES.church(GM.church.slug).draft.id : "")) || ""); } catch (e) {}
+        var NCs = GM_NOTES.church(GM.church.slug), sunday = tapped ? "Sunday's notes are scheduled for " + GM_NOTES.shortTime(NCs ? NCs.sundayAt : "8:30 AM") + ", 30 minutes before the first service." : "Sunday's notes are a draft until you tap Schedule.";
+        return { text: shepherd() ? "Friday's and Saturday's devotionals at 6 AM. " + sunday : sunday + " " + SHEPHERD_LINE, links: link() }; } },
+      { first: true, match: /\bsermon notes?\b.{0,30}\b(?:come with|included? (?:in|with|on)|on) (?:the )?care\b|\bdo sermon notes come with\b/i, answer: function () {
+        return { text: "Yes. Sunday notes on your website come with every plan: bring your outline, a file, the video or a voice memo, and " + AN + " shapes only your words. " + SHEPHERD_LINE, links: link() }; } }
+    ];
   }
 
   /* ------------------------------------------------------------------ member screens: Hope in the church's brand */
@@ -1380,12 +1487,20 @@
         freeplan: a("The app is free for members. Giving is always your choice, through the church's own giving form.", [{ label: "How Do I Give?", key: "give" }]),
         wrong: a("If something I say looks wrong, send a Message to the church office, and a person will check it. I answer only from facts " + c.short + " approved.", [toMessages]),
         textoff: a("That is a question for the church office. Send a Message, and someone from " + c.short + " will change it for you.", [toMessages]),
+        /* Sunday's message and today's devotional, from ../../shared/notes-data.js, read when tapped. */
+        sunday: { t: function () { var n = notesNow(); if (!n.s) return "Sunday's notes are in the app every week, with the scripture, the key points and questions for small groups."; return "Sunday's message was “" + n.s.title + "”, " + n.s.part.toLowerCase() + " of " + n.s.series + ", with " + n.say(n.s) + ", from " + n.s.ref + ". " + n.s.points[0] + " The notes, with questions for small groups, are in the app."; },
+          c: function () { var n = notesNow(); return [{ label: "Read Sunday's Notes", href: GM.url("member-notes.html", n.s ? { id: n.s.id } : {}), go: true, cta: true }, { label: "Is There a Devotional Today?", key: "devotional" }]; } },
+        devotional: { t: function () { var n = notesNow(); if (!n.d) return "A new devotional arrives each morning at 6."; return "Yes. Today's devotional is " + n.d.title + ", from " + n.d.verses[0].ref + ": a verse, a short reading and a prayer from " + n.say(n.d) + ". A new one arrives each morning at 6."; },
+          c: function () { return [{ label: "Read Today's Devotional", href: GM.url("member-devotional.html"), go: true, cta: true }, { label: "What Was Sunday's Message About?", key: "sunday" }]; } },
         mailinglist: a("No. Plan a Visit goes to the welcome team so they can greet you. You get church emails only when you ask for them, and every email has a way to stop them.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages])
       }, a,[{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
       /* A member's own questions first, then the product rules (in the member's words where they differ). */
       match: [
         /* "Do you use my prayer requests to train AI?" is about AI training before it is about who reads prayer. */
         rx(aiTraining, "aitraining"),
+        /* Sunday's message and today's devotional, in the member's own words. Writing one is the sermon answer. */
+        [/^(?!.*\b(?:write|writes|writing|draft\w*)\b).*(?:\b(?:what|tell me)\b.{0,30}\b(?:sunday'?s|last sunday'?s|last week'?s|this week'?s|the)\s+(?:message|sermon)\b.{0,20}\babout\b|\bnotes from (?:sunday|the sermon)\b|\bprepare for (?:the |this |sunday'?s )?(?:sunday )?(?:message|sermon)\b|\b(?:sermon|message)s?\b.{0,20}\bwritten down\b)/i, "sunday"],
+        [/^(?!.*\b(?:write|writes|writing|draft\w*|prepare\w*|create\w*)\b)(?!.*\b(?:plans?|shepherd|plus|care|cost)\b).*\b(?:devotionals?|daily (?:reading|verse))\b/i, "devotional"],
         /* Round 5: what the church pays, its plan, texts a member wants off, and a moral question for the pastors. */
         [/\b(?:church|they|we)\b.{0,20}\b(?:pay|pays|paying|spend|spends)\b|\bwhich plan\b|\b(?:our|this|the) church\b.{0,20}\bplan\b|\bplan\b.{0,20}\b(?:our|this|the) church\b/i, "memberplan"],
         [/\b(?:turn off|stop|opt out|unsubscribe)\b.{0,20}\btext\w*|\btext\w*\b.{0,20}\b(?:turn(?:ed)? off|stop|opt out)\b/i, "textoff"],
@@ -1436,6 +1551,7 @@
           ["Who Sees My Gifts?", "giftswho"], ["Can Other Members See My Phone Number?", "contactsee"], ["Who Sees What I Give?", "givingprivate"],
           ["Can I Get a Copy of My Data?", "mydata"], ["How Do I Remove My Information?", "remove"]] },
         { title: "Sundays", more: true, items: [
+          ["What Was Sunday's Message About?", "sunday"], ["Is There a Devotional Today?", "devotional"],
           ["What Time Is Sunday?", "times"], ["Where Do Kids Check In?", "kids"], ["How Do I Get Baptized?", "baptism"]] }
       ],
       tour: function () { return compile(tour); },
@@ -1618,7 +1734,7 @@
           ["What Is Genesis Ministry?", "platform"], ["What Does It Cost?", "price"], ["What Does Each Plan Include?", "levels"],
           ["Who Sees Prayer Requests?", "prayerwho"], ["What Happens in a Crisis?", "crisisinfo"], ["How Is the AI Limited?", "ai"]] },
         { title: "How It Works", more: true, items: [
-          ["Does It Replace Planning Center?", "pco"], ["Is Our Data Safe?", "hosting"], ["How Do Members Sign In?", "signin"], ["Can We Customize It?", "custom"]] },
+          ["Can Genesis Write Our Sermons?", "sermon"], ["Does It Replace Planning Center?", "pco"], ["Is Our Data Safe?", "hosting"], ["How Do Members Sign In?", "signin"], ["Can We Customize It?", "custom"]] },
         { title: "Getting Started", more: true, items: [
           ["How Do We Get Started?", "start"], ["Does It Work for a Small Church?", "size"], ["Is There a Free Trial?", "trial"]] }
       ],
@@ -1645,6 +1761,8 @@
     /* Take the Tour, Help and Jump to always show every step of the screen. */
     start: function () { fullTour = true; if (window.HopeDemo) window.HopeDemo.tour(); else pending = true; },
     end: function () { if (window.HopeDemo) window.HopeDemo.end(); },
+    /* The steps this screen's tour would show now (read by shared/hope-check.html). */
+    steps: function () { var t = currentTour(); return t ? t.steps.map(function (x) { return { h: x.h, p: GM.fill ? GM.fill(String(x.p)) : x.p }; }) : []; },
     next: null
   };
 
@@ -1661,7 +1779,7 @@
     var tour = currentTour();
     var nx = nextFor();
     GM.demo.next = nx;
-    if (!MEMBER && GM.hope && GM.hope.addAnswers) GM.hope.addAnswers(dockAnswers(), "base");
+    if (!MEMBER && GM.hope && GM.hope.addAnswers) GM.hope.addAnswers(notesDockAnswers().concat(dockAnswers()), "base");
     window.HOPE_DEMO = MEMBER ? memberConfig(tour, nx) : genesisConfig(tour, nx);
 
     if (tour && tour.steps && tour.steps.length) {

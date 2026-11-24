@@ -31,6 +31,10 @@
   .ws-kit .v2-card h2{margin:0}
   .ws-kit .v2-card p{margin:0;color:var(--v2-text-2);font-size:13px;line-height:1.6}
   .ws-kit .v2-card .v2-button{align-self:flex-start;margin-top:auto}
+  .ws-notes{display:grid;gap:12px}
+  .ws-notes h2,.ws-notes p{margin:0}
+  .ws-notes .ws-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .ws-notes .ws-actions .v2-button{margin:0}
   .ws-mails{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
   .ws-mails .v2-card{display:grid;gap:12px}
   .ws-mails h2{margin:0}
@@ -88,6 +92,13 @@
       <section class="v2-card" aria-labelledby="ws-brand-title"><div class="v2-eyebrow">Brand board</div><h2 id="ws-brand-title">So every post looks like your church</h2><p id="ws-brand-copy"></p><a class="v2-button" id="ws-brand-link" href="#">Open the Brand Board</a></section>
       <section class="v2-card" aria-labelledby="ws-social-title"><div class="v2-eyebrow">Social marketing plan</div><h2 id="ws-social-title">One Sunday, a week of posts</h2><p>One message turned into a week of posts, with sample captions, the best times to post and what to measure.</p><a class="v2-button" id="ws-social-link" href="#">Open the Social Plan</a></section>
     </div>
+
+    <section class="v2-card ws-notes" aria-labelledby="ws-notes-title" data-tour="website.notes">
+      <div class="v2-eyebrow">Sermon notes, on every plan</div>
+      <h2 id="ws-notes-title">Sunday notes page</h2>
+      <p class="v2-muted-copy" id="ws-notes-copy">Every Sunday's message on the website: the scripture with its translation named, the key points and questions for small groups. Searchable, and shaped only from the pastor's own outline, file, video or voice memo.</p>
+      <div class="ws-actions"><a class="v2-button" id="ws-notes-site" href="#">See the Notes Page</a><a class="v2-button" href="church-notes.html">Open Notes</a></div>
+    </section>
 
     <section class="v2-section" aria-labelledby="ws-mails-title">
       <div class="v2-section-head"><div><h2 id="ws-mails-title">The forms, as your team receives them</h2><p id="ws-mails-sub"></p></div></div>
@@ -207,6 +218,10 @@ GM.ready(function (ctx) {
     { target: '[data-tour="website.prayer"]', title: "A prayer form email", text: "Honest about where the words travel." }
   ]);
 });
+</script>
+<script>
+/* The Sunday notes page on the church's own site (#/notes), with the church and plan shown. */
+GM.ready(function (ctx) { var a = document.getElementById("ws-notes-site"); if (a) a.href = ctx.church.site + "?church=" + encodeURIComponent(ctx.church.slug) + "&plan=" + ctx.plan + "#/notes"; });
 </script>
 </body>
 </html>

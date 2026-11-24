@@ -39,7 +39,7 @@
 .m-main{flex:1;padding:22px 18px 28px;outline:none}
 .m-powered{margin-top:32px;text-align:center;color:var(--m-muted);font-size:12.5px;letter-spacing:.02em}
 .m-tabbar{position:sticky;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(5,1fr);padding:4px 6px calc(6px + env(safe-area-inset-bottom));background:var(--m-surface);border-top:1px solid var(--m-line)}
-.m-tabbar a{position:relative;min-height:52px;display:grid;justify-items:center;align-content:center;gap:2px;padding:4px 2px;border-radius:12px;color:var(--m-muted);font-size:11.5px;font-weight:700;text-decoration:none}
+.m-tabbar a{position:relative;min-height:52px;display:grid;justify-items:center;align-content:center;gap:2px;padding:4px 2px;border-radius:12px;color:var(--m-muted);font-size:12px;letter-spacing:0;font-weight:700;text-decoration:none}
 .m-tabbar a .gm-icon{width:23px;height:23px}
 .m-tabbar a[aria-current="page"]{color:var(--m-accent-ink)}
 .m-tabbar a[aria-current="page"]::before{content:"";position:absolute;top:-5px;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--m-accent)}
@@ -304,3 +304,36 @@ body.mx-staged .mx-card .gm-protect-list>li:nth-child(n){border-right:0;margin-r
 .m-crisis-calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
 .m-crisis-calls .m-btn{min-height:48px;padding:10px 12px;text-align:center}
 .m-app .m-crisis-note{color:var(--m-muted);font-size:14px;line-height:1.5}
+
+/* --- Sermon notes review (November 24): a phone on its side ----------------------------- */
+/* A touch screen held on its side (844 by 390), or any window that short and no wider than 960px, is a phone: the app fills the width with
+   no phone frame and no side panels, the app's top bar is compact and the tab bar stays at the foot,
+   so the reading starts near the top of the screen. The frame stays for a mouse and a big screen. */
+@media (pointer:coarse) and (max-height:500px),(max-height:500px) and (max-width:960px){
+  body.mx-staged .m-stage{display:block;min-height:0;padding-bottom:0}
+  body.mx-staged .mx-about,body.mx-staged .mx-screens,body.mx-staged .m-caption{display:none!important}
+  body.mx-staged .m-device,.m-device{width:100%;height:auto!important;min-height:0;margin:0!important;padding:0;border-radius:0;background:none;box-shadow:none}
+  body.mx-staged .m-device>.m-app,.m-device>.m-app{height:auto;min-height:0;overflow:clip;border-radius:0}
+  body.mx-staged .m-stagebar{min-height:0;padding:4px 12px;gap:6px}
+  body.mx-staged .m-stagebar .v2-button,body.mx-staged .m-stagebar .gm-plan a{min-height:44px}
+  .m-app .m-top{position:static;padding:4px 18px}
+  .m-app .m-top .m-church{min-height:44px}
+  .m-app .m-tabbar{position:sticky;bottom:0;padding:2px 8px calc(2px + env(safe-area-inset-bottom,0px))}
+  .m-app .m-tabbar a{min-height:44px;grid-auto-flow:column;gap:6px;padding:2px 4px}
+  .m-app .m-tabbar a .gm-icon{width:20px;height:20px}
+  .m-app .m-tabbar a[aria-current="page"]::before{top:-3px}
+  .m-app .m-main{padding-top:14px}
+  .m-app:has(.m-tabbar) .m-main{padding-bottom:24px}
+  html:has(body.mx-staged .m-tabbar){scroll-padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+}
+/* The sample strip is 28px on a short, wide screen (genesis.css), so the stage starts right under it. */
+@media (max-height:500px) and (orientation:landscape) and (max-width:960px){
+  body.mx-staged{padding-top:28px}
+  body.mx-staged .m-stage{min-height:calc(100vh - 28px)}
+  html:has(body.mx-staged){scroll-padding-top:36px}
+}
+/* On its side the floating Hope circle would sit on the tab bar, so Hope moves into the stage bar, as on a phone held upright. */
+@media (pointer:coarse) and (max-height:500px),(max-height:500px) and (max-width:960px){
+  body[data-side="member"] .hd-launch{display:none!important}
+  .m-stagebar .mx-hope{display:inline-flex;min-width:44px;min-height:44px}
+}
