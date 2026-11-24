@@ -394,7 +394,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
    FLOATING: phone Sundays bar, chat circle and sheet, video dialog, toast
    ===================================================================== */
 .sbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:var(--parchment);border-top:3px double var(--rule);
-  padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));transform:translateY(110%);visibility:hidden;
+  padding:8px var(--gutter) calc(8px + env(safe-area-inset-bottom));transform:translateY(110%);visibility:hidden;
   transition:transform .45s var(--ease),visibility 0s linear .45s;box-shadow:0 -14px 30px -24px rgba(21,42,32,.5)}
 .sbar.show{transform:none;visibility:visible;transition-delay:0s}
 .sbar-in{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -404,7 +404,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .sbar-r{display:flex;align-items:center;gap:8px}
 .sbar-ask{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule);border-radius:50%;background:var(--ivory);color:var(--forest)}
 .sbar-ask svg{width:20px;height:20px}
-.sbar .btn{min-height:46px;padding:0 18px;font-size:15px}
+.sbar .btn{min-height:44px;padding:0 18px;font-size:15px}
 
 .chat-fab{position:fixed;right:24px;bottom:24px;z-index:45;width:60px;height:60px;border-radius:50%;border:0;background:var(--forest);color:var(--ivory);
   display:grid;place-items:center;box-shadow:0 14px 30px -14px rgba(21,42,32,.7);transition:transform .35s var(--ease),opacity .3s ease}

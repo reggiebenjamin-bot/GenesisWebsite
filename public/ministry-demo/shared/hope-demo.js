@@ -220,7 +220,17 @@
     ".hd-skip{background:none;border:0;color:inherit;opacity:.8;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px;border-radius:6px}",
     ".hd-skip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;opacity:1}",
     "@media (max-width:640px){",
-    "  .hd-panel{right:0;left:0;bottom:0;width:auto;height:min(86vh,640px);border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* The open chat is a sheet that takes the phone screen, with a sliver of the page left above it so it
+       reads as a layer that closes (review of November 24: it used to stop at 640px, a third of the screen
+       left over the page). The 911 and 988 line stays in its foot. */
+    "  .hd-panel{right:0;left:0;bottom:0;top:calc(28px + env(safe-area-inset-top,0px));width:auto;height:auto;border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* Closed, Hope is a compact circle in the corner, never a band across the page. */
+    "  .hd-launch{right:14px;bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
+    /* Buttons on a phone: every question and action is one full-width row, 44px or taller, the same
+       padding and radius, so a group never wraps into a ragged run of different widths. */
+    "  .hd-chips{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
+    "  .hd-chip{width:100%;min-height:44px;padding:11px 14px;display:flex;align-items:center}",
+    "  .hd-card .bar .hd-row .hd-btn,.hd-invite .hd-btn{min-height:44px}",
     "  .hd-panel.on~.hd-launch,.hd-tour-on .hd-launch{opacity:0;pointer-events:none}",
     "  .hd-tour-on.hd-step-launch .hd-launch{opacity:1}",
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",

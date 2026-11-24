@@ -1546,6 +1546,12 @@
          approval line and the header orb step aside so the replies have room; at 400 percent the
          composer is one line (Enter sends) and the header is compact, so the log never shrinks to nothing. */
       '@media (max-height:500px){.aria-footer{display:none!important}.aria-actions-row .hawk-header-orb{display:none}}' +
+      /* Phones (review of November 24): the dock's buttons line up. The briefing actions share one row in two
+         equal halves, Hear the Sample Briefing takes the full row under them, and every question is a
+         full-width row, so no group wraps into a ragged run of pill widths. Each is 44px or taller. */
+      '@media (max-width:640px){.hawk-briefing-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;box-sizing:border-box}.hawk-briefing-chips>.hawk-chip:only-child,.hawk-briefing-chips>.hawk-chip:last-child:nth-child(odd){grid-column:1/-1}.hawk-chip{width:100%;min-height:44px;padding:0 10px;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.hawk-voice-row{width:100%;box-sizing:border-box}.hawk-hear{width:100%;min-height:44px;justify-content:center}' +
+      '.gm-dock-qs-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.gm-dock-q{width:100%;min-height:44px;padding:10px 14px;box-sizing:border-box}}' +
       '@media (max-height:320px){.composer__toolbar{display:none!important}.aria-actions-row{min-height:0;padding-top:0;padding-bottom:0}.aria-control-panel,.aria-control-panel__inner{padding-top:0;padding-bottom:4px}}' +
       '.hawk-core .hawk-core-mark,.hawk-core[data-state] .hawk-core-mark{filter:none}.hawk-core--orb .hawk-core-mark{width:21.73px}.hawk-core--orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,rgba(8,9,14,.92) 0%,rgba(8,9,14,.88) 56%,rgba(8,9,14,.45) 72%,rgba(8,9,14,0) 88%);pointer-events:none}</style>';
     dock = { host: host, root: root, thread: root.querySelector(".aria-thread"), scroll: root.querySelector(".aria-scroll"), qs: root.querySelector(".gm-dock-qs"), cores: [] };

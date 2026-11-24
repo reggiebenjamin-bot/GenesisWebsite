@@ -558,7 +558,7 @@ body.chat-open .chat-fab .i-x{display:inline}
   .mplay{top:calc((100vw - 42px) * 9 / 32)}
   .modal-close{top:-54px}
   /* The Sundays bar */
-  .sbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:65;align-items:center;gap:12px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  .sbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:65;align-items:center;gap:12px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));
     background:rgba(20,17,14,.97);border-top:1px solid var(--char);transform:translateY(110%);visibility:hidden;transition:none}
   .sbar.show{transform:none;visibility:visible;transition:transform .4s var(--ease)}
   .sbar .sb-chat{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--bone);color:var(--kiln);cursor:pointer}
@@ -566,7 +566,7 @@ body.chat-open .chat-fab .i-x{display:inline}
   .sbar .sb-t{flex:1;min-width:0;line-height:1.15}
   .sbar .sb-t small{display:block;font:600 10.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;color:var(--flare);margin-bottom:4px}
   .sbar .sb-t b{font:800 21px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
-  .sbar .btn{min-height:46px;padding:0 16px;font-size:15px}
+  .sbar .btn{min-height:44px;padding:0 16px;font-size:15px}
   /* Keyboard focus and in-page jumps stop above the bar, never behind it */
   html{scroll-padding-bottom:calc(67px + env(safe-area-inset-bottom) + 12px)}
   /* One floating thing at a time: the chat circle waits until the first screen is passed, and hides while the bar is up (the bar has its own chat button) */

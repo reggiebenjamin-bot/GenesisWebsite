@@ -356,7 +356,7 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 /* ---------- Phone Sundays bar ---------- */
 .sbar{display:none}
 @media (max-width:760px){
-  .sbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);border-top:1px solid var(--rule);box-shadow:0 -12px 30px -20px rgba(11,18,32,.4);padding:10px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(115%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s linear .35s}
+  .sbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);border-top:1px solid var(--rule);box-shadow:0 -12px 30px -20px rgba(11,18,32,.4);padding:8px 16px calc(8px + env(safe-area-inset-bottom));transform:translateY(115%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s linear .35s}
   body.sb-open .sbar{transform:none;visibility:visible;transition:transform .35s var(--ease),visibility 0s}
   /* Keyboard focus and in-page jumps stop above the bar, never behind it */
   html{scroll-padding-bottom:calc(65px + env(safe-area-inset-bottom) + 12px)}
