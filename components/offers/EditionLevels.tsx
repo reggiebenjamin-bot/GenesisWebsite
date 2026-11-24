@@ -33,7 +33,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
             aria-hidden="true"
             className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--tier-edge),transparent)]"
           />
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+          <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
             Level {plan.step}
           </p>
           <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
@@ -48,7 +48,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
           <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
 
           <div className="mt-6 border-t border-line-light pt-4">
-            <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
               Users
             </p>
             <p className="mt-2 text-[0.92rem] leading-snug">{plan.userLimit}</p>

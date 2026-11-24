@@ -243,7 +243,7 @@ export function ClosingBand({
           {actions}
         </div>
         {footnote ? (
-          <div className="mx-auto mt-9 max-w-[56ch] text-[0.84rem] text-muted-light">{footnote}</div>
+          <div className="mx-auto mt-9 max-w-[56ch] text-[0.875rem] text-muted-light">{footnote}</div>
         ) : null}
       </div>
     </Sheet>

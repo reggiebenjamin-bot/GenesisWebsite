@@ -14,8 +14,11 @@ export function UserLimitNote({
 }) {
   if (!plan.enterpriseNote) return null;
   return (
-    <p className={`mt-1 text-[0.8rem] leading-snug ${className}`}>
-      <Link href="/enterprise" className="underline decoration-gold/70 underline-offset-4">
+    <p className={`mt-1 text-[0.875rem] leading-snug ${className}`}>
+      <Link
+        href="/enterprise"
+        className="inline-flex min-h-11 items-center underline decoration-gold/70 underline-offset-4"
+      >
         {plan.enterpriseNote}
       </Link>
     </p>

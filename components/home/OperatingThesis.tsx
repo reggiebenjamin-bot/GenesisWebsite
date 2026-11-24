@@ -52,7 +52,7 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
             {genesisPositioning.domains.map((domain, index) => (
               <li key={domain} className="flex items-center">
                 <span className="inline-flex min-h-10 items-center gap-3 rounded-[6px] border border-line-dark bg-ink-soft px-4 text-[0.9rem] text-ivory/88 lg:w-full">
-                  <span className="font-display text-[0.62rem] tracking-[0.12em] text-gold">
+                  <span className="font-display text-[0.75rem] tracking-[0.12em] text-gold">
                     0{index + 1}
                   </span>
                   {domain}
@@ -102,7 +102,7 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
             <div className="grid justify-items-center gap-2">
               {/* The margins hold the 44px slot the old square file used. */}
               <GenesisMark className="mt-1.5 mb-[9px] h-[29px] w-auto" />
-              <span className="font-display text-[0.66rem] tracking-[0.2em] text-ivory uppercase">
+              <span className="font-display text-[0.75rem] tracking-[0.2em] text-ivory uppercase">
                 Genesis
               </span>
             </div>
@@ -137,7 +137,7 @@ export function OperatingThesis({ current }: { current: OfferPathId }) {
 
           {outcome ? (
             <div className="grid w-full gap-1.5 rounded-[6px] border border-gold/45 bg-ink-soft p-5 lg:h-[124px] lg:content-center">
-              <span className="font-display text-[0.64rem] tracking-[0.16em] text-gold uppercase">
+              <span className="font-display text-[0.75rem] tracking-[0.16em] text-gold uppercase">
                 {outcome.label}
               </span>
               <span className="text-[1.2rem] leading-tight tracking-[-0.02em] text-ivory">

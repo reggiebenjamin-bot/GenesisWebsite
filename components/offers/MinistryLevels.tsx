@@ -72,12 +72,12 @@ export function MinistryLevels() {
           </Card>
         ))}
       </ol>
-      <p className="mt-8 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center text-[0.95rem] text-muted-dark">
+      <p className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center text-[0.95rem] text-muted-dark">
         <span>{enterprise.line}</span>
         <Link
           href={enterprise.action.href}
           aria-label={`${enterprise.action.label}: ${enterprise.name}`}
-          className="font-bold text-ink underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
+          className="inline-flex min-h-11 items-center font-bold text-ink underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
         >
           {enterprise.action.label}
         </Link>

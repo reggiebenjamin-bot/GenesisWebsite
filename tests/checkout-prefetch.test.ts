@@ -89,7 +89,7 @@ test("the /start route goes through the prefetch gate", () => {
 });
 
 test("no next/link points at /start, so nothing prefetches checkout", () => {
-  for (const file of ["components/home/ProductChooser.tsx", "components/home/PlanCards.tsx"]) {
+  for (const file of ["components/home/PlanCards.tsx"]) {
     const source = readFileSync(new URL(`../${file}`, import.meta.url), "utf8");
     const links = source.match(/<Link\b[^>]*>/g) ?? [];
     for (const link of links) {

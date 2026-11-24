@@ -52,7 +52,7 @@ export function ManagedComparison({
             />
 
             <div>
-              <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+              <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                 Level {plan.step}
               </p>
               <p className="mt-4 flex items-baseline gap-1.5">
@@ -91,7 +91,7 @@ export function ManagedComparison({
         ))}
       </ol>
 
-      <p className="mt-6 max-w-[72ch] text-[0.8rem] leading-relaxed text-muted-dark">
+      <p className="mt-6 max-w-[72ch] text-[0.875rem] leading-relaxed text-muted-dark">
         {managedOverview.thirdPartyNote}
       </p>
     </div>
@@ -101,7 +101,7 @@ export function ManagedComparison({
 function Detail({ label, value, note }: { label: string; value: string; note?: ReactNode }) {
   return (
     <div className="border-t border-line-light pt-4">
-      <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+      <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
         {label}
       </p>
       <p className="mt-2 text-[0.92rem] leading-snug">{value}</p>

@@ -63,12 +63,15 @@ export default function LendingPricingPage() {
         </h2>
         <EditionLevels edition="lending" />
 
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.84rem] text-muted-dark">
+        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
           {edition.footer}
         </p>
-        <p className="mx-auto mt-6 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
-          {FUNDING_LINE}
-        </p>
+        {/* The edition footer can already be the funding line; say it once. */}
+        {edition.footer !== FUNDING_LINE ? (
+          <p className="mx-auto mt-6 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
+            {FUNDING_LINE}
+          </p>
+        ) : null}
       </Sheet>
     </>
   );

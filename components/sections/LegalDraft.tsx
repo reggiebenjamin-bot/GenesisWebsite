@@ -55,7 +55,7 @@ export function LegalDraft({
         <div className="mx-auto grid max-w-[46rem] gap-10">
           {sections.map((section) => (
             <div key={section.heading}>
-              <h2 className="font-display text-[0.72rem] tracking-[0.16em] text-gold-dark uppercase">
+              <h2 className="font-display text-[0.9rem] tracking-[0.12em] text-gold-dark uppercase">
                 {section.heading}
               </h2>
               <div className="mt-3 grid gap-3 text-[1.02rem] leading-relaxed text-ink/85">
@@ -66,7 +66,7 @@ export function LegalDraft({
             </div>
           ))}
         </div>
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
+        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
           {FUNDING_LINE}
         </p>
       </Sheet>

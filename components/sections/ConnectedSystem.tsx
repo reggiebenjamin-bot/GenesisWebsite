@@ -40,7 +40,7 @@ export function ConnectedSystem() {
                 data-layer={layer.number}
               >
                 <div className="grid gap-x-6 gap-y-3 sm:grid-cols-[3.5rem_1fr]">
-                  <span className="font-display text-[0.66rem] tracking-[0.14em] text-gold">
+                  <span className="font-display text-[0.75rem] tracking-[0.14em] text-gold">
                     {layer.number}
                   </span>
                   <div>

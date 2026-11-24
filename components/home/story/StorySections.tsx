@@ -3,7 +3,6 @@ import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/
 import { Button } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
-import { ProductChooser } from "@/components/home/ProductChooser";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import {
   aiEmployeePersonas,
@@ -84,7 +83,7 @@ export function StoryOpening() {
                 <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{e.name}</p>
                 <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{e.body}</p>
                 <Points items={e.points} className="mt-5" />
-                <p className="mt-5 border-t border-line-light pt-4 text-[0.8rem] text-muted-dark">{e.disclaimer}</p>
+                <p className="mt-5 border-t border-line-light pt-4 text-[0.875rem] text-muted-dark">{e.disclaimer}</p>
               </Link>
             </Card>
           ))}
@@ -129,23 +128,7 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: Business, Real Estate, and Lending, each with checkout. */
-export function StoryOffers() {
-  return (
-    <Sheet id="choose-business" surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
-      <SectionIntro
-        layout="split"
-        eyebrow="Chapter six. Build your team"
-        title="Choose your business."
-        titleId="story-offers-title"
-        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Open the edition page, or start Level 01, Level 02, or Level 03 checkout. Monthly plans with a one time setup.</p>}
-      />
-      <ProductChooser />
-    </Sheet>
-  );
-}
-
-/** Chapter seven: the close. */
+/** The close. The levels and checkout sit above it, in PlanCards. */
 export function StoryClose() {
   return (
     <ClosingBand
@@ -153,10 +136,12 @@ export function StoryClose() {
       title="The next call is coming. Who will answer it?"
       line="Give your business a team that never misses a lead, never forgets a follow up and never sleeps."
       actions={
-        <>
-          <ConsultationButton href="/assessment">Assess My Business</ConsultationButton>
-          <Button href="/ai-employees" variant="ghost">Meet the team</Button>
-        </>
+        /* One width for both: stacked full width on phones, two equal
+           columns from sm up. */
+        <div className="grid w-full gap-3 sm:w-auto sm:grid-cols-2 sm:gap-4">
+          <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
+          <Button href="/ai-employees" variant="ghost" className="min-h-[53px] w-full">Meet the team</Button>
+        </div>
       }
       footnote={<p>{FUNDING_LINE}</p>}
     />

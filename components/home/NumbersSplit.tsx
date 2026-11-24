@@ -28,7 +28,7 @@ export function NumbersSplit() {
           <dl className="grid gap-2.5">
             {dataProvenance.map((label) => (
               <div key={label} className="grid gap-1 sm:grid-cols-[8.5rem_minmax(0,1fr)] sm:gap-4">
-                <dt className="font-display text-[0.64rem] leading-6 tracking-[0.14em] text-gold uppercase">
+                <dt className="font-display text-[0.75rem] leading-6 tracking-[0.14em] text-gold uppercase">
                   {label}
                 </dt>
                 <dd>{dataProvenanceMeaning[label]}</dd>

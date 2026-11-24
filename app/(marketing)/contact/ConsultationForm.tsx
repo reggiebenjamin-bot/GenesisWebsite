@@ -16,9 +16,9 @@ const churchForm = ministryContact.form;
 const checkForm = ministryContact.websiteCheck.form;
 
 const field =
-  "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
+  "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.85rem] tracking-[0.08em] text-muted-dark uppercase";
 const control =
-  "min-h-12 w-full border border-line-light bg-paper px-4 text-base sm:text-[0.95rem] tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
+  "min-h-12 w-full border border-line-light bg-paper px-4 text-base tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
 
 export function ConsultationForm({
   initialPlan = "",
@@ -391,7 +391,7 @@ export function ConsultationForm({
               : "Book a Consultation"}
       </SubmitButton>
 
-      <div className="grid gap-2 text-[0.8rem] text-muted-dark">
+      <div className="grid gap-2 text-[0.875rem] text-muted-dark">
         {church ? (
           (check ? checkForm.footnotes : churchForm.footnotes).map((line) => <p key={line}>{line}</p>)
         ) : (

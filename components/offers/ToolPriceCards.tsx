@@ -26,7 +26,7 @@ export function ToolPriceCards({ headingLevel = "h3" }: { headingLevel?: "h3" | 
 
           <div>
             <div className="flex items-center justify-between gap-3">
-              <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+              <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                 Tool {tool.number}
               </p>
               {tool.price.cadence === "monthly" ? (
@@ -54,14 +54,14 @@ export function ToolPriceCards({ headingLevel = "h3" }: { headingLevel?: "h3" | 
           </Heading>
 
           <div className="border-t border-line-light pt-4">
-            <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
               What it is for
             </p>
             <p className="mt-2 text-[0.92rem] leading-snug">{tool.pricing.for}</p>
           </div>
 
           <div className="border-t border-line-light pt-4">
-            <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
               What you get
             </p>
             <ul className="mt-3 grid gap-2">

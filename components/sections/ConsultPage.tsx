@@ -54,7 +54,7 @@ export function ConsultPage({
       <Sheet surface="paper" rise className="site-section">
         <div className="mx-auto max-w-[46rem]">
           <ConsultationForm interest={interest} />
-          <p className="mx-auto mt-8 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">{FUNDING_LINE}</p>
+          <p className="mx-auto mt-8 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">{FUNDING_LINE}</p>
         </div>
       </Sheet>
     </>

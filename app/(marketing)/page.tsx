@@ -6,7 +6,6 @@ import { CustomInfrastructureSections } from "@/components/home/PathSections";
 import {
   StoryClose,
   StoryHowItWorks,
-  StoryOffers,
   StoryOpening,
   StoryTeamDay,
 } from "@/components/home/story/StorySections";
@@ -28,7 +27,8 @@ export const metadata: Metadata = pageMetadata("/");
 /**
  * The homepage tells the Genesis story beneath the Hawk hero: the problem,
  * why Genesis exists, Genesis OS and its editions, the team, how it runs,
- * the plans, Managed AI, and the close.
+ * Managed AI with the plans and checkout (one presentation, PlanCards), the
+ * questions, and the close.
  */
 export default function Home() {
   return (
@@ -50,7 +50,6 @@ export default function Home() {
       <AiEmployeesHomeSection />
       <StoryTeamDay />
       <StoryHowItWorks />
-      <StoryOffers />
 
       <CustomInfrastructureSections />
       <StoryClose />

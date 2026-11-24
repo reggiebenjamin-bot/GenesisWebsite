@@ -47,7 +47,7 @@ export function ProductThesis() {
                 </div>
 
                 <div className={flipped ? "lg:order-1" : undefined}>
-                  <p className="font-display text-[0.62rem] tracking-[0.22em] text-ivory/32 uppercase">
+                  <p className="font-display text-[0.75rem] tracking-[0.22em] text-ivory/32 uppercase">
                     Fig {pillar.figure}
                   </p>
                   <h3 className="mt-5 max-w-[18ch] text-[clamp(1.6rem,2.6vw,2.4rem)] tracking-[-0.02em] text-balance text-ivory">

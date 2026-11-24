@@ -110,15 +110,15 @@ export default async function ContactPage({
               </p>
               <a
                 href={`mailto:${contact.email}`}
-                className="w-fit border-b border-ink/30 font-medium"
+                className="inline-flex min-h-11 w-fit items-center font-medium"
               >
-                {contact.email}
+                <span className="border-b border-ink/30">{contact.email}</span>
               </a>
               <a
                 href={`tel:${contact.phoneHref}`}
-                className="w-fit border-b border-ink/30 font-medium"
+                className="inline-flex min-h-11 w-fit items-center font-medium"
               >
-                {contact.phoneDisplay}
+                <span className="border-b border-ink/30">{contact.phoneDisplay}</span>
               </a>
             </div>
           </aside>

@@ -48,7 +48,7 @@ export function OperatingPath() {
                         : "lg:row-start-3 lg:pt-9"
                     }`}
                   >
-                    <p className="font-display text-[0.66rem] tracking-[0.16em] text-gold-dark">
+                    <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark">
                       {step.number}
                     </p>
                     <h3 className="mt-3 text-[1.35rem] tracking-[-0.02em]">

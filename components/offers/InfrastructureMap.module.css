@@ -87,6 +87,21 @@
   text-transform: uppercase;
 }
 
+/* On phones the core tile is under 100px wide, so the widest word
+   ("Infrastructure") gets tighter tracking, a size that follows the
+   viewport and slimmer side padding to stay inside the dark tile. */
+@media (max-width: 639.98px) {
+  .core {
+    padding: 8px 4px;
+  }
+
+  .coreLabel {
+    max-width: 100%;
+    font-size: clamp(0.56rem, 2.5vw, 0.66rem);
+    letter-spacing: 0.03em;
+  }
+}
+
 @media (min-width: 640px) {
   .coreLabel {
     font-size: 0.78rem;

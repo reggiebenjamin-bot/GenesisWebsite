@@ -416,7 +416,7 @@ export function AssessmentForm() {
             </SubmitButton>
           </div>
 
-          <p className="text-[0.8rem] leading-relaxed text-muted-dark">
+          <p className="text-[0.875rem] leading-relaxed text-muted-dark">
             Genesis uses these details to send your assessment and follow up about it. Completing
             the assessment does not create an account or commit either party to an engagement.
           </p>

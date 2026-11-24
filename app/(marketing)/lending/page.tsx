@@ -76,7 +76,7 @@ export default function LendingPage() {
           <EditionLevels edition="lending" />
         </div>
 
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
+        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
           {lendingPage.disclaimer}
         </p>
       </Sheet>

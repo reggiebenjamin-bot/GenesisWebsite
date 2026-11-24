@@ -37,7 +37,7 @@ export function ManagedBento() {
       </Card>
 
       <Card className="flex flex-col justify-center lg:col-span-5">
-        <p className="font-display text-[0.64rem] tracking-[0.16em] text-gold-dark uppercase">
+        <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
           What it does
         </p>
         <ul className="mt-5 grid gap-5">
