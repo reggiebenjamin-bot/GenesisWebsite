@@ -16,6 +16,10 @@ export type AnalyticsEvent =
   | "assessment_completed"
   | "assessment_lead_captured"
   | "assessment_result_viewed"
+  /* A church in the assessment: Genesis Ministry recommended, its page opened, its call booked */
+  | "assessment_edition_recommended"
+  | "assessment_edition_link_clicked"
+  | "ministry_call_cta_clicked"
   | "infrastructure_review_cta_clicked"
   | "infrastructure_review_booked"
   | "direct_consultation_cta_clicked"

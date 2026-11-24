@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
-import { contact, navigation, navigationLinks } from "@/lib/content";
-import { editions, ministryEdition } from "@/lib/editions";
+import { contact, navigation, navigationLinks, uniqueByHref } from "@/lib/content";
+import { allEditions } from "@/lib/editions";
 import { genesisPositioning, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
@@ -15,9 +15,8 @@ const pathPages = offerPaths
   .filter((path) => path.id === "custom-infrastructure")
   .map((path) => ({ label: path.product, href: path.href }));
 
-/* The Genesis OS editions, each with its own landing page. Ministry is not on
-   the homepage yet, so the footer is how every page links to it. */
-const editionPages = [...editions, ministryEdition].map((edition) => ({
+/* All five Genesis OS editions, Ministry included, each with its own page. */
+const editionPages = allEditions.map((edition) => ({
   label: edition.name.replace(/^Genesis /, ""),
   href: edition.href,
 }));
@@ -28,6 +27,18 @@ const consultPages = [
   { label: "Capital Desk", href: "/capital-desk" },
   { label: "Leadscout", href: "/leadscout" },
 ];
+
+/* The navigation repeats the editions, so each destination is listed once. */
+const exploreLinks = uniqueByHref([
+  ...pathPages,
+  ...editionPages,
+  ...consultPages,
+  { label: "Texas", href: "/texas" },
+  { label: "Texas service businesses", href: "/texas/service-businesses" },
+  ...navigationLinks(navigation),
+  { label: "Blog", href: "/blog" },
+]);
+
 const bottomLinks = [
   { label: "Classes", href: "/classes" },
   { label: "Privacy", href: "/privacy" },
@@ -51,7 +62,7 @@ export function Footer() {
         <div>
           <p className={columnLabel}>Explore</p>
           <div className="mt-5 grid gap-3">
-            {[...pathPages, ...editionPages, ...consultPages, { label: "Texas", href: "/texas" }, { label: "Texas service businesses", href: "/texas/service-businesses" }, ...navigationLinks(navigation), { label: "Blog", href: "/blog" }].map((item) => (
+            {exploreLinks.map((item) => (
               <Link key={item.href} href={item.href} className={columnLink}>
                 {item.label}
               </Link>

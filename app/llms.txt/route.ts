@@ -40,6 +40,8 @@ export function GET() {
     link("/business"),
     link("/real-estate"),
     link("/lending"),
+    link("/enterprise"),
+    link("/ministry"),
     "",
     "## Consults",
     "",

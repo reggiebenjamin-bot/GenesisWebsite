@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Blocks";
+import { ministryEdition } from "@/lib/editions";
+import { ministryLevels } from "@/lib/ministryPage";
 import { chooserProducts } from "@/lib/productChooser";
 
 const pageLink =
@@ -50,6 +52,13 @@ export function ProductChooser() {
           Leadscout consult
         </Link>
         . These are conversations. They do not start checkout.
+      </p>
+      <p className="mx-auto mt-3 max-w-[62ch] text-center text-[0.95rem] leading-relaxed text-muted-dark">
+        Leading a church?{" "}
+        <Link href={ministryEdition.href} className={consultLink}>
+          {ministryEdition.name}
+        </Link>{" "}
+        has its own plans, from {ministryLevels.levels[0].priceDisplay} a month.
       </p>
     </div>
   );

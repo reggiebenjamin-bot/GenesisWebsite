@@ -1,4 +1,14 @@
+import { allEditions, ministryEdition } from "./editions.ts";
 import type { OfferPathId } from "./offers.ts";
+
+/** One short line per edition under its name in the Editions dropdown. */
+const editionNavNotes: Record<string, string> = {
+  "/lending": "For loan officers.",
+  "/real-estate": "For agents and brokerages.",
+  "/business": "For service businesses.",
+  "/enterprise": "For multi location operations.",
+  "/ministry": "For churches.",
+};
 
 export type NavItem = { label: string; href: string };
 
@@ -26,6 +36,12 @@ export function isNavGroup(entry: NavEntry): entry is NavGroup {
 /** Every destination in the navigation, flattened, in display order. */
 export function navigationLinks(entries: NavEntry[]): NavLink[] {
   return entries.flatMap((entry) => (isNavGroup(entry) ? entry.items : [entry]));
+}
+
+/** The first link for each destination, in order: a list that repeats an href renders it once. */
+export function uniqueByHref<T extends NavItem>(links: readonly T[]): T[] {
+  const seen = new Set<string>();
+  return links.filter((link) => !seen.has(link.href) && Boolean(seen.add(link.href)));
 }
 
 export type SystemLayer = {
@@ -57,11 +73,28 @@ export const contact = {
  * Entries with more than one destination are groups, and render as dropdowns.
  * The two path pages (/mini and /solutions) are reached through the Agent /
  * Custom Infrastructure toggle in the navigation bar, not from this list.
+ * The Editions dropdown lists all five Genesis OS editions and features
+ * Genesis Ministry, so a church can find its edition from any page.
  */
 export const navigation: NavEntry[] = [
   { label: "How It Works", href: "/how-it-works" },
   { label: "AI Employees", href: "/ai-employees" },
   { label: "Pricing", href: "/pricing" },
+  {
+    label: "Editions",
+    items: allEditions.map((edition) => ({
+      label: edition.name.replace(/^Genesis /, ""),
+      href: edition.href,
+      description: editionNavNotes[edition.href],
+    })),
+    feature: {
+      eyebrow: `Edition ${ministryEdition.no}`,
+      title: ministryEdition.name,
+      description: "For churches of about 100 to 1,000 people. Plans from $149 a month.",
+      href: ministryEdition.href,
+      action: "See Genesis Ministry",
+    },
+  },
   {
     label: "Company",
     items: [

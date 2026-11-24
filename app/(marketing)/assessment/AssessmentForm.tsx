@@ -1,17 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Card } from "@/components/ui/Blocks";
+import { Card, Points } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
 import { track } from "@/lib/analytics";
 import {
   assessmentCopy,
+  assessmentEdition,
   assessmentFindings,
   assessmentSteps,
   type Answers,
+  type EditionRecommendation,
   type Question,
   type Step,
 } from "@/lib/assessment";
@@ -157,6 +160,8 @@ export function AssessmentForm() {
 
   const step = assessmentSteps[index];
   const findings = useMemo(() => assessmentFindings(answers), [answers]);
+  const persona = typeof answers.persona === "string" ? answers.persona : undefined;
+  const recommended = assessmentEdition(persona);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -179,7 +184,8 @@ export function AssessmentForm() {
     if (status !== "done") return;
     resultRef.current?.focus();
     track("assessment_result_viewed", { findings: findings.length });
-  }, [status, findings.length]);
+    if (recommended) track("assessment_edition_recommended", { edition: recommended.edition });
+  }, [status, findings.length, recommended]);
 
   function answer(id: string, value: string | string[]) {
     if (!startedRef.current) {
@@ -253,12 +259,12 @@ export function AssessmentForm() {
   }
 
   if (status === "done") {
-    const persona = typeof answers.persona === "string" ? answers.persona : undefined;
     return (
       <Results
         findings={findings}
         resultRef={resultRef}
         pricingHref={pricingPathForPersona(persona)}
+        recommended={recommended}
       />
     );
   }
@@ -305,6 +311,22 @@ export function AssessmentForm() {
               />
             ))}
           </div>
+
+          {index === 0 && recommended ? (
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5">
+              <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto shrink-0" />
+              <p className="min-w-0 flex-1 text-[0.95rem] leading-relaxed">
+                {recommended.stepNote}{" "}
+                <Link
+                  href={recommended.page.href}
+                  className="font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+                  onClick={() => track("assessment_edition_link_clicked", { edition: recommended.edition, from: "step_one" })}
+                >
+                  {recommended.page.label}
+                </Link>
+              </p>
+            </div>
+          ) : null}
 
           {showRequired ? (
             <p role="alert" className="mt-6 text-[0.9rem] text-gold-dark">
@@ -430,10 +452,12 @@ function Results({
   findings,
   resultRef,
   pricingHref,
+  recommended,
 }: {
   findings: readonly { id: string; title: string; body: string }[];
   resultRef: React.RefObject<HTMLDivElement | null>;
   pricingHref: string;
+  recommended: EditionRecommendation | null;
 }) {
   const { results } = assessmentCopy;
 
@@ -466,25 +490,59 @@ function Results({
         </p>
       </Card>
 
+      {recommended ? (
+        <Card className="mt-4">
+          <div className="flex items-center gap-3">
+            <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
+            <Eyebrow className="text-gold">{recommended.eyebrow}</Eyebrow>
+          </div>
+          <h2 className="mt-3 text-[1.7rem] font-light tracking-[-0.035em]">{recommended.name}</h2>
+          <p className="mt-3 max-w-[64ch] text-[0.95rem] leading-relaxed text-muted-dark">{recommended.body}</p>
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <Points items={recommended.points} />
+            <ul className="grid gap-2.5 text-[0.95rem]">
+              {recommended.plans.map((plan) => (
+                <li key={plan} className="border-b border-line-light pb-2.5 last:border-b-0">
+                  {plan}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="mt-6 border-t border-line-light pt-4">
+            <Link
+              href={recommended.page.href}
+              className="text-[0.95rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+              onClick={() => track("assessment_edition_link_clicked", { edition: recommended.edition, from: "results" })}
+            >
+              {recommended.page.label}
+            </Link>
+          </p>
+        </Card>
+      ) : null}
+
       <Card tone="inverse" className="mt-4 text-center">
         <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
-          {results.ctaHeadline}
+          {recommended ? results.churchCtaHeadline : results.ctaHeadline}
         </h2>
         <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
-          {results.ctaBody}
+          {recommended ? results.churchCtaBody : results.ctaBody}
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <ConsultationButton
-            href="/contact"
-            onClick={() => track("infrastructure_review_cta_clicked", { from: "assessment_results" })}
+            href={recommended ? recommended.call.href : "/contact"}
+            onClick={() =>
+              track(recommended ? "ministry_call_cta_clicked" : "infrastructure_review_cta_clicked", {
+                from: "assessment_results",
+              })
+            }
           >
-            {results.ctaPrimary}
+            {recommended ? recommended.call.label : results.ctaPrimary}
           </ConsultationButton>
           <Link
-            href={pricingHref}
+            href={recommended ? recommended.plansLink.href : pricingHref}
             className="inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:border-ivory"
           >
-            See pricing
+            {recommended ? recommended.plansLink.label : "See pricing"}
           </Link>
         </div>
       </Card>

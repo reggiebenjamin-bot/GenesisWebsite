@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
@@ -8,8 +9,9 @@ import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import {
   aiEmployeePersonas,
 } from "@/lib/aiEmployees";
-import { editions } from "@/lib/editions";
+import { editions, ministryEdition } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
+import { ministryPriceAnswer } from "@/lib/ministryPage";
 
 const problems = [
   { title: "Missed calls", body: "The phone rings during a job or after hours, and that caller rarely calls back." },
@@ -72,7 +74,7 @@ export function StoryOpening() {
           titleId="story-os-title"
           aside={
             <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              Genesis OS connects your calls, inbox, CRM, calendar and pipeline, with AI employees working inside it. Choose the edition built for you.
+              Genesis OS connects your calls, inbox, CRM, calendar and pipeline, with AI employees working inside it. Choose the edition built for you. Churches have their own: Genesis Ministry.
             </p>
           }
         />
@@ -88,6 +90,29 @@ export function StoryOpening() {
               </Link>
             </Card>
           ))}
+          {/* Edition 05 spans the row: software for churches, with its own plans and disclaimer. */}
+          <Card as="li" className="md:col-span-2">
+            <Link href={ministryEdition.href} className="group grid gap-x-10 gap-y-5 md:grid-cols-[1.1fr_1fr] md:items-start">
+              <div>
+                <div className="flex items-center gap-3">
+                  <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
+                  <Eyebrow className="text-gold">Edition {ministryEdition.no}</Eyebrow>
+                </div>
+                <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{ministryEdition.name}</p>
+                <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{ministryEdition.body}</p>
+              </div>
+              <div>
+                <Points items={ministryEdition.points} className="md:mt-9" />
+                <p className="mt-5 text-[0.95rem] leading-relaxed">
+                  {ministryPriceAnswer}{" "}
+                  <span className="font-bold underline decoration-ink/30 underline-offset-4 group-hover:text-gold-dark">
+                    See Genesis Ministry
+                  </span>
+                </p>
+              </div>
+              <p className="border-t border-line-light pt-4 text-[0.8rem] text-muted-dark md:col-span-2">{ministryEdition.disclaimer}</p>
+            </Link>
+          </Card>
         </ul>
       </Sheet>
     </>

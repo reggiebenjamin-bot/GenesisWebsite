@@ -144,6 +144,9 @@ export function pricingPathForPersona(persona: string | undefined): string {
     case "Brokerage":
     case "Investor / Acquisitions":
       return editionPricing.real_estate.pricingPath;
+    /* Churches get the three Ministry plans, not the business Levels. */
+    case "Church or ministry":
+      return "/ministry#levels";
     default:
       return "/pricing";
   }

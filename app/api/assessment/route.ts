@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import { assessmentQuestions } from "@/lib/assessment";
+import { assessmentEdition, assessmentQuestions } from "@/lib/assessment";
 import { NEEDS_GHL_TAG, crmAnswer, crmChoice, needsGhl } from "@/lib/crm";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
 
@@ -115,6 +115,8 @@ export async function POST(request: Request) {
       company: asString(data.company),
       assessment_result_categories: asString(data.assessment_result_categories),
       crm_choice: crm,
+      /* "ministry" for a church, so the CRM can route it to the Ministry follow up. */
+      recommended_edition: assessmentEdition(answers.persona)?.edition ?? "",
       needs_ghl: tagged ? "true" : "",
       tags: tagged ? NEEDS_GHL_TAG : "",
       assessment_completed: "true",

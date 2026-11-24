@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
-import { editions, ministryEdition } from "../lib/editions.ts";
+import { isNavGroup, navigation, navigationLinks, uniqueByHref } from "../lib/content.ts";
+import { allEditions, editions, ministryEdition } from "../lib/editions.ts";
 import { FUNDING_LINE } from "../lib/legal.ts";
 import {
   MINISTRY_OPERATION_TYPE,
@@ -69,13 +70,46 @@ const allCopy = [
     .flatMap(([name, value]) => strings(value, name)),
 ].filter(({ path, text }) => isCopy(path, text));
 
-test("Ministry is Edition 05 and stays off the homepage edition list", () => {
+test("Ministry is Edition 05: its own card, not one of the four business editions", () => {
   assert.equal(ministryEdition.no, "05");
   assert.equal(ministryEdition.href, "/ministry");
   assert.equal(ministryEdition.name, "Genesis Ministry");
-  assert.equal(editions.length, 4, "the homepage keeps its four edition cards");
+  assert.equal(editions.length, 4, "the four business editions share the funding line and the assessment");
   assert.ok(!editions.some((edition) => edition.href === "/ministry"));
   assert.equal(ministryEdition.points.length, 3);
+  /* allEditions is every edition, Ministry last: the homepage, the navigation and the footer. */
+  assert.deepEqual(allEditions.map((edition) => edition.href), [...editions.map((edition) => edition.href), "/ministry"]);
+});
+
+test("the homepage features Ministry as a fifth edition card with the gold G and its plans", () => {
+  const story = readFileSync(join(process.cwd(), "components", "home", "story", "StorySections.tsx"), "utf8");
+  assert.match(story, /href=\{ministryEdition\.href\}/);
+  assert.match(story, /Edition \{ministryEdition\.no\}/);
+  assert.match(story, /\{ministryEdition\.disclaimer\}/);
+  assert.match(story, /\{ministryPriceAnswer\}/);
+  assert.match(story, /\/brand\/mark-gold-on-light\.svg/);
+  const chooser = readFileSync(join(process.cwd(), "components", "home", "ProductChooser.tsx"), "utf8");
+  assert.match(chooser, /Leading a church\?/);
+  assert.match(chooser, /href=\{ministryEdition\.href\}/);
+});
+
+test("the navigation lists every edition and features Ministry, and the footer lists each link once", () => {
+  const editionsGroup = navigation.find((entry) => entry.label === "Editions");
+  assert.ok(editionsGroup && isNavGroup(editionsGroup), "an Editions dropdown");
+  assert.deepEqual(editionsGroup.items.map((item) => item.href), allEditions.map((edition) => edition.href));
+  for (const item of editionsGroup.items) assert.ok(item.description, `${item.href} has a line`);
+  assert.equal(editionsGroup.feature?.href, "/ministry");
+  assert.match(editionsGroup.feature?.description ?? "", new RegExp(`from \\${ministryLevels.levels[0].priceDisplay} a month`));
+  for (const text of [editionsGroup.feature?.title, editionsGroup.feature?.description, editionsGroup.feature?.action, ...editionsGroup.items.flatMap((item) => [item.label, item.description])]) {
+    for (const dash of DASHES) assert.equal(String(text).includes(dash), false, `nav copy has "${dash}": ${text}`);
+    assert.equal(EMOJI.test(String(text)), false);
+  }
+  const links = [...editionsGroup.items, { label: "Again", href: "/ministry" }, ...navigationLinks(navigation)];
+  const unique = uniqueByHref(links);
+  assert.equal(new Set(unique.map((link) => link.href)).size, unique.length);
+  assert.equal(unique.filter((link) => link.href === "/ministry")[0].label, "Ministry");
+  const footer = readFileSync(join(process.cwd(), "components", "layout", "Footer.tsx"), "utf8");
+  assert.match(footer, /uniqueByHref\(/);
 });
 
 test("Ministry is software for churches, not funding", () => {

@@ -10,6 +10,49 @@
  */
 
 import { CRM_QUESTION, crmOptions } from "./crm.ts";
+import { ministryEdition } from "./editions.ts";
+import { ministryLevels } from "./ministryPage.ts";
+
+/** The persona a church picks. It must match the case in pricingPathForPersona. */
+export const CHURCH_PERSONA = "Church or ministry";
+
+/** The Genesis OS edition the assessment recommends, with the links it offers. */
+export type EditionRecommendation = {
+  edition: "ministry";
+  eyebrow: string;
+  name: string;
+  body: string;
+  points: readonly string[];
+  /** Each plan as "Care, $149 a month". */
+  plans: readonly string[];
+  /** Shown on step one as soon as a church picks its persona. */
+  stepNote: string;
+  page: { label: string; href: string };
+  plansLink: { label: string; href: string };
+  call: { label: string; href: string };
+};
+
+/**
+ * The edition built for this persona, or null when the business Levels fit.
+ * Today only churches get one: Genesis Ministry, its three plans, the page
+ * and a call. Everyone else keeps the business results and pricing.
+ */
+export function assessmentEdition(persona: string | undefined): EditionRecommendation | null {
+  if (persona !== CHURCH_PERSONA) return null;
+  return {
+    edition: "ministry",
+    eyebrow: `Recommended for you. Edition ${ministryEdition.no}`,
+    name: ministryEdition.name,
+    body: ministryEdition.body,
+    points: ministryEdition.points,
+    plans: ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month`),
+    stepNote:
+      "Genesis Ministry is built for churches of about 100 to 1,000 people. You can see it now, or keep going and we will point you to it at the end.",
+    page: { label: "See Genesis Ministry", href: ministryEdition.href },
+    plansLink: { label: "See the Plans", href: `${ministryEdition.href}#levels` },
+    call: { label: "Book a Call", href: "/contact?topic=ministry" },
+  };
+}
 
 export type Choice = { value: string; label: string };
 
@@ -36,7 +79,7 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "persona",
         kind: "single",
-        label: "Which best describes your business?",
+        label: "Which best describes your business or organization?",
         options: choices(
           "Agent / Solo Operator",
           "Real Estate Team",
@@ -45,6 +88,7 @@ export const assessmentSteps: readonly Step[] = [
           "Investor / Acquisitions",
           "Developer",
           "Service business / trades (HVAC and more)",
+          CHURCH_PERSONA,
           "Other",
         ),
       },
@@ -436,5 +480,9 @@ export const assessmentCopy = {
     ctaBody:
       "A Genesis Infrastructure Review looks at your assessment with you, understands how the work actually moves today, and identifies where Genesis could create the most useful operating leverage.",
     ctaPrimary: "Book My Infrastructure Review",
+    /* For a church, the band books the Ministry call instead of the business review. */
+    churchCtaHeadline: "Talk with us about your church.",
+    churchCtaBody:
+      "A short call to hear how guests and care requests reach your church today, and which Genesis Ministry plan fits. No commitment.",
   },
 } as const;
