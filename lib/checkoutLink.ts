@@ -22,23 +22,65 @@ export function isLinkPreviewAgent(userAgent: string | null | undefined): boolea
   return PREVIEW_AGENT.test(ua);
 }
 
-/**
- * True for a request the browser makes ahead of a click: a Next.js link
- * prefetch (RSC or Next-Router-Prefetch headers, or an _rsc query), or a
- * speculative prefetch (Sec-Purpose or Purpose: prefetch). Such a request
- * must never open a Stripe Checkout Session.
- */
-export function isPrefetchRequest(headers: Headers, url: URL | string): boolean {
-  const target = typeof url === "string" ? new URL(url) : url;
-  if (target.searchParams.has("_rsc")) return true;
-  if (headers.get("rsc") === "1" || headers.has("next-router-prefetch")) return true;
-  const purpose = `${headers.get("sec-purpose") ?? ""} ${headers.get("purpose") ?? ""}`.toLowerCase();
-  return purpose.includes("prefetch") || purpose.includes("prerender");
-}
-
 /** Plan id from ?plan= or a /start/<tier> segment. Empty when unknown. */
 export function planFromLink(value: string | null | undefined): string {
   const raw = (value ?? "").trim().toLowerCase();
   const plan = /^\d+$/.test(raw) ? `managed-${raw}` : raw;
   return isManagedPlanId(plan) ? plan : "";
+}
+
+/**
+ * True for a speculative fetch rather than a person opening the link: a
+ * Next.js router prefetch or RSC fetch (RSC, Next-Router-Prefetch,
+ * Next-Router-State-Tree, or an _rsc query), or a browser prefetch (Purpose,
+ * Sec-Purpose, X-Purpose or X-Moz: prefetch). None of these may open a Stripe
+ * Checkout Session. Takes a Request, or its headers and URL.
+ */
+export function isPrefetchRequest(request: Request): boolean;
+export function isPrefetchRequest(headers: Headers, url: URL | string): boolean;
+export function isPrefetchRequest(input: Request | Headers, url?: URL | string): boolean {
+  const headers = input instanceof Headers ? input : input.headers;
+  if (headers.get("rsc") !== null) return true;
+  if (headers.get("next-router-prefetch") !== null) return true;
+  if (headers.get("next-router-state-tree") !== null) return true;
+  if (/prefetch|prerender/i.test(headers.get("purpose") ?? "")) return true;
+  if (/prefetch|prerender/i.test(headers.get("sec-purpose") ?? "")) return true;
+  if (/prefetch|prerender/i.test(headers.get("x-purpose") ?? "")) return true;
+  if (/prefetch/i.test(headers.get("x-moz") ?? "")) return true;
+  const target = input instanceof Headers ? url : input.url;
+  if (target === undefined) return false;
+  return new URL(target).searchParams.has("_rsc");
+}
+
+/** 303 to the pricing page, never cached, never indexed. */
+export function pricingRedirect(request: Request): Response {
+  const url = new URL("/pricing", request.url);
+  url.hash = "custom-infrastructure";
+  return new Response(null, {
+    status: 303,
+    headers: {
+      Location: url.toString(),
+      "Cache-Control": "no-store",
+      "X-Robots-Tag": "noindex, nofollow",
+      Vary: "RSC, Next-Router-Prefetch, Purpose, Sec-Purpose, User-Agent",
+    },
+  });
+}
+
+/**
+ * Gate for GET /start/<tier>. Unknown plans, prefetches, and link previews go
+ * to pricing. Only a person opening the link reaches `start`, which creates
+ * the Checkout Session.
+ */
+export async function gateCheckoutLink(
+  request: Request,
+  rawPlan: string | null,
+  start: (plan: string, edition: string | null) => Promise<Response>,
+): Promise<Response> {
+  const plan = planFromLink(rawPlan);
+  if (!plan) return pricingRedirect(request);
+  if (isPrefetchRequest(request)) return pricingRedirect(request);
+  if (isLinkPreviewAgent(request.headers.get("user-agent"))) return pricingRedirect(request);
+  const edition = new URL(request.url).searchParams.get("edition");
+  return start(plan, edition);
 }

@@ -29,10 +29,10 @@ test("a link prefetch never opens a Stripe Checkout Session", () => {
   assert.equal(isPrefetchRequest(new Headers({ "Sec-Purpose": "prefetch;prerender" }), url), true);
   assert.equal(isPrefetchRequest(new Headers(), `${url}&_rsc=abc`), true);
   assert.equal(isPrefetchRequest(new Headers(), url), false);
-  /* The link entry checks for a prefetch before it ever calls Stripe. */
+  /* The link entry runs the prefetch gate before it ever calls Stripe. */
   const start = read("lib/managedCheckoutStart.ts");
   const link = start.slice(start.indexOf("export async function startManagedCheckoutFromLink"));
-  assert.ok(link.indexOf("isPrefetchRequest") > 0 && link.indexOf("isPrefetchRequest") < link.indexOf("startManagedCheckout(request"));
+  assert.ok(link.indexOf("gateCheckoutLink(") > 0 && link.indexOf("gateCheckoutLink(") < link.indexOf("startManagedCheckout(request"));
 });
 
 test("the business assessment is six steps plus the snapshot form, like the church path", () => {
