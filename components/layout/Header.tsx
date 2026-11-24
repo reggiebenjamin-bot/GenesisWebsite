@@ -17,9 +17,10 @@ import {
 import { setOfferPath } from "@/components/offers/offerPathState";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
-import { isMinistryTopic } from "@/lib/ministryPage";
+import { isMinistryTopic, ministryCue } from "@/lib/ministryPage";
 import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { cn } from "@/lib/utils";
+import { GenesisMark } from "./GenesisMark";
 import styles from "./Header.module.css";
 import { Logo } from "./Logo";
 
@@ -544,6 +545,20 @@ function MobileMenu({
       </div>
 
       <nav aria-label="Primary navigation" className={styles.sheetBody}>
+        {/* A church reading the business site sees its own edition first.
+            On the Ministry pages it is already there, so the cue steps aside. */}
+        {church ? null : (
+          <Link href={ministryCue.href} className={styles.sheetCue} onClick={onClose}>
+            <GenesisMark className="h-4 w-auto shrink-0" />
+            <span className={styles.sheetCueText}>
+              <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
+              <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
+            </span>
+            <span aria-hidden="true" className={styles.sheetArrow}>
+              →
+            </span>
+          </Link>
+        )}
         {navigation.map((entry) =>
           isNavGroup(entry) ? (
             <div key={entry.label} className={styles.sheetGroup}>

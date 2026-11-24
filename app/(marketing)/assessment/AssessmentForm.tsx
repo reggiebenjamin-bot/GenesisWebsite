@@ -11,8 +11,8 @@ import { track } from "@/lib/analytics";
 import {
   assessmentCopy,
   assessmentEdition,
-  assessmentFindings,
-  assessmentSteps,
+  findingsFor,
+  stepsFor,
   type Answers,
   type EditionRecommendation,
   type Question,
@@ -23,9 +23,6 @@ import { pricingPathForPersona } from "@/lib/editionPlans";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "error" | "done";
-
-const CONTACT_STEP = assessmentSteps.length;
-const TOTAL = CONTACT_STEP + 1;
 
 const field =
   "grid gap-2 text-[0.72rem] tracking-[0.1em] text-muted-dark uppercase";
@@ -158,9 +155,13 @@ export function AssessmentForm() {
   const resultRef = useRef<HTMLDivElement>(null);
   const context = useRef<Record<string, string>>({});
 
-  const step = assessmentSteps[index];
-  const findings = useMemo(() => assessmentFindings(answers), [answers]);
   const persona = typeof answers.persona === "string" ? answers.persona : undefined;
+  /* A church walks the church path from step two on; everyone else the business one. */
+  const steps = stepsFor(persona);
+  const CONTACT_STEP = steps.length;
+  const TOTAL = CONTACT_STEP + 1;
+  const step = steps[index];
+  const findings = useMemo(() => findingsFor(answers), [answers]);
   const recommended = assessmentEdition(persona);
 
   useEffect(() => {
@@ -216,8 +217,14 @@ export function AssessmentForm() {
     }
 
     const entries = Object.fromEntries(new FormData(form).entries());
+    /* Only the answers to the path they finished: a visitor who switched
+       persona on step one does not send the other path's answers too. */
+    const asked = steps.flatMap((group) => group.questions);
+    const answered = Object.fromEntries(
+      asked.filter((question) => answers[question.id] !== undefined).map((question) => [question.id, answers[question.id]]),
+    );
     const payload = {
-      ...answers,
+      ...answered,
       ...entries,
       consultation_requested: Boolean(entries.consultation_requested),
       assessment_result_categories: findings.map((finding) => finding.title).join(", "),
@@ -226,15 +233,13 @@ export function AssessmentForm() {
 
     /* Composed first, so a network failure still leaves them a way to reach
        us that carries everything they just typed. */
-    const lines = assessmentSteps.flatMap((group) =>
-      group.questions.map((question) => {
-        const value = answers[question.id];
-        return `${question.label} ${Array.isArray(value) ? value.join(", ") : (value ?? "")}`;
-      }),
-    );
+    const lines = asked.map((question) => {
+      const value = answers[question.id];
+      return `${question.label} ${Array.isArray(value) ? value.join(", ") : (value ?? "")}`;
+    });
     setFallbackHref(
       `mailto:${contact.email}?subject=${encodeURIComponent(
-        "Genesis Infrastructure Assessment",
+        recommended ? "Genesis Ministry Assessment" : "Genesis Infrastructure Assessment",
       )}&body=${encodeURIComponent(
         [`${entries.first_name} ${entries.last_name}`, String(entries.email), "", ...lines].join(
           "\n",
@@ -265,6 +270,7 @@ export function AssessmentForm() {
         resultRef={resultRef}
         pricingHref={pricingPathForPersona(persona)}
         recommended={recommended}
+        attendance={typeof answers.weekly_attendance === "string" ? answers.weekly_attendance : undefined}
       />
     );
   }
@@ -374,7 +380,7 @@ export function AssessmentForm() {
 
           <div className="grid gap-5 md:grid-cols-2">
             <label className={field}>
-              Work Email <span aria-hidden="true">*</span>
+              {recommended ? "Email" : "Work Email"} <span aria-hidden="true">*</span>
               <input
                 name="email"
                 type="email"
@@ -391,7 +397,7 @@ export function AssessmentForm() {
           </div>
 
           <label className={field}>
-            Company / Team Name
+            {recommended ? "Church Name" : "Company / Team Name"}
             <input name="company" autoComplete="organization" className={control} />
           </label>
 
@@ -448,17 +454,35 @@ export function AssessmentForm() {
   );
 }
 
+type ResultFinding = { id: string; title: string; body: string; fit?: string };
+
+/** Weekend sizes outside the 100 to 1,000 Genesis Ministry is built for. */
+const OUTSIDE_MINISTRY_SIZE = new Set(["Under 100", "More than 1,000"]);
+
 function Results({
   findings,
   resultRef,
   pricingHref,
   recommended,
+  attendance,
 }: {
-  findings: readonly { id: string; title: string; body: string }[];
+  findings: readonly ResultFinding[];
   resultRef: React.RefObject<HTMLDivElement | null>;
   pricingHref: string;
   recommended: EditionRecommendation | null;
+  attendance?: string;
 }) {
+  if (recommended) {
+    return (
+      <ChurchResults
+        findings={findings}
+        resultRef={resultRef}
+        recommended={recommended}
+        attendance={attendance}
+      />
+    );
+  }
+
   const { results } = assessmentCopy;
 
   return (
@@ -469,80 +493,154 @@ function Results({
           {findings.length ? results.intro : results.clear}
         </p>
 
-        {findings.length ? (
-          <ul className="mt-8 grid gap-4 md:grid-cols-2">
-            {findings.map((finding, position) => (
-              <li key={finding.id} className="border-t border-line-light pt-5">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-display text-[0.7rem] tracking-[0.14em] text-gold-dark">
-                    {String(position + 1).padStart(2, "0")}
-                  </span>
-                  <p className="text-[1.08rem] leading-snug tracking-[-0.015em]">{finding.title}</p>
-                </div>
-                <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-dark">{finding.body}</p>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        {findings.length ? <FindingList findings={findings} /> : null}
 
         <p className="mt-7 border-t border-line-light pt-5 text-[0.84rem] leading-relaxed text-muted-dark">
           {results.caveat}
         </p>
       </Card>
 
-      {recommended ? (
-        <Card className="mt-4">
-          <div className="flex items-center gap-3">
-            <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
-            <Eyebrow className="text-gold">{recommended.eyebrow}</Eyebrow>
+      <Card tone="inverse" className="mt-4 text-center">
+        <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
+          {results.ctaHeadline}
+        </h2>
+        <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
+          {results.ctaBody}
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <ConsultationButton
+            href="/contact"
+            onClick={() => track("infrastructure_review_cta_clicked", { from: "assessment_results" })}
+          >
+            {results.ctaPrimary}
+          </ConsultationButton>
+          <Link href={pricingHref} className={inverseLink}>
+            See pricing
+          </Link>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+const inverseLink =
+  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:border-ivory";
+
+function FindingList({ findings }: { findings: readonly ResultFinding[] }) {
+  return (
+    <ul className="mt-8 grid gap-4 md:grid-cols-2">
+      {findings.map((finding, position) => (
+        <li key={finding.id} className="border-t border-line-light pt-5">
+          <div className="flex items-baseline gap-3">
+            <span className="font-display text-[0.7rem] tracking-[0.14em] text-gold-dark">
+              {String(position + 1).padStart(2, "0")}
+            </span>
+            <p className="text-[1.08rem] leading-snug tracking-[-0.015em]">{finding.title}</p>
           </div>
-          <h2 className="mt-3 text-[1.7rem] font-light tracking-[-0.035em]">{recommended.name}</h2>
-          <p className="mt-3 max-w-[64ch] text-[0.95rem] leading-relaxed text-muted-dark">{recommended.body}</p>
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <p className="mt-2 text-[0.95rem] leading-relaxed text-muted-dark">{finding.body}</p>
+          {finding.fit ? (
+            <p className="mt-3 border-l-2 border-gold/60 pl-3 text-[0.9rem] leading-relaxed">{finding.fit}</p>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * A church's results open in a church's words: Genesis Ministry, its plans
+ * and the call first, then what the answers point to, then the call again.
+ */
+function ChurchResults({
+  findings,
+  resultRef,
+  recommended,
+  attendance,
+}: {
+  findings: readonly ResultFinding[];
+  resultRef: React.RefObject<HTMLDivElement | null>;
+  recommended: EditionRecommendation;
+  attendance?: string;
+}) {
+  const { results } = assessmentCopy;
+  const bookCall = (from: string) => () => track("ministry_call_cta_clicked", { from });
+
+  return (
+    <div ref={resultRef} tabIndex={-1} role="status" className="mx-auto max-w-[56rem]">
+      <Card>
+        <div className="flex items-center gap-3">
+          <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
+          <Eyebrow>{results.churchEyebrow}</Eyebrow>
+        </div>
+        <h2 className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] leading-[1.08] tracking-[-0.035em] text-balance">
+          {results.churchHeadline}
+        </h2>
+        <p className="mt-4 max-w-[62ch] text-[1.02rem] leading-relaxed">
+          {findings.length ? results.churchIntro : results.churchClear}
+        </p>
+
+        <div className="mt-7 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5 sm:p-6">
+          <p className="font-display text-[0.66rem] font-semibold tracking-[0.16em] text-gold-dark uppercase">
+            {recommended.eyebrow}
+          </p>
+          <p className="mt-2 text-[1.5rem] font-light tracking-[-0.03em]">{recommended.name}</p>
+          <p className="mt-2 max-w-[64ch] text-[0.95rem] leading-relaxed text-muted-dark">{recommended.body}</p>
+          <div className="mt-5 grid gap-6 md:grid-cols-2">
             <Points items={recommended.points} />
-            <ul className="grid gap-2.5 text-[0.95rem]">
-              {recommended.plans.map((plan) => (
-                <li key={plan} className="border-b border-line-light pb-2.5 last:border-b-0">
-                  {plan}
-                </li>
-              ))}
-            </ul>
+            <div>
+              <ul className="grid gap-2.5 text-[0.95rem]">
+                {recommended.plans.map((plan) => (
+                  <li key={plan} className="border-b border-line-light pb-2.5 last:border-b-0">
+                    {plan}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-[0.85rem] leading-relaxed text-muted-dark">{recommended.enterprise}</p>
+            </div>
           </div>
-          <p className="mt-6 border-t border-line-light pt-4">
+          {attendance && OUTSIDE_MINISTRY_SIZE.has(attendance) ? (
+            <p className="mt-5 text-[0.9rem] leading-relaxed">{results.churchSizeNote}</p>
+          ) : null}
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <ConsultationButton href={recommended.call.href} onClick={bookCall("assessment_results_top")}>
+              {recommended.call.label}
+            </ConsultationButton>
             <Link
               href={recommended.page.href}
-              className="text-[0.95rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+              className="inline-flex min-h-11 items-center text-[0.95rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
               onClick={() => track("assessment_edition_link_clicked", { edition: recommended.edition, from: "results" })}
             >
               {recommended.page.label}
             </Link>
-          </p>
-        </Card>
-      ) : null}
+          </div>
+        </div>
+      </Card>
+
+      <Card className="mt-4">
+        <Eyebrow>{results.churchFindingsTitle}</Eyebrow>
+        {findings.length ? (
+          <FindingList findings={findings} />
+        ) : (
+          <p className="mt-4 max-w-[60ch] text-[0.98rem] leading-relaxed text-muted-dark">{results.churchClear}</p>
+        )}
+        <p className="mt-7 border-t border-line-light pt-5 text-[0.84rem] leading-relaxed text-muted-dark">
+          {results.churchCaveat}
+        </p>
+      </Card>
 
       <Card tone="inverse" className="mt-4 text-center">
         <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
-          {recommended ? results.churchCtaHeadline : results.ctaHeadline}
+          {results.churchCtaHeadline}
         </h2>
         <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
-          {recommended ? results.churchCtaBody : results.ctaBody}
+          {results.churchCtaBody}
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <ConsultationButton
-            href={recommended ? recommended.call.href : "/contact"}
-            onClick={() =>
-              track(recommended ? "ministry_call_cta_clicked" : "infrastructure_review_cta_clicked", {
-                from: "assessment_results",
-              })
-            }
-          >
-            {recommended ? recommended.call.label : results.ctaPrimary}
+          <ConsultationButton href={recommended.call.href} onClick={bookCall("assessment_results")}>
+            {recommended.call.label}
           </ConsultationButton>
-          <Link
-            href={recommended ? recommended.plansLink.href : pricingHref}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:border-ivory"
-          >
-            {recommended ? recommended.plansLink.label : "See pricing"}
+          <Link href={recommended.plansLink.href} className={inverseLink}>
+            {recommended.plansLink.label}
           </Link>
         </div>
       </Card>

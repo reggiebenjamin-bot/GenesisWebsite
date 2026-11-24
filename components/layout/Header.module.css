@@ -428,6 +428,47 @@
   padding: 12px 16px 24px;
 }
 
+/* The church cue at the top of the phone menu: one quiet row with the gold G. */
+.sheetCue {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1px solid rgb(201 165 94 / 0.35);
+  border-radius: 6px;
+  background: rgb(201 165 94 / 0.07);
+  transition: border-color 200ms var(--ease-editorial), background-color 200ms var(--ease-editorial);
+}
+
+.sheetCue:hover {
+  border-color: rgb(201 165 94 / 0.6);
+  background: rgb(201 165 94 / 0.12);
+}
+
+.sheetCue:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
+}
+
+.sheetCueText {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+}
+
+.sheetCueLead {
+  color: rgb(244 239 232 / 0.66);
+  font-size: 0.8rem;
+}
+
+.sheetCueLabel {
+  color: var(--color-gold-light);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
 .sheetGroup {
   padding-block: 14px;
   border-bottom: 1px solid rgb(244 239 232 / 0.08);

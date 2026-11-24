@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { preconnect } from "react-dom";
+import { GenesisMark } from "@/components/layout/GenesisMark";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { ministryCue } from "@/lib/ministryPage";
 import { genesisPositioning, type OfferPathId, pathHeroes } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { HawkAscii } from "./HawkAscii";
@@ -65,6 +67,22 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
       </p>
 
       <div className="mt-9 flex flex-wrap items-center justify-center gap-3">{children}</div>
+
+      {/* A quiet cue for a pastor who lands here: a text link, not a third button. */}
+      <p className="mt-6 text-[0.9rem] leading-snug text-ivory/70">
+        <Link
+          href={ministryCue.href}
+          className="group inline-flex min-h-11 items-center gap-2.5 rounded-[6px] px-2 transition-colors duration-200 hover:text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-light"
+        >
+          <GenesisMark className="h-[15px] w-auto shrink-0" />
+          <span>
+            {ministryCue.lead}{" "}
+            <span className="font-semibold text-gold-light underline decoration-gold-light/40 underline-offset-4 transition-colors duration-200 group-hover:decoration-gold-light">
+              {ministryCue.label}
+            </span>
+          </span>
+        </Link>
+      </p>
     </div>
   );
 }

@@ -457,6 +457,17 @@ export const ministryProcess = {
   ],
 } as const;
 
+/**
+ * The quiet church cue on the homepage hero and at the top of the phone menu:
+ * a text link with the gold G, not a button, so a pastor who lands on a
+ * business homepage sees at once that there is a version built for churches.
+ */
+export const ministryCue = {
+  lead: "Leading a church?",
+  label: "See Genesis Ministry",
+  href: ministryEdition.href,
+} as const;
+
 export const ministryWebsiteCheck = {
   eyebrow: "Free offer",
   title: "A free Church Website Check.",
