@@ -29,12 +29,14 @@ export function ProductChooser() {
                 Open {product.label}
               </Link>
               {product.levels.map((level) => (
-                <Link key={level.id} href={level.href} className={levelLink}>
+                // Plain <a>, not <Link>: /start/* opens a live Stripe Checkout
+                // Session, so it must never be prefetched or fetched as RSC.
+                <a key={level.id} href={level.href} rel="nofollow" className={levelLink}>
                   <span className="text-[0.84rem] leading-none font-bold">Level {level.step}</span>
                   <span className="mt-1 text-[0.8rem] leading-snug text-muted-dark">
                     {level.priceDisplay} a month, {level.setupLine}
                   </span>
-                </Link>
+                </a>
               ))}
             </div>
           </Card>
