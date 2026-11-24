@@ -10,7 +10,8 @@ import { editionPricing, type EditionKey } from "./editionPlans.ts";
 import { editions } from "./editions.ts";
 import { managedPlans } from "./offers.ts";
 
-export const chooserEditionKeys: readonly EditionKey[] = ["business", "real_estate", "lending"];
+/* The same order as the editions everywhere else: Lending, Real Estate Pros, Business. */
+export const chooserEditionKeys: readonly EditionKey[] = ["lending", "real_estate", "business"];
 
 export type ChooserLevel = {
   id: (typeof managedPlans)[number]["id"];
@@ -23,7 +24,7 @@ export type ChooserLevel = {
 
 export type ChooserProduct = {
   key: EditionKey;
-  label: "Business" | "Real Estate" | "Lending";
+  label: "Business" | "Real Estate Pros" | "Lending";
   href: string;
   summary: string;
   levels: readonly ChooserLevel[];
@@ -31,7 +32,7 @@ export type ChooserProduct = {
 
 const LABELS = {
   business: "Business",
-  real_estate: "Real Estate",
+  real_estate: "Real Estate Pros",
   lending: "Lending",
 } as const;
 

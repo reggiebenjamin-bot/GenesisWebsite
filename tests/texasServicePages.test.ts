@@ -38,7 +38,8 @@ test("the service landings are the hub and seven trades, all in the sitemap", ()
     assert.equal(texasLanding(page.path).title, page.title);
     assert.equal(page.points.length, 3);
     assert.ok(page.faqs.length >= 4);
-    assert.equal(page.ctas[0]?.href, "/assessment");
+    /* A trade opens the assessment already answering as a service business. */
+    assert.equal(page.ctas[0]?.href, "/assessment?persona=business");
     assert.ok(page.ctas.some((cta) => cta.href === "/pricing"));
     assert.equal(page.pricing, true);
     assert.equal(page.parent, page.path === "/texas/service-businesses" ? "/texas" : "/texas/service-businesses");

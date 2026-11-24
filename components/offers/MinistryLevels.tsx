@@ -1,7 +1,7 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Blocks";
-import { Button } from "@/components/ui/Button";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { ministryLevels } from "@/lib/ministryPage";
 
 /* The gold hairline gets stronger with the plan, as on the edition Levels. */
@@ -10,14 +10,14 @@ const TIER_EDGES = ["rgb(201 165 94 / 0.3)", "rgb(201 165 94 / 0.6)", "rgb(201 1
 /**
  * The three Genesis Ministry plans (Care, Shepherd and Plus), in the same
  * visual language as EditionLevels: light cards, a gold edge that strengthens
- * by plan, the plan name, what it is for, the monthly price in the edition
- * price style, what it includes, and one outline action. Every button books a
- * consultation with the plan and its price in the starting note.
+ * by plan, the plan name, who it suits, the monthly price, what it includes,
+ * and the gold primary. No card is marked as the one most churches pick:
+ * that would be a claim, so every card carries the same button.
  *
- * Enterprise, for more than one campus, is the line under the cards, as
- * Genesis Enterprise is under the edition levels.
+ * Under the cards, one row: Enterprise for more than one campus on the left,
+ * and whatever the section adds (the assessment link) on the right.
  */
-export function MinistryLevels() {
+export function MinistryLevels({ aside }: { aside?: ReactNode }) {
   const { enterprise, priceUnit } = ministryLevels;
   return (
     <>
@@ -36,7 +36,8 @@ export function MinistryLevels() {
             <h3 className="font-light text-[clamp(1.9rem,2.6vw,2.4rem)] leading-none tracking-[-0.04em]">
               {plan.name}
             </h3>
-            <p className="mt-3 text-[0.95rem] leading-snug text-muted-dark">{plan.summary}</p>
+            <p className="mt-3 text-[0.98rem] leading-snug">{plan.summary}</p>
+            <p className="mt-1.5 text-[0.9rem] leading-snug text-muted-dark">{plan.suits}</p>
 
             <p className="mt-6 flex items-baseline gap-1.5 border-t border-line-light pt-5">
               <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
@@ -49,39 +50,39 @@ export function MinistryLevels() {
               {plan.bullets.map((bullet) => (
                 <li
                   key={bullet}
-                  className="grid grid-cols-[1rem_minmax(0,1fr)] gap-2.5 text-[0.95rem] leading-snug"
+                  className="grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.95rem] leading-snug"
                 >
-                  <span aria-hidden="true" className="text-gold-dark">
-                    +
-                  </span>
+                  <span aria-hidden="true" className="mt-[0.45rem] size-1.5 rounded-full bg-gold-dark" />
                   <span>{bullet}</span>
                 </li>
               ))}
             </ul>
 
             <div className="mt-auto pt-8">
-              <Button
+              <ConsultationButton
                 href={plan.action.href}
-                variant="outline"
                 className="w-full"
                 aria-label={`${plan.action.label}: ${plan.name}, ${plan.priceDisplay} ${priceUnit}`}
               >
                 {plan.action.label}
-              </Button>
+              </ConsultationButton>
             </div>
           </Card>
         ))}
       </ol>
-      <p className="mt-8 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center text-[0.95rem] text-muted-dark">
-        <span>{enterprise.line}</span>
-        <Link
-          href={enterprise.action.href}
-          aria-label={`${enterprise.action.label}: ${enterprise.name}`}
-          className="inline-flex min-h-11 items-center font-bold text-ink underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
-        >
-          {enterprise.action.label}
-        </Link>
-      </p>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-2 border-t border-line-light pt-5">
+        <p className="flex flex-wrap items-baseline gap-x-3 text-[0.95rem] text-muted-dark">
+          <span>{enterprise.line}</span>
+          <Link
+            href={enterprise.action.href}
+            aria-label={`${enterprise.action.label}: ${enterprise.name}`}
+            className="inline-flex min-h-11 items-center font-bold text-ink underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
+          >
+            {enterprise.action.label}
+          </Link>
+        </p>
+        {aside}
+      </div>
     </>
   );
 }

@@ -174,9 +174,9 @@
   padding-inline: 10px;
   border: 0;
   border-radius: 6px;
-  color: rgb(244 239 232 / 0.8);
+  color: rgb(244 239 232 / 0.84);
   background: transparent;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
@@ -423,9 +423,11 @@
   background: var(--color-ink);
 }
 
+/* The bottom padding is the sticky button's height and then some, so the last
+   row can always scroll clear of it. */
 .sheetBody {
   flex: 1;
-  padding: 12px 16px 24px;
+  padding: 12px 16px 104px;
 }
 
 /* The church cue at the top of the phone menu: one quiet row with the gold G. */
@@ -472,6 +474,15 @@
 .sheetGroup {
   padding-block: 14px;
   border-bottom: 1px solid rgb(244 239 232 / 0.08);
+}
+
+/* A single destination is one row, the same height as a row in a group. */
+.sheetSingle {
+  padding-block: 4px;
+}
+
+.sheetSingle .sheetLink {
+  min-height: 56px;
 }
 
 .sheetGroupLabel {
@@ -525,6 +536,35 @@
   color: var(--color-gold-light);
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+/* A phone on its side: tighter rows, and Editions and Company side by side. */
+@media (max-height: 500px) {
+  .sheetGroup {
+    padding-block: 8px;
+  }
+
+  .sheetSingle {
+    padding-block: 0;
+  }
+
+  .sheetLink,
+  .sheetSingle .sheetLink {
+    min-height: 44px;
+    padding-block: 4px;
+  }
+
+  .sheetBody {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    align-content: start;
+    padding-bottom: 88px;
+  }
+
+  .sheetFooter {
+    padding-block: 10px;
+  }
 }
 
 .sheetFooter {

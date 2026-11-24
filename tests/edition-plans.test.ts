@@ -50,8 +50,22 @@ test("editions keep their disclaimers", () => {
 });
 
 test("an assessment persona maps to the matching edition pricing page", () => {
-  assert.equal(pricingPathForPersona("Lender"), "/packs/lending/pricing");
+  assert.equal(pricingPathForPersona("Lender or loan officer"), "/packs/lending/pricing");
   assert.equal(pricingPathForPersona("Brokerage"), "/packs/real_estate/pricing");
   assert.equal(pricingPathForPersona("Other"), "/pricing");
   assert.equal(pricingPathForPersona(undefined), "/pricing");
+});
+
+test("no Level repeats a bullet from a lower Level, so each Level says what it adds", () => {
+  for (const key of editionKeys) {
+    const levels = editionLevels(key).map((level) => level.bullets.filter((bullet) => !bullet.startsWith("Everything in")));
+    for (let index = 1; index < levels.length; index += 1) {
+      for (const bullet of levels[index]) {
+        for (const lower of levels.slice(0, index)) {
+          assert.equal(lower.includes(bullet), false, `${key} Level 0${index + 1} repeats "${bullet}"`);
+        }
+      }
+      assert.ok(levels[index].length > 0, `${key} Level 0${index + 1} adds something`);
+    }
+  }
 });

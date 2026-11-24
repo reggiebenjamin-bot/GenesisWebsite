@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { announceAudience } from "@/components/hooks/useAssessingChurch";
 import { useReducedMotion } from "@/components/hooks/useMotionPreference";
-import { Card, Points, Sheet } from "@/components/ui/Blocks";
+import { Card, Sheet } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
@@ -14,23 +15,24 @@ import {
   CHURCH_PERSONA,
   assessmentCopy,
   assessmentEdition,
+  assessmentSummary,
   businessRecommendation,
   churchFindings,
   findingsFor,
-  personaFromParams,
+  planLabel,
   stepsFor,
   suggestedMinistryPlan,
   toggleChoice,
   type Answers,
   type BusinessRecommendation,
   type EditionRecommendation,
+  type MinistryPlanId,
   type Question,
   type Step,
   type SuggestedPlan,
 } from "@/lib/assessment";
-import { ASSESSMENT_HANDOFF_KEY, AUDIENCE_EVENT, type AssessmentHandoff } from "@/lib/assessmentHandoff";
+import { ASSESSMENT_HANDOFF_KEY, type AssessmentHandoff } from "@/lib/assessmentHandoff";
 import { contact } from "@/lib/content";
-import { pricingPathForPersona } from "@/lib/editionPlans";
 import { cn } from "@/lib/utils";
 
 type Status = "idle" | "submitting" | "error" | "done";
@@ -49,29 +51,45 @@ const inverseAction =
 /* Paired buttons share one width: full width and stacked on phones, two equal columns from sm up. */
 const actionPair = "grid w-full gap-3 sm:max-w-[36rem] sm:grid-cols-2";
 
+/* A step heading that takes focus when the step changes: a soft gold underline, never a hard box. */
+const stepHeading =
+  "rounded-[4px] text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.1] tracking-[-0.03em] text-balance outline-none focus-visible:underline focus-visible:decoration-gold focus-visible:decoration-2 focus-visible:underline-offset-8 [@media(max-height:500px)]:text-[1.25rem]";
+
+/* The quiet hint after a question that may be skipped. */
+function Optional({ multi = false }: { multi?: boolean }) {
+  return (
+    <span className="ml-2 text-[0.85rem] text-muted-dark">{multi ? "(optional, choose any)" : "(optional)"}</span>
+  );
+}
+
 /**
  * The assessment page below the header: a short intro that speaks to a
  * business or, once a church says so, to a church, then the form. The intro
- * is kept short so the first question is on the first screen.
+ * is kept short so the first question is on the first screen, and the
+ * assessment's name is said once, on the card.
+ *
+ * `initialPersona` comes from the link (?for=church or ?persona=...), read on
+ * the server, so the first render is already on the right path.
  */
-export function AssessmentExperience() {
-  const [church, setChurch] = useState(false);
+export function AssessmentExperience({ initialPersona }: { initialPersona?: string }) {
+  const [church, setChurch] = useState(initialPersona === CHURCH_PERSONA);
   const copy = church ? assessmentCopy.church : assessmentCopy;
 
   return (
     <>
-      <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+28px)] pb-16 text-ivory md:pt-[calc(var(--header-height)+44px)] md:pb-[72px]">
+      <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+28px)] pb-16 text-ivory md:pt-[calc(var(--header-height)+44px)] md:pb-[72px] [@media(max-height:500px)]:pt-[calc(var(--header-height)+12px)] [@media(max-height:500px)]:pb-10">
         <div className="shell max-w-[980px]">
-          <Eyebrow>{copy.eyebrow}</Eyebrow>
-          <h1 className="mt-4 max-w-[24ch] text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.04] text-balance">
+          <h1 className="max-w-[24ch] text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.04] text-balance [@media(max-height:500px)]:text-[1.6rem]">
             {copy.headline}
           </h1>
-          <p className="mt-4 max-w-[60ch] text-[1rem] leading-relaxed text-ivory/72">{copy.summary[0]}</p>
+          <p className="mt-4 max-w-[60ch] text-[1rem] leading-relaxed text-ivory/72 [@media(max-height:500px)]:hidden">
+            {copy.summary[0]}
+          </p>
         </div>
       </section>
 
-      <Sheet surface="paper" rise className="pt-6! pb-[clamp(72px,9vw,120px)]! md:pt-8!">
-        <AssessmentForm onChurchChange={setChurch} />
+      <Sheet surface="paper" rise className="pt-6! pb-[clamp(72px,9vw,120px)]! md:pt-8! [@media(max-height:500px)]:pt-3!">
+        <AssessmentForm onChurchChange={setChurch} initialPersona={initialPersona} />
       </Sheet>
     </>
   );
@@ -81,6 +99,7 @@ export function AssessmentExperience() {
 function Chip({
   name,
   value,
+  label,
   kind,
   checked,
   onChange,
@@ -88,6 +107,7 @@ function Chip({
 }: {
   name: string;
   value: string;
+  label: string;
   kind: "single" | "multi";
   checked: boolean;
   onChange: () => void;
@@ -112,23 +132,30 @@ function Chip({
         aria-describedby={describedBy}
         className="sr-only"
       />
-      <span
-        aria-hidden="true"
-        className={cn(
-          "grid size-4 shrink-0 place-items-center border-[1.5px]",
-          kind === "single" ? "rounded-full" : "rounded-[3px]",
-          checked ? "border-gold-light bg-gold-light" : "border-ink/45 bg-transparent",
-        )}
-      >
-        {checked && kind === "multi" ? (
-          <svg viewBox="0 0 12 12" className="size-3 text-ink">
-            <path d="M2.5 6.2 5 8.6l4.6-5.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        ) : null}
-        {checked && kind === "single" ? <span className="size-1.5 rounded-full bg-ink" /> : null}
-      </span>
-      {value}
+      <Marker round={kind === "single"} checked={checked} />
+      {label}
     </label>
+  );
+}
+
+/** The drawn marker for a chip or a checkbox: never the browser's own, which follows the dark page theme. */
+function Marker({ round = false, checked }: { round?: boolean; checked: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "grid size-4 shrink-0 place-items-center border-[1.5px]",
+        round ? "rounded-full" : "rounded-[3px]",
+        checked ? "border-gold-light bg-gold-light" : "border-ink/55 bg-white",
+      )}
+    >
+      {checked && !round ? (
+        <svg viewBox="0 0 12 12" className="size-3 text-ink">
+          <path d="M2.5 6.2 5 8.6l4.6-5.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ) : null}
+      {checked && round ? <span className="size-1.5 rounded-full bg-ink" /> : null}
+    </span>
   );
 }
 
@@ -137,11 +164,16 @@ function QuestionBlock({
   answers,
   onAnswer,
   missing,
+  collapsed,
+  onExpand,
 }: {
   question: Question;
   answers: Answers;
   onAnswer: (id: string, value: string | string[]) => void;
   missing: boolean;
+  /** The persona came from the link: one summary row, with a way to change it. */
+  collapsed?: boolean;
+  onExpand?: () => void;
 }) {
   const current = answers[question.id];
   const errorId = `${question.id}-error`;
@@ -150,7 +182,8 @@ function QuestionBlock({
     return (
       <label className="grid gap-3" htmlFor={question.id}>
         <span className="text-[1.02rem] leading-snug tracking-[-0.01em]">
-          {question.label} <span className="text-[0.85rem] text-muted-dark">(optional)</span>
+          {question.label}
+          <Optional />
         </span>
         <textarea
           id={question.id}
@@ -166,6 +199,35 @@ function QuestionBlock({
   }
 
   const selected = Array.isArray(current) ? current : current ? [current] : [];
+
+  if (collapsed && question.kind === "single" && typeof current === "string") {
+    const chosen = question.options.find((option) => option.value === current);
+    return (
+      <div
+        id={`q-${question.id}`}
+        className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-[6px] border border-gold/50 bg-gold-light/12 px-4 py-2"
+      >
+        <p className="flex items-center gap-3 text-[0.95rem]">
+          {current === CHURCH_PERSONA ? (
+            <Image src="/brand/mark-gold-on-light.svg" alt="" width={20} height={16} className="h-4 w-auto" />
+          ) : null}
+          <span>
+            <span className="text-muted-dark">{assessmentCopy.answeringFor}: </span>
+            <span className="font-semibold">{chosen?.label ?? current}</span>
+          </span>
+        </p>
+        <button
+          type="button"
+          onClick={onExpand}
+          aria-label={`${assessmentCopy.change}: ${question.label}`}
+          className="inline-flex min-h-11 items-center text-[0.9rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+        >
+          {assessmentCopy.change}
+        </button>
+      </div>
+    );
+  }
+
   /* Short answers sit two to a row on a phone; long ones take the full width. */
   const short = question.options.every((option) => option.label.length <= 16);
 
@@ -181,9 +243,7 @@ function QuestionBlock({
     >
       <legend className="text-[1.02rem] leading-snug tracking-[-0.01em]">
         {question.label}
-        {question.kind === "multi" ? (
-          <span className="ml-2 text-[0.85rem] text-muted-dark">Optional. Choose all that apply.</span>
-        ) : null}
+        {question.kind === "multi" ? <Optional multi /> : null}
       </legend>
       {missing ? (
         <p id={errorId} className="text-[0.88rem] font-semibold text-gold-dark">
@@ -196,6 +256,7 @@ function QuestionBlock({
             key={option.value}
             name={question.id}
             value={option.value}
+            label={option.label}
             kind={question.kind}
             checked={selected.includes(option.value)}
             describedBy={missing ? errorId : undefined}
@@ -216,13 +277,20 @@ function QuestionBlock({
 const unanswered = (step: Step, answers: Answers) =>
   step.questions.filter((question) => question.kind === "single" && !answers[question.id]).map((question) => question.id);
 
-export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: boolean) => void } = {}) {
+type Who = { firstName: string; review: boolean };
+
+export function AssessmentForm({
+  onChurchChange,
+  initialPersona,
+}: { onChurchChange?: (church: boolean) => void; initialPersona?: string } = {}) {
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
+  const [answers, setAnswers] = useState<Answers>(() => (initialPersona ? { persona: initialPersona } : {}));
+  /* A persona that came with the link is shown as one row until the visitor asks to change it. */
+  const [personaCollapsed, setPersonaCollapsed] = useState(Boolean(initialPersona));
   const [status, setStatus] = useState<Status>("idle");
   const [missing, setMissing] = useState<readonly string[]>([]);
   const [fallbackHref, setFallbackHref] = useState(`mailto:${contact.email}`);
-  const [who, setWho] = useState<{ firstName: string; review: boolean }>({ firstName: "", review: false });
+  const [who, setWho] = useState<Who>({ firstName: "", review: false });
   const startedRef = useRef(false);
   const movedRef = useRef(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -252,24 +320,16 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
       if (key.startsWith("utm_") || ["gclid", "fbclid"].includes(key)) tracked[key] = value;
     }
     context.current = tracked;
-    /* /assessment?for=church (or ?persona=lending from an edition page) opens on that path. */
-    const preset = personaFromParams(params);
-    if (!preset) return;
-    /* Applied on the next frame, after hydration, so the server and first client render agree. */
-    const frame = requestAnimationFrame(() =>
-      setAnswers((previous) => (previous.persona ? previous : { ...previous, persona: preset })),
-    );
-    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
     onChurchChange?.(church);
-    /* The header's call to action follows the path: a church books a call, not a business assessment. */
-    window.dispatchEvent(new CustomEvent(AUDIENCE_EVENT, { detail: church ? "church" : "business" }));
+    /* The header and footer follow the path: a church books a call and reads the Ministry line. */
+    announceAudience(church ? "church" : "business");
   }, [church, onChurchChange]);
 
-  /* Leaving the page puts the header back. */
-  useEffect(() => () => void window.dispatchEvent(new CustomEvent(AUDIENCE_EVENT, { detail: "business" })), []);
+  /* Leaving the page puts the header and footer back. */
+  useEffect(() => () => announceAudience("business"), []);
 
   /* A new step brings the card to the top of the screen, under the header,
      and moves focus to its heading so a screen reader lands on it. The first
@@ -292,7 +352,9 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
     resultRef.current?.focus({ preventScroll: true });
     resultRef.current?.closest("[data-results]")?.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
     track("assessment_result_viewed", { findings: findings.length, path });
-    if (recommended) track("assessment_edition_recommended", { edition: recommended.edition, path });
+    const edition =
+      recommended?.edition ?? businessRecommendation(persona, typeof answers.team_size === "string" ? answers.team_size : undefined)?.edition;
+    if (edition) track("assessment_edition_recommended", { edition, path });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
@@ -362,7 +424,7 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
     });
     setFallbackHref(
       `mailto:${contact.email}?subject=${encodeURIComponent(
-        recommended ? "Genesis Ministry Assessment" : "Genesis Infrastructure Assessment",
+        recommended ? "Genesis Ministry Assessment" : "Genesis Assessment",
       )}&body=${encodeURIComponent(
         [`${entries.first_name} ${entries.last_name}`, String(entries.email), "", ...lines].join(
           "\n",
@@ -381,14 +443,19 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
       track("assessment_completed", { findings: findings.length, path });
       track("assessment_lead_captured", { path });
       /* Held for this tab only, never in a URL: the contact form fills in
-         what they just typed, so booking the call does not ask twice. */
+         what they just typed and what the assessment found, so booking the
+         call does not ask twice. */
       const handoff: AssessmentHandoff = {
         path,
         name: `${String(entries.first_name ?? "")} ${String(entries.last_name ?? "")}`.trim(),
         email: String(entries.email ?? ""),
         phone: String(entries.phone ?? ""),
         company: String(entries.company ?? ""),
-        staff: typeof answers.church_staff === "string" ? answers.church_staff : "",
+        staff:
+          typeof (church ? answers.church_staff : answers.team_size) === "string"
+            ? String(church ? answers.church_staff : answers.team_size)
+            : "",
+        summary: assessmentSummary(answers, findings),
       };
       try {
         window.sessionStorage.setItem(ASSESSMENT_HANDOFF_KEY, JSON.stringify(handoff));
@@ -417,10 +484,12 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
 
   return (
     <div ref={cardRef} className="scroll-mt-2">
-      <Card className="mx-auto max-w-[56rem]">
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-line-light pb-4">
+      <Card className="mx-auto max-w-[56rem] [@media(max-height:500px)]:py-4">
+        {/* The assessment's name, said once, beside the step count. On a phone held sideways the
+            two share one short row so the question starts high on the screen. */}
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-line-light pb-4 [@media(max-height:500px)]:flex-nowrap [@media(max-height:500px)]:pb-2">
           <Eyebrow>{church ? assessmentCopy.church.eyebrow : assessmentCopy.cardEyebrow}</Eyebrow>
-          <p className="text-[0.82rem] text-muted-dark">
+          <p className="text-[0.84rem] whitespace-nowrap text-muted-dark">
             Step {index + 1} of {TOTAL}
           </p>
         </div>
@@ -430,7 +499,7 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
           aria-valuemin={1}
           aria-valuemax={TOTAL}
           aria-label="Assessment progress"
-          className="mt-4 h-0.5 w-full bg-line-light"
+          className="mt-4 h-0.5 w-full bg-line-light [@media(max-height:500px)]:mt-2"
         >
           <span
             className="block h-full bg-gold-dark transition-[width] duration-300 motion-reduce:transition-none"
@@ -439,16 +508,12 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
         </div>
 
         {step ? (
-          <div className="mt-6 md:mt-8">
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              className="text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.1] tracking-[-0.03em] text-balance"
-            >
+          <div className="mt-6 md:mt-8 [@media(max-height:500px)]:mt-3">
+            <h2 ref={headingRef} tabIndex={-1} className={stepHeading}>
               {step.heading}
             </h2>
 
-            <div className="mt-7 grid gap-9">
+            <div className="mt-7 grid gap-9 [@media(max-height:500px)]:mt-4 [@media(max-height:500px)]:gap-6">
               {step.questions.map((question) => (
                 <QuestionBlock
                   key={question.id}
@@ -456,11 +521,13 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
                   answers={answers}
                   onAnswer={answer}
                   missing={missing.includes(question.id)}
+                  collapsed={question.id === "persona" && personaCollapsed}
+                  onExpand={() => setPersonaCollapsed(false)}
                 />
               ))}
             </div>
 
-            {index === 0 && recommended ? (
+            {index === 0 && recommended && !personaCollapsed ? (
               <div className="mt-8 flex items-start gap-4 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5">
                 <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="mt-0.5 h-6 w-auto shrink-0" />
                 <p className="min-w-0 flex-1 text-[0.95rem] leading-relaxed">{recommended.stepNote}</p>
@@ -485,17 +552,13 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
                 <span />
               )}
               <SubmitButton type="button" onClick={next} className="min-w-[180px] shrink-0 max-sm:flex-1">
-                Continue
+                Continue <span aria-hidden="true">→</span>
               </SubmitButton>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 grid gap-6 md:mt-8">
-            <h2
-              ref={headingRef}
-              tabIndex={-1}
-              className="text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.1] tracking-[-0.03em] text-balance"
-            >
+            <h2 ref={headingRef} tabIndex={-1} className={stepHeading}>
               {assessmentCopy.contact.heading}
             </h2>
 
@@ -543,12 +606,18 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
               <input name="company" autoComplete="organization" className={control} />
             </label>
 
-            <label className="flex min-h-11 cursor-pointer items-center gap-3 py-2 text-[0.95rem] leading-snug">
-              <input
-                type="checkbox"
-                name="consultation_requested"
-                className="size-5 shrink-0 accent-[var(--color-gold-dark)]"
-              />
+            {/* Drawn, not the browser's checkbox: the page's dark color scheme would paint an
+                unchecked native box as a solid dark square on this light card. */}
+            <label className="group flex min-h-11 cursor-pointer items-center gap-3 py-2 text-[0.95rem] leading-snug">
+              <input type="checkbox" name="consultation_requested" className="peer sr-only" />
+              <span
+                aria-hidden="true"
+                className="grid size-5 shrink-0 place-items-center rounded-[4px] border-[1.5px] border-ink/55 bg-white transition-colors duration-200 group-hover:border-gold-dark peer-checked:border-gold-dark peer-checked:bg-gold-light peer-focus-visible:ring-2 peer-focus-visible:ring-gold-dark/40 [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100"
+              >
+                <svg viewBox="0 0 12 12" className="size-3.5 text-ink">
+                  <path d="M2.5 6.2 5 8.6l4.6-5.2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
               {assessmentCopy.contact.consent}
             </label>
 
@@ -586,7 +655,7 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
               </SubmitButton>
             </div>
 
-            <p className="text-[0.8rem] leading-relaxed text-muted-dark">
+            <p className="text-[0.84rem] leading-relaxed text-muted-dark">
               Genesis uses these details to follow up about your results. Completing the assessment
               does not create an account or commit either party to an engagement.
             </p>
@@ -597,12 +666,12 @@ export function AssessmentForm({ onChurchChange }: { onChurchChange?: (church: b
   );
 }
 
-type ResultFinding = { id: string; title: string; body: string; fit?: string };
+type ResultFinding = { id: string; title: string; body: string; fit?: string; plan?: MinistryPlanId };
 
 /** Weekend sizes outside the 100 to 1,000 Genesis Ministry is built for. */
 const OUTSIDE_MINISTRY_SIZE = new Set(["Under 100", "More than 1,000"]);
 
-function Received({ who }: { who: { firstName: string; review: boolean } }) {
+function Received({ who }: { who: Who }) {
   const { results } = assessmentCopy;
   return (
     <p className="mt-4 max-w-[62ch] text-[1.02rem] leading-relaxed">
@@ -625,6 +694,193 @@ function PrintLink() {
   );
 }
 
+/** The results' opening card: the mark, the snapshot heading, the thanks and one line of intro. */
+function SnapshotHeader({
+  eyebrow,
+  headline,
+  intro,
+  resultRef,
+  who,
+  children,
+}: {
+  eyebrow: string;
+  headline: string;
+  intro: string;
+  resultRef: React.RefObject<HTMLHeadingElement | null>;
+  who: Who;
+  children: React.ReactNode;
+}) {
+  return (
+    <Card>
+      <div className="flex items-center gap-3">
+        <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
+        <Eyebrow>{eyebrow}</Eyebrow>
+      </div>
+      <h2
+        ref={resultRef}
+        tabIndex={-1}
+        className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] leading-[1.08] tracking-[-0.035em] text-balance outline-none"
+      >
+        {headline}
+      </h2>
+      <Received who={who} />
+      <p className="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-muted-dark">{intro}</p>
+      {children}
+    </Card>
+  );
+}
+
+/**
+ * The two actions under a recommendation. Once they have asked us to review
+ * the results with them, a second "Book a Call" would ask twice: the primary
+ * becomes adding details for that call instead.
+ */
+function RecommendationActions({
+  callHref,
+  callLabel,
+  secondary,
+  review,
+  onCall,
+}: {
+  callHref: string;
+  callLabel: string;
+  secondary: { label: string; href: string; onClick?: () => void };
+  review: boolean;
+  onCall: () => void;
+}) {
+  return (
+    <div className="mt-6">
+      {review ? <p className="mb-3 text-[0.95rem] leading-relaxed">{assessmentCopy.results.onTheList}</p> : null}
+      <div className={actionPair}>
+        <ConsultationButton href={callHref} className="w-full" onClick={onCall}>
+          {review ? assessmentCopy.results.addDetails : callLabel}
+        </ConsultationButton>
+        <Link href={secondary.href} className={outlineAction} onClick={secondary.onClick}>
+          {secondary.label}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/** What the answers point to, in its own card, the same on both paths. */
+function FindingsCard({
+  title,
+  findings,
+  nothing,
+  caveat,
+}: {
+  title: string;
+  findings: readonly ResultFinding[];
+  nothing: string;
+  caveat: string;
+}) {
+  return (
+    <Card className="mt-4">
+      <Eyebrow>{title}</Eyebrow>
+      {findings.length ? (
+        <ol className="mt-4 grid">
+          {findings.map((finding, position) => (
+            <li key={finding.id} className="grid gap-x-4 border-t border-line-light py-5 first:border-t-0 sm:grid-cols-[2.25rem_minmax(0,1fr)]">
+              <span aria-hidden="true" className="font-display text-[0.8rem] tracking-[0.12em] text-gold-dark sm:pt-1">
+                {String(position + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <p className="text-[1.12rem] leading-snug tracking-[-0.015em]">{finding.title}</p>
+                <p className="mt-2 max-w-[66ch] text-[0.95rem] leading-relaxed text-muted-dark">{finding.body}</p>
+                {finding.fit ? (
+                  <div className="mt-3 max-w-[66ch] border-l-2 border-gold/60 pl-3 text-[0.92rem] leading-relaxed">
+                    {finding.plan ? (
+                      <p className="font-display text-[0.72rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+                        {planLabel(finding.plan)}
+                      </p>
+                    ) : null}
+                    <p className={finding.plan ? "mt-1" : undefined}>{finding.fit}</p>
+                  </div>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="mt-4 max-w-[60ch] text-[0.98rem] leading-relaxed text-muted-dark">{nothing}</p>
+      )}
+      <p className="mt-7 border-t border-line-light pt-5 text-[0.84rem] leading-relaxed text-muted-dark">{caveat}</p>
+      <PrintLink />
+    </Card>
+  );
+}
+
+/** The dark closing band: one headline, one line, the call and the plans. */
+function CloseBand({
+  headline,
+  body,
+  callHref,
+  callLabel,
+  secondary,
+  onCall,
+}: {
+  headline: string;
+  body: string;
+  callHref: string;
+  callLabel: string;
+  secondary: { label: string; href: string };
+  onCall: () => void;
+}) {
+  return (
+    <Card tone="inverse" className="mt-4 text-center">
+      <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
+        {headline}
+      </h2>
+      <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">{body}</p>
+      <div className={cn(actionPair, "mx-auto mt-8")}>
+        <ConsultationButton href={callHref} className="w-full" onClick={onCall}>
+          {callLabel}
+        </ConsultationButton>
+        <Link href={secondary.href} className={inverseAction}>
+          {secondary.label}
+        </Link>
+      </div>
+    </Card>
+  );
+}
+
+/** The plans or Levels as a short list, with the one that fits marked and its reason under it. */
+function OptionList({
+  items,
+  fits,
+  reason,
+}: {
+  items: readonly string[];
+  fits: (item: string) => boolean;
+  reason?: string;
+}) {
+  return (
+    <ul className="grid gap-2 text-[0.95rem]">
+      {items.map((item) => {
+        const match = fits(item);
+        return (
+          <li
+            key={item}
+            className={cn(
+              "rounded-[4px] border-l-2 py-2 pl-3",
+              match ? "border-gold-dark bg-white/70 font-semibold" : "border-line-light",
+            )}
+          >
+            {item}
+            {match ? (
+              <span className="mt-0.5 block font-display text-[0.72rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+                {assessmentCopy.results.suggestedLabel}
+              </span>
+            ) : null}
+            {match && reason ? <span className="mt-1 block text-[0.88rem] font-normal text-muted-dark">{reason}</span> : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function Results({
   findings,
   resultRef,
@@ -638,7 +894,7 @@ function Results({
   persona: string | undefined;
   answers: Answers;
   recommended: EditionRecommendation | null;
-  who: { firstName: string; review: boolean };
+  who: Who;
 }) {
   if (recommended) {
     const attendance = typeof answers.weekly_attendance === "string" ? answers.weekly_attendance : undefined;
@@ -654,125 +910,95 @@ function Results({
     );
   }
 
-  const { results } = assessmentCopy;
   const edition = businessRecommendation(persona, typeof answers.team_size === "string" ? answers.team_size : undefined);
-  const pricingHref = pricingPathForPersona(persona);
+  return <BusinessResults findings={findings} resultRef={resultRef} edition={edition} who={who} />;
+}
+
+/**
+ * A business's results, in the same order as a church's: the snapshot with the
+ * edition built for them and the Level their team fits, then what the answers
+ * point to, then the review.
+ */
+function BusinessResults({
+  findings,
+  resultRef,
+  edition,
+  who,
+}: {
+  findings: readonly ResultFinding[];
+  resultRef: React.RefObject<HTMLHeadingElement | null>;
+  edition: BusinessRecommendation | null;
+  who: Who;
+}) {
+  const { results } = assessmentCopy;
+  const reviewHref = `/contact?topic=${ASSESSMENT_REVIEW_TOPIC}#consultation-form`;
+  const bookReview = (from: string) => () =>
+    track("infrastructure_review_cta_clicked", { from, path: "business", edition: edition?.edition ?? "" });
+  const suggested = edition?.suggested ?? null;
 
   return (
     <div data-results className="mx-auto max-w-[56rem] scroll-mt-2">
       <p role="status" className="sr-only">
         Your snapshot is ready.
       </p>
-      <Card>
-        <div className="flex items-center gap-3">
-          <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
-          <Eyebrow>{results.eyebrow}</Eyebrow>
-        </div>
-        <h2
-          ref={resultRef}
-          tabIndex={-1}
-          className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] leading-[1.08] tracking-[-0.035em] text-balance"
-        >
-          {results.headline}
-        </h2>
-        <Received who={who} />
-        <p className="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-muted-dark">
-          {findings.length ? results.intro : results.clear}
-        </p>
-
-        {findings.length ? <FindingList findings={findings} /> : null}
-
-        {edition ? <BusinessEditionCard edition={edition} /> : null}
-
-        <p className="mt-7 border-t border-line-light pt-5 text-[0.84rem] leading-relaxed text-muted-dark">
-          {results.caveat}
-        </p>
-        <PrintLink />
-      </Card>
-
-      <Card tone="inverse" className="mt-4 text-center">
-        <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
-          {results.ctaHeadline}
-        </h2>
-        <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
-          {results.ctaBody}
-        </p>
-        <div className={cn(actionPair, "mx-auto mt-8")}>
-          <ConsultationButton
-            href={`/contact?topic=${ASSESSMENT_REVIEW_TOPIC}#consultation-form`}
-            className="w-full"
-            onClick={() => track("infrastructure_review_cta_clicked", { from: "assessment_results", path: "business" })}
-          >
-            {results.ctaPrimary}
-          </ConsultationButton>
-          <Link href={pricingHref} className={inverseAction}>
-            See Pricing
-          </Link>
-        </div>
-      </Card>
-    </div>
-  );
-}
-
-/** The edition built for this business, with its Levels and its own disclaimer. */
-function BusinessEditionCard({ edition }: { edition: BusinessRecommendation }) {
-  return (
-    <div className="mt-8 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5 sm:p-6">
-      <p className="font-display text-[0.66rem] font-semibold tracking-[0.16em] text-gold-dark uppercase">
-        {assessmentCopy.results.editionEyebrow}
-      </p>
-      <p className="mt-2 text-[1.5rem] font-light tracking-[-0.03em]">{edition.name}</p>
-      <p className="mt-2 max-w-[64ch] text-[0.95rem] leading-relaxed text-muted-dark">{edition.body}</p>
-      <div className="mt-5 grid gap-6 md:grid-cols-2 md:items-start">
-        <Points items={edition.points} />
-        <ul className="grid gap-2.5 text-[0.92rem]">
-          {edition.levels.map((level) => (
-            <li key={level} className="border-b border-line-light pb-2.5 last:border-b-0">
-              {level}
-            </li>
-          ))}
-        </ul>
-      </div>
-      {edition.enterpriseNote ? (
-        <p className="mt-4 text-[0.9rem] leading-relaxed">{edition.enterpriseNote}</p>
-      ) : null}
-      <div className="mt-5 flex flex-wrap gap-x-6 gap-y-1">
-        <Link
-          href={edition.href}
-          className="inline-flex min-h-11 items-center text-[0.95rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
-        >
-          See {edition.name}
-        </Link>
-      </div>
-      <p className="mt-3 text-[0.8rem] text-muted-dark">{edition.disclaimer}</p>
-    </div>
-  );
-}
-
-function FindingList({ findings }: { findings: readonly ResultFinding[] }) {
-  return (
-    <ol className="mt-7 grid">
-      {findings.map((finding, position) => (
-        <li key={finding.id} className="grid gap-x-4 border-t border-line-light py-5 sm:grid-cols-[2.25rem_minmax(0,1fr)]">
-          <span aria-hidden="true" className="font-display text-[0.78rem] tracking-[0.14em] text-gold-dark sm:pt-1">
-            {String(position + 1).padStart(2, "0")}
-          </span>
-          <div>
-            <p className="text-[1.12rem] leading-snug tracking-[-0.015em]">{finding.title}</p>
-            <p className="mt-2 max-w-[66ch] text-[0.95rem] leading-relaxed text-muted-dark">{finding.body}</p>
-            {finding.fit ? (
-              <p className="mt-3 max-w-[66ch] border-l-2 border-gold/60 pl-3 text-[0.92rem] leading-relaxed">{finding.fit}</p>
+      <SnapshotHeader
+        eyebrow={results.eyebrow}
+        headline={results.headline}
+        intro={findings.length ? results.intro : results.clear}
+        resultRef={resultRef}
+        who={who}
+      >
+        {edition ? (
+          <div className="mt-7 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5 sm:p-6">
+            <p className="font-display text-[0.75rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+              {results.editionEyebrow}
+            </p>
+            <p className="mt-2 text-[1.5rem] font-light tracking-[-0.03em]">{edition.name}</p>
+            {suggested ? (
+              <p className="mt-2 text-[1rem] leading-relaxed">
+                <span className="font-semibold">Where we would start: {suggested.label}.</span>
+              </p>
             ) : null}
+            <RecommendationActions
+              callHref={reviewHref}
+              callLabel={results.ctaPrimary}
+              secondary={{ label: `See ${edition.name}`, href: edition.href }}
+              review={who.review}
+              onCall={bookReview("assessment_results_top")}
+            />
+            <div className="mt-6 border-t border-line-light pt-5">
+              <OptionList
+                items={edition.levels}
+                fits={(level) => Boolean(suggested?.step) && level.startsWith(`Level ${suggested?.step},`)}
+                reason={suggested?.reason}
+              />
+              {suggested && !suggested.step ? (
+                <p className="mt-3 text-[0.92rem] leading-relaxed font-semibold">{suggested.reason}</p>
+              ) : null}
+            </div>
+            <p className="mt-4 text-[0.84rem] text-muted-dark">{edition.disclaimer}</p>
           </div>
-        </li>
-      ))}
-    </ol>
+        ) : null}
+      </SnapshotHeader>
+
+      <FindingsCard title={results.findingsTitle} findings={findings} nothing={results.nothing} caveat={results.caveat} />
+
+      <CloseBand
+        headline={results.ctaHeadline}
+        body={results.ctaBody}
+        callHref={reviewHref}
+        callLabel={who.review ? results.addDetails : results.ctaPrimary}
+        secondary={{ label: "See Pricing", href: edition?.pricingHref ?? "/pricing" }}
+        onCall={bookReview("assessment_results")}
+      />
+    </div>
   );
 }
 
 /**
- * A church's results open in a church's words: Genesis Ministry with the
- * plan the answers point to, then what the answers point to, then the call.
+ * A church's results open in a church's words: where we would start, with
+ * the call beside it, then the three plans, then what the answers point to,
+ * then the call again.
  */
 function ChurchResults({
   findings,
@@ -787,11 +1013,11 @@ function ChurchResults({
   recommended: EditionRecommendation;
   attendance?: string;
   suggested: SuggestedPlan | null;
-  who: { firstName: string; review: boolean };
+  who: Who;
 }) {
   const { results } = assessmentCopy;
   const outside = attendance ? OUTSIDE_MINISTRY_SIZE.has(attendance) : false;
-  const callHref = `${suggested?.href ?? recommended.call.href}#consultation-form`;
+  const callHref = suggested?.href ?? recommended.call.href;
   const bookCall = (from: string) => () =>
     track("ministry_call_cta_clicked", { from, plan: suggested?.id ?? "", path: "church" });
 
@@ -800,109 +1026,62 @@ function ChurchResults({
       <p role="status" className="sr-only">
         Your church snapshot is ready.
       </p>
-      <Card>
-        <div className="flex items-center gap-3">
-          <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
-          <Eyebrow>{results.churchEyebrow}</Eyebrow>
-        </div>
-        <h2
-          ref={resultRef}
-          tabIndex={-1}
-          className="mt-4 text-[clamp(1.6rem,3vw,2.3rem)] leading-[1.08] tracking-[-0.035em] text-balance"
-        >
-          {results.churchHeadline}
-        </h2>
-        <Received who={who} />
-        <p className="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-muted-dark">
-          {findings.length ? results.churchIntro : results.churchClear}
-        </p>
-
+      <SnapshotHeader
+        eyebrow={results.churchEyebrow}
+        headline={results.churchHeadline}
+        intro={findings.length ? results.churchIntro : results.churchClear}
+        resultRef={resultRef}
+        who={who}
+      >
         <div className="mt-7 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5 sm:p-6">
-          <p className="font-display text-[0.66rem] font-semibold tracking-[0.16em] text-gold-dark uppercase">
+          <p className="font-display text-[0.75rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
             {outside ? results.churchOutsideEyebrow : recommended.eyebrow}
           </p>
           <p className="mt-2 text-[1.5rem] font-light tracking-[-0.03em]">{recommended.name}</p>
-          <p className="mt-2 max-w-[64ch] text-[0.95rem] leading-relaxed text-muted-dark">{recommended.body}</p>
-          {outside ? <p className="mt-3 text-[0.92rem] leading-relaxed">{results.churchSizeNote}</p> : null}
-          <div className="mt-5 grid gap-6 md:grid-cols-2 md:items-start">
-            <Points items={recommended.points} />
-            <div>
-              <ul className="grid gap-2 text-[0.95rem]">
-                {recommended.plans.map((plan) => {
-                  const fits = suggested ? plan.startsWith(`${suggested.name},`) : false;
-                  return (
-                    <li
-                      key={plan}
-                      className={cn(
-                        "rounded-[4px] border-l-2 py-2 pl-3",
-                        fits ? "border-gold-dark bg-white/70 font-semibold" : "border-line-light",
-                      )}
-                    >
-                      {plan}
-                      {fits ? (
-                        <span className="mt-0.5 block font-display text-[0.62rem] font-semibold tracking-[0.14em] text-gold-dark uppercase">
-                          Fits what you told us
-                        </span>
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ul>
-              <p className="mt-3 text-[0.85rem] leading-relaxed text-muted-dark">{recommended.enterprise}</p>
-            </div>
-          </div>
           {suggested ? (
-            <p className="mt-5 text-[0.95rem] leading-relaxed">
+            <p className="mt-2 text-[1rem] leading-relaxed">
               <span className="font-semibold">
                 {results.churchSuggested}: {suggested.name}, {suggested.price} a month.
               </span>{" "}
               {suggested.reason}
             </p>
           ) : null}
-          <div className={cn(actionPair, "mt-6")}>
-            <ConsultationButton href={callHref} className="w-full" onClick={bookCall("assessment_results_top")}>
-              {recommended.call.label}
-            </ConsultationButton>
-            <Link
-              href={recommended.page.href}
-              className={outlineAction}
-              onClick={() => track("assessment_edition_link_clicked", { edition: recommended.edition, from: "results", path: "church" })}
-            >
-              {recommended.page.label}
-            </Link>
+          {outside ? <p className="mt-3 text-[0.92rem] leading-relaxed">{results.churchSizeNote}</p> : null}
+          <RecommendationActions
+            callHref={callHref}
+            callLabel={recommended.call.label}
+            secondary={{
+              label: recommended.page.label,
+              href: recommended.page.href,
+              onClick: () =>
+                track("assessment_edition_link_clicked", { edition: recommended.edition, from: "results", path: "church" }),
+            }}
+            review={who.review}
+            onCall={bookCall("assessment_results_top")}
+          />
+          <div className="mt-6 border-t border-line-light pt-5">
+            <OptionList items={recommended.plans} fits={(plan) => Boolean(suggested) && plan.startsWith(`${suggested?.name},`)} />
+            {suggested?.later ? <p className="mt-3 text-[0.9rem] leading-relaxed text-muted-dark">{suggested.later}</p> : null}
+            <p className="mt-3 text-[0.88rem] leading-relaxed text-muted-dark">{recommended.enterprise}</p>
           </div>
         </div>
-      </Card>
+      </SnapshotHeader>
 
-      <Card className="mt-4">
-        <Eyebrow>{results.churchFindingsTitle}</Eyebrow>
-        {findings.length ? (
-          <FindingList findings={findings} />
-        ) : (
-          <p className="mt-4 max-w-[60ch] text-[0.98rem] leading-relaxed text-muted-dark">{results.churchNothing}</p>
-        )}
-        <p className="mt-7 border-t border-line-light pt-5 text-[0.84rem] leading-relaxed text-muted-dark">
-          {results.churchCaveat}
-        </p>
-        <PrintLink />
-      </Card>
+      <FindingsCard
+        title={results.churchFindingsTitle}
+        findings={findings}
+        nothing={results.churchNothing}
+        caveat={results.churchCaveat}
+      />
 
-      <Card tone="inverse" className="mt-4 text-center">
-        <h2 className="mx-auto max-w-[22ch] text-[clamp(1.6rem,3vw,2.4rem)] leading-[1.06] tracking-[-0.035em] text-balance">
-          {suggested ? `Talk through ${suggested.name} for your church.` : results.churchCtaHeadline}
-        </h2>
-        <p className="mx-auto mt-4 max-w-[52ch] text-[0.98rem] leading-relaxed text-ivory/70">
-          {results.churchCtaBody}
-        </p>
-        <div className={cn(actionPair, "mx-auto mt-8")}>
-          <ConsultationButton href={callHref} className="w-full" onClick={bookCall("assessment_results")}>
-            {recommended.call.label}
-          </ConsultationButton>
-          <Link href={recommended.plansLink.href} className={inverseAction}>
-            {recommended.plansLink.label}
-          </Link>
-        </div>
-      </Card>
+      <CloseBand
+        headline={suggested ? `Talk through ${suggested.name} for your church.` : results.churchCtaHeadline}
+        body={results.churchCtaBody}
+        callHref={callHref}
+        callLabel={who.review ? results.addDetails : recommended.call.label}
+        secondary={recommended.plansLink}
+        onCall={bookCall("assessment_results")}
+      />
     </div>
   );
 }

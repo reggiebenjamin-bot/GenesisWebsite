@@ -126,7 +126,7 @@ export function IntakeForm({ sessionId }: { sessionId: string }) {
         </p>
       ) : null}
 
-      <SubmitButton variant="secondary" className="w-full sm:w-auto" disabled={status === "submitting"}>
+      <SubmitButton className="w-full sm:w-auto" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending" : "Send intake"}
       </SubmitButton>
     </form>

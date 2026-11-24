@@ -107,7 +107,7 @@ export function EnterpriseInquiryForm({ copy }: { copy: InquiryCopy }) {
         </p>
       ) : null}
 
-      <SubmitButton variant="secondary" className="w-full sm:w-auto" disabled={status === "submitting"}>
+      <SubmitButton className="w-full sm:w-auto" disabled={status === "submitting"}>
         {status === "submitting" ? copy.sending : copy.submit}
       </SubmitButton>
     </form>

@@ -5,7 +5,7 @@ import styles from "./ConsultationButton.module.css";
 export function ConsultationButton({
   compact = false,
   className = "",
-  children = "Book a Consultation",
+  children = "Book a Call",
   ...props
 }: Omit<ComponentProps<typeof Link>, "children"> & {
   compact?: boolean;

@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
+import { TrackClick } from "@/components/ui/TrackClick";
 import { editionLevels, editionPricing, type EditionKey } from "@/lib/editionPlans";
 
 /* The gold hairline gets stronger with the level, as on the pricing page. */
@@ -33,7 +34,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
             aria-hidden="true"
             className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--tier-edge),transparent)]"
           />
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+          <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold-dark uppercase">
             Level {plan.step}
           </p>
           <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
@@ -48,7 +49,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
           <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
 
           <div className="mt-6 border-t border-line-light pt-4">
-            <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.12em] text-muted-dark uppercase">
               Users
             </p>
             <p className="mt-2 text-[0.92rem] leading-snug">{plan.userLimit}</p>
@@ -59,11 +60,9 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
             {bullets.map((bullet) => (
               <li
                 key={bullet}
-                className="grid grid-cols-[1rem_minmax(0,1fr)] gap-2.5 text-[0.95rem] leading-snug"
+                className="grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.95rem] leading-snug"
               >
-                <span aria-hidden="true" className="text-gold-dark">
-                  +
-                </span>
+                <span aria-hidden="true" className="mt-[0.45rem] size-1.5 rounded-full bg-gold-dark" />
                 <span>{bullet}</span>
               </li>
             ))}
@@ -72,9 +71,16 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
           <form action="/api/managed/checkout" method="POST" className="mt-auto flex items-end pt-8">
             <input type="hidden" name="plan" value={plan.id} />
             <input type="hidden" name="edition" value={edition} />
-            <SubmitButton variant="outline" className="w-full">
-              Start Level {plan.step}
-            </SubmitButton>
+            <TrackClick event="managed_plan_selected" from={`edition_${edition}`} selector="button">
+              <SubmitButton
+                variant="outline"
+                className="w-full"
+                data-track-level={plan.step}
+                data-track-edition={edition}
+              >
+                Start Level {plan.step}
+              </SubmitButton>
+            </TrackClick>
           </form>
         </Card>
       ))}

@@ -12,6 +12,7 @@
 
 import { FUNDING_LINE } from "./legal.ts";
 import { managedPlans, type ManagedPlan, type ManagedPlanId } from "./offers.ts";
+import { CHURCH_PERSONA, personaEdition } from "./personas.ts";
 
 export type EditionKey = "business" | "real_estate" | "lending";
 
@@ -51,17 +52,19 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
     footer: FUNDING_LINE,
     bullets: {
       "managed-750": ["Calls answered", "Quotes followed up", "Appointments confirmed"],
+      /* Each Level adds only what that Level is (lib/offers.ts): team routing and
+         automation across workflows at Level 02, business wide infrastructure,
+         several AI employees working together and priority onboarding at Level 03. */
       "managed-1750": [
         "Everything in Level 01",
-        "Calls answered",
-        "Quotes followed up",
-        "Appointments confirmed",
+        "Team roles and routing rules",
+        "Automation across workflows and handoffs",
       ],
       "managed-4500": [
         "Everything in Level 02",
-        "Calls answered",
-        "Quotes followed up",
-        "Appointments confirmed",
+        "Priority onboarding and configuration",
+        "Genesis working across your connected systems",
+        "Several AI employees working together",
       ],
     },
   },
@@ -136,18 +139,10 @@ export function editionLevels(key: EditionKey): readonly EditionLevel[] {
 
 /** The edition pricing page that matches an assessment persona. */
 export function pricingPathForPersona(persona: string | undefined): string {
-  switch (persona) {
-    case "Lender":
-      return editionPricing.lending.pricingPath;
-    case "Agent / Solo Operator":
-    case "Real Estate Team":
-    case "Brokerage":
-    case "Investor / Acquisitions":
-      return editionPricing.real_estate.pricingPath;
-    /* Churches get the three Ministry plans, not the business Levels. */
-    case "Church or ministry":
-      return "/ministry#levels";
-    default:
-      return "/pricing";
-  }
+  /* Churches get the three Ministry plans, not the business Levels. */
+  if (persona === CHURCH_PERSONA) return "/ministry#levels";
+  const edition = personaEdition(persona);
+  if (edition === "lending") return editionPricing.lending.pricingPath;
+  if (edition === "real_estate") return editionPricing.real_estate.pricingPath;
+  return "/pricing";
 }

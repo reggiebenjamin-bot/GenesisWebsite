@@ -79,9 +79,10 @@ const CITIES = [
   { label: "Austin", href: "/texas/austin" },
 ] as const;
 
+/* A trade opens the assessment already answering as a service business. */
 const CTAS = [
-  { label: "Start a consultation", href: "/assessment" },
-  { label: "See pricing", href: "/pricing" },
+  { label: "Assess My Business", href: "/assessment?persona=business" },
+  { label: "See Pricing", href: "/pricing" },
   { label: "See Genesis Business", href: "/business" },
 ] as const;
 

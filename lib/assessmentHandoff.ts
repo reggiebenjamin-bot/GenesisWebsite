@@ -14,8 +14,10 @@ export type AssessmentHandoff = {
   email: string;
   phone: string;
   company: string;
-  /** The church staff size, in the same buckets the church contact form uses. */
+  /** The church staff size, or a business's team size, in the buckets the contact form uses. */
   staff: string;
+  /** Attendance or team size and the finding titles, for the contact form's notes. */
+  summary: string;
 };
 
 /** A stored handoff, or null when there is none or it is not the shape we wrote. */
@@ -32,6 +34,7 @@ export function readAssessmentHandoff(raw: string | null): AssessmentHandoff | n
       phone: text("phone"),
       company: text("company"),
       staff: text("staff"),
+      summary: typeof value.summary === "string" ? value.summary.slice(0, 600) : "",
     };
   } catch {
     return null;

@@ -8,14 +8,14 @@ import { managedPlans } from "../lib/offers.ts";
 const DASHES = ["-", "–", "—"];
 const EMOJI = /\p{Extended_Pictographic}/u;
 
-test("the chooser is Business, Real Estate, and Lending, with the live checkout links", () => {
+test("the chooser is Lending, Real Estate Pros and Business, in the editions' order, with the live checkout links", () => {
   const products = chooserProducts();
   assert.deepEqual(
     products.map((product) => [product.label, product.href]),
     [
-      ["Business", "/business"],
-      ["Real Estate", "/real-estate"],
       ["Lending", "/lending"],
+      ["Real Estate Pros", "/real-estate"],
+      ["Business", "/business"],
     ],
   );
 

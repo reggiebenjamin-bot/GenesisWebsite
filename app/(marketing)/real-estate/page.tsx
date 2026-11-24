@@ -10,7 +10,7 @@ const edition = editionByPath("/real-estate")!;
 
 export default function RealEstatePage() {
   return (
-    <EditionLanding edition={edition}>
+    <EditionLanding edition={edition} pricingKey="real_estate">
       <EditionLevels edition="real_estate" />
     </EditionLanding>
   );

@@ -1,14 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
+import { TrackClick } from "@/components/ui/TrackClick";
 import { ProductChooser } from "@/components/home/ProductChooser";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
-import {
-  aiEmployeePersonas,
-} from "@/lib/aiEmployees";
+import { aiEmployeePersonas, aiEmployeesHome } from "@/lib/aiEmployees";
 import { editions, ministryEdition } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
 import { ministryLevels } from "@/lib/ministryPage";
@@ -38,7 +36,8 @@ const problems = [
   { title: "Scattered tools", body: "CRM, inbox, texts, spreadsheets and calendar never talk, so the next step falls through." },
 ];
 
-const team = aiEmployeePersonas.filter((p) => p.id !== "ava");
+/* All four, the same team the AI Employees band names. */
+const team = aiEmployeePersonas;
 
 /** Chapters one to three: the problem, why Genesis exists, and Genesis OS with its editions. */
 export function StoryOpening() {
@@ -109,24 +108,16 @@ export function StoryOpening() {
               </Link>
             </Card>
           ))}
-          {/* Edition 05 spans the row: software for churches, with its own plans and disclaimer. */}
-          <Card as="li" className="md:col-span-2">
-            <Link href={ministryEdition.href} className="group grid gap-x-10 gap-y-5 md:grid-cols-[1.1fr_1fr] md:items-start">
-              <div>
-                <div className="flex items-center gap-3">
-                  <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
-                  <Eyebrow className="text-gold">Edition {ministryEdition.no}</Eyebrow>
-                </div>
-                <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{ministryEdition.name}</p>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{ministryEdition.body}</p>
-              </div>
-              <div className="md:pt-9">
-                <Points items={ministryEdition.points} />
-                <p className="mt-4 text-[0.8rem] leading-relaxed text-muted-dark">{ministryEdition.disclaimer}</p>
-              </div>
-              <div className="md:col-span-2">
-                <EditionFooter price={ministryFrom} action={`See ${ministryEdition.name}`} />
-              </div>
+          {/* Edition 05 spans the row with the same structure as the other four: software for
+              churches, with its own plans and its own disclaimer in place of the funding line. */}
+          <Card as="li" className="flex md:col-span-2">
+            <Link href={ministryEdition.href} className="group flex w-full flex-col">
+              <Eyebrow className="text-gold">Edition {ministryEdition.no}</Eyebrow>
+              <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{ministryEdition.name}</p>
+              <p className="mt-3 max-w-[72ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryEdition.body}</p>
+              <Points items={ministryEdition.points} className="mt-5" />
+              <p className="mt-4 mb-6 text-[0.84rem] leading-relaxed text-muted-dark">{ministryEdition.disclaimer}</p>
+              <EditionFooter price={ministryFrom} action={`See ${ministryEdition.name}`} />
             </Link>
           </Card>
         </ul>
@@ -143,19 +134,24 @@ export function StoryTeamDay() {
     <Sheet surface="paper" rise aria-labelledby="story-team-title" className="site-section">
       <SectionIntro
         layout="center"
-        eyebrow="Chapter four. Meet the team"
+        eyebrow="Chapter four. Your AI employees"
         title="A day with your AI employees."
         titleId="story-team-title"
       />
-      <ul className="grid gap-4 lg:grid-cols-3">
+      <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {team.map((p) => (
           <Card as="li" key={p.id}>
             <p className="text-[1.7rem] font-light tracking-[-0.035em]">{p.name}</p>
-            <Eyebrow className="mt-2 text-gold">{p.role}</Eyebrow>
+            <Eyebrow className="mt-2 min-h-[2.8em] text-gold-dark">{p.role}</Eyebrow>
             <p className="mt-4 text-[0.95rem] leading-relaxed text-muted-dark">{p.dailyWork}</p>
           </Card>
         ))}
       </ul>
+      <div className="mt-10 flex justify-center">
+        <Button href="/ai-employees" variant="outline" className="min-h-[53px] max-sm:w-full">
+          {aiEmployeesHome.action}
+        </Button>
+      </div>
     </Sheet>
   );
 }
@@ -172,23 +168,23 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: Business, Real Estate, and Lending, each with checkout. */
+/** Chapter six: Lending, Real Estate Pros and Business, each with its Levels and checkout: the one place the homepage prices them. */
 export function StoryOffers() {
   return (
     <Sheet id="choose-business" surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
       <SectionIntro
         layout="split"
-        eyebrow="Chapter six. Build your team"
-        title="Choose your business."
+        eyebrow="Chapter six. Plans and pricing"
+        title="Choose your edition and Level."
         titleId="story-offers-title"
-        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Open the edition page, or start Level 01, Level 02, or Level 03 checkout. Monthly plans with a one time setup.</p>}
+        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Open the edition page, or start Level 01, Level 02 or Level 03. Monthly plans with a one time setup. Level 01 is one user, Level 02 up to 5 and Level 03 up to 25.</p>}
       />
       <ProductChooser />
     </Sheet>
   );
 }
 
-/** Chapter seven: the close. */
+/** The close. The footer under it carries the disclaimer, so it is said once. */
 export function StoryClose() {
   return (
     <ClosingBand
@@ -197,11 +193,12 @@ export function StoryClose() {
       line="Give your business a team that never misses a lead, never forgets a follow up and never sleeps."
       actions={
         <div className="grid w-full max-w-[30rem] gap-3 sm:grid-cols-2">
-          <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
+          <TrackClick event="assessment_link_clicked" from="home_close" selector="a[href^='/assessment']">
+            <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
+          </TrackClick>
           <Button href="/ai-employees" variant="secondary" className="min-h-[53px] w-full">Meet the Team</Button>
         </div>
       }
-      footnote={<p>{FUNDING_LINE}</p>}
     />
   );
 }

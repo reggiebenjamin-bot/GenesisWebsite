@@ -9,14 +9,13 @@
  */
 
 export type AnalyticsEvent =
-  /* Custom Infrastructure funnel */
-  | "custom_infrastructure_viewed"
+  /* The assessment funnel */
   | "assessment_started"
   | "assessment_step_completed"
   | "assessment_completed"
   | "assessment_lead_captured"
   | "assessment_result_viewed"
-  /* A church in the assessment: Genesis Ministry recommended, its page opened, its call booked */
+  /* The edition the results recommend (business or church), its page opened, a Ministry call booked */
   | "assessment_edition_recommended"
   | "assessment_edition_link_clicked"
   | "ministry_call_cta_clicked"
@@ -27,14 +26,9 @@ export type AnalyticsEvent =
   | "assessment_link_clicked"
   | "infrastructure_review_cta_clicked"
   | "infrastructure_review_booked"
-  | "direct_consultation_cta_clicked"
   | "direct_consultation_booked"
-  /* Pricing */
-  | "managed_pricing_viewed"
+  /* Pricing: a Start Level button, with its level and edition */
   | "managed_plan_selected"
-  | "tools_pricing_viewed"
-  | "tools_plan_selected"
-  | "one_time_tool_selected"
   /* Homepage film */
   | "hawk_demo_played";
 

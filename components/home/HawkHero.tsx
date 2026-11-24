@@ -5,7 +5,7 @@ import { GenesisMark } from "@/components/layout/GenesisMark";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { ministryCue } from "@/lib/ministryPage";
-import { genesisPositioning, type OfferPathId, pathHeroes } from "@/lib/offers";
+import { type OfferPathId, pathHeroes } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { HawkAscii } from "./HawkAscii";
 import { HAWK_IMAGE_ORIGIN, HAWK_IMAGE_SRC } from "./hawkAsset";
@@ -33,15 +33,12 @@ export function HawkHero() {
       </div>
 
       <div className={cn("shell relative z-10", styles.inner)}>
-        {/* The page's one H1 names what Genesis is, as the page title does. Each
-            path's title below is the visible heading for that path; there are
-            two of them in the HTML, so they cannot both be the H1. */}
-        <h1 className="sr-only">Genesis AI: {genesisPositioning.category}</h1>
-
         <HeroCopy path="custom-infrastructure">
-          <ConsultationButton href="/assessment" className="w-full">
-            Assess My Business
-          </ConsultationButton>
+          <TrackClick event="assessment_link_clicked" from="hero" selector="a[href^='/assessment']">
+            <ConsultationButton href="/assessment" className="w-full">
+              Assess My Business
+            </ConsultationButton>
+          </TrackClick>
           <Link href="/how-it-works" className={secondaryAction}>
             <span>See How It Works</span>
           </Link>
@@ -56,15 +53,28 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
 
   return (
     <div className={styles.copy}>
-      <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.12em] text-gold uppercase sm:tracking-[0.18em]">
+      <p
+        className={cn(
+          "font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.1em] text-gold uppercase sm:tracking-[0.14em]",
+          styles.eyebrow,
+        )}
+      >
         {hero.eyebrow}
       </p>
-      <h2 className={cn("mt-5 text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance", styles.title)}>
+      {/* The page's one H1 is the headline a visitor sees, with the plain line under it saying
+          who Genesis is for and what it does. */}
+      <h1 className={cn("mt-5 text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance", styles.title)}>
         {hero.title} <span className="text-gold-light">{hero.accent}</span>
-      </h2>
+      </h1>
+      {hero.subline ? (
+        <p className={cn("mx-auto mt-5 max-w-[40ch] text-[clamp(1.08rem,1.5vw,1.3rem)] leading-snug text-balance text-ivory", styles.subline)}>
+          {hero.subline}
+        </p>
+      ) : null}
 
-      <p className={cn("mx-auto mt-6 max-w-[44ch] text-[clamp(1rem,1.3vw,1.18rem)] leading-relaxed text-balance text-ivory/74", styles.summary)}>
-        {hero.summary}
+      <p className={cn("mx-auto mt-4 max-w-[44ch] text-[clamp(1rem,1.3vw,1.18rem)] leading-relaxed text-balance text-ivory/74", styles.summary)}>
+        <span className={styles.summaryLong}>{hero.summary}</span>
+        {hero.summaryShort ? <span className={styles.summaryShort}>{hero.summaryShort}</span> : null}
       </p>
 
       <div className={cn("mx-auto mt-9 grid max-w-[30rem] gap-3 sm:grid-cols-2", styles.actions)}>{children}</div>

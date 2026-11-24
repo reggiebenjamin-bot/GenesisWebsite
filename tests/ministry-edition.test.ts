@@ -83,14 +83,15 @@ test("Ministry is Edition 05: its own card, not one of the four business edition
   assert.deepEqual(allEditions.map((edition) => edition.href), [...editions.map((edition) => edition.href), "/ministry"]);
 });
 
-test("the homepage features Ministry as a fifth edition card with the gold G and its plans", () => {
+test("the homepage features Ministry as a fifth edition card, built like the other four, with its plans", () => {
   const story = readFileSync(join(process.cwd(), "components", "home", "story", "StorySections.tsx"), "utf8");
   assert.match(story, /href=\{ministryEdition\.href\}/);
   assert.match(story, /Edition \{ministryEdition\.no\}/);
   assert.match(story, /\{ministryEdition\.disclaimer\}/);
   /* Its plans start where the plan cards say: "Plans from $149 a month", built from ministryLevels. */
   assert.match(story, /Plans from \$\{ministryLevels\.levels\[0\]\.priceDisplay\} a month/);
-  assert.match(story, /\/brand\/mark-gold-on-light\.svg/);
+  /* The same structure as the other cards: no mark of its own, so the G is not repeated per card. */
+  assert.doesNotMatch(story, /\/brand\/mark-gold-on-light\.svg/);
   const chooser = readFileSync(join(process.cwd(), "components", "home", "ProductChooser.tsx"), "utf8");
   assert.match(chooser, /Leading a church\?/);
   assert.match(chooser, /href=\{ministryEdition\.href\}/);
@@ -127,7 +128,9 @@ test("the hero books a call, then opens the guided demo", () => {
   assert.equal(ministryHero.primary.label, "Book a Call");
   assert.equal(ministryContact.form.submit, "Book a Call");
   const header = readFileSync(join(process.cwd(), "components", "layout", "Header.tsx"), "utf8");
-  assert.match(header, /href: "\/contact\?topic=ministry", label: "Book a Call"/);
+  /* The header books the same call the page does, from the same place, and lands on the form. */
+  assert.match(header, /return ministryHero\.primary;/);
+  assert.equal(ministryHero.primary.href, "/contact?topic=ministry#consultation-form");
   assert.doesNotMatch(JSON.stringify(ministryPage), /Book a Consultation/);
   assert.match(ministryHero.primary.href, /^\/contact\b/);
   assert.equal(ministryHero.secondary.label, "Take the Guided Demo");
@@ -361,8 +364,16 @@ test("the guided demo is linked only once its files are published", () => {
 
 test("a church reaches a church version of the consultation form", () => {
   const { form } = ministryContact;
-  assert.equal(form.company, "Church Name");
-  assert.deepEqual([...form.roles], ["Senior pastor", "Church staff", "Volunteer"]);
+  assert.equal(form.company, "Church name");
+  /* The executive pastor and the administrator, who often make this decision, each have a role. */
+  assert.deepEqual([...form.roles], [
+    "Senior or lead pastor",
+    "Executive pastor",
+    "Church administrator or operations",
+    "Communications or guest services",
+    "Other staff",
+    "Volunteer",
+  ]);
   assert.equal(MINISTRY_OPERATION_TYPE, "Church");
   assert.match(ministryContact.intro.description[0], /church/);
   /* Every Ministry topic link on the page opens the church version. */

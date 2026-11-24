@@ -50,7 +50,6 @@ const socialImage = (name: string, alt: string): SeoImage => ({
   height: 1080,
 });
 
-const planPrices = managedPlans.map((plan) => plan.priceDisplay).join(", ");
 
 function toolPricePhrase(id: ToolId): string {
   const tool = genesisTools.find((candidate) => candidate.id === id);
@@ -101,10 +100,10 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/assessment",
-    title: "Business AI Assessment",
+    title: "Free Business and Church Assessment",
     description:
       "Free assessment for service businesses, lenders, real estate teams and churches: see where calls, follow up and handoffs still depend on someone remembering.",
-    label: "Business Assessment",
+    label: "Free Assessment",
     parent: "/solutions",
     image: null,
     lastModified: SEO_PASS,
@@ -114,7 +113,10 @@ export const seoPages: readonly SeoPage[] = [
   {
     path: "/pricing",
     title: "Pricing: Managed AI Plans",
-    description: `Genesis Managed AI plans for real estate businesses are ${planPrices} per month.`,
+    /* Business Levels first, then the church plans, which have their own page. */
+    description: `Genesis plans for service businesses, lenders and real estate teams: ${managedPlans
+      .map((plan) => `Level ${plan.step} ${plan.priceDisplay}`)
+      .join(", ")} a month, plus setup. Church plans from $149.`,
     label: "Pricing",
     image: socialImage("pricing", "Genesis AI pricing: Managed AI plans"),
     lastModified: "2026-11-15",
@@ -169,11 +171,11 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/contact",
-    title: { absolute: "Contact Genesis AI: Book a Consultation" },
+    title: { absolute: "Contact Genesis AI: Book a Call" },
     description:
-      "Book a no-cost Genesis consultation to review your current systems, the manual work creating the most drag, and the right scope and next step.",
+      "Book a free call with Genesis to review your current systems, the manual work creating the most drag, and the right scope and next step.",
     label: "Contact",
-    image: socialImage("contact", "Contact Genesis AI: book a consultation"),
+    image: socialImage("contact", "Contact Genesis AI: book a call"),
     lastModified: REBUILD,
     changeFrequency: "yearly",
     priority: 0.6,

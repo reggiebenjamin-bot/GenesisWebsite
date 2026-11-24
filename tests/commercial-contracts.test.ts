@@ -100,7 +100,7 @@ test("Infrastructure exposes only the approved three custom-build paths", () => 
   );
   assert.deepEqual(
     infrastructureCatalog.plans.map((plan) => plan.ctaLabel),
-    ["Discuss Foundation", "Discuss Growth", "Book a consultation"],
+    ["Discuss Foundation", "Discuss Growth", "Book a Call"],
   );
   assert.deepEqual(
     infrastructureCatalog.plans.map((plan) => plan.name),

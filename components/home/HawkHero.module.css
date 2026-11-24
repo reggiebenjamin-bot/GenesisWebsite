@@ -83,6 +83,36 @@
   margin-bottom: 28px;
 }
 
+/* The eyebrow sits on the hawk's characters: a soft dark ground behind it,
+   so the small capitals read cleanly. */
+.eyebrow {
+  position: relative;
+  display: inline-block;
+  padding: 6px 18px;
+}
+
+.eyebrow::before {
+  position: absolute;
+  inset: -6px -10px;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(8 9 14 / 0.92), rgb(8 9 14 / 0.7) 65%, transparent);
+}
+
+.summaryShort {
+  display: none;
+}
+
+/* A tablet held upright: the hero ends near the copy, so the next section
+   shows below it instead of a tall empty band. */
+@media (min-width: 640px) and (max-width: 1023px) and (orientation: portrait) {
+  .hero {
+    --hero-overrun: 0rem;
+    min-height: min(82svh, 900px);
+  }
+}
+
 /* From tablet up the toggle sits in the navigation bar. */
 @media (min-width: 640px) {
   .toggle {
@@ -123,12 +153,23 @@
     font-size: clamp(1.9rem, 4.6vw, 2.5rem) !important;
   }
 
+  .subline {
+    margin-top: 10px !important;
+    font-size: 1rem !important;
+  }
+
+  /* A complete short sentence, never a long one cut off. */
   .summary {
-    display: -webkit-box;
-    margin-top: 12px !important;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    margin-top: 8px !important;
+    font-size: 0.95rem !important;
+  }
+
+  .summaryLong {
+    display: none;
+  }
+
+  .summaryShort {
+    display: inline;
   }
 
   .actions {

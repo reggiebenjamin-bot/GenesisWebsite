@@ -37,7 +37,8 @@ test("the Texas landings cover the hub, three use cases and four cities", () => 
     assert.equal(page.disclaimer, FUNDING_LINE);
     assert.equal(page.points.length, 3);
     assert.ok(page.faqs.length >= 2);
-    assert.equal(page.ctas[0]?.href, "/assessment");
+    /* The assessment, opened on the page's own path where it has one. */
+    assert.match(page.ctas[0]?.href ?? "", /^\/assessment(\?persona=(lending|real-estate))?$/);
   }
 });
 

@@ -101,7 +101,7 @@ export const navigation: NavEntry[] = [
     items: [
       { label: "About", href: "/about", description: "Our principles." },
       { label: "Results", href: "/results", description: "The proof standard." },
-      { label: "Contact", href: "/contact", description: "Book a consultation." },
+      { label: "Contact", href: "/contact", description: "Book a call." },
     ],
   },
 ];
@@ -261,7 +261,7 @@ export const faqs: readonly Faq[] = [
   {
     question: "What is Genesis?",
     answer:
-      "Genesis is AI infrastructure for real estate professionals. It connects business systems, workflows, communication, data, automation, and AI capabilities around the way the operation actually works.",
+      "Genesis is AI infrastructure for service businesses, lenders and real estate teams. It connects business systems, workflows, communication, data, automation, and AI capabilities around the way the operation actually works.",
     paths: ["agent", "custom-infrastructure"],
   },
   {
@@ -299,9 +299,9 @@ export const faqs: readonly Faq[] = [
 /** The pricing page's questions. */
 export const pricingFaqs = [
   {
-    question: "What changes between the managed levels?",
+    question: "What changes between the Levels?",
     answer:
-      "The implementation becomes broader across workflows, integrations, people, automation, operational intelligence, and the level of support required to run the system.",
+      "Level 01 is for one user: calls answered, quotes followed up and appointments confirmed. Level 02 covers up to 5 users and adds team roles, routing and automation across workflows. Level 03 covers up to 25 users and adds priority onboarding and Genesis working across your connected systems. More than 25 users is Genesis Enterprise.",
   },
   {
     question: "Are third-party software costs included?",
@@ -309,9 +309,9 @@ export const pricingFaqs = [
       "No, unless explicitly stated. Plan pricing covers Genesis; external licenses and usage are separate.",
   },
   {
-    question: "How do I know which managed level fits?",
+    question: "How do I know which Level fits?",
     answer:
-      "The consultation maps the current operation and defines what Genesis would actually be responsible for connecting, implementing, and supporting before a scope is recommended.",
+      "Take the free assessment: your results suggest a Level from your team size. A short call then maps how the work moves today and what Genesis would be responsible for, before anything is recommended in writing.",
   },
 ] as const;
 

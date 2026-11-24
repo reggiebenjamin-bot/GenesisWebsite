@@ -5,7 +5,8 @@ const base =
   "inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[6px] border px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-center transition-colors duration-200";
 
 const variants = {
-  gold: "border-gold-light bg-gold-light text-ink hover:bg-ivory hover:border-ivory",
+  /* The one primary: the same gold as the header and hero buttons (globals.css .primary-action). */
+  gold: "primary-action",
   outline: "border-ink/30 text-ink hover:bg-ink hover:text-ivory",
   ghost: "border-ivory/30 bg-ink/20 text-ivory hover:bg-ivory/12",
   secondary: "secondary-action",

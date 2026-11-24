@@ -7,10 +7,12 @@ import { cn } from "@/lib/utils";
 /** The homepage questions for one path: the questions in view, each answer one tap away. */
 export function HomeFaq({
   path,
+  eyebrow = "FAQ",
   rise = false,
   className,
 }: {
   path: OfferPathId;
+  eyebrow?: string;
   rise?: boolean;
   className?: string;
 }) {
@@ -25,7 +27,7 @@ export function HomeFaq({
     >
       <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
         <SectionIntro
-          eyebrow="FAQ"
+          eyebrow={eyebrow}
           title="Questions serious operators ask first."
           titleId={titleId}
           className="mb-0"

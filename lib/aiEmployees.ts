@@ -14,8 +14,8 @@ export const aiEmployeesHero = {
   accent: "every day.",
   summary:
     "Hawk leads operations. Susan runs marketing. Darius works sales and prospecting. Ava covers the front desk and scheduling.",
-  teamAction: "Meet the team",
-  pricingAction: "See pricing",
+  teamAction: "Meet the Team",
+  pricingAction: "See Pricing",
 } as const;
 
 export const aiEmployeesTeam = {
@@ -200,7 +200,7 @@ export const aiEmployeesHome = {
   accent: "every day.",
   summary:
     "Hawk, Susan, Darius, and Ava take the daily work of the pipeline: operations, marketing, sales, and the front desk.",
-  action: "Meet the team",
+  action: "Meet the Team",
 } as const;
 
 export const checkoutMessages = {

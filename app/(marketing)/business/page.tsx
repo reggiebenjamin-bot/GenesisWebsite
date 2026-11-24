@@ -10,7 +10,7 @@ const edition = editionByPath("/business")!;
 
 export default function BusinessPage() {
   return (
-    <EditionLanding edition={edition}>
+    <EditionLanding edition={edition} pricingKey="business">
       <EditionLevels edition="business" />
     </EditionLanding>
   );

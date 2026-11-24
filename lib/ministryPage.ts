@@ -18,8 +18,11 @@ import { ministryEdition } from "./editions.ts";
 
 export type MinistryLink = { label: string; href: string };
 
-/** The consultation route, with a topic the contact form turns into a starting note. */
-const consult = (topic: string) => `/contact?topic=${topic}`;
+/**
+ * The consultation route, with a topic the contact form turns into a starting
+ * note, landing on the form itself rather than on the page's intro.
+ */
+export const consult = (topic: string) => `/contact?topic=${topic}#consultation-form`;
 
 /**
  * The clickable previews, served as static files from public/ministry-demo/
@@ -96,7 +99,8 @@ export const ministryMedia = {
 } as const;
 
 export const ministryHero = {
-  edition: `Edition ${ministryEdition.no}`,
+  /** Said beside the name instead of an edition number, which means nothing to a church arriving from search. */
+  audience: "For churches",
   eyebrow: ministryEdition.eyebrow,
   headline: ministryEdition.headline,
   /** The part of the headline set in gold. */
@@ -318,6 +322,8 @@ export type MinistryLevel = {
   /** The monthly price as the card prints it. */
   priceDisplay: string;
   summary: string;
+  /** Who the plan suits, from what it includes. Not a claim about which plan churches pick. */
+  suits: string;
   bullets: readonly string[];
   action: MinistryLink;
 };
@@ -350,6 +356,7 @@ export const ministryLevels = {
       monthlyPriceUsd: 149,
       priceDisplay: "$149",
       summary: "Everything a guest sees first.",
+      suits: "For a church that wants a better website and first impression.",
       bullets: [
         "Website in one of four looks",
         "Brand board",
@@ -366,6 +373,7 @@ export const ministryLevels = {
       monthlyPriceUsd: 299,
       priceDisplay: "$299",
       summary: "Every guest followed up.",
+      suits: "For a church with a team that follows up guests and care.",
       bullets: [
         "Everything in Care",
         "The Today view",
@@ -383,6 +391,7 @@ export const ministryLevels = {
       monthlyPriceUsd: 499,
       priceDisplay: "$499",
       summary: "Care for every person, over time.",
+      suits: "For a staff that wants to see care for each person over time.",
       bullets: [
         "Everything in Shepherd",
         "Person pages",
@@ -585,9 +594,17 @@ export const ministryContact = {
   form: {
     title: "A few details about your church.",
     lede: "This helps us prepare for the call. You do not need anything technical for the first conversation.",
-    company: "Church Name",
-    roles: ["Senior pastor", "Church staff", "Volunteer"],
-    teamSize: "Staff Size",
+    company: "Church name",
+    /* The executive pastor or administrator often makes this decision, so each has a role of their own. */
+    roles: [
+      "Senior or lead pastor",
+      "Executive pastor",
+      "Church administrator or operations",
+      "Communications or guest services",
+      "Other staff",
+      "Volunteer",
+    ],
+    teamSize: "Staff size",
     /** Church staff sizes, paid and volunteer. app/api/consultation accepts these too. */
     staffSizes: ["1 or 2", "3 to 5", "6 to 15", "16 or more"],
     notes: "What would you like help with?",

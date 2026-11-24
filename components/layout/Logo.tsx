@@ -12,9 +12,12 @@ import { GenesisMark } from "./GenesisMark";
 export function Logo({
   light = false,
   wordmark = true,
+  priority = true,
 }: {
   light?: boolean;
   wordmark?: boolean;
+  /** The header mark loads first; the footer's waits until it is near. */
+  priority?: boolean;
 }) {
   return (
     <Link
@@ -44,8 +47,8 @@ export function Logo({
           after the logo (footer tagline, menu sheet) stays where it was. */}
       <GenesisMark
         ground={light ? "dark" : "light"}
-        loading="eager"
-        fetchPriority="high"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
         className="h-[37px] w-auto pt-[5px] pr-[3.75px] pb-2 pl-[3px]"
       />
       {wordmark ? (

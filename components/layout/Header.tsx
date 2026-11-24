@@ -17,10 +17,10 @@ import {
 import { setOfferPath } from "@/components/offers/offerPathState";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
-import { isMinistryTopic, ministryCue } from "@/lib/ministryPage";
+import { isMinistryTopic, ministryCue, ministryHero } from "@/lib/ministryPage";
 import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { track } from "@/lib/analytics";
-import { AUDIENCE_EVENT } from "@/lib/assessmentHandoff";
+import { useAssessingChurch } from "@/components/hooks/useAssessingChurch";
 import { cn } from "@/lib/utils";
 import styles from "./Header.module.css";
 import { Logo } from "./Logo";
@@ -74,15 +74,22 @@ function ChurchPageFromUrl({ pathname, children }: { pathname: string; children:
  * Ministry plans and their prices, on /ministry#levels.
  */
 function primaryFor(church: ChurchPage, assessingChurch = false) {
-  if (church === "ministry" || assessingChurch) return { href: "/contact?topic=ministry", label: "Book a Call" };
+  if (church === "ministry" || assessingChurch) return ministryHero.primary;
   if (church === "contact") return { href: "/ministry", label: "See Genesis Ministry" };
   return { href: "/assessment", label: "Assess My Business" };
 }
 
 const CHURCH_PLANS: NavLink = { label: "Plans", href: "/ministry#levels" };
 
-function entryFor(entry: NavLink, church: ChurchPage): NavLink {
-  return church && entry.href === "/pricing" ? CHURCH_PLANS : entry;
+/* On the church assessment too: a church pricing the business Levels is the wrong page. */
+function entryFor(entry: NavLink, church: ChurchPage, assessingChurch = false): NavLink {
+  return (church || assessingChurch) && entry.href === "/pricing" ? CHURCH_PLANS : entry;
+}
+
+/** Which header button was pressed, for the analytics event it sends. */
+function trackPrimary(href: string, from: string) {
+  if (href.startsWith("/assessment")) track("assessment_link_clicked", { from, href });
+  else if (href.startsWith("/contact?topic=ministry")) track("ministry_call_cta_clicked", { from, href });
 }
 
 /**
@@ -104,12 +111,7 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState(pathname);
   /* On /assessment, once a church picks the church path, the header books a church call. */
-  const [assessingChurch, setAssessingChurch] = useState(false);
-  useEffect(() => {
-    const onAudience = (event: Event) => setAssessingChurch((event as CustomEvent<string>).detail === "church");
-    window.addEventListener(AUDIENCE_EVENT, onAudience);
-    return () => window.removeEventListener(AUDIENCE_EVENT, onAudience);
-  }, []);
+  const assessingChurch = useAssessingChurch();
   const nav = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
 
@@ -230,7 +232,7 @@ export function Header() {
                   ) : (
                     <ForChurchPage pathname={pathname}>
                       {(church) => {
-                        const link = entryFor(entry, church);
+                        const link = entryFor(entry, church, assessingChurch && pathname === "/assessment");
                         return (
                           <Link
                             href={link.href}
@@ -252,7 +254,12 @@ export function Header() {
             {(church) => {
               const primary = primaryFor(church, assessingChurch && pathname === "/assessment");
               return (
-                <ConsultationButton href={primary.href} compact className={styles.cta}>
+                <ConsultationButton
+                  href={primary.href}
+                  compact
+                  className={styles.cta}
+                  onClick={() => trackPrimary(primary.href, "header")}
+                >
                   {primary.label}
                 </ConsultationButton>
               );
@@ -489,6 +496,7 @@ function MobileMenu({
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
   const primary = primaryFor(church, assessingChurch);
+  const entryHere = (entry: NavLink) => entryFor(entry, church, assessingChurch);
   const sheet = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const labelId = useId();
@@ -592,14 +600,14 @@ function MobileMenu({
               </ul>
             </div>
           ) : (
-            <div key={entry.label} className={styles.sheetGroup}>
+            <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)}>
               <Link
-                href={entryFor(entry, church).href}
-                aria-current={entryFor(entry, church) === entry && isCurrent(pathname, entry.href) ? "page" : undefined}
+                href={entryHere(entry).href}
+                aria-current={entryHere(entry) === entry && isCurrent(pathname, entry.href) ? "page" : undefined}
                 className={styles.sheetLink}
                 onClick={onClose}
               >
-                <span className={styles.sheetLinkLabel}>{entryFor(entry, church).label}</span>
+                <span className={styles.sheetLinkLabel}>{entryHere(entry).label}</span>
                 <span aria-hidden="true" className={styles.sheetArrow}>
                   →
                 </span>
@@ -610,7 +618,14 @@ function MobileMenu({
       </nav>
 
       <div className={styles.sheetFooter}>
-        <ConsultationButton href={primary.href} className="w-full" onClick={onClose}>
+        <ConsultationButton
+          href={primary.href}
+          className="w-full"
+          onClick={() => {
+            trackPrimary(primary.href, "mobile_menu");
+            onClose();
+          }}
+        >
           {primary.label}
         </ConsultationButton>
       </div>

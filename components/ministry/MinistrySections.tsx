@@ -137,7 +137,7 @@ export function MinistryHero() {
   return (
     <section
       aria-labelledby="ministry-title"
-      className="relative overflow-hidden border-b border-line-dark bg-ink pt-[calc(var(--header-height)+72px)] pb-[clamp(72px,9vw,128px)] text-ivory"
+      className="hero-top relative overflow-hidden border-b border-line-dark bg-ink pb-[clamp(72px,9vw,128px)] text-ivory"
     >
       {/* A warm light over the top of the page: the church edition's one flourish. */}
       <div
@@ -152,26 +152,26 @@ export function MinistryHero() {
             width={84}
             height={84}
             preload
-            className="mx-auto h-[84px] w-[84px]"
+            className="hero-mark mx-auto h-[84px] w-[84px]"
           />
-          <div className="mx-auto mt-6 h-px w-16 bg-gold" />
-          <Eyebrow className="mt-8">
-            {ministryHero.edition}
+          <div className="hero-rule mx-auto mt-6 h-px w-16 bg-gold" />
+          <Eyebrow className="hero-eyebrow mt-8">
+            {ministryHero.eyebrow}
             <span aria-hidden="true" className="px-3 text-ivory/30">
               /
             </span>
-            {ministryHero.eyebrow}
+            {ministryHero.audience}
           </Eyebrow>
           <h1
             id="ministry-title"
-            className="mx-auto mt-5 max-w-[16ch] font-light text-[clamp(2.8rem,6vw,5.4rem)] leading-[1.02] tracking-[-0.045em] text-balance"
+            className="hero-title mx-auto mt-5 max-w-[16ch] font-light text-[clamp(2.6rem,6vw,5.4rem)] leading-[1.02] tracking-[-0.045em] text-balance"
           >
             <Headline text={ministryHero.headline} accent={ministryHero.accent} />
           </h1>
-          <p className="mx-auto mt-6 max-w-[52ch] text-[1.08rem] leading-relaxed text-ivory/74">
+          <p className="hero-lede mx-auto mt-6 max-w-[52ch] text-[1.08rem] leading-relaxed text-ivory/74">
             {ministryHero.lede}
           </p>
-          <div className="mx-auto mt-9 grid max-w-[36rem] gap-3 sm:grid-cols-2">
+          <div className="hero-actions mx-auto mt-9 grid max-w-[36rem] gap-3 sm:grid-cols-2">
             <TrackClick event="ministry_call_cta_clicked" from="ministry_hero">
               <ConsultationButton href={ministryHero.primary.href} className="w-full">
                 {ministryHero.primary.label}
@@ -555,15 +555,15 @@ export function MinistryLevelsSection() {
         eyebrow={ministryLevels.eyebrow}
         title={ministryLevels.title}
         titleId="ministry-levels-title"
-        aside={<p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryLevels.aside}</p>}
+        aside={
+          <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
+            {ministryLevels.aside} {ministryLevels.footnote}
+          </p>
+        }
       />
       <TrackClick event="ministry_call_cta_clicked" from="ministry_plans" selector="a[href^='/contact']">
-        <MinistryLevels />
+        <MinistryLevels aside={<AssessmentCue light from="ministry_plans" />} />
       </TrackClick>
-      <p className="mt-8 text-center text-[0.85rem] text-muted-dark">{ministryLevels.footnote}</p>
-      <div className="mt-4 text-center">
-        <AssessmentCue light from="ministry_plans" />
-      </div>
     </Sheet>
   );
 }

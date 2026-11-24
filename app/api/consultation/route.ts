@@ -28,6 +28,12 @@ const allowedRoles = new Set([
 ]);
 const allowedTeamSizes = new Set([
   "Just me",
+  // The sizes the form and the assessment offer today.
+  "2 to 5",
+  "6 to 25",
+  "26 to 50",
+  "More than 50",
+  // Earlier sizes, still accepted if an old page sends them.
   "2–4",
   "5–50",
   "50+",
@@ -51,7 +57,9 @@ export async function POST(request: Request) {
 
     if (data.website) return NextResponse.json({ ok: true });
 
-    const required = ["name", "email", "phone", "company", "vertical", "monthly_leads", "operation_type"];
+    /* A church may leave its name out; every business request names its company. */
+    const church = String(data.operation_type ?? "").trim() === MINISTRY_OPERATION_TYPE;
+    const required = ["name", "email", "phone", ...(church ? [] : ["company"]), "vertical", "monthly_leads", "operation_type"];
     const missing = required.some(
       (field) => typeof data[field] !== "string" || !String(data[field]).trim(),
     );

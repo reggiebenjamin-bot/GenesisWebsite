@@ -155,7 +155,19 @@ export const genesisThesis = {
  * accent is the closing phrase, set in gold.
  */
 export const pathHeroes: Readonly<
-  Record<OfferPathId, { eyebrow: string; title: string; accent: string; summary: string }>
+  Record<
+    OfferPathId,
+    {
+      eyebrow: string;
+      title: string;
+      accent: string;
+      /** One plain line under the title: who Genesis is for and what it does. */
+      subline?: string;
+      summary: string;
+      /** A complete short version of the summary, for a phone on its side. */
+      summaryShort?: string;
+    }
+  >
 > = {
   agent: {
     eyebrow: "Genesis Tools",
@@ -168,6 +180,8 @@ export const pathHeroes: Readonly<
     eyebrow: genesisPositioning.category,
     title: "Your business should get smarter",
     accent: "as it grows.",
+    subline: "AI employees that answer calls, follow up and keep jobs, loans and deals moving for Texas businesses.",
+    summaryShort: "Genesis connects the systems and workflows behind your business and runs them as managed infrastructure.",
     summary:
       "Genesis maps how work moves through your business, connects the systems, data, communication, and workflows behind it, and builds managed infrastructure so more volume does not automatically mean more manual coordination.",
   },
@@ -576,7 +590,7 @@ export const managedOverview = {
   pricing: {
     headline: "I want Genesis operating across my business.",
     body: "Managed plans represent increasing depth across implementation, integrations, workflows, automation, intelligence, and operational support.",
-    closing: "A consultation confirms the appropriate implementation level for the operation.",
+    closing: "A short call confirms the right Level for your business.",
   },
   thirdPartyNote:
     "Plan prices cover Genesis. Third-party licenses and usage, including external software and infrastructure charges, are separate unless explicitly stated.",
@@ -608,6 +622,8 @@ export type ManagedPlan = {
   summary: string;
   /** Who the level is for, in the pricing comparison. */
   fit: string;
+  /** What changes on a normal day, in plain words, from the Business Edition bullets for this Level. */
+  day: string;
   /*
    * Required in data by the mandate, not yet defined by it or by the
    * repository. Left null rather than guessed; the site renders nothing for a
@@ -657,6 +673,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For an operator or smaller team beginning to move repeatable work into a managed Genesis environment.",
     fit: "For operations beginning with a managed foundation and focused workflows.",
+    day: "Calls get answered, quotes get followed up and appointments get confirmed, for one user.",
     ...undefinedEntitlements,
   },
   {
@@ -678,6 +695,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For operations where the problem extends across multiple workflows, people, handoffs, and systems.",
     fit: "For businesses where the work crosses multiple people, systems, and operating workflows.",
+    day: "Everything in Level 01 for a team of up to 5, with roles and routing so every lead has an owner.",
     ...undefinedEntitlements,
   },
   {
@@ -700,6 +718,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For businesses that need Genesis operating more broadly across connected systems, workflows, teams, and AI capabilities.",
     fit: "For organizations that need Genesis working broadly across infrastructure, workflows, integrations, and AI capabilities.",
+    day: "Genesis works across your connected systems for up to 25 users, with several AI employees and priority onboarding.",
     ...undefinedEntitlements,
   },
 ];

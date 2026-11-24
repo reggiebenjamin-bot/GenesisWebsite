@@ -65,7 +65,7 @@ export type InfrastructurePlan = {
   price: InfrastructurePrice;
   audience: string;
   features: readonly string[];
-  ctaLabel: "Discuss Foundation" | "Discuss Growth" | "Book a consultation";
+  ctaLabel: "Discuss Foundation" | "Discuss Growth" | "Book a Call";
   featured?: boolean;
 };
 
@@ -297,7 +297,7 @@ export const infrastructureCatalog = {
         "Expanded governance, launch, and support",
         "Scope determined with the customer",
       ],
-      ctaLabel: "Book a consultation",
+      ctaLabel: "Book a Call",
     },
   ] satisfies readonly InfrastructurePlan[],
 };

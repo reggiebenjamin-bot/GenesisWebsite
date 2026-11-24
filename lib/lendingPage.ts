@@ -29,7 +29,7 @@ export const lendingPage = {
       href: "/assessment?persona=lending",
     },
     secondary: {
-      label: "See Lending Edition Pricing",
+      label: "See Pricing",
       href: "/packs/lending/pricing",
     },
   },

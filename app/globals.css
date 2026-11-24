@@ -29,7 +29,8 @@
   --color-gold-dark: #765426;
   --color-signal: #3fc975;
 
-  --color-muted-dark: #6d6c69;
+  /* Body grey on paper and cream: about 5.9 to 1, so small copy clears WCAG AA with room to spare. */
+  --color-muted-dark: #5e5d5a;
   --color-muted-light: #aeb3bc;
 
   --color-line-dark: rgb(244 239 232 / 0.14);
@@ -244,6 +245,94 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
     details::details-content {
       transition: none;
     }
+  }
+}
+
+/* The one primary action: the gold fill the header and hero buttons carry
+   (components/ui/ConsultationButton.module.css), for a <button> or a plain
+   link. Every page uses this or ConsultationButton, never a flat gold. */
+.primary-action {
+  border: 1px solid rgb(201 165 94);
+  color: var(--color-ink);
+  background: linear-gradient(120deg, rgb(247 228 178), rgb(242 216 149) 55%, rgb(227 194 122));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45);
+  transition:
+    transform 220ms var(--ease-editorial),
+    border-color 220ms ease,
+    background 300ms ease;
+}
+
+.primary-action:hover:not(:disabled) {
+  border-color: rgb(166 132 64);
+  background: linear-gradient(120deg, rgb(250 236 198), rgb(246 224 166) 55%, rgb(236 206 140));
+  transform: translateY(-1px);
+}
+
+.primary-action:focus-visible {
+  outline: 2px solid var(--color-gold-dark);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primary-action,
+  .primary-action:hover:not(:disabled) {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* The logo, rule and padding at the top of the edition and Ministry heroes.
+   On a short screen (a phone on its side, or a small phone) the mark shrinks
+   or steps aside, so the headline and the first button reach the first
+   screen. */
+.hero-top {
+  padding-top: calc(var(--header-height) + 72px);
+}
+
+@media (max-width: 420px) and (max-height: 780px) {
+  .hero-top {
+    padding-top: calc(var(--header-height) + 24px);
+  }
+
+  .hero-mark {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .hero-rule {
+    margin-top: 16px !important;
+  }
+
+  .hero-title {
+    font-size: 2.35rem !important;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-top {
+    padding-top: calc(var(--header-height) + 16px);
+  }
+
+  .hero-mark,
+  .hero-rule {
+    display: none !important;
+  }
+
+  .hero-eyebrow {
+    margin-top: 0 !important;
+  }
+
+  .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .hero-lede {
+    margin-top: 12px !important;
+    font-size: 0.98rem !important;
+  }
+
+  .hero-actions {
+    margin-top: 18px !important;
   }
 }
 

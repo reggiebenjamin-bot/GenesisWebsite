@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
+import { track } from "@/lib/analytics";
 import { contact } from "@/lib/content";
 import { ASSESSMENT_HANDOFF_KEY, readAssessmentHandoff } from "@/lib/assessmentHandoff";
 import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
@@ -14,12 +15,21 @@ type FormStatus = "idle" | "submitting" | "success" | "error";
 export type ConsultationAudience = "business" | "church";
 
 const churchForm = ministryContact.form;
+/* The assessment's team sizes, so a business answers once, one way. */
+const BUSINESS_TEAM_SIZES = ["Just me", "2 to 5", "6 to 25", "26 to 50", "More than 50"] as const;
 const checkForm = ministryContact.websiteCheck.form;
 
-const field =
-  "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
+/* The same labels as the assessment's contact step: sentence case, the asterisk on the label
+   line. Inputs are 16px at every width, so no phone zooms in on a tapped field. */
+const field = "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.92rem] text-ink";
 const control =
-  "min-h-12 w-full border border-line-light bg-paper px-4 text-base sm:text-[0.95rem] tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
+  "min-h-12 w-full border border-line-light bg-paper px-4 text-base text-ink transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
+const optional = <span className="text-muted-dark">(optional)</span>;
+const required = (
+  <span aria-hidden="true" className="text-gold-dark">
+    *
+  </span>
+);
 
 export function ConsultationForm({
   initialPlan = "",
@@ -27,6 +37,7 @@ export function ConsultationForm({
   audience = "business",
   websiteCheck = false,
   interest = "",
+  topic = "",
 }: {
   initialPlan?: string;
   /** A starting note for the notes field, from a known topic link. */
@@ -45,6 +56,8 @@ export function ConsultationForm({
   websiteCheck?: boolean;
   /** Which consult this request came from, forwarded with the existing form. */
   interest?: string;
+  /** The /contact topic, reported with the booking. */
+  topic?: string;
 }) {
   const church = audience === "church";
   const check = church && websiteCheck;
@@ -83,11 +96,17 @@ export function ConsultationForm({
       const input = form.elements.namedItem(name);
       if (value && (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) && !input.value) input.value = value;
     };
+    /* What the assessment found leads into the notes, under whatever the topic already said. */
+    const notes = form.elements.namedItem("notes");
+    if (handoff.summary && notes instanceof HTMLTextAreaElement && !notes.value.includes(handoff.summary)) {
+      notes.value = `${notes.value.trim()}${notes.value.trim() ? "\n" : ""}${handoff.summary}`;
+    }
     fill("name", handoff.name);
     fill("email", handoff.email);
     fill("phone", handoff.phone);
     fill("company", handoff.company);
     if (church && (churchForm.staffSizes as readonly string[]).includes(handoff.staff)) fill("monthly_leads", handoff.staff);
+    if (!church && (BUSINESS_TEAM_SIZES as readonly string[]).includes(handoff.staff)) fill("monthly_leads", handoff.staff);
     setFromAssessment(true);
   }, [audience, church, check]);
 
@@ -167,6 +186,13 @@ export function ConsultationForm({
       });
 
       if (!response.ok) throw new Error("Unable to submit.");
+      /* The conversion itself: the review booked from the assessment, or any other call. */
+      track(topic === "assessment-review" ? "infrastructure_review_booked" : "direct_consultation_booked", {
+        topic: topic || (church ? "ministry" : "general"),
+        plan: String(payload.plan ?? "") || (/^ministry-([a-z]+)$/.exec(topic)?.[1] ?? ""),
+        from_assessment: fromAssessment,
+        path: church ? "church" : "business",
+      });
       form.reset();
       setStatus("success");
     } catch {
@@ -217,7 +243,7 @@ export function ConsultationForm({
       className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
       <div className="border-b border-line-light pb-5">
-        <Eyebrow>{check ? checkForm.eyebrow : "Consultation request"}</Eyebrow>
+        <Eyebrow>{check ? checkForm.eyebrow : "Book a call"}</Eyebrow>
         <h2 className="mt-3 text-[clamp(1.45rem,2.4vw,2rem)]">
           {check ? checkForm.title : church ? churchForm.title : "Tell us about the operation."}
         </h2>
@@ -233,7 +259,7 @@ export function ConsultationForm({
       {check ? (
         /* Not named "website": that name is the honeypot below. */
         <label className={field}>
-          {checkForm.website} <span aria-hidden="true">*</span>
+          {checkForm.website} {required}
           <input
             name="church_website"
             type="text"
@@ -249,13 +275,13 @@ export function ConsultationForm({
       ) : null}
 
       <label className={field}>
-        Full Name <span aria-hidden="true">*</span>
+        Full name {required}
         <input name="name" autoComplete="name" required className={control} />
       </label>
 
       <div className="grid gap-5 md:grid-cols-2">
         <label className={field}>
-          {church ? "Email" : "Work Email"} <span aria-hidden="true">*</span>
+          {church ? "Email" : "Work email"} {required}
           <input
             name="email"
             type="email"
@@ -265,8 +291,8 @@ export function ConsultationForm({
           />
         </label>
         <label className={field}>
-          Phone <span aria-hidden="true">*</span>
-          {church ? <span className="normal-case tracking-normal">(so we can set a time)</span> : null}
+          Phone {required}
+          <span className="text-muted-dark">(so we can set a time)</span>
           <input
             name="phone"
             type="tel"
@@ -278,17 +304,18 @@ export function ConsultationForm({
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
+        {/* A church can skip its name (the assessment made it optional too); a business cannot. */}
         <label className={field}>
-          {church ? churchForm.company : "Company / Operation"} <span aria-hidden="true">*</span>
+          {church ? churchForm.company : "Company or operation"} {church ? optional : required}
           <input
             name="company"
             autoComplete="organization"
-            required
+            required={!church}
             className={control}
           />
         </label>
         <label className={field}>
-          Your Role <span aria-hidden="true">*</span>
+          Your role {required}
           <select name="vertical" defaultValue="" required className={control}>
             <option value="" disabled>
               Select
@@ -314,7 +341,7 @@ export function ConsultationForm({
 
       <div className={church ? "grid gap-5" : "grid gap-5 md:grid-cols-2"}>
         <label className={field}>
-          {church ? churchForm.teamSize : "Team Size"} <span aria-hidden="true">*</span>
+          {church ? churchForm.teamSize : "Team size"} {required}
           <select name="monthly_leads" defaultValue="" required className={control}>
             <option value="" disabled>Select</option>
             {church ? (
@@ -325,10 +352,11 @@ export function ConsultationForm({
               ))
             ) : (
               <>
-                <option value="Just me">Just me</option>
-                <option value="2–4">2–4</option>
-                <option value="5–50">5–50</option>
-                <option value="50+">50+</option>
+                {BUSINESS_TEAM_SIZES.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
               </>
             )}
           </select>
@@ -338,14 +366,14 @@ export function ConsultationForm({
           <input type="hidden" name="operation_type" value={MINISTRY_OPERATION_TYPE} />
         ) : (
           <label className={field}>
-            Operation Type <span aria-hidden="true">*</span>
+            Operation type {required}
             <select name="operation_type" defaultValue="" required className={control}>
               <option value="" disabled>Select</option>
               <option value="Brokerage">Brokerage</option>
               <option value="Private Lending">Private lending</option>
-              <option value="Acquisitions / Builder">Acquisitions / builder</option>
-              <option value="Service business / trades">Service business / trades</option>
-              <option value="Other Property-Driven">Other property-driven</option>
+              <option value="Acquisitions / Builder">Acquisitions or builder</option>
+              <option value="Service business / trades">Service business or trade</option>
+              <option value="Other Property-Driven">Other property business</option>
               <option value="Other">Other</option>
             </select>
           </label>
@@ -357,7 +385,7 @@ export function ConsultationForm({
         <input type="hidden" name="plan" value="" />
       ) : (
         <label className={field}>
-          Where are you starting?
+          Where are you starting? {optional}
           <select name="plan" defaultValue={normalizedPlan} className={control}>
             <option value="">Not sure yet</option>
             {managedPlans.map((plan) => (
@@ -371,7 +399,7 @@ export function ConsultationForm({
       )}
 
       <label className={field}>
-        {church ? churchForm.notes : "Where does work slow down today?"}
+        {church ? churchForm.notes : "Where does work slow down today?"} {optional}
         <textarea
           name="notes"
           rows={4}
@@ -410,18 +438,16 @@ export function ConsultationForm({
         </div>
       ) : null}
 
-      <SubmitButton
-        type="submit"
-        variant="secondary"
-        disabled={status === "submitting"}
-      >
+      {/* The gold primary, the same as every button that led here. */}
+      <SubmitButton type="submit" disabled={status === "submitting"}>
         {status === "submitting"
           ? "Sending request…"
           : check
             ? checkForm.submit
             : church
               ? churchForm.submit
-              : "Book a Consultation"}
+              : "Book a Call"}
+        <span aria-hidden="true">&#8599;</span>
       </SubmitButton>
 
       <div className="grid gap-2 text-[0.8rem] text-muted-dark">

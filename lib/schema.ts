@@ -4,7 +4,8 @@ import {
   expertPhone,
 } from "./aiEmployees.ts";
 import { contact } from "./content.ts";
-import { ministryEdition } from "./editions.ts";
+import { editionLevels, editionPricing, type EditionKey } from "./editionPlans.ts";
+import { editions, ministryEdition } from "./editions.ts";
 import { ministryLevels } from "./ministryPage.ts";
 import {
   genesisPositioning,
@@ -181,6 +182,43 @@ export function managedServiceSchema() {
           unitText: "per month",
         },
         url: absoluteUrl("/pricing"),
+      })),
+    },
+  };
+}
+
+/**
+ * One business edition as a Service with its three Levels as Offers, built
+ * from the same data the edition page prints, so the two cannot drift.
+ */
+export function editionServiceSchema(key: EditionKey) {
+  const pricing = editionPricing[key];
+  const edition = editions.find((candidate) => candidate.href === pricing.landingPath)!;
+  return {
+    "@type": "Service",
+    "@id": `${absoluteUrl(edition.href)}#service`,
+    name: edition.name,
+    serviceType: edition.audience,
+    description: edition.body,
+    url: absoluteUrl(edition.href),
+    provider: organizationRef,
+    areaServed: { "@type": "State", name: "Texas" },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: `${pricing.name} Levels`,
+      itemListElement: editionLevels(key).map(({ plan }) => ({
+        "@type": "Offer",
+        name: `${pricing.name}, Level ${plan.step}`,
+        description: `${plan.userLimit}. ${plan.setupLine}.`,
+        price: plan.monthlyPriceUsd,
+        priceCurrency: "USD",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: plan.monthlyPriceUsd,
+          priceCurrency: "USD",
+          unitText: "per month",
+        },
+        url: absoluteUrl(pricing.pricingPath === "/pricing" ? `${edition.href}#levels` : pricing.pricingPath),
       })),
     },
   };

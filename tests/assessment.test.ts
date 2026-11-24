@@ -61,7 +61,10 @@ test("a church can say so, and the result recommends Genesis Ministry", async ()
   assert.equal(recommended.page.href, "/ministry");
   assert.equal(recommended.plansLink.href, "/ministry#levels");
   assert.equal(recommended.call.label, "Book a Call");
-  assert.equal(recommended.call.href, "/contact?topic=ministry");
+  /* Every Ministry call link lands on the form itself. */
+  assert.equal(recommended.call.href, "/contact?topic=ministry#consultation-form");
+  assert.equal(recommended.eyebrow, "Recommended for your church");
+  assert.doesNotMatch(recommended.eyebrow, /Edition/);
   assert.deepEqual(
     recommended.plans,
     ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month`),
@@ -243,7 +246,10 @@ test("every option on both paths is free of dashes and emojis, and team sizes re
   }
   const team = assessmentQuestions.find((question) => question.id === "team_size");
   assert.ok(team && "options" in team);
-  assert.deepEqual(team.options.map((option) => option.value), ["Just me", "2 to 5", "6 to 15", "16 to 50", "More than 50"]);
+  /* The sizes break where the Levels do: 1 user, up to 5, up to 25, then Enterprise. */
+  assert.deepEqual(team.options.map((option) => option.value), ["Just me", "2 to 5", "6 to 25", "26 to 50", "More than 50"]);
+  /* Labels read in words: no slashes standing in for "or". */
+  for (const text of texts) assert.equal(text.includes(" / "), false, `"${text}" uses a slash`);
   /* The step seven label is a question, so the form's own "choose all" hint is the only one. */
   const outcomes = assessmentQuestions.find((question) => question.id === "desired_outcomes");
   assert.doesNotMatch(outcomes?.label ?? "", /apply/i);
@@ -264,9 +270,12 @@ test("a link can open the assessment on a path, and only known values are read",
   const { CHURCH_PERSONA, personaFromParams, assessmentQuestions } = await import("../lib/assessment.ts");
   const read = (query: string) => personaFromParams(new URLSearchParams(query));
   assert.equal(read("for=church"), CHURCH_PERSONA);
-  assert.equal(read("persona=lending"), "Lender");
-  assert.equal(read("persona=real-estate"), "Real Estate Team");
-  assert.equal(read("persona=business"), "Service business / trades (HVAC and more)");
+  assert.equal(read("persona=lending"), "Lender or loan officer");
+  assert.equal(read("persona=real-estate"), "Real estate team");
+  assert.equal(read("persona=business"), "Service business or trade (HVAC, plumbing, roofing and more)");
+  /* A page's searchParams object reads the same way, so the server can render the path. */
+  assert.equal(personaFromParams({ for: "church" }), CHURCH_PERSONA);
+  assert.equal(personaFromParams({ persona: ["lending"] }), undefined);
   for (const bad of ["for=toString", "persona=<script>", "", "for=Church"]) assert.equal(read(bad), undefined, bad);
   /* Every preset is an answer the API accepts. */
   const persona = assessmentQuestions.find((question) => question.id === "persona");
@@ -277,7 +286,7 @@ test("a link can open the assessment on a path, and only known values are read",
 });
 
 test("a church's results suggest the plan its findings point to", async () => {
-  const { CHURCH_PERSONA, churchFindings, suggestedMinistryPlan } = await import("../lib/assessment.ts");
+  const { CHURCH_PERSONA, churchFindings, planLabel, suggestedMinistryPlan } = await import("../lib/assessment.ts");
   const { ministryConsultationNote, ministryLevels } = await import("../lib/ministryPage.ts");
 
   const shepherd = { persona: CHURCH_PERSONA, guest_follow_up: "It often does not happen", church_staff: "3 to 5" };
@@ -285,22 +294,32 @@ test("a church's results suggest the plan its findings point to", async () => {
   const plan = suggestedMinistryPlan(shepherd, found);
   assert.equal(plan?.id, "shepherd");
   assert.equal(plan?.price, "$299");
-  /* Each fit line names the plan the suggestion lands on, or one below it. */
-  for (const finding of found) assert.match(finding.fit, finding.plan === "shepherd" ? /Shepherd/ : /Every plan/);
-  /* The call link opens with the plan and its price already in the note. */
-  assert.equal(plan?.href, "/contact?topic=ministry-shepherd");
+  /* Each fit line's plan is said once beside it, and is the suggestion or one below it. */
+  for (const finding of found) {
+    assert.match(planLabel(finding.plan), finding.plan === "shepherd" ? /Shepherd/ : /every plan/);
+    assert.doesNotMatch(finding.fit, /^From the/);
+  }
+  /* The call link opens on the form with the plan and its price already in the note. */
+  assert.equal(plan?.href, "/contact?topic=ministry-shepherd#consultation-form");
   assert.ok(ministryConsultationNote("ministry-shepherd"));
 
   const care = { persona: CHURCH_PERSONA, church_pain_points: ["Our website is hard to use on a phone"] };
   assert.equal(suggestedMinistryPlan(care, churchFindings(care))?.id, "care");
 
-  const plus = {
+  /* A larger staff that wants to see who needs care next starts where its findings start
+     (Shepherd), and hears that Plus adds person pages and reports, as a later step, never an upsell. */
+  const larger = {
     persona: CHURCH_PERSONA,
-    church_staff: "16 or more",
+    church_staff: "6 to 15",
+    weekly_attendance: "251 to 500",
     care_requests: "Paper cards",
     church_pain_points: ["Knowing who needs care next"],
   };
-  assert.equal(suggestedMinistryPlan(plus, churchFindings(plus))?.id, "plus");
+  const start = suggestedMinistryPlan(larger, churchFindings(larger));
+  assert.equal(start?.id, "shepherd");
+  assert.match(start?.later ?? "", /Plus later/);
+  assert.ok(churchFindings(larger).every((finding) => finding.plan !== "plus"), "no finding needs Plus to start");
+  assert.equal(suggestedMinistryPlan({ ...larger, church_staff: "1 or 2" }, churchFindings(larger))?.later, null);
   assert.ok(ministryLevels.levels.find((level) => level.id === "plus")?.bullets.some((bullet) => /Person pages|Reports/.test(bullet)));
 
   /* No findings, no suggestion: a call decides it. */
@@ -322,23 +341,69 @@ test("business results name the edition built for the persona, with its Levels a
   const { managedPlans } = await import("../lib/offers.ts");
   const { FUNDING_LINE } = await import("../lib/legal.ts");
 
-  assert.equal(businessRecommendation("Lender", "Just me")?.href, "/lending");
+  const { LENDER_PERSONA, SERVICE_PERSONA } = await import("../lib/personas.ts");
+  assert.equal(businessRecommendation(LENDER_PERSONA, "Just me")?.href, "/lending");
   assert.equal(businessRecommendation("Brokerage", "2 to 5")?.href, "/real-estate");
-  assert.equal(businessRecommendation("Service business / trades (HVAC and more)", "6 to 15")?.href, "/business");
+  assert.equal(businessRecommendation(SERVICE_PERSONA, "6 to 25")?.href, "/business");
   assert.equal(businessRecommendation("Other", undefined)?.href, "/business");
   assert.equal(businessRecommendation(CHURCH_PERSONA, undefined), null);
   assert.equal(businessRecommendation(undefined, undefined), null);
 
-  const lender = businessRecommendation("Lender", "16 to 50");
+  const lender = businessRecommendation(LENDER_PERSONA, "26 to 50");
   assert.ok(lender);
   assert.equal(lender.disclaimer, FUNDING_LINE);
   assert.equal(lender.pricingHref, "/packs/lending/pricing");
-  assert.ok(lender.enterpriseNote, "a larger team hears about Enterprise");
-  assert.equal(businessRecommendation("Lender", "2 to 5")?.enterpriseNote, null);
+  /* More than 25 users is Enterprise: the same line the Levels print under Level 03. */
+  assert.equal(lender.suggested?.step, null);
+  assert.equal(lender.suggested?.label, "Genesis Enterprise");
+  assert.equal(managedPlans.at(-1)?.userLimit, "Up to 25 users");
+  assert.match(managedPlans.at(-1)?.enterpriseNote ?? "", /More than 25 users/);
+  /* Each team size lands on the Level whose user limit covers it. */
+  const steps = ["Just me", "2 to 5", "6 to 25"].map((size) => businessRecommendation(LENDER_PERSONA, size)?.suggested?.step);
+  assert.deepEqual(steps, ["01", "02", "03"]);
+  assert.equal(businessRecommendation(LENDER_PERSONA, undefined)?.suggested, null);
   assert.deepEqual(
     lender.levels,
     managedPlans.map((plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}`),
   );
+});
+
+test("business findings speak the visitor's trade and name only what the edition lists", async () => {
+  const { assessmentFindings, businessRecommendation } = await import("../lib/assessment.ts");
+  const { LENDER_PERSONA, SERVICE_PERSONA } = await import("../lib/personas.ts");
+  const { editionPricing } = await import("../lib/editionPlans.ts");
+  const { editions } = await import("../lib/editions.ts");
+  const heavy = {
+    lead_response: "Only when someone notices",
+    follow_up_process: "Mostly from memory or the inbox",
+    handoff_quality: "They have to ask someone",
+    document_storage: "Several places",
+    operational_pain_points: ["Missed or after hours calls", "Inconsistent follow up", "Team handoffs", "Documents hard to find"],
+  };
+  const lender = assessmentFindings({ ...heavy, persona: LENDER_PERSONA });
+  assert.ok(lender.some((finding) => /borrower|file/.test(finding.body)), "a lender reads about borrowers and files");
+  assert.ok(lender.every((finding) => !/during a job/.test(finding.body)));
+  const trade = assessmentFindings({ ...heavy, persona: SERVICE_PERSONA });
+  assert.ok(trade.some((finding) => /job|quote|customer/.test(finding.body)));
+  /* Every fit line names something on that edition's card or Level bullets. */
+  for (const [persona, key, href] of [
+    [LENDER_PERSONA, "lending", "/lending"],
+    [SERVICE_PERSONA, "business", "/business"],
+    ["Brokerage", "real_estate", "/real-estate"],
+  ] as const) {
+    const listed = [
+      ...editions.find((edition) => edition.href === href)!.points,
+      ...Object.values(editionPricing[key].bullets).flat(),
+    ].join(" ").toLowerCase();
+    for (const finding of assessmentFindings({ ...heavy, persona })) {
+      if (!finding.fit) continue;
+      const named = ["calls answered", "instant first reply", "same day lead response", "quotes followed up", "document follow up", "team roles and routing", "clear owner", "connected systems", "file status in one view", "live deal board", "automation across workflows", "guided first touch", "appointments confirmed", "ai follow up"];
+      const hit = named.filter((phrase) => finding.fit!.toLowerCase().includes(phrase));
+      assert.ok(hit.length, `${finding.id} for ${key} names a listed feature: ${finding.fit}`);
+      for (const phrase of hit) assert.ok(listed.includes(phrase), `${key} lists "${phrase}"`);
+    }
+    assert.ok(businessRecommendation(persona, "2 to 5"));
+  }
 });
 
 test("a missed call is its own finding for a business", async () => {
@@ -365,7 +430,14 @@ test("the assessment hands its details to the contact form through storage, neve
     phone: "",
     company: "",
     staff: "3 to 5",
+    summary: "",
   });
+  /* The summary carries what the assessment found into the contact form's notes. */
+  const { assessmentSummary } = await import("../lib/assessment.ts");
+  assert.equal(
+    assessmentSummary({ weekly_attendance: "251 to 500" }, [{ id: "a", title: "Care requests are scattered", body: "", review: "" }]),
+    "Weekend attendance: 251 to 500. Assessment findings: Care requests are scattered.",
+  );
   const { readFileSync } = await import("node:fs");
   const form = readFileSync(new URL("../app/(marketing)/assessment/AssessmentForm.tsx", import.meta.url), "utf8");
   assert.match(form, /sessionStorage\.setItem\(ASSESSMENT_HANDOFF_KEY/);
@@ -377,6 +449,51 @@ test("the homepage chapters run in order, with no gap", async () => {
   const words = ["one", "two", "three", "four", "five", "six", "seven", "eight"];
   const found = [...story.matchAll(/eyebrow="Chapter (\w+)\./g)].map((match) => match[1]);
   assert.deepEqual(found, words.slice(0, found.length));
-  const home = readFileSync(new URL("../components/home/PathSections.tsx", import.meta.url), "utf8");
-  assert.doesNotMatch(home, /<ProcessTimeline/, "the timeline is told once, in chapter five");
+  /* The page itself: the questions are chapter seven, and the Levels are priced once, in chapter six. */
+  const page = readFileSync(new URL("../app/(marketing)/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /eyebrow="Chapter seven\. Questions"/);
+  assert.doesNotMatch(page, /PlanCards|CustomInfrastructureSections|OperatingThesis/, "the Levels are priced once on the homepage");
+  assert.equal((story.match(/<ProcessTimeline/g) ?? []).length, 1, "the timeline is told once, in chapter five");
+});
+
+test("church finding titles are statements, not topic labels", async () => {
+  const { churchFindings, CHURCH_PERSONA } = await import("../lib/assessment.ts");
+  const everything = churchFindings({
+    persona: CHURCH_PERSONA,
+    guest_follow_up: "A pastor handles it personally",
+    care_requests: "Paper cards",
+    church_tools: ["Planning Center", "Breeze", "Pushpay"],
+    church_pain_points: [
+      "Guests slip away after one visit",
+      "Our website is hard to use on a phone",
+      "Getting the word out each week",
+      "Our tools do not talk to each other",
+    ],
+  });
+  const verbs = /\b(is|are|can|carry|carries|starts|do|does|takes|wait)\b/;
+  for (const finding of everything) assert.match(finding.title, verbs, `"${finding.title}" reads as a statement`);
+});
+
+test("a link that names the path starts on it, with the persona folded to one row", async () => {
+  const { readFileSync } = await import("node:fs");
+  const form = readFileSync(new URL("../app/(marketing)/assessment/AssessmentForm.tsx", import.meta.url), "utf8");
+  /* The server passes the persona from the link, so the first render is already on that path. */
+  const page = readFileSync(new URL("../app/(marketing)/assessment/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /personaFromParams\(await searchParams\)/);
+  assert.match(form, /useState\(Boolean\(initialPersona\)\)/);
+  assert.match(form, /collapsed=\{question\.id === "persona" && personaCollapsed\}/);
+  assert.doesNotMatch(form, /requestAnimationFrame\(\(\) =>\s*setAnswers/, "no preset applied a frame late");
+});
+
+test("the house label is Book a Call: no visitor copy says Book a Consultation", async () => {
+  const { readdirSync, readFileSync, statSync } = await import("node:fs");
+  const { join } = await import("node:path");
+  const walk = (dir: string): string[] =>
+    readdirSync(dir).flatMap((name) => {
+      const path = join(dir, name);
+      return statSync(path).isDirectory() ? walk(path) : /\.(ts|tsx)$/.test(name) ? [path] : [];
+    });
+  for (const file of ["app", "components", "lib"].flatMap((dir) => walk(join(process.cwd(), dir)))) {
+    assert.doesNotMatch(readFileSync(file, "utf8"), /Book a consultation/i, file);
+  }
 });
