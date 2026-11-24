@@ -133,7 +133,7 @@ export function ManagedComparison({
         cards
       )}
 
-      <p className="mt-6 max-w-[72ch] text-[0.8rem] leading-relaxed text-muted-dark">{managedOverview.thirdPartyNote}</p>
+      <p className="mt-6 max-w-[72ch] text-[0.875rem] leading-relaxed text-muted-dark">{managedOverview.thirdPartyNote}</p>
     </div>
   );
 }

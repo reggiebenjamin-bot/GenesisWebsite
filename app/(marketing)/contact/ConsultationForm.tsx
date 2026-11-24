@@ -454,7 +454,7 @@ export function ConsultationForm({
         <span aria-hidden="true">&#8599;</span>
       </SubmitButton>
 
-      <div className="grid gap-2 text-[0.8rem] text-muted-dark">
+      <div className="grid gap-2 text-[0.875rem] text-muted-dark">
         {church ? (
           (check ? checkForm.footnotes : churchForm.footnotes).map((line) => <p key={line}>{line}</p>)
         ) : (

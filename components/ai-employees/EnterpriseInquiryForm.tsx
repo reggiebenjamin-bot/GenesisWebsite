@@ -5,7 +5,7 @@ import { SubmitButton } from "@/components/ui/Button";
 import { inquiryMessages } from "@/lib/aiEmployees";
 
 const label =
-  "grid gap-2 text-left text-[0.78rem] tracking-[0.08em] text-muted-dark uppercase";
+  "grid gap-2 text-left text-[0.85rem] tracking-[0.08em] text-muted-dark uppercase";
 const control =
   "min-h-12 w-full rounded-[6px] border border-line-light bg-paper px-4 text-base sm:text-[0.95rem] tracking-normal text-ink normal-case transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
 

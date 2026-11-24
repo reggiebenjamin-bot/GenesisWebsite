@@ -14,7 +14,7 @@ export function UserLimitNote({
 }) {
   if (!plan.enterpriseNote) return null;
   return (
-    <p className={`text-[0.84rem] leading-snug ${className}`}>
+    <p className={`text-[0.875rem] leading-snug ${className}`}>
       {/* A full 44px tap target that keeps the small visual size. */}
       <Link href="/enterprise" className="inline-flex min-h-11 items-center underline decoration-gold/70 underline-offset-4">
         {plan.enterpriseNote}

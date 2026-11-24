@@ -238,7 +238,7 @@ export function MinistryHero() {
           )}
           {/* Said under the frame too, because on a phone the still's own sample strip is too small to read. */}
           {film || poster ? (
-            <p className="mt-4 text-center text-[0.78rem] text-muted-light/80">{ministryHero.filmNote}</p>
+            <p className="mt-4 text-center text-[0.875rem] text-muted-light/80">{ministryHero.filmNote}</p>
           ) : null}
         </div>
       </div>
@@ -535,7 +535,7 @@ export function MinistryProtection() {
                   <p className="text-[clamp(2.2rem,3.4vw,2.8rem)] leading-none font-light tracking-[-0.04em] text-gold-light tabular-nums">
                     {line.number}
                   </p>
-                  <p className="mt-3 text-[0.86rem] leading-snug text-muted-light">{line.text}</p>
+                  <p className="mt-3 text-[0.9rem] leading-snug text-muted-light">{line.text}</p>
                 </li>
               ))}
             </ul>
@@ -637,7 +637,7 @@ export function MinistryCheckAndFaq() {
                 </ConsultationButton>
               </TrackClick>
             </div>
-            <p className="mt-4 max-w-[48ch] text-[0.84rem] text-ivory/60">{ministryWebsiteCheck.note}</p>
+            <p className="mt-4 max-w-[48ch] text-[0.9rem] text-ivory/60">{ministryWebsiteCheck.note}</p>
           </div>
           <div className="rounded-[6px] border border-line-dark bg-ink-soft p-[clamp(20px,2.4vw,32px)]">
             <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold uppercase">What we look at</p>

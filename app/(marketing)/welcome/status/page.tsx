@@ -83,14 +83,14 @@ export default async function WelcomeStatusPage({
               </div>
 
               <div className="rounded-[6px] border border-gold/40 bg-white/70 p-[clamp(18px,2.4vw,28px)]">
-                <p className="font-display text-[0.64rem] tracking-[0.16em] text-gold-dark uppercase">
+                <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                   Current stage
                 </p>
                 <p className="mt-2 text-[1.1rem] leading-snug">{status.stage}</p>
               </div>
 
               <div className="rounded-[6px] border border-line-light bg-white/70 p-[clamp(18px,2.4vw,28px)]">
-                <p className="font-display text-[0.64rem] tracking-[0.16em] text-muted-dark uppercase">
+                <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
                   Checklist
                 </p>
                 <ul className="mt-4 grid gap-3">
@@ -146,7 +146,7 @@ export default async function WelcomeStatusPage({
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-display text-[0.6rem] tracking-[0.16em] text-muted-dark uppercase">
+      <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
         {label}
       </p>
       <p className="mt-2 text-[1.02rem] leading-snug">{value}</p>

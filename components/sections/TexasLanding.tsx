@@ -17,7 +17,7 @@ const secondaryCta =
   "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ink/25 bg-transparent px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:border-ink";
 
 const relatedLink =
-  "inline-flex min-h-[44px] items-center text-[0.95rem] text-ink/80 underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-ink";
+  "inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-[0.95rem] text-ink/80 underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-ink";
 
 /**
  * A Texas use case or city landing page, visually aligned with the edition
@@ -113,7 +113,7 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
             <ol className="mx-auto mt-6 grid max-w-[72rem] gap-4 md:grid-cols-3">
               {managedPlans.map((plan) => (
                 <Card key={plan.id} as="li" className="flex h-full flex-col">
-                  <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+                  <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                     Level {plan.step}
                   </p>
                   <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
@@ -140,7 +140,7 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
         ) : null}
 
         <nav aria-label="Related pages" className="mx-auto mt-16 max-w-[46rem]">
-          <p className="text-center font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] uppercase text-muted-dark">
+          <p className="text-center font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.18em] uppercase text-muted-dark">
             Also in Texas
           </p>
           <ul className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-3">
@@ -159,7 +159,7 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
           <FaqList items={page.faqs} className="mt-6" />
         </div>
 
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
+        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
           {page.disclaimer}
         </p>
       </Sheet>

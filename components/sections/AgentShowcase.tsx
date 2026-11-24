@@ -93,7 +93,7 @@ export function AgentShowcase() {
               >
                 <div className="flex flex-col-reverse items-start gap-4 sm:flex-row sm:justify-between sm:gap-6">
                   <div className="min-w-0">
-                    <p className="font-display text-[0.62rem] tracking-[0.2em] text-gold uppercase">
+                    <p className="font-display text-[0.75rem] tracking-[0.2em] text-gold uppercase">
                       {agent.role}
                     </p>
                     <h3 className="mt-4 text-[clamp(1.7rem,2.7vw,2.5rem)] text-ivory">
@@ -111,7 +111,7 @@ export function AgentShowcase() {
                   {agent.signals.map((signal) => (
                     <span
                       key={signal}
-                      className="rounded-[6px] border border-ivory/12 px-3 py-1.5 font-display text-[0.6rem] tracking-[0.1em] text-ivory/60 uppercase"
+                      className="rounded-[6px] border border-ivory/12 px-3 py-1.5 font-display text-[0.75rem] tracking-[0.1em] text-ivory/60 uppercase"
                     >
                       {signal}
                     </span>

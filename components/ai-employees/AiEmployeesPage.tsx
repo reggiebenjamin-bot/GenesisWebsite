@@ -115,7 +115,7 @@ export function AiEmployeesPage() {
           {aiEmployeePersonas.map((persona) => (
             <Card as="li" key={persona.id} id={persona.id} className="grid content-start gap-6">
               <div>
-                <p className="font-display text-[0.66rem] tracking-[0.16em] text-gold-dark uppercase">
+                <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                   {persona.role}
                 </p>
                 <h3 className="mt-3 font-light text-[clamp(2rem,3vw,2.7rem)] leading-none tracking-[-0.04em]">
@@ -123,13 +123,13 @@ export function AiEmployeesPage() {
                 </h3>
               </div>
               <div className="border-t border-line-light pt-5">
-                <h4 className="font-display text-[0.64rem] tracking-[0.16em] text-gold-dark uppercase">
+                <h4 className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                   {aiEmployeesTeam.dailyWorkLabel}
                 </h4>
                 <p className="mt-3 text-[0.98rem] leading-relaxed">{persona.dailyWork}</p>
               </div>
               <div>
-                <h4 className="font-display text-[0.64rem] tracking-[0.16em] text-gold-dark uppercase">
+                <h4 className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                   {aiEmployeesTeam.outcomesLabel}
                 </h4>
                 <p className="mt-3 text-[0.98rem] leading-relaxed text-muted-dark">{persona.outcomes}</p>
@@ -154,7 +154,7 @@ export function AiEmployeesPage() {
         <ol className="grid gap-4 lg:grid-cols-3">
           {managedPlans.map((plan) => (
             <Card as="li" key={plan.id} tone="dark" className="flex h-full flex-col text-center">
-              <p className="font-display text-[0.66rem] tracking-[0.16em] text-gold-light uppercase">Level {plan.step}</p>
+              <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-light uppercase">Level {plan.step}</p>
               <h3 className="mt-3 font-light text-[clamp(1.6rem,2vw,2rem)] tracking-[-0.03em]">{plan.name}</h3>
               <p className="mt-6 font-light text-[clamp(2.6rem,4vw,3.4rem)] leading-none tracking-[-0.05em] text-gold-light tabular-nums">
                 {plan.priceDisplay}

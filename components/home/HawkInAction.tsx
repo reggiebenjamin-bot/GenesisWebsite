@@ -47,7 +47,7 @@ export function HawkInAction() {
         ))}
       </ol>
 
-      <div className="mx-auto mt-8 max-w-[56ch] text-center text-[0.78rem] leading-relaxed text-muted-light/80">
+      <div className="mx-auto mt-8 max-w-[56ch] text-center text-[0.875rem] leading-relaxed text-muted-light/80">
         <p>Sample data shown.</p>
       </div>
     </Sheet>

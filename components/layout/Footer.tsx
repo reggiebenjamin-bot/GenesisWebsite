@@ -30,6 +30,9 @@ const productPages = [
 ];
 
 /* The two consults and the classes, under their own label, so they never read as editions. */
+/* /classes is static HTML in public/ served by a rewrite, not an App Router route, so it gets a
+   plain <a>: next/link would prefetch it as RSC and log a 404. */
+const STATIC_PAGES = new Set(["/classes"]);
 const toolPages = [
   { label: "Capital Desk", href: "/capital-desk" },
   { label: "Leadscout", href: "/leadscout" },
@@ -96,11 +99,17 @@ export function Footer() {
             <div key={column.label}>
               <p className={columnLabel}>{column.label}</p>
               <div className="mt-3 grid">
-                {column.links.map((item) => (
-                  <Link key={item.href} href={item.href} className={columnLink}>
-                    {item.label}
-                  </Link>
-                ))}
+                {column.links.map((item) =>
+                  STATIC_PAGES.has(item.href) ? (
+                    <a key={item.href} href={item.href} className={columnLink}>
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link key={item.href} href={item.href} className={columnLink}>
+                      {item.label}
+                    </Link>
+                  ),
+                )}
               </div>
             </div>
           ))}
@@ -128,7 +137,7 @@ export function Footer() {
         </div>
       </TrackClick>
 
-      <div className="shell border-t border-line-dark pt-4 text-[0.84rem] text-ivory/66">
+      <div className="shell border-t border-line-dark pt-4 text-[0.875rem] text-ivory/66">
         <div className="flex flex-wrap items-center gap-x-6">
           <span className="text-ivory/55">Service areas</span>
           {serviceAreas.map((item) => (

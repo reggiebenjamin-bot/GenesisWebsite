@@ -57,13 +57,13 @@ export default async function BlogPostPage({ params }: Props) {
 
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+90px)] pb-[80px] text-ivory">
         <div className="shell max-w-[980px]">
-          <Link href="/blog" className="font-display text-[0.7rem] tracking-[0.14em] text-ivory/60 uppercase hover:text-gold-light">
+          <Link href="/blog" className="-my-3 inline-flex min-h-11 items-center font-display text-[0.75rem] tracking-[0.14em] text-ivory/60 uppercase hover:text-gold-light">
             ← Blog
           </Link>
           <Eyebrow className="mt-8">{post.tag}</Eyebrow>
           <h1 className="mt-5 text-[clamp(2.2rem,4.8vw,4.2rem)] leading-[1.04] text-balance">{post.title}</h1>
           <p className="mt-6 max-w-2xl text-[1.08rem] text-ivory/72">{post.description}</p>
-          <p className="mt-7 font-display text-[0.7rem] tracking-[0.12em] text-ivory/55 uppercase">
+          <p className="mt-7 font-display text-[0.8rem] tracking-[0.12em] text-ivory/55 uppercase">
             Reginald Benjamin · <time dateTime={post.date}>{post.date}</time> · {post.readTime}
           </p>
         </div>

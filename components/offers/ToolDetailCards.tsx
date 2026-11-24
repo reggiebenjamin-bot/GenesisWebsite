@@ -49,7 +49,7 @@ export function ToolDetailCards() {
             </div>
             {tool.primaryUsers ? (
               <p className="mt-4 text-[0.88rem] leading-relaxed">
-                <span className="font-display text-[0.6rem] tracking-[0.16em] text-gold-dark uppercase">
+                <span className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
                   For{" "}
                 </span>
                 {tool.primaryUsers}
@@ -73,7 +73,7 @@ export function ToolDetailCards() {
                   {tool.structure.steps.map((step, index) => (
                     <li key={step} className={chip}>
                       {numbered || tool.outputs ? (
-                        <span className="font-display text-[0.6rem] text-gold-dark">
+                        <span className="font-display text-[0.75rem] text-gold-dark">
                           {String(index + 1).padStart(2, "0")}
                         </span>
                       ) : null}
@@ -84,7 +84,7 @@ export function ToolDetailCards() {
 
                 {tool.outputs ? (
                   <>
-                    <p className="mt-5 font-display text-[0.62rem] tracking-[0.16em] uppercase opacity-70">
+                    <p className="mt-5 font-display text-[0.75rem] tracking-[0.16em] uppercase opacity-70">
                       Potential outputs
                     </p>
                     <ul className="mt-3 flex flex-wrap gap-1.5">

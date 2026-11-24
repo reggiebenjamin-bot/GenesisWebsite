@@ -46,7 +46,7 @@ export function DealReportPreview({ className }: { className?: string }) {
     >
       <div className="flex items-center justify-between gap-4 border-b border-line-light px-5 py-4 sm:px-6">
         <div className="min-w-0">
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold-dark uppercase">
+          <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark uppercase">
             Deal Architect
           </p>
           <p className="mt-1 truncate text-[0.98rem] font-medium tracking-[-0.01em]">
