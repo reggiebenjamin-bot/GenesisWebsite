@@ -27,7 +27,7 @@ export function SystemLayers({
             className="absolute inset-x-0 -bottom-px h-0.5 origin-left scale-x-0 bg-gold transition-transform duration-[420ms] ease-editorial group-hover:scale-x-100"
           />
 
-          <div className="mb-11 flex items-center gap-4 font-display text-[0.65rem] text-gold lg:mb-[88px]">
+          <div className="mb-11 flex items-center gap-4 font-display text-[0.75rem] text-gold lg:mb-[88px]">
             <span>{layer.number}</span>
             <span aria-hidden="true" className="h-px w-[34px] bg-gold/42" />
           </div>

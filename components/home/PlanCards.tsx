@@ -95,7 +95,7 @@ export function PlanCards() {
       </ol>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-3">
-        <p className="max-w-[58ch] text-[0.8rem] text-muted-dark">
+        <p className="max-w-[58ch] text-[0.875rem] text-muted-dark">
           {managedOverview.thirdPartyShort}
         </p>
         <div className="flex flex-wrap items-center gap-x-8 gap-y-3">

@@ -134,7 +134,7 @@ export default function HowItWorksPage() {
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {weight.map((item, index) => (
             <Card key={item} as="li" tone="dark" className="flex items-baseline gap-4">
-              <span className="font-display text-[0.64rem] tracking-[0.14em] text-gold">
+              <span className="font-display text-[0.75rem] tracking-[0.14em] text-gold">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <p className="text-[1rem] leading-snug">{item}</p>

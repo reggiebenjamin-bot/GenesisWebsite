@@ -52,11 +52,11 @@ export function AppliedIntelligence() {
               className="border-b border-line-dark py-9 sm:py-11"
             >
               <div className="grid gap-6 sm:grid-cols-[4rem_1fr]">
-                <span className="font-display text-[0.68rem] text-gold">
+                <span className="font-display text-[0.75rem] text-gold">
                   {stage.number}
                 </span>
                 <div>
-                  <p className="font-display text-[0.65rem] font-semibold tracking-[0.15em] text-gold-light uppercase">
+                  <p className="font-display text-[0.75rem] font-semibold tracking-[0.15em] text-gold-light uppercase">
                     {stage.label}
                   </p>
                   <h3 className="mt-3 max-w-xl text-[clamp(1.5rem,2.7vw,2.3rem)] text-ivory">
@@ -69,7 +69,7 @@ export function AppliedIntelligence() {
                     {stage.items.map((item) => (
                       <span
                         key={item}
-                        className="border border-ivory/12 bg-ink/25 px-3 py-1.5 font-display text-[0.62rem] tracking-[0.08em] text-ivory/72 uppercase"
+                        className="border border-ivory/12 bg-ink/25 px-3 py-1.5 font-display text-[0.75rem] tracking-[0.08em] text-ivory/72 uppercase"
                       >
                         {item}
                       </span>

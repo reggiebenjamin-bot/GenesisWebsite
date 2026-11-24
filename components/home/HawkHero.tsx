@@ -53,7 +53,7 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
 
   return (
     <div className={styles.copy}>
-      <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
+      <p className="font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
         {hero.eyebrow}
       </p>
       <h2 className="mt-5 text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance">

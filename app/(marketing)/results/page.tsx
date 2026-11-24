@@ -88,7 +88,7 @@ export default function ResultsPage() {
                     ["Outcome", item.outcome],
                   ].map(([term, detail]) => (
                     <div key={term}>
-                      <dt className="font-display text-[0.66rem] tracking-[0.14em] text-gold-dark uppercase">
+                      <dt className="font-display text-[0.75rem] tracking-[0.14em] text-gold-dark uppercase">
                         {term}
                       </dt>
                       <dd className="mt-3 text-muted-dark">{detail}</dd>

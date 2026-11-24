@@ -107,7 +107,7 @@ export function EditionLanding({
 
         {children ? <div className="mt-16">{children}</div> : null}
 
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.8rem] text-muted-dark">
+        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.875rem] text-muted-dark">
           {edition.disclaimer}
         </p>
       </Sheet>

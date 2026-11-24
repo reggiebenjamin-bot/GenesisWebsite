@@ -17,7 +17,7 @@ export function FactList({ facts, className }: { facts: readonly Fact[]; classNa
             key={fact.label}
             className="grid gap-1 border-b border-line-light py-4 last:border-b-0 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6"
           >
-            <dt className="font-display text-[0.62rem] leading-6 tracking-[0.16em] text-gold-dark uppercase">
+            <dt className="font-display text-[0.75rem] leading-6 tracking-[0.16em] text-gold-dark uppercase">
               {fact.label}
             </dt>
             <dd className="text-[0.96rem] leading-relaxed">{fact.value}</dd>

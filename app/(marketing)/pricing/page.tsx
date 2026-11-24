@@ -94,7 +94,7 @@ export default function PricingPage() {
           />
           <FaqList items={pricingFaqs} />
         </div>
-        <p className="mt-10 text-[0.8rem] text-muted-dark">{FUNDING_LINE}</p>
+        <p className="mt-10 text-[0.875rem] text-muted-dark">{FUNDING_LINE}</p>
       </Sheet>
 
       <ClosingBand

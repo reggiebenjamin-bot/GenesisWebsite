@@ -179,7 +179,7 @@ export function ToolOutputs({ tool }: { tool: GenesisTool }) {
         </summary>
         <div className="grid gap-8 border-t border-line-light py-6 lg:grid-cols-2">
           <div>
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
               {tool.structure.label}
             </p>
             <ul className="mt-4 border-t border-line-light">
@@ -192,7 +192,7 @@ export function ToolOutputs({ tool }: { tool: GenesisTool }) {
           </div>
           {tool.outputs ? (
             <div>
-              <p className="font-display text-[0.62rem] tracking-[0.16em] text-muted-dark uppercase">
+              <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">
                 Potential outputs
               </p>
               <ul className="mt-4 border-t border-line-light">
@@ -238,8 +238,8 @@ export function DealArchitectMethod() {
               key={label}
               className="grid grid-cols-[2rem_minmax(0,1fr)] items-baseline gap-x-3 gap-y-1 border-b border-line-dark py-3.5 sm:grid-cols-[2rem_8.5rem_minmax(0,1fr)] sm:gap-x-5"
             >
-              <span className="font-display text-[0.62rem] text-gold/60">{pad(index)}</span>
-              <span className="font-display text-[0.64rem] tracking-[0.14em] text-gold uppercase">
+              <span className="font-display text-[0.75rem] text-gold/60">{pad(index)}</span>
+              <span className="font-display text-[0.75rem] tracking-[0.14em] text-gold uppercase">
                 {label}
               </span>
               <span className="col-start-2 text-[0.92rem] text-ivory/80 sm:col-start-auto">
@@ -294,7 +294,7 @@ export function ToolStructure({
 
       {note ? (
         <div className="mt-8 flex flex-col gap-3 rounded-[6px] border border-gold/30 p-[clamp(22px,2.4vw,32px)] sm:flex-row sm:items-baseline sm:gap-8">
-          <p className="shrink-0 font-display text-[0.64rem] tracking-[0.16em] text-gold uppercase">
+          <p className="shrink-0 font-display text-[0.75rem] tracking-[0.16em] text-gold uppercase">
             {note.title}
           </p>
           <p className="text-[0.98rem] leading-relaxed text-ivory/80">{note.body}</p>

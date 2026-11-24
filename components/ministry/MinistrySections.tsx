@@ -182,7 +182,7 @@ export function MinistryHero() {
           )}
           {/* Said under the frame too, because on a phone the still's own sample strip is too small to read. */}
           {film || poster ? (
-            <p className="mt-4 text-center text-[0.78rem] text-muted-light/80">{ministryHero.filmNote}</p>
+            <p className="mt-4 text-center text-[0.875rem] text-muted-light/80">{ministryHero.filmNote}</p>
           ) : null}
         </div>
       </div>
@@ -241,7 +241,7 @@ export function MinistryPackage() {
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card as="li" className="grid gap-8 md:col-span-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
           <div>
-            <p className="font-display text-[0.69rem] tracking-[0.16em] text-gold-dark">{website.no}</p>
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold-dark">{website.no}</p>
             <h3 className="mt-3 text-[clamp(1.6rem,2.4vw,2.1rem)] font-light leading-[1.08] tracking-[-0.035em] text-balance">
               {website.title}
             </h3>
@@ -270,7 +270,7 @@ export function MinistryPackage() {
           const lead = item === platform;
           return (
             <Card as="li" key={item.no} tone={lead ? "inverse" : "light"} className="flex flex-col">
-              <p className={cn("font-display text-[0.69rem] tracking-[0.16em]", lead ? "text-gold" : "text-gold-dark")}>
+              <p className={cn("font-display text-[0.75rem] tracking-[0.16em]", lead ? "text-gold" : "text-gold-dark")}>
                 {item.no}
               </p>
               <h3 className="mt-3 text-[1.45rem] font-light leading-[1.1] tracking-[-0.03em]">{item.title}</h3>
@@ -306,7 +306,7 @@ function LookCardBody({ look, index, linked }: { look: (typeof ministryLooks.ite
       </div>
       <div className="flex flex-1 flex-wrap items-end justify-between gap-x-6 gap-y-3 px-2 pt-5 pb-2">
         <div>
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
+          <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold uppercase">
             Look {String(index + 1).padStart(2, "0")}
           </p>
           <h3 className="mt-2 text-[clamp(1.5rem,2.2vw,1.9rem)] font-light leading-none tracking-[-0.035em] text-ivory">
@@ -402,7 +402,7 @@ export function MinistryPlatform() {
               )}
             >
               <div className={cn(index % 2 === 1 && "lg:order-last")}>
-                <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold-dark uppercase">
+                <p className="font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold-dark uppercase">
                   <span aria-hidden="true" className="text-muted-dark">
                     {String(index + 1).padStart(2, "0")}
                   </span>
@@ -460,7 +460,7 @@ export function MinistryProtection() {
             {ministryProtection.footnote}
           </p>
           <div className="mt-10 max-w-[28rem]">
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold uppercase">
               {ministryProtection.crisis.label}
             </p>
             <ul className="mt-4 grid grid-cols-2 gap-3">
@@ -469,7 +469,7 @@ export function MinistryProtection() {
                   <p className="text-[clamp(2.2rem,3.4vw,2.8rem)] leading-none font-light tracking-[-0.04em] text-gold-light tabular-nums">
                     {line.number}
                   </p>
-                  <p className="mt-3 text-[0.86rem] leading-snug text-muted-light">{line.text}</p>
+                  <p className="mt-3 text-[0.9rem] leading-snug text-muted-light">{line.text}</p>
                 </li>
               ))}
             </ul>
@@ -519,7 +519,7 @@ export function MinistryLevelsSection() {
         aside={<p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryLevels.aside}</p>}
       />
       <MinistryLevels />
-      <p className="mt-8 text-center text-[0.85rem] text-muted-dark">{ministryLevels.footnote}</p>
+      <p className="mt-8 text-center text-[0.9rem] text-muted-dark">{ministryLevels.footnote}</p>
     </Sheet>
   );
 }
@@ -564,10 +564,10 @@ export function MinistryCheckAndFaq() {
                 {ministryWebsiteCheck.action.label}
               </ConsultationButton>
             </div>
-            <p className="mt-4 max-w-[48ch] text-[0.84rem] text-ivory/60">{ministryWebsiteCheck.note}</p>
+            <p className="mt-4 max-w-[48ch] text-[0.9rem] text-ivory/60">{ministryWebsiteCheck.note}</p>
           </div>
           <div className="rounded-[6px] border border-line-dark bg-ink-soft p-[clamp(20px,2.4vw,32px)]">
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">What we look at</p>
+            <p className="font-display text-[0.75rem] tracking-[0.16em] text-gold uppercase">What we look at</p>
             <ol className="mt-4">
               {ministryWebsiteCheck.checks.map((check, index) => (
                 <li

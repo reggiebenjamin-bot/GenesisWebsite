@@ -44,7 +44,7 @@ export function AiEmployeesHomeSection() {
         {aiEmployeePersonas.map((persona) => (
           <li key={persona.id} className="rounded-[6px] border border-line-dark px-4 py-5">
             <p className="font-light text-[1.45rem] tracking-[-0.03em]">{persona.name}</p>
-            <p className="mt-2 font-display text-[0.62rem] leading-relaxed tracking-[0.14em] text-gold uppercase">
+            <p className="mt-2 font-display text-[0.75rem] leading-relaxed tracking-[0.14em] text-gold uppercase">
               {persona.role}
             </p>
           </li>

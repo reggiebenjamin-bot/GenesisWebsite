@@ -49,7 +49,7 @@ export default function SolutionsPage() {
           }
         />
         <ProductCockpit />
-        <p className="mt-6 max-w-[80ch] text-[0.8rem] leading-relaxed text-muted-light">
+        <p className="mt-6 max-w-[80ch] text-[0.875rem] leading-relaxed text-muted-light">
           Illustrative product view. The information shown is an example of how connected
           operational context can be turned into a clearer next action; it is not a client
           performance claim.
@@ -78,7 +78,7 @@ export default function SolutionsPage() {
                 <span className="font-display text-[0.7rem] tracking-[0.14em] text-gold-dark">
                   0{index + 1}
                 </span>
-                <p className="font-display text-[0.66rem] tracking-[0.12em] text-muted-dark uppercase">
+                <p className="font-display text-[0.75rem] tracking-[0.12em] text-muted-dark uppercase">
                   {audience.title}
                 </p>
               </div>
