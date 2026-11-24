@@ -56,7 +56,7 @@ const demoActionDark =
 
 /* The same action on a light surface: the site's outline button. */
 const demoActionLight =
-  "inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[6px] border border-ink/30 px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory";
+  "inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[6px] border border-ink/30 px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory";
 
 /**
  * The guided demo button. The demo is a static page, not an app route, so it
@@ -78,6 +78,21 @@ function DemoLink({ action, light = false }: { action: MinistryLink & { isDemo: 
   ) : (
     <Link href={action.href} className={className}>
       {content}
+    </Link>
+  );
+}
+
+/** The demo as a text link, for a caption under a section. */
+function DemoTextLink({ action }: { action: MinistryLink & { isDemo: boolean } }) {
+  const className =
+    "inline-flex min-h-11 items-center font-bold text-ink underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-gold-dark";
+  return action.isDemo ? (
+    <a href={action.href} className={className}>
+      {action.label}
+    </a>
+  ) : (
+    <Link href={action.href} className={className}>
+      {action.label}
     </Link>
   );
 }
@@ -216,7 +231,9 @@ export function MinistryHero() {
               Phones have the same action right above the frame. */}
           {film ? null : (
             <div className="mt-6 flex justify-center max-sm:hidden">
-              <DemoLink action={secondary} />
+              <TrackClick event="ministry_demo_opened" from="ministry_hero_frame">
+                <DemoLink action={secondary} />
+              </TrackClick>
             </div>
           )}
           {/* Said under the frame too, because on a phone the still's own sample strip is too small to read. */}
@@ -278,9 +295,9 @@ export function MinistryPackage() {
         aside={<p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryPackage.aside}</p>}
       />
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card as="li" className="grid gap-8 md:col-span-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
+        <Card as="li" className="grid gap-8 md:col-span-2 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
           <div>
-            <p className="font-display text-[0.69rem] tracking-[0.16em] text-gold-dark">{website.no}</p>
+            <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold-dark">{website.no}</p>
             <h3 className="mt-3 text-[clamp(1.6rem,2.4vw,2.1rem)] font-light leading-[1.08] tracking-[-0.035em] text-balance">
               {website.title}
             </h3>
@@ -294,9 +311,10 @@ export function MinistryPackage() {
                 <span className="size-1.5 rounded-full bg-ink/20" />
                 <span className="size-1.5 rounded-full bg-gold" />
               </div>
+              {/* Bright and Modern here, so no look appears twice on the page (Warm Community is Look 04). */}
               <Image
-                src={ministryLooks.items[3].image}
-                alt={ministryLooks.items[3].alt}
+                src={ministryLooks.items[0].image}
+                alt={ministryLooks.items[0].alt}
                 width={1440}
                 height={900}
                 sizes="(min-width: 1024px) 460px, (min-width: 768px) 80vw, 92vw"
@@ -309,7 +327,7 @@ export function MinistryPackage() {
           const lead = item === platform;
           return (
             <Card as="li" key={item.no} tone={lead ? "inverse" : "light"} className="flex flex-col">
-              <p className={cn("font-display text-[0.69rem] tracking-[0.16em]", lead ? "text-gold" : "text-gold-dark")}>
+              <p className={cn("font-display text-[0.75rem] tracking-[0.12em]", lead ? "text-gold" : "text-gold-dark")}>
                 {item.no}
               </p>
               <h3 className="mt-3 text-[1.45rem] font-light leading-[1.1] tracking-[-0.03em]">{item.title}</h3>
@@ -345,7 +363,7 @@ function LookCardBody({ look, index, linked }: { look: (typeof ministryLooks.ite
       </div>
       <div className="flex flex-1 flex-wrap items-end justify-between gap-x-6 gap-y-3 px-2 pt-5 pb-2">
         <div>
-          <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
+          <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold uppercase">
             Look {String(index + 1).padStart(2, "0")}
           </p>
           <h3 className="mt-2 text-[clamp(1.5rem,2.2vw,1.9rem)] font-light leading-none tracking-[-0.035em] text-ivory">
@@ -376,6 +394,7 @@ export function MinistryLooks() {
         titleId="ministry-looks-title"
         aside={<p className="max-w-[52ch] text-[0.95rem] leading-relaxed text-muted-light">{aside}</p>}
       />
+      <TrackClick event="ministry_demo_opened" from="ministry_looks" selector="a[data-track-look]">
       <ul className="grid gap-4 md:grid-cols-2">
         {ministryLooks.items.map((look, index) => (
           <li key={look.slug}>
@@ -383,6 +402,7 @@ export function MinistryLooks() {
               {linked[index] ? (
                 <a
                   href={ministryDemo.template(look.slug)}
+                  data-track-look={look.slug}
                   aria-label={`Open the ${look.name} preview, shown as ${look.sampleChurch}, a made up church`}
                   className="group flex h-full flex-col rounded-[6px] border border-line-dark bg-ink-soft p-3 transition-colors duration-300 hover:border-gold/60 sm:p-4"
                 >
@@ -397,9 +417,12 @@ export function MinistryLooks() {
           </li>
         ))}
       </ul>
+      </TrackClick>
       {galleryReady ? (
         <div className="mt-10 flex justify-center">
-          <InkTextLink href={ministryLooks.gallery.href}>{ministryLooks.gallery.label}</InkTextLink>
+          <TrackClick event="ministry_demo_opened" from="ministry_looks_gallery">
+            <InkTextLink href={ministryLooks.gallery.href}>{ministryLooks.gallery.label}</InkTextLink>
+          </TrackClick>
         </div>
       ) : null}
     </Sheet>
@@ -441,7 +464,7 @@ export function MinistryPlatform() {
               )}
             >
               <div className={cn(index % 2 === 1 && "lg:order-last")}>
-                <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold-dark uppercase">
+                <p className="font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.12em] text-gold-dark uppercase">
                   <span aria-hidden="true" className="text-muted-dark">
                     {String(index + 1).padStart(2, "0")}
                   </span>
@@ -475,9 +498,13 @@ export function MinistryPlatform() {
           );
         })}
       </div>
-      <div className="mt-[clamp(56px,7vw,88px)] flex justify-center">
-        <DemoLink action={demo} light />
-      </div>
+      {/* A caption link, not a third demo button: the hero and the close carry the buttons. */}
+      <p className="mt-[clamp(48px,6vw,72px)] text-center text-[0.95rem] text-muted-dark">
+        See all three working together.{" "}
+        <TrackClick event="ministry_demo_opened" from="ministry_platform">
+          <DemoTextLink action={demo} />
+        </TrackClick>
+      </p>
     </Sheet>
   );
 }
@@ -499,7 +526,7 @@ export function MinistryProtection() {
             {ministryProtection.footnote}
           </p>
           <div className="mt-10 max-w-[28rem]">
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">
+            <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold uppercase">
               {ministryProtection.crisis.label}
             </p>
             <ul className="mt-4 grid grid-cols-2 gap-3">
@@ -604,14 +631,16 @@ export function MinistryCheckAndFaq() {
             </h2>
             <p className="mt-5 max-w-[48ch] text-[1rem] leading-relaxed text-ivory/74">{ministryWebsiteCheck.body}</p>
             <div className="mt-8">
-              <ConsultationButton href={ministryWebsiteCheck.action.href}>
-                {ministryWebsiteCheck.action.label}
-              </ConsultationButton>
+              <TrackClick event="church_website_check_clicked" from="ministry_check">
+                <ConsultationButton href={ministryWebsiteCheck.action.href}>
+                  {ministryWebsiteCheck.action.label}
+                </ConsultationButton>
+              </TrackClick>
             </div>
             <p className="mt-4 max-w-[48ch] text-[0.84rem] text-ivory/60">{ministryWebsiteCheck.note}</p>
           </div>
           <div className="rounded-[6px] border border-line-dark bg-ink-soft p-[clamp(20px,2.4vw,32px)]">
-            <p className="font-display text-[0.62rem] tracking-[0.16em] text-gold uppercase">What we look at</p>
+            <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold uppercase">What we look at</p>
             <ol className="mt-4">
               {ministryWebsiteCheck.checks.map((check, index) => (
                 <li
@@ -671,7 +700,6 @@ export function MinistryClose() {
           <AssessmentCue from="ministry_close" />
         </div>
       }
-      footnote={<p>{ministryClose.footnote}</p>}
     />
   );
 }

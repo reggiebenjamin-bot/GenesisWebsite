@@ -36,7 +36,8 @@ export function Sheet({
   return (
     <section
       className={cn(
-        "relative py-[clamp(88px,10vw,136px)]",
+        /* One section rhythm for the whole site. */
+        "relative py-[clamp(72px,9vw,120px)]",
         surfaces[surface],
         rise && "z-10 -mt-10 rounded-t-[6px]",
         /* A sheet that does not rise still tucks under the section before it by

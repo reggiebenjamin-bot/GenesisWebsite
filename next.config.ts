@@ -45,6 +45,9 @@ const nextConfig: NextConfig = {
       { source: "/mini/:path*", destination: "/pricing", statusCode: 301 },
       { source: "/tools", destination: "/pricing", statusCode: 301 },
       { source: "/tools/:path*", destination: "/pricing", statusCode: 301 },
+      /* The edition pricing pages repeated the Levels already on each edition page. */
+      { source: "/packs/lending/pricing", destination: "/lending#levels", statusCode: 301 },
+      { source: "/packs/real_estate/pricing", destination: "/real-estate#levels", statusCode: 301 },
       /*
        * The Genesis Ministry demo is static files whose links are relative,
        * so a folder address (typed, or trimmed from a shared link) is sent to

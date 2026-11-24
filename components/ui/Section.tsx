@@ -56,13 +56,28 @@ export function PageIntro({
   title,
   description,
   actions,
+  compact = false,
 }: {
   eyebrow: string;
   title: string;
   description: string | readonly string[];
   actions?: ReactNode;
+  /** A short masthead (one paragraph), for a page whose form should reach the first screen. */
+  compact?: boolean;
 }) {
   const paragraphs = typeof description === "string" ? [description] : description;
+
+  if (compact) {
+    return (
+      <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+32px)] pb-12 text-ivory md:pt-[calc(var(--header-height)+48px)] md:pb-14">
+        <div className="shell">
+          <Eyebrow>{eyebrow}</Eyebrow>
+          <h1 className="mt-4 max-w-[22ch] text-[clamp(2.1rem,4.2vw,3.4rem)] text-balance">{title}</h1>
+          <p className="mt-4 max-w-2xl text-[1.02rem] text-ivory/72">{paragraphs[0]}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex min-h-[620px] items-end border-b border-line-dark bg-ink pt-[calc(var(--header-height)+110px)] pb-[110px] text-ivory md:min-h-[720px]">

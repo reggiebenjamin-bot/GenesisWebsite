@@ -8,6 +8,20 @@ import { indexable } from "@/lib/site";
  * the same place. Search engines build a result's title from several of these
  * at once, so they should never disagree.
  */
+/**
+ * The same page, shared from a church link: its own tab title, description
+ * and link preview, with the canonical left on the page itself.
+ */
+export function withVariant(base: Metadata, variant: { title: string; description: string }): Metadata {
+  return {
+    ...base,
+    title: { absolute: variant.title },
+    description: variant.description,
+    openGraph: { ...base.openGraph, title: variant.title, description: variant.description },
+    twitter: { ...base.twitter, title: variant.title, description: variant.description },
+  };
+}
+
 export function pageMetadata(path: string): Metadata {
   const page = seoPage(path);
   const title = fullTitle(page);

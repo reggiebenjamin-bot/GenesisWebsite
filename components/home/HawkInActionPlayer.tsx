@@ -140,7 +140,10 @@ export function HawkInActionPlayer() {
             type="button"
             onClick={togglePause}
             aria-pressed={paused}
-            className="absolute right-3 bottom-3 z-10 inline-flex min-h-11 items-center gap-2 rounded-[6px] border border-ivory/25 bg-ink/75 px-3 text-[0.8rem] font-bold text-ivory backdrop-blur-sm transition-colors duration-200 hover:border-gold-light"
+            aria-label={paused ? "Play loop" : "Pause loop"}
+            title={paused ? "Play loop" : "Pause loop"}
+            /* Top right and icon only, clear of the burned-in captions and the demo's input bar. */
+            className="absolute top-3 right-3 z-10 grid size-11 place-items-center rounded-[6px] border border-ivory/25 bg-ink/75 text-ivory backdrop-blur-sm transition-colors duration-200 hover:border-gold-light"
           >
             {paused ? (
               <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3 fill-current">
@@ -151,7 +154,6 @@ export function HawkInActionPlayer() {
                 <path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z" />
               </svg>
             )}
-            {paused ? "Play loop" : "Pause loop"}
           </button>
         ) : null}
       </div>
@@ -167,7 +169,7 @@ export function HawkInActionPlayer() {
             <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 fill-current">
               <path d="M3 1.5v13l11-6.5z" />
             </svg>
-            Watch the 60 Second Film With Sound
+            Watch the 60 Second Film
           </span>
         </button>
       </div>

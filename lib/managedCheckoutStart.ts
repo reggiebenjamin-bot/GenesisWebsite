@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isLinkPreviewAgent, planFromLink } from "@/lib/checkoutLink";
+import { isLinkPreviewAgent, isPrefetchRequest, planFromLink } from "@/lib/checkoutLink";
 import {
   MANAGED_CHECKOUT_INTEGRATION_ID,
   checkoutLineItems,
@@ -27,8 +27,9 @@ export async function startManagedCheckout(request: Request, plan: string, rawEd
   if (!stripe) return back(request, "unavailable");
 
   const origin = new URL(request.url).origin;
-  const edition = isEditionKey(rawEdition) ? rawEdition : "";
-  const metadata = { plan, kind: "managed", ...(edition ? { edition } : {}) };
+  /* A missing edition is flagged rather than left blank, so onboarding asks for it. */
+  const edition = isEditionKey(rawEdition) ? rawEdition : "unspecified";
+  const metadata = { plan, kind: "managed", edition };
 
   try {
     const ownerId = await checkoutOwnerId();
@@ -65,6 +66,7 @@ export async function startManagedCheckoutFromLink(request: Request, rawPlan: st
   const plan = planFromLink(rawPlan);
   if (!plan) return toPricing(request);
   if (isLinkPreviewAgent(request.headers.get("user-agent"))) return toPricing(request);
+  if (isPrefetchRequest(request.headers, request.url)) return toPricing(request);
   const response = await startManagedCheckout(request, plan, edition);
   response.headers.set("Cache-Control", "no-store");
   response.headers.set("X-Robots-Tag", "noindex, nofollow");

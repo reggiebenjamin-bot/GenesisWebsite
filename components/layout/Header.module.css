@@ -46,12 +46,15 @@
     box-shadow 500ms ease;
 }
 
-/* Over the homepage's dark hero the top state needs no surface of its own. */
-.header[data-over-dark="true"]:not([data-scrolled="true"]) .bar {
-  border-color: transparent;
-  background-color: rgb(8 9 14 / 0);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+/* Over the homepage's dark hero a phone's top state needs no surface of its own.
+   Wide screens use the one floating bar everywhere (below). */
+@media (max-width: 1023px) {
+  .header[data-over-dark="true"]:not([data-scrolled="true"]) .bar {
+    border-color: transparent;
+    background-color: rgb(8 9 14 / 0);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* There the links sit on the hawk's characters, so a low dark wash lies
@@ -72,8 +75,10 @@
   transition: opacity 450ms ease;
 }
 
-.header[data-over-dark="true"]:not([data-scrolled="true"])::before {
-  opacity: 1;
+@media (max-width: 1023px) {
+  .header[data-over-dark="true"]:not([data-scrolled="true"])::before {
+    opacity: 1;
+  }
 }
 
 .brand {
@@ -126,26 +131,56 @@
 
 /* ── wide screens: the floating bar ─────────────────────────────────── */
 
+/* One header on every page, at the top and once scrolled: the same floating
+   bar, the same width and height. Scrolling only deepens its shadow. */
 @media (min-width: 1024px) {
-  .header[data-scrolled="true"] {
+  .header {
     padding: 12px 16px 0;
   }
 
-  .header[data-scrolled="true"] .bar {
+  .header .bar {
     max-width: 1060px;
     height: 62px;
     padding-inline: 18px 7px;
     border-color: rgb(244 239 232 / 0.12);
     border-radius: 6px;
-    background-color: rgb(10 12 18 / 0.84);
+    background-color: rgb(10 12 18 / 0.88);
+    box-shadow:
+      0 10px 30px rgb(0 0 0 / 0.22),
+      inset 0 1px 0 rgb(255 255 255 / 0.05);
+  }
+
+  .header[data-scrolled="true"] .bar {
     box-shadow:
       0 18px 50px rgb(0 0 0 / 0.34),
       0 6px 18px rgb(0 0 0 / 0.18),
       inset 0 1px 0 rgb(255 255 255 / 0.05);
   }
 
-  .menuToggle {
+  .menuToggle,
+  .phoneCta {
     display: none !important;
+  }
+}
+
+/* The phone's main action, beside the menu button: small, gold, always there. */
+.phoneCta {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 14px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+@media (max-width: 359px) {
+  .phoneCta {
+    padding-inline: 10px;
+    font-size: 0.82rem;
   }
 }
 
@@ -304,8 +339,8 @@
 .featureEyebrow {
   color: var(--color-gold);
   font-family: var(--font-display);
-  font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -378,7 +413,7 @@
 
 @media (max-width: 1023px) {
   .bar {
-    height: 64px;
+    height: var(--header-height);
     padding-inline: 16px 6px;
   }
 
@@ -489,8 +524,8 @@
   margin-bottom: 4px;
   color: var(--color-gold);
   font-family: var(--font-display);
-  font-size: 0.64rem;
-  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -538,10 +573,17 @@
   font-weight: 600;
 }
 
-/* A phone on its side: tighter rows, and Editions and Company side by side. */
+/* A phone on its side: two columns. The single links, the church row and
+   Company on the left; the whole Editions group, label first, on the right.
+   Rows are 44px with no description, so all five editions show above the
+   sticky button. */
 @media (max-height: 500px) {
+  .sheetHeader {
+    min-height: var(--header-height);
+  }
+
   .sheetGroup {
-    padding-block: 8px;
+    padding-block: 6px;
   }
 
   .sheetSingle {
@@ -549,21 +591,52 @@
   }
 
   .sheetLink,
-  .sheetSingle .sheetLink {
+  .sheetSingle .sheetLink,
+  .sheetCue {
     min-height: 44px;
-    padding-block: 4px;
+    padding-block: 2px;
+  }
+
+  .sheetCue {
+    margin-top: 0;
+  }
+
+  .sheetCueLead,
+  .sheetLinkDescription {
+    display: none;
+  }
+
+  .sheetLinkLabel {
+    font-size: 1rem;
   }
 
   .sheetBody {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24px;
+    grid-auto-flow: row dense;
+    column-gap: 32px;
     align-content: start;
-    padding-bottom: 88px;
+    padding-bottom: 76px;
+  }
+
+  .sheetBody > [data-area="cue"],
+  .sheetBody > [data-area="side"] {
+    grid-column: 1;
+  }
+
+  .sheetBody > [data-area="editions"] {
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    align-self: start;
+    border-bottom: 0;
   }
 
   .sheetFooter {
-    padding-block: 10px;
+    padding-block: 8px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .sheetFooter > a {
+    min-height: 44px;
   }
 }
 

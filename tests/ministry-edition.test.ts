@@ -85,16 +85,18 @@ test("Ministry is Edition 05: its own card, not one of the four business edition
 
 test("the homepage features Ministry as a fifth edition card, built like the other four, with its plans", () => {
   const story = readFileSync(join(process.cwd(), "components", "home", "story", "StorySections.tsx"), "utf8");
-  assert.match(story, /href=\{ministryEdition\.href\}/);
-  assert.match(story, /Edition \{ministryEdition\.no\}/);
-  assert.match(story, /\{ministryEdition\.disclaimer\}/);
+  /* All five editions from one list, Ministry last, with one card structure (three across, then two). */
+  assert.match(story, /allEditions\.map/);
+  assert.match(story, /Edition \{e\.no\}/);
+  /* Disclaimers live in the footer and on each edition page, not stacked under the cards. */
+  assert.doesNotMatch(story, /\{ministryEdition\.disclaimer\}/);
+  assert.doesNotMatch(story, /FUNDING_LINE/);
   /* Its plans start where the plan cards say: "Plans from $149 a month", built from ministryLevels. */
   assert.match(story, /Plans from \$\{ministryLevels\.levels\[0\]\.priceDisplay\} a month/);
   /* The same structure as the other cards: no mark of its own, so the G is not repeated per card. */
   assert.doesNotMatch(story, /\/brand\/mark-gold-on-light\.svg/);
-  const chooser = readFileSync(join(process.cwd(), "components", "home", "ProductChooser.tsx"), "utf8");
-  assert.match(chooser, /Leading a church\?/);
-  assert.match(chooser, /href=\{ministryEdition\.href\}/);
+  /* The Levels block names the church plans too, linked to /ministry#levels. */
+  assert.match(story, /href=\{`\$\{ministryEdition\.href\}#levels`\}/);
 });
 
 test("the navigation lists every edition once, features the assessment, and the footer lists each link once", () => {

@@ -46,9 +46,9 @@ export const editions: readonly Edition[] = [
     href: "/lending",
     name: "Genesis Lending",
     eyebrow: "Genesis Lending",
-    audience: "For lending teams",
+    audience: "For loan officers",
     headline: "Software that helps lending teams move faster on every borrower inquiry.",
-    body: "For loan officers and capital matchers. Every inquiry gets a fast first reply, document requests are tracked, and files never stall quietly.",
+    body: "Every borrower inquiry gets a fast first reply, document requests are tracked, and files never stall quietly.",
     points: ["Instant first reply", "Document follow up", "File status in one view"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=lending" },
@@ -61,9 +61,9 @@ export const editions: readonly Edition[] = [
     href: "/real-estate",
     name: "Genesis Real Estate Pros",
     eyebrow: "Genesis Real Estate Pros",
-    audience: "For agents, investors and teams",
+    audience: "For agents and investors",
     headline: "Software that works every buyer and seller lead the same day.",
-    body: "For agents, investors and teams. Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current.",
+    body: "Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current. Built for agents, investors and teams.",
     points: ["Same day lead response", "Showings booked", "Live deal board"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=real-estate" },
@@ -78,7 +78,7 @@ export const editions: readonly Edition[] = [
     eyebrow: "Genesis Business",
     audience: "For service businesses",
     headline: "Software that answers the call and follows up for your business.",
-    body: "For any service business: contractors, clinics, law offices, home services and agencies. Calls answered, quotes followed up, appointments confirmed.",
+    body: "Contractors, clinics, law offices, home services and agencies: calls answered, quotes followed up, appointments confirmed.",
     points: ["Calls answered", "Quotes followed up", "Appointments confirmed"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=business" },
@@ -94,7 +94,7 @@ export const editions: readonly Edition[] = [
     eyebrow: "Genesis Enterprise",
     audience: "For multi location operations",
     headline: "Software that connects your operation across every location.",
-    body: "For multi location operations. Your systems connected, custom workflows, access controls and a managed build that keeps running.",
+    body: "More than 25 users, or more than one location: your systems connected, custom workflows, access controls and a managed build that keeps running.",
     points: ["Custom workflows", "Systems connected", "Managed every month"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=business" },

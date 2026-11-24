@@ -2,13 +2,6 @@ import { allEditions } from "./editions.ts";
 import type { OfferPathId } from "./offers.ts";
 
 /** One short line per edition under its name in the Editions dropdown. */
-const editionNavNotes: Record<string, string> = {
-  "/lending": "For mortgage lending teams.",
-  "/real-estate": "For agents and brokerages.",
-  "/business": "For contractors, HVAC, clinics.",
-  "/enterprise": "For multi location operations.",
-  "/ministry": "For churches.",
-};
 
 export type NavItem = { label: string; href: string };
 
@@ -85,7 +78,8 @@ export const navigation: NavEntry[] = [
     items: allEditions.map((edition) => ({
       label: edition.name.replace(/^Genesis /, ""),
       href: edition.href,
-      description: editionNavNotes[edition.href],
+      /* The same "For ..." line the edition cards and the edition hero eyebrows read. */
+      description: `${edition.audience}.`,
     })),
     /* The shared next step for every edition: the assessment points to the one that fits. */
     feature: {
@@ -300,8 +294,10 @@ export const faqs: readonly Faq[] = [
 export const pricingFaqs = [
   {
     question: "What changes between the Levels?",
+    /* The all-edition answer. Each edition page builds its own from its own Level bullets
+       (levelsFaqAnswer in lib/editionPlans.ts). */
     answer:
-      "Level 01 is for one user: calls answered, quotes followed up and appointments confirmed. Level 02 covers up to 5 users and adds team roles, routing and automation across workflows. Level 03 covers up to 25 users and adds priority onboarding and Genesis working across your connected systems. More than 25 users is Genesis Enterprise.",
+      "How many people use Genesis, and how much it takes on. Level 01 is one user, Level 02 up to 5 users and Level 03 up to 25 users, and each Level adds to the one before. More than 25 users is Genesis Enterprise. Each edition page lists what its Levels include.",
   },
   {
     question: "Are third-party software costs included?",
@@ -311,7 +307,7 @@ export const pricingFaqs = [
   {
     question: "How do I know which Level fits?",
     answer:
-      "Take the free assessment: your results suggest a Level from your team size. A short call then maps how the work moves today and what Genesis would be responsible for, before anything is recommended in writing.",
+      "Take the free assessment: your results suggest a Level from how many people would use Genesis day to day. A short call then confirms it before anything is recommended in writing.",
   },
 ] as const;
 

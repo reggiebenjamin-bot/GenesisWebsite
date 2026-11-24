@@ -4,6 +4,18 @@ import { Card } from "@/components/ui/Blocks";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { ministryLevels } from "@/lib/ministryPage";
 
+/* How many of a plan's points a phone shows before "See everything". */
+const PHONE_BULLETS = 3;
+
+function Bullet({ text, className }: { text: string; className?: string }) {
+  return (
+    <li className={`grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.95rem] leading-snug ${className ?? ""}`}>
+      <span aria-hidden="true" className="mt-[0.45rem] size-1.5 rounded-full bg-gold-dark" />
+      <span>{text}</span>
+    </li>
+  );
+}
+
 /* The gold hairline gets stronger with the plan, as on the edition Levels. */
 const TIER_EDGES = ["rgb(201 165 94 / 0.3)", "rgb(201 165 94 / 0.6)", "rgb(201 165 94 / 0.95)"] as const;
 
@@ -46,17 +58,25 @@ export function MinistryLevels({ aside }: { aside?: ReactNode }) {
               <span className="text-[0.9rem] text-muted-dark">{priceUnit}</span>
             </p>
 
+            {/* A phone shows the first three, with the rest one tap away; wider screens show all. */}
             <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">
-              {plan.bullets.map((bullet) => (
-                <li
-                  key={bullet}
-                  className="grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.95rem] leading-snug"
-                >
-                  <span aria-hidden="true" className="mt-[0.45rem] size-1.5 rounded-full bg-gold-dark" />
-                  <span>{bullet}</span>
-                </li>
+              {plan.bullets.map((bullet, position) => (
+                <Bullet key={bullet} text={bullet} className={position >= PHONE_BULLETS ? "max-sm:hidden" : undefined} />
               ))}
             </ul>
+            {plan.bullets.length > PHONE_BULLETS ? (
+              <details className="group mt-3 sm:hidden">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-[0.92rem] font-bold underline decoration-ink/30 underline-offset-4 [&::-webkit-details-marker]:hidden">
+                  See everything in {plan.name}
+                  <span aria-hidden="true" className="transition-transform duration-200 group-open:rotate-45">+</span>
+                </summary>
+                <ul className="mt-2 grid gap-3">
+                  {plan.bullets.slice(PHONE_BULLETS).map((bullet) => (
+                    <Bullet key={bullet} text={bullet} />
+                  ))}
+                </ul>
+              </details>
+            ) : null}
 
             <div className="mt-auto pt-8">
               <ConsultationButton

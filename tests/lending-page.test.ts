@@ -24,7 +24,7 @@ test("the two CTAs point at the assessment, then Lending Edition pricing", () =>
 
   /* The same short label as every edition hero. */
   assert.equal(lendingPage.ctas.secondary.label, "See Pricing");
-  assert.equal(lendingPage.ctas.secondary.href, "/packs/lending/pricing");
+  assert.equal(lendingPage.ctas.secondary.href, "/lending#levels");
 });
 
 test("the disclaimer is the shared funding line", () => {

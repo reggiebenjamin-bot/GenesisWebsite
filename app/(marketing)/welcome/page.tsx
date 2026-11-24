@@ -37,7 +37,7 @@ function headingFor(view: WorkspaceView | null, managed: boolean): string {
 
 /* Dark button with a gold outline, matching the brand's secondary action. */
 const kickoffButton =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
+  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
 
 export default async function WelcomePage({
   searchParams,

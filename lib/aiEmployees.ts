@@ -30,8 +30,15 @@ export const aiEmployeesTeam = {
 export type AiEmployeePersona = {
   id: "hawk" | "susan" | "darius" | "ava";
   name: string;
+  /** A short role, the same pattern for all four, that fits one line on a card. */
   role: string;
   dailyWork: string;
+  /**
+   * The same day in an edition's own words: borrowers and files for Lending,
+   * buyers, sellers and deals for Real Estate Pros, jobs and quotes for
+   * Business. Only the nouns change; every action is one dailyWork names.
+   */
+  editionDay: Readonly<Record<"lending" | "real_estate" | "business", string>>;
   outcomes: string;
 };
 
@@ -39,36 +46,68 @@ export const aiEmployeePersonas: readonly AiEmployeePersona[] = [
   {
     id: "hawk",
     name: "Hawk",
-    role: "Lead and ops AI employee",
+    role: "Operations",
     dailyWork:
       "Hawk watches the pipeline each day. New leads get a next step, stalled work comes back into view, and handoffs between marketing, sales, and the front desk stay visible.",
+    editionDay: {
+      lending:
+        "Hawk watches the borrower pipeline each day. New inquiries get a next step, stalled files come back into view, and handoffs stay visible.",
+      real_estate:
+        "Hawk watches the buyer and seller pipeline each day. New leads get a next step, stalled deals come back into view, and handoffs stay visible.",
+      business:
+        "Hawk watches the jobs and quotes pipeline each day. New leads get a next step, stalled quotes come back into view, and handoffs stay visible.",
+    },
     outcomes:
       "The pipeline keeps moving. Every lead has an owner for the next action, and quiet work is visible before the day ends.",
   },
   {
     id: "susan",
     name: "Susan",
-    role: "AI marketing employee",
+    role: "Marketing",
     dailyWork:
       "Susan prepares the marketing work for the day. She drafts messages from facts you approve, lines up follow up, and keeps a record of what was sent and who replied.",
+    editionDay: {
+      lending:
+        "Susan drafts borrower outreach from facts you approve, lines up follow up, and keeps a record of what was sent and which borrowers replied.",
+      real_estate:
+        "Susan drafts messages to buyers and sellers from facts you approve, lines up follow up, and keeps a record of what was sent and who replied.",
+      business:
+        "Susan drafts messages to customers from facts you approve, lines up quote follow up, and keeps a record of what was sent and who replied.",
+    },
     outcomes:
       "Outreach goes out on a steady rhythm. Messages stay tied to the facts you supply, and the team can see which ones drew a reply.",
   },
   {
     id: "darius",
     name: "Darius",
-    role: "AI sales and prospecting employee",
+    role: "Sales",
     dailyWork:
       "Darius works the prospect list you provide. He drafts first contact and follow up, logs replies, and marks the people who are ready for a person to call.",
+    editionDay: {
+      lending:
+        "Darius works the prospect list you provide. He drafts first contact and follow up, logs replies, and marks the borrowers ready for a loan officer to call.",
+      real_estate:
+        "Darius works the prospect list you provide. He drafts first contact and follow up, logs replies, and marks the buyers and sellers ready for an agent to call.",
+      business:
+        "Darius works the prospect list you provide. He drafts first contact and follow up, logs replies, and marks the customers ready for someone to call.",
+    },
     outcomes:
       "Prospecting continues every day. Conversations are prepared before someone on the team steps in, and contacted people stay in the pipeline.",
   },
   {
     id: "ava",
     name: "Ava",
-    role: "Front desk and scheduling",
+    role: "Front desk",
     dailyWork:
       "Ava covers the front desk. She answers common questions from approved information, offers open times, confirms appointments, and routes anything that needs a person.",
+    editionDay: {
+      lending:
+        "Ava answers borrower questions from approved information, offers open times for a call, confirms appointments, and routes anything that needs a loan officer.",
+      real_estate:
+        "Ava answers buyer and seller questions from approved information, offers open times, confirms showings, and routes anything that needs an agent.",
+      business:
+        "Ava answers customer questions from approved information, offers open times, confirms appointments, and routes anything that needs a person on the job.",
+    },
     outcomes:
       "The desk stays covered through the workday. Appointments are booked, moved, and reminded, and callers reach the right person.",
   },

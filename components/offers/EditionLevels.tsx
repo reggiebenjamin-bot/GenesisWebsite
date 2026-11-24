@@ -22,7 +22,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
   const { name } = editionPricing[edition];
 
   return (
-    <ol className="mx-auto grid max-w-[72rem] gap-4 md:grid-cols-3">
+    <ol className="grid gap-4 md:grid-cols-3">
       {editionLevels(edition).map(({ plan, bullets }, index) => (
         <Card
           key={plan.id}
@@ -40,11 +40,11 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
           <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
             {name}
           </h3>
-          <p className="mt-4 flex items-baseline gap-1.5">
+          <p className="mt-4 flex flex-wrap items-baseline gap-x-1.5">
             <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
               {plan.priceDisplay}
             </span>
-            <span className="text-[0.9rem] text-muted-dark">per month</span>
+            <span className="text-[0.9rem] whitespace-nowrap text-muted-dark max-lg:basis-full max-lg:pt-1">per month</span>
           </p>
           <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
 

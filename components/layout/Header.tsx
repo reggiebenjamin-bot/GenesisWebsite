@@ -74,9 +74,22 @@ function ChurchPageFromUrl({ pathname, children }: { pathname: string; children:
  * Ministry plans and their prices, on /ministry#levels.
  */
 function primaryFor(church: ChurchPage, assessingChurch = false) {
-  if (church === "ministry" || assessingChurch) return ministryHero.primary;
-  if (church === "contact") return { href: "/ministry", label: "See Genesis Ministry" };
+  if (church === "ministry" || church === "contact" || assessingChurch) return ministryHero.primary;
   return { href: "/assessment", label: "Assess My Business" };
+}
+
+/*
+ * The header button never points at the page the visitor is already on: on
+ * /contact (the call form) and /assessment (the assessment itself) it steps
+ * aside, so the page's own form is the one next step.
+ */
+function showsPrimary(pathname: string) {
+  return pathname !== "/contact" && pathname !== "/assessment";
+}
+
+/* On the church version of /contact the reader is in Genesis Ministry, not "Company". */
+function currentPathFor(pathname: string, church: ChurchPage) {
+  return church === "contact" ? "/ministry" : pathname;
 }
 
 const CHURCH_PLANS: NavLink = { label: "Plans", href: "/ministry#levels" };
@@ -223,12 +236,16 @@ export function Header() {
               {navigation.map((entry) => (
                 <li key={entry.label}>
                   {isNavGroup(entry) ? (
-                    <NavDropdown
-                      group={entry}
-                      pathname={pathname}
-                      open={openGroup === entry.label}
-                      onOpenChange={(open) => setOpenGroup(open ? entry.label : null)}
-                    />
+                    <ForChurchPage pathname={pathname}>
+                      {(church) => (
+                        <NavDropdown
+                          group={entry}
+                          pathname={currentPathFor(pathname, church)}
+                          open={openGroup === entry.label}
+                          onOpenChange={(open) => setOpenGroup(open ? entry.label : null)}
+                        />
+                      )}
+                    </ForChurchPage>
                   ) : (
                     <ForChurchPage pathname={pathname}>
                       {(church) => {
@@ -250,28 +267,40 @@ export function Header() {
             </ul>
           </nav>
 
-          <ForChurchPage pathname={pathname}>
-            {(church) => {
-              const primary = primaryFor(church, assessingChurch && pathname === "/assessment");
-              return (
-                <ConsultationButton
-                  href={primary.href}
-                  compact
-                  className={styles.cta}
-                  onClick={() => trackPrimary(primary.href, "header")}
-                >
-                  {primary.label}
-                </ConsultationButton>
-              );
-            }}
-          </ForChurchPage>
+          {showsPrimary(pathname) ? (
+            <ForChurchPage pathname={pathname}>
+              {(church) => {
+                const primary = primaryFor(church, assessingChurch && pathname === "/assessment");
+                return (
+                  <>
+                    <ConsultationButton
+                      href={primary.href}
+                      compact
+                      className={styles.cta}
+                      onClick={() => trackPrimary(primary.href, "header")}
+                    >
+                      {primary.label}
+                    </ConsultationButton>
+                    {/* A phone keeps the main action one tap away on every screen, beside the menu. */}
+                    <Link
+                      href={primary.href}
+                      className={cn("primary-action", styles.phoneCta)}
+                      onClick={() => trackPrimary(primary.href, "header_phone")}
+                    >
+                      {primary.label}
+                    </Link>
+                  </>
+                );
+              }}
+            </ForChurchPage>
+          ) : null}
 
           <button
             ref={menuButton}
             type="button"
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
-            aria-label="Open navigation"
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             data-open={menuOpen}
             onClick={() => setMenuOpen(true)}
             className={cn("mobile-menu-toggle grid size-12 place-items-center", styles.menuToggle)}
@@ -567,16 +596,39 @@ function MobileMenu({
       </div>
 
       <nav aria-label="Primary navigation" className={styles.sheetBody}>
+        {/* The church path, one tap from the top of the menu. Hidden where the reader
+            is already in the church context. */}
+        {church ? null : (
+          <Link
+            href={ministryCue.href}
+            aria-label={ministryCue.ariaLabel}
+            className={styles.sheetCue}
+            data-area="cue"
+            onClick={() => {
+              track("ministry_cue_clicked", { from: "mobile_menu_top" });
+              onClose();
+            }}
+          >
+            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-gold" />
+            <span className={styles.sheetCueText}>
+              <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
+              <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
+            </span>
+            <span aria-hidden="true" className={styles.sheetArrow}>
+              →
+            </span>
+          </Link>
+        )}
         {navigation.map((entry) =>
           isNavGroup(entry) ? (
-            <div key={entry.label} className={styles.sheetGroup}>
+            <div key={entry.label} className={styles.sheetGroup} data-area={entry.label === "Editions" ? "editions" : "side"}>
               <p className={styles.sheetGroupLabel}>{entry.label}</p>
               <ul>
                 {entry.items.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+                      aria-current={isCurrent(currentPathFor(pathname, church), item.href) ? "page" : undefined}
                       className={styles.sheetLink}
                       onClick={() => {
                         if (item.href === ministryCue.href) track("ministry_cue_clicked", { from: "mobile_menu" });
@@ -600,7 +652,7 @@ function MobileMenu({
               </ul>
             </div>
           ) : (
-            <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)}>
+            <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)} data-area="side">
               <Link
                 href={entryHere(entry).href}
                 aria-current={entryHere(entry) === entry && isCurrent(pathname, entry.href) ? "page" : undefined}

@@ -134,9 +134,17 @@ export function HawkAscii({
       data-status={status}
       aria-hidden="true"
     >
-      <div
+      {/* Requested with CORS, exactly as the effect and the probe request it, so the
+          browser fetches the hawk once and all three share it. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        crossOrigin="anonymous"
+        fetchPriority="high"
+        decoding="async"
         className={styles.fallback}
-        style={{ "--hawk-image": `url("${src}")`, "--hawk-scale": scale } as CSSProperties}
+        style={{ "--hawk-scale": scale } as CSSProperties}
       />
 
       {status === "ready" && seen ? (

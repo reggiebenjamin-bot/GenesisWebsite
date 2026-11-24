@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
 const base =
-  "inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[6px] border px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-center transition-colors duration-200";
+  "inline-flex min-h-[52px] min-w-[min(240px,100%)] items-center justify-center gap-3 rounded-[6px] border px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-center transition-colors duration-200";
 
 const variants = {
   /* The one primary: the same gold as the header and hero buttons (globals.css .primary-action). */

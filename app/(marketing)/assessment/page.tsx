@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CHURCH_PERSONA, personaFromParams } from "@/lib/assessment";
-import { pageMetadata } from "@/lib/metadata";
+import { pageMetadata, withVariant } from "@/lib/metadata";
+import { ministryMeta } from "@/lib/ministryPage";
 import { breadcrumbSchema, graph } from "@/lib/schema";
 import { AssessmentExperience } from "./AssessmentForm";
 
-/* /assessment?for=church names the church assessment in the tab; the canonical stays /assessment. */
+/* /assessment?for=church names the church assessment in the tab and in a shared link's preview;
+   the canonical stays /assessment. */
 export async function generateMetadata({ searchParams }: PageProps<"/assessment">): Promise<Metadata> {
   const base = pageMetadata("/assessment");
-  return personaFromParams(await searchParams) === CHURCH_PERSONA
-    ? { ...base, title: { absolute: "Free Church Assessment | Genesis AI" } }
-    : base;
+  return personaFromParams(await searchParams) === CHURCH_PERSONA ? withVariant(base, ministryMeta.assessment) : base;
 }
 
 /**

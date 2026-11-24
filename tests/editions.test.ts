@@ -42,8 +42,8 @@ test("every edition points to the assessment, then to its pricing", () => {
     assert.match(edition.ctas[0]?.href ?? "", /^\/assessment\?persona=[a-z-]+$/, `${edition.name} first CTA`);
     assert.ok(edition.ctas.length >= 2, `${edition.name} CTAs`);
   }
-  assert.equal(editionByPath("/lending")!.ctas[1].href, "/packs/lending/pricing");
-  assert.equal(editionByPath("/real-estate")!.ctas[1].href, "/packs/real_estate/pricing");
+  assert.equal(editionByPath("/lending")!.ctas[1].href, "/lending#levels");
+  assert.equal(editionByPath("/real-estate")!.ctas[1].href, "/real-estate#levels");
   assert.ok(editionByPath("/real-estate")!.ctas.length > 0);
   assert.ok(editionByPath("/business")!.ctas.length > 0);
   assert.ok(editionByPath("/enterprise")!.ctas.length > 0);

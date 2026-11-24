@@ -6,7 +6,7 @@ import { Eyebrow } from "@/components/ui/Section";
 import { track } from "@/lib/analytics";
 import { contact } from "@/lib/content";
 import { ASSESSMENT_HANDOFF_KEY, readAssessmentHandoff } from "@/lib/assessmentHandoff";
-import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
+import { MINISTRY_OPERATION_TYPE, ministryContact, ministryPlanFromTopic } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
@@ -24,6 +24,8 @@ const checkForm = ministryContact.websiteCheck.form;
 const field = "flex flex-wrap items-center gap-x-1.5 gap-y-2 text-[0.92rem] text-ink";
 const control =
   "min-h-12 w-full border border-line-light bg-paper px-4 text-base text-ink transition-colors duration-200 focus:border-gold-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-dark/60";
+/* The same 16px field, drawn with its own chevron instead of the system one. */
+const selectControl = `${control} select-field`;
 const optional = <span className="text-muted-dark">(optional)</span>;
 const required = (
   <span aria-hidden="true" className="text-gold-dark">
@@ -275,7 +277,7 @@ export function ConsultationForm({
       ) : null}
 
       <label className={field}>
-        Full name {required}
+        Your name {required}
         <input name="name" autoComplete="name" required className={control} />
       </label>
 
@@ -290,14 +292,15 @@ export function ConsultationForm({
             className={control}
           />
         </label>
+        {/* A church can be reached by email alone, as on the assessment; a business call needs a phone. */}
         <label className={field}>
-          Phone {required}
-          <span className="text-muted-dark">(so we can set a time)</span>
+          Phone {church ? optional : required}
+          {church ? null : <span className="text-muted-dark">(so we can set a time)</span>}
           <input
             name="phone"
             type="tel"
             autoComplete="tel"
-            required
+            required={!church}
             className={control}
           />
         </label>
@@ -316,9 +319,9 @@ export function ConsultationForm({
         </label>
         <label className={field}>
           Your role {required}
-          <select name="vertical" defaultValue="" required className={control}>
+          <select name="vertical" defaultValue="" required className={selectControl}>
             <option value="" disabled>
-              Select
+              Choose one
             </option>
             {church ? (
               churchForm.roles.map((role) => (
@@ -341,9 +344,9 @@ export function ConsultationForm({
 
       <div className={church ? "grid gap-5" : "grid gap-5 md:grid-cols-2"}>
         <label className={field}>
-          {church ? churchForm.teamSize : "Team size"} {required}
-          <select name="monthly_leads" defaultValue="" required className={control}>
-            <option value="" disabled>Select</option>
+          {church ? churchForm.teamSize : "Team size"} {church ? optional : required}
+          <select name="monthly_leads" defaultValue="" required={!church} className={selectControl}>
+            <option value="" disabled={!church}>Choose one</option>
             {church ? (
               churchForm.staffSizes.map((size) => (
                 <option key={size} value={size}>
@@ -367,8 +370,8 @@ export function ConsultationForm({
         ) : (
           <label className={field}>
             Operation type {required}
-            <select name="operation_type" defaultValue="" required className={control}>
-              <option value="" disabled>Select</option>
+            <select name="operation_type" defaultValue="" required className={selectControl}>
+              <option value="" disabled>Choose one</option>
               <option value="Brokerage">Brokerage</option>
               <option value="Private Lending">Private lending</option>
               <option value="Acquisitions / Builder">Acquisitions or builder</option>
@@ -381,12 +384,13 @@ export function ConsultationForm({
       </div>
 
       {church ? (
-        /* The select lists the business plans; a church plan is named in the starting note. */
-        <input type="hidden" name="plan" value="" />
+        /* The select lists the business plans; a church plan (Care, Shepherd, Plus or Enterprise)
+           comes from the topic, so the CRM can filter church leads by plan. */
+        <input type="hidden" name="plan" value={ministryPlanFromTopic(topic)} />
       ) : (
         <label className={field}>
           Where are you starting? {optional}
-          <select name="plan" defaultValue={normalizedPlan} className={control}>
+          <select name="plan" defaultValue={normalizedPlan} className={selectControl}>
             <option value="">Not sure yet</option>
             {managedPlans.map((plan) => (
               <option key={plan.id} value={plan.id}>

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { announceAudience } from "@/components/hooks/useAssessingChurch";
@@ -19,7 +18,10 @@ import {
   businessRecommendation,
   churchFindings,
   findingsFor,
-  planLabel,
+  levelGapNote,
+  levelLabel,
+  planLabelBeside,
+  questionLabel,
   stepsFor,
   suggestedMinistryPlan,
   toggleChoice,
@@ -45,9 +47,9 @@ const control =
 
 /* One button system: the gold primary, an outline secondary of the same height. */
 const outlineAction =
-  "inline-flex min-h-[53px] w-full items-center justify-center rounded-[6px] border border-ink/30 px-6 text-center text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory";
+  "inline-flex min-h-[52px] w-full items-center justify-center rounded-[6px] border border-ink/30 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory";
 const inverseAction =
-  "inline-flex min-h-[53px] w-full items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-center text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:border-ivory";
+  "inline-flex min-h-[52px] w-full items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ivory transition-colors duration-200 hover:border-ivory";
 /* Paired buttons share one width: full width and stacked on phones, two equal columns from sm up. */
 const actionPair = "grid w-full gap-3 sm:max-w-[36rem] sm:grid-cols-2";
 
@@ -55,10 +57,14 @@ const actionPair = "grid w-full gap-3 sm:max-w-[36rem] sm:grid-cols-2";
 const stepHeading =
   "rounded-[4px] text-[clamp(1.5rem,2.6vw,2.1rem)] leading-[1.1] tracking-[-0.03em] text-balance outline-none focus-visible:underline focus-visible:decoration-gold focus-visible:decoration-2 focus-visible:underline-offset-8 [@media(max-height:500px)]:text-[1.25rem]";
 
-/* The quiet hint after a question that may be skipped. */
+/* The quiet hint after a question that may be skipped. It never breaks from the label's last
+   word, so it never starts a line of its own with a stray indent. */
 function Optional({ multi = false }: { multi?: boolean }) {
   return (
-    <span className="ml-2 text-[0.85rem] text-muted-dark">{multi ? "(optional, choose any)" : "(optional)"}</span>
+    <span className="text-[0.85rem] whitespace-nowrap text-muted-dark">
+      {"\u00a0"}
+      {multi ? "(optional, choose any)" : "(optional)"}
+    </span>
   );
 }
 
@@ -73,23 +79,35 @@ function Optional({ multi = false }: { multi?: boolean }) {
  */
 export function AssessmentExperience({ initialPersona }: { initialPersona?: string }) {
   const [church, setChurch] = useState(initialPersona === CHURCH_PERSONA);
+  const [done, setDone] = useState(false);
   const copy = church ? assessmentCopy.church : assessmentCopy;
 
   return (
     <>
+      {/* The hero and the card share one column, so their left edges line up. Once the results
+          show, the hero says so in one line. On a phone with the path already chosen by the
+          link, the hero is the headline alone, so the first question starts high. */}
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+28px)] pb-16 text-ivory md:pt-[calc(var(--header-height)+44px)] md:pb-[72px] [@media(max-height:500px)]:pt-[calc(var(--header-height)+12px)] [@media(max-height:500px)]:pb-10">
-        <div className="shell max-w-[980px]">
-          <h1 className="max-w-[24ch] text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.04] text-balance [@media(max-height:500px)]:text-[1.6rem]">
-            {copy.headline}
+        <div className="shell max-w-[56rem]">
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
+          <h1 className="mt-4 max-w-[24ch] text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.04] text-balance [@media(max-height:500px)]:text-[1.6rem]">
+            {done ? (church ? assessmentCopy.churchDoneHeadline : assessmentCopy.doneHeadline) : copy.headline}
           </h1>
-          <p className="mt-4 max-w-[60ch] text-[1rem] leading-relaxed text-ivory/72 [@media(max-height:500px)]:hidden">
-            {copy.summary[0]}
-          </p>
+          {done ? null : (
+            <p
+              className={cn(
+                "mt-4 max-w-[60ch] text-[1rem] leading-relaxed text-ivory/72 [@media(max-height:500px)]:hidden",
+                initialPersona && "max-sm:hidden",
+              )}
+            >
+              {copy.summary[0]}
+            </p>
+          )}
         </div>
       </section>
 
       <Sheet surface="paper" rise className="pt-6! pb-[clamp(72px,9vw,120px)]! md:pt-8! [@media(max-height:500px)]:pt-3!">
-        <AssessmentForm onChurchChange={setChurch} initialPersona={initialPersona} />
+        <AssessmentForm onChurchChange={setChurch} onDone={() => setDone(true)} initialPersona={initialPersona} />
       </Sheet>
     </>
   );
@@ -104,10 +122,12 @@ function Chip({
   checked,
   onChange,
   describedBy,
+  wide = false,
 }: {
   name: string;
   value: string;
   label: string;
+  wide?: boolean;
   kind: "single" | "multi";
   checked: boolean;
   onChange: () => void;
@@ -117,6 +137,7 @@ function Chip({
     <label
       className={cn(
         "flex min-h-11 cursor-pointer items-center gap-3 rounded-[6px] border px-4 py-2 text-[0.92rem] leading-snug transition-colors duration-200 sm:inline-flex",
+        wide && "col-span-2",
         "focus-within:border-gold-dark focus-within:ring-2 focus-within:ring-gold-dark/30",
         checked
           ? "border-ink bg-ink text-ivory"
@@ -166,8 +187,10 @@ function QuestionBlock({
   missing,
   collapsed,
   onExpand,
+  persona,
 }: {
   question: Question;
+  persona: string | undefined;
   answers: Answers;
   onAnswer: (id: string, value: string | string[]) => void;
   missing: boolean;
@@ -177,6 +200,7 @@ function QuestionBlock({
 }) {
   const current = answers[question.id];
   const errorId = `${question.id}-error`;
+  const label = questionLabel(question, persona);
 
   if (question.kind === "text") {
     return (
@@ -207,10 +231,7 @@ function QuestionBlock({
         id={`q-${question.id}`}
         className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-[6px] border border-gold/50 bg-gold-light/12 px-4 py-2"
       >
-        <p className="flex items-center gap-3 text-[0.95rem]">
-          {current === CHURCH_PERSONA ? (
-            <Image src="/brand/mark-gold-on-light.svg" alt="" width={20} height={16} className="h-4 w-auto" />
-          ) : null}
+        <p className="text-[0.95rem]">
           <span>
             <span className="text-muted-dark">{assessmentCopy.answeringFor}: </span>
             <span className="font-semibold">{chosen?.label ?? current}</span>
@@ -219,7 +240,7 @@ function QuestionBlock({
         <button
           type="button"
           onClick={onExpand}
-          aria-label={`${assessmentCopy.change}: ${question.label}`}
+          aria-label={`${assessmentCopy.change}: ${label}`}
           className="inline-flex min-h-11 items-center text-[0.9rem] font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
         >
           {assessmentCopy.change}
@@ -228,8 +249,9 @@ function QuestionBlock({
     );
   }
 
-  /* Short answers sit two to a row on a phone; long ones take the full width. */
-  const short = question.options.every((option) => option.label.length <= 16);
+  /* On a phone, each short answer (16 characters or fewer) takes half a row and each long one
+     the whole row, judged answer by answer. */
+  const wide = (text: string) => text.length > 16;
 
   return (
     <fieldset
@@ -237,23 +259,24 @@ function QuestionBlock({
       aria-invalid={missing || undefined}
       aria-describedby={missing ? errorId : undefined}
       className={cn(
-        "grid scroll-mt-4 gap-3.5 rounded-[6px] transition-colors duration-200",
+        "grid scroll-mt-4 gap-3 rounded-[6px] transition-colors duration-200",
         missing && "-m-3 border border-gold-dark bg-gold-light/12 p-3",
       )}
     >
-      <legend className="text-[1.02rem] leading-snug tracking-[-0.01em]">
-        {question.label}
-        {question.kind === "multi" ? <Optional multi /> : null}
+      <legend className="mb-3 text-[1.02rem] leading-snug tracking-[-0.01em]">
+        {label}
+        {question.kind === "multi" ? <Optional multi /> : question.optional ? <Optional /> : null}
       </legend>
       {missing ? (
         <p id={errorId} className="text-[0.88rem] font-semibold text-gold-dark">
           Choose one answer to continue.
         </p>
       ) : null}
-      <div className={cn("grid gap-2 sm:flex sm:flex-wrap", short ? "grid-cols-2" : "grid-cols-1")}>
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {question.options.map((option) => (
           <Chip
             key={option.value}
+            wide={wide(option.label)}
             name={question.id}
             value={option.value}
             label={option.label}
@@ -275,14 +298,17 @@ function QuestionBlock({
 
 /** The single-choice questions on a step still waiting for an answer. Only those are required. */
 const unanswered = (step: Step, answers: Answers) =>
-  step.questions.filter((question) => question.kind === "single" && !answers[question.id]).map((question) => question.id);
+  step.questions
+    .filter((question) => question.kind === "single" && !question.optional && !answers[question.id])
+    .map((question) => question.id);
 
 type Who = { firstName: string; review: boolean };
 
 export function AssessmentForm({
   onChurchChange,
+  onDone,
   initialPersona,
-}: { onChurchChange?: (church: boolean) => void; initialPersona?: string } = {}) {
+}: { onChurchChange?: (church: boolean) => void; onDone?: () => void; initialPersona?: string } = {}) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>(() => (initialPersona ? { persona: initialPersona } : {}));
   /* A persona that came with the link is shown as one row until the visitor asks to change it. */
@@ -337,18 +363,23 @@ export function AssessmentForm({
   useEffect(() => {
     if (status === "done") return;
     if (!movedRef.current) return;
-    const card = cardRef.current;
-    if (card) {
-      const top = card.getBoundingClientRect().top;
-      const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-height")) || 88;
-      if (top < 0 || top > header + 48) card.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
-    }
+    /* Every step change lands the card at the same place: its top just under the header. */
     headingRef.current?.focus({ preventScroll: true });
+    /* After the new step has painted, so nothing that settles in the same frame cancels the scroll. */
+    const frame = requestAnimationFrame(() => {
+      const card = cardRef.current;
+      if (!card) return;
+      const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-height")) || 88;
+      const target = Math.max(window.scrollY + card.getBoundingClientRect().top - header - 8, 0);
+      if (Math.abs(window.scrollY - target) > 4) window.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
+    });
+    return () => cancelAnimationFrame(frame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   useEffect(() => {
     if (status !== "done") return;
+    onDone?.();
     resultRef.current?.focus({ preventScroll: true });
     resultRef.current?.closest("[data-results]")?.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" });
     track("assessment_result_viewed", { findings: findings.length, path });
@@ -420,7 +451,7 @@ export function AssessmentForm({
        us that carries everything they just typed. */
     const lines = asked.map((question) => {
       const value = answers[question.id];
-      return `${question.label} ${Array.isArray(value) ? value.join(", ") : (value ?? "")}`;
+      return `${questionLabel(question, persona)} ${Array.isArray(value) ? value.join(", ") : (value ?? "")}`;
     });
     setFallbackHref(
       `mailto:${contact.email}?subject=${encodeURIComponent(
@@ -487,9 +518,9 @@ export function AssessmentForm({
       <Card className="mx-auto max-w-[56rem] [@media(max-height:500px)]:py-4">
         {/* The assessment's name, said once, beside the step count. On a phone held sideways the
             two share one short row so the question starts high on the screen. */}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-line-light pb-4 [@media(max-height:500px)]:flex-nowrap [@media(max-height:500px)]:pb-2">
-          <Eyebrow>{church ? assessmentCopy.church.eyebrow : assessmentCopy.cardEyebrow}</Eyebrow>
-          <p className="text-[0.84rem] whitespace-nowrap text-muted-dark">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b border-line-light pb-4 [@media(max-height:500px)]:flex-nowrap [@media(max-height:500px)]:pb-2">
+          <p className="text-[0.88rem] text-muted-dark">{assessmentCopy.reassurance}</p>
+          <p className="text-[0.88rem] font-semibold whitespace-nowrap">
             Step {index + 1} of {TOTAL}
           </p>
         </div>
@@ -513,11 +544,12 @@ export function AssessmentForm({
               {step.heading}
             </h2>
 
-            <div className="mt-7 grid gap-9 [@media(max-height:500px)]:mt-4 [@media(max-height:500px)]:gap-6">
+            <div className="mt-7 grid gap-8 [@media(max-height:500px)]:mt-4 [@media(max-height:500px)]:gap-6">
               {step.questions.map((question) => (
                 <QuestionBlock
                   key={question.id}
                   question={question}
+                  persona={persona}
                   answers={answers}
                   onAnswer={answer}
                   missing={missing.includes(question.id)}
@@ -528,9 +560,8 @@ export function AssessmentForm({
             </div>
 
             {index === 0 && recommended && !personaCollapsed ? (
-              <div className="mt-8 flex items-start gap-4 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5">
-                <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="mt-0.5 h-6 w-auto shrink-0" />
-                <p className="min-w-0 flex-1 text-[0.95rem] leading-relaxed">{recommended.stepNote}</p>
+              <div className="mt-8 rounded-[6px] border border-gold/50 bg-gold-light/12 p-5">
+                <p className="text-[0.95rem] leading-relaxed">{recommended.stepNote}</p>
               </div>
             ) : null}
 
@@ -558,9 +589,12 @@ export function AssessmentForm({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-6 grid gap-6 md:mt-8">
-            <h2 ref={headingRef} tabIndex={-1} className={stepHeading}>
-              {assessmentCopy.contact.heading}
-            </h2>
+            <div>
+              <h2 ref={headingRef} tabIndex={-1} className={stepHeading}>
+                {recommended ? assessmentCopy.contact.churchHeading : assessmentCopy.contact.heading}
+              </h2>
+              <p className="mt-3 max-w-[60ch] text-[0.95rem] leading-relaxed text-muted-dark">{assessmentCopy.contact.lede}</p>
+            </div>
 
             <div className="grid gap-5 md:grid-cols-2">
               <label className={field}>
@@ -651,7 +685,8 @@ export function AssessmentForm({
                 <span aria-hidden="true">←</span> Back
               </button>
               <SubmitButton type="submit" disabled={status === "submitting"} className="min-w-[180px] max-sm:flex-1">
-                {status === "submitting" ? "Preparing…" : assessmentCopy.contact.submit}
+                {status === "submitting" ? "Preparing…" : recommended ? assessmentCopy.contact.churchSubmit : assessmentCopy.contact.submit}
+                {status === "submitting" ? null : <span aria-hidden="true">→</span>}
               </SubmitButton>
             </div>
 
@@ -666,7 +701,7 @@ export function AssessmentForm({
   );
 }
 
-type ResultFinding = { id: string; title: string; body: string; fit?: string; plan?: MinistryPlanId };
+type ResultFinding = { id: string; title: string; body: string; fit?: string; plan?: MinistryPlanId; level?: "01" | "02" | "03" };
 
 /** Weekend sizes outside the 100 to 1,000 Genesis Ministry is built for. */
 const OUTSIDE_MINISTRY_SIZE = new Set(["Under 100", "More than 1,000"]);
@@ -712,10 +747,7 @@ function SnapshotHeader({
 }) {
   return (
     <Card>
-      <div className="flex items-center gap-3">
-        <Image src="/brand/mark-gold-on-light.svg" alt="" width={30} height={24} className="h-6 w-auto" />
-        <Eyebrow>{eyebrow}</Eyebrow>
-      </div>
+      <Eyebrow>{eyebrow}</Eyebrow>
       <h2
         ref={resultRef}
         tabIndex={-1}
@@ -769,11 +801,14 @@ function FindingsCard({
   findings,
   nothing,
   caveat,
+  labelFor,
 }: {
   title: string;
   findings: readonly ResultFinding[];
   nothing: string;
   caveat: string;
+  /** The small label beside a fit line, or null when the suggestion already says it. */
+  labelFor: (finding: ResultFinding) => string | null;
 }) {
   return (
     <Card className="mt-4">
@@ -790,12 +825,12 @@ function FindingsCard({
                 <p className="mt-2 max-w-[66ch] text-[0.95rem] leading-relaxed text-muted-dark">{finding.body}</p>
                 {finding.fit ? (
                   <div className="mt-3 max-w-[66ch] border-l-2 border-gold/60 pl-3 text-[0.92rem] leading-relaxed">
-                    {finding.plan ? (
-                      <p className="font-display text-[0.72rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
-                        {planLabel(finding.plan)}
+                    {labelFor(finding) ? (
+                      <p className="mb-1 font-display text-[0.75rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+                        {labelFor(finding)}
                       </p>
                     ) : null}
-                    <p className={finding.plan ? "mt-1" : undefined}>{finding.fit}</p>
+                    <p>{finding.fit}</p>
                   </div>
                 ) : null}
               </div>
@@ -935,6 +970,7 @@ function BusinessResults({
   const bookReview = (from: string) => () =>
     track("infrastructure_review_cta_clicked", { from, path: "business", edition: edition?.edition ?? "" });
   const suggested = edition?.suggested ?? null;
+  const gap = levelGapNote(findings, suggested?.step);
 
   return (
     <div data-results className="mx-auto max-w-[56rem] scroll-mt-2">
@@ -959,6 +995,7 @@ function BusinessResults({
                 <span className="font-semibold">Where we would start: {suggested.label}.</span>
               </p>
             ) : null}
+            {gap ? <p className="mt-2 text-[0.95rem] leading-relaxed">{gap}</p> : null}
             <RecommendationActions
               callHref={reviewHref}
               callLabel={results.ctaPrimary}
@@ -976,12 +1013,20 @@ function BusinessResults({
                 <p className="mt-3 text-[0.92rem] leading-relaxed font-semibold">{suggested.reason}</p>
               ) : null}
             </div>
-            <p className="mt-4 text-[0.84rem] text-muted-dark">{edition.disclaimer}</p>
+
           </div>
         ) : null}
       </SnapshotHeader>
 
-      <FindingsCard title={results.findingsTitle} findings={findings} nothing={results.nothing} caveat={results.caveat} />
+      <FindingsCard
+        title={results.findingsTitle}
+        findings={findings}
+        nothing={results.nothing}
+        caveat={results.caveat}
+        labelFor={(finding) =>
+          finding.level && finding.level !== (suggested?.step ?? "") ? levelLabel(finding.level) : null
+        }
+      />
 
       <CloseBand
         headline={results.ctaHeadline}
@@ -1067,11 +1112,15 @@ function ChurchResults({
         </div>
       </SnapshotHeader>
 
+      {suggested && findings.every((finding) => finding.plan === suggested.id) ? (
+        <p className="mt-4 px-1 text-[0.92rem] text-muted-dark">Everything below is in {suggested.name}.</p>
+      ) : null}
       <FindingsCard
         title={results.churchFindingsTitle}
         findings={findings}
         nothing={results.churchNothing}
         caveat={results.churchCaveat}
+        labelFor={(finding) => (finding.plan ? planLabelBeside(finding.plan, suggested?.id) : null)}
       />
 
       <CloseBand

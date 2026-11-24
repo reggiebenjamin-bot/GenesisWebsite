@@ -497,7 +497,7 @@ export const ministryCue = {
 
 export const ministryWebsiteCheck = {
   eyebrow: "Free offer",
-  title: "A free Church Website Check.",
+  title: "A free church website check.",
   body: "Send us your church's website. We look at it the way a first time guest does, on a phone, and send you a short, plain note on what to fix first. It is free, and there is no obligation.",
   checks: [
     "Service times and address on the first screen",
@@ -685,6 +685,15 @@ export function ministryConsultationNote(topic: unknown): string {
     : "";
 }
 
+/** The church plans a /contact topic can name, sent as the request's plan. */
+export const MINISTRY_PLAN_IDS = ["care", "shepherd", "plus", "enterprise"] as const;
+
+/** "shepherd" for topic=ministry-shepherd; empty for any other topic. */
+export function ministryPlanFromTopic(topic: unknown): string {
+  const id = typeof topic === "string" ? /^ministry-([a-z]+)$/.exec(topic)?.[1] : undefined;
+  return id && (MINISTRY_PLAN_IDS as readonly string[]).includes(id) ? id : "";
+}
+
 /** Whether a /contact topic opens the church version of the page. */
 export function isMinistryTopic(topic: unknown): boolean {
   return ministryConsultationNote(topic) !== "";
@@ -694,3 +703,20 @@ export function isMinistryTopic(topic: unknown): boolean {
 export function isWebsiteCheckTopic(topic: unknown): boolean {
   return topic === "church-website-check";
 }
+
+/*
+ * The church links' tab titles and link previews: /assessment?for=church and
+ * the Ministry topics of /contact. The canonical stays on the page itself.
+ */
+export const ministryMeta = {
+  assessment: {
+    title: "Free Church Assessment | Genesis AI",
+    description:
+      "Free church assessment: see where first time guests and care requests may be slipping. Seven short steps, no account needed.",
+  },
+  contact: {
+    title: "Book a Call About Genesis Ministry | Genesis AI",
+    description:
+      "Book a free call about Genesis Ministry: how first time guests and care requests reach your church today, and which of the three plans fits.",
+  },
+} as const;

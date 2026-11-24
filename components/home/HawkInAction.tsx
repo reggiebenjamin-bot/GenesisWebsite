@@ -1,11 +1,11 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { HawkInActionPlayer } from "@/components/home/HawkInActionPlayer";
-import { FUNDING_LINE } from "@/lib/legal";
+
 
 const beats = [
   { label: "Ask", body: "Hawk reads your book and tells you who to call first." },
-  { label: "Act", body: "One tap to call, or open the lead." },
+  { label: "Act", body: "One tap to call the lead, or open it, right from Hawk's answer." },
   { label: "Approve", body: "Hawk drafts it, then waits. Nothing goes out without your approval." },
 ];
 
@@ -39,7 +39,7 @@ export function HawkInAction() {
       <ol className="mx-auto mt-10 grid max-w-[64rem] gap-4 md:grid-cols-3">
         {beats.map((b, i) => (
           <li key={b.label} className="rounded-[6px] border border-line-dark bg-ink-soft p-5">
-            <p className="font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] text-gold uppercase">
+            <p className="font-display text-[0.75rem] leading-[1.4] font-semibold tracking-[0.12em] text-gold uppercase">
               {String(i + 1).padStart(2, "0")} {b.label}
             </p>
             <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-light">{b.body}</p>
@@ -49,7 +49,6 @@ export function HawkInAction() {
 
       <div className="mx-auto mt-8 max-w-[56ch] text-center text-[0.78rem] leading-relaxed text-muted-light/80">
         <p>Sample data shown.</p>
-        <p className="mt-1">{FUNDING_LINE}</p>
       </div>
     </Sheet>
   );

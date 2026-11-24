@@ -100,9 +100,9 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/assessment",
-    title: "Free Business and Church Assessment",
+    title: "Free Business Assessment",
     description:
-      "Free assessment for service businesses, lenders, real estate teams and churches: see where calls, follow up and handoffs still depend on someone remembering.",
+      "Free assessment for service businesses, lenders and real estate teams: see where calls, follow up and handoffs still depend on someone remembering. No account needed.",
     label: "Free Assessment",
     parent: "/solutions",
     image: null,

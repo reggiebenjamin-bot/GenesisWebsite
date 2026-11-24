@@ -2,43 +2,25 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { FUNDING_LINE } from "../lib/legal.ts";
-import { chooserProducts } from "../lib/productChooser.ts";
+import { editionPricing } from "../lib/editionPlans.ts";
 import { managedPlans } from "../lib/offers.ts";
 
 const DASHES = ["-", "–", "—"];
 const EMOJI = /\p{Extended_Pictographic}/u;
 
-test("the chooser is Lending, Real Estate Pros and Business, in the editions' order, with the live checkout links", () => {
-  const products = chooserProducts();
-  assert.deepEqual(
-    products.map((product) => [product.label, product.href]),
-    [
-      ["Lending", "/lending"],
-      ["Real Estate Pros", "/real-estate"],
-      ["Business", "/business"],
-    ],
-  );
-
-  for (const product of products) {
-    assert.equal(product.levels.length, managedPlans.length);
-    assert.deepEqual(
-      product.levels.map((level) => [level.priceDisplay, level.setupLine, level.href]),
-      [
-        ["$750", "plus $500 setup", `/start/750?edition=${product.key}`],
-        ["$1,750", "plus $1,500 setup", `/start/1750?edition=${product.key}`],
-        ["$4,500", "plus $10,000 setup", `/start/4500?edition=${product.key}`],
-      ],
-    );
+test("the homepage shows the three Levels once, sends each edition to its own Levels, and links no checkout", () => {
+  const story = readFileSync(new URL("../components/home/story/StorySections.tsx", import.meta.url), "utf8");
+  const offers = story.slice(story.indexOf("export function StoryOffers"), story.indexOf("export function StoryClose"));
+  assert.match(offers, /managedPlans\.map/);
+  assert.equal((offers.match(/managedPlans\.map/g) ?? []).length, 1, "the Levels are listed once");
+  assert.doesNotMatch(story, /\/start\//, "no checkout link on the homepage, so nothing prefetches one");
+  for (const key of ["lending", "real_estate", "business"] as const) {
+    assert.match(editionPricing[key].pricingPath, /#levels$/);
   }
-});
-
-test("chooser copy has no dashes or emoji, and keeps the funding line available", () => {
-  const products = chooserProducts();
-  for (const product of products) {
-    for (const text of [product.label, product.summary]) {
-      for (const dash of DASHES) assert.equal(text.includes(dash), false, text);
-      assert.equal(EMOJI.test(text), false, text);
-    }
+  assert.equal(managedPlans.length, 3);
+  for (const plan of managedPlans) {
+    for (const dash of DASHES) assert.equal(plan.day.includes(dash), false, plan.day);
+    assert.equal(EMOJI.test(plan.day), false);
   }
   assert.equal(FUNDING_LINE, "Genesis is software. We do not lend, place or arrange funding.");
 });

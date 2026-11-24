@@ -4,8 +4,8 @@ import { TextLink } from "@/components/ui/Button";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
 import { ASSESSMENT_REVIEW_TOPIC, assessmentReviewNote } from "@/lib/assessment";
 import { contact } from "@/lib/content";
-import { isWebsiteCheckTopic, ministryConsultationNote, ministryContact } from "@/lib/ministryPage";
-import { pageMetadata } from "@/lib/metadata";
+import { isWebsiteCheckTopic, ministryConsultationNote, ministryContact, ministryMeta } from "@/lib/ministryPage";
+import { pageMetadata, withVariant } from "@/lib/metadata";
 import { breadcrumbSchema, graph } from "@/lib/schema";
 import { ConsultationForm } from "./ConsultationForm";
 
@@ -13,7 +13,7 @@ import { ConsultationForm } from "./ConsultationForm";
 export async function generateMetadata({ searchParams }: PageProps<"/contact">): Promise<Metadata> {
   const base = pageMetadata("/contact");
   const { topic } = await searchParams;
-  return ministryConsultationNote(topic) ? { ...base, title: { absolute: "Book a Call About Genesis Ministry" } } : base;
+  return ministryConsultationNote(topic) ? withVariant(base, ministryMeta.contact) : base;
 }
 
 /** The business version of the page: what a first consultation may look at. */
@@ -139,9 +139,16 @@ export default async function ContactPage({
     <>
       <JsonLd data={graph(breadcrumbSchema("/contact"))} />
 
-      <PageIntro eyebrow={copy.intro.eyebrow} title={copy.intro.title} description={copy.intro.description} />
+      {/* For a church or the assessment review, a short masthead, so the first field is on the
+          first screen even without the #consultation-form anchor. */}
+      <PageIntro
+        eyebrow={copy.intro.eyebrow}
+        title={copy.intro.title}
+        description={copy.intro.description}
+        compact={formFirst}
+      />
 
-      <Section>
+      <Section className={formFirst ? "pt-8! md:pt-14!" : undefined}>
         {/* For a church, and for the review booked from the assessment, the form comes first, in
             the reading order as well as on screen, so keyboard and screen reader order match
             what is shown at every width. They already know why they are here. */}

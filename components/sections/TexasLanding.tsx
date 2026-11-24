@@ -11,10 +11,10 @@ import { breadcrumbSchema, faqPageSchema, graph } from "@/lib/schema";
 import type { TexasLanding } from "@/lib/texasPages";
 
 const primaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
+  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
 
 const secondaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ink/25 bg-transparent px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:border-ink";
+  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ink/25 bg-transparent px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:border-ink";
 
 const relatedLink =
   "inline-flex min-h-[44px] items-center text-[0.95rem] text-ink/80 underline decoration-gold/70 underline-offset-4 transition-colors duration-200 hover:text-ink";

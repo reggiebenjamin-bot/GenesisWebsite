@@ -30,7 +30,7 @@ export const lendingPage = {
     },
     secondary: {
       label: "See Pricing",
-      href: "/packs/lending/pricing",
+      href: "/lending#levels",
     },
   },
   disclaimer: FUNDING_LINE,

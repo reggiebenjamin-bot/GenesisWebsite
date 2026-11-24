@@ -589,7 +589,7 @@ export const managedOverview = {
   /** The Managed AI half of the pricing page. */
   pricing: {
     headline: "I want Genesis operating across my business.",
-    body: "Managed plans represent increasing depth across implementation, integrations, workflows, automation, intelligence, and operational support.",
+    body: "Pick by how many people need a login. Lending, Real Estate Pros and Business share these Levels and prices; each edition page lists what its Levels include.",
     closing: "A short call confirms the right Level for your business.",
   },
   thirdPartyNote:
@@ -673,7 +673,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For an operator or smaller team beginning to move repeatable work into a managed Genesis environment.",
     fit: "For operations beginning with a managed foundation and focused workflows.",
-    day: "Calls get answered, quotes get followed up and appointments get confirmed, for one user.",
+    day: "One person. Every new inquiry gets a fast reply and a follow up, so none sits waiting.",
     ...undefinedEntitlements,
   },
   {
@@ -695,7 +695,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For operations where the problem extends across multiple workflows, people, handoffs, and systems.",
     fit: "For businesses where the work crosses multiple people, systems, and operating workflows.",
-    day: "Everything in Level 01 for a team of up to 5, with roles and routing so every lead has an owner.",
+    day: "A team of up to 5. Everything in Level 01, plus roles and routing so every lead has an owner.",
     ...undefinedEntitlements,
   },
   {
@@ -718,7 +718,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For businesses that need Genesis operating more broadly across connected systems, workflows, teams, and AI capabilities.",
     fit: "For organizations that need Genesis working broadly across infrastructure, workflows, integrations, and AI capabilities.",
-    day: "Genesis works across your connected systems for up to 25 users, with several AI employees and priority onboarding.",
+    day: "Up to 25 people. Genesis works across your connected systems, with priority onboarding.",
     ...undefinedEntitlements,
   },
 ];

@@ -8,12 +8,12 @@ import { Eyebrow } from "@/components/ui/Section";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { aiEmployeePersonas } from "@/lib/aiEmployees";
 import { faqs, pricingFaqs } from "@/lib/content";
-import type { EditionKey } from "@/lib/editionPlans";
+import { levelsFaqAnswer, type EditionKey } from "@/lib/editionPlans";
 import type { Edition, EditionCta } from "@/lib/editions";
-import { breadcrumbSchema, editionServiceSchema, faqPageSchema, graph } from "@/lib/schema";
+import { breadcrumbSchema, editionServiceSchema, enterpriseServiceSchema, faqPageSchema, graph } from "@/lib/schema";
 
 /* The site's secondary action on ink: dark with a gold hairline, the same height as the gold primary. */
-const secondaryCta = "secondary-action inline-flex min-h-[53px] w-full items-center justify-center px-6";
+const secondaryCta = "secondary-action inline-flex min-h-[52px] w-full items-center justify-center px-6";
 
 /** A single link that renders as a Next Link for internal routes, an anchor for external. */
 function CtaLink({
@@ -60,13 +60,21 @@ function HeroActions({ ctas, from }: { ctas: readonly EditionCta[]; from: string
   );
 }
 
-/** Edition questions: only answers the pricing page and homepage already give. */
-const editionFaqs = [
-  ...pricingFaqs,
-  ...faqs.filter((faq) =>
-    ["Do we have to replace our current systems?", "Does Genesis replace human judgment?"].includes(faq.question),
-  ),
-];
+/**
+ * Edition questions: only answers the pricing page and homepage already give,
+ * with "What changes between the Levels?" answered from this edition's own
+ * Level bullets.
+ */
+function editionFaqsFor(key?: EditionKey) {
+  return [
+    ...pricingFaqs.map((faq) =>
+      key && faq.question === "What changes between the Levels?" ? { ...faq, answer: levelsFaqAnswer(key) } : faq,
+    ),
+    ...faqs.filter((faq) =>
+      ["Do we have to replace our current systems?", "Does Genesis replace human judgment?"].includes(faq.question),
+    ),
+  ];
+}
 
 /** Pages built for a trade or a market, linked from the edition they belong to. */
 const related: Partial<Record<string, { title: string; links: readonly { label: string; href: string }[] }>> = {
@@ -125,13 +133,14 @@ export function EditionLanding({
   const actions = ctas ?? edition.ctas;
   const trades = related[edition.href];
   const slug = edition.href.slice(1);
+  const editionFaqs = editionFaqsFor(pricingKey);
 
   return (
     <>
       <JsonLd
         data={graph(
           breadcrumbSchema(edition.href),
-          ...(pricingKey ? [editionServiceSchema(pricingKey)] : []),
+          pricingKey ? editionServiceSchema(pricingKey) : enterpriseServiceSchema(),
           faqPageSchema(editionFaqs, edition.href),
         )}
       />
@@ -181,22 +190,32 @@ export function EditionLanding({
 
         {children ? (
           <div id="levels" className="scroll-mt-[calc(var(--header-height)+16px)]">
+            {pricingKey ? (
+              <SectionIntro
+                layout="split"
+                eyebrow="Plans and pricing"
+                title="Choose your Level."
+                aside={
+                  <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
+                    Pick by how many people need a login. Monthly plans with a one time setup.
+                  </p>
+                }
+              />
+            ) : null}
             {children}
           </div>
         ) : null}
-
-        <p className="mx-auto mt-12 max-w-[56ch] text-center text-[0.84rem] text-muted-dark">{edition.disclaimer}</p>
       </Sheet>
 
       <Sheet surface="paper" aria-labelledby="edition-team-title" className="site-section border-t border-line-light">
         <SectionIntro
           layout="split"
-          eyebrow="How it works"
+          eyebrow="Your AI employees"
           title="A day with your AI employees."
           titleId="edition-team-title"
           aside={
             <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              The same team works inside every Level of {edition.name}: operations, marketing, sales and the front desk.
+              Operations, marketing, sales and the front desk, working inside {edition.name}. The call confirms which of them your Level puts to work.
             </p>
           }
         />
@@ -204,8 +223,10 @@ export function EditionLanding({
           {aiEmployeePersonas.map((persona) => (
             <Card as="li" key={persona.id}>
               <p className="text-[1.5rem] font-light tracking-[-0.03em]">{persona.name}</p>
-              <Eyebrow className="mt-2 min-h-[2.8em] text-gold-dark">{persona.role}</Eyebrow>
-              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{persona.dailyWork}</p>
+              <Eyebrow className="mt-2 text-gold-dark">{persona.role}</Eyebrow>
+              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">
+                {pricingKey ? persona.editionDay[pricingKey] : persona.dailyWork}
+              </p>
             </Card>
           ))}
         </ul>

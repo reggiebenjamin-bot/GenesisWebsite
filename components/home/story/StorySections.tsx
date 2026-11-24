@@ -1,27 +1,39 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
 import { TrackClick } from "@/components/ui/TrackClick";
-import { ProductChooser } from "@/components/home/ProductChooser";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { aiEmployeePersonas, aiEmployeesHome } from "@/lib/aiEmployees";
-import { editions, ministryEdition } from "@/lib/editions";
-import { FUNDING_LINE } from "@/lib/legal";
+import { editionPricing } from "@/lib/editionPlans";
+import { allEditions, ministryEdition } from "@/lib/editions";
 import { ministryLevels } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
+import { cn } from "@/lib/utils";
 
 /* The three business editions share the Levels, so each card can say where they start. */
 const PRICED_EDITIONS = new Set(["/lending", "/real-estate", "/business"]);
 const levelsFrom = `From ${managedPlans[0].priceDisplay} a month`;
 const ministryFrom = `Plans from ${ministryLevels.levels[0].priceDisplay} a month`;
 
-/** The line that closes every edition card: where it starts, and where the card goes. */
-function EditionFooter({ price, action }: { price?: string; action: string }) {
+/* Where each edition card says it starts. Enterprise has no list price: it is scoped on a call. */
+function startsAt(href: string) {
+  if (PRICED_EDITIONS.has(href)) return levelsFrom;
+  if (href === ministryEdition.href) return ministryFrom;
+  return "Scoped on a call";
+}
+
+/* Three across, then two: every card the same width as its row. */
+const CARD_SPANS = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3"] as const;
+
+/** The line that closes every edition card: where it starts, then where the card goes, stacked the same on every card. */
+function EditionFooter({ price, action }: { price: string; action: string }) {
   return (
-    <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 border-t border-line-light pt-4">
-      {price ? <span className="text-[0.88rem] text-muted-dark">{price}</span> : <span />}
+    <div className="mt-auto grid gap-1 border-t border-line-light pt-4 sm:flex sm:flex-wrap sm:items-end sm:justify-between sm:gap-x-4">
+      <span className="text-[0.88rem] text-muted-dark">{price}</span>
       <span className="inline-flex items-center gap-1.5 text-[0.92rem] font-bold text-gold-dark underline decoration-gold-dark/30 underline-offset-4 group-hover:decoration-gold-dark">
         {action}
         <span aria-hidden="true">→</span>
@@ -29,6 +41,19 @@ function EditionFooter({ price, action }: { price?: string; action: string }) {
     </div>
   );
 }
+
+/* The gold hairline gets stronger with the Level, as on /pricing. */
+const TIER_EDGES = ["rgb(201 165 94 / 0.3)", "rgb(201 165 94 / 0.6)", "rgb(201 165 94 / 0.95)"] as const;
+
+/* What each business edition's Levels include, on its own page. */
+const levelLinks = [
+  { label: "Lending", href: editionPricing.lending.pricingPath },
+  { label: "Real Estate Pros", href: editionPricing.real_estate.pricingPath },
+  { label: "Business", href: editionPricing.business.pricingPath },
+] as const;
+
+const textLink =
+  "inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 transition-colors duration-200 hover:text-gold-dark";
 
 const problems = [
   { title: "Missed calls", body: "The phone rings during a job or after hours, and that caller rarely calls back." },
@@ -55,17 +80,18 @@ export function StoryOpening() {
             </p>
           }
         />
-        <ul className="grid gap-4 md:grid-cols-3">
+        {/* A phone reads the three as one compact list. */}
+        <ul className="grid gap-4 max-sm:gap-0 max-sm:divide-y max-sm:divide-line-light max-sm:rounded-[6px] max-sm:border max-sm:border-line-light max-sm:bg-white/70 md:grid-cols-3">
           {problems.map((p) => (
-            <Card as="li" key={p.title}>
-              <p className="text-[1.45rem] font-light tracking-[-0.03em]">{p.title}</p>
-              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{p.body}</p>
+            <Card as="li" key={p.title} className="max-sm:rounded-none max-sm:border-0 max-sm:bg-transparent max-sm:p-5 max-sm:shadow-none">
+              <p className="text-[1.45rem] font-light tracking-[-0.03em] max-sm:text-[1.2rem]">{p.title}</p>
+              <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark max-sm:mt-1.5">{p.body}</p>
             </Card>
           ))}
         </ul>
       </Sheet>
 
-      <Sheet surface="ink" rise aria-labelledby="story-origin-title" className="site-section">
+      <Sheet surface="ink" rise aria-labelledby="story-origin-title" className="site-section" style={{ "--section-size": "560px" } as CSSProperties}>
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-end">
           <SectionIntro
             eyebrow="Chapter two. Why Genesis exists"
@@ -84,7 +110,7 @@ export function StoryOpening() {
         </div>
       </Sheet>
 
-      <Sheet surface="paper" rise aria-labelledby="story-os-title" className="site-section">
+      <Sheet surface="paper" rise aria-labelledby="story-os-title" className="site-section" style={{ "--section-size": "1500px" } as CSSProperties}>
         <SectionIntro
           layout="split"
           eyebrow="Chapter three. Genesis OS"
@@ -96,33 +122,40 @@ export function StoryOpening() {
             </p>
           }
         />
-        <ul className="grid gap-4 md:grid-cols-2">
-          {editions.map((e) => (
-            <Card as="li" key={e.name} className="flex">
-              <Link href={e.href} className="group flex w-full flex-col">
-                <Eyebrow className="text-gold">Edition {e.no}</Eyebrow>
-                <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{e.name}</p>
-                <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{e.body}</p>
-                <Points items={e.points} className="mt-5 mb-6" />
-                <EditionFooter price={PRICED_EDITIONS.has(e.href) ? levelsFrom : undefined} action={`See ${e.name}`} />
-              </Link>
-            </Card>
-          ))}
-          {/* Edition 05 spans the row with the same structure as the other four: software for
-              churches, with its own plans and its own disclaimer in place of the funding line. */}
-          <Card as="li" className="flex md:col-span-2">
-            <Link href={ministryEdition.href} className="group flex w-full flex-col">
-              <Eyebrow className="text-gold">Edition {ministryEdition.no}</Eyebrow>
-              <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{ministryEdition.name}</p>
-              <p className="mt-3 max-w-[72ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryEdition.body}</p>
-              <Points items={ministryEdition.points} className="mt-5" />
-              <p className="mt-4 mb-6 text-[0.84rem] leading-relaxed text-muted-dark">{ministryEdition.disclaimer}</p>
-              <EditionFooter price={ministryFrom} action={`See ${ministryEdition.name}`} />
-            </Link>
-          </Card>
-        </ul>
-        {/* The four business editions share one line: said once, under the grid. */}
-        <p className="mt-5 text-center text-[0.8rem] text-muted-dark">{FUNDING_LINE}</p>
+        {/* All five editions, Ministry included, with one card structure: three across, then two.
+            Each card is one link, named by its title and described by its summary. The
+            disclaimers live in the footer and on each edition's own page. */}
+        <TrackClick event="edition_link_clicked" from="home_editions">
+          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
+            {allEditions.map((e, index) => {
+              const slug = e.href.slice(1);
+              return (
+                <Card as="li" key={e.name} className={cn("flex", CARD_SPANS[index], index === 4 && "md:max-lg:col-span-2")}>
+                  <Link
+                    href={e.href}
+                    aria-labelledby={`edition-${slug}-name`}
+                    aria-describedby={`edition-${slug}-body`}
+                    data-track-edition={slug}
+                    className="group flex w-full flex-col"
+                  >
+                    <Eyebrow className="text-gold-dark">Edition {e.no}</Eyebrow>
+                    <p id={`edition-${slug}-name`} className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">
+                      {e.name}
+                    </p>
+                    <p className="mt-1 text-[0.92rem] font-medium">{e.audience}</p>
+                    <p id={`edition-${slug}-body`} className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">
+                      {e.body}
+                    </p>
+                    {/* The points repeat the summary in short; a phone keeps the summary alone. */}
+                    <Points items={e.points} className="mt-5 mb-6 max-sm:hidden" />
+                    <span aria-hidden="true" className="block h-5 sm:hidden" />
+                    <EditionFooter price={startsAt(e.href)} action={`See ${e.name}`} />
+                  </Link>
+                </Card>
+              );
+            })}
+          </ul>
+        </TrackClick>
       </Sheet>
     </>
   );
@@ -131,27 +164,28 @@ export function StoryOpening() {
 /** Chapter four: a day with the team, from the existing persona copy. */
 export function StoryTeamDay() {
   return (
-    <Sheet surface="paper" rise aria-labelledby="story-team-title" className="site-section">
+    <Sheet surface="paper" rise aria-labelledby="story-team-title" className="site-section" style={{ "--section-size": "760px" } as CSSProperties}>
       <SectionIntro
-        layout="center"
+        layout="split"
         eyebrow="Chapter four. Your AI employees"
         title="A day with your AI employees."
         titleId="story-team-title"
+        aside={
+          <Button href="/ai-employees" variant="outline" className="max-sm:w-full">
+            {aiEmployeesHome.action}
+          </Button>
+        }
       />
+      {/* On a phone, two of the four, with the rest one tap away on Meet the Team. */}
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {team.map((p) => (
-          <Card as="li" key={p.id}>
+        {team.map((p, index) => (
+          <Card as="li" key={p.id} className={index > 1 ? "max-sm:hidden" : undefined}>
             <p className="text-[1.7rem] font-light tracking-[-0.035em]">{p.name}</p>
-            <Eyebrow className="mt-2 min-h-[2.8em] text-gold-dark">{p.role}</Eyebrow>
+            <Eyebrow className="mt-2 text-gold-dark">{p.role}</Eyebrow>
             <p className="mt-4 text-[0.95rem] leading-relaxed text-muted-dark">{p.dailyWork}</p>
           </Card>
         ))}
       </ul>
-      <div className="mt-10 flex justify-center">
-        <Button href="/ai-employees" variant="outline" className="min-h-[53px] max-sm:w-full">
-          {aiEmployeesHome.action}
-        </Button>
-      </div>
     </Sheet>
   );
 }
@@ -168,18 +202,68 @@ export function StoryHowItWorks() {
   );
 }
 
-/** Chapter six: Lending, Real Estate Pros and Business, each with its Levels and checkout: the one place the homepage prices them. */
+/**
+ * Chapter six: the three Levels, shown once. Lending, Real Estate Pros and
+ * Business share them at the same prices; each edition page lists what its
+ * Levels include and is where a Level is bought. Churches have their own plans.
+ */
 export function StoryOffers() {
   return (
-    <Sheet id="choose-business" surface="paper" rise aria-labelledby="story-offers-title" className="site-section">
+    <Sheet id="choose-business" surface="paper" rise aria-labelledby="story-offers-title" className="site-section" style={{ "--section-size": "720px" } as CSSProperties}>
       <SectionIntro
         layout="split"
         eyebrow="Chapter six. Plans and pricing"
-        title="Choose your edition and Level."
+        title="Three Levels. Pick by how many people need a login."
         titleId="story-offers-title"
-        aside={<p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">Open the edition page, or start Level 01, Level 02 or Level 03. Monthly plans with a one time setup. Level 01 is one user, Level 02 up to 5 and Level 03 up to 25.</p>}
+        aside={
+          <p className="max-w-[42ch] text-[0.95rem] leading-relaxed text-muted-dark">
+            Monthly plans with a one time setup, the same for Lending, Real Estate Pros and Business.
+          </p>
+        }
       />
-      <ProductChooser />
+      <ol className="grid gap-4 md:grid-cols-3">
+        {managedPlans.map((plan, index) => (
+          <Card
+            as="li"
+            key={plan.id}
+            className="relative flex flex-col overflow-hidden"
+            style={{ "--tier-edge": TIER_EDGES[index] } as CSSProperties}
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--tier-edge),transparent)]"
+            />
+            <Eyebrow className="text-gold-dark">Level {plan.step}</Eyebrow>
+            <p className="mt-4 flex flex-wrap items-baseline gap-x-1.5">
+              <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">{plan.priceDisplay}</span>
+              <span className="text-[0.9rem] whitespace-nowrap text-muted-dark">a month</span>
+            </p>
+            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+            <p className="mt-5 border-t border-line-light pt-4 text-[0.95rem] leading-relaxed">{plan.day}</p>
+            <UserLimitNote plan={plan} className="mt-1 text-muted-dark" />
+          </Card>
+        ))}
+      </ol>
+      <div className="mt-6 grid gap-x-10 gap-y-2 text-[0.95rem] text-muted-dark lg:flex lg:flex-wrap lg:items-center lg:justify-between">
+        <TrackClick event="edition_link_clicked" from="home_levels">
+          <p className="flex flex-wrap items-center gap-x-5">
+            <span className="w-full sm:w-auto">What each Level includes:</span>
+            {levelLinks.map((link) => (
+              <Link key={link.href} href={link.href} data-track-edition={link.href.split("#")[0].slice(1)} className={textLink}>
+                {link.label}
+              </Link>
+            ))}
+          </p>
+        </TrackClick>
+        <TrackClick event="ministry_cue_clicked" from="home_levels">
+          <p>
+            Churches:{" "}
+            <Link href={`${ministryEdition.href}#levels`} className={textLink}>
+              {ministryFrom}
+            </Link>
+          </p>
+        </TrackClick>
+      </div>
     </Sheet>
   );
 }
@@ -196,7 +280,7 @@ export function StoryClose() {
           <TrackClick event="assessment_link_clicked" from="home_close" selector="a[href^='/assessment']">
             <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
           </TrackClick>
-          <Button href="/ai-employees" variant="secondary" className="min-h-[53px] w-full">Meet the Team</Button>
+          <Button href="/ai-employees" variant="secondary" className="min-h-[52px] w-full">Meet the Team</Button>
         </div>
       }
     />

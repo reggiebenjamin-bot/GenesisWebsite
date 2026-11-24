@@ -69,8 +69,20 @@ export function assessmentEdition(persona: string | undefined): EditionRecommend
 
 export type Choice = { value: string; label: string };
 
+/** A question's words for one business edition, when its nouns should be that edition's own. */
+type EditionLabels = Partial<Record<PersonaEdition, string>>;
+
 export type Question =
-  | { id: string; kind: "single"; label: string; help?: string; options: readonly Choice[] }
+  | {
+      id: string;
+      kind: "single";
+      label: string;
+      help?: string;
+      options: readonly Choice[];
+      /** A single choice that may be skipped. Every other single choice is required. */
+      optional?: boolean;
+      labels?: EditionLabels;
+    }
   | {
       id: string;
       kind: "multi";
@@ -79,6 +91,7 @@ export type Question =
       options: readonly Choice[];
       /** Choices that stand alone, such as "None yet": picking one clears the rest, and picking another clears it. */
       exclusive?: readonly string[];
+      labels?: EditionLabels;
     }
   | { id: string; kind: "text"; label: string; help?: string; placeholder?: string };
 
@@ -90,6 +103,13 @@ export type Step = {
 
 const choices = (...labels: string[]): readonly Choice[] =>
   labels.map((label) => ({ value: label, label }));
+
+/** The words a question reads with for this persona: its edition's own, or the shared label. */
+export function questionLabel(question: Question, persona: string | undefined): string {
+  if (question.kind === "text") return question.label;
+  const edition = personaEdition(persona);
+  return (edition && question.labels?.[edition]) || question.label;
+}
 
 /*
  * Team sizes break where the Levels do: Level 01 is 1 user, Level 02 up to 5,
@@ -120,7 +140,7 @@ const crmChoices: readonly Choice[] = crmOptions.map((option) => ({
         : option.label,
 }));
 
-/** Steps 1 to 7. The eighth step asks who to follow up with, and is its own form. */
+/** Steps 1 to 6. The seventh step asks who the snapshot is for, and is its own form. */
 export const assessmentSteps: readonly Step[] = [
   {
     id: "business",
@@ -130,7 +150,8 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "team_size",
         kind: "single",
-        label: "How many people work in the business?",
+        /* The number that sets the Level: people who need a login, not everyone on the payroll. */
+        label: "How many people would use Genesis day to day, such as office, dispatch and sales?",
         options: choices(...TEAM_SIZES),
       },
     ],
@@ -201,6 +222,7 @@ export const assessmentSteps: readonly Step[] = [
         kind: "single",
         label: "How often does someone copy information between these systems?",
         options: choices("Rarely", "Occasionally", "Every day", "Constantly"),
+        optional: true,
       },
     ],
   },
@@ -245,6 +267,11 @@ export const assessmentSteps: readonly Step[] = [
         id: "document_storage",
         kind: "single",
         label: "Where do customer, job or deal documents live?",
+        labels: {
+          lending: "Where do borrower files and documents live?",
+          real_estate: "Where do deal documents live?",
+          business: "Where does job paperwork live?",
+        },
         options: choices(
           "One organized system",
           "CRM",
@@ -263,9 +290,10 @@ export const assessmentSteps: readonly Step[] = [
       },
     ],
   },
+  /* One step for what hurts and what would help: the last before the snapshot. */
   {
     id: "pressure",
-    heading: "What gets harder as the business grows?",
+    heading: "What would help most?",
     questions: [
       {
         id: "operational_pain_points",
@@ -289,21 +317,9 @@ export const assessmentSteps: readonly Step[] = [
         ),
       },
       {
-        id: "growth_breakpoint",
-        kind: "text",
-        label: "If volume doubled next month, what would break first?",
-        placeholder: "The part of the business you would worry about…",
-      },
-    ],
-  },
-  {
-    id: "outcomes",
-    heading: "What would you most like to work better?",
-    questions: [
-      {
         id: "desired_outcomes",
         kind: "multi",
-        label: "Which of these would help most?",
+        label: "Which of these would you most like to work better?",
         options: choices(
           "Answer every call, even after hours",
           "Reply to every lead quickly",
@@ -533,6 +549,8 @@ export type ResultCategory = {
   review: string;
   /** The part of Genesis that speaks to it, named only when it exists. */
   fit?: string;
+  /** For a business finding: the first Level that includes the fit line. */
+  level?: "01" | "02" | "03";
 };
 
 /*
@@ -561,12 +579,16 @@ const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1
  * and the Level bullets in lib/editionPlans.ts), with the Level where it
  * matters. Where an edition lists nothing for a finding, there is no fit line.
  */
+type Step3 = "01" | "02" | "03";
+type Fit = { text: string; level: Step3 };
+
 type BusinessCategory = {
   id: string;
   title: string;
   review: string;
   body: (nouns: Nouns) => string;
-  fit: Partial<Record<PersonaEdition, string>>;
+  /** Only what that edition's Levels list, with the first Level that includes it. */
+  fit: Partial<Record<PersonaEdition, Fit>>;
   weight: (answers: Answers) => number;
 };
 
@@ -580,9 +602,9 @@ const categories: readonly BusinessCategory[] = [
     body: (n) =>
       `Calls that come in ${n.busy} or after hours may reach no one, and a caller who reaches no one usually calls the next business.`,
     fit: {
-      business: "Genesis Business starts with calls answered, on every Level.",
-      lending: "Genesis Lending starts with an instant first reply to every borrower inquiry.",
-      real_estate: "Genesis Real Estate Pros starts with same day lead response.",
+      business: { text: "Genesis Business starts with calls answered.", level: "01" },
+      lending: { text: "Genesis Lending starts with an instant first reply to every borrower inquiry.", level: "01" },
+      real_estate: { text: "Genesis Real Estate Pros starts with same day lead response.", level: "01" },
     },
     weight: (a) =>
       signals(
@@ -597,9 +619,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Lead intake and follow up",
     body: (n) => `Next steps with ${n.customers} still depend on someone noticing, remembering or starting them by hand.`,
     fit: {
-      business: "Quotes followed up and appointments confirmed, on every Level.",
-      lending: "Level 02 adds document follow up, and Level 03 adds AI follow up that keeps every borrower conversation moving.",
-      real_estate: "Every Level includes a guided first touch and follow up.",
+      business: { text: "Quotes followed up and appointments confirmed.", level: "01" },
+      lending: { text: "Document follow up, and from Level 03 AI follow up that keeps every borrower conversation moving.", level: "02" },
+      real_estate: { text: "A guided first touch and follow up for every lead.", level: "01" },
     },
     weight: (a) =>
       signals(
@@ -616,7 +638,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Systems and communication",
     body: (n) => `Information about ${n.work} is spread across systems, so people move or reconcile it by hand.`,
     fit: {
-      business: "Level 03 puts Genesis to work across your connected systems.",
+      business: { text: "Genesis works across your connected systems.", level: "03" },
+      lending: { text: "File status in one view, so nobody checks several systems to see where a file stands.", level: "03" },
+      real_estate: { text: "A live deal board, so every deal's status sits in one place.", level: "03" },
     },
     weight: (a) =>
       signals(
@@ -633,9 +657,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Team handoffs",
     body: (n) => `${capitalize(n.work)} can change hands without everything the next person needs.`,
     fit: {
-      business: "Level 02 adds team roles and routing rules.",
-      lending: "From Level 02, every borrower inquiry has a clear owner and a clear next step.",
-      real_estate: "Level 02 adds team roles and routing rules.",
+      business: { text: "Team roles and routing rules.", level: "02" },
+      lending: { text: "Every borrower inquiry has a clear owner and a clear next step.", level: "02" },
+      real_estate: { text: "Team roles and routing rules.", level: "02" },
     },
     weight: (a) =>
       signals(
@@ -652,8 +676,9 @@ const categories: readonly BusinessCategory[] = [
       n === NOUNS.lending
         ? "Document requests and borrower files may take extra searching, chasing or sorting by hand."
         : `Documents for ${n.work} may take extra searching, requesting or sorting by hand.`,
+    /* Only Lending lists document handling. The other editions show no document finding rather than one with no fix. */
     fit: {
-      lending: "Level 02 adds document follow up.",
+      lending: { text: "Document follow up.", level: "02" },
     },
     weight: (a) =>
       signals(
@@ -668,9 +693,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Who carries the work",
     body: (n) => `The business appears to depend on the owner, or a few people, to remember how ${n.work} move.`,
     fit: {
-      business: "Calls answered, quotes followed up and appointments confirmed, on every Level, so less waits on the owner.",
-      lending: "Level 03 adds file status in one view.",
-      real_estate: "Level 03 adds a live deal board.",
+      business: { text: "Calls answered, quotes followed up and appointments confirmed, so less waits on the owner.", level: "01" },
+      lending: { text: "File status in one view.", level: "03" },
+      real_estate: { text: "A live deal board.", level: "03" },
     },
     weight: (a) =>
       signals(
@@ -685,8 +710,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Seeing what is next",
     body: (n) => `It may be hard to see which ${n.work} need attention next without checking several systems.`,
     fit: {
-      lending: "Level 03 adds file status in one view.",
-      real_estate: "Level 03 adds a live deal board.",
+      business: { text: "Team roles and routing rules, so every lead has an owner and a next step.", level: "02" },
+      lending: { text: "File status in one view.", level: "03" },
+      real_estate: { text: "A live deal board.", level: "03" },
     },
     weight: (a) =>
       signals(
@@ -702,7 +728,9 @@ const categories: readonly BusinessCategory[] = [
     review: "Repeatable work",
     body: (n) => `Repeatable tasks around ${n.work} still take a lot of manual coordination.`,
     fit: {
-      business: "Level 02 adds automation across workflows and handoffs.",
+      business: { text: "Automation across workflows and handoffs.", level: "02" },
+      lending: { text: "Guided intake for every borrower inquiry, so the same questions are not asked by hand.", level: "01" },
+      real_estate: { text: "Call scripts for every stage, and team roles and routing rules.", level: "02" },
     },
     weight: (a) =>
       signals(
@@ -715,28 +743,47 @@ const categories: readonly BusinessCategory[] = [
 
 /**
  * The areas the answers actually point at, strongest first, capped at three,
- * in the words of the visitor's own line of work. An operation that reports
- * little friction gets a short list, not a padded one: naming a problem the
- * answers do not describe would be a worse result than naming none.
+ * in the words of the visitor's own line of work. Every finding carries what
+ * that edition does about it and the Level that starts it: a finding the
+ * edition has no answer for is left out rather than shown without one. An
+ * operation that reports little friction gets a short list, not a padded one.
  */
 export function assessmentFindings(answers: Answers): readonly ResultCategory[] {
-  const edition = personaEdition(one(answers, "persona") || undefined);
-  const nouns = NOUNS[edition ?? "any"];
+  const edition = personaEdition(one(answers, "persona") || undefined) ?? "business";
+  const nouns = NOUNS[edition];
   return categories
+    .filter((category) => category.fit[edition])
     .map((category) => ({ category, weight: category.weight(answers) }))
     .filter((entry) => entry.weight > 0)
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3)
     .map(({ category }) => {
-      const fit = edition ? category.fit[edition] : undefined;
+      const fit = category.fit[edition]!;
       return {
         id: category.id,
         title: category.title,
         body: category.body(nouns),
         review: category.review,
-        ...(fit ? { fit } : {}),
+        fit: fit.text,
+        level: fit.level,
       };
     });
+}
+
+/** Where a business fit line's feature starts: "In every Level" or "From Level 02". */
+export function levelLabel(level: Step3): string {
+  return level === "01" ? "In every Level" : level === "02" ? "From Level 02" : "In Level 03";
+}
+
+/**
+ * When the biggest finding is covered only above the Level a team size
+ * suggests, the results say so plainly next to the suggestion, and the call
+ * settles it. Null when the suggestion already covers it.
+ */
+export function levelGapNote(findings: readonly Pick<ResultCategory, "title" | "level">[], suggestedStep: string | null | undefined): string | null {
+  const top = findings[0];
+  if (!top?.level || !suggestedStep || top.level <= suggestedStep) return null;
+  return `Your biggest gap, "${top.title.toLowerCase()}", is covered from Level ${top.level}. We will confirm the right Level with you on the call.`;
 }
 
 export type MinistryPlanId = "care" | "shepherd" | "plus";
@@ -753,12 +800,40 @@ export function planLabel(plan: MinistryPlanId): string {
   return plan === "care" ? "In every plan" : plan === "shepherd" ? "In Shepherd and Plus" : "In Plus";
 }
 
+/**
+ * The label beside a church fit line, only when it says something the
+ * suggestion does not: a feature in the suggested plan needs no label, one
+ * above it does (or below it, "In every plan").
+ */
+export function planLabelBeside(plan: MinistryPlanId, suggested: MinistryPlanId | undefined): string | null {
+  if (suggested && plan === suggested) return null;
+  return planLabel(plan);
+}
+
 /*
  * What a church's answers point at. Each "fit" line names only what Genesis
  * Ministry actually includes (see lib/ministryPage.ts), and the plan it
  * comes with is shown beside it. Nothing here promises an outcome.
  */
-const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) => number })[] = [
+/* The church tools that run giving, check in or an app, as the assessment names them. */
+const LINKED_TOOLS = ["Planning Center", "Breeze", "Church Community Builder", "Subsplash", "Pushpay", "Tithe.ly", "Realm", "Rock RMS"];
+
+const GUEST_PIPELINE_LINE =
+  "Every guest who fills in a card, a form or a chat with Hope lands in one guest pipeline, so nobody chases them across inboxes.";
+const TOOLS_FIT_DEFAULT = `${GUEST_PIPELINE_LINE} Genesis Ministry links to the tools you already use for giving, check in or your app, rather than syncing with them: your website and Hope send people there.`;
+
+/**
+ * The tools finding in the church's own words: the tools it picked, and the
+ * plain fact from the FAQ that Genesis Ministry links to them, not syncs.
+ */
+function toolsFit(answers: Answers): string {
+  const picked = many(answers, "church_tools").filter((tool) => LINKED_TOOLS.includes(tool));
+  if (!picked.length) return TOOLS_FIT_DEFAULT;
+  const names = picked.length === 1 ? picked[0] : `${picked.slice(0, -1).join(", ")} and ${picked.at(-1)}`;
+  return `${GUEST_PIPELINE_LINE} ${names} ${picked.length === 1 ? "keeps" : "keep"} running what ${picked.length === 1 ? "it does" : "they do"} today. Genesis Ministry links to ${picked.length === 1 ? "it" : "them"} rather than syncing: your website and Hope send people there.`;
+}
+
+const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) => number; fitFor?: (answers: Answers) => string })[] = [
   {
     id: "guest-follow-up",
     title: "Guests can wait too long to hear from you",
@@ -783,13 +858,23 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
     body: "Prayer and care requests reach your pastors in more than one way, so it can be hard to see who is waiting and who has been cared for.",
     fit: "Requests arrive in one care inbox, and prayer is seen only by your pastors and the prayer team you name.",
     review: "Prayer and care requests",
+    /* Only when the answers say requests arrive in more than one place: never for a church that
+       said "Through one shared place" and did not tick the scattered pain point. */
     weight: (a) =>
       signals(
         ["Email or text to a pastor", "Paper cards", "Word of mouth"].includes(one(a, "care_requests")),
         one(a, "care_requests") === "Several places, depending on the person",
         many(a, "church_pain_points").includes("Prayer requests land in too many places"),
-        many(a, "church_pain_points").includes("Knowing who needs care next"),
       ),
+  },
+  {
+    id: "care-next",
+    title: "It is hard to see who needs care next",
+    plan: "plus",
+    body: "Your pastors may not have one view of who has been cared for recently and who is still waiting for a call or a visit.",
+    fit: "Person pages and reports show your pastors who needs care next, over time.",
+    review: "Who needs care next",
+    weight: (a) => signals(many(a, "church_pain_points").includes("Knowing who needs care next")),
   },
   {
     id: "first-impression",
@@ -823,7 +908,8 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
     title: "Your tools do not share what they know",
     plan: "shepherd",
     body: "Church information sits in several tools, so people retype details or chase them between systems.",
-    fit: "Every guest who fills in a card, a form or a chat with Hope lands in one guest pipeline, so nobody chases them across inboxes. Planning Center or Subsplash keep running giving and check in, and your website and Hope send people there.",
+    fit: TOOLS_FIT_DEFAULT,
+    fitFor: toolsFit,
     review: "Church tools",
     weight: (a) =>
       signals(
@@ -849,7 +935,14 @@ export function churchFindings(answers: Answers): readonly ChurchFinding[] {
     .filter((category) => category.weight > 0)
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3)
-    .map(({ id, title, body, fit, review, plan }) => ({ id, title, body, fit, review, plan }));
+    .map(({ id, title, body, fit, fitFor, review, plan }) => ({
+      id,
+      title,
+      body,
+      fit: fitFor ? fitFor(answers) : fit,
+      review,
+      plan,
+    }));
 }
 
 /** The Ministry plan a church's answers point to, and why, for the results to suggest. */
@@ -874,10 +967,11 @@ const PLAN_ORDER: readonly MinistryPlanId[] = ["care", "shepherd", "plus"];
  */
 export function suggestedMinistryPlan(answers: Answers, findings: readonly ChurchFinding[]): SuggestedPlan | null {
   if (!findings.length) return null;
-  const id = findings.reduce<MinistryPlanId>(
-    (best, finding) => (PLAN_ORDER.indexOf(finding.plan) > PLAN_ORDER.indexOf(best) ? finding.plan : best),
-    "care",
-  );
+  /* Plus is never the start: a finding only Plus covers suggests Shepherd, with Plus named as later. */
+  const id = findings.reduce<MinistryPlanId>((best, finding) => {
+    const start = finding.plan === "plus" ? "shepherd" : finding.plan;
+    return PLAN_ORDER.indexOf(start) > PLAN_ORDER.indexOf(best) ? start : best;
+  }, "care");
   const plan = ministryLevels.levels.find((level) => level.id === id)!;
   const largerStaff = (ministryContact.form.staffSizes.slice(2) as readonly string[]).includes(one(answers, "church_staff"));
   const wantsCareView = many(answers, "church_pain_points").includes("Knowing who needs care next");
@@ -953,10 +1047,15 @@ export function suggestedLevel(edition: PersonaEdition, teamSize: string | undef
   const index = TEAM_SIZES.indexOf(teamSize as (typeof TEAM_SIZES)[number]);
   if (index < 0) return null;
   const { plan } = editionLevels(edition)[Math.min(index, 2)];
+  /* 6 to 25 spans two Levels: Level 02 still fits if 5 or fewer of them need a login. */
+  const reason =
+    plan.step === "03"
+      ? `Level 03 covers up to 25 users. If 5 or fewer of your ${teamSize.toLowerCase()} people need a login, Level 02 fits instead; the call settles it.`
+      : `Level ${plan.step} covers ${plan.userLimit.toLowerCase()}, which fits ${teamSize === "Just me" ? "just you" : `a team of ${teamSize.toLowerCase()}`}.`;
   return {
     step: plan.step,
     label: `Level ${plan.step}, ${plan.priceDisplay} a month`,
-    reason: `Level ${plan.step} covers ${plan.userLimit.toLowerCase()}, which fits a team of ${teamSize.toLowerCase()}.`,
+    reason,
   };
 }
 
@@ -1060,10 +1159,18 @@ export const assessmentCopy = {
   change: "Change",
   cta: "Assess My Business",
   note: "No purchase required.",
-  /** The eighth step. */
+  /** The card's quiet line beside the step count: what it costs and asks. */
+  reassurance: "Free. Seven short steps. No account needed.",
+  /** The hero once the results are showing. */
+  doneHeadline: "Your snapshot is ready.",
+  churchDoneHeadline: "Your church snapshot is ready.",
+  /** The last step. */
   contact: {
-    heading: "Who should we follow up with?",
+    heading: "Who is this snapshot for?",
+    churchHeading: "Who is this church snapshot for?",
+    lede: "Your results show on the next screen. Tick the box if you would like someone from Genesis to walk through them with you.",
     submit: "Show My Assessment",
+    churchSubmit: "Show My Church Snapshot",
     consent: "I'd like Genesis to review my results with me.",
   },
   results: {
@@ -1084,7 +1191,7 @@ export const assessmentCopy = {
     ctaHeadline: "Want us to map what should change?",
     ctaBody:
       "A free review looks at your answers with you, how the work actually moves today, and where Genesis could take the most work off your team.",
-    ctaPrimary: "Book My Free Review",
+    ctaPrimary: "Book a Call",
     /* A church's results, in a church's words. */
     churchEyebrow: "Your Church Snapshot",
     churchHeadline: "Here is what we heard about your church.",
@@ -1101,7 +1208,7 @@ export const assessmentCopy = {
     /** Shown only when they ticked the box asking Genesis to review the results with them. */
     reviewRequested: "You asked us to review your results with you, so someone from Genesis will reach out to set a time.",
     /** Replaces the call buttons once they have already asked us to reach out. */
-    onTheList: "You are on our list. Want to tell us more before the call?",
+    onTheList: "We will reach out to set a time. Want to tell us more before the call?",
     addDetails: "Add Details for the Call",
     print: "Print or save these results",
     churchFindingsTitle: "What your answers point to",

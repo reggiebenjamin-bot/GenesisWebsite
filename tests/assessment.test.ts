@@ -111,8 +111,8 @@ test("a church walks a church path, and the business path is unchanged", async (
   assert.equal(stepsFor(undefined), assessmentSteps);
   assert.deepEqual(
     assessmentSteps.map((step) => step.id),
-    ["business", "leads", "systems", "follow-up", "deals", "pressure", "outcomes"],
-    "the business steps keep their order",
+    ["business", "leads", "systems", "follow-up", "deals", "pressure"],
+    "the business steps keep their order, with what hurts and what would help on one step",
   );
 
   /* Step one keeps the same persona question, so a church can change its mind. */
@@ -318,7 +318,9 @@ test("a church's results suggest the plan its findings point to", async () => {
   const start = suggestedMinistryPlan(larger, churchFindings(larger));
   assert.equal(start?.id, "shepherd");
   assert.match(start?.later ?? "", /Plus later/);
-  assert.ok(churchFindings(larger).every((finding) => finding.plan !== "plus"), "no finding needs Plus to start");
+  /* Seeing who needs care next is its own finding, labelled In Plus, but Plus is still never the start. */
+  assert.ok(churchFindings(larger).some((finding) => finding.id === "care-next" && finding.plan === "plus"));
+  assert.equal(suggestedMinistryPlan({ ...larger, church_pain_points: ["Knowing who needs care next"], care_requests: "Through one shared place" }, churchFindings({ ...larger, care_requests: "Through one shared place" }))?.id, "shepherd");
   assert.equal(suggestedMinistryPlan({ ...larger, church_staff: "1 or 2" }, churchFindings(larger))?.later, null);
   assert.ok(ministryLevels.levels.find((level) => level.id === "plus")?.bullets.some((bullet) => /Person pages|Reports/.test(bullet)));
 
@@ -352,7 +354,7 @@ test("business results name the edition built for the persona, with its Levels a
   const lender = businessRecommendation(LENDER_PERSONA, "26 to 50");
   assert.ok(lender);
   assert.equal(lender.disclaimer, FUNDING_LINE);
-  assert.equal(lender.pricingHref, "/packs/lending/pricing");
+  assert.equal(lender.pricingHref, "/lending#levels");
   /* More than 25 users is Enterprise: the same line the Levels print under Level 03. */
   assert.equal(lender.suggested?.step, null);
   assert.equal(lender.suggested?.label, "Genesis Enterprise");

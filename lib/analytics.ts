@@ -21,7 +21,10 @@ export type AnalyticsEvent =
   | "ministry_call_cta_clicked"
   /* The church cue on the homepage hero, the phone menu and the Editions menu */
   | "ministry_cue_clicked"
+  /* An edition page opened from the homepage hero, the edition cards or the Levels block */
+  | "edition_link_clicked"
   | "ministry_demo_opened"
+  | "church_website_check_clicked"
   /* A link into the assessment from another page, such as /ministry */
   | "assessment_link_clicked"
   | "infrastructure_review_cta_clicked"

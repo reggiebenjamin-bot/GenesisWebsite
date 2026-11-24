@@ -50,10 +50,11 @@ test("editions keep their disclaimers", () => {
 });
 
 test("an assessment persona maps to the matching edition pricing page", () => {
-  assert.equal(pricingPathForPersona("Lender or loan officer"), "/packs/lending/pricing");
-  assert.equal(pricingPathForPersona("Brokerage"), "/packs/real_estate/pricing");
-  assert.equal(pricingPathForPersona("Other"), "/pricing");
-  assert.equal(pricingPathForPersona(undefined), "/pricing");
+  /* Each edition's own Levels, on its own page: never the all-edition /pricing. */
+  assert.equal(pricingPathForPersona("Lender or loan officer"), "/lending#levels");
+  assert.equal(pricingPathForPersona("Brokerage"), "/real-estate#levels");
+  assert.equal(pricingPathForPersona("Other"), "/business#levels");
+  assert.equal(pricingPathForPersona(undefined), "/business#levels");
 });
 
 test("no Level repeats a bullet from a lower Level, so each Level says what it adds", () => {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { mirrorToGenesis } from "@/lib/genesis-lead";
-import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
+import { MINISTRY_OPERATION_TYPE, MINISTRY_PLAN_IDS, ministryContact } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
 
 const WEBHOOK_URL =
@@ -12,6 +12,8 @@ const allowedPlans = new Set<string>([
   "",
   "done-for-you",
   ...managedPlans.map((plan) => plan.id),
+  // The Genesis Ministry plans, from a church topic link.
+  ...MINISTRY_PLAN_IDS,
   // Legacy infrastructure slugs still accepted if an old link sends them.
   "foundation",
   "growth",
@@ -57,9 +59,10 @@ export async function POST(request: Request) {
 
     if (data.website) return NextResponse.json({ ok: true });
 
-    /* A church may leave its name out; every business request names its company. */
+    /* A church may leave out its name, phone and staff size (email reaches it); every business
+       request names its company, phone and team size. */
     const church = String(data.operation_type ?? "").trim() === MINISTRY_OPERATION_TYPE;
-    const required = ["name", "email", "phone", ...(church ? [] : ["company"]), "vertical", "monthly_leads", "operation_type"];
+    const required = ["name", "email", ...(church ? [] : ["phone", "company", "monthly_leads"]), "vertical", "operation_type"];
     const missing = required.some(
       (field) => typeof data[field] !== "string" || !String(data[field]).trim(),
     );
@@ -73,7 +76,7 @@ export async function POST(request: Request) {
       missing ||
       !emailPattern.test(email) ||
       !allowedRoles.has(role) ||
-      !allowedTeamSizes.has(teamSize) ||
+      (teamSize ? !allowedTeamSizes.has(teamSize) : !church) ||
       !allowedOperationTypes.has(operationType) ||
       !allowedPlans.has(plan)
     ) {

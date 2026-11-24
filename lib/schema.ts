@@ -172,7 +172,7 @@ export function managedServiceSchema() {
       itemListElement: managedPlans.map((plan) => ({
         "@type": "Offer",
         name: `${managedOverview.product}, Level ${plan.step}`,
-        description: `${plan.ladder} ${plan.scope}`,
+        description: plan.day,
         price: plan.monthlyPriceUsd,
         priceCurrency: "USD",
         priceSpecification: {
@@ -183,6 +183,35 @@ export function managedServiceSchema() {
         },
         url: absoluteUrl("/pricing"),
       })),
+    },
+  };
+}
+
+/** "1 user, plus $500 setup." for an edition Offer. */
+export function offerDescription(plan: { userLimit: string; setupLine: string }): string {
+  return `${plan.userLimit}, ${plan.setupLine}.`;
+}
+
+/**
+ * Genesis Enterprise as a Service: no listed price, so its one Offer says the
+ * price is set on a call.
+ */
+export function enterpriseServiceSchema() {
+  const edition = editions.find((candidate) => candidate.href === "/enterprise")!;
+  return {
+    "@type": "Service",
+    "@id": `${absoluteUrl(edition.href)}#service`,
+    name: edition.name,
+    serviceType: "Multi location AI operations",
+    description: edition.body,
+    url: absoluteUrl(edition.href),
+    provider: organizationRef,
+    areaServed: { "@type": "State", name: "Texas" },
+    offers: {
+      "@type": "Offer",
+      name: `${edition.name}, scoped on a call`,
+      description: "More than 25 users or more than one location. Pricing is set with you on a call.",
+      url: absoluteUrl("/contact"),
     },
   };
 }
@@ -209,7 +238,7 @@ export function editionServiceSchema(key: EditionKey) {
       itemListElement: editionLevels(key).map(({ plan }) => ({
         "@type": "Offer",
         name: `${pricing.name}, Level ${plan.step}`,
-        description: `${plan.userLimit}. ${plan.setupLine}.`,
+        description: offerDescription(plan),
         price: plan.monthlyPriceUsd,
         priceCurrency: "USD",
         priceSpecification: {
@@ -218,7 +247,7 @@ export function editionServiceSchema(key: EditionKey) {
           priceCurrency: "USD",
           unitText: "per month",
         },
-        url: absoluteUrl(pricing.pricingPath === "/pricing" ? `${edition.href}#levels` : pricing.pricingPath),
+        url: absoluteUrl(pricing.pricingPath),
       })),
     },
   };
@@ -367,7 +396,7 @@ export function genesisSoftwareSchema() {
     offers: managedPlans.map((plan) => ({
       "@type": "Offer",
       name: `${managedOverview.product}, Level ${plan.step}`,
-      description: `${plan.ladder} ${plan.scope}`,
+      description: plan.day,
       url: absoluteUrl("/pricing"),
       price: plan.monthlyPriceUsd,
       priceCurrency: "USD",

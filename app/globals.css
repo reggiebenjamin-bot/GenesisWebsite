@@ -49,6 +49,20 @@
   --header-height: 88px;
 }
 
+/* A phone's bar is 64px, and 52px on a phone held sideways, where every
+   pixel of height counts. Page tops and scroll anchors follow it. */
+@media (max-width: 1023px) {
+  :root {
+    --header-height: 64px;
+  }
+}
+
+@media (max-width: 1023px) and (max-height: 500px) and (orientation: landscape) {
+  :root {
+    --header-height: 52px;
+  }
+}
+
 @font-face {
   font-family: "Satoshi";
   src: url("/fonts/satoshi-300.woff2") format("woff2");
@@ -181,9 +195,11 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
 /* Below-the-fold sections stay out of the initial paint and layout budget.
    The intrinsic fallback keeps scroll geometry stable until each band nears
    the viewport. */
+/* Each section can say roughly how tall it is (--section-size), so the page
+   height and anchor positions barely move as sections render. */
 .site-section {
   content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
+  contain-intrinsic-size: auto var(--section-size, 900px);
 }
 
 /* Progressive, CSS-only reveals avoid hydrating dozens of animation wrappers.
@@ -281,6 +297,17 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
   }
 }
 
+/* A form select drawn like the text fields, with its own chevron, never the system one. */
+.select-field {
+  appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%2308090e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 14px 14px;
+  cursor: pointer;
+}
+
 /* The logo, rule and padding at the top of the edition and Ministry heroes.
    On a short screen (a phone on its side, or a small phone) the mark shrinks
    or steps aside, so the headline and the first button reach the first
@@ -355,9 +382,9 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
     inset 0 1px 0 rgb(255 255 255 / 0.12),
     inset 0 -10px 20px rgb(0 0 0 / 0.16),
     0 8px 24px rgb(0 0 0 / 0.2);
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   transition:
     color 1400ms ease,
     border-color 1400ms ease,

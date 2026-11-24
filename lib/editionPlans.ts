@@ -44,7 +44,7 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
     key: "business",
     name: "Business Edition",
     landingPath: "/business",
-    pricingPath: "/pricing",
+    pricingPath: "/business#levels",
     eyebrow: "Business Edition pricing",
     headline: "Software that answers the call and follows up for your business.",
     lede:
@@ -72,7 +72,7 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
     key: "real_estate",
     name: "Real Estate Edition",
     landingPath: "/real-estate",
-    pricingPath: "/packs/real_estate/pricing",
+    pricingPath: "/real-estate#levels",
     eyebrow: "Real Estate Edition pricing",
     headline: "One closed listing pays for the plan.",
     lede:
@@ -102,7 +102,7 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
     key: "lending",
     name: "Lending Edition",
     landingPath: "/lending",
-    pricingPath: "/packs/lending/pricing",
+    pricingPath: "/lending#levels",
     eyebrow: "Lending Edition pricing",
     headline: "Software that helps lending teams move faster on every borrower inquiry.",
     lede:
@@ -137,12 +137,33 @@ export function editionLevels(key: EditionKey): readonly EditionLevel[] {
   return managedPlans.map((plan) => ({ plan, bullets: editionPricing[key].bullets[plan.id] }));
 }
 
-/** The edition pricing page that matches an assessment persona. */
+/** The edition's Levels that match an assessment persona: its own page, at #levels. */
 export function pricingPathForPersona(persona: string | undefined): string {
   /* Churches get the three Ministry plans, not the business Levels. */
   if (persona === CHURCH_PERSONA) return "/ministry#levels";
-  const edition = personaEdition(persona);
-  if (edition === "lending") return editionPricing.lending.pricingPath;
-  if (edition === "real_estate") return editionPricing.real_estate.pricingPath;
-  return "/pricing";
+  return editionPricing[personaEdition(persona) ?? "business"].pricingPath;
+}
+
+/* "Instant first reply" reads "instant first reply" mid sentence; "AI follow up" keeps its capitals. */
+const lowerFirst = (text: string) =>
+  /^[A-Z][a-z]/.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
+const listOf = (items: readonly string[]) =>
+  items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+
+/**
+ * "What changes between the Levels?" in one edition's own words, built from
+ * its own Level bullets, so a lender reads about borrower inquiries and
+ * documents, never about quotes and appointments.
+ */
+export function levelsFaqAnswer(key: EditionKey): string {
+  const [one, two, three] = editionLevels(key).map(({ plan, bullets }) => ({
+    plan,
+    adds: listOf(bullets.filter((bullet) => !bullet.startsWith("Everything in")).map(lowerFirst)),
+  }));
+  return [
+    `Level 01 is one user, with ${one.adds}.`,
+    `Level 02 covers ${two.plan.userLimit.toLowerCase()} and adds ${two.adds}.`,
+    `Level 03 covers ${three.plan.userLimit.toLowerCase()} and adds ${three.adds}.`,
+    "More than 25 users is Genesis Enterprise.",
+  ].join(" ");
 }

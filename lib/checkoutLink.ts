@@ -22,6 +22,20 @@ export function isLinkPreviewAgent(userAgent: string | null | undefined): boolea
   return PREVIEW_AGENT.test(ua);
 }
 
+/**
+ * True for a request the browser makes ahead of a click: a Next.js link
+ * prefetch (RSC or Next-Router-Prefetch headers, or an _rsc query), or a
+ * speculative prefetch (Sec-Purpose or Purpose: prefetch). Such a request
+ * must never open a Stripe Checkout Session.
+ */
+export function isPrefetchRequest(headers: Headers, url: URL | string): boolean {
+  const target = typeof url === "string" ? new URL(url) : url;
+  if (target.searchParams.has("_rsc")) return true;
+  if (headers.get("rsc") === "1" || headers.has("next-router-prefetch")) return true;
+  const purpose = `${headers.get("sec-purpose") ?? ""} ${headers.get("purpose") ?? ""}`.toLowerCase();
+  return purpose.includes("prefetch") || purpose.includes("prerender");
+}
+
 /** Plan id from ?plan= or a /start/<tier> segment. Empty when unknown. */
 export function planFromLink(value: string | null | undefined): string {
   const raw = (value ?? "").trim().toLowerCase();

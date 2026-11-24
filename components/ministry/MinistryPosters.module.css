@@ -56,8 +56,8 @@
 .label {
   overflow: hidden;
   font-family: var(--font-display, ui-monospace, monospace);
-  font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
