@@ -19,8 +19,9 @@ import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
 import { isMinistryTopic, ministryCue } from "@/lib/ministryPage";
 import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
+import { track } from "@/lib/analytics";
+import { AUDIENCE_EVENT } from "@/lib/assessmentHandoff";
 import { cn } from "@/lib/utils";
-import { GenesisMark } from "./GenesisMark";
 import styles from "./Header.module.css";
 import { Logo } from "./Logo";
 
@@ -72,8 +73,8 @@ function ChurchPageFromUrl({ pathname, children }: { pathname: string; children:
  * Ministry. On both, Pricing (the business plans) becomes Plans: the three
  * Ministry plans and their prices, on /ministry#levels.
  */
-function primaryFor(church: ChurchPage) {
-  if (church === "ministry") return { href: "/contact?topic=ministry", label: "Book a Consultation" };
+function primaryFor(church: ChurchPage, assessingChurch = false) {
+  if (church === "ministry" || assessingChurch) return { href: "/contact?topic=ministry", label: "Book a Call" };
   if (church === "contact") return { href: "/ministry", label: "See Genesis Ministry" };
   return { href: "/assessment", label: "Assess My Business" };
 }
@@ -102,6 +103,13 @@ export function Header() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState(pathname);
+  /* On /assessment, once a church picks the church path, the header books a church call. */
+  const [assessingChurch, setAssessingChurch] = useState(false);
+  useEffect(() => {
+    const onAudience = (event: Event) => setAssessingChurch((event as CustomEvent<string>).detail === "church");
+    window.addEventListener(AUDIENCE_EVENT, onAudience);
+    return () => window.removeEventListener(AUDIENCE_EVENT, onAudience);
+  }, []);
   const nav = useRef<HTMLElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
 
@@ -242,7 +250,7 @@ export function Header() {
 
           <ForChurchPage pathname={pathname}>
             {(church) => {
-              const primary = primaryFor(church);
+              const primary = primaryFor(church, assessingChurch && pathname === "/assessment");
               return (
                 <ConsultationButton href={primary.href} compact className={styles.cta}>
                   {primary.label}
@@ -276,6 +284,7 @@ export function Header() {
             <MobileMenu
               pathname={pathname}
               church={church}
+              assessingChurch={assessingChurch && pathname === "/assessment"}
               onClose={() => setMenuOpen(false)}
               returnFocus={menuButton}
             />
@@ -447,7 +456,10 @@ function NavDropdown({
                   href={item.href}
                   aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
                   className={styles.item}
-                  onClick={() => onOpenChange(false)}
+                  onClick={() => {
+                    if (item.href === ministryCue.href) track("ministry_cue_clicked", { from: "editions_dropdown" });
+                    onOpenChange(false);
+                  }}
                 >
                   <span className={styles.itemLabel}>{item.label}</span>
                   {item.description ? (
@@ -466,15 +478,17 @@ function NavDropdown({
 function MobileMenu({
   pathname,
   church,
+  assessingChurch,
   onClose,
   returnFocus,
 }: {
   pathname: string;
   church: ChurchPage;
+  assessingChurch: boolean;
   onClose: () => void;
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
-  const primary = primaryFor(church);
+  const primary = primaryFor(church, assessingChurch);
   const sheet = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const labelId = useId();
@@ -545,20 +559,6 @@ function MobileMenu({
       </div>
 
       <nav aria-label="Primary navigation" className={styles.sheetBody}>
-        {/* A church reading the business site sees its own edition first.
-            On the Ministry pages it is already there, so the cue steps aside. */}
-        {church ? null : (
-          <Link href={ministryCue.href} className={styles.sheetCue} onClick={onClose}>
-            <GenesisMark className="h-4 w-auto shrink-0" />
-            <span className={styles.sheetCueText}>
-              <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
-              <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
-            </span>
-            <span aria-hidden="true" className={styles.sheetArrow}>
-              →
-            </span>
-          </Link>
-        )}
         {navigation.map((entry) =>
           isNavGroup(entry) ? (
             <div key={entry.label} className={styles.sheetGroup}>
@@ -570,7 +570,10 @@ function MobileMenu({
                       href={item.href}
                       aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
                       className={styles.sheetLink}
-                      onClick={onClose}
+                      onClick={() => {
+                        if (item.href === ministryCue.href) track("ministry_cue_clicked", { from: "mobile_menu" });
+                        onClose();
+                      }}
                     >
                       <span className={styles.sheetLinkText}>
                         <span className={styles.sheetLinkLabel}>{item.label}</span>
@@ -584,14 +587,8 @@ function MobileMenu({
                     </Link>
                   </li>
                 ))}
-                {entry.feature ? (
-                  <li>
-                    <Link href={entry.feature.href} className={styles.sheetFeature} onClick={onClose}>
-                      {entry.feature.action}
-                      <span aria-hidden="true">→</span>
-                    </Link>
-                  </li>
-                ) : null}
+                {/* The feature tile stays in the desktop dropdown. Here it would repeat the
+                    assessment button at the foot of the menu, so each place is listed once. */}
               </ul>
             </div>
           ) : (

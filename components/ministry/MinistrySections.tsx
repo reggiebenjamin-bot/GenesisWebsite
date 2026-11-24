@@ -7,8 +7,10 @@ import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { FaqList } from "@/components/ui/FaqList";
 import { Reveal } from "@/components/ui/Reveal";
+import { TrackClick } from "@/components/ui/TrackClick";
 import { Eyebrow } from "@/components/ui/Section";
 import {
+  ministryAssessment,
   ministryClose,
   ministryDemo,
   ministryDemoAction,
@@ -18,6 +20,7 @@ import {
   ministryLooks,
   ministryMedia,
   ministryPackage,
+  ministryPlansCue,
   ministryPlatform,
   ministryProcess,
   ministryProtection,
@@ -76,6 +79,26 @@ function DemoLink({ action, light = false }: { action: MinistryLink & { isDemo: 
     <Link href={action.href} className={className}>
       {content}
     </Link>
+  );
+}
+
+/** The quiet way into the church assessment, for a church not ready for a call. */
+function AssessmentCue({ light = false, from }: { light?: boolean; from: string }) {
+  return (
+    <TrackClick event="assessment_link_clicked" from={from}>
+      <p className={cn("text-[0.95rem] leading-snug", light ? "text-muted-dark" : "text-ivory/72")}>
+        {ministryAssessment.lead}{" "}
+        <Link
+          href={ministryAssessment.href}
+          className={cn(
+            "inline-flex min-h-11 items-center font-bold underline underline-offset-4 transition-colors duration-200",
+            light ? "text-ink decoration-ink/30 hover:text-gold-dark" : "text-ivory decoration-ivory/40 hover:text-gold-light",
+          )}
+        >
+          {ministryAssessment.label}
+        </Link>
+      </p>
+    </TrackClick>
   );
 }
 
@@ -148,10 +171,26 @@ export function MinistryHero() {
           <p className="mx-auto mt-6 max-w-[52ch] text-[1.08rem] leading-relaxed text-ivory/74">
             {ministryHero.lede}
           </p>
-          <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <ConsultationButton href={ministryHero.primary.href}>{ministryHero.primary.label}</ConsultationButton>
-            <DemoLink action={secondary} />
+          <div className="mx-auto mt-9 grid max-w-[36rem] gap-3 sm:grid-cols-2">
+            <TrackClick event="ministry_call_cta_clicked" from="ministry_hero">
+              <ConsultationButton href={ministryHero.primary.href} className="w-full">
+                {ministryHero.primary.label}
+              </ConsultationButton>
+            </TrackClick>
+            <TrackClick event="ministry_demo_opened" from="ministry_hero">
+              <DemoLink action={secondary} />
+            </TrackClick>
           </div>
+          {/* The first price on a phone, and the way down to the plans. */}
+          <p className="mt-5 text-[0.95rem] text-ivory/72">
+            {ministryPlansCue.line}{" "}
+            <a
+              href={ministryPlansCue.link.href}
+              className="inline-flex min-h-11 items-center font-bold text-gold-light underline decoration-gold-light/40 underline-offset-4 hover:decoration-gold-light"
+            >
+              {ministryPlansCue.link.label}
+            </a>
+          </p>
         </div>
 
         {/* No scroll reveal here: the frame is part of the first screen. On a
@@ -518,8 +557,13 @@ export function MinistryLevelsSection() {
         titleId="ministry-levels-title"
         aside={<p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">{ministryLevels.aside}</p>}
       />
-      <MinistryLevels />
+      <TrackClick event="ministry_call_cta_clicked" from="ministry_plans" selector="a[href^='/contact']">
+        <MinistryLevels />
+      </TrackClick>
       <p className="mt-8 text-center text-[0.85rem] text-muted-dark">{ministryLevels.footnote}</p>
+      <div className="mt-4 text-center">
+        <AssessmentCue light from="ministry_plans" />
+      </div>
     </Sheet>
   );
 }
@@ -613,9 +657,18 @@ export function MinistryClose() {
       line={ministryClose.line}
       actions={
         /* Stacked to one width on phones, side by side from there up. */
-        <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-          <ConsultationButton href={ministryClose.primary.href}>{ministryClose.primary.label}</ConsultationButton>
-          <DemoLink action={secondary} />
+        <div className="grid w-full gap-3">
+          <div className="grid w-full gap-3 sm:min-w-[32rem] sm:grid-cols-2">
+            <TrackClick event="ministry_call_cta_clicked" from="ministry_close">
+              <ConsultationButton href={ministryClose.primary.href} className="w-full">
+                {ministryClose.primary.label}
+              </ConsultationButton>
+            </TrackClick>
+            <TrackClick event="ministry_demo_opened" from="ministry_close">
+              <DemoLink action={secondary} />
+            </TrackClick>
+          </div>
+          <AssessmentCue from="ministry_close" />
         </div>
       }
       footnote={<p>{ministryClose.footnote}</p>}

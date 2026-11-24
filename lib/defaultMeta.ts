@@ -6,4 +6,4 @@ export const defaultTitle = "Genesis AI | AI Employees for Texas Businesses";
  * rather than a real estate only line.
  */
 export const defaultDescription =
-  "AI employees for Texas businesses across business, real estate, and lending. Software that answers, follows up, and keeps the work moving.";
+  "AI employees for Texas businesses across business, real estate, and lending, and software for churches. It answers, follows up, and keeps work moving.";

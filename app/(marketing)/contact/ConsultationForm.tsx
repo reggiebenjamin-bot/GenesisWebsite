@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
+import { ASSESSMENT_HANDOFF_KEY, readAssessmentHandoff } from "@/lib/assessmentHandoff";
 import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
 
@@ -62,6 +63,33 @@ export function ConsultationForm({
   const context = useRef<Record<string, string>>({});
   const submittedRef = useRef(false);
   const successRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [fromAssessment, setFromAssessment] = useState(false);
+
+  /* Someone who just finished the assessment in this tab does not type the
+     same details again: name, email, phone, church or company, and a
+     church's staff size, from sessionStorage (never the URL). */
+  useEffect(() => {
+    let raw: string | null = null;
+    try {
+      raw = window.sessionStorage.getItem(ASSESSMENT_HANDOFF_KEY);
+    } catch {
+      return;
+    }
+    const handoff = readAssessmentHandoff(raw);
+    const form = formRef.current;
+    if (!handoff || !form || check || handoff.path !== audience) return;
+    const fill = (name: string, value: string) => {
+      const input = form.elements.namedItem(name);
+      if (value && (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) && !input.value) input.value = value;
+    };
+    fill("name", handoff.name);
+    fill("email", handoff.email);
+    fill("phone", handoff.phone);
+    fill("company", handoff.company);
+    if (church && (churchForm.staffSizes as readonly string[]).includes(handoff.staff)) fill("monthly_leads", handoff.staff);
+    setFromAssessment(true);
+  }, [audience, church, check]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -183,6 +211,8 @@ export function ConsultationForm({
 
   return (
     <form
+      ref={formRef}
+      id="consultation-form"
       onSubmit={handleSubmit}
       className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
@@ -236,6 +266,7 @@ export function ConsultationForm({
         </label>
         <label className={field}>
           Phone <span aria-hidden="true">*</span>
+          {church ? <span className="normal-case tracking-normal">(so we can set a time)</span> : null}
           <input
             name="phone"
             type="tel"
@@ -355,6 +386,8 @@ export function ConsultationForm({
       </label>
 
       {interest ? <input type="hidden" name="interest" value={interest} /> : null}
+      {/* Links this request to the assessment just finished, for whoever reads both. */}
+      {fromAssessment ? <input type="hidden" name="from_assessment" value="true" /> : null}
 
       {/* Honeypot — hidden from people, irresistible to bots. */}
       <input

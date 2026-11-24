@@ -160,7 +160,7 @@ export function managedServiceSchema() {
     "@type": "Service",
     "@id": `${absoluteUrl("/solutions")}#service`,
     name: managedOverview.product,
-    serviceType: "AI infrastructure for real estate businesses",
+    serviceType: "AI infrastructure for service, lending and real estate businesses",
     description: managedOverview.summary,
     url: absoluteUrl("/solutions"),
     provider: organizationRef,

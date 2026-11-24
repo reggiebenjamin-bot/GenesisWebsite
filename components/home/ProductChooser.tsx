@@ -21,12 +21,13 @@ export function ProductChooser() {
 
   return (
     <div>
-      <ul className="grid gap-4 md:grid-cols-3">
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
           <Card as="li" key={product.key} className="flex h-full flex-col">
             <h3 className="text-[1.7rem] font-light tracking-[-0.035em]">{product.label}</h3>
             <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{product.summary}</p>
-            <div className="mt-6 grid gap-2">
+            {/* Pushed to the foot of the card, so the buttons line up across all three. */}
+            <div className="mt-auto grid gap-2 pt-6">
               <Link href={product.href} className={pageLink}>
                 Open {product.label}
               </Link>
@@ -34,7 +35,8 @@ export function ProductChooser() {
                 <Link key={level.id} href={level.href} className={levelLink}>
                   <span className="text-[0.84rem] leading-none font-bold">Level {level.step}</span>
                   <span className="mt-1 text-[0.8rem] leading-snug text-muted-dark">
-                    {level.priceDisplay} a month, {level.setupLine}
+                    {level.priceDisplay} a month
+                    <span className="block text-[0.74rem]">{level.setupLine}</span>
                   </span>
                 </Link>
               ))}

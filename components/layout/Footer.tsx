@@ -1,19 +1,15 @@
 import Link from "next/link";
 import { softwareDisclaimer } from "@/lib/aiEmployees";
-import { contact, navigation, navigationLinks, uniqueByHref } from "@/lib/content";
+import { contact, navigation, navigationLinks, uniqueByHref, type NavItem } from "@/lib/content";
 import { allEditions } from "@/lib/editions";
 import { genesisPositioning, offerPaths } from "@/lib/offers";
 import { Logo } from "./Logo";
 
 const columnLabel =
   "font-display text-[0.69rem] leading-[1.4] font-semibold tracking-[0.18em] uppercase text-ivory/55";
+/* Every footer link is a full 44px target, with the rows set close together. */
 const columnLink =
-  "text-[0.92rem] text-ivory/72 transition-colors duration-200 hover:text-gold-light";
-
-/* Managed AI, linked from every page. */
-const pathPages = offerPaths
-  .filter((path) => path.id === "custom-infrastructure")
-  .map((path) => ({ label: path.product, href: path.href }));
+  "inline-flex min-h-11 w-fit items-center text-[0.92rem] text-ivory/72 transition-colors duration-200 hover:text-gold-light";
 
 /* All five Genesis OS editions, Ministry included, each with its own page. */
 const editionPages = allEditions.map((edition) => ({
@@ -21,23 +17,43 @@ const editionPages = allEditions.map((edition) => ({
   href: edition.href,
 }));
 
-/* Legal pages and the classes index, linked from the bottom bar. */
-
-const consultPages = [
+/* Managed AI, linked from every page, then the product pages and the two consults. */
+const productPages = [
+  ...offerPaths
+    .filter((path) => path.id === "custom-infrastructure")
+    .map((path) => ({ label: path.product, href: path.href })),
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "AI Employees", href: "/ai-employees" },
+  { label: "Pricing", href: "/pricing" },
   { label: "Capital Desk", href: "/capital-desk" },
   { label: "Leadscout", href: "/leadscout" },
 ];
 
-/* The navigation repeats the editions, so each destination is listed once. */
-const exploreLinks = uniqueByHref([
-  ...pathPages,
-  ...editionPages,
-  ...consultPages,
+const companyPages = [
+  ...navigationLinks(navigation).filter((link) => ["/about", "/results", "/contact"].includes(link.href)),
+  { label: "Blog", href: "/blog" },
   { label: "Texas", href: "/texas" },
   { label: "Texas service businesses", href: "/texas/service-businesses" },
-  ...navigationLinks(navigation),
-  { label: "Blog", href: "/blog" },
-]);
+];
+
+/*
+ * Three columns of destinations. The navigation repeats some of them, so the
+ * whole set is de-duplicated once, in order, and each destination is listed
+ * in the first column that claims it.
+ */
+const allLinks = uniqueByHref([...editionPages, ...productPages, ...companyPages, ...navigationLinks(navigation)]);
+const inColumn = (column: readonly NavItem[]) =>
+  allLinks.filter((link) => column.some((item) => item.href === link.href));
+const columns = [
+  { label: "Editions", links: inColumn(editionPages) },
+  { label: "Product", links: inColumn(productPages).filter((link) => !editionPages.some((e) => e.href === link.href)) },
+  {
+    label: "Company",
+    links: inColumn(companyPages).filter(
+      (link) => !editionPages.some((e) => e.href === link.href) && !productPages.some((p) => p.href === link.href),
+    ),
+  },
+];
 
 const bottomLinks = [
   { label: "Classes", href: "/classes" },
@@ -48,7 +64,7 @@ const bottomLinks = [
 export function Footer() {
   return (
     <footer className="border-t border-line-dark bg-ink pt-20 pb-6 text-ivory">
-      <div className="shell grid gap-x-[clamp(32px,5vw,80px)] gap-y-12 pb-[70px] sm:grid-cols-2 lg:grid-cols-[1.8fr_repeat(3,1fr)]">
+      <div className="shell grid gap-x-[clamp(28px,4vw,64px)] gap-y-10 pb-[70px] sm:grid-cols-2 lg:grid-cols-[1.6fr_repeat(4,1fr)]">
         <div className="max-lg:col-span-full">
           <Logo light />
           <p className="mt-6 font-display text-[0.66rem] leading-[1.5] tracking-[0.16em] text-gold uppercase">
@@ -59,20 +75,22 @@ export function Footer() {
           </p>
         </div>
 
-        <div>
-          <p className={columnLabel}>Explore</p>
-          <div className="mt-5 grid gap-3">
-            {exploreLinks.map((item) => (
-              <Link key={item.href} href={item.href} className={columnLink}>
-                {item.label}
-              </Link>
-            ))}
+        {columns.map((column) => (
+          <div key={column.label}>
+            <p className={columnLabel}>{column.label}</p>
+            <div className="mt-3 grid">
+              {column.links.map((item) => (
+                <Link key={item.href} href={item.href} className={columnLink}>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
 
         <div>
           <p className={columnLabel}>Contact</p>
-          <div className="mt-5 grid gap-3">
+          <div className="mt-3 grid">
             <a href={`mailto:${contact.email}`} className={columnLink}>
               {contact.email}
             </a>
@@ -80,25 +98,12 @@ export function Footer() {
               {contact.phoneDisplay}
             </a>
           </div>
-        </div>
-
-        <div>
-          <p className={columnLabel}>Follow</p>
-          <div className="mt-5 grid gap-3">
-            <a
-              href={contact.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className={columnLink}
-            >
+          <p className={`${columnLabel} mt-6`}>Follow</p>
+          <div className="mt-3 grid">
+            <a href={contact.linkedin} target="_blank" rel="noreferrer" className={columnLink}>
               LinkedIn
             </a>
-            <a
-              href={contact.facebook}
-              target="_blank"
-              rel="noreferrer"
-              className={columnLink}
-            >
+            <a href={contact.facebook} target="_blank" rel="noreferrer" className={columnLink}>
               Facebook
             </a>
           </div>
@@ -110,14 +115,14 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
           <p>Managed AI helps your business operate.</p>
         </div>
-        <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2">
+        <div className="mt-2 flex flex-wrap justify-center gap-x-6">
           {bottomLinks.map((item) => (
-            <Link key={item.href} href={item.href} className={columnLink}>
+            <Link key={item.href} href={item.href} className={`${columnLink} px-1`}>
               {item.label}
             </Link>
           ))}
         </div>
-        <p className="mt-3 text-center">{softwareDisclaimer}</p>
+        <p className="mt-2 text-center">{softwareDisclaimer}</p>
       </div>
     </footer>
   );

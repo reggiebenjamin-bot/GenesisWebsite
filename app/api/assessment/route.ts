@@ -97,6 +97,7 @@ export async function POST(request: Request) {
           name: `${firstName} ${lastName}`,
           phone: asString(data.phone),
           email,
+          /* The Genesis intake accepts borrow, buy, sell or other; a church is "other", routed by recommended_edition. */
           want: "other",
         },
         "geai.us:assessment",
@@ -121,7 +122,8 @@ export async function POST(request: Request) {
       tags: tagged ? NEEDS_GHL_TAG : "",
       assessment_completed: "true",
       consultation_requested: data.consultation_requested ? "true" : "false",
-      source: "Genesis Infrastructure Assessment",
+      /* A church lead is labelled as the Ministry assessment, the same name its email fallback uses. */
+      source: assessmentEdition(answers.persona) ? "Genesis Ministry Assessment" : "Genesis Infrastructure Assessment",
       source_page: asString(data.source_page),
       referring_page: asString(data.referring_page),
       utm_source: asString(data.utm_source),

@@ -11,7 +11,26 @@ import {
 } from "@/lib/aiEmployees";
 import { editions, ministryEdition } from "@/lib/editions";
 import { FUNDING_LINE } from "@/lib/legal";
-import { ministryPriceAnswer } from "@/lib/ministryPage";
+import { ministryLevels } from "@/lib/ministryPage";
+import { managedPlans } from "@/lib/offers";
+
+/* The three business editions share the Levels, so each card can say where they start. */
+const PRICED_EDITIONS = new Set(["/lending", "/real-estate", "/business"]);
+const levelsFrom = `From ${managedPlans[0].priceDisplay} a month`;
+const ministryFrom = `Plans from ${ministryLevels.levels[0].priceDisplay} a month`;
+
+/** The line that closes every edition card: where it starts, and where the card goes. */
+function EditionFooter({ price, action }: { price?: string; action: string }) {
+  return (
+    <div className="mt-auto flex flex-wrap items-end justify-between gap-x-4 gap-y-1 border-t border-line-light pt-4">
+      {price ? <span className="text-[0.88rem] text-muted-dark">{price}</span> : <span />}
+      <span className="inline-flex items-center gap-1.5 text-[0.92rem] font-bold text-gold-dark underline decoration-gold-dark/30 underline-offset-4 group-hover:decoration-gold-dark">
+        {action}
+        <span aria-hidden="true">→</span>
+      </span>
+    </div>
+  );
+}
 
 const problems = [
   { title: "Missed calls", body: "The phone rings during a job or after hours, and that caller rarely calls back." },
@@ -74,19 +93,19 @@ export function StoryOpening() {
           titleId="story-os-title"
           aside={
             <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              Genesis OS connects your calls, inbox, CRM, calendar and pipeline, with AI employees working inside it. Choose the edition built for you. Churches have their own: Genesis Ministry.
+              Genesis OS connects your calls, inbox, CRM, calendar and pipeline, with AI employees working inside it. Choose the edition built for you.
             </p>
           }
         />
         <ul className="grid gap-4 md:grid-cols-2">
           {editions.map((e) => (
-            <Card as="li" key={e.name}>
-              <Link href={e.href} className="group block">
+            <Card as="li" key={e.name} className="flex">
+              <Link href={e.href} className="group flex w-full flex-col">
                 <Eyebrow className="text-gold">Edition {e.no}</Eyebrow>
                 <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{e.name}</p>
                 <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{e.body}</p>
-                <Points items={e.points} className="mt-5" />
-                <p className="mt-5 border-t border-line-light pt-4 text-[0.8rem] text-muted-dark">{e.disclaimer}</p>
+                <Points items={e.points} className="mt-5 mb-6" />
+                <EditionFooter price={PRICED_EDITIONS.has(e.href) ? levelsFrom : undefined} action={`See ${e.name}`} />
               </Link>
             </Card>
           ))}
@@ -101,19 +120,18 @@ export function StoryOpening() {
                 <p className="mt-3 text-[1.7rem] font-light tracking-[-0.035em] group-hover:text-gold-dark">{ministryEdition.name}</p>
                 <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{ministryEdition.body}</p>
               </div>
-              <div>
-                <Points items={ministryEdition.points} className="md:mt-9" />
-                <p className="mt-5 text-[0.95rem] leading-relaxed">
-                  {ministryPriceAnswer}{" "}
-                  <span className="font-bold underline decoration-ink/30 underline-offset-4 group-hover:text-gold-dark">
-                    See Genesis Ministry
-                  </span>
-                </p>
+              <div className="md:pt-9">
+                <Points items={ministryEdition.points} />
+                <p className="mt-4 text-[0.8rem] leading-relaxed text-muted-dark">{ministryEdition.disclaimer}</p>
               </div>
-              <p className="border-t border-line-light pt-4 text-[0.8rem] text-muted-dark md:col-span-2">{ministryEdition.disclaimer}</p>
+              <div className="md:col-span-2">
+                <EditionFooter price={ministryFrom} action={`See ${ministryEdition.name}`} />
+              </div>
             </Link>
           </Card>
         </ul>
+        {/* The four business editions share one line: said once, under the grid. */}
+        <p className="mt-5 text-center text-[0.8rem] text-muted-dark">{FUNDING_LINE}</p>
       </Sheet>
     </>
   );
@@ -142,11 +160,11 @@ export function StoryTeamDay() {
   );
 }
 
-/** Chapter five: how it works (the existing timeline) and the proof standard. */
+/** Chapter five: how it works (the one timeline on the page) and the proof standard. */
 export function StoryHowItWorks() {
   return (
     <Sheet surface="ink" rise aria-labelledby="story-process-title" className="site-section">
-      <ProcessTimeline titleId="story-process-title" />
+      <ProcessTimeline titleId="story-process-title" eyebrow="Chapter five. How it runs" />
       <p className="mx-auto mt-14 max-w-[60ch] text-center text-[0.95rem] leading-relaxed text-muted-light">
         Our proof standard: a result goes on this site only when the starting point, the change Genesis made, the source records and the client&apos;s permission are all confirmed. No invented numbers.
       </p>
@@ -178,10 +196,10 @@ export function StoryClose() {
       title="The next call is coming. Who will answer it?"
       line="Give your business a team that never misses a lead, never forgets a follow up and never sleeps."
       actions={
-        <>
-          <ConsultationButton href="/assessment">Assess My Business</ConsultationButton>
-          <Button href="/ai-employees" variant="ghost">Meet the team</Button>
-        </>
+        <div className="grid w-full max-w-[30rem] gap-3 sm:grid-cols-2">
+          <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
+          <Button href="/ai-employees" variant="secondary" className="min-h-[53px] w-full">Meet the Team</Button>
+        </div>
       }
       footnote={<p>{FUNDING_LINE}</p>}
     />

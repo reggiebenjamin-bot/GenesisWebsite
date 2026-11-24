@@ -83,7 +83,7 @@ export function ManagedComparison({
               >
                 <input type="hidden" name="plan" value={plan.id} />
                 <SubmitButton variant="outline" className="w-full">
-                  Start {plan.name}
+                  Start Level {plan.step}
                 </SubmitButton>
               </form>
             ) : null}

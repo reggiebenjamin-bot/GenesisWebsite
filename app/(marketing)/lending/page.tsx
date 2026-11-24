@@ -4,6 +4,7 @@ import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Sheet } from "@/components/ui/Blocks";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
 import { lendingPage } from "@/lib/lendingPage";
 import { pageMetadata } from "@/lib/metadata";
@@ -11,13 +12,8 @@ import { breadcrumbSchema, graph } from "@/lib/schema";
 
 export const metadata: Metadata = pageMetadata("/lending");
 
-/* Dark button with a gold outline, for the primary call to action. */
-const primaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
-
-/* Quiet outline on paper, for the secondary call to action. */
-const secondaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ink/25 bg-transparent px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:border-ink";
+/* The site's secondary action on ink: dark with a gold hairline, the same height as the gold primary. */
+const secondaryCta = "secondary-action inline-flex min-h-[53px] w-full items-center justify-center px-6";
 
 export default function LendingPage() {
   return (
@@ -42,6 +38,15 @@ export default function LendingPage() {
           <p className="mx-auto mt-6 max-w-[48ch] text-[1.08rem] leading-relaxed text-ivory/74">
             {lendingPage.lede}
           </p>
+          {/* The calls to action sit in the hero, on the first screen. */}
+          <div className="mx-auto mt-9 grid max-w-[34rem] gap-3 sm:grid-cols-2">
+            <ConsultationButton href={lendingPage.ctas.primary.href} className="w-full">
+              {lendingPage.ctas.primary.label}
+            </ConsultationButton>
+            <Link className={secondaryCta} href={lendingPage.ctas.secondary.href}>
+              <span>{lendingPage.ctas.secondary.label}</span>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -62,15 +67,6 @@ export default function LendingPage() {
             </li>
           ))}
         </ul>
-
-        <div className="mx-auto mt-12 flex max-w-[34rem] flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link className={primaryCta} href={lendingPage.ctas.primary.href}>
-            {lendingPage.ctas.primary.label}
-          </Link>
-          <Link className={secondaryCta} href={lendingPage.ctas.secondary.href}>
-            {lendingPage.ctas.secondary.label}
-          </Link>
-        </div>
 
         <div className="mt-16">
           <EditionLevels edition="lending" />

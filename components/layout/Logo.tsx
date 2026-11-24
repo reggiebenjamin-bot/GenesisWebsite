@@ -19,7 +19,7 @@ export function Logo({
   return (
     <Link
       href="/"
-      aria-label="Genesis AI"
+      aria-label="Genesis AI home"
       onClick={(event) => {
         if (window.location.pathname !== "/") return;
 

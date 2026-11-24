@@ -38,7 +38,8 @@ test("every edition has three benefit points and the shared funding disclaimer",
 
 test("every edition points to the assessment, then to its pricing", () => {
   for (const edition of editions) {
-    assert.equal(edition.ctas[0]?.href, "/assessment", `${edition.name} first CTA`);
+    /* The assessment opens on this edition's path: /assessment?persona=... */
+    assert.match(edition.ctas[0]?.href ?? "", /^\/assessment\?persona=[a-z-]+$/, `${edition.name} first CTA`);
     assert.ok(edition.ctas.length >= 2, `${edition.name} CTAs`);
   }
   assert.equal(editionByPath("/lending")!.ctas[1].href, "/packs/lending/pricing");

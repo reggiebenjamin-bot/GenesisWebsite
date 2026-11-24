@@ -20,6 +20,11 @@ export type AnalyticsEvent =
   | "assessment_edition_recommended"
   | "assessment_edition_link_clicked"
   | "ministry_call_cta_clicked"
+  /* The church cue on the homepage hero, the phone menu and the Editions menu */
+  | "ministry_cue_clicked"
+  | "ministry_demo_opened"
+  /* A link into the assessment from another page, such as /ministry */
+  | "assessment_link_clicked"
   | "infrastructure_review_cta_clicked"
   | "infrastructure_review_booked"
   | "direct_consultation_cta_clicked"

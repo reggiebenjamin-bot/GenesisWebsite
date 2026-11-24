@@ -103,7 +103,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/assessment",
     title: "Business AI Assessment",
     description:
-      "Assess where disconnected systems, manual coordination, and workflow gaps are creating operational drag in your real estate business.",
+      "Free assessment for service businesses, lenders, real estate teams and churches: see where calls, follow up and handoffs still depend on someone remembering.",
     label: "Business Assessment",
     parent: "/solutions",
     image: null,

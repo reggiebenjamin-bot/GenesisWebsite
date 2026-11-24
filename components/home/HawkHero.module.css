@@ -105,3 +105,33 @@
     mask-image: linear-gradient(180deg, transparent 30%, #000 37%, #000 70%, transparent 94%);
   }
 }
+
+/* A phone on its side is short: the copy starts just under the bar, the title
+   and paragraph shrink, and the buttons land on the first screen. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    --hero-overrun: 0rem;
+    min-height: auto;
+  }
+
+  .inner {
+    padding-top: calc(var(--header-height) + 12px);
+    padding-bottom: 40px;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 4.6vw, 2.5rem) !important;
+  }
+
+  .summary {
+    display: -webkit-box;
+    margin-top: 12px !important;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .actions {
+    margin-top: 18px !important;
+  }
+}

@@ -28,6 +28,24 @@ export default function PricingPage() {
 
       <ManagedComparison checkout />
 
+      {/* These are the business plans, and they are the first prices on the page. Genesis
+          Ministry, for churches, has its own three plans and prices: its own card with its own
+          heading, after the Levels, so the business setup lines never read as a church's. */}
+      <aside
+        aria-labelledby="pricing-churches-title"
+        className="mt-8 max-w-[62ch] rounded-[6px] border border-ink/15 bg-white/60 px-5 py-4"
+      >
+        <h2 id="pricing-churches-title" className="text-[1rem] leading-snug font-semibold tracking-[-0.01em]">
+          Genesis Ministry, for churches
+        </h2>
+        <p className="mt-1.5 text-[0.95rem] text-muted-dark">
+          {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
+        </p>
+        <p className="mt-2 text-[0.95rem]">
+          <TextLink href="/ministry#levels">See the Ministry Plans</TextLink>
+        </p>
+      </aside>
+
       <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
         <p className="max-w-[44ch] text-[0.9rem] text-muted-dark">{managedOverview.pricing.closing}</p>
         <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
@@ -56,24 +74,6 @@ export default function PricingPage() {
               across the business. Choose the level that matches the scope of the operation.
             </p>
           </div>
-          {/* These are the business plans. Genesis Ministry, for churches, has its own three
-              plans and prices, so a church is pointed there before it reads a business number.
-              It is its own card with its own heading, so the business setup lines below never
-              read as part of a church plan. */}
-          <aside
-            aria-labelledby="pricing-churches-title"
-            className="mt-7 max-w-[62ch] rounded-[6px] border border-ink/15 bg-white/60 px-5 py-4"
-          >
-            <h2 id="pricing-churches-title" className="text-[1rem] leading-snug font-semibold tracking-[-0.01em]">
-              Genesis Ministry, for churches
-            </h2>
-            <p className="mt-1.5 text-[0.95rem] text-muted-dark">
-              {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
-            </p>
-            <p className="mt-2 text-[0.95rem]">
-              <TextLink href="/ministry#levels">See the Ministry Plans</TextLink>
-            </p>
-          </aside>
         </div>
       </section>
 

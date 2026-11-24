@@ -127,7 +127,7 @@ export const genesisPositioning = {
     "Genesis helps operators and real estate teams deploy AI powered infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.",
   /** The brand in one sentence: the footer, and the organization record. */
   brandDescription:
-    "Genesis builds AI infrastructure for operators and real estate professionals by connecting business systems, workflows, communication, deal flow, data, automation, and operational intelligence.",
+    "Genesis builds AI employees and software for service businesses, lending teams, real estate professionals and churches, connecting calls, follow up, workflows and the systems they already use.",
   domains: [
     "Communication",
     "Sales",
@@ -143,7 +143,7 @@ export const genesisThesis = {
   eyebrow: "The Genesis thesis",
   headline: "Growth should create leverage, not more operational drag.",
   body: [
-    "Most real estate businesses do not have a shortage of software. They have work scattered between CRMs, inboxes, documents, spreadsheets, follow-up systems, employees, and processes that still depend on someone remembering what happens next.",
+    "Most growing businesses do not have a shortage of software. They have work scattered between CRMs, inboxes, documents, spreadsheets, follow-up systems, employees, and processes that still depend on someone remembering what happens next.",
     "Genesis is built around a different idea: as the business grows, the operation should become more connected, more informed, and more capable of carrying repeatable work.",
     "That means turning communication, sales activity, deal flow, business knowledge, workflows, and execution into infrastructure the business can keep using and improving.",
   ],

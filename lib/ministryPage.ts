@@ -102,7 +102,7 @@ export const ministryHero = {
   /** The part of the headline set in gold. */
   accent: "Care for every person.",
   lede: ministryEdition.body,
-  primary: { label: "Book a Consultation", href: consult("ministry") },
+  primary: { label: "Book a Call", href: consult("ministry") },
   secondary: { label: "Take the Guided Demo", href: ministryDemo.tour },
   filmLabel:
     "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
@@ -358,7 +358,7 @@ export const ministryLevels = {
         "Plan a Visit and prayer forms by email",
         "Newsletter sign up",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-care") },
+      action: { label: "Book a Call", href: consult("ministry-care") },
     },
     {
       id: "shepherd",
@@ -375,7 +375,7 @@ export const ministryLevels = {
         "Team roles, with your prayer team named",
         "Hope drafts that wait for approval",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-shepherd") },
+      action: { label: "Book a Call", href: consult("ministry-shepherd") },
     },
     {
       id: "plus",
@@ -392,14 +392,14 @@ export const ministryLevels = {
         "Custom roles and named gift viewers",
         "More staff seats",
       ],
-      action: { label: "Book a Consultation", href: consult("ministry-plus") },
+      action: { label: "Book a Call", href: consult("ministry-plus") },
     },
   ] satisfies readonly MinistryLevel[],
   /** Enterprise is everything in Plus, across more than one campus. */
   enterprise: {
     name: "Enterprise",
     line: "More than one campus? Enterprise is scoped with you on a call.",
-    action: { label: "Book a Consultation", href: consult("ministry-enterprise") },
+    action: { label: "Book a Call", href: consult("ministry-enterprise") },
   },
   footnote: "Customization beyond the template is quoted separately.",
 } as const;
@@ -412,6 +412,22 @@ const planPrices = ministryLevels.levels.map((plan) => `${plan.name} at ${plan.p
  * on this page, and Hope's price answer in the public demo
  * (PRICE_ANSWER in scripts/ministry-demo-public.mjs, which a test keeps equal).
  */
+/** The line under the hero buttons: the first plan price, and a link down to the plans. */
+export const ministryPlansCue = {
+  line: `Plans from ${ministryLevels.levels[0].priceDisplay} a month.`,
+  link: { label: "See the Plans", href: "/ministry#levels" },
+} as const;
+
+/**
+ * The lower commitment next step for a church that is not ready for a call:
+ * the assessment, opened on the church path.
+ */
+export const ministryAssessment = {
+  lead: "Not sure which plan fits?",
+  label: "Take the free church assessment",
+  href: "/assessment?for=church",
+} as const;
+
 export const ministryPriceAnswer = `Genesis Ministry has three plans: ${planPrices.slice(0, -1).join(", ")} and ${planPrices.at(-1)}.`;
 
 /** The church version of the five stages, for the shared process timeline. */
@@ -466,6 +482,8 @@ export const ministryCue = {
   lead: "Leading a church?",
   label: "See Genesis Ministry",
   href: ministryEdition.href,
+  /** Read as one phrase by a screen reader, whatever the layout does with the two spans. */
+  ariaLabel: "Leading a church? See Genesis Ministry",
 } as const;
 
 export const ministryWebsiteCheck = {
@@ -520,7 +538,7 @@ export const ministryFaq = {
 export const ministryClose = {
   eyebrow: "Genesis Ministry",
   title: "Be ready for whoever walks in this Sunday.",
-  line: "Book a consultation and we will walk through your church, the look that fits and the plan to start with.",
+  line: "Book a call and we will walk through your church, the look that fits and the plan to start with.",
   primary: ministryHero.primary,
   secondary: ministryHero.secondary,
   footnote: ministryEdition.disclaimer,
@@ -574,7 +592,7 @@ export const ministryContact = {
     staffSizes: ["1 or 2", "3 to 5", "6 to 15", "16 or more"],
     notes: "What would you like help with?",
     notesPlaceholder: "Tell us about your church, your website address and what you would like help with first.",
-    submit: "Book a Consultation",
+    submit: "Book a Call",
     footnotes: [
       "Your request starts a conversation. It does not sign your church up for anything or commit you to a plan.",
       "Genesis uses these details only to prepare for the call and to follow up about your request.",
@@ -626,7 +644,7 @@ export const MINISTRY_OPERATION_TYPE = "Church";
 
 /*
  * The starting note the contact form fills in for each Ministry topic, so a
- * church that clicks "Book a Consultation" or "Request a Website Check" does
+ * church that clicks "Book a Call" or "Request a Website Check" does
  * not have to explain what it came for. A plan's note names the plan and its
  * price, from ministryLevels, so the note cannot drift from the card. Only
  * these topics are recognized; any other value leaves the note empty.

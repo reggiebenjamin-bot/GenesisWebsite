@@ -9,19 +9,20 @@
   gap: 12px;
   padding: 0 1.5rem;
   overflow: hidden;
-  border: 1px solid rgb(242 216 149 / 0.8);
+  /* The primary action is the one gold-filled button on any screen; every
+     secondary action is dark or outlined, so the two never read alike. */
+  border: 1px solid rgb(201 165 94);
   border-radius: 6px;
-  color: var(--color-ivory);
+  color: var(--color-ink);
   background: linear-gradient(
     120deg,
-    rgb(33 28 17 / 0.98),
-    rgb(10 12 17 / 0.98) 66%,
-    rgb(48 39 21 / 0.98)
+    rgb(247 228 178),
+    rgb(242 216 149) 55%,
+    rgb(227 194 122)
   );
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.12),
-    inset 0 -10px 20px rgb(0 0 0 / 0.16),
-    0 8px 24px rgb(0 0 0 / 0.2);
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 6px 18px rgb(0 0 0 / 0.14);
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -40,7 +41,7 @@
   position: absolute;
   z-index: 0;
   inset: 0;
-  opacity: 0.12;
+  opacity: 0.05;
   border-radius: inherit;
   background:
     radial-gradient(
@@ -57,16 +58,16 @@
 
 .button:hover {
   transform: translateY(-2px);
-  border-color: var(--color-ivory);
+  border-color: rgb(166 132 64);
+  background: linear-gradient(120deg, rgb(250 236 198), rgb(246 224 166) 55%, rgb(236 206 140));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.24),
-    inset 0 -10px 20px rgb(0 0 0 / 0.14),
-    0 12px 30px rgb(201 165 94 / 0.24),
-    0 0 0 3px rgb(242 216 149 / 0.08);
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 12px 30px rgb(201 165 94 / 0.28),
+    0 0 0 3px rgb(242 216 149 / 0.12);
 }
 
 .button:hover::before {
-  opacity: 0.38;
+  opacity: 0.1;
 }
 
 .button:active {
@@ -74,7 +75,7 @@
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--color-ivory);
+  outline: 2px solid var(--color-gold-dark);
   outline-offset: 4px;
 }
 
@@ -105,6 +106,7 @@
     rgb(17 17 17 / 0.38) 50%
   );
   background-size: 3px 3px;
+  opacity: 0.12;
 }
 
 .edge {

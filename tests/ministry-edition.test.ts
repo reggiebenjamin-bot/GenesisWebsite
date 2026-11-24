@@ -44,6 +44,8 @@ const PLAN_AMOUNTS = ["$149", "$299", "$499"];
 function mayShowPrice(path: string, text: string): boolean {
   if (/^ministryLevels\.(levels\[\d\]\.priceDisplay|priceUnit)$/.test(path)) return true;
   if (/^ministryConsultationNotes\.ministry-(care|shepherd|plus)$/.test(path)) return true;
+  /* The line under the hero buttons: the first plan's price, built from the plans. */
+  if (path === "ministryPlansCue.line") return text === `Plans from ${ministryLevels.levels[0].priceDisplay} a month.`;
   return text.includes(ministryPriceAnswer);
 }
 
@@ -86,20 +88,23 @@ test("the homepage features Ministry as a fifth edition card with the gold G and
   assert.match(story, /href=\{ministryEdition\.href\}/);
   assert.match(story, /Edition \{ministryEdition\.no\}/);
   assert.match(story, /\{ministryEdition\.disclaimer\}/);
-  assert.match(story, /\{ministryPriceAnswer\}/);
+  /* Its plans start where the plan cards say: "Plans from $149 a month", built from ministryLevels. */
+  assert.match(story, /Plans from \$\{ministryLevels\.levels\[0\]\.priceDisplay\} a month/);
   assert.match(story, /\/brand\/mark-gold-on-light\.svg/);
   const chooser = readFileSync(join(process.cwd(), "components", "home", "ProductChooser.tsx"), "utf8");
   assert.match(chooser, /Leading a church\?/);
   assert.match(chooser, /href=\{ministryEdition\.href\}/);
 });
 
-test("the navigation lists every edition and features Ministry, and the footer lists each link once", () => {
+test("the navigation lists every edition once, features the assessment, and the footer lists each link once", () => {
   const editionsGroup = navigation.find((entry) => entry.label === "Editions");
   assert.ok(editionsGroup && isNavGroup(editionsGroup), "an Editions dropdown");
   assert.deepEqual(editionsGroup.items.map((item) => item.href), allEditions.map((edition) => edition.href));
   for (const item of editionsGroup.items) assert.ok(item.description, `${item.href} has a line`);
-  assert.equal(editionsGroup.feature?.href, "/ministry");
-  assert.match(editionsGroup.feature?.description ?? "", new RegExp(`from \\${ministryLevels.levels[0].priceDisplay} a month`));
+  /* The feature is the next step for every edition; Ministry is listed once. */
+  assert.equal(editionsGroup.feature?.href, "/assessment");
+  assert.equal(editionsGroup.items.filter((item) => item.href === "/ministry").length, 1);
+  assert.equal(editionsGroup.items.find((item) => item.href === "/ministry")?.description, "For churches.");
   for (const text of [editionsGroup.feature?.title, editionsGroup.feature?.description, editionsGroup.feature?.action, ...editionsGroup.items.flatMap((item) => [item.label, item.description])]) {
     for (const dash of DASHES) assert.equal(String(text).includes(dash), false, `nav copy has "${dash}": ${text}`);
     assert.equal(EMOJI.test(String(text)), false);
@@ -117,8 +122,13 @@ test("Ministry is software for churches, not funding", () => {
   assert.match(ministryEdition.disclaimer, /^Genesis is software\./);
 });
 
-test("the hero books a consultation, then opens the guided demo", () => {
-  assert.equal(ministryHero.primary.label, "Book a Consultation");
+test("the hero books a call, then opens the guided demo", () => {
+  /* The house label for the church conversion, everywhere: the page, the header and the assessment. */
+  assert.equal(ministryHero.primary.label, "Book a Call");
+  assert.equal(ministryContact.form.submit, "Book a Call");
+  const header = readFileSync(join(process.cwd(), "components", "layout", "Header.tsx"), "utf8");
+  assert.match(header, /href: "\/contact\?topic=ministry", label: "Book a Call"/);
+  assert.doesNotMatch(JSON.stringify(ministryPage), /Book a Consultation/);
   assert.match(ministryHero.primary.href, /^\/contact\b/);
   assert.equal(ministryHero.secondary.label, "Take the Guided Demo");
   /* The guided demo starts as Lampstand Church, the sample church in the stills. */
@@ -207,9 +217,9 @@ test("the three plans are Care, Shepherd and Plus at $149, $299 and $499 a month
   assert.doesNotMatch(JSON.stringify(ministryLevels), /Welcome"|Connect"|Level 0|Pricing set|set with Genesis/);
 });
 
-test("each plan and Enterprise books a consultation that names what was picked", () => {
+test("each plan and Enterprise books a call that names what was picked", () => {
   for (const action of [...ministryLevels.levels.map((plan) => plan.action), ministryLevels.enterprise.action]) {
-    assert.equal(action.label, "Book a Consultation");
+    assert.equal(action.label, "Book a Call");
     assert.ok(action.href.startsWith("/contact?topic=ministry"), action.href);
     assert.ok(noteFor(action.href), `${action.href} opens with no starting note`);
   }

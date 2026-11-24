@@ -19,10 +19,10 @@ function strings(value: unknown, path = "lendingPage"): { path: string; text: st
 }
 
 test("the two CTAs point at the assessment, then Lending Edition pricing", () => {
-  assert.equal(lendingPage.ctas.primary.label, "Assess my business");
-  assert.equal(lendingPage.ctas.primary.href, "/assessment");
+  assert.equal(lendingPage.ctas.primary.label, "Assess My Business");
+  assert.equal(lendingPage.ctas.primary.href, "/assessment?persona=lending");
 
-  assert.equal(lendingPage.ctas.secondary.label, "See Lending Edition pricing");
+  assert.equal(lendingPage.ctas.secondary.label, "See Lending Edition Pricing");
   assert.equal(lendingPage.ctas.secondary.href, "/packs/lending/pricing");
 });
 

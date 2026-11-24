@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { TextLink } from "@/components/ui/Button";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
+import { ASSESSMENT_REVIEW_TOPIC, assessmentReviewNote } from "@/lib/assessment";
 import { contact } from "@/lib/content";
 import { isWebsiteCheckTopic, ministryConsultationNote, ministryContact } from "@/lib/ministryPage";
 import { pageMetadata } from "@/lib/metadata";
@@ -60,6 +61,8 @@ export default async function ContactPage({
   /* The free Church Website Check has its own words and asks for the website first. */
   const websiteCheck = church && isWebsiteCheckTopic(params.topic);
   const copy = websiteCheck ? ministryContact.websiteCheck : church ? ministryContact : business;
+  /* A business visitor booking the review from the assessment results starts with a note that says so. */
+  const reviewNote = !church && params.topic === ASSESSMENT_REVIEW_TOPIC ? assessmentReviewNote : "";
 
   return (
     <>
@@ -69,8 +72,9 @@ export default async function ContactPage({
 
       <Section>
         <div className="grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
-          {/* A Website Check is a short form: on phones it comes first, and what we look at follows it. */}
-          <aside className={websiteCheck ? "max-lg:order-last" : undefined}>
+          {/* For a church, and for the review booked from the assessment, the form comes first on
+              phones: they already know why they are here. What the call covers follows it. */}
+          <aside className={church || reviewNote ? "max-lg:order-last" : undefined}>
             <Eyebrow>{copy.aside.eyebrow}</Eyebrow>
             <h2 className="mt-5 text-[clamp(1.9rem,3.2vw,2.8rem)] leading-[1.06] tracking-[-0.04em]">
               {copy.aside.title}
@@ -110,13 +114,13 @@ export default async function ContactPage({
               </p>
               <a
                 href={`mailto:${contact.email}`}
-                className="w-fit border-b border-ink/30 font-medium"
+                className="inline-flex min-h-11 w-fit items-center font-medium underline decoration-ink/30 underline-offset-4"
               >
                 {contact.email}
               </a>
               <a
                 href={`tel:${contact.phoneHref}`}
-                className="w-fit border-b border-ink/30 font-medium"
+                className="inline-flex min-h-11 w-fit items-center font-medium underline decoration-ink/30 underline-offset-4"
               >
                 {contact.phoneDisplay}
               </a>
@@ -125,7 +129,7 @@ export default async function ContactPage({
 
           <ConsultationForm
             initialPlan={plan}
-            initialNote={note}
+            initialNote={note || reviewNote}
             audience={church ? "church" : "business"}
             websiteCheck={websiteCheck}
           />

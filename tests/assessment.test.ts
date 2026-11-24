@@ -162,7 +162,7 @@ test("church findings use church words, stay at three, and name only what Minist
     guest_follow_up: "It depends on who met them",
     follow_up_speed: "Often not at all",
     care_requests: "Several places, depending on the person",
-    church_staff: "Just the pastor",
+    church_staff: "1 or 2",
     church_tools: ["Planning Center", "Breeze", "Pushpay", "Spreadsheets"],
     church_pain_points: [
       "Guests slip away after one visit",
@@ -220,4 +220,163 @@ test("church findings use church words, stay at three, and name only what Minist
     for (const dash of ["-", "–", "—"]) assert.equal(text.includes(dash), false, `"${text}" contains "${dash}"`);
     assert.equal(/\p{Extended_Pictographic}/u.test(text), false, `"${text}" contains an emoji`);
   }
+});
+
+test("every option on both paths is free of dashes and emojis, and team sizes read in words", async () => {
+  const { assessmentQuestions, assessmentSteps, assessmentCopy } = await import("../lib/assessment.ts");
+  const texts = [
+    ...assessmentQuestions.flatMap((question) => [
+      question.label,
+      ...("options" in question ? question.options.map((option) => option.label) : []),
+    ]),
+    ...assessmentSteps.map((step) => step.heading),
+    assessmentCopy.cardEyebrow,
+    assessmentCopy.church.eyebrow,
+    assessmentCopy.church.headline,
+    ...assessmentCopy.church.summary,
+    ...assessmentCopy.summary,
+    assessmentCopy.contact.heading,
+  ];
+  for (const text of texts) {
+    for (const dash of ["–", "—"]) assert.equal(text.includes(dash), false, `"${text}" contains "${dash}"`);
+    assert.equal(/\p{Extended_Pictographic}/u.test(text), false, `"${text}" contains an emoji`);
+  }
+  const team = assessmentQuestions.find((question) => question.id === "team_size");
+  assert.ok(team && "options" in team);
+  assert.deepEqual(team.options.map((option) => option.value), ["Just me", "2 to 5", "6 to 15", "16 to 50", "More than 50"]);
+  /* The step seven label is a question, so the form's own "choose all" hint is the only one. */
+  const outcomes = assessmentQuestions.find((question) => question.id === "desired_outcomes");
+  assert.doesNotMatch(outcomes?.label ?? "", /apply/i);
+});
+
+test("a choice that stands alone clears the others, and the others clear it", async () => {
+  const { assessmentQuestions, toggleChoice } = await import("../lib/assessment.ts");
+  const tools = assessmentQuestions.find((question) => question.id === "church_tools");
+  assert.ok(tools && tools.kind === "multi");
+  assert.deepEqual(tools.exclusive, ["None yet"]);
+  assert.deepEqual(toggleChoice(tools, ["Planning Center"], "None yet"), ["None yet"]);
+  assert.deepEqual(toggleChoice(tools, ["None yet"], "Breeze"), ["Breeze"]);
+  assert.deepEqual(toggleChoice(tools, ["Planning Center"], "Breeze"), ["Planning Center", "Breeze"]);
+  assert.deepEqual(toggleChoice(tools, ["Planning Center", "Breeze"], "Breeze"), ["Planning Center"]);
+});
+
+test("a link can open the assessment on a path, and only known values are read", async () => {
+  const { CHURCH_PERSONA, personaFromParams, assessmentQuestions } = await import("../lib/assessment.ts");
+  const read = (query: string) => personaFromParams(new URLSearchParams(query));
+  assert.equal(read("for=church"), CHURCH_PERSONA);
+  assert.equal(read("persona=lending"), "Lender");
+  assert.equal(read("persona=real-estate"), "Real Estate Team");
+  assert.equal(read("persona=business"), "Service business / trades (HVAC and more)");
+  for (const bad of ["for=toString", "persona=<script>", "", "for=Church"]) assert.equal(read(bad), undefined, bad);
+  /* Every preset is an answer the API accepts. */
+  const persona = assessmentQuestions.find((question) => question.id === "persona");
+  assert.ok(persona && "options" in persona);
+  for (const query of ["for=church", "persona=lending", "persona=real-estate", "persona=business"]) {
+    assert.ok(persona.options.some((option) => option.value === read(query)), query);
+  }
+});
+
+test("a church's results suggest the plan its findings point to", async () => {
+  const { CHURCH_PERSONA, churchFindings, suggestedMinistryPlan } = await import("../lib/assessment.ts");
+  const { ministryConsultationNote, ministryLevels } = await import("../lib/ministryPage.ts");
+
+  const shepherd = { persona: CHURCH_PERSONA, guest_follow_up: "It often does not happen", church_staff: "3 to 5" };
+  const found = churchFindings(shepherd);
+  const plan = suggestedMinistryPlan(shepherd, found);
+  assert.equal(plan?.id, "shepherd");
+  assert.equal(plan?.price, "$299");
+  /* Each fit line names the plan the suggestion lands on, or one below it. */
+  for (const finding of found) assert.match(finding.fit, finding.plan === "shepherd" ? /Shepherd/ : /Every plan/);
+  /* The call link opens with the plan and its price already in the note. */
+  assert.equal(plan?.href, "/contact?topic=ministry-shepherd");
+  assert.ok(ministryConsultationNote("ministry-shepherd"));
+
+  const care = { persona: CHURCH_PERSONA, church_pain_points: ["Our website is hard to use on a phone"] };
+  assert.equal(suggestedMinistryPlan(care, churchFindings(care))?.id, "care");
+
+  const plus = {
+    persona: CHURCH_PERSONA,
+    church_staff: "16 or more",
+    care_requests: "Paper cards",
+    church_pain_points: ["Knowing who needs care next"],
+  };
+  assert.equal(suggestedMinistryPlan(plus, churchFindings(plus))?.id, "plus");
+  assert.ok(ministryLevels.levels.find((level) => level.id === "plus")?.bullets.some((bullet) => /Person pages|Reports/.test(bullet)));
+
+  /* No findings, no suggestion: a call decides it. */
+  const calm = { persona: CHURCH_PERSONA, guest_follow_up: "A set process, with someone responsible" };
+  assert.deepEqual(churchFindings(calm), []);
+  assert.equal(suggestedMinistryPlan(calm, []), null);
+});
+
+test("a church picks staff sizes the church contact form also offers", async () => {
+  const { churchSteps } = await import("../lib/assessment.ts");
+  const { ministryContact } = await import("../lib/ministryPage.ts");
+  const staff = churchSteps.flatMap((step) => step.questions).find((question) => question.id === "church_staff");
+  assert.ok(staff && "options" in staff);
+  assert.deepEqual(staff.options.map((option) => option.value), [...ministryContact.form.staffSizes]);
+});
+
+test("business results name the edition built for the persona, with its Levels and its disclaimer", async () => {
+  const { businessRecommendation, CHURCH_PERSONA } = await import("../lib/assessment.ts");
+  const { managedPlans } = await import("../lib/offers.ts");
+  const { FUNDING_LINE } = await import("../lib/legal.ts");
+
+  assert.equal(businessRecommendation("Lender", "Just me")?.href, "/lending");
+  assert.equal(businessRecommendation("Brokerage", "2 to 5")?.href, "/real-estate");
+  assert.equal(businessRecommendation("Service business / trades (HVAC and more)", "6 to 15")?.href, "/business");
+  assert.equal(businessRecommendation("Other", undefined)?.href, "/business");
+  assert.equal(businessRecommendation(CHURCH_PERSONA, undefined), null);
+  assert.equal(businessRecommendation(undefined, undefined), null);
+
+  const lender = businessRecommendation("Lender", "16 to 50");
+  assert.ok(lender);
+  assert.equal(lender.disclaimer, FUNDING_LINE);
+  assert.equal(lender.pricingHref, "/packs/lending/pricing");
+  assert.ok(lender.enterpriseNote, "a larger team hears about Enterprise");
+  assert.equal(businessRecommendation("Lender", "2 to 5")?.enterpriseNote, null);
+  assert.deepEqual(
+    lender.levels,
+    managedPlans.map((plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}`),
+  );
+});
+
+test("a missed call is its own finding for a business", async () => {
+  const { assessmentFindings } = await import("../lib/assessment.ts");
+  const findings = assessmentFindings({ operational_pain_points: ["Missed or after hours calls"] });
+  assert.equal(findings[0]?.id, "missed-calls");
+});
+
+test("a church lead is labelled as the Ministry assessment", async () => {
+  const { readFileSync } = await import("node:fs");
+  const route = readFileSync(new URL("../app/api/assessment/route.ts", import.meta.url), "utf8");
+  assert.match(route, /assessmentEdition\(answers\.persona\) \? "Genesis Ministry Assessment" : "Genesis Infrastructure Assessment"/);
+});
+
+test("the assessment hands its details to the contact form through storage, never the URL", async () => {
+  const { readAssessmentHandoff } = await import("../lib/assessmentHandoff.ts");
+  assert.equal(readAssessmentHandoff(null), null);
+  assert.equal(readAssessmentHandoff("{nope"), null);
+  assert.equal(readAssessmentHandoff(JSON.stringify({ path: "admin" })), null);
+  assert.deepEqual(readAssessmentHandoff(JSON.stringify({ path: "church", name: "Ana Ruiz", email: "a@b.org", staff: "3 to 5", extra: 1 })), {
+    path: "church",
+    name: "Ana Ruiz",
+    email: "a@b.org",
+    phone: "",
+    company: "",
+    staff: "3 to 5",
+  });
+  const { readFileSync } = await import("node:fs");
+  const form = readFileSync(new URL("../app/(marketing)/assessment/AssessmentForm.tsx", import.meta.url), "utf8");
+  assert.match(form, /sessionStorage\.setItem\(ASSESSMENT_HANDOFF_KEY/);
+});
+
+test("the homepage chapters run in order, with no gap", async () => {
+  const { readFileSync } = await import("node:fs");
+  const story = readFileSync(new URL("../components/home/story/StorySections.tsx", import.meta.url), "utf8");
+  const words = ["one", "two", "three", "four", "five", "six", "seven", "eight"];
+  const found = [...story.matchAll(/eyebrow="Chapter (\w+)\./g)].map((match) => match[1]);
+  assert.deepEqual(found, words.slice(0, found.length));
+  const home = readFileSync(new URL("../components/home/PathSections.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(home, /<ProcessTimeline/, "the timeline is told once, in chapter five");
 });

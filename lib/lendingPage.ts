@@ -25,11 +25,11 @@ export const lendingPage = {
   ],
   ctas: {
     primary: {
-      label: "Assess my business",
-      href: "/assessment",
+      label: "Assess My Business",
+      href: "/assessment?persona=lending",
     },
     secondary: {
-      label: "See Lending Edition pricing",
+      label: "See Lending Edition Pricing",
       href: "/packs/lending/pricing",
     },
   },

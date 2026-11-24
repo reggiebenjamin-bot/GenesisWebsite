@@ -10,8 +10,10 @@
  */
 
 import { CRM_QUESTION, crmOptions } from "./crm.ts";
-import { ministryEdition } from "./editions.ts";
-import { ministryLevels } from "./ministryPage.ts";
+import { editions, ministryEdition } from "./editions.ts";
+import { pricingPathForPersona } from "./editionPlans.ts";
+import { managedPlans } from "./offers.ts";
+import { ministryContact, ministryLevels } from "./ministryPage.ts";
 
 /** The persona a church picks. It must match the case in pricingPathForPersona. */
 export const CHURCH_PERSONA = "Church or ministry";
@@ -50,7 +52,7 @@ export function assessmentEdition(persona: string | undefined): EditionRecommend
     plans: ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month`),
     enterprise: ministryLevels.enterprise.line,
     stepNote:
-      "Genesis Ministry is built for churches of about 100 to 1,000 people. You can see it now, or keep going: the next questions are about guests and care at your church.",
+      "Genesis Ministry is built for churches of about 100 to 1,000 people. The next questions are about guests and care at your church, and your results show the plan that fits.",
     page: { label: "See Genesis Ministry", href: ministryEdition.href },
     plansLink: { label: "See the Plans", href: `${ministryEdition.href}#levels` },
     call: { label: "Book a Call", href: "/contact?topic=ministry" },
@@ -61,7 +63,15 @@ export type Choice = { value: string; label: string };
 
 export type Question =
   | { id: string; kind: "single"; label: string; help?: string; options: readonly Choice[] }
-  | { id: string; kind: "multi"; label: string; help?: string; options: readonly Choice[] }
+  | {
+      id: string;
+      kind: "multi";
+      label: string;
+      help?: string;
+      options: readonly Choice[];
+      /** Choices that stand alone, such as "None yet": picking one clears the rest, and picking another clears it. */
+      exclusive?: readonly string[];
+    }
   | { id: string; kind: "text"; label: string; help?: string; placeholder?: string };
 
 export type Step = {
@@ -73,7 +83,7 @@ export type Step = {
 const choices = (...labels: string[]): readonly Choice[] =>
   labels.map((label) => ({ value: label, label }));
 
-/** Steps 1–7. The eighth step asks who to send it to, and is its own form. */
+/** Steps 1 to 7. The eighth step asks who to follow up with, and is its own form. */
 export const assessmentSteps: readonly Step[] = [
   {
     id: "business",
@@ -82,7 +92,7 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "persona",
         kind: "single",
-        label: "Which best describes your business or organization?",
+        label: "Which best describes you?",
         options: choices(
           "Agent / Solo Operator",
           "Real Estate Team",
@@ -99,7 +109,7 @@ export const assessmentSteps: readonly Step[] = [
         id: "team_size",
         kind: "single",
         label: "How many people actively work inside the operation?",
-        options: choices("Just me", "2–5", "6–15", "16–50", "50+"),
+        options: choices("Just me", "2 to 5", "6 to 15", "16 to 50", "More than 50"),
       },
     ],
   },
@@ -157,7 +167,9 @@ export const assessmentSteps: readonly Step[] = [
           "Microsoft 365",
           "Google Workspace",
           "Transaction management software",
-          "Loan / lending software",
+          "Loan origination system (Encompass, Arive and others)",
+          "Field service software (ServiceTitan, Housecall Pro, Jobber)",
+          "QuickBooks",
           "Spreadsheets",
           "Project management",
           "Other",
@@ -217,7 +229,7 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "document_storage",
         kind: "single",
-        label: "Where are deal or client documents primarily stored?",
+        label: "Where are customer, job or deal documents primarily stored?",
         options: choices(
           "One organized system",
           "CRM",
@@ -231,7 +243,7 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "handoff_quality",
         kind: "single",
-        label: "When a deal changes hands, does the next person usually have the context they need?",
+        label: "When work changes hands, does the next person usually have the context they need?",
         options: choices(
           "Yes, consistently",
           "Usually",
@@ -251,6 +263,7 @@ export const assessmentSteps: readonly Step[] = [
         kind: "multi",
         label: "Which problems are you experiencing?",
         options: choices(
+          "Missed or after hours calls",
           "Leads slipping through",
           "Inconsistent follow-up",
           "Too many systems",
@@ -281,13 +294,14 @@ export const assessmentSteps: readonly Step[] = [
       {
         id: "desired_outcomes",
         kind: "multi",
-        label: "Choose as many as apply.",
+        label: "Which of these would help most?",
         options: choices(
+          "Answer every call, even after hours",
           "Respond to leads consistently",
           "Automate follow-up",
           "Connect existing systems",
           "Improve CRM workflows",
-          "Organize deal information",
+          "Organize customer, job and deal information",
           "Improve team handoffs",
           "Automate document workflows",
           "Make operational information easier to find",
@@ -296,6 +310,7 @@ export const assessmentSteps: readonly Step[] = [
           "Use AI across the business",
           "Not sure yet",
         ),
+        exclusive: ["Not sure yet"],
       },
     ],
   },
@@ -312,7 +327,7 @@ const personaQuestion = assessmentSteps[0].questions[0];
 
 export const churchSteps: readonly Step[] = [
   {
-    id: "business",
+    id: "church-start",
     heading: "First, tell us about your church.",
     questions: [
       personaQuestion,
@@ -422,6 +437,7 @@ export const churchSteps: readonly Step[] = [
           "Other",
           "None yet",
         ),
+        exclusive: ["None yet"],
       },
     ],
   },
@@ -433,7 +449,8 @@ export const churchSteps: readonly Step[] = [
         id: "church_staff",
         kind: "single",
         label: "How many people are on staff, full or part time?",
-        options: choices("Just the pastor", "2 to 5", "6 to 15", "More than 15"),
+        /* The sizes the church consultation form asks, so a church answers once, one way. */
+        options: choices(...ministryContact.form.staffSizes),
       },
       {
         id: "church_volunteers",
@@ -518,8 +535,21 @@ type Finding = ResultCategory & { weight: number };
  */
 const categories: readonly (ResultCategory & { weight: (answers: Answers) => number })[] = [
   {
+    id: "missed-calls",
+    title: "Calls go unanswered",
+    body: "Calls that come in during a job or after hours may reach no one, and a caller who reaches no one usually calls the next business.",
+    review: "Calls and first response",
+    weight: (a) =>
+      signals(
+        many(a, "operational_pain_points").includes("Missed or after hours calls"),
+        many(a, "desired_outcomes").includes("Answer every call, even after hours"),
+        many(a, "lead_sources").includes("Phone") &&
+          ["Sometimes", "Rarely", "It depends on someone noticing it"].includes(one(a, "lead_response")),
+      ),
+  },
+  {
     id: "follow-up-dependency",
-    title: "Follow-Up Dependency",
+    title: "Follow up depends on memory",
     body: "Important next actions still appear to depend on people noticing, remembering, or manually initiating them.",
     review: "Lead intake → follow-up",
     weight: (a) =>
@@ -537,7 +567,7 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "system-fragmentation",
-    title: "System Fragmentation",
+    title: "Systems that do not connect",
     body: "Important business information is spread across systems that require people to move or reconcile context manually.",
     review: "CRM → communication",
     weight: (a) =>
@@ -551,8 +581,8 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "handoff-friction",
-    title: "Handoff Friction",
-    body: "Deals or clients can change hands without all of the relevant information moving with them.",
+    title: "Handoffs lose context",
+    body: "Customers, jobs or deals can change hands without all of the relevant information moving with them.",
     review: "Team handoffs",
     weight: (a) =>
       signals(
@@ -563,7 +593,7 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "document-friction",
-    title: "Document Friction",
+    title: "Documents are hard to find",
     body: "Documents and transaction information may require unnecessary searching, requesting, or manual organization.",
     review: "Deal context → documents",
     weight: (a) =>
@@ -575,7 +605,7 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "owner-dependency",
-    title: "Owner Dependency",
+    title: "The owner carries it",
     body: "The operation appears to depend heavily on the owner, or on a small number of people, to remember how work moves.",
     review: "Operational visibility",
     weight: (a) =>
@@ -587,7 +617,7 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "visibility-gaps",
-    title: "Visibility Gaps",
+    title: "Hard to see what is next",
     body: "Important pipeline or workflow information may not be easy to see without checking several systems.",
     review: "Operational visibility",
     weight: (a) =>
@@ -600,7 +630,7 @@ const categories: readonly (ResultCategory & { weight: (answers: Answers) => num
   },
   {
     id: "repetitive-manual-work",
-    title: "Repetitive Manual Work",
+    title: "Repetitive manual work",
     body: "Repeatable operating tasks still require significant manual coordination.",
     review: "Repeatable operating work",
     weight: (a) =>
@@ -633,7 +663,13 @@ export function assessmentFindings(answers: Answers): readonly ResultCategory[] 
 }
 
 /** A church finding, with the part of Genesis Ministry that speaks to it. */
-export type ChurchFinding = ResultCategory & { fit: string };
+export type ChurchFinding = ResultCategory & {
+  fit: string;
+  /** The first Ministry plan that includes what the fit line names. */
+  plan: MinistryPlanId;
+};
+
+export type MinistryPlanId = "care" | "shepherd" | "plus";
 
 /*
  * What a church's answers point at. Each "fit" line names only what Genesis
@@ -643,7 +679,8 @@ export type ChurchFinding = ResultCategory & { fit: string };
 const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) => number })[] = [
   {
     id: "guest-follow-up",
-    title: "Guest Follow Up",
+    title: "Guest follow up",
+    plan: "shepherd",
     body: "First time guests may not hear from anyone in time, because follow up depends on someone noticing and remembering.",
     fit: "From the Shepherd plan, every guest lands in one guest pipeline, and the Today view shows your team who to welcome next.",
     review: "Guests and follow up",
@@ -659,7 +696,8 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
   },
   {
     id: "care-scattered",
-    title: "Care Requests Scattered",
+    title: "Care requests are scattered",
+    plan: "shepherd",
     body: "Prayer and care requests reach your pastors in more than one way, so it can be hard to see who is waiting and who has been cared for.",
     fit: "From the Shepherd plan, requests arrive in one care inbox, and prayer is seen only by your pastors and the prayer team you name.",
     review: "Prayer and care requests",
@@ -673,7 +711,8 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
   },
   {
     id: "first-impression",
-    title: "The First Visit Starts Online",
+    title: "The first visit starts online",
+    plan: "care",
     body: "Guests look you up before they come. A site that is hard to use on a phone, or questions that wait for the office, can cost a first visit.",
     fit: "Every plan includes a website built for the phone first, and Hope, which answers visitors from the facts your church approves.",
     review: "Website and first questions",
@@ -685,7 +724,8 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
   },
   {
     id: "few-hands",
-    title: "A Few People Carry It",
+    title: "A few people carry it",
+    plan: "shepherd",
     body: "Welcome and follow up appear to rest on one or two people, so a busy week or a sick day means people wait.",
     fit: "From the Shepherd plan, Genesis AI drafts welcome and follow up notes for your team, and none goes out until a person approves it.",
     review: "Who carries follow up",
@@ -693,14 +733,15 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
       signals(
         many(a, "church_pain_points").includes("Follow up depends on one person"),
         one(a, "guest_follow_up") === "A pastor handles it personally",
-        one(a, "church_staff") === "Just the pastor",
+        one(a, "church_staff") === ministryContact.form.staffSizes[0],
       ),
   },
   {
     id: "tools-apart",
-    title: "Tools That Do Not Talk",
+    title: "Tools that do not talk",
+    plan: "shepherd",
     body: "Church information sits in several tools, so people retype details or chase them between systems.",
-    fit: "Genesis Ministry does not replace tools like Planning Center or Subsplash. Your website and Hope send people to them, and the welcome and care sit beside them.",
+    fit: "From the Shepherd plan, every guest who fills in a card, a form or a chat with Hope lands in one guest pipeline, so nobody chases them across inboxes. Planning Center or Subsplash keep running giving and check in, and your website and Hope send people there.",
     review: "Church tools",
     weight: (a) =>
       signals(
@@ -710,7 +751,8 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
   },
   {
     id: "word-out",
-    title: "Getting the Word Out",
+    title: "Getting the word out",
+    plan: "care",
     body: "Sharing what is happening each week takes more time than it should.",
     fit: "Every plan includes a social marketing plan: a weekly rhythm, a 30 day calendar and sample captions.",
     review: "Weekly communication",
@@ -725,7 +767,43 @@ export function churchFindings(answers: Answers): readonly ChurchFinding[] {
     .filter((category) => category.weight > 0)
     .sort((a, b) => b.weight - a.weight)
     .slice(0, 3)
-    .map(({ id, title, body, fit, review }) => ({ id, title, body, fit, review }));
+    .map(({ id, title, body, fit, review, plan }) => ({ id, title, body, fit, review, plan }));
+}
+
+/** The Ministry plan a church's answers point to, and why, for the results to suggest. */
+export type SuggestedPlan = {
+  id: MinistryPlanId;
+  name: string;
+  price: string;
+  /** /contact?topic=ministry-<plan>, which opens with the plan and its price in the note. */
+  href: string;
+  reason: string;
+};
+
+const PLAN_ORDER: readonly MinistryPlanId[] = ["care", "shepherd", "plus"];
+
+/**
+ * The plan to start the conversation with: the highest plan any finding
+ * needs, and Plus only when a larger staff wants to know who needs care next
+ * (Plus adds person pages and reports). No findings, no suggestion: a call
+ * decides it instead.
+ */
+export function suggestedMinistryPlan(answers: Answers, findings: readonly ChurchFinding[]): SuggestedPlan | null {
+  if (!findings.length) return null;
+  let id = findings.reduce<MinistryPlanId>(
+    (best, finding) => (PLAN_ORDER.indexOf(finding.plan) > PLAN_ORDER.indexOf(best) ? finding.plan : best),
+    "care",
+  );
+  const largerStaff = (ministryContact.form.staffSizes.slice(2) as readonly string[]).includes(one(answers, "church_staff"));
+  if (largerStaff && many(answers, "church_pain_points").includes("Knowing who needs care next")) id = "plus";
+  const plan = ministryLevels.levels.find((level) => level.id === id)!;
+  const reason =
+    id === "plus"
+      ? "Plus adds person pages and reports, for a staff that wants to see who needs care next."
+      : id === "shepherd"
+        ? "The guest pipeline, the care inbox and drafts that wait for approval all start with Shepherd."
+        : "The website and Hope are in every plan, so Care is a good place to start.";
+  return { id, name: plan.name, price: plan.priceDisplay, href: `/contact?topic=ministry-${id}`, reason };
 }
 
 /** The findings for the path this visitor took. */
@@ -738,25 +816,114 @@ export function reviewAreas(findings: readonly ResultCategory[]): readonly strin
   return [...new Set(findings.map((finding) => finding.review))];
 }
 
+/*
+ * A business visitor's results name the edition built for them too: Lending,
+ * Real Estate Pros or Business, with its three Levels at the prices the
+ * pricing pages print, and its own disclaimer. The next step stays the
+ * Infrastructure Review: assess first, then decide.
+ */
+export type BusinessRecommendation = {
+  name: string;
+  href: string;
+  body: string;
+  points: readonly string[];
+  /** Each Level as "Level 01, $750 a month, plus $500 setup". */
+  levels: readonly string[];
+  disclaimer: string;
+  pricingHref: string;
+  /** Shown when the team is larger than the Levels are built around. */
+  enterpriseNote: string | null;
+};
+
+const REAL_ESTATE_PERSONAS = ["Agent / Solo Operator", "Real Estate Team", "Brokerage", "Investor / Acquisitions"];
+
+export function businessRecommendation(
+  persona: string | undefined,
+  teamSize: string | undefined,
+): BusinessRecommendation | null {
+  if (!persona || persona === CHURCH_PERSONA) return null;
+  const href = persona === "Lender" ? "/lending" : REAL_ESTATE_PERSONAS.includes(persona) ? "/real-estate" : "/business";
+  const edition = editions.find((candidate) => candidate.href === href)!;
+  const large = teamSize === "16 to 50" || teamSize === "More than 50";
+  return {
+    name: edition.name,
+    href: edition.href,
+    body: edition.body,
+    points: edition.points,
+    levels: managedPlans.map((plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}`),
+    disclaimer: edition.disclaimer,
+    pricingHref: pricingPathForPersona(persona),
+    enterpriseNote: large
+      ? "With a larger team, Genesis Enterprise may fit better: custom workflows and systems connected across locations. We scope it with you on the review."
+      : null,
+  };
+}
+
+/**
+ * The persona a link can open the assessment with: /assessment?for=church,
+ * or ?persona=lending, real-estate or business from an edition page. Only
+ * these values are read; anything else starts the assessment blank.
+ */
+const personaParams: Readonly<Record<string, string>> = {
+  church: CHURCH_PERSONA,
+  ministry: CHURCH_PERSONA,
+  lending: "Lender",
+  "real-estate": "Real Estate Team",
+  business: "Service business / trades (HVAC and more)",
+};
+
+export function personaFromParams(params: URLSearchParams): string | undefined {
+  const key = params.get("for") ?? params.get("persona");
+  return key && Object.hasOwn(personaParams, key) ? personaParams[key] : undefined;
+}
+
+/** Toggle one choice in a multi question, honouring the choices that stand alone. */
+export function toggleChoice(
+  question: { exclusive?: readonly string[] },
+  selected: readonly string[],
+  value: string,
+): string[] {
+  if (selected.includes(value)) return selected.filter((item) => item !== value);
+  const alone = question.exclusive ?? [];
+  if (alone.includes(value)) return [value];
+  return [...selected.filter((item) => !alone.includes(item)), value];
+}
+
+/** The /contact topic a business visitor's results book, and the note it opens with. */
+export const ASSESSMENT_REVIEW_TOPIC = "assessment-review";
+export const assessmentReviewNote = "I took the Genesis assessment and would like to review my results. ";
+
 /* ── the words on the page ───────────────────────────────────────────── */
 
 export const assessmentCopy = {
   eyebrow: "Free Genesis Infrastructure Assessment",
   headline: "See where your operation is carrying unnecessary work.",
   summary: [
-    "Answer a few questions about how leads, deals, communication, documents, and handoffs move through your business.",
-    "Genesis will identify where your operation may be relying too heavily on manual coordination, disconnected systems, or people remembering what happens next.",
+    "Answer a few questions about how calls, leads, follow up and handoffs move today. We show where work depends on someone remembering.",
   ],
+  /** The card's eyebrow: short enough for one line on a phone. */
+  cardEyebrow: "Free Business Assessment",
+  /** The same page, in a church's words, once a church picks its persona. */
+  church: {
+    eyebrow: "Free Church Assessment",
+    headline: "See where guests and care may be slipping.",
+    summary: [
+      "Answer a few questions about how guests find you, how follow up happens and where care requests land. We show where it depends on someone remembering.",
+    ],
+  },
   cta: "Assess My Business",
   note: "No purchase required.",
   /** The eighth step. */
   contact: {
-    heading: "Where should we send your assessment?",
+    heading: "Who should we follow up with?",
     submit: "Show My Assessment",
     consent: "I'd like Genesis to review my results with me.",
   },
   results: {
     eyebrow: "Genesis Infrastructure Snapshot",
+    headline: "Here is what we heard about your operation.",
+    /** The edition card's eyebrow on the business results. */
+    editionEyebrow: "Built for operations like yours",
     intro:
       "Based on your answers, these are the areas where your operation appears to be carrying the most manual coordination.",
     /** Shown when the answers describe an operation that is already connected. */
@@ -772,9 +939,18 @@ export const assessmentCopy = {
     churchEyebrow: "Your Church Snapshot",
     churchHeadline: "Here is what we heard about your church.",
     churchIntro:
-      "Based on your answers, these are the places where guests and care may be depending on someone remembering.",
+      "Below is the Genesis Ministry plan that fits what you told us, and the places where guests and care may be depending on someone remembering.",
     churchClear:
       "Your answers do not point strongly at any one gap. That usually means guests and care are in good hands today, and the useful conversation is about what happens as your church grows.",
+    /** The findings card, when nothing stood out. */
+    churchNothing: "Nothing stood out strongly. A call can look at what changes as your church grows.",
+    /** The plan card's eyebrow when the church is outside the size Ministry is built for. */
+    churchOutsideEyebrow: "Built for churches of 100 to 1,000",
+    churchSuggested: "Where most of what you told us lives",
+    received: "We have your answers.",
+    /** Shown only when they ticked the box asking Genesis to review the results with them. */
+    reviewRequested: "You asked us to review your results with you, so someone from Genesis will reach out to set a time.",
+    print: "Print or save these results",
     churchFindingsTitle: "What your answers point to",
     churchCaveat:
       "This is a first look from your answers, not a plan for your church. A call is where we listen properly.",

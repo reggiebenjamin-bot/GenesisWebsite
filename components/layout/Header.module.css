@@ -565,3 +565,9 @@
     animation: none;
   }
 }
+
+/* The feature tile takes only the height its words need, so it never sits
+   half empty beside a longer list. */
+.feature {
+  align-self: start;
+}

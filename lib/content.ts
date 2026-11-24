@@ -1,11 +1,11 @@
-import { allEditions, ministryEdition } from "./editions.ts";
+import { allEditions } from "./editions.ts";
 import type { OfferPathId } from "./offers.ts";
 
 /** One short line per edition under its name in the Editions dropdown. */
 const editionNavNotes: Record<string, string> = {
-  "/lending": "For loan officers.",
+  "/lending": "For mortgage lending teams.",
   "/real-estate": "For agents and brokerages.",
-  "/business": "For service businesses.",
+  "/business": "For contractors, HVAC, clinics.",
   "/enterprise": "For multi location operations.",
   "/ministry": "For churches.",
 };
@@ -73,8 +73,8 @@ export const contact = {
  * Entries with more than one destination are groups, and render as dropdowns.
  * The two path pages (/mini and /solutions) are reached through the Agent /
  * Custom Infrastructure toggle in the navigation bar, not from this list.
- * The Editions dropdown lists all five Genesis OS editions and features
- * Genesis Ministry, so a church can find its edition from any page.
+ * The Editions dropdown lists all five Genesis OS editions, Ministry once,
+ * and features the assessment, which points each visitor to the one that fits.
  */
 export const navigation: NavEntry[] = [
   { label: "How It Works", href: "/how-it-works" },
@@ -87,12 +87,13 @@ export const navigation: NavEntry[] = [
       href: edition.href,
       description: editionNavNotes[edition.href],
     })),
+    /* The shared next step for every edition: the assessment points to the one that fits. */
     feature: {
-      eyebrow: `Edition ${ministryEdition.no}`,
-      title: ministryEdition.name,
-      description: "For churches of about 100 to 1,000 people. Plans from $149 a month.",
-      href: ministryEdition.href,
-      action: "See Genesis Ministry",
+      eyebrow: "Not sure which edition?",
+      title: "Take the free assessment",
+      description: "Answer a few questions and we will point you to the edition that fits, business or church.",
+      href: "/assessment",
+      action: "Start the assessment",
     },
   },
   {
@@ -154,7 +155,7 @@ export const processSteps = [
   {
     number: "02",
     title: "Scoping",
-    summary: "Recommendation + next step",
+    summary: "Recommendation and next step",
     description:
       "Define the implementation boundary: what should stay, what needs to connect, where work is breaking down, and where automation or intelligence would be useful.",
     method:
@@ -181,7 +182,7 @@ export const processSteps = [
   {
     number: "05",
     title: "Managed Platform",
-    summary: "Support + improve when included",
+    summary: "Support and improve when included",
     description:
       "When ongoing management is included, Genesis keeps the agreed infrastructure supported, current, and improving as the business changes.",
     method:

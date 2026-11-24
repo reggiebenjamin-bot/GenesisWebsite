@@ -2,17 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Sheet } from "@/components/ui/Blocks";
+import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { Eyebrow } from "@/components/ui/Section";
 import type { Edition } from "@/lib/editions";
 import { breadcrumbSchema, graph } from "@/lib/schema";
 
-/* Dark button with a gold outline, for the primary call to action. */
-const primaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-gold bg-ink px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ivory transition-colors duration-200 hover:bg-ink-soft";
-
-/* Quiet outline on paper, for the secondary call to action. */
-const secondaryCta =
-  "inline-flex min-h-[52px] items-center justify-center rounded-[6px] border border-ink/25 bg-transparent px-6 text-[0.84rem] leading-[1.1] font-bold tracking-[0.025em] text-ink transition-colors duration-200 hover:border-ink";
+/* The site's secondary action on ink: dark with a gold hairline, the same height as the gold primary. */
+const secondaryCta = "secondary-action inline-flex min-h-[53px] w-full items-center justify-center px-6";
 
 /** A single link that renders as a Next Link for internal routes, an anchor for external. */
 function CtaLink({
@@ -74,6 +70,24 @@ export function EditionLanding({
           <p className="mx-auto mt-6 max-w-[48ch] text-[1.08rem] leading-relaxed text-ivory/74">
             {edition.body}
           </p>
+          {/* The calls to action sit in the hero, on the first screen: the gold primary, then the rest. */}
+          {edition.ctas.length ? (
+            <div
+              className={`mx-auto mt-9 grid gap-3 ${edition.ctas.length > 2 ? "max-w-[46rem] sm:grid-cols-3" : "max-w-[34rem] sm:grid-cols-2"}`}
+            >
+              {edition.ctas.map((cta, index) =>
+                index === 0 ? (
+                  <ConsultationButton key={cta.href} href={cta.href} className="w-full">
+                    {cta.label}
+                  </ConsultationButton>
+                ) : (
+                  <CtaLink key={cta.href} href={cta.href} className={secondaryCta}>
+                    <span>{cta.label}</span>
+                  </CtaLink>
+                ),
+              )}
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -94,16 +108,6 @@ export function EditionLanding({
             </li>
           ))}
         </ul>
-
-        {edition.ctas.length ? (
-          <div className="mx-auto mt-12 flex max-w-[46rem] flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
-            {edition.ctas.map((cta, index) => (
-              <CtaLink key={cta.href} href={cta.href} className={index === 0 ? primaryCta : secondaryCta}>
-                {cta.label}
-              </CtaLink>
-            ))}
-          </div>
-        ) : null}
 
         {children ? <div className="mt-16">{children}</div> : null}
 
