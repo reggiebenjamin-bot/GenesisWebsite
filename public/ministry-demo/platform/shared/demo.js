@@ -220,7 +220,7 @@
   ANSWERS.confidential = "A pastor can talk with you about what stays private and the few things they must report to keep someone safe. If anyone is in danger right now, call 911, or call or text 988.";
   ANSWERS.aiprayerco = ANSWERS.aiprayer;
   /* What a pastor types to the workspace Hope. */
-  ANSWERS.chat = "In this preview, answers are scripted from sample data, and nothing you type here is sent. In your workspace, " + AN + " only sees what you can see, and never sends anything without a person's approval.";
+  ANSWERS.chat = "In this preview, answers are scripted from sample data, and nothing is sent in this demo. In your workspace, " + AN + " only sees what you can see, and never sends anything without a person's approval.";
   /* Round 5: answers a question used to miss: more than one website, shared sign-ins, prayer options,
      pastor notes, a legal request, a free plan, a Bible translation, leaving with the website, export
      terms, chat history, a loss, and texting asked a different way. */
@@ -1051,7 +1051,7 @@
       { sel: T("home.prayer"), h: "Their own prayer requests", p: "Each with its status and a lock that shows exactly who can see it." },
       { sel: T("home.profile"), h: "Their information stays theirs", p: "Adult account confirmed with the date, and Ask for a Copy or Ask to Remove My Information.", focus: ".mh-kv > div:last-child, .mh-links",
         phone: { focus: ".mh-links" } },
-      { sel: [".hd-launch", ".mx-hope"], h: "{assistant}, in {church.short}'s colors", p: "Members can ask {assistant} questions any time. {assistant} answers from facts the church approved and hands anything personal to a real person." },
+      { sel: [".hd-launch", ".mx-hope"], h: "{assistant}, in {church.short}'s colors", p: "Members tap a question any time, and {assistant} answers from facts the church approved and hands anything personal to a real person. Typing a question comes back later, only on a real AI with a safety check." },
       { sel: '.m-stagebar [data-tour="shell.switcher"]', h: "The same app, each church's brand", p: "Switch between Lightwell, Lampstand, Calder Hill and Goldenrod. Same app, each church's own colors and type." },
       { sel: ".mx-about", h: "How it protects people", p: "Beside the phone: what this screen does to protect people, and a link to the same moment in the church workspace." }
     ] },
@@ -1059,7 +1059,7 @@
       { sel: T("prayer.form"), h: "Prayer in a few taps", p: "The member is already signed in. The pastors get an alert that says only: New request. Sign in to read.",
         phone: { sel: [T("prayer.form") + " .mp-alert", T("prayer.form")] } },
       { sel: T("prayer.visibility"), h: "They choose who sees it", p: "Pastors and the prayer team, or pastors only, with the names shown." },
-      { sel: T("prayer.help"), h: "Help is always on the page", p: "911 and 988 with the church phone, on every prayer form." },
+      { sel: T("prayer.help"), h: "Help is always on the page", p: "911 and 988, on every prayer form." },
       { sel: T("prayer.secrecy"), h: "An honest promise", p: "Prayer is private, and the page never promises total secrecy when someone is being harmed." },
       { sel: T("prayer.history"), h: "A history with replies", p: "Every request, any reply, who can see it, and Add an Update.",
         phone: { sel: [T("prayer.history") + " .mp-req", T("prayer.history")] } }
@@ -1189,7 +1189,7 @@
     { sel: ".mx-about", h: "How this screen protects people", p: "Beside the phone: what this screen does to keep people safe, and a link to the same moment in the church workspace." },
     { sel: ".mx-screens", h: "Every screen of the member app", p: "The member app in order, from sign in to gifts. A screen outside the plan shows the plan that adds it.", place: "edge-left" },
     { sel: '.m-stagebar [data-tour="shell.plan"]', h: "Show any plan", p: "Care, Shepherd or Plus. A screen outside the plan shows a calm state that names the plan that adds it, never a broken page." },
-    { sel: [".hd-launch", ".mx-hope"], h: "{assistant}, in {church.short}'s colors", p: "Members can ask {assistant} questions any time. {assistant} answers from facts the church approved and hands anything personal to a real person." }
+    { sel: [".hd-launch", ".mx-hope"], h: "{assistant}, in {church.short}'s colors", p: "Members tap a question any time, and {assistant} answers from facts the church approved and hands anything personal to a real person. Typing a question comes back later, only on a real AI with a safety check." }
   ];
   /* Each extra is shown once per demo run (on the first screen that uses it, and again only there),
      so the member path never repeats the same padding step. */
@@ -1291,7 +1291,9 @@
     var pastors = [lead, care].map(function (x) { return x.name; });
     var team = D.staff.filter(function (x) { return x.roleKey === "prayer"; }).map(function (x) { return x.name; });
     var giftNames = D.staff.filter(function (x) { return x.caps.indexOf("giftNames") >= 0; }).map(function (x) { return GM.staff(x.id).name; });
-    var prayerMine = "Only the people you chose can read it. With the pastors and the prayer team, that is " + listNames(pastors.concat(team)) + ", and no one else. With pastors only, it is " + listNames(pastors) + ". The alert they get says only: New request. Sign in to read. Staff and website admins cannot open it.";
+    var GIFTS_OFF = GM.plan < 3;
+    var GIFTS_OFF_LINE = "The spiritual gifts conversation is not part of " + poss(c.short) + " app, so there are no gifts results to see or share. On a real church site, a pastor would be glad to talk about your gifts with you. In this demo, nothing is sent.";
+    var prayerMine = "On a real church site, only the people you chose can read it. With the pastors and the prayer team, that is " + listNames(pastors.concat(team)) + ", and no one else. With pastors only, it is " + listNames(pastors) + ". The alert they get says only: New request. Sign in to read. Staff and website admins cannot open it. In this demo, nothing is sent.";
     var toMessages = { label: "Send a Message", href: GM.url("member-messages.html", { "new": "1" }), go: true, cta: true };
     var toHome = { label: "Open Home", href: GM.url("member-home.html"), go: true };
     var last = nx && nx.last && ORIGIN === "church";
@@ -1319,8 +1321,9 @@
         crisisinfo: a(ANSWERS.crisis, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         ai: a(ANSWERS.ai, [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, { label: "Who Reads My Messages?", key: "messageswho" }]),
         /* What a member asks about the people behind the app. */
-        messageswho: a("A question for the church office is read by the church staff, who reply, usually within a day. Something private, for a pastor, is read only by " + listNames(pastors) + ". Every reply comes from a person.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        giftswho: a("Only you, unless you say yes. With a yes, " + listNames(giftNames) + " see your name with your gifts. The church's gifts picture shows counts only, never names.", [{ label: "How Is It Added Up?", key: "giftsinfo" }]),
+        messageswho: a("On a real church site, a question for the church office is read by the church staff, who reply, usually within a day. Something private, for a pastor, is read only by " + listNames(pastors) + ". Every reply comes from a person. In this demo, nothing is sent.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
+        /* The gifts conversation comes with Plus: below Plus the answer says so plainly, never a gifts flow the app does not have. */
+        giftswho: GIFTS_OFF ? a(GIFTS_OFF_LINE, [toMessages]) : a("Only you, unless you say yes. With a yes, " + listNames(giftNames) + " see your name with your gifts. The church's gifts picture shows counts only, never names.", [{ label: "How Is It Added Up?", key: "giftsinfo" }]),
         aimine: a("No. " + AN + " never reads or answers prayer. Only the people you chose can read it, and a person writes every reply.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         pastor: a(lead.name + " leads " + c.name + ", and " + care.name + " cares for the church family. " + (FAKE_PHONE ? "On a real church site, you would reach one of them by sending a Message and choosing Something private, for a pastor. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency." : "To reach one of them, send a Message and choose Something private, for a pastor. Or call the church at " + c.phone + "."), [toMessages]),
         talk: a("You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". If you are in danger, call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
@@ -1332,7 +1335,7 @@
         custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }, { label: "What Does Each Plan Include?", key: "levels" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
         price: a(ANSWERS.price, [{ label: "What Does Each Plan Include?", key: "levels" }, { label: "Can We Customize It?", key: "custom" }]),
-        giftsinfo: a("The gifts conversation takes about 10 minutes and saves after every tap. It gives gifts to explore, worked out by plain arithmetic, and " + AN + " never sets a score. Your name is shared only after a yes. Who sees it is up to you.", [{ label: "Who Sees My Gifts?", key: "giftswho" }]),
+        giftsinfo: GIFTS_OFF ? a(GIFTS_OFF_LINE, [toMessages]) : a("The gifts conversation takes about 10 minutes and saves after every tap. It gives gifts to explore, worked out by plain arithmetic, and " + AN + " never sets a score. Your name is shared only after a yes. Who sees it is up to you.", [{ label: "Who Sees My Gifts?", key: "giftswho" }]),
         give: a("Give opens " + poss(c.short) + " own giving form. Genesis never handles the payment, and the app keeps no giving history. Recurring gifts and receipts stay with the church's giving provider.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         times: a(c.short + " gathers " + c.times + " in " + c.city + ". The church website has the address, directions and what to expect on a first Sunday.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         /* Everyday member questions: a reply, giving, baptism, emails, and a hard week. */
@@ -1538,7 +1541,7 @@
         { sel: ".hero .hero-copy", h: "Edition 05 of Genesis OS", p: "Genesis Ministry is one platform for a church of about 100 to 1,000 people: a website in its own look, " + AN + " for guests, and a workspace where nobody falls through the cracks." },
         { sel: ".tenant", h: "Show the demo as any church", p: "Four made-up churches, one in each look. The choice carries through every screen, in the workspace and in the member app." },
         { sel: ["#doors .intro > div:first-child", "#doors .intro", "#doors"], phoneSel: ["#doors .intro", "#doors"], h: "Every part, one door each", p: "From the website to what members see on their phones." + " Each screen opens with sample data and its own short tour." },
-        { sel: ["#rules .rules-side", "#rules"], phoneSel: ["#rules .crisis", "#rules .rules-side"], h: "A reply written by people", p: "If someone writes in crisis, they see 988 and 911 right away, in a reply written by people, never improvised. From the Shepherd plan, the pastor on call is alerted with no private words." },
+        { sel: ["#rules .rules-side", "#rules"], phoneSel: ["#rules .crisis", "#rules .rules-side"], h: "A reply written by people", p: "On a real church site, when typing to " + AN + " comes back, a message that sounds like a crisis will get 988 and 911 right away, in a reply written by people, never improvised. From the Shepherd plan, a request that sounds like danger alerts the pastor on call with no private words. In this demo, " + AN + " answers tapped questions only." },
         { sel: ["#rules .rules", "#rules"], phoneSel: ["#rules .rules > li:first-child", "#rules .rules"], place: "edge-left", h: "Pastoral care comes with rules", p: "From the Shepherd plan, prayer stays with pastors and the prayer team and alerts carry no private words. On Care, prayer forms go to the pastors' email. A person approves every draft, and nothing is deleted. Each rule links to the screen where you can see it." },
         { sel: ["#levels .intro > div:first-child", "#levels .intro", "#levels"], phoneSel: ["#levels .intro", "#levels"], h: "Start where the church is", p: PRICES + " Enterprise, for more than one campus, is scoped on a call. Each Demo This Plan button starts the tour on that plan." },
         { sel: [".close-band .actions", ".close-band"], h: "One week, start to finish", p: "Start the Guided Demo opens Today and follows Maya's first visit and Sarah's prayer request through the week, a few stops on each screen. It ends with the plans and a way back here." }

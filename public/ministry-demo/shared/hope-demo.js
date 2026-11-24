@@ -220,7 +220,17 @@
     ".hd-skip{background:none;border:0;color:inherit;opacity:.8;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px;border-radius:6px}",
     ".hd-skip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;opacity:1}",
     "@media (max-width:640px){",
-    "  .hd-panel{right:0;left:0;bottom:0;width:auto;height:min(86vh,640px);border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* The open chat is a sheet that takes the phone screen, with a sliver of the page left above it so it
+       reads as a layer that closes (review of November 24: it used to stop at 640px, a third of the screen
+       left over the page). The 911 and 988 line stays in its foot. */
+    "  .hd-panel{right:0;left:0;bottom:0;top:calc(28px + env(safe-area-inset-top,0px));width:auto;height:auto;border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* Closed, Hope is a compact circle in the corner, never a band across the page. */
+    "  .hd-launch{right:14px;bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
+    /* Buttons on a phone: every question and action is one full-width row, 44px or taller, the same
+       padding and radius, so a group never wraps into a ragged run of different widths. */
+    "  .hd-chips{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
+    "  .hd-chip{width:100%;min-height:44px;padding:11px 14px;display:flex;align-items:center}",
+    "  .hd-card .bar .hd-row .hd-btn,.hd-invite .hd-btn{min-height:44px}",
     "  .hd-panel.on~.hd-launch,.hd-tour-on .hd-launch{opacity:0;pointer-events:none}",
     "  .hd-tour-on.hd-step-launch .hd-launch{opacity:1}",
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",
@@ -571,7 +581,7 @@
     prayer: { t: CH.prayer || "On a real church site, our pastors and prayer team would be honored to pray with you: share your request, and a real person reads it." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] },
     /* A sample site with no plan says only what every plan keeps; from the Shepherd plan (?plan=2 or 3) the
        reader choice is added below. */
-    prayerwho: { t: "Prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + CRISIS_LINE, c: [SHARE, BACK] },
+    prayerwho: { t: "On a real church site, prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] },
     pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service Times", key: "times" }] },
     values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I Am New Here", key: "newhere" }] },
     /* A made-up 555 number is never offered to call: the answer says what a real church site gives instead. */
@@ -628,7 +638,7 @@
     notyping: { t: "This demo answers only the questions it shows, so every answer here was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer." + CRISIS_LINE, c: [BACK] },
     real: { t: NAME + " is a made-up church for this preview. Its times, people and stories are samples, and a real church fills every part with its own.", c: [{ label: "What Does a Church Get?", key: "package", cta: true }, { label: "Take the Tour", key: "tour" }] },
     /* plain words about who is answering */
-    human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". A real person on our team follows up on anything I cannot answer" + (CH.phone ? ", and you can call us at " + CH.phone + "." : ".") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
+    human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". On a real church site, a real person on our team would help with anything I cannot answer" + (CH.phone && !FAKE_PHONE ? ", and you can call us at " + CH.phone + "." : ". In this demo, nothing is sent.") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
     hello: { t: "Hi. I am " + AN + ", an automated assistant" + (CHURCH ? " for " + NAME : "") + ". Here is what I can help with.", c: null },
     thanks: { t: "You are welcome. Anything else I can help with?", c: null },
     /* questions a church leader asks about the product */
@@ -637,7 +647,7 @@
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     /* What a real church site does, in honest terms: this demo screens no typed words, because nobody can type here. */
-    hope: { t: "On a real church site, " + AN + " answers guests day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and shows 988 and 911 under every answer. When " + AN + " does not know, it says so and hands the question to a person. In this demo, every answer was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    hope: { t: "On a real church site, " + AN + " answers guests day and night from facts your team approves: times, kids, parking, next steps, giving. A guest taps a question, and every answer was written and checked ahead of time, as in this demo. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and shows 988 and 911 under its questions. Typing a question comes back later, only on a real AI service with a safety check before any answer. When it does, and " + AN + " does not know, it will say so and hand the question to a person.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
     backoffice: { t: "The back office starts with the Shepherd plan, at $299 a month: Today, a front office where every first-time guest gets an owner and a next step, the care inbox for prayer and messages, the member app, and drafts that wait for approval. The Plus plan, at $499 a month, adds a page for each person, the Access Record screen, the spiritual gifts conversation with a picture of the gifts across the church, and reports.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     menu: null,
   };
@@ -662,7 +672,7 @@
   /* Round 4: giving privacy, a phone number and app messages, in the church's own voice. */
   A.givingprivate = { t: "Genesis, which runs this " + WHERE + ", keeps no giving history, so " + AN + " and this " + WHERE + " never see what you give. Giving records stay with " + SHORT + "'s giving provider, and the church decides who on staff may see them." + (CH.phone ? " To ask who that is, call " + CH.phone + "." : ""), c: [{ label: "How Do I Give?", key: "give" }, BACK] };
   A.texting = { t: SHORT + " follows up with guests by email. A phone number you share is used only to reach you about your visit, and it is never sold or passed on for anyone's marketing.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
-  A.appmessages = { t: "In " + SHORT + "'s member app, a private message is read only by the pastors, and a prayer request only by the people you choose. " + AN + " never reads either, and other members never see them.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+  A.appmessages = { t: "On a real church site, in " + SHORT + "'s member app, a private message is read only by the pastors, and a prayer request only by the people you choose. " + AN + " never reads either, and other members never see them." + DEMO_NOTE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
   A.gmdenom = { t: "Genesis Ministry is built for churches of any denomination, and it takes no side on doctrine. " + AN + " shares only what each church has written about its beliefs. A person at Genesis would be glad to tell you about the company and its team on a call.", c: function () { return chips(talkChip(), BACK); } };
   /* AI training, on every Hope, in the same words. */
   A.aitraining = { t: "No. Genesis never uses prayer, messages or member data to train AI. " + AN + " answers only from facts " + (CHURCH ? SHORT : "the church") + " approved.", c: [{ label: "How Does " + AN + " Work?", key: "hope" }, BACK] };
@@ -689,12 +699,12 @@
   if (CHURCH && SITE_PLAN === 1) {
     var CARE_PRAYER = "Your request goes by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that.";
     A.prayer = { t: "On a real church site, the pastors would be honored to pray with you. " + CARE_PRAYER + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
-    A.prayerwho = { t: CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerwho = { t: "On a real church site, your request would go by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
     A.privacy = { t: "What you share here goes to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER + " " + PROCESSORS_LINE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
-    A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone && !FAKE_PHONE ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   } else if (CHURCH && SITE_PLAN >= 2) {
-    A.prayerwho = { t: "Only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + CRISIS_LINE, c: [SHARE, BACK] };
-    A.prayerfromstaff = { t: "When you share a request, you can choose Pastors only, so the prayer team does not read it. It still reaches every pastor, " + listOf(pastorNames()) + ". If you would rather talk with just one of them, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerwho = { t: "On a real church site, only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerfromstaff = { t: "When you share a request, you can choose Pastors only, so the prayer team does not read it. It still reaches every pastor, " + listOf(pastorNames()) + ". If you would rather talk with just one of them, " + (CH.phone && !FAKE_PHONE ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   }
   /* The story pages speak for Genesis Ministry, not a church: a Sunday question points to the sample
      sites, and a buyer's questions (getting started, a call) get Genesis's own answers. */
@@ -716,7 +726,7 @@
     A.care = { t: function (q) { return (sorry(q) || "I am sorry you are carrying that.") + " This is the Genesis Ministry preview, so no one reads this chat, but a pastor at your own church would be honored to walk with you." + CRISIS_LINE; }, c: [BACK] };
     A.welcome = { t: function (q) { return (/\bhope for\b/i.test(q || "") ? "Yes, there is." : "You are welcome, just as you are.") + " This is a software preview, so no one reads this chat, but a pastor at a church near you would be glad to talk with you." + CRISIS_LINE; }, c: [BACK] };
     A.free = A.price;
-    A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing you type here is sent anywhere, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
+    A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing is sent in this demo, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
     A.real = { t: "Genesis Ministry is real software from Genesis AI. The four churches in this preview are made up, with sample data, so you can try every screen without touching anyone's real information.", c: function () { return chips(A.startdemo && { label: "Start the Guided Demo", key: "startdemo", cta: true }, { label: "How Do We Get Started?", key: "start" }); } };
     A.start = { t: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "See Getting Started", href: startHref(), go: true }, { label: "What Does Each Plan Include?", key: "levels" }); } };
     A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Talk With Genesis opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };

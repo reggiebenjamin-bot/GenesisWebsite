@@ -193,11 +193,7 @@
 
     <form class="m-section" id="mm-form" novalidate data-tour="messages.new">
       <p class="m-note mm-help" id="mm-urgent-2" data-mm-help></p>
-      <fieldset class="mm-fieldset">
-        <legend>Who is it for?</legend>
-        <div class="m-choices" id="mm-to"></div>
-      </fieldset>
-      <p class="m-note" id="mm-to-note" style="margin:-4px 0 16px"></p>
+      <!-- The words come first, so the message box is in the first view on a phone (390 by 844). -->
       <div class="m-field">
         <label class="m-label" for="mm-subject-in">Subject</label>
         <input class="m-input" id="mm-subject-in" name="subject" autocomplete="off" readonly>
@@ -207,6 +203,11 @@
         <textarea class="m-textarea" id="mm-text-in" name="message" aria-describedby="mm-text-hint" readonly></textarea>
         <span class="m-hint" id="mm-text-hint">Demo only: a sample message is filled in, and it cannot be changed here. Nothing is sent.</span>
       </div>
+      <fieldset class="mm-fieldset">
+        <legend>Who is it for?</legend>
+        <div class="m-choices" id="mm-to"></div>
+      </fieldset>
+      <p class="m-note" id="mm-to-note" style="margin:-4px 0 16px"></p>
       <button type="submit" class="m-btn m-btn--primary m-btn--block">Send Message</button>
       <p class="m-note mx-demo-sent" id="mm-sent" role="status" hidden></p>
       <p class="mm-shield" id="mm-shield-2"></p>

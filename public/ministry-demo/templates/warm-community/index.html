@@ -685,6 +685,8 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){header.site{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
@@ -780,7 +782,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <div class="mfoot">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
     <p class="times"><b>Sundays 9:00 &amp; 10:45 AM</b><a href="https://maps.google.com/?q=Beaverdale+Des+Moines+IA" target="_blank" rel="noopener">3120 Wrenfield Ave, Des Moines</a></p>
-    <p class="quiet"><a href="tel:+15155550142">(515) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="quiet"><span class="fake-tel">(515) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -1067,7 +1069,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <div>
         <h3>Reach us</h3>
         <ul>
-          <li><a href="tel:+15155550142">(515) 555-0142</a></li>
+          <li><span class="fake-tel">(515) 555-0142</span></li>
           <li><a href="mailto:goldenrod@example.org">goldenrod@example.org</a></li>
           <li><a href="#/contact">Contact Us</a></li>
           <li><button type="button" data-open-chat>Ask a Question</button></li>
@@ -1096,11 +1098,11 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
 <div class="cw" id="cw" role="dialog" aria-modal="true" aria-labelledby="cw-title" hidden>
   <div class="cw-head">
     <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
-    <div><b id="cw-title">Goldenrod helper</b><small>Quick answers. A real person follows up.</small></div>
+    <div><b id="cw-title">Goldenrod helper</b><small>Tap a question for a sample answer.</small></div>
     <button class="cw-x" type="button" aria-label="Close chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="cw-body" aria-live="polite">
-    <p class="bub">Hi neighbor! Ask me anything about Sundays, kids, parking or getting connected.</p>
+    <p class="bub">Hi neighbor! Tap a question about Sundays, kids, parking or getting connected.</p>
     <div class="chips">
       <button type="button" data-q="times">Service Times</button>
       <button type="button" data-q="kids">Kids on Sunday</button>
@@ -1407,7 +1409,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     times: "We meet Sundays at 9:00 and 10:45 AM at 3120 Wrenfield Ave. Coffee is on from 8:30.",
     kids: "Kids have their own rooms from nursery through fifth grade. Check-in opens 15 minutes before each service, and every volunteer is trained and background checked.",
     park: "Park in the lot off Wrenfield or along the street. The yellow umbrellas out front mark the way in, and a greeter will be right there.",
-    person: "Of course. Leave your name and number here and someone from our welcome team will call you today."
+    person: "Of course. On a real church site, the prayer form and Plan a Visit reach our welcome team, and a real person answers. In this demo, nothing is sent."
   };
   var labels = { times: "Service times", kids: "Kids on Sunday", park: "Where do I park?", person: "Talk to a person" };
   function say(text, me) { var p = document.createElement("p"); p.className = "bub" + (me ? " me" : ""); p.textContent = text; body.appendChild(p); body.scrollTop = body.scrollHeight; }

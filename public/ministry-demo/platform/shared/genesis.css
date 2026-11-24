@@ -916,10 +916,12 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
    9. Review round 1 (November 22): phones.
    ========================================================================== */
 /* Genesis OS keeps 136px at the foot of a phone for its bottom nav and the Hawk button
-   (os/refine-phone.css). This preview has no bottom nav, so the work area ends 12px above the round
-   Genesis button instead: the sample strip (44px), the top bar (58px) and the button's band (72px). */
+   (os/refine-phone.css). This preview has no bottom nav, and a band kept empty for the round Hope
+   button read as a thick black bar on a phone (review of November 24). So the work area runs to the
+   foot of the screen under the sample strip (44px) and the top bar (58px), and its own bottom padding
+   lets the last card scroll clear of the round button, which floats in the corner. */
 @media (max-width:860px){
-  body.v2-showing-sample .v2-main{height:calc(100dvh - 44px - 58px - 72px)!important}
+  body.v2-showing-sample .v2-main{height:calc(100dvh - 44px - 58px)!important;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;scroll-padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
 }
 /* A short, wide window (200 percent zoom of a laptop): the member tour card docks at the foot of the
    screen (../shared/hope-demo.js shortDock), so Skip to Next Screen moves up beside the step count and

@@ -394,7 +394,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
    FLOATING: phone Sundays bar, chat circle and sheet, video dialog, toast
    ===================================================================== */
 .sbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:var(--parchment);border-top:3px double var(--rule);
-  padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));transform:translateY(110%);visibility:hidden;
+  padding:8px var(--gutter) calc(8px + env(safe-area-inset-bottom));transform:translateY(110%);visibility:hidden;
   transition:transform .45s var(--ease),visibility 0s linear .45s;box-shadow:0 -14px 30px -24px rgba(21,42,32,.5)}
 .sbar.show{transform:none;visibility:visible;transition-delay:0s}
 .sbar-in{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -404,7 +404,7 @@ a.step:focus-visible{outline-color:var(--brass-light);outline-offset:-3px}
 .sbar-r{display:flex;align-items:center;gap:8px}
 .sbar-ask{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--rule);border-radius:50%;background:var(--ivory);color:var(--forest)}
 .sbar-ask svg{width:20px;height:20px}
-.sbar .btn{min-height:46px;padding:0 18px;font-size:15px}
+.sbar .btn{min-height:44px;padding:0 18px;font-size:15px}
 
 .chat-fab{position:fixed;right:24px;bottom:24px;z-index:45;width:60px;height:60px;border-radius:50%;border:0;background:var(--forest);color:var(--ivory);
   display:grid;place-items:center;box-shadow:0 14px 30px -14px rgba(21,42,32,.7);transition:transform .35s var(--ease),opacity .3s ease}
@@ -666,6 +666,8 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
@@ -759,7 +761,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <div class="mfoot wrap">
     <a class="btn btn-primary" href="#plan-a-visit" data-close>Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 11:00 AM</b><a href="https://maps.google.com/?q=Richmond+Virginia" target="_blank" rel="noopener">1418 Calder Hill Road, Richmond</a></p>
-    <p class="mquiet"><a href="tel:+18045550142">(804) 555-0142</a><button type="button" data-chat>Ask a Question</button></p>
+    <p class="mquiet"><span class="fake-tel">(804) 555-0142</span><button type="button" data-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -1040,7 +1042,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <div>
         <h3>Reach us</h3>
         <ul>
-          <li><a href="tel:+18045550142">(804) 555-0142</a></li>
+          <li><span class="fake-tel">(804) 555-0142</span></li>
           <li><a href="mailto:calderhill@example.org">calderhill@example.org</a></li>
           <li><a href="#/contact" data-demo>Contact Us</a></li>
           <li><button type="button" data-chat>Ask a Question</button></li>
@@ -1076,7 +1078,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <button class="chat-x" type="button" aria-label="Close chat" data-chat-close><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
   </div>
   <div class="chat-body" id="chat-body" aria-live="polite">
-    <p class="bubble">Hello and welcome. I can help with service times, parking, kids and anything else about Sunday. What would you like to know?</p>
+    <p class="bubble">Hello and welcome. Tap a question about service times, parking or kids on Sunday.</p>
     <div class="chips" id="chips">
       <button type="button" data-a="times">Service Times</button>
       <button type="button" data-a="park">Where Do I Park?</button>
@@ -1332,7 +1334,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     times: 'We gather every Sunday at 9:00 AM (hymns and organ) and 11:00 AM (choir and band). Both last about an hour and fifteen minutes.',
     park: 'Park free on Calder Lane or in the lot behind the parish hall. A greeter at the side door will point you to coffee and the sanctuary.',
     kids: 'Nursery and Calder Kids classes run during the 11:00 service. Check in at the welcome table and a teacher will walk you over.',
-    person: 'Happy to. Leave your question below or call (804) 555-0142, and someone from our welcome team will get back to you today.'
+    person: 'Happy to. On a real church site, the prayer form and Plan a Visit reach our welcome team, and a real person answers. In this demo, nothing is sent.'
   };
   function add(text, me) { var p = document.createElement('p'); p.className = 'bubble' + (me ? ' me' : ''); p.textContent = text; body.appendChild(p); body.scrollTop = body.scrollHeight; }
   $$('#chips button').forEach(function (b) { b.addEventListener('click', function () { add(b.textContent, true); setTimeout(function () { add(A[b.dataset.a]); }, 380); }); });
