@@ -28,3 +28,54 @@ export function planFromLink(value: string | null | undefined): string {
   const plan = /^\d+$/.test(raw) ? `managed-${raw}` : raw;
   return isManagedPlanId(plan) ? plan : "";
 }
+
+/**
+ * True for a speculative fetch rather than a person opening the link: a
+ * Next.js router prefetch or RSC fetch (RSC, Next-Router-Prefetch, _rsc), or a
+ * browser prefetch (Purpose or Sec-Purpose: prefetch). None of these may open
+ * a Stripe Checkout Session.
+ */
+export function isPrefetchRequest(request: Request): boolean {
+  const headers = request.headers;
+  if (headers.get("rsc") !== null) return true;
+  if (headers.get("next-router-prefetch") !== null) return true;
+  if (headers.get("next-router-state-tree") !== null) return true;
+  if (/prefetch|prerender/i.test(headers.get("purpose") ?? "")) return true;
+  if (/prefetch|prerender/i.test(headers.get("sec-purpose") ?? "")) return true;
+  if (/prefetch|prerender/i.test(headers.get("x-purpose") ?? "")) return true;
+  if (/prefetch/i.test(headers.get("x-moz") ?? "")) return true;
+  return new URL(request.url).searchParams.has("_rsc");
+}
+
+/** 303 to the pricing page, never cached, never indexed. */
+export function pricingRedirect(request: Request): Response {
+  const url = new URL("/pricing", request.url);
+  url.hash = "custom-infrastructure";
+  return new Response(null, {
+    status: 303,
+    headers: {
+      Location: url.toString(),
+      "Cache-Control": "no-store",
+      "X-Robots-Tag": "noindex, nofollow",
+      Vary: "RSC, Next-Router-Prefetch, Purpose, Sec-Purpose, User-Agent",
+    },
+  });
+}
+
+/**
+ * Gate for GET /start/<tier>. Unknown plans, prefetches, and link previews go
+ * to pricing. Only a person opening the link reaches `start`, which creates
+ * the Checkout Session.
+ */
+export async function gateCheckoutLink(
+  request: Request,
+  rawPlan: string | null,
+  start: (plan: string, edition: string | null) => Promise<Response>,
+): Promise<Response> {
+  const plan = planFromLink(rawPlan);
+  if (!plan) return pricingRedirect(request);
+  if (isPrefetchRequest(request)) return pricingRedirect(request);
+  if (isLinkPreviewAgent(request.headers.get("user-agent"))) return pricingRedirect(request);
+  const edition = new URL(request.url).searchParams.get("edition");
+  return start(plan, edition);
+}

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isLinkPreviewAgent, planFromLink } from "@/lib/checkoutLink";
+import { gateCheckoutLink } from "@/lib/checkoutLink";
 import {
   MANAGED_CHECKOUT_INTEGRATION_ID,
   checkoutLineItems,
@@ -59,13 +59,14 @@ export function toPricing(request: Request) {
   return NextResponse.redirect(new URL("/pricing#custom-infrastructure", request.url), 303);
 }
 
-/** Direct link entry. Unknown plans and link previews go to the pricing page. */
+/**
+ * Direct link entry. Unknown plans, router and browser prefetches, and link
+ * previews go to the pricing page without creating a Checkout Session.
+ */
 export async function startManagedCheckoutFromLink(request: Request, rawPlan: string | null) {
-  const edition = new URL(request.url).searchParams.get("edition");
-  const plan = planFromLink(rawPlan);
-  if (!plan) return toPricing(request);
-  if (isLinkPreviewAgent(request.headers.get("user-agent"))) return toPricing(request);
-  const response = await startManagedCheckout(request, plan, edition);
+  const response = await gateCheckoutLink(request, rawPlan, (plan, edition) =>
+    startManagedCheckout(request, plan, edition),
+  );
   response.headers.set("Cache-Control", "no-store");
   response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;

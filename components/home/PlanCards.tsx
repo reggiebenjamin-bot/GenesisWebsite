@@ -1,5 +1,4 @@
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
-import Link from "next/link";
 import { SectionIntro } from "@/components/ui/Blocks";
 import { TextLink } from "@/components/ui/Button";
 import { chooserProducts } from "@/lib/productChooser";
@@ -77,15 +76,18 @@ export function PlanCards() {
                 {chooserProducts().map((product) => {
                   const level = product.levels.find((item) => item.id === plan.id);
                   if (!level) return null;
+                  // Plain <a>, not <Link>: /start/* opens a live Stripe
+                  // Checkout Session, so it must never be prefetched.
                   return (
-                    <Link
+                    <a
                       key={product.key}
                       href={level.href}
+                      rel="nofollow"
                       aria-label={`${product.label} Level ${plan.step} checkout, ${plan.priceDisplay} a month, ${plan.setupLine}`}
                       className={styles.cta}
                     >
                       {product.label}
-                    </Link>
+                    </a>
                   );
                 })}
               </nav>
