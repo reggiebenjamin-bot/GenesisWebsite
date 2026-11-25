@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import { softwareDisclaimer } from "../lib/aiEmployees.ts";
 import {
   leadWorkflowApps,
@@ -83,4 +84,13 @@ test("employee portraits are local headshots and the path runs from the lead to 
     leadWorkflowApps.map((app) => app.name),
     ["Hawk", "Ava", "Susan", "Darius"],
   );
+});
+
+test("the lead workflow canvas is display-only", () => {
+  const source = readFileSync(new URL("../components/ai-employees/LeadWorkflow.tsx", import.meta.url), "utf8");
+  const blueprint = readFileSync(new URL("../components/ui/interactive-workflow-blueprint.tsx", import.meta.url), "utf8");
+  assert.match(source, /readOnly/);
+  assert.match(blueprint, /readOnly\?: boolean/);
+  assert.match(blueprint, /\{!readOnly && <div className="wb-header-actions">/);
+  assert.match(blueprint, /nodesDraggable=\{\!readOnly\}/);
 });
