@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { HAWK_IMAGE_SRC, HAWK_IMAGE_SRCSET, HAWK_IMAGE_WIDTHS } from "../components/home/hawkAsset.ts";
 import { aiEmployeePersonas } from "../lib/aiEmployees.ts";
+import { GA_MEASUREMENT_ID_ENV, gaMeasurementId } from "../lib/analytics.ts";
 import {
   CHURCH_PERSONA,
   assessmentFindings,
@@ -13,7 +15,7 @@ import {
   suggestedLevel,
 } from "../lib/assessment.ts";
 import { isPrefetchRequest } from "../lib/checkoutLink.ts";
-import { pricingFaqs } from "../lib/content.ts";
+import { bookACall, pricingFaqs } from "../lib/content.ts";
 import { editionKeys, editionLevels, levelsFaqAnswer } from "../lib/editionPlans.ts";
 import { ministryMeta, ministryPlanFromTopic } from "../lib/ministryPage.ts";
 import { LENDER_PERSONA, REAL_ESTATE_TEAM_PERSONA, SERVICE_PERSONA } from "../lib/personas.ts";
@@ -176,4 +178,63 @@ test("front door links to the assessment are measured", () => {
   }
   assert.match(read("components/home/story/StorySections.tsx"), /event="edition_link_clicked"/);
   assert.match(read("components/ministry/MinistrySections.tsx"), /church_website_check_clicked/);
+});
+
+test("Book a Call promises a reply within one business day and offers the calendar", () => {
+  assert.equal(bookACall.replyPromise, "We reply within one business day.");
+  assert.equal(bookACall.pickTime.label, "Pick a Time");
+  assert.equal(
+    bookACall.pickTime.href,
+    "https://outlook.office.com/bookwithme/user/9aad5fd73bf342e9a8b09822b37992b7@powerlandgroup.com?anonymous",
+  );
+  const form = read("app/(marketing)/contact/ConsultationForm.tsx");
+  /* Under the form's button and again on the thanks screen, both counted as secondary actions. */
+  assert.match(form, /<PickATime from="contact_form_pick_time" \/>/);
+  assert.match(form, /<PickATime from="contact_success_pick_time" \/>/);
+  assert.match(form, /TrackClick event="secondary_cta_clicked" from=\{from\}/);
+  const button = form.slice(form.indexOf("function PickATime"), form.indexOf("export function ConsultationForm"));
+  assert.match(button, /target="_blank"/);
+  assert.match(button, /rel="noopener"/);
+  assert.match(button, /min-h-\[52px\]/, "at least 44px tall");
+  /* The promise is said in the one sentence, on the form and in the thanks heading. */
+  assert.equal(form.split("bookACall.replyPromise").length, 3);
+  assert.doesNotMatch(form, /one business day/, "the promise comes from lib/content.ts, not a second copy");
+});
+
+test("the hero hawk is served from this site, in three sizes", () => {
+  assert.equal(
+    HAWK_IMAGE_SRCSET,
+    "/images/home/hawk-hero-600.webp 600w, /images/home/hawk-hero-900.webp 900w, /images/home/hawk-hero-1200.webp 1200w",
+  );
+  assert.equal(HAWK_IMAGE_SRC, "/images/home/hawk-hero-1200.webp");
+  for (const width of HAWK_IMAGE_WIDTHS) {
+    const file = readFileSync(new URL(`../public/images/home/hawk-hero-${width}.webp`, import.meta.url));
+    assert.equal(file.subarray(0, 4).toString("latin1"), "RIFF", `${width}: a WebP file`);
+    assert.equal(file.subarray(8, 12).toString("latin1"), "WEBP", `${width}: a WebP file`);
+  }
+  /* No other host is asked for the hero image, and the credit stays with the asset. */
+  const hero = read("components/home/HawkHero.tsx");
+  assert.doesNotMatch(hero, /preconnect|images\.unsplash\.com/);
+  assert.match(hero, /preload\(HAWK_IMAGE_SRC/);
+  const asset = read("components/home/hawkAsset.ts");
+  assert.doesNotMatch(asset, /images\.unsplash\.com/);
+  assert.match(asset, /Andy Spark on Unsplash/);
+  assert.doesNotMatch(read("next.config.ts"), /unsplash/i);
+});
+
+test("Google Analytics 4 loads only with a measurement ID in NEXT_PUBLIC_GA_MEASUREMENT_ID", () => {
+  assert.equal(GA_MEASUREMENT_ID_ENV, "NEXT_PUBLIC_GA_MEASUREMENT_ID");
+  assert.equal(gaMeasurementId(undefined), "");
+  assert.equal(gaMeasurementId(""), "");
+  assert.equal(gaMeasurementId("UA-12345-1"), "");
+  assert.equal(gaMeasurementId('G-ABC"onload='), "");
+  assert.equal(gaMeasurementId(" G-TEST123456 "), "G-TEST123456");
+  const loader = read("components/seo/GoogleAnalytics.tsx");
+  assert.match(loader, /if \(!id\) return null;/);
+  assert.match(loader, /googletagmanager\.com\/gtag\/js\?id=\$\{id\}/);
+  assert.match(read("app/layout.tsx"), /<GoogleAnalytics \/>/);
+  /* No measurement ID is written into the repository. */
+  for (const file of ["components/seo/GoogleAnalytics.tsx", "lib/analytics.ts", "app/layout.tsx"]) {
+    assert.doesNotMatch(read(file), /["'`]G-[A-Z0-9]{6,}["'`]/, file);
+  }
 });

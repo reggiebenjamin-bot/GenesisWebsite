@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
+import { TrackClick } from "@/components/ui/TrackClick";
 import { track } from "@/lib/analytics";
-import { contact } from "@/lib/content";
+import { bookACall, contact } from "@/lib/content";
 import { ASSESSMENT_HANDOFF_KEY, readAssessmentHandoff } from "@/lib/assessmentHandoff";
 import { MINISTRY_OPERATION_TYPE, ministryContact, ministryPlanFromTopic } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
@@ -32,6 +33,28 @@ const required = (
     *
   </span>
 );
+
+/**
+ * The calendar, for a visitor who would rather choose a time than wait for the reply. It opens
+ * in a new tab, so the form (or its thanks) stays where it is, and it is counted like the other
+ * secondary actions. The same outline button as the rest of the site, 52px tall.
+ */
+function PickATime({ from }: { from: string }) {
+  return (
+    <TrackClick event="secondary_cta_clicked" from={from}>
+      <a
+        href={bookACall.pickTime.href}
+        target="_blank"
+        rel="noopener"
+        className="inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-[6px] border border-ink/30 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory"
+      >
+        {bookACall.pickTime.label}
+        <span aria-hidden="true">↗</span>
+        <span className="sr-only">(opens in a new tab)</span>
+      </a>
+    </TrackClick>
+  );
+}
 
 export function ConsultationForm({
   initialPlan = "",
@@ -63,6 +86,8 @@ export function ConsultationForm({
 }) {
   const church = audience === "church";
   const check = church && websiteCheck;
+  /* A request for a call, not the free Website Check or a class notice: it can also be booked on the calendar. */
+  const call = !check && topic !== "classes";
   const allowedPlanValues = useMemo(
     () => new Set(["", "done-for-you", ...managedPlans.map((plan) => plan.id)]),
     [],
@@ -217,8 +242,8 @@ export function ConsultationForm({
       >
         <Eyebrow>Request received</Eyebrow>
         <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.6rem)]">
-          {/* A call request books no time by itself, so the heading says what happens to set one. */}
-          {check ? "Thanks, we have it. Here is what happens next." : "Thanks, we have it. We reply within one business day to set a time."}
+          {/* A call request books no time by itself, so the heading says when the reply comes. */}
+          {check ? "Thanks, we have it. Here is what happens next." : `Thanks, we have it. ${bookACall.replyPromise}`}
         </h2>
         <p className="mt-5 text-muted-dark">
           {check
@@ -235,6 +260,13 @@ export function ConsultationForm({
           </a>
           .
         </p>
+        {/* A call can also be put on the calendar right away. Not for the Website Check or a class notice. */}
+        {call ? (
+          <div className="mt-7 grid gap-3 border-t border-line-light pt-6 sm:max-w-[22rem]">
+            <p className="text-[0.95rem] font-medium text-ink">{bookACall.pickTime.lead}</p>
+            <PickATime from="contact_success_pick_time" />
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -456,11 +488,14 @@ export function ConsultationForm({
                 ? "Notify Me About the Next Class"
                 : "Book a Call"}
       </SubmitButton>
-      {check || topic === "classes" ? null : (
-        <p className="-mt-2 text-[0.9rem] font-medium text-ink">
-          Genesis will email you to set a time that works for you.
-        </p>
-      )}
+      {call ? (
+        <div className="grid gap-3">
+          <p className="-mt-2 text-[0.9rem] font-medium text-ink">
+            {bookACall.replyPromise} {bookACall.pickTime.lead}
+          </p>
+          <PickATime from="contact_form_pick_time" />
+        </div>
+      ) : null}
 
       <div className="grid gap-2 text-[0.875rem] text-muted-dark">
         {church ? (
