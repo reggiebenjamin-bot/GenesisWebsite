@@ -66,6 +66,9 @@ before touching the plates or the geometry.
   noindexed.
 - `NEXT_PUBLIC_SITE_URL` — canonical origin used for metadata and sitemap URLs;
   defaults to `https://www.geai.us`.
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`: the Google Analytics 4 measurement ID
+  (`G-` followed by letters and digits). Unset, or not shaped like one, the
+  site loads no analytics script and `track` (lib/analytics.ts) does nothing.
 - `GENESIS_CONSULTATION_WEBHOOK_URL` — server-only override for the consultation
   webhook.
 - `STRIPE_SECRET_KEY` — restricted Stripe key (`rk_`) for AI Employees checkout.

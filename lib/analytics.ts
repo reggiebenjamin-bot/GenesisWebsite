@@ -1,12 +1,24 @@
 /*
  * The events worth knowing about, and one way to send them.
  *
- * Nothing is connected to this yet. `track` pushes to a tag manager or a
- * gtag if the page has one and does nothing at all if it does not, so the
- * call sites can be correct before a provider exists — and so no dashboard
- * can show a number that was never measured. Wire a provider in one place
- * here; the rest of the site already reports.
+ * The provider is Google Analytics 4. It loads only when
+ * NEXT_PUBLIC_GA_MEASUREMENT_ID is set (components/seo/GoogleAnalytics.tsx,
+ * in the root layout). `track` sends to gtag when the page has one, or to a
+ * tag manager's dataLayer, and does nothing at all when it has neither, so no
+ * dashboard can show a number that was never measured.
  */
+
+/** The one environment variable that turns Google Analytics 4 on. */
+export const GA_MEASUREMENT_ID_ENV = "NEXT_PUBLIC_GA_MEASUREMENT_ID";
+
+/**
+ * The GA4 measurement ID from the environment, or "" when it is unset or is
+ * not shaped like one (G- then letters and digits), so a typo loads nothing.
+ */
+export function gaMeasurementId(value: string | undefined = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID): string {
+  const id = (value ?? "").trim();
+  return /^G-[A-Z0-9]{4,20}$/.test(id) ? id : "";
+}
 
 export type AnalyticsEvent =
   /* The assessment funnel */
@@ -51,14 +63,15 @@ type AnalyticsWindow = Window & {
   gtag?: (command: string, event: string, props?: Props) => void;
 };
 
-/** Report an event. A no-op until a provider is connected. */
+/** Report an event. A no-op on a page with no provider. */
 export function track(event: AnalyticsEvent, props: Props = {}): void {
   if (typeof window === "undefined") return;
 
   const target = window as AnalyticsWindow;
   try {
-    if (Array.isArray(target.dataLayer)) target.dataLayer.push({ event, ...props });
+    /* gtag writes to the dataLayer itself, so an event goes to one or the other, never both. */
     if (typeof target.gtag === "function") target.gtag("event", event, props);
+    else if (Array.isArray(target.dataLayer)) target.dataLayer.push({ event, ...props });
   } catch {
     /* Reporting must never break the page it is reporting on. */
   }

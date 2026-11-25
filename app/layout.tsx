@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { preload } from "react-dom";
 import "./globals.css";
 import { OfferPathBootstrap } from "@/components/offers/OfferPathBootstrap";
+import { GoogleAnalytics } from "@/components/seo/GoogleAnalytics";
 import {
   DEFAULT_OFFER_PATH,
   OFFER_PATH_ATTRIBUTE,
@@ -123,6 +124,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <OfferPathBootstrap script={offerPathScript} />
         {children}
+        {/* Google Analytics 4, only when NEXT_PUBLIC_GA_MEASUREMENT_ID is set. */}
+        <GoogleAnalytics />
       </body>
     </html>
   );
