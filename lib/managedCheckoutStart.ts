@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 import { gateCheckoutLink } from "@/lib/checkoutLink";
 import {
   MANAGED_CHECKOUT_INTEGRATION_ID,
-  checkoutLineItems,
   managedCheckoutFields,
-  monthlyPriceId,
-  setupPriceId,
+  managedCheckoutLineItems,
 } from "@/lib/managedCheckout";
 import { isEditionKey } from "@/lib/editionPlans";
 import { isManagedPlanId } from "@/lib/offers";
@@ -34,7 +32,7 @@ export async function startManagedCheckout(request: Request, plan: string, rawEd
     const ownerId = await checkoutOwnerId();
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      line_items: checkoutLineItems(monthlyPriceId(plan), setupPriceId(plan)),
+      line_items: managedCheckoutLineItems(plan),
       custom_fields: managedCheckoutFields(),
       metadata,
       subscription_data: { metadata },

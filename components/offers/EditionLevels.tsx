@@ -2,7 +2,9 @@ import type { CSSProperties } from "react";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
+import { SetupFeeNote } from "@/components/offers/SetupFeeNote";
 import { editionLevels, editionPricing, type EditionKey } from "@/lib/editionPlans";
+import { setupWaiverActive } from "@/lib/setupWaiver";
 
 /* The gold hairline gets stronger with the level, as on the pricing page. */
 const TIER_EDGES = [
@@ -19,6 +21,7 @@ const TIER_EDGES = [
  */
 export function EditionLevels({ edition }: { edition: EditionKey }) {
   const { name } = editionPricing[edition];
+  const waived = setupWaiverActive();
 
   return (
     <ol className="mx-auto grid max-w-[72rem] gap-4 md:grid-cols-3">
@@ -45,7 +48,12 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
             </span>
             <span className="text-[0.9rem] text-muted-dark">per month</span>
           </p>
-          <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+          <SetupFeeNote
+            setupLine={plan.setupLine}
+            initialActive={waived}
+            className="mt-2 block text-[0.85rem] text-muted-dark"
+            noteClassName="mt-1 block text-ink"
+          />
 
           <div className="mt-6 border-t border-line-light pt-4">
             <p className="font-display text-[0.75rem] tracking-[0.16em] text-muted-dark uppercase">

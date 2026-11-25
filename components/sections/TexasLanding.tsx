@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
+import { SetupFeeNote } from "@/components/offers/SetupFeeNote";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqList } from "@/components/ui/FaqList";
 import { Card, Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
 import { managedPlans } from "@/lib/offers";
+import { setupWaiverActive } from "@/lib/setupWaiver";
 import { breadcrumbSchema, faqPageSchema, graph } from "@/lib/schema";
 import type { TexasLanding } from "@/lib/texasPages";
 
@@ -125,7 +127,12 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
                     </span>
                     <span className="text-[0.9rem] text-muted-dark">per month</span>
                   </p>
-                  <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+                  <SetupFeeNote
+                    setupLine={plan.setupLine}
+                    initialActive={setupWaiverActive()}
+                    className="mt-2 block text-[0.85rem] text-muted-dark"
+                    noteClassName="mt-1 block text-ink"
+                  />
                   <p className="mt-5 text-[0.92rem] leading-snug">{plan.userLimit}</p>
                   <UserLimitNote plan={plan} className="text-muted-dark" />
                 </Card>
