@@ -18,6 +18,7 @@ export function LeadWorkflow() {
       apps={leadWorkflowApps}
       agentTemplate={leadWorkflowAgent}
       style={leadWorkflowColors}
+      readOnly
     />
   );
 }
