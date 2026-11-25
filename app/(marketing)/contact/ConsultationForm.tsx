@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/Section";
 import { contact } from "@/lib/content";
 import { MINISTRY_OPERATION_TYPE, ministryContact } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
+import { SETUP_WAIVER_LINE, setupWaiverActive } from "@/lib/setupWaiver";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -331,7 +332,9 @@ export function ConsultationForm({
             <option value="">Not sure yet</option>
             {managedPlans.map((plan) => (
               <option key={plan.id} value={plan.id}>
-                {`Level ${plan.step} ${plan.name}, ${plan.userLimit}, ${plan.priceDisplay} a month ${plan.setupLine}`}
+                {setupWaiverActive()
+                  ? `Level ${plan.step} ${plan.name}, ${plan.userLimit}, ${plan.priceDisplay} a month, ${plan.setupLine}, ${SETUP_WAIVER_LINE}`
+                  : `Level ${plan.step} ${plan.name}, ${plan.userLimit}, ${plan.priceDisplay} a month ${plan.setupLine}`}
               </option>
             ))}
             <option value="done-for-you">Done For You, scoped on a call</option>

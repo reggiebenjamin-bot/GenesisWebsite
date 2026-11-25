@@ -2,7 +2,9 @@ import type { CSSProperties, ReactNode } from "react";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
+import { SetupFeeNote } from "@/components/offers/SetupFeeNote";
 import { managedOverview, managedPlans } from "@/lib/offers";
+import { setupWaiverActive } from "@/lib/setupWaiver";
 
 /* The gold hairline gets stronger with the level, the way the plan cards on
    the homepage do. */
@@ -31,6 +33,7 @@ export function ManagedComparison({
   checkout?: boolean;
 }) {
   const Heading = headingLevel;
+  const waived = setupWaiverActive();
   const olRows = checkout
     ? "md:[grid-template-rows:repeat(6,auto)]"
     : "md:[grid-template-rows:repeat(5,auto)]";
@@ -61,7 +64,12 @@ export function ManagedComparison({
                 </span>
                 <span className="text-[0.9rem] text-muted-dark">per month</span>
               </p>
-              <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+              <SetupFeeNote
+                setupLine={plan.setupLine}
+                initialActive={waived}
+                className="mt-2 block text-[0.85rem] text-muted-dark"
+                noteClassName="mt-1 block text-ink"
+              />
             </div>
 
             <div>

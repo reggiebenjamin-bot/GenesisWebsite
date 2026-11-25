@@ -49,14 +49,10 @@ export function useToolUnlock(toolId: WorkspaceToolId): ToolUnlockState {
     const sessionId = urlSession ?? storedSession;
     const freshRedirect = fromCheckout && Boolean(urlSession);
 
-    if (!sessionId) {
-      setState({ status: "locked" });
-      return;
-    }
+    if (!sessionId) return;
 
-    setState({ status: "verifying" });
-
-    (async () => {
+    void (async () => {
+      setState({ status: "verifying" });
       try {
         const response = await fetch(
           `/api/tools/verify?session_id=${encodeURIComponent(sessionId)}`,
