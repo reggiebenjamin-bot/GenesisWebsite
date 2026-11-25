@@ -77,7 +77,7 @@ export default function AboutPage() {
       <PageIntro
         eyebrow="About Genesis"
         title="Build the operating layer, not another AI demo."
-        description="Genesis AI builds infrastructure for real estate professionals around a simple belief: as the business grows, its systems should become more useful, not more fragmented."
+        description="Genesis AI builds AI employees and infrastructure for Texas businesses and churches around a simple belief: as the business grows, its systems should become more useful, not more fragmented."
       />
 
       <Sheet surface="paper" aria-labelledby="why-title" className="site-section">

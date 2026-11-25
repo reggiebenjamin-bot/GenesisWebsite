@@ -89,11 +89,11 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/solutions",
-    title: "Managed AI Infrastructure for Real Estate",
+    title: "Managed AI Infrastructure for Texas Businesses",
     description:
-      "Genesis Managed AI connects systems, data, workflows, communication, CRM, AI agents and automation into managed AI infrastructure for real estate businesses.",
+      "Genesis Managed AI connects systems, data, workflows, communication, CRM, AI agents and automation into managed AI infrastructure for Texas businesses.",
     label: "Genesis Managed AI",
-    image: socialImage("solutions", "Genesis Managed AI — managed AI infrastructure for real estate businesses"),
+    image: socialImage("solutions", "Genesis Managed AI: managed AI infrastructure for Texas businesses"),
     lastModified: REBUILD,
     changeFrequency: "monthly",
     priority: 0.9,
@@ -102,7 +102,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/assessment",
     title: "Free Business Assessment",
     description:
-      "Free assessment for service businesses, lenders and real estate teams: see where calls, follow up and handoffs still depend on someone remembering. No account needed.",
+      "Free assessment for service businesses, lenders and real estate teams: see where calls, follow up and handoffs still depend on someone remembering. Seven short steps.",
     label: "Free Assessment",
     parent: "/solutions",
     image: null,
@@ -160,9 +160,9 @@ export const seoPages: readonly SeoPage[] = [
   },
   {
     path: "/about",
-    title: { absolute: "About Genesis AI: AI Infrastructure for Real Estate" },
+    title: { absolute: "About Genesis AI: AI Employees for Businesses and Churches" },
     description:
-      "Genesis AI builds managed AI infrastructure for real estate professionals and supports the operation as it grows.",
+      "Genesis AI builds AI employees and managed AI infrastructure for Texas lenders, real estate teams, service businesses and churches, and supports them as they grow.",
     label: "About",
     image: socialImage("about", "About Genesis AI: the principles behind Genesis"),
     lastModified: "2026-11-15",

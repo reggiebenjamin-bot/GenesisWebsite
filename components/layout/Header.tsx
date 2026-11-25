@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
+  Fragment,
   Suspense,
   useEffect,
   useId,
@@ -73,9 +74,18 @@ function ChurchPageFromUrl({ pathname, children }: { pathname: string; children:
  * Ministry. On both, Pricing (the business plans) becomes Plans: the three
  * Ministry plans and their prices, on /ministry#levels.
  */
-function primaryFor(church: ChurchPage, assessingChurch = false) {
+/* On an edition page the header opens the assessment already set to that edition, as the hero does. */
+const PERSONA_BY_PAGE: Readonly<Record<string, string>> = {
+  "/lending": "lending",
+  "/real-estate": "real-estate",
+  "/business": "business",
+  "/enterprise": "business",
+};
+
+function primaryFor(church: ChurchPage, assessingChurch = false, pathname = "") {
   if (church === "ministry" || church === "contact" || assessingChurch) return ministryHero.primary;
-  return { href: "/assessment", label: "Assess My Business" };
+  const persona = PERSONA_BY_PAGE[pathname];
+  return { href: persona ? `/assessment?persona=${persona}` : "/assessment", label: "Assess My Business" };
 }
 
 /*
@@ -270,7 +280,7 @@ export function Header() {
           {showsPrimary(pathname) ? (
             <ForChurchPage pathname={pathname}>
               {(church) => {
-                const primary = primaryFor(church, assessingChurch && pathname === "/assessment");
+                const primary = primaryFor(church, assessingChurch && pathname === "/assessment", pathname);
                 return (
                   <>
                     <ConsultationButton
@@ -524,7 +534,7 @@ function MobileMenu({
   onClose: () => void;
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
-  const primary = primaryFor(church, assessingChurch);
+  const primary = primaryFor(church, assessingChurch, pathname);
   const entryHere = (entry: NavLink) => entryFor(entry, church, assessingChurch);
   const sheet = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -596,32 +606,10 @@ function MobileMenu({
       </div>
 
       <nav aria-label="Primary navigation" className={styles.sheetBody}>
-        {/* The church path, one tap from the top of the menu. Hidden where the reader
-            is already in the church context. */}
-        {church ? null : (
-          <Link
-            href={ministryCue.href}
-            aria-label={ministryCue.ariaLabel}
-            className={styles.sheetCue}
-            data-area="cue"
-            onClick={() => {
-              track("ministry_cue_clicked", { from: "mobile_menu_top" });
-              onClose();
-            }}
-          >
-            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-gold" />
-            <span className={styles.sheetCueText}>
-              <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
-              <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
-            </span>
-            <span aria-hidden="true" className={styles.sheetArrow}>
-              →
-            </span>
-          </Link>
-        )}
         {navigation.map((entry) =>
           isNavGroup(entry) ? (
-            <div key={entry.label} className={styles.sheetGroup} data-area={entry.label === "Editions" ? "editions" : "side"}>
+            <Fragment key={entry.label}>
+            <div className={styles.sheetGroup} data-area={entry.label === "Editions" ? "editions" : "side"}>
               <p className={styles.sheetGroupLabel}>{entry.label}</p>
               <ul>
                 {entry.items.map((item) => (
@@ -647,10 +635,53 @@ function MobileMenu({
                     </Link>
                   </li>
                 ))}
-                {/* The feature tile stays in the desktop dropdown. Here it would repeat the
-                    assessment button at the foot of the menu, so each place is listed once. */}
+                {/* The desktop dropdown's assessment row, as one line: the way to the edition that fits. */}
+                {entry.feature && !church ? (
+                  <li>
+                    <Link
+                      href={entry.feature.href}
+                      className={styles.sheetLink}
+                      onClick={() => {
+                        trackPrimary(entry.feature!.href, "mobile_menu_editions");
+                        onClose();
+                      }}
+                    >
+                      <span className={styles.sheetLinkText}>
+                        <span className={styles.sheetLinkLabel}>{entry.feature.title}</span>
+                        <span className={styles.sheetLinkDescription}>{entry.feature.eyebrow}</span>
+                      </span>
+                      <span aria-hidden="true" className={styles.sheetArrow}>
+                        →
+                      </span>
+                    </Link>
+                  </li>
+                ) : null}
               </ul>
             </div>
+            {/* The church path, right under the editions: a business owner sees the editions
+                and the assessment first. Hidden where the reader is already in the church context. */}
+            {entry.label === "Editions" && !church ? (
+            <Link
+              href={ministryCue.href}
+              aria-label={ministryCue.ariaLabel}
+              className={styles.sheetCue}
+              data-area="cue"
+              onClick={() => {
+                track("ministry_cue_clicked", { from: "mobile_menu_cue" });
+                onClose();
+              }}
+            >
+              <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-gold" />
+              <span className={styles.sheetCueText}>
+                <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
+                <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
+              </span>
+              <span aria-hidden="true" className={styles.sheetArrow}>
+                →
+              </span>
+            </Link>
+            ) : null}
+            </Fragment>
           ) : (
             <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)} data-area="side">
               <Link
@@ -680,6 +711,10 @@ function MobileMenu({
         >
           {primary.label}
         </ConsultationButton>
+        {/* A second way out, within thumb reach of the bottom of the screen. */}
+        <button type="button" onClick={onClose} className={styles.sheetClose}>
+          Close Menu
+        </button>
       </div>
     </div>
   );

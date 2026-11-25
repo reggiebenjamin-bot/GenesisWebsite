@@ -71,6 +71,11 @@ export type Choice = { value: string; label: string };
 
 /** A question's words for one business edition, when its nouns should be that edition's own. */
 type EditionLabels = Partial<Record<PersonaEdition, string>>;
+/**
+ * The answers one business edition sees, in its own order and words: each value must be one of
+ * the question's options (the API accepts the full list), so only what is shown changes.
+ */
+type EditionOptions = Partial<Record<PersonaEdition, readonly Choice[]>>;
 
 export type Question =
   | {
@@ -82,6 +87,7 @@ export type Question =
       /** A single choice that may be skipped. Every other single choice is required. */
       optional?: boolean;
       labels?: EditionLabels;
+      optionsFor?: EditionOptions;
     }
   | {
       id: string;
@@ -92,6 +98,7 @@ export type Question =
       /** Choices that stand alone, such as "None yet": picking one clears the rest, and picking another clears it. */
       exclusive?: readonly string[];
       labels?: EditionLabels;
+      optionsFor?: EditionOptions;
     }
   | { id: string; kind: "text"; label: string; help?: string; placeholder?: string };
 
@@ -109,6 +116,25 @@ export function questionLabel(question: Question, persona: string | undefined): 
   if (question.kind === "text") return question.label;
   const edition = personaEdition(persona);
   return (edition && question.labels?.[edition]) || question.label;
+}
+
+/** The answers a question shows for this persona: its edition's own list, or every option. */
+export function questionOptions(question: Question, persona: string | undefined): readonly Choice[] {
+  if (question.kind === "text") return [];
+  const edition = personaEdition(persona);
+  return (edition && question.optionsFor?.[edition]) || question.options;
+}
+
+/** An edition's list: these values first, in this order, then the rest, minus any hidden, with any words swapped. */
+function editionChoices(
+  all: readonly Choice[],
+  { first = [], hide = [], words = {} }: { first?: readonly string[]; hide?: readonly string[]; words?: Record<string, string> },
+): readonly Choice[] {
+  const byValue = new Map(all.map((choice) => [choice.value, choice] as const));
+  const ordered = [...first.map((value) => byValue.get(value)!), ...all.filter((choice) => !first.includes(choice.value))];
+  return ordered
+    .filter((choice) => !hide.includes(choice.value))
+    .map((choice) => (words[choice.value] ? { ...choice, label: words[choice.value] } : choice));
 }
 
 /*
@@ -140,6 +166,45 @@ const crmChoices: readonly Choice[] = crmOptions.map((option) => ({
         : option.label,
 }));
 
+const TRANSACTION_SOFTWARE = "Transaction management software";
+const LOS = "Loan origination system (Encompass, Arive and others)";
+const FIELD_SERVICE_SOFTWARE = "Field service software (ServiceTitan, Housecall Pro, Jobber)";
+const SYSTEM_CHOICES = choices(
+  "CRM",
+  "Email",
+  "Calendar",
+  "Text or SMS",
+  "Phone system",
+  "Cloud storage",
+  "Microsoft 365",
+  "Google Workspace",
+  TRANSACTION_SOFTWARE,
+  LOS,
+  FIELD_SERVICE_SOFTWARE,
+  "QuickBooks",
+  "Spreadsheets",
+  "Project management",
+  "Other",
+);
+
+/* One wish, in each edition's own nouns. */
+const ORGANIZE = "Organize customer, job and deal information";
+const OUTCOME_CHOICES = choices(
+  "Answer every call, even after hours",
+  "Reply to every lead quickly",
+  "Automate follow up",
+  "Connect the systems we have",
+  "Get more from our CRM",
+  ORGANIZE,
+  "Smoother team handoffs",
+  "Automate document requests",
+  "Find information faster",
+  "Less repetitive admin",
+  "See the whole pipeline",
+  "Use AI across the business",
+  "Not sure yet",
+);
+
 /** Steps 1 to 6. The seventh step asks who the snapshot is for, and is its own form. */
 export const assessmentSteps: readonly Step[] = [
   {
@@ -152,6 +217,10 @@ export const assessmentSteps: readonly Step[] = [
         kind: "single",
         /* The number that sets the Level: people who need a login, not everyone on the payroll. */
         label: "How many people would use Genesis day to day, such as office, dispatch and sales?",
+        labels: {
+          lending: "How many people would use Genesis day to day, such as loan officers, processors and assistants?",
+          real_estate: "How many people would use Genesis day to day, such as agents, assistants and coordinators?",
+        },
         options: choices(...TEAM_SIZES),
       },
     ],
@@ -193,23 +262,17 @@ export const assessmentSteps: readonly Step[] = [
         id: "systems_used",
         kind: "multi",
         label: "Which systems does the business use today?",
-        options: choices(
-          "CRM",
-          "Email",
-          "Calendar",
-          "Text or SMS",
-          "Phone system",
-          "Cloud storage",
-          "Microsoft 365",
-          "Google Workspace",
-          "Transaction management software",
-          "Loan origination system (Encompass, Arive and others)",
-          "Field service software (ServiceTitan, Housecall Pro, Jobber)",
-          "QuickBooks",
-          "Spreadsheets",
-          "Project management",
-          "Other",
-        ),
+        /* A lender sees the loan origination system first, an agent the transaction software;
+           neither sees field service software, which is for the trades. */
+        optionsFor: {
+          lending: editionChoices(SYSTEM_CHOICES, { first: [LOS, "CRM"], hide: [TRANSACTION_SOFTWARE, FIELD_SERVICE_SOFTWARE] }),
+          real_estate: editionChoices(SYSTEM_CHOICES, {
+            first: [TRANSACTION_SOFTWARE, "CRM"],
+            hide: [LOS, FIELD_SERVICE_SOFTWARE],
+          }),
+          business: editionChoices(SYSTEM_CHOICES, { hide: [LOS, TRANSACTION_SOFTWARE] }),
+        },
+        options: SYSTEM_CHOICES,
       },
       {
         id: "crm",
@@ -320,21 +383,12 @@ export const assessmentSteps: readonly Step[] = [
         id: "desired_outcomes",
         kind: "multi",
         label: "Which of these would you most like to work better?",
-        options: choices(
-          "Answer every call, even after hours",
-          "Reply to every lead quickly",
-          "Automate follow up",
-          "Connect the systems we have",
-          "Get more from our CRM",
-          "Organize customer, job and deal information",
-          "Smoother team handoffs",
-          "Automate document requests",
-          "Find information faster",
-          "Less repetitive admin",
-          "See the whole pipeline",
-          "Use AI across the business",
-          "Not sure yet",
-        ),
+        optionsFor: {
+          lending: editionChoices(OUTCOME_CHOICES, { words: { [ORGANIZE]: "Organize borrower and file information" } }),
+          real_estate: editionChoices(OUTCOME_CHOICES, { words: { [ORGANIZE]: "Organize client and deal information" } }),
+          business: editionChoices(OUTCOME_CHOICES, { words: { [ORGANIZE]: "Organize customer and job information" } }),
+        },
+        options: OUTCOME_CHOICES,
         exclusive: ["Not sure yet"],
       },
     ],
@@ -1160,7 +1214,7 @@ export const assessmentCopy = {
   cta: "Assess My Business",
   note: "No purchase required.",
   /** The card's quiet line beside the step count: what it costs and asks. */
-  reassurance: "Free. Seven short steps. No account needed.",
+  reassurance: "Free. Seven short steps. We ask for your email at the end.",
   /** The hero once the results are showing. */
   doneHeadline: "Your snapshot is ready.",
   churchDoneHeadline: "Your church snapshot is ready.",

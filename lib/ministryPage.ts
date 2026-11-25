@@ -298,7 +298,8 @@ export const ministryProtection = {
     },
     {
       title: "Every person has one private record.",
-      plan: "From Plus",
+      /* Person pages and the record of every open start at Shepherd; Plus adds the screen to search it. */
+      plan: "From Shepherd",
       body: "Each person has one page, not copies in five places. Every open is recorded from the Shepherd plan, and the Plus plan adds the Access Record screen to search it.",
     },
   ],

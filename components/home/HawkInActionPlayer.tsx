@@ -134,6 +134,19 @@ export function HawkInActionPlayer() {
           </video>
         ) : null}
 
+        {/* The film's camera pans the workspace inside its gold frame, so a word can meet the
+            frame's left edge mid-letter. A soft inner gutter, just inside the gold line, fades
+            that edge so nothing reads as cut. Placed in the film's own proportions: the gold line
+            sits 12.3% in on the wide cut and 16.4% in on the vertical one. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[7%] bottom-[15%] left-[12.45%] z-[1] hidden w-[2.4%] min-w-4 bg-[linear-gradient(90deg,rgb(18_19_23)_35%,rgb(18_19_23/0))] md:block"
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[17.5%] bottom-[9%] left-[16.6%] z-[1] w-[6%] min-w-4 bg-[linear-gradient(90deg,rgb(18_19_23)_35%,rgb(18_19_23/0))] md:hidden"
+        />
+
         {/* Moving content longer than five seconds needs a way to stop it (WCAG 2.2.2). */}
         {showLoop ? (
           <button

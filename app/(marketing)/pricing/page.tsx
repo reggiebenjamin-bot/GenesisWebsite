@@ -9,34 +9,57 @@ import { FaqList } from "@/components/ui/FaqList";
 import { Eyebrow } from "@/components/ui/Section";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { pricingFaqs } from "@/lib/content";
-import { editionPricing } from "@/lib/editionPlans";
 
 import { pageMetadata } from "@/lib/metadata";
-import { ministryPriceAnswer } from "@/lib/ministryPage";
+import { ministryLevels, ministryPriceAnswer } from "@/lib/ministryPage";
 import { breadcrumbSchema, faqPageSchema, graph, managedServiceSchema } from "@/lib/schema";
 import { managedOverview } from "@/lib/offers";
 
 export const metadata: Metadata = pageMetadata("/pricing");
 
-/* Every edition, in the nav order: the three that share these Levels, then Enterprise and Ministry. */
-const editionLinks = [
-  { label: "Lending", href: editionPricing.lending.pricingPath },
-  { label: "Real Estate Pros", href: editionPricing.real_estate.pricingPath },
-  { label: "Business", href: editionPricing.business.pricingPath },
-  { label: "Enterprise", href: "/enterprise" },
-  { label: "Ministry", href: "/ministry#levels" },
-];
+/* ?edition= from an edition page or a link: the business editions preselect, Ministry leads with church plans. */
+function editionFrom(value: string | string[] | undefined): string {
+  const raw = (Array.isArray(value) ? value[0] : value ?? "").toLowerCase().replace("-", "_");
+  return raw;
+}
 
-const editionLink =
+const textLink =
   "inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 transition-colors duration-200 hover:text-gold-dark";
 
-export default function PricingPage() {
+const fromMinistryPlans = `Genesis Ministry, for churches: plans from ${ministryLevels.levels[0].priceDisplay} a month`;
+
+/** The church plans in one slim row, with its own heading so a pastor never takes the business Levels for theirs. */
+function ChurchPlans({ className = "" }: { className?: string }) {
+  return (
+    <aside
+      aria-labelledby="pricing-churches-title"
+      className={`flex flex-wrap items-center justify-between gap-x-10 gap-y-1 rounded-[6px] border border-gold/45 bg-gold-light/10 px-5 py-3 ${className}`}
+    >
+      <div className="max-w-[70ch] text-[0.95rem]">
+        <h2 id="pricing-churches-title" className="text-[1rem] font-semibold tracking-normal">
+          {fromMinistryPlans}
+        </h2>
+        <p className="text-muted-dark">
+          {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
+        </p>
+      </div>
+      <TrackClick event="edition_link_clicked" from="pricing_churches">
+        <TextLink className="shrink-0" href="/ministry#levels">See the Ministry Plans</TextLink>
+      </TrackClick>
+    </aside>
+  );
+}
+
+export default async function PricingPage({ searchParams }: PageProps<"/pricing">) {
+  const edition = editionFrom((await searchParams).edition);
+  const church = edition === "ministry";
   return (
     <>
       <JsonLd data={graph(managedServiceSchema(), faqPageSchema(pricingFaqs, "/pricing"), breadcrumbSchema("/pricing"))} />
 
       {/* One header, in the same container as the cards below it, so the page has one left edge
-          and the first price rises onto the first screen. */}
+          and the first price rises onto the first screen. The business Levels come first; the
+          church plans follow them, unless the visitor came from Ministry. */}
       <section className="relative bg-paper pt-[calc(var(--header-height)+36px)] pb-[clamp(48px,6vw,80px)] text-ink md:pt-[calc(var(--header-height)+56px)]">
         {["custom-infrastructure", "infrastructure", "agent", "mini"].map((id) => (
           <span key={id} id={id} aria-hidden="true" className="absolute top-0 left-0 block size-px" />
@@ -51,24 +74,10 @@ export default function PricingPage() {
             </div>
             <div className="grid gap-3">
               <p className="max-w-[52ch] text-[1rem] leading-relaxed text-muted-dark">{managedOverview.pricing.body}</p>
-              <div className="text-[0.95rem] text-muted-dark">
-                <p className="max-sm:mb-0.5">Pricing by edition:</p>
-                <TrackClick event="edition_link_clicked" from="pricing_header">
-                  <ul className="flex flex-wrap gap-x-5">
-                    {editionLinks.map((link) => (
-                      <li key={link.href}>
-                        <Link href={link.href} className={editionLink}>
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </TrackClick>
-              </div>
               <TrackClick event="assessment_link_clicked" from="pricing_hero" selector="a[href^='/assessment']">
                 <p className="text-[0.95rem] text-muted-dark">
                   Not sure which Level?{" "}
-                  <Link href="/assessment" className={editionLink}>
+                  <Link href="/assessment" className={textLink}>
                     Take the free assessment
                   </Link>
                 </p>
@@ -76,30 +85,27 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* Churches first see their own prices, before any business Level: one slim row. */}
-          <aside
-            aria-labelledby="pricing-churches-title"
-            className="mb-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-1 rounded-[6px] border border-gold/45 bg-gold-light/10 px-5 py-3"
-          >
-            <p className="max-w-[70ch] text-[0.95rem]">
-              <span id="pricing-churches-title" className="font-semibold">Genesis Ministry, for churches. </span>
-              <span className="text-muted-dark">
-                {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
-              </span>
-            </p>
-            <TrackClick event="edition_link_clicked" from="pricing_churches">
-              <TextLink className="shrink-0" href="/ministry#levels">See the Ministry Plans</TextLink>
-            </TrackClick>
-          </aside>
+          {church ? <ChurchPlans className="mb-6" /> : null}
 
-          <ManagedComparison checkout />
+          <ManagedComparison checkout initialEdition={edition} />
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 border-t border-line-light pt-6">
             <p className="max-w-[60ch] text-[0.9rem] text-muted-dark">
-              {managedOverview.pricing.closing}
+              {managedOverview.pricing.closing} More than 25 users is{" "}
+              <Link href="/enterprise" className={textLink}>
+                Genesis Enterprise
+              </Link>
+              .
             </p>
-            <TextLink href="/solutions">See How It Is Built</TextLink>
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-1">
+              <TrackClick event="consultation_cta_clicked" from="pricing_levels">
+                <TextLink href="/contact?topic=pricing#consultation-form">Book a Call</TextLink>
+              </TrackClick>
+              <TextLink href="/solutions">See How It Is Built</TextLink>
+            </div>
           </div>
+
+          {church ? null : <ChurchPlans className="mt-10" />}
         </div>
       </section>
 
@@ -120,7 +126,7 @@ export default function PricingPage() {
         line="Take the free assessment. Your results suggest a Level from how many people would use Genesis."
         actions={
           <TrackClick event="assessment_link_clicked" from="pricing_close" selector="a[href^='/assessment']">
-            <ConsultationButton href="/assessment">Assess My Business</ConsultationButton>
+            <ConsultationButton href="/assessment" className="max-sm:w-full">Assess My Business</ConsultationButton>
           </TrackClick>
         }
       />

@@ -457,7 +457,8 @@ test("the protection rules do not promise more than the product does", () => {
   const record = ministryProtection.rules[4];
   assert.equal("plan" in prayer ? prayer.plan : "", "From Shepherd");
   assert.match(prayer.body, /On the Care plan, prayer forms go by email to the pastors' address only\./);
-  assert.equal("plan" in record ? record.plan : "", "From Plus");
+  /* The tag and the body agree: person pages and the record of opens start at Shepherd. */
+  assert.equal("plan" in record ? record.plan : "", "From Shepherd");
   assert.match(record.body, /recorded from the Shepherd plan/);
   /* Hope answers on the website and the crisis reply goes out on its own; the rule says so. */
   assert.match(approval.body, /Hope's answers/);

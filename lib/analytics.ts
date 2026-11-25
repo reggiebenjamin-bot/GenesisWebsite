@@ -32,6 +32,15 @@ export type AnalyticsEvent =
   | "direct_consultation_booked"
   /* Pricing: a Start Level button, with its level and edition */
   | "managed_plan_selected"
+  /* A Start Level press on /pricing, before the edition check runs */
+  | "managed_plan_attempted"
+  /* Secondary actions: How It Works, an edition's pricing, the Ministry plans, a call */
+  | "how_it_works_clicked"
+  | "edition_pricing_viewed"
+  | "secondary_cta_clicked"
+  | "consultation_cta_clicked"
+  /* /classes: asked to be told about the next class */
+  | "classes_notify_requested"
   /* Homepage film */
   | "hawk_demo_played";
 

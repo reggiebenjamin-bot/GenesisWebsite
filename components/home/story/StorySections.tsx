@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { Button } from "@/components/ui/Button";
@@ -32,7 +33,7 @@ const CARD_SPANS = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-s
 /** The line that closes every edition card: where it starts, then where the card goes, stacked the same on every card. */
 function EditionFooter({ price, action }: { price: string; action: string }) {
   return (
-    <div className="mt-auto grid gap-1 border-t border-line-light pt-4 sm:flex sm:flex-wrap sm:items-end sm:justify-between sm:gap-x-4">
+    <div className="mt-auto grid gap-1 border-t border-line-light pt-4">
       <span className="text-[0.88rem] text-muted-dark">{price}</span>
       <span className="inline-flex items-center gap-1.5 text-[0.92rem] font-bold text-gold-dark underline decoration-gold-dark/30 underline-offset-4 group-hover:decoration-gold-dark">
         {action}
@@ -149,7 +150,7 @@ export function StoryOpening() {
                     {/* The points repeat the summary in short; a phone keeps the summary alone. */}
                     <Points items={e.points} className="mt-5 mb-6 max-sm:hidden" />
                     <span aria-hidden="true" className="block h-5 sm:hidden" />
-                    <EditionFooter price={startsAt(e.href)} action={`See ${e.name}`} />
+                    <EditionFooter price={startsAt(e.href)} action={`See ${e.name.replace(/^Genesis /, "")}`} />
                   </Link>
                 </Card>
               );
@@ -234,11 +235,7 @@ export function StoryOffers() {
               className="absolute inset-x-0 top-0 h-px bg-[linear-gradient(90deg,transparent,var(--tier-edge),transparent)]"
             />
             <Eyebrow className="text-gold-dark">Level {plan.step}</Eyebrow>
-            <p className="mt-4 flex flex-wrap items-baseline gap-x-1.5">
-              <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">{plan.priceDisplay}</span>
-              <span className="text-[0.9rem] whitespace-nowrap text-muted-dark">a month</span>
-            </p>
-            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+            <PriceTag amount={plan.priceDisplay} setup={plan.setupLine} className="mt-4" />
             <p className="mt-5 border-t border-line-light pt-4 text-[0.95rem] leading-relaxed">{plan.day}</p>
             <UserLimitNote plan={plan} className="mt-1 text-muted-dark" />
           </Card>
@@ -262,6 +259,15 @@ export function StoryOffers() {
               {ministryFrom}
             </Link>
           </p>
+        </TrackClick>
+      </div>
+      {/* The prices lead to a next step: the assessment first, then the full price list. */}
+      <div className="mt-8 grid w-full gap-3 sm:max-w-[34rem] sm:grid-cols-2">
+        <TrackClick event="assessment_link_clicked" from="home_levels" selector="a[href^='/assessment']">
+          <ConsultationButton href="/assessment" className="w-full">Assess My Business</ConsultationButton>
+        </TrackClick>
+        <TrackClick event="edition_pricing_viewed" from="home_levels">
+          <Button href="/pricing" variant="outline" className="min-h-[52px] w-full">See Pricing</Button>
         </TrackClick>
       </div>
     </Sheet>

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
@@ -40,13 +41,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
           <h3 className="mt-3 text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">
             {name}
           </h3>
-          <p className="mt-4 flex flex-wrap items-baseline gap-x-1.5">
-            <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
-              {plan.priceDisplay}
-            </span>
-            <span className="text-[0.9rem] whitespace-nowrap text-muted-dark max-lg:basis-full max-lg:pt-1">per month</span>
-          </p>
-          <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+          <PriceTag amount={plan.priceDisplay} setup={plan.setupLine} className="mt-4" />
 
           <div className="mt-6 border-t border-line-light pt-4">
             <p className="font-display text-[0.75rem] tracking-[0.12em] text-muted-dark uppercase">

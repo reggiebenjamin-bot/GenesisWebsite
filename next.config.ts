@@ -14,13 +14,12 @@ const nextConfig: NextConfig = {
     qualities: [75, 92],
   },
   /*
-   * Live class sales page and thank-you page are static files in
-   * public/classes. These rewrites serve each folder's index.html at its
-   * clean path. Scoped to the class paths only.
+   * /classes is an App Router page in the site layout. The past class page
+   * and its thank-you page are still static files in public/classes; these
+   * rewrites serve each folder's index.html at its clean path.
    */
   async rewrites() {
     return [
-      { source: "/classes", destination: "/classes/index.html" },
       { source: "/classes/ai-employees", destination: "/classes/ai-employees/index.html" },
       { source: "/classes/ai-employees/thank-you", destination: "/classes/ai-employees/thank-you/index.html" },
     ];

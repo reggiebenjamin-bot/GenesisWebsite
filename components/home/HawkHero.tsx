@@ -23,7 +23,7 @@ const heroEditions = [
 ] as const;
 
 /* True of the assessment today: free, seven short steps, and no account is made. */
-const heroReassurance = "Free. Seven short steps. No account needed.";
+const heroReassurance = "Free. Seven short steps. We ask for your email at the end.";
 
 /**
  * The opening, over the hawk. The hawk fills the frame behind the centred
@@ -51,9 +51,11 @@ export function HawkHero() {
               Assess My Business
             </ConsultationButton>
           </TrackClick>
-          <Link href="/how-it-works" className={secondaryAction}>
-            <span>See How It Works</span>
-          </Link>
+          <TrackClick event="how_it_works_clicked" from="hero">
+            <Link href="/how-it-works" className={secondaryAction}>
+              <span>See How It Works</span>
+            </Link>
+          </TrackClick>
         </HeroCopy>
       </div>
     </section>

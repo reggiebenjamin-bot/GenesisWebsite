@@ -632,7 +632,7 @@
   }
 
   .sheetFooter {
-    padding-block: 8px calc(8px + env(safe-area-inset-bottom));
+    padding-block: 8px;
   }
 
   .sheetFooter > a {
@@ -640,10 +640,14 @@
   }
 }
 
+/* The site does not set viewport-fit=cover, so the browser keeps the page clear of the home
+   indicator and env(safe-area-inset-*) is always 0 here: plain padding is enough. */
 .sheetFooter {
   position: sticky;
   bottom: 0;
-  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 4px;
+  padding: 16px;
   background: linear-gradient(180deg, rgb(8 9 14 / 0), var(--color-ink) 30%);
 }
 
@@ -683,4 +687,42 @@
    half empty beside a longer list. */
 .feature {
   align-self: start;
+}
+
+/* "Close Menu" under the sticky button: a quiet text action within thumb reach. */
+.sheetClose {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: rgb(244 239 232 / 0.72);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgb(244 239 232 / 0.3);
+  text-underline-offset: 4px;
+}
+
+.sheetClose:hover {
+  color: var(--color-ivory);
+}
+
+.sheetClose:focus-visible {
+  outline: 2px solid var(--color-gold-light);
+  outline-offset: 2px;
+}
+
+/* A phone on its side keeps the footer one row high: the button, then Close Menu beside it. */
+@media (max-height: 500px) {
+  .sheetFooter {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sheetClose {
+    width: auto;
+    padding-inline: 12px;
+  }
 }

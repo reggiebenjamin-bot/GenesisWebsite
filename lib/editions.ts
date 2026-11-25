@@ -49,7 +49,8 @@ export const editions: readonly Edition[] = [
     audience: "For loan officers",
     headline: "Software that helps lending teams move faster on every borrower inquiry.",
     body: "Every borrower inquiry gets a fast first reply, document requests are tracked, and files never stall quietly.",
-    points: ["Instant first reply", "Document follow up", "File status in one view"],
+    /* A point that arrives with a higher Level says so, so a Level 01 buyer knows what they get. */
+    points: ["Instant first reply", "Document follow up, from Level 02", "File status in one view, from Level 03"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=lending" },
       { label: "See Pricing", href: editionPricing.lending.pricingPath },
@@ -64,7 +65,7 @@ export const editions: readonly Edition[] = [
     audience: "For agents and investors",
     headline: "Software that works every buyer and seller lead the same day.",
     body: "Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current. Built for agents, investors and teams.",
-    points: ["Same day lead response", "Showings booked", "Live deal board"],
+    points: ["Same day lead response", "Showings booked, from Level 03", "Live deal board, from Level 03"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=real-estate" },
       { label: "See Pricing", href: editionPricing.real_estate.pricingPath },
@@ -99,7 +100,7 @@ export const editions: readonly Edition[] = [
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=business" },
       /* Enterprise has no listed price: it is scoped on a call. */
-      { label: "Book a Call", href: "/contact#consultation-form" },
+      { label: "Book a Call", href: "/contact?topic=enterprise#consultation-form" },
     ],
     disclaimer: FUNDING_LINE,
   },

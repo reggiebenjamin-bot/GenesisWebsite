@@ -51,6 +51,29 @@ const business = {
   },
 };
 
+/** /contact?topic=classes, from /classes: asking to hear about the next class. */
+const CLASSES_TOPIC = "classes";
+const classesCopy = {
+  intro: {
+    eyebrow: "Genesis Classes",
+    title: "Get notified about the next class.",
+    description: [
+      "Leave your details and Genesis will tell you when the next live class is scheduled. Nothing is booked or charged.",
+    ],
+  },
+  aside: {
+    ...business.aside,
+    eyebrow: "Genesis Classes",
+    title: "Live classes and education.",
+    body: "Classes are live working sessions on running AI employees in a real business. No class is open for seats right now.",
+    areasLead: "Past classes covered:",
+    areas: ["AI employees for real estate", "Speed to lead", "Follow up", "Approvals and guardrails"],
+    closingLead: "No obligation.",
+    closing: "We will only write to you about the next class and anything you ask us about.",
+  },
+};
+const classesNote = "Please tell me when the next Genesis class is scheduled.";
+
 export default async function ContactPage({
   searchParams,
 }: PageProps<"/contact">) {
@@ -65,9 +88,10 @@ export default async function ContactPage({
   const church = note !== "";
   /* The free Church Website Check has its own words and asks for the website first. */
   const websiteCheck = church && isWebsiteCheckTopic(params.topic);
-  const copy = websiteCheck ? ministryContact.websiteCheck : church ? ministryContact : business;
+  const classes = !church && params.topic === CLASSES_TOPIC;
+  const copy = websiteCheck ? ministryContact.websiteCheck : church ? ministryContact : classes ? classesCopy : business;
   /* A business visitor booking the review from the assessment results starts with a note that says so. */
-  const reviewNote = !church && params.topic === ASSESSMENT_REVIEW_TOPIC ? assessmentReviewNote : "";
+  const reviewNote = !church && params.topic === ASSESSMENT_REVIEW_TOPIC ? assessmentReviewNote : classes ? classesNote : "";
   const formFirst = church || reviewNote !== "";
 
   const form = (

@@ -40,6 +40,11 @@ function CtaLink({
 }
 
 /** The two hero actions: the gold primary, then one secondary. */
+/* The event a secondary action reports: an edition's pricing, or a call. */
+function secondaryEvent(cta: EditionCta) {
+  return cta.href.includes("#levels") ? "edition_pricing_viewed" : "consultation_cta_clicked";
+}
+
 function HeroActions({ ctas, from }: { ctas: readonly EditionCta[]; from: string }) {
   const [primary, secondary] = ctas;
   return (
@@ -52,9 +57,11 @@ function HeroActions({ ctas, from }: { ctas: readonly EditionCta[]; from: string
         </TrackClick>
       ) : null}
       {secondary ? (
-        <CtaLink href={secondary.href} className={secondaryCta}>
-          <span>{secondary.label}</span>
-        </CtaLink>
+        <TrackClick event={secondaryEvent(secondary)} from={from}>
+          <CtaLink href={secondary.href} className={secondaryCta}>
+            <span>{secondary.label}</span>
+          </CtaLink>
+        </TrackClick>
       ) : null}
     </div>
   );
@@ -65,10 +72,21 @@ function HeroActions({ ctas, from }: { ctas: readonly EditionCta[]; from: string
  * with "What changes between the Levels?" answered from this edition's own
  * Level bullets.
  */
+/* Enterprise has no Levels: its question is how it is scoped. */
+const enterpriseScopeFaq = {
+  question: "How is Enterprise scoped?",
+  answer:
+    "On a call. Genesis looks at your locations, how many people need a login, the systems you use and the workflows you want covered, then recommends a starting point before anything is proposed in writing. Enterprise has no list price.",
+};
+
 function editionFaqsFor(key?: EditionKey) {
   return [
-    ...pricingFaqs.map((faq) =>
-      key && faq.question === "What changes between the Levels?" ? { ...faq, answer: levelsFaqAnswer(key) } : faq,
+    ...pricingFaqs.filter((faq) => key || faq.question !== "How do I know which Level fits?").map((faq) =>
+      faq.question !== "What changes between the Levels?"
+        ? faq
+        : key
+          ? { ...faq, answer: levelsFaqAnswer(key) }
+          : enterpriseScopeFaq,
     ),
     ...faqs.filter((faq) =>
       ["Do we have to replace our current systems?", "Does Genesis replace human judgment?"].includes(faq.question),
@@ -189,7 +207,7 @@ export function EditionLanding({
         ) : null}
 
         {children ? (
-          <div id="levels" className="scroll-mt-[calc(var(--header-height)+16px)]">
+          <div id={pricingKey ? "levels" : "scope"} className="scroll-mt-[calc(var(--header-height)+16px)]">
             {pricingKey ? (
               <SectionIntro
                 layout="split"
@@ -203,6 +221,21 @@ export function EditionLanding({
               />
             ) : null}
             {children}
+            {pricingKey ? (
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-2 border-t border-line-light pt-5">
+                <p className="max-w-[60ch] text-[0.95rem] text-muted-dark">
+                  Want to talk first? A short call confirms the right Level for your team.
+                </p>
+                <TrackClick event="consultation_cta_clicked" from={`edition_${slug}_levels`}>
+                  <Link
+                    href={`/contact?topic=${slug}#consultation-form`}
+                    className="inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+                  >
+                    Book a Call
+                  </Link>
+                </TrackClick>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </Sheet>
@@ -215,7 +248,7 @@ export function EditionLanding({
           titleId="edition-team-title"
           aside={
             <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              Operations, marketing, sales and the front desk, working inside {edition.name}. The call confirms which of them your Level puts to work.
+              Operations, marketing, sales and the front desk, working inside {edition.name}. {pricingKey ? "The call confirms which of them your Level puts to work." : "The call confirms which of them your build puts to work."}
             </p>
           }
         />
@@ -266,11 +299,15 @@ export function EditionLanding({
                 Assess My Business
               </ConsultationButton>
             </TrackClick>
-            {actions[1] ? (
-              <CtaLink href={actions[1].href} className={secondaryCta}>
-                <span>{actions[1].label}</span>
+            {/* The close offers the call: the prices are already above it. */}
+            <TrackClick event="consultation_cta_clicked" from={`edition_${slug}_close`}>
+              <CtaLink
+                href={pricingKey ? `/contact?topic=${slug}#consultation-form` : (actions[1]?.href ?? "/contact#consultation-form")}
+                className={secondaryCta}
+              >
+                <span>Book a Call</span>
               </CtaLink>
-            ) : null}
+            </TrackClick>
           </div>
         }
       />

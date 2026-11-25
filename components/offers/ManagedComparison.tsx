@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
@@ -15,7 +16,7 @@ const TIER_EDGES = [
 ] as const;
 
 /* The editions that share these Levels, in the nav order. */
-const EDITIONS = [
+export const MANAGED_EDITIONS = [
   { value: "lending", label: "Lending" },
   { value: "real_estate", label: "Real Estate Pros" },
   { value: "business", label: "Business" },
@@ -34,12 +35,20 @@ const EDITIONS = [
 export function ManagedComparison({
   headingLevel = "h3",
   checkout = false,
+  initialEdition = "",
 }: {
   headingLevel?: "h3" | "h4";
   checkout?: boolean;
+  /** The edition the visitor came from (?edition=), chosen for them. */
+  initialEdition?: string;
 }) {
   const Heading = headingLevel;
-  const [edition, setEdition] = useState("");
+  const [edition, setEdition] = useState(
+    MANAGED_EDITIONS.some((option) => option.value === initialEdition) ? initialEdition : "",
+  );
+  /* No edition yet: a visible message by the choice, never the browser's bubble on a hidden radio. */
+  const [needsEdition, setNeedsEdition] = useState(false);
+  const fieldset = useRef<HTMLFieldSetElement>(null);
   const rows = checkout ? "md:[grid-template-rows:repeat(4,auto)]" : "md:[grid-template-rows:repeat(3,auto)]";
   const span = checkout ? "md:row-span-4" : "md:row-span-3";
 
@@ -59,14 +68,7 @@ export function ManagedComparison({
 
           <div>
             <p className="font-display text-[0.75rem] tracking-[0.12em] text-gold-dark uppercase">Level {plan.step}</p>
-            {/* "per month" sits under the price until the cards are wide, so every card's rows line up. */}
-            <p className="mt-4 flex flex-wrap items-baseline gap-x-1.5">
-              <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
-                {plan.priceDisplay}
-              </span>
-              <span className="text-[0.9rem] whitespace-nowrap text-muted-dark max-lg:basis-full max-lg:pt-1">per month</span>
-            </p>
-            <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
+            <PriceTag amount={plan.priceDisplay} setup={plan.setupLine} className="mt-4" />
           </div>
 
           <div>
@@ -85,8 +87,16 @@ export function ManagedComparison({
                 variant="outline"
                 className="w-full"
                 onClick={(event) => {
-                  if (event.currentTarget.form?.checkValidity())
-                    track("managed_plan_selected", { from: "pricing", level: plan.step, edition });
+                  /* Every press is counted, then the edition is checked. */
+                  track("managed_plan_attempted", { from: "pricing", level: plan.step, edition: edition || "none" });
+                  if (!edition) {
+                    event.preventDefault();
+                    setNeedsEdition(true);
+                    fieldset.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+                    fieldset.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
+                    return;
+                  }
+                  track("managed_plan_selected", { from: "pricing", level: plan.step, edition });
                 }}
               >
                 Start Level {plan.step}
@@ -102,30 +112,45 @@ export function ManagedComparison({
     <div>
       {checkout ? (
         <form action="/api/managed/checkout" method="POST">
-          <fieldset className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <legend className="float-left mr-2 text-[0.95rem] font-semibold">Your edition</legend>
-            {EDITIONS.map((option) => (
+          {/* On a phone: the label on its own line, then the three as an even segmented row. */}
+          <fieldset
+            ref={fieldset}
+            aria-describedby="managed-edition-help"
+            aria-invalid={needsEdition || undefined}
+            className="mb-5 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-3"
+          >
+            <legend className="mb-2 text-[0.95rem] font-semibold sm:float-left sm:mr-2 sm:mb-0">Your edition</legend>
+            {MANAGED_EDITIONS.map((option) => (
               <label
                 key={option.value}
-                className="flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[6px] border border-line-light bg-white/60 px-4 text-[0.95rem] transition-colors duration-200 hover:border-gold-dark has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-ivory has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold-dark/40"
+                className="flex min-h-11 cursor-pointer items-center justify-center gap-2.5 rounded-[6px] border border-line-light bg-white/60 px-2 text-center text-[0.95rem] leading-tight max-sm:text-[0.88rem] sm:px-4 transition-colors duration-200 hover:border-gold-dark has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-ivory has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold-dark/40"
               >
                 <input
                   type="radio"
                   name="edition"
                   value={option.value}
-                  required
                   checked={edition === option.value}
-                  onChange={() => setEdition(option.value)}
+                  onChange={() => {
+                    setEdition(option.value);
+                    setNeedsEdition(false);
+                  }}
                   className="peer sr-only"
                 />
                 <span
                   aria-hidden="true"
-                  className="grid size-4 place-items-center rounded-full border-[1.5px] border-ink/55 bg-white peer-checked:border-gold-light peer-checked:bg-gold-light"
+                  className="grid size-4 shrink-0 place-items-center rounded-full border-[1.5px] border-ink/55 bg-white peer-checked:border-gold-light peer-checked:bg-gold-light max-sm:hidden"
                 />
                 {option.label}
               </label>
             ))}
-            <span className="w-full text-[0.84rem] text-muted-dark sm:w-auto">The same Levels and prices for all three.</span>
+            <span id="managed-edition-help" className="col-span-3 text-[0.84rem] text-muted-dark sm:w-auto">
+              The same Levels and prices for all three. Your edition sets up your onboarding.
+            </span>
+            {needsEdition ? (
+              <p role="alert" className="col-span-3 w-full text-[0.9rem] font-semibold text-gold-dark">
+                Choose your edition first, then press Start again.
+              </p>
+            ) : null}
           </fieldset>
           {cards}
         </form>

@@ -30,9 +30,9 @@ const productPages = [
 ];
 
 /* The two consults and the classes, under their own label, so they never read as editions. */
-/* /classes is static HTML in public/ served by a rewrite, not an App Router route, so it gets a
-   plain <a>: next/link would prefetch it as RSC and log a 404. */
-const STATIC_PAGES = new Set(["/classes"]);
+/* Pages served as static HTML from public/ by a rewrite, not App Router routes, get a plain <a>:
+   next/link would prefetch them as RSC and log a 404. /classes is a route now, so none are listed. */
+const STATIC_PAGES = new Set<string>([]);
 const toolPages = [
   { label: "Capital Desk", href: "/capital-desk" },
   { label: "Leadscout", href: "/leadscout" },

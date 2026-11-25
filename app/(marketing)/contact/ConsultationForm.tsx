@@ -189,6 +189,7 @@ export function ConsultationForm({
 
       if (!response.ok) throw new Error("Unable to submit.");
       /* The conversion itself: the review booked from the assessment, or any other call. */
+      if (topic === "classes") track("classes_notify_requested", { from: "contact" });
       track(topic === "assessment-review" ? "infrastructure_review_booked" : "direct_consultation_booked", {
         topic: topic || (church ? "ministry" : "general"),
         plan: String(payload.plan ?? "") || (/^ministry-([a-z]+)$/.exec(topic)?.[1] ?? ""),
@@ -245,7 +246,7 @@ export function ConsultationForm({
       className="grid gap-5 border border-line-light bg-paper p-[clamp(22px,2.6vw,34px)]"
     >
       <div className="border-b border-line-light pb-5">
-        <Eyebrow>{check ? checkForm.eyebrow : "Book a call"}</Eyebrow>
+        <Eyebrow>{check ? checkForm.eyebrow : topic === "classes" ? "Genesis Classes" : "Book a call"}</Eyebrow>
         <h2 className="mt-3 text-[clamp(1.45rem,2.4vw,2rem)]">
           {check ? checkForm.title : church ? churchForm.title : "Tell us about the operation."}
         </h2>
@@ -397,7 +398,7 @@ export function ConsultationForm({
                 {`Level ${plan.step} ${plan.name}, ${plan.userLimit}, ${plan.priceDisplay} a month ${plan.setupLine}`}
               </option>
             ))}
-            <option value="done-for-you">Done For You, scoped on a call</option>
+            <option value="done-for-you">Done for you, scoped on a call</option>
           </select>
         </label>
       )}
@@ -450,9 +451,15 @@ export function ConsultationForm({
             ? checkForm.submit
             : church
               ? churchForm.submit
-              : "Book a Call"}
-        <span aria-hidden="true">&#8599;</span>
+              : topic === "classes"
+                ? "Notify Me About the Next Class"
+                : "Book a Call"}
       </SubmitButton>
+      {check || topic === "classes" ? null : (
+        <p className="-mt-2 text-[0.9rem] font-medium text-ink">
+          Genesis will email you to set a time that works for you.
+        </p>
+      )}
 
       <div className="grid gap-2 text-[0.875rem] text-muted-dark">
         {church ? (

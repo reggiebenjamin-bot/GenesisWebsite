@@ -22,6 +22,7 @@ import {
   levelLabel,
   planLabelBeside,
   questionLabel,
+  questionOptions,
   stepsFor,
   suggestedMinistryPlan,
   toggleChoice,
@@ -52,6 +53,11 @@ const inverseAction =
   "inline-flex min-h-[52px] w-full items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ivory transition-colors duration-200 hover:border-ivory";
 /* Paired buttons share one width: full width and stacked on phones, two equal columns from sm up. */
 const actionPair = "grid w-full gap-3 sm:max-w-[36rem] sm:grid-cols-2";
+/* Back and Continue under each step: one part to two on a phone, two 180px buttons from sm up. */
+const stepPair =
+  "mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-t border-line-light pt-6 sm:flex sm:items-center sm:justify-between";
+const backAction =
+  "inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[6px] border border-ink/30 px-4 text-[0.94rem] font-bold text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory sm:w-auto sm:min-w-[180px]";
 
 /* A step heading that takes focus when the step changes: a soft gold underline, never a hard box. */
 const stepHeading =
@@ -250,8 +256,17 @@ function QuestionBlock({
   }
 
   /* On a phone, each short answer (16 characters or fewer) takes half a row and each long one
-     the whole row, judged answer by answer. */
-  const wide = (text: string) => text.length > 16;
+     the whole row, judged answer by answer. A short answer left alone at the end of a run of
+     short ones takes the whole row too, so no tile sits orphaned in half a row. */
+  const options = questionOptions(question, persona);
+  const short = (text: string) => text.length <= 16;
+  const wideAt = options.map((option, at) => {
+    if (!short(option.label)) return true;
+    let run = 0;
+    for (let back = at; back >= 0 && short(options[back].label); back -= 1) run += 1;
+    const lastOfRun = at === options.length - 1 || !short(options[at + 1].label);
+    return lastOfRun && run % 2 === 1;
+  });
 
   return (
     <fieldset
@@ -273,10 +288,10 @@ function QuestionBlock({
         </p>
       ) : null}
       <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-        {question.options.map((option) => (
+        {options.map((option, at) => (
           <Chip
             key={option.value}
-            wide={wide(option.label)}
+            wide={wideAt[at]}
             name={question.id}
             value={option.value}
             label={option.label}
@@ -570,19 +585,17 @@ export function AssessmentForm({
               {missing.length ? "Please choose an answer for the highlighted question." : ""}
             </p>
 
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-line-light pt-6">
+            {/* Back and Continue are one even pair: the same height, an outlined Back beside the gold
+                Continue (one part to two on a phone, the same width from sm up). */}
+            <div className={cn(stepPair, index === 0 && "max-sm:grid-cols-1")}>
               {index > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => goTo(Math.max(index - 1, 0))}
-                  className="inline-flex min-h-11 items-center gap-2 text-[0.9rem] font-bold transition-colors duration-200 hover:text-gold-dark"
-                >
+                <button type="button" onClick={() => goTo(Math.max(index - 1, 0))} className={backAction}>
                   <span aria-hidden="true">←</span> Back
                 </button>
               ) : (
-                <span />
+                <span className="max-sm:hidden" />
               )}
-              <SubmitButton type="button" onClick={next} className="min-w-[180px] shrink-0 max-sm:flex-1">
+              <SubmitButton type="button" onClick={next} className="w-full sm:w-auto sm:min-w-[180px]">
                 Continue <span aria-hidden="true">→</span>
               </SubmitButton>
             </div>
@@ -676,15 +689,11 @@ export function AssessmentForm({
               </div>
             ) : null}
 
-            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line-light pt-6">
-              <button
-                type="button"
-                onClick={() => goTo(CONTACT_STEP - 1)}
-                className="inline-flex min-h-11 items-center gap-2 text-[0.9rem] font-bold transition-colors duration-200 hover:text-gold-dark"
-              >
+            <div className={cn(stepPair, "mt-0")}>
+              <button type="button" onClick={() => goTo(CONTACT_STEP - 1)} className={backAction}>
                 <span aria-hidden="true">←</span> Back
               </button>
-              <SubmitButton type="submit" disabled={status === "submitting"} className="min-w-[180px] max-sm:flex-1">
+              <SubmitButton type="submit" disabled={status === "submitting"} className="w-full sm:w-auto sm:min-w-[180px]">
                 {status === "submitting" ? "Preparing…" : recommended ? assessmentCopy.contact.churchSubmit : assessmentCopy.contact.submit}
                 {status === "submitting" ? null : <span aria-hidden="true">→</span>}
               </SubmitButton>
@@ -692,7 +701,7 @@ export function AssessmentForm({
 
             <p className="text-[0.875rem] leading-relaxed text-muted-dark">
               Genesis uses these details to follow up about your results. Completing the assessment
-              does not create an account or commit either party to an engagement.
+              does not create an account. {recommended ? "It does not sign your church up for anything." : "It does not sign you up for anything."}
             </p>
           </form>
         )}
@@ -756,7 +765,7 @@ function SnapshotHeader({
         {headline}
       </h2>
       <Received who={who} />
-      <p className="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-muted-dark">{intro}</p>
+      <p className="mt-3 max-w-[62ch] text-[1rem] leading-relaxed text-muted-dark max-sm:hidden">{intro}</p>
       {children}
     </Card>
   );
@@ -798,12 +807,15 @@ function RecommendationActions({
 /** What the answers point to, in its own card, the same on both paths. */
 function FindingsCard({
   title,
+  lead,
   findings,
   nothing,
   caveat,
   labelFor,
 }: {
   title: string;
+  /** One intro line inside the card, under its label. */
+  lead?: string;
   findings: readonly ResultFinding[];
   nothing: string;
   caveat: string;
@@ -813,6 +825,7 @@ function FindingsCard({
   return (
     <Card className="mt-4">
       <Eyebrow>{title}</Eyebrow>
+      {lead ? <p className="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{lead}</p> : null}
       {findings.length ? (
         <ol className="mt-4 grid">
           {findings.map((finding, position) => (
@@ -999,7 +1012,11 @@ function BusinessResults({
             <RecommendationActions
               callHref={reviewHref}
               callLabel={results.ctaPrimary}
-              secondary={{ label: `See ${edition.name}`, href: edition.href }}
+              secondary={
+                suggested?.step
+                  ? { label: `Start Level ${suggested.step}`, href: edition.pricingHref }
+                  : { label: `See ${edition.name}`, href: edition.href }
+              }
               review={who.review}
               onCall={bookReview("assessment_results_top")}
             />
@@ -1112,10 +1129,12 @@ function ChurchResults({
         </div>
       </SnapshotHeader>
 
-      {suggested && findings.every((finding) => finding.plan === suggested.id) ? (
-        <p className="mt-4 px-1 text-[0.92rem] text-muted-dark">Everything below is in {suggested.name}.</p>
-      ) : null}
       <FindingsCard
+        lead={
+          suggested && findings.length && findings.every((finding) => finding.plan === suggested.id)
+            ? `Everything below is in ${suggested.name}.`
+            : undefined
+        }
         title={results.churchFindingsTitle}
         findings={findings}
         nothing={results.churchNothing}

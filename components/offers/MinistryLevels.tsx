@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Blocks";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
+import { PriceTag } from "@/components/offers/PriceTag";
 import { ministryLevels } from "@/lib/ministryPage";
 
 /* How many of a plan's points a phone shows before "See everything". */
@@ -51,12 +52,7 @@ export function MinistryLevels({ aside }: { aside?: ReactNode }) {
             <p className="mt-3 text-[0.98rem] leading-snug">{plan.summary}</p>
             <p className="mt-1.5 text-[0.9rem] leading-snug text-muted-dark">{plan.suits}</p>
 
-            <p className="mt-6 flex items-baseline gap-1.5 border-t border-line-light pt-5">
-              <span className="text-[clamp(2.1rem,3vw,2.7rem)] leading-none tracking-[-0.05em] tabular-nums">
-                {plan.priceDisplay}
-              </span>
-              <span className="text-[0.9rem] text-muted-dark">{priceUnit}</span>
-            </p>
+            <PriceTag amount={plan.priceDisplay} className="mt-6 border-t border-line-light pt-5" />
 
             {/* A phone shows the first three, with the rest one tap away; wider screens show all. */}
             <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">

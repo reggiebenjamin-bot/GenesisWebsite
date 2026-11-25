@@ -196,7 +196,7 @@ export const aiEmployeesEnterprise = {
   eyebrow: "Enterprise",
   name: "Done For You",
   /** Public title. No price. */
-  publicTitle: "Done For You, scoped on a call",
+  publicTitle: "Done for you, scoped on a call",
   /** Kept for webhooks and tests. Never render on marketing pages. */
   priceLine: "$15,000 setup plus $2,500 a month.",
   setupDisplay: "$15,000",

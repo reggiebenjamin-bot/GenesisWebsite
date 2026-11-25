@@ -199,12 +199,14 @@ export function MinistryHero() {
           {/* The first price on a phone, and the way down to the plans. */}
           <p className="mt-5 text-[0.95rem] text-ivory/72">
             {ministryPlansCue.line}{" "}
-            <a
-              href={ministryPlansCue.link.href}
-              className="inline-flex min-h-11 items-center font-bold text-gold-light underline decoration-gold-light/40 underline-offset-4 hover:decoration-gold-light"
-            >
-              {ministryPlansCue.link.label}
-            </a>
+            <TrackClick event="edition_pricing_viewed" from="ministry_hero">
+              <a
+                href={ministryPlansCue.link.href}
+                className="inline-flex min-h-11 items-center font-bold text-gold-light underline decoration-gold-light/40 underline-offset-4 hover:decoration-gold-light"
+              >
+                {ministryPlansCue.link.label}
+              </a>
+            </TrackClick>
           </p>
         </div>
 
@@ -557,7 +559,7 @@ export function MinistryProtection() {
                 <h3 className="text-[clamp(1.15rem,1.6vw,1.35rem)] leading-snug font-medium tracking-[-0.015em] text-ivory">
                   {rule.title}
                   {"plan" in rule ? (
-                    <span className="ml-2 inline-block align-[3px] font-mono text-[0.72rem] font-semibold tracking-[0.14em] text-gold uppercase">
+                    <span className="ml-2 inline-block align-[3px] font-mono text-[0.75rem] font-semibold tracking-[0.12em] text-gold uppercase">
                       {rule.plan}
                     </span>
                   ) : null}
@@ -632,7 +634,7 @@ export function MinistryCheckAndFaq() {
             <p className="mt-5 max-w-[48ch] text-[1rem] leading-relaxed text-ivory/74">{ministryWebsiteCheck.body}</p>
             <div className="mt-8">
               <TrackClick event="church_website_check_clicked" from="ministry_check">
-                <ConsultationButton href={ministryWebsiteCheck.action.href}>
+                <ConsultationButton href={ministryWebsiteCheck.action.href} className="max-sm:w-full">
                   {ministryWebsiteCheck.action.label}
                 </ConsultationButton>
               </TrackClick>
