@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Notes · Genesis Ministry · Design preview</title>
@@ -34,10 +34,25 @@
   #nt-actions .v2-button{width:100%;min-height:44px;margin:0;justify-content:center;flex-wrap:wrap;text-align:center;line-height:1.2;white-space:normal}
   #nt-actions .nt-lock{display:flex;justify-content:center;flex:1 1 100%}
   #nt-actions .nt-lock .gm-nav-lock{margin:2px 0 0}
-  @media (min-width:861px){#nt-actions{grid-template-columns:repeat(3,minmax(0,1fr));min-width:min(560px,100%)}}
   .nt-video{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;color:var(--v2-text-2);font-size:13.5px;line-height:1.5}
   @media (max-width:860px){.nt-titlerow .gm-tour-btn{width:44px;min-width:44px;padding:0;justify-content:center}.nt-titlerow .gm-tour-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}}
   @media (max-width:860px){.nt-page .v2-next-actions{grid-template-columns:minmax(0,1fr)!important}}
+  /* Wide screens (review of November 24): Take the Tour joins the right-aligned row of header actions as
+     its last, quiet button, every header button shares one top line, and the title block keeps the rest
+     of the width, so the subtitle never breaks around a button. Phones keep the icon in the title row. */
+  #nt-tour{display:none}
+  #nt-next:empty{min-height:246px}
+  @media (max-width:860px){#nt-next:empty{min-height:410px}}
+  @media (min-width:861px){
+    .nt-page .v2-page-head{flex-wrap:wrap;align-items:flex-start;row-gap:14px}
+    .nt-page .v2-page-head>div:first-child{flex:1 1 360px;min-width:0}
+    #nt-head-actions{display:none!important}
+    #nt-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:flex-start;margin-left:auto;min-width:0}
+    #nt-actions .v2-button{width:auto;white-space:nowrap}
+    #nt-tour{display:inline-flex}
+  }
+  /* The byline sits on its own line under the scripture, never as a stray "· Pastor Priya". */
+  .nt-by{display:block}
   .nt-video svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--v2-muted)}
 </style>
 </head>
@@ -56,6 +71,7 @@
         <a class="v2-button" href="church-note.html?new=sermon&amp;way=file" id="nt-new-sermon"></a>
         <a class="v2-button" href="church-note.html?new=devotional" id="nt-new-devo"></a>
         <button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What was Sunday's message about?" id="nt-ask"></button>
+        <button class="v2-button v2-button-quiet" type="button" data-gm-action="start-tour" id="nt-tour"></button>
       </div>
     </header>
 
@@ -139,6 +155,7 @@ GM.ready(function (ctx) {
   /* On Care the lock sits under the label, so the two buttons stay one width. */
   if (!SHEP) $("nt-new-devo").insertAdjacentHTML("beforeend", '<span class="nt-lock"><em class="gm-nav-lock" title="Included in Shepherd">' + GM.icon("lock") + "Included in Shepherd</em></span>");
   $("nt-ask").textContent = "Ask " + HOPE; $("nt-ask").insertAdjacentHTML("afterbegin", ic("genesis"));
+  $("nt-tour").innerHTML = ic("help") + "<span>Take the Tour</span>";
   var sermons = NC.sermons.length, devos = NC.devotionals.length;
   function scheduledCount() { return notes.filter(function (n) { return statusOf(n) === "scheduled"; }).length; }
   function paintSub() {
@@ -214,7 +231,7 @@ GM.ready(function (ctx) {
     var list = filtered();
     var total = notes.filter(function (n) { return view === "all" || (view === "sermons" ? n.kind === "sermon" : view === "devotionals" ? n.kind === "devotional" : statusOf(n) === "scheduled"); }).length;
     var rows = list.map(function (n) {
-      return '<tr data-nt-row="' + esc(n.id) + '"><td class="v2-primary-cell"><a class="v2-deal-row-link" href="church-note.html?id=' + esc(n.id) + '"><b>' + esc(n.title) + "</b></a><span>" + N.refHTML(ref(n)) + " · " + esc(speaker(n)) + "</span></td>" +
+      return '<tr data-nt-row="' + esc(n.id) + '"><td class="v2-primary-cell"><a class="v2-deal-row-link" href="church-note.html?id=' + esc(n.id) + '"><b>' + esc(n.title) + "</b></a><span>" + N.refHTML(ref(n)) + '<span class="nt-by">' + esc(speaker(n)) + "</span></span></td>" +
         "<td>" + GM.pill(typeName(n), n.kind === "sermon" ? "neutral" : "info") + "</td><td>" + badge(n) + '</td><td class="nt-where">' + esc(where(n)) + "</td><td>" + esc(N.dateShort(n.date).replace(/, 2026$/, "")) + "</td></tr>";
     }).join("");
     var mobile = list.map(function (n) {

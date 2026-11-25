@@ -314,7 +314,7 @@
       text: "Interview for a teaching job this Thursday. Please pray I can rest the night before.",
       replies: [{ from: "s-sofia", at: "2026-08-05T08:30", text: "Praying for Thursday, Sarah. You are ready." }, { from: "member", at: "2026-08-12T17:45", text: "I got the job! Thank you for praying." }] }
   ];
-  D.crisisLine = "If you or someone else is in danger, call 911. To talk with someone now, call or text 988.";
+  D.crisisLine = "In danger or crisis? Call 911, or call or text 988.";
 
   /* ------------------------------------------------------------------ care: message threads */
   /* kind: "everyday" = staff can see it, Genesis may draft a reply.

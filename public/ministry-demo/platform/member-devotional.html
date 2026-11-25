@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Today's Devotional · Member app · Genesis Ministry · Design preview</title>
@@ -199,7 +199,7 @@ function mxStage(o) {
   if (!stage || body.classList.contains("mx-staged")) return;
   var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
   body.classList.add("mx-staged");
-  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+  body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
 
   var bar = stage.querySelector(".m-stagebar");
   var brand = bar.querySelector(".m-stage-brand");

@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Sunday's Notes · Genesis Ministry · Design preview</title>
@@ -17,7 +17,8 @@
   .ne-top{display:flex!important;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .ne-top .v2-page-actions,.ne-top .v2-page-back{margin:0!important;padding:0!important}
   .ne-head{display:grid;gap:12px}
-  .ne-head h1{margin:0}
+  /* One heading face for page titles across Notes: the Genesis OS serif, as on All Notes. */
+  .ne-head h1{margin:0;font-family:var(--v2-font-serif);font-weight:500;letter-spacing:-.02em}
   .ne-head p{margin:0;color:var(--v2-text-2);font-size:14px;line-height:1.55}
   .ne-page .v2-stepper li{font-size:12px;letter-spacing:.06em}
   .ne-ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0}
@@ -97,13 +98,18 @@
   .ne-bar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;position:sticky;bottom:0;z-index:20;margin-top:4px;padding:12px 0;background:var(--v2-bg);border-top:1px solid var(--v2-border)}
   .ne-bar[hidden],body.ne-typing .ne-bar{display:none}
   .ne-bar .v2-button{margin:0;width:100%;min-height:48px;justify-content:center}
-  @media (min-width:861px){.ne-bar{grid-template-columns:minmax(0,360px)}}
+  /* Wide screens: the action sits at the right edge of the content column, and the bar's top edge fades
+     the lines that scroll under it instead of cutting them in half. */
+  @media (min-width:861px){
+    .ne-bar{grid-template-columns:minmax(0,360px);justify-content:end;border-top:0;box-shadow:0 -28px 24px -4px var(--v2-bg)}
+  }
   /* Phones held upright: the bar is pinned at the foot, and its right end is kept free for the round Hope
      button, which sits inside the bar, so Hope never covers a line, a pencil or a button. */
   @media (max-width:860px) and (min-height:501px){
     .ne-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:10px 76px calc(10px + env(safe-area-inset-bottom,0px)) 16px;background:var(--v2-sidebar)}
     body.ne-bar-on .v2-main{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))!important;scroll-padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
-    body.ne-bar-on .v2-genesis-opener{bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;right:16px!important}
+    /* The round Hope button sits in the bar's right end, above the bar (it was drawn under it). */
+    body.ne-bar-on .v2-genesis-opener{bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;right:16px!important;z-index:61!important}
     body.ne-typing .v2-genesis-opener{display:none!important}
   }
   /* Phones on their side: the bar sits at the end of the draft instead of over it, and a 64px gutter on the
@@ -390,11 +396,14 @@ GM.ready(function (ctx) {
   /* ---------- Head ---------- */
   function paintHead() {
     $("ne-title").textContent = DRAFT && step !== "done" ? N.dateLong(note.date) : note.title;
+    /* While the title is the date, the line under it does not say the date again. */
+    var dated = DRAFT && step !== "done";
     $("ne-sub").textContent = DEVO
-      ? "Devotional for " + N.dateLong(note.date) + " · From " + pastor + "'s " + WAY_SHORT[way]
-      : note.series + ", " + note.part.toLowerCase() + " · " + pastor + " · " + N.dateLong(note.date) + (note.length ? " · " + note.length : "");
+      ? (dated ? "Devotional" : "Devotional for " + N.dateLong(note.date)) + " · From " + pastor + "'s " + WAY_SHORT[way]
+      : note.series + ", " + note.part.toLowerCase() + " · " + pastor + (dated ? "" : " · " + N.dateLong(note.date)) + (note.length ? " · " + note.length : "");
     /* On a phone the four steps keep one row with short labels. */
-    var STEPS = [["Bring It In", "Words"], ["Shape", "Shape"], ["Review", "Review"], ["Publish", "Publish"]];
+    /* One label per step at every width: the four still fit one row on a 393px phone. */
+    var STEPS = [["Bring It In", "Bring It In"], ["Shape", "Shape"], ["Review", "Review"], ["Publish", "Publish"]];
     var cur = { "in": 0, shape: 1, review: 2, sheet: 3, done: 4 }[step];
     $("ne-steps").innerHTML = STEPS.map(function (s, i) {
       var cls = i < cur ? "is-done" : i === cur ? "is-current" : "";

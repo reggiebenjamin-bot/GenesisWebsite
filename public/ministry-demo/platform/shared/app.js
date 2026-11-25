@@ -548,7 +548,7 @@
      data-page keys that belong to this item (old page keys and record pages). */
   var NAV = {
     church: {
-      label: "Church workspace", brand: "Ministry OS", home: "church-today.html",
+      label: "Church workspace", brand: "Ministry", home: "church-today.html",
       action: { key: "add-guest", label: "Add a Guest", icon: "plus" },
       work: [
         { key: "today", label: "Today", href: "church-today.html", icon: "today", module: "today", hint: "What needs a person today", sepAfter: true },
@@ -675,6 +675,14 @@
     }).join("") + "</nav>";
   }
   var PREVIEW_LABEL = '<span class="gm-preview-label" role="note">Design preview. Sample data shown.</span>';
+  /* The sample strip at the top of every workspace and member screen. */
+  GM.previewStripHTML = function () {
+    return '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span><span class="gm-strip-words">Design preview<span class="gm-strip-long">. Sample data shown</span>.</span>' + talkLinkHTML() + "</div>";
+  };
+  /* Talk With Genesis, always in view in the sample strip: a pastor who lands deep in the demo can still reach a person. */
+  function talkLinkHTML() {
+    return D.genesisContact ? '<a class="gm-strip-talk" href="' + esc(D.genesisContact) + '" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>' : "";
+  }
 
   /* ------------------------------------------------------------------ shell: church and genesis (Genesis OS) */
   /* Account-menu links. */
@@ -735,11 +743,11 @@
     var hopeLocked = side === "church" && !GM.isIncluded("genesis");
 
     /* As in Genesis OS: WORK, ASSISTANT (Ask Hope, no count badge, as Ask Hawk has none), INTELLIGENCE, SYSTEM. */
-    var nav = '<div class="v2-nav-group"><div class="v2-nav-label">Work</div>' + cfg.work.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
+    var nav = '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Your Week" : "Work") + '</div>' + cfg.work.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
       '<div class="v2-nav-group v2-genesis-nav"><div class="v2-nav-label">Assistant</div><a href="#v2-genesis-panel" data-route="genesis" data-gm-action="open-hope" data-tour="shell.genesis" aria-label="Ask ' + esc(ASSISTANT.name) + (hopeLocked ? ", included in the Shepherd plan" : "") + '">' + vIcon("genesis") + "<span>Ask " + esc(ASSISTANT.name) + "</span>" +
       (hopeLocked ? lockFor("genesis") : "") + "</a></div>" +
-      '<div class="v2-nav-group"><div class="v2-nav-label">Intelligence</div>' + cfg.intelligence.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
-      (cfg.system ? '<div class="v2-nav-group"><div class="v2-nav-label">System</div>' + cfg.system.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" : "");
+      '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Your People" : "Intelligence") + '</div>' + cfg.intelligence.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
+      (cfg.system ? '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Settings" : "System") + '</div>' + cfg.system.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" : "");
 
     /* A page shown as another person (data-viewer: Nadia on Guests, Renee on Find) says so in the account
        row, so the change of greeting and of what is shown reads as a deliberate role preview. */
@@ -809,7 +817,7 @@
     root.querySelector(".v2-shell").appendChild(main);
     body.insertBefore(root, body.firstChild);
     body.insertAdjacentHTML("afterbegin", '<a class="v2-skip-link" href="#v2-main">Skip to workspace</a>');
-    body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+    body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
     body.classList.add("v2-showing-sample");
 
     /* The round Genesis button floats over the page, so it comes after the page in Tab order (WCAG 2.4.3). */

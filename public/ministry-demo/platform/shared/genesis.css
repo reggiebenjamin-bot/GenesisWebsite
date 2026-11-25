@@ -152,6 +152,13 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* The sample strip is a design-preview strip, not a button. */
 .v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px}
 .gm-preview-strip b{font-weight:700}
+/* The strip's dot is its first span only; the words and Talk With Genesis are ordinary text. */
+.v2-fixture-badge.gm-preview-strip .gm-strip-words,.v2-fixture-badge.gm-preview-strip .gm-strip-words span,.v2-fixture-badge.gm-preview-strip .gm-strip-talk span{width:auto;height:auto;border-radius:0;background:none;flex:none}
+.gm-strip-talk{display:inline-flex;align-items:center;min-height:44px;margin-left:10px;padding:0 4px;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.gm-strip-talk:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:4px}
+@media (max-width:520px){.gm-strip-long{display:none}}
+/* A phone on its side keeps the strip at 28px: Talk With Genesis stays in Hope's answers there. */
+@media (max-height:500px){.gm-strip-talk{display:none}}
 /* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
    page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
 .v2-fixture-badge.gm-preview-strip{background:linear-gradient(rgba(232,149,90,.12),rgba(232,149,90,.12)),var(--v2-bg,#0d0e10)}
@@ -185,7 +192,7 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* The plan level shown in this preview. Sits in the account area of the sidebar. */
 .gm-plan-switch{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:3px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface)}
 .gm-plan-switch>span{padding:0 4px 0 6px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.gm-plan-switch a{flex:1 1 auto;min-height:30px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
+.gm-plan-switch a{flex:1 1 auto;min-height:44px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
 .gm-plan-switch a:hover{background:var(--v2-hover);color:var(--v2-text)}
 /* The plan shown is marked like the current nav row (one gold fill in the sidebar: the action). */
 .gm-plan-switch a[aria-current="true"]{background:var(--v2-accent-soft);box-shadow:inset 0 0 0 1px rgba(var(--v2-accent-rgb),.32);color:var(--v2-text)}
@@ -813,7 +820,8 @@ section.v2-card>h2:first-child,div.v2-card>h2:first-child{margin-top:0}
 .hd-g .gm-skip-screen:hover{color:var(--v2-text)}
 .hd-card .gm-skip-screen{color:inherit;opacity:.78;font-family:var(--hd-font,inherit)}
 .hd-g .gm-skip-screen:focus-visible,.hd-card .gm-skip-screen:focus-visible{outline:2px solid var(--v2-focus,currentColor);outline-offset:2px;border-radius:4px}
-@media (max-width:860px),(pointer:coarse){.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{min-height:44px;margin-top:2px}}
+/* Skip to Next Screen is a 44px target at every width (review of November 24: 17px tall on desktop). */
+.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{min-height:44px;margin-top:2px}
 /* Round 2: the card keeps room for the link from the moment a step is drawn, so the link never makes
    the card taller after the card and its target were placed (on phones that hid the target's foot).
    Every step card but the last carries it; the last links on, the Done card and the invite never do. */

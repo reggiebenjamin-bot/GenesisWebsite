@@ -103,8 +103,10 @@
     ".nv-soon{display:inline-block;margin-top:6px;font-size:14px;font-weight:700;color:var(--nv-accent-ink,var(--nv-accent))}",
     ".nv-novideo{margin:0;color:var(--nv-muted);font-size:16px;align-self:center}",
     ".nv-key{display:block;margin-bottom:4px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--nv-muted)}",
-    "@media (max-width:400px){.nv-dsep{display:none}.nv-ddate{display:block}}",
-    "html.nv-on footer a{display:inline-flex;align-items:center;min-height:44px}",
+    /* On a phone the devotional label is one line and its date a second, even where the look's label is a flex row. */
+    "@media (max-width:480px){.nv-label{flex-wrap:wrap;row-gap:2px}.nv-dsep{display:none}.nv-ddate{display:block;flex-basis:100%}}",
+    /* Links inside a footer's lines of text get a 44px row; links a look already stacks keep their own layout. */
+    "html.nv-on footer :is(p,li,small,span)>a{display:inline-flex;align-items:center;min-height:44px}",
     "@media (max-width:600px){.nv-row{grid-template-columns:52px minmax(0,1fr) auto;gap:12px}.nv-date b{font-size:28px}.nv-points li{font-size:17px}.nv-more{padding-left:0}}",
     /* A phone on its side: less hero padding, and the Hope circle keeps clear of the words. */
     "@media (max-height:500px){.nv-head{padding-top:24px}.nv-sec{padding-block:28px}.nv-head .nv-actions{margin-top:16px}html.nv-on .hd-launch{right:calc(12px + env(safe-area-inset-right,0px))!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important}.nv-head>div{padding-right:max(64px,env(safe-area-inset-right,0px))}}"

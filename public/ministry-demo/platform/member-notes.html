@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Sunday's Notes · Member app · Genesis Ministry · Design preview</title>
@@ -53,7 +53,7 @@
   .m-app .mn-copy{display:grid;gap:10px;margin-top:16px}
   .m-app .mn-copy .m-btn{width:100%;min-height:48px}
   .m-app .mn-sunday{margin:8px 0 0}
-  .m-app .mn-sunday a{display:inline-flex;align-items:center;min-height:44px}
+  .m-app .mn-sunday .m-btn{width:100%;font-weight:600}
   /* One disabled look across the reader: a dashed outline in full-contrast type, never a faded button. */
   .m-app .mn-two .m-btn:disabled{opacity:1;border-style:dashed;cursor:default;color:var(--m-muted)}
   /* While following, the tab bar steps aside so the point and its two buttons fit, even on a phone on its side. */
@@ -223,7 +223,7 @@ function mxStage(o) {
   if (!stage || body.classList.contains("mx-staged")) return;
   var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
   body.classList.add("mx-staged");
-  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+  body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
 
   var bar = stage.querySelector(".m-stagebar");
   var brand = bar.querySelector(".m-stage-brand");
@@ -408,7 +408,7 @@ GM.ready(function (ctx) {
     $("mn-follow").addEventListener("touchstart", function (e) { if (e.target.closest("textarea")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     $("mn-follow").addEventListener("touchend", function (e) { if (x0 == null) return; var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1); }, { passive: true });
     /* On a weekday the demo offers the Sunday morning view, where Follow Along comes first. */
-    if (!SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").innerHTML = '<a class="m-link" href="' + esc(GM.url("member-notes.html", { id: n.id, day: "sun" })) + '">Demo: See It on Sunday Morning</a>'; }
+    if (!SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").innerHTML = '<a class="m-btn m-btn--sm" href="' + esc(GM.url("member-notes.html", { id: n.id, day: "sun" })) + '">Preview: Follow Along During the Sermon</a>'; }
     if (SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").textContent = "Demo: Sunday, " + N.dateLong(n.date).replace(/^Sunday, /, "") + ", at " + NC.sundayAt + ", as members sit down."; }
     if (ctx.params.get("follow") === "1") { at = 0; follow(true); }
   }

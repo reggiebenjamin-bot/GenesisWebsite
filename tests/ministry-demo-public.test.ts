@@ -291,9 +291,9 @@ test("the public demo leaves out the Growth Desk and links only to files it has"
 });
 
 test("the public copy has no presenter mode", { skip: !existsSync(DEMO) }, () => {
-  assert.match(read("platform/shared/app.js"), /\n  GM\.presenting = false;\n/);
+  assert.match(read("platform/shared/app.js"), /\r?\n  GM\.presenting = false;\r?\n/);
   assert.doesNotMatch(read("platform/shared/app.js"), /params\.get\("present"\)|gm\.present/);
-  assert.match(read("platform/story/story.js"), /\n  var present = false;\n/);
+  assert.match(read("platform/story/story.js"), /\r?\n  var present = false;\r?\n/);
   assert.doesNotMatch(read("platform/story/story.js"), /params\.get\("present"\)|gm\.present/);
   assert.match(read("platform/shared/demo.js"), /var PRESENT = false;/);
   assert.match(read("platform/shared/demo.js"), /var ORIGIN = "church";/);

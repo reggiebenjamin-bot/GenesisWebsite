@@ -151,10 +151,10 @@
     ":root{--hd-accent:" + (BR.accent || "#2f5bea") + ";--hd-accent-ink:" + (BR.accentInk || "#ffffff") + ";--hd-accent-text:" + (BR.accentText || BR.accent || "#2f5bea") + ";--hd-ink:" + (BR.ink || "#14161a") +
       ";--hd-surface:" + (BR.surface || "#ffffff") + ";--hd-surface2:" + (BR.surface2 || "#f3f4f6") + ";--hd-line:" + (BR.line || "rgba(0,0,0,.12)") +
       ";--hd-font:" + (BR.font || "system-ui,-apple-system,Segoe UI,Roboto,sans-serif") + ";--hd-radius:" + (BR.radius || "18px") + ";--hd-btn-radius:" + (BR.buttonRadius || "999px") + ";--hd-bottom:" + (Number(CFG.bottomOffset) || 0) + "px}",
-    ".hd-launch{position:fixed;right:20px;bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
+    ".hd-launch{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
     ".hd-launch:hover{transform:translateY(-2px)}.hd-launch:focus-visible{outline:3px solid var(--hd-ink);outline-offset:3px}",
     ".hd-launch svg{width:24px;height:24px}",
-    ".hd-invite{position:fixed;right:20px;bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
+    ".hd-invite{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
     ".hd-invite.on{opacity:1;transform:none}",
     ".hd-invite p{margin:0 0 12px;padding-right:28px}.hd-invite b{font-weight:700}",
     ".hd-invite .hd-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:inherit;opacity:.6;cursor:pointer;font-size:18px;line-height:1;border-radius:8px}",
@@ -165,12 +165,12 @@
     ".hd-btn{font:600 14px/1 var(--hd-font);min-height:40px;padding:10px 16px;border-radius:var(--hd-btn-radius);border:1.5px solid var(--hd-accent);background:var(--hd-accent);color:var(--hd-accent-ink);cursor:pointer;transition:transform .2s ease,opacity .2s ease}",
     ".hd-btn.ghost{background:transparent;color:var(--hd-ink);border-color:var(--hd-line)}",
     ".hd-btn:hover{transform:translateY(-1px)}.hd-btn:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
-    ".hd-panel{position:fixed;right:20px;bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483001;width:min(380px,calc(100vw - 32px));height:min(600px,calc(100vh - 130px));display:flex;flex-direction:column;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);box-shadow:0 30px 70px -24px rgba(0,0,0,.5);font:15px/1.5 var(--hd-font);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .25s ease,transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}",
+    ".hd-panel{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483001;width:min(380px,calc(100vw - 32px));height:min(600px,calc(100vh - 130px));display:flex;flex-direction:column;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);box-shadow:0 30px 70px -24px rgba(0,0,0,.5);font:15px/1.5 var(--hd-font);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .25s ease,transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}",
     ".hd-panel.on{opacity:1;visibility:visible;transform:none;transition-delay:0s}",
     ".hd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 12px 14px 18px;border-bottom:1px solid var(--hd-line)}",
     ".hd-head .t{font-weight:700;font-size:15px;line-height:1.2}.hd-head small{display:block;font-weight:400;font-size:12px;opacity:.7}",
     ".hd-dot{width:9px;height:9px;border-radius:50%;background:var(--hd-accent);display:inline-block;margin-right:10px;vertical-align:middle}",
-    ".hd-head button{width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
+    ".hd-head button{width:44px;height:44px;min-width:44px;min-height:44px;flex:none;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
     ".hd-head button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:-3px}",
     ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:" + (CHECKED ? "auto" : "smooth") + "}",
     ".hd-msg{max-width:88%;padding:10px 14px;border-radius:16px;white-space:pre-line;animation:hdIn .35s cubic-bezier(.2,.7,.2,1) both}",
@@ -201,7 +201,7 @@
     ".hd-help{font-size:13px;line-height:1.45;text-align:center;margin:0;padding:8px 16px;background:var(--hd-surface2)}",
     ".hd-help b{font-weight:700}",
     ".hd-help a{position:relative;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
-    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -12px}",
+    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -14px}",
     ".hd-help a:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;border-radius:3px}",
     "@keyframes hdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}",
     "@keyframes hdDot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:.9;transform:translateY(-3px)}}",
@@ -228,7 +228,7 @@
        left over the page). The 911 and 988 line stays in its foot. */
     "  .hd-panel{right:0;left:0;bottom:0;top:calc(28px + env(safe-area-inset-top,0px));width:auto;height:auto;border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
     /* Closed, Hope is a compact circle in the corner, never a band across the page. */
-    "  .hd-launch{right:14px;bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
+    "  .hd-launch{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
     /* Buttons on a phone: every question and action is one full-width row, 44px or taller, the same
        padding and radius, so a group never wraps into a ragged run of different widths. */
     "  .hd-chips{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
@@ -239,7 +239,12 @@
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",
     "  .hd-card{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}",
     /* The invite is a compact card above the circle, never across the first screen. */
-    "  .hd-invite{left:auto;right:16px;max-width:min(300px,calc(100vw - 32px))}",
+    "  .hd-invite{left:auto;right:calc(16px + env(safe-area-inset-right,0px));max-width:min(300px,calc(100vw - 32px))}",
+    /* The invite's two buttons are one even pair. */
+    "  .hd-invite .hd-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hd-invite .hd-btn{width:100%;padding-inline:10px}",
+    /* At the very end of a page the closed circle would sit on the footer's last line: the footer keeps
+       room for it, so the last words can always scroll clear. */
+    "  html.hd-has-launch body>footer:last-of-type,html.hd-has-launch footer.site-footer{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}",
     /* Phone tap targets: 44px. */
     "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip,.hd-allq,.hd-more{min-height:44px}",
     "  .hd-skip{padding:8px 10px}",
@@ -258,6 +263,7 @@
     "  .hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}",
     "  .hd-g .v2-guide-close,.hd-g .hd-g-again{width:44px;height:44px;margin:-10px -12px -10px 0}",
     "}",
+    ".hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}.hd-g .v2-guide-close{width:44px;height:44px;margin:-10px -12px -10px 0}",
     /* the Genesis OS guide (skin: "genesis") uses the host page's own .v2-guide styles; only these few extras */
     ".hd-g.v2-guide{z-index:2147482999}.hd-g-ring.v2-guide-ring{z-index:2147482998}",
     /* Mouse screens only: a touch screen keeps the 44px controls set above. */
@@ -327,7 +333,7 @@
   var isOpen = false, started = false, busy = false;
   function phoneChat() { return window.innerWidth <= 640; }
   if (!GENESIS) {
-    launch = el("button", "hd-launch"); launch.type = "button"; launch.setAttribute("aria-label", "Chat with " + AN + ", the " + SHORT + " assistant"); launch.innerHTML = ICON_CHAT;
+    launch = el("button", "hd-launch"); launch.type = "button"; document.documentElement.classList.add("hd-has-launch"); launch.setAttribute("aria-label", "Chat with " + AN + ", the " + SHORT + " assistant"); launch.innerHTML = ICON_CHAT;
     panel = el("div", "hd-panel"); panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", AN + ", the " + SHORT + " assistant"); panel.setAttribute("aria-modal", "false");
     var head = el("div", "hd-head");
     var ttl = el("div", "t"); ttl.innerHTML = '<span class="hd-dot" aria-hidden="true"></span><span class="hd-name"></span><small></small>'; ttl.querySelector(".hd-name").textContent = AN; ttl.querySelector("small").textContent = "Automated assistant for " + SHORT;
@@ -1611,7 +1617,7 @@
     card.classList.remove("on");
     card.innerHTML = "";
     var kk = s.k || (CFG.tourTitle ? GUIDE + " · " + CFG.tourTitle : GUIDE);
-    var k = el("p", "k", kk + "  ·  " + (i + 1) + " of " + STEPS.length);
+    var k = el("p", "k", kk + "  ·  Tip " + (i + 1) + " of " + STEPS.length);
     var h = el("h3", null, s.h);
     var p = el("p", null, s.p); p.id = "hd-say"; card.setAttribute("aria-describedby", "hd-say");
     var bar = el("div", "bar");
@@ -1656,7 +1662,7 @@
     card.querySelector(".v2-guide-title").textContent = s.h;
     card.querySelector(".v2-guide-say").textContent = s.p;
     if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
-    card.querySelector(".v2-guide-count").textContent = (i + 1) + " of " + STEPS.length;
+    card.querySelector(".v2-guide-count").textContent = "Tip " + (i + 1) + " of " + STEPS.length;
     if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
     announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
     card.onclick = function (e) {
