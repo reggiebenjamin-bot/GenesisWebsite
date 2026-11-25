@@ -2111,6 +2111,8 @@
   var ctx = null;
   GM.ready = function (fn) { if (ctx) { if (!ctx.locked || ctx.customLocked) fn(ctx); } else readyFns.push(fn); };
 
+  /* If a page script stops early, the page still shows. */
+  setTimeout(function () { html.classList.add("gm-booted"); }, 2500);
   function boot() {
     html.setAttribute("data-detail", "standard");
     var main = document.getElementById("v2-main") || document.getElementById("gm-main");
@@ -2150,6 +2152,8 @@
     GM.ctx = ctx;
     readyFns.forEach(function (fn) { if (!locked || customLocked) fn(ctx); });
     readyFns = [];
+    /* The page is drawn: show it in one step, so nothing on it jumps while its parts fill in. */
+    html.classList.add("gm-booted");
     if (GM.side !== "member") { syncRailRestore(item || {}); }
     /* The guided demo: tours for every screen, the demo path and the scripted answers. */
     GM.sharedPath = SHARED;
