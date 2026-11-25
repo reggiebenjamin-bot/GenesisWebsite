@@ -296,8 +296,8 @@ export function ConsultationForm({
             ) : (
               <>
                 <option value="Just me">Just me</option>
-                <option value="2–4">2–4</option>
-                <option value="5–50">5–50</option>
+                <option value="2 to 4">2 to 4</option>
+                <option value="5 to 50">5 to 50</option>
                 <option value="50+">50+</option>
               </>
             )}
@@ -312,7 +312,7 @@ export function ConsultationForm({
             <select name="operation_type" defaultValue="" required className={control}>
               <option value="" disabled>Select</option>
               <option value="Brokerage">Brokerage</option>
-              <option value="Private Lending">Private lending</option>
+              <option value="Private Lending">Financing</option>
               <option value="Acquisitions / Builder">Acquisitions / builder</option>
               <option value="Service business / trades">Service business / trades</option>
               <option value="Other Property-Driven">Other property-driven</option>
@@ -359,7 +359,7 @@ export function ConsultationForm({
 
       {interest ? <input type="hidden" name="interest" value={interest} /> : null}
 
-      {/* Honeypot — hidden from people, irresistible to bots. */}
+      {/* Honeypot. Hidden from people, irresistible to bots. */}
       <input
         name="website"
         tabIndex={-1}

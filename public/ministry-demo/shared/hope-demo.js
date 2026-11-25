@@ -307,6 +307,31 @@
     "  html.hd-tour-on.hd-step-launch .hd-launch{z-index:2147482990}",
     "}",
     "@media (prefers-reduced-motion:reduce){.hd-body{scroll-behavior:auto}.hd-launch,.hd-invite,.hd-panel,.hd-msg,.hd-chips,.hd-spot,.hd-card,.hd-g,.hd-g-ring{transition:none!important;animation:none!important}.hd-typing i{animation:none}}",
+    /* Guided demo: the primary action stays gold and sticks to the card's bottom edge. */
+    "html.gm-guided.hd-tour-on .hd-g .v2-guide-foot,html.gm-guided.hd-tour-on .hd-card .hd-cfoot{position:sticky;bottom:0;z-index:2}",
+    "html.gm-guided.hd-tour-on .hd-g .v2-button-primary,html.gm-guided.hd-tour-on .hd-g .hd-g-next,html.gm-guided.hd-tour-on .hd-card .hd-btn:not(.ghost),html.gm-guided.hd-tour-on .hd-card .hd-next{background:#c9a55e;border-color:#c9a55e;color:#14120e}",
+    ".gm-walkthrough{display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;padding:8px 12px;border:0;background:transparent;color:inherit;font:600 14px/1.2 var(--hd-font,Satoshi,ui-sans-serif,system-ui,sans-serif);text-decoration:underline;text-underline-offset:3px;opacity:.8}",
+    "@media (max-width:640px){html.gm-guided.hd-tour-on .hd-g .v2-guide-foot,html.gm-guided.hd-tour-on .hd-card .hd-cfoot{display:flex;flex-wrap:wrap}html.gm-guided.hd-tour-on .hd-g .v2-button-primary,html.gm-guided.hd-tour-on .hd-g .hd-g-next,html.gm-guided.hd-tour-on .hd-card .hd-btn:not(.ghost),html.gm-guided.hd-tour-on .hd-card .hd-next{flex:1 0 100%;width:100%;min-height:48px;font-weight:700}.gm-walkthrough{width:100%}}",
+    /* The sale close: ivory sheet, ink type, gold actions. One column on a phone, three plans from 800px. */
+    ".gm-sale{position:fixed;z-index:2147483002;left:12px;right:12px;bottom:12px;max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));border-radius:16px;background:#f6f1e8;color:#14120e;font:15px/1.45 Satoshi,ui-sans-serif,system-ui,sans-serif;box-shadow:0 18px 50px rgba(20,18,14,.35)}",
+    ".gm-sale-head{display:flex;align-items:center;justify-content:space-between;gap:12px}",
+    ".gm-sale-kicker{margin:0;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8a6a2f}",
+    ".gm-sale-x{min-height:44px;padding:8px 4px;border:0;background:transparent;color:#14120e;font:600 14px/1 Satoshi,ui-sans-serif,system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}",
+    ".gm-sale h2{margin:8px 0 0;font:500 28px/1.1 Satoshi,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.03em}",
+    ".gm-sale-next{margin:8px 0 0;color:#3d3830}",
+    ".gm-sale-plans{display:grid;gap:10px;margin-top:14px}",
+    ".gm-sale-plan{display:flex;flex-direction:column;gap:6px;padding:12px;border:1px solid rgba(20,18,14,.12);border-radius:12px;background:#fffdf8}",
+    ".gm-sale-plan.is-recommended{border-color:#c9a55e;box-shadow:0 0 0 1px #c9a55e}",
+    ".gm-sale-rec{min-height:1.1em;margin:0;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a6a2f}",
+    ".gm-sale-plan h3{margin:0;font:500 22px/1 Satoshi,ui-sans-serif,system-ui,sans-serif}",
+    ".gm-sale-price{margin:0}.gm-sale-price b{font-size:28px;font-weight:500;letter-spacing:-.03em}.gm-sale-price span{color:#5c564c}",
+    ".gm-sale-fee{margin:0;color:#5c564c;font-size:14px}",
+    ".gm-sale-start{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:auto;border-radius:6px;background:#c9a55e;color:#14120e;font-weight:700;text-decoration:none}",
+    ".gm-sale-start:focus-visible{outline:3px solid #14120e;outline-offset:2px}",
+    ".gm-sale-backwrap{margin:12px 0 0;text-align:center}",
+    ".gm-sale-back{color:#14120e;font-weight:600;text-decoration:underline;text-underline-offset:3px}",
+    "@media (max-width:719px){.gm-sale-rec:empty{display:none}}",
+    "@media (min-width:800px){.gm-sale{left:50%;right:auto;width:min(920px,calc(100vw - 48px));transform:translateX(-50%)}.gm-sale-plans{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}}",
   ].join("\n");
   var style = el("style"); style.id = "hope-demo-style"; style.textContent = css; document.head.appendChild(style);
 
@@ -1317,6 +1342,13 @@
     document.removeEventListener("scroll", place, { capture: true }); window.removeEventListener("resize", place);
     document.removeEventListener("keydown", tourKeys);
     cancelAnimationFrame(rafId);
+    if (finale && CFG.saleClose && typeof CFG.onSaleClose === "function") {
+      if (spot) spot.remove();
+      if (card) card.remove();
+      spot = card = null;
+      try { CFG.onSaleClose(); } catch (e) {}
+      return;
+    }
     if (GENESIS) {
       if (spot) spot.remove();
       if (finale && card) { showDone(); return; }
@@ -1575,6 +1607,16 @@
       }
     }, REDUCE ? 60 : 520);
   }
+  function walkHere(i, last) {
+    var w = CFG.walkthrough;
+    if (!w || !w.href || last || !STEPS || STEPS.length < 3) return false;
+    return i === Math.floor((STEPS.length - 1) / 2);
+  }
+  function walkLink() {
+    var a = el("a", "gm-walkthrough", (CFG.walkthrough && CFG.walkthrough.label) || "Book a walkthrough");
+    a.href = CFG.walkthrough.href;
+    return a;
+  }
   function paintSite(s, i, last, nh) {
     card.classList.remove("on");
     card.innerHTML = "";
@@ -1587,7 +1629,8 @@
     var ctr = el("div", "hd-row");
     var skip = el("button", "hd-skip", "End Tour"); skip.type = "button";
     var bk = el("button", "hd-btn ghost", "Back"); bk.type = "button"; bk.disabled = i === 0; if (i === 0) bk.style.visibility = "hidden";
-    var nx = el("button", "hd-btn" + (last && nh ? " ghost" : ""), last ? "Finish" : "Next"); nx.type = "button";
+    var sale = !!(last && CFG.saleClose);
+    var nx = el("button", "hd-btn" + (last && nh && !sale ? " ghost" : ""), sale ? "Choose your plan" : last ? "Finish" : "Next"); nx.type = "button";
     ctr.appendChild(bk); ctr.appendChild(nx);
     bar.appendChild(skip); bar.appendChild(ctr);
     card.appendChild(k); card.appendChild(h); card.appendChild(p);
@@ -1596,11 +1639,12 @@
     var foot = el("div", "hd-cfoot");
     foot.appendChild(dots); foot.appendChild(bar); card.appendChild(foot);
     dots.style.margin = "0 0 12px";
-    if (last && nh) {
+    if (last && nh && !sale) {
       var a = el("a", "hd-btn hd-next"); a.href = nh; a.setAttribute("data-hd-focus", "");
       a.appendChild(document.createTextNode(NEXT.label || "Continue the Demo")); a.insertAdjacentHTML("beforeend", ICON_ARROW);
       foot.appendChild(a);
     } else nx.setAttribute("data-hd-focus", "");
+    if (walkHere(i, last)) card.appendChild(walkLink());
     skip.addEventListener("click", function () { endTour(false); });
     bk.addEventListener("click", back); nx.addEventListener("click", next);
     announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
@@ -1613,19 +1657,22 @@
     /* The card keeps its place between steps, so it glides to the next target the way Genesis OS does.
        The first step stays out of sight until it has a place. */
     if (i === 0 && !card.hasAttribute("data-placed")) card.style.visibility = "hidden";
+    var sale = !!(last && CFG.saleClose);
     var title = CFG.tourTitle || s.k || "";
     card.innerHTML = guideHead(false, "End Tour") +
       '<h2 class="v2-guide-title"></h2><p class="v2-guide-say" id="hd-say"></p>' + (s.note ? '<p class="v2-guide-note"></p>' : "") +
       '<div class="v2-guide-foot"><span class="v2-guide-count"></span>' +
       (i > 0 ? '<button class="v2-button v2-button-quiet" type="button" data-guide="back">Back</button>' : "") +
-      '<button class="v2-button' + (last && nh ? "" : " v2-button-primary") + ' v2-guide-next" type="button" data-guide="next"' + (last && nh ? "" : " data-hd-focus") + ">" + (last ? "Finish" : "Next") + "</button></div>" +
-      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "");
+      '<button class="v2-button' + (last && nh && !sale ? "" : " v2-button-primary") + ' v2-guide-next" type="button" data-guide="next"' + (last && nh && !sale ? "" : " data-hd-focus") + ">" + (sale ? "Choose your plan" : last ? "Finish" : "Next") + "</button></div>" +
+      (last && nh && !sale ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "") +
+      (walkHere(i, last) ? '<a class="gm-walkthrough"></a>' : "");
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + (title ? " · " + title : "");
     card.querySelector(".v2-guide-title").textContent = s.h;
     card.querySelector(".v2-guide-say").textContent = s.p;
     if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
     card.querySelector(".v2-guide-count").textContent = (i + 1) + " of " + STEPS.length;
-    if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
+    if (last && nh && !sale) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
+    if (walkHere(i, last)) { var wk = card.querySelector(".gm-walkthrough"); if (wk) { wk.href = CFG.walkthrough.href; wk.textContent = CFG.walkthrough.label || "Book a walkthrough"; } }
     announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
     card.onclick = function (e) {
       var b = e.target.closest("[data-guide]"); if (!b) return;

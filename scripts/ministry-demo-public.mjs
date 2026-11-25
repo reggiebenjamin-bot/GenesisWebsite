@@ -111,7 +111,12 @@ const SHARED_DESIGN_SYSTEM = /^platform\/shared\/os\//;
  * address, so the demo cannot quietly point at a business page or a price,
  * and it links within the site it is served from.
  */
-export const SITE_LINKS = ["/contact?topic=ministry-demo"];
+export const SITE_LINKS = [
+  "/contact?topic=ministry-demo",
+  "/contact?topic=ministry-care",
+  "/contact?topic=ministry-shepherd",
+  "/contact?topic=ministry-plus",
+];
 
 /**
  * Every forbidden reference in a text, with a little context around each.

@@ -70,6 +70,7 @@ export default function PricingPage() {
             <p className="mt-1.5 text-[0.95rem] text-muted-dark">
               {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
             </p>
+            <p className="mt-1.5 text-[0.95rem] text-muted-dark">No setup fee.</p>
             <p className="mt-2 text-[0.95rem]">
               <TextLink href="/ministry#levels">See the Ministry Plans</TextLink>
             </p>

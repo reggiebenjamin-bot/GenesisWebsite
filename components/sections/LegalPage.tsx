@@ -2,20 +2,16 @@ import Image from "next/image";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
-import { FUNDING_LINE } from "@/lib/legal";
+import { FUNDING_LINE, LEGAL_EFFECTIVE_DATE } from "@/lib/legal";
 import { breadcrumbSchema, graph } from "@/lib/schema";
-
-export const DRAFT_BANNER =
-  "DRAFT for legal review. This page is not legal advice and is not a final policy.";
 
 export type LegalSection = { heading: string; body: readonly string[] };
 
 /**
- * A draft legal page in the lending page visual family: logo, eyebrow, a clear
- * draft banner, and a paper sheet of plain sections. Every draft page carries
- * the funding disclaimer and makes clear it will be replaced after legal review.
+ * A final legal page: logo, eyebrow, effective date, and a paper sheet of
+ * plain sections. Every page carries the funding line.
  */
-export function LegalDraft({
+export function LegalPage({
   path,
   eyebrow,
   title,
@@ -45,8 +41,8 @@ export function LegalDraft({
           <h1 className="mx-auto mt-5 max-w-[20ch] font-light text-[clamp(2.4rem,5vw,4.4rem)] leading-[1.04] tracking-[-0.045em] text-balance">
             {title}
           </h1>
-          <p className="mx-auto mt-8 max-w-[52ch] rounded-[6px] border border-gold/60 bg-ink-soft px-5 py-4 text-[0.95rem] leading-relaxed text-ivory/80">
-            {DRAFT_BANNER}
+          <p className="mx-auto mt-8 max-w-[52ch] text-[0.95rem] leading-relaxed text-ivory/80">
+            Effective {LEGAL_EFFECTIVE_DATE}.
           </p>
         </div>
       </section>

@@ -6,7 +6,7 @@
  *
  * The proof standard applies: no statistics, results or testimonials. Ministry
  * shows its three plan prices (Care, Shepherd and Plus, per month); Enterprise,
- * for more than one campus, is scoped on a call. No setup fees are named.
+ * for more than one campus, is scoped on a call. There is no setup fee.
  *
  * Copy rules: warm, plain, short sentences. No em dashes, no emojis, and no
  * hyphens in visitor copy (the tests check all three).
@@ -329,7 +329,7 @@ export type MinistryLevel = {
  *
  * What each plan includes is a working mapping until the owner lists it: Care
  * has exactly what Level 01 (Welcome) had, Shepherd what Level 02 (Connect)
- * had, and Plus what Level 03 (Shepherd) had. No setup fee is named.
+ * had, and Plus what Level 03 (Shepherd) had. The setup line says there is no setup fee.
  *
  * Enterprise, for more than one campus, is a line under the three cards
  * rather than a fourth card, the way Genesis Enterprise sits under the
@@ -343,6 +343,8 @@ export const ministryLevels = {
     "Every plan includes the website, the brand board, the social marketing plan and Hope. Prices are monthly, for one campus.",
   /** Printed beside each price, as on the edition Levels. */
   priceUnit: "per month",
+  /** Ministry plans have no setup fee. */
+  setupLine: "No setup fee",
   levels: [
     {
       id: "care",
@@ -569,7 +571,7 @@ export const ministryContact = {
       "Genesis uses these details only to prepare for the call and to follow up about your request.",
     ],
     success:
-      "Genesis will reach out to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a plan before anything is proposed in writing.",
+      "Genesis will reach out within one business day to confirm a time. The call is a conversation about your church, how guests find you and the tools you use today. If it looks like a fit, we will suggest a look and a plan before anything is proposed in writing.",
   },
   /*
    * The free Church Website Check (the church-website-check topic): the same

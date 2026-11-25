@@ -47,7 +47,7 @@ export type ProofItem = {
 
 export const contact = {
   email: "info@geai.us",
-  phoneDisplay: "+1 469 557 2658",
+  phoneDisplay: "(469) 557-2658",
   phoneHref: "+14695572658",
   linkedin: "https://www.linkedin.com/company/genesis-ai-studio",
   facebook: "https://www.facebook.com/profile.php?id=61586903450734",
@@ -89,14 +89,14 @@ export const systemLayers: SystemLayer[] = [
   },
   {
     number: "03",
-    title: "Genesis CRM — Optional",
+    title: "Genesis CRM, optional",
     shortTitle: "Optional CRM",
     description: "A system of record for pipeline, campaigns, booking, and structured follow-up when the operation needs one. Genesis does not force a CRM replacement simply to make the rest of the system work.",
     details: ["No forced rip-and-replace", "Pipelines and opportunities", "Campaigns and booking", "Structured follow-up"],
   },
   {
     number: "04",
-    title: "Fully Managed — Ongoing",
+    title: "Fully Managed, ongoing",
     shortTitle: "Managed",
     description: "When included in the engagement, Genesis monitors, supports, maintains, and improves the agreed platform so managing the infrastructure does not become the operator’s next job.",
     details: ["Monitoring and support", "System maintenance", "Workflow refinement", "Continuous improvement"],
@@ -174,7 +174,7 @@ export const audiences = [
     ],
   },
   {
-    title: "Lenders",
+    title: "Financing teams",
     outcome: "Keep borrower, property, document, and pipeline context connected.",
     body: [
       "Bring borrower information, property information, documents, communication, conditions, follow-up, pipeline activity, and internal handoffs into a clearer operational flow.",
