@@ -1,8 +1,10 @@
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { SectionIntro } from "@/components/ui/Blocks";
 import { TextLink } from "@/components/ui/Button";
+import { SetupFeeNote } from "@/components/offers/SetupFeeNote";
 import { chooserProducts } from "@/lib/productChooser";
 import { managedOverview, managedPlans } from "@/lib/offers";
+import { SETUP_WAIVER_LINE, setupWaiverActive } from "@/lib/setupWaiver";
 import styles from "./PlanCards.module.css";
 
 /* Same card, three strengths of the same finish: the higher the level, the
@@ -18,6 +20,7 @@ const TIERS = ["", styles.tierTwo, styles.tierThree];
  * /start routes.
  */
 export function PlanCards() {
+  const waived = setupWaiverActive();
   return (
     <div>
       <SectionIntro
@@ -48,7 +51,12 @@ export function PlanCards() {
                 <span className={styles.currency}>{plan.priceDisplay.slice(0, 1)}</span>
                 {plan.priceDisplay.slice(1)}
                 <span className={styles.cadence}>per month</span>
-                <span className={styles.setup}>{plan.setupLine}</span>
+                <SetupFeeNote
+                  setupLine={plan.setupLine}
+                  initialActive={waived}
+                  className={styles.setup}
+                  noteClassName={styles.waiver}
+                />
               </p>
 
               <span aria-hidden="true" className={styles.divider} />
@@ -83,7 +91,11 @@ export function PlanCards() {
                       key={product.key}
                       href={level.href}
                       rel="nofollow"
-                      aria-label={`${product.label} Level ${plan.step} checkout, ${plan.priceDisplay} a month, ${plan.setupLine}`}
+                      aria-label={
+                        waived
+                          ? `${product.label} Level ${plan.step} checkout, ${plan.priceDisplay} a month, ${SETUP_WAIVER_LINE}`
+                          : `${product.label} Level ${plan.step} checkout, ${plan.priceDisplay} a month, ${plan.setupLine}`
+                      }
                       className={styles.cta}
                     >
                       {product.label}

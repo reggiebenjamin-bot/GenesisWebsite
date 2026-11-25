@@ -1,6 +1,7 @@
 import type { ManagedPlanId } from "./offers.ts";
 import { checkoutLineItems } from "./aiEmployeesCheckout.ts";
 import { crmCheckoutField } from "./crm.ts";
+import { setupWaiverActive } from "./setupWaiver.ts";
 
 export { checkoutLineItems };
 
@@ -98,6 +99,21 @@ export function setupPriceId(
   env: Record<string, string | undefined> = process.env,
 ): string {
   return resolvePrice(setupPriceEnv[plan], setupPriceDefaults[plan], env);
+}
+
+/**
+ * Checkout line items for one Genesis level. Before the Black Friday waiver
+ * ends, the session is the monthly Price only. After that, the one-time setup
+ * Price is added again. No new Stripe Price is created either way.
+ */
+export function managedCheckoutLineItems(
+  plan: ManagedPlanId,
+  now: Date = new Date(),
+  env: Record<string, string | undefined> = process.env,
+) {
+  const monthly = { price: monthlyPriceId(plan, env), quantity: 1 };
+  if (setupWaiverActive(now)) return [monthly];
+  return checkoutLineItems(monthly.price, setupPriceId(plan, env));
 }
 
 /** Stable Checkout label. The last eight letters are the tracking suffix. */

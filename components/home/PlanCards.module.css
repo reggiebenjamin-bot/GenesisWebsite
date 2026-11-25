@@ -232,6 +232,12 @@
   letter-spacing: 0;
   text-transform: none;
 }
+.waiver {
+  display: block;
+  margin-top: 4px;
+  color: rgb(244 239 232 / 0.92);
+  font-size: 0.8rem;
+}
 
 .divider {
   display: block;
