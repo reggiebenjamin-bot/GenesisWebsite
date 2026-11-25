@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { EditionLanding } from "@/components/sections/EditionLanding";
-import { SectionIntro } from "@/components/ui/Blocks";
+import { Eyebrow } from "@/components/ui/Section";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { aiEmployeesEnterprise } from "@/lib/aiEmployees";
@@ -21,25 +21,26 @@ const benefits = [
 export default function EnterprisePage() {
   return (
     <EditionLanding edition={edition} benefits={benefits}>
-      {/* The standard section opening, left aligned like every other section on the page. */}
-      <SectionIntro
-        layout="split"
-        eyebrow={aiEmployeesEnterprise.eyebrow}
-        title={aiEmployeesEnterprise.publicTitle}
-        className="mb-0"
-        aside={
-          <div className="grid gap-5">
-            <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              {aiEmployeesEnterprise.summary} More than 25 users, or more than one location, is scoped on a call, with no list price.
-            </p>
-            <TrackClick event="consultation_cta_clicked" from="enterprise_scope">
-              <ConsultationButton href="/contact?topic=enterprise#consultation-form" className="max-sm:w-full sm:w-fit">
-                Book a Call
-              </ConsultationButton>
-            </TrackClick>
-          </div>
-        }
-      />
+      {/* The split header every section uses: the heading on the left, and on the right the lead
+          set against the heading's top line, with the call under it at the standard button size. */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
+        <div>
+          <Eyebrow>{aiEmployeesEnterprise.eyebrow}</Eyebrow>
+          <h2 className="mt-4 max-w-[20ch] text-[clamp(2.2rem,4.4vw,3.9rem)] leading-[1.02] tracking-[-0.045em] text-balance">
+            {aiEmployeesEnterprise.publicTitle}
+          </h2>
+        </div>
+        <div className="grid content-start gap-6 lg:pt-[2.1rem]">
+          <p className="max-w-[46ch] text-[1.02rem] leading-relaxed text-muted-dark">
+            {aiEmployeesEnterprise.summary} More than 25 users, or more than one location, is scoped on a call, with no list price.
+          </p>
+          <TrackClick event="consultation_cta_clicked" from="enterprise_scope">
+            <ConsultationButton href="/contact?topic=enterprise#consultation-form" className="w-full sm:w-[17rem]">
+              Book a Call
+            </ConsultationButton>
+          </TrackClick>
+        </div>
+      </div>
     </EditionLanding>
   );
 }

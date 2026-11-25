@@ -24,9 +24,10 @@ test("the assessment asks the same CRM question as a required single choice", ()
   const question = assessmentQuestions.find((item) => item.id === "crm");
   assert.ok(question && question.kind === "single");
   assert.equal(question.label, "What CRM do you use today?");
+  /* Same values as the CRM labels; shown with the common answers first and GoHighLevel last. */
   assert.deepEqual(
     question.options.map((option) => option.value),
-    ["GoHighLevel", "Another CRM", "None"],
+    ["None", "Another CRM", "GoHighLevel"],
   );
 });
 

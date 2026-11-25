@@ -60,12 +60,20 @@ const phoneQuery = mediaQuery("(max-width: 639px)");
  */
 export function HawkAscii({
   src,
+  srcSet,
+  sizes,
   className,
 }: {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   className?: string;
 }) {
   const frame = useRef<HTMLDivElement>(null);
+  const still = useRef<HTMLImageElement>(null);
+  /* The file the browser picked from srcSet for the still: the effect draws from the same one,
+     so the hawk is downloaded once. */
+  const [drawSrc, setDrawSrc] = useState<string | null>(null);
   // Reduced motion until proven otherwise, so the server never promises movement.
   const reducedMotion = useSyncExternalStore(
     reducedMotionQuery.subscribe,
@@ -100,6 +108,24 @@ export function HawkAscii({
   // Mount the effect only once the image has actually loaded and the browser
   // can draw to a 2D canvas. Otherwise the fallback simply stays.
   useEffect(() => {
+    const image = still.current;
+    if (!image) return;
+    const pick = () => setDrawSrc(image.currentSrc || src);
+    const fail = () => setStatus("unavailable");
+    if (image.complete && image.naturalWidth > 0) {
+      pick();
+      return;
+    }
+    image.addEventListener("load", pick);
+    image.addEventListener("error", fail);
+    return () => {
+      image.removeEventListener("load", pick);
+      image.removeEventListener("error", fail);
+    };
+  }, [src]);
+
+  useEffect(() => {
+    if (!drawSrc) return;
     let cancelled = false;
     const probe = new Image();
     // Requested the way the effect requests it, so an image the canvas is not
@@ -114,14 +140,14 @@ export function HawkAscii({
     probe.onerror = () => {
       if (!cancelled) setStatus("unavailable");
     };
-    probe.src = src;
+    probe.src = drawSrc;
 
     return () => {
       cancelled = true;
       probe.onload = null;
       probe.onerror = null;
     };
-  }, [src]);
+  }, [drawSrc]);
 
   // A phone gets the still image: there is no pointer to ripple under, and
   // its small characters are drawn once instead of on every frame.
@@ -137,20 +163,23 @@ export function HawkAscii({
       {/* Requested with CORS, exactly as the effect and the probe request it, so the
           browser fetches the hawk once and all three share it. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
+      {/* The page's largest paint, so it is decoded in step with the page, not deferred. */}
       <img
+        ref={still}
         src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt=""
         crossOrigin="anonymous"
         fetchPriority="high"
-        decoding="async"
         className={styles.fallback}
         style={{ "--hawk-scale": scale } as CSSProperties}
       />
 
-      {status === "ready" && seen ? (
+      {status === "ready" && seen && drawSrc ? (
         <AsciiEffect
           className={styles.canvas}
-          imageSrc={src}
+          imageSrc={drawSrc}
           alt=""
           variant={animate ? "flow" : "image"}
           chars={CHARACTERS}

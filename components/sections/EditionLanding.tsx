@@ -202,13 +202,17 @@ export function EditionLanding({
         <h2 id="edition-title" className="sr-only">
           What {edition.name} does
         </h2>
+        {/* Three small cards on the page grid, each with a numbered kicker, as the homepage problem
+            cards are, so the first block after the hero reads as a section, not loose bullets. */}
         {benefits?.length ? (
-          <ul className="mx-auto mb-16 grid max-w-[58rem] gap-6 sm:grid-cols-3">
-            {benefits.map((benefit) => (
-              <li key={benefit} className="grid grid-cols-[8px_minmax(0,1fr)] gap-3 text-[0.95rem] leading-snug">
-                <span aria-hidden="true" className="mt-[0.45rem] size-1.5 rounded-full bg-gold-dark" />
-                <span>{benefit}</span>
-              </li>
+          <ul className="mb-16 grid gap-4 md:grid-cols-3">
+            {benefits.map((benefit, index) => (
+              <Card as="li" key={benefit}>
+                <p className="font-mono text-[0.72rem] font-semibold tracking-[0.14em] text-gold-dark uppercase">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <p className="mt-3 text-[1.02rem] leading-relaxed">{benefit}</p>
+              </Card>
             ))}
           </ul>
         ) : null}

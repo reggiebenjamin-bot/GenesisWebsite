@@ -329,20 +329,24 @@ export function MinistryPackage() {
           const lead = item === platform;
           return (
             <Card as="li" key={item.no} tone={lead ? "inverse" : "light"} className={cn("flex flex-col", lead && "md:col-span-2 lg:col-span-3")}>
-              <p className={cn("font-display text-[0.75rem] tracking-[0.12em]", lead ? "text-gold" : "text-gold-dark")}>
-                {item.no}
-              </p>
-              {"plan" in item && item.plan ? (
-                <p className="mt-3 w-fit rounded-full border border-gold-dark/40 px-2.5 py-0.5 font-mono text-[0.7rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
-                  {item.plan}
+              {/* The plan tag shares the number's row, so the card is no taller than its neighbours need. */}
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                <p className={cn("font-display text-[0.75rem] tracking-[0.12em]", lead ? "text-gold" : "text-gold-dark")}>
+                  {item.no}
                 </p>
-              ) : null}
+                {"plan" in item && item.plan ? (
+                  <p className="w-fit rounded-full border border-gold-dark/40 px-2.5 py-0.5 font-mono text-[0.7rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+                    {item.plan}
+                  </p>
+                ) : null}
+              </div>
               <h3 className="mt-3 text-[1.45rem] font-light leading-[1.1] tracking-[-0.03em]">{item.title}</h3>
               <p className={cn("mt-3 text-[0.95rem] leading-relaxed", lead ? "text-ivory/72" : "text-muted-dark")}>
                 {item.body}
               </p>
               {item.no === "02" ? <BrandSample /> : null}
-              <Points items={item.points} className="mt-auto pt-6" />
+              {/* The points follow the words; a shorter card ends with space below, never a gap in the middle. */}
+              <Points items={item.points} className="mt-6" />
               {"links" in item && item.links ? (
                 <TrackClick event="ministry_demo_opened" from="ministry_package_notes">
                   <p className="mt-4 flex flex-wrap gap-x-5">
@@ -362,7 +366,34 @@ export function MinistryPackage() {
           );
         })}
       </ul>
+      <PlanPrices />
     </Sheet>
+  );
+}
+
+/** The three plan prices in one slim row, so a pastor scrolling a phone sees them long before the plans. */
+function PlanPrices() {
+  return (
+    <div className="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-1 rounded-[6px] border border-gold/45 bg-gold-light/10 px-5 py-3">
+      <p className="text-[0.98rem]">
+        <span className="sr-only">Plan prices: </span>
+        {ministryLevels.levels.map((plan, index) => (
+          <span key={plan.id} className="inline-block whitespace-nowrap">
+            {index > 0 ? <span aria-hidden="true" className="px-2 text-ink/35">&middot;</span> : null}
+            <span className="font-semibold">{plan.name}</span> {plan.priceDisplay}
+          </span>
+        ))}{" "}
+        <span className="text-muted-dark">a month, for one campus.</span>
+      </p>
+      <TrackClick event="edition_pricing_viewed" from="ministry_package_prices">
+        <a
+          href={ministryPlansCue.link.href}
+          className="inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
+        >
+          See What Each Plan Includes
+        </a>
+      </TrackClick>
+    </div>
   );
 }
 
@@ -599,7 +630,8 @@ export function MinistryProtection() {
 
 export function MinistryLevelsSection() {
   return (
-    <Sheet id="levels" surface="paper" rise aria-labelledby="ministry-levels-title" className="site-section">
+    /* No site-section: an estimated height here would make a link to #how-it-runs, below, land short. */
+    <Sheet id="levels" surface="paper" rise aria-labelledby="ministry-levels-title">
       <SectionIntro
         layout="split"
         eyebrow={ministryLevels.eyebrow}
@@ -622,7 +654,7 @@ export function MinistryLevelsSection() {
 
 export function MinistryProcess() {
   return (
-    <Sheet surface="ink" rise aria-labelledby="ministry-process-title" className="site-section">
+    <Sheet id="how-it-runs" surface="ink" rise aria-labelledby="ministry-process-title" className="scroll-mt-[calc(var(--header-height)+8px)]">
       <ProcessTimeline
         titleId="ministry-process-title"
         eyebrow={ministryProcess.eyebrow}

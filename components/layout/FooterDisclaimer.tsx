@@ -46,6 +46,11 @@ export function FooterDisclaimer() {
   return <ForChurch>{(church) => <p>{church ? ministryEdition.disclaimer : FUNDING_LINE}</p>}</ForChurch>;
 }
 
+/** Business only: a row that means nothing to a church (the Texas service area pages) is left out there. */
+export function ForBusinessOnly({ children }: { children: ReactNode }) {
+  return <ForChurch>{(church) => (church ? null : children)}</ForChurch>;
+}
+
 /** The line under the footer mark: what Genesis is, for whoever is reading. */
 export function FooterTagline() {
   return (

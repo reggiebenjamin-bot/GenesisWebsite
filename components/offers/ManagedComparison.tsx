@@ -131,7 +131,7 @@ export function ManagedComparison({
             aria-invalid={needsEdition || undefined}
             className="mb-5 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-x-3"
           >
-            <legend className="mb-2 text-[0.95rem] font-semibold sm:float-left sm:mr-2 sm:mb-0">Your edition</legend>
+            <legend className="mb-2 text-[0.95rem] font-semibold sm:float-left sm:mr-2 sm:mb-0">Pick your edition to start</legend>
             {MANAGED_EDITIONS.map((option) => (
               <label
                 key={option.value}

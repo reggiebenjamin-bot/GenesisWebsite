@@ -129,9 +129,9 @@ test("Genesis Managed AI carries the reviewed monthly plans in ascending order",
   assert.deepEqual(
     managedPlans.map((plan) => plan.ladder),
     [
-      "Genesis assists the operator.",
-      "Genesis connects and assists the team.",
-      "Genesis helps orchestrate the operation.",
+      "Fast first replies, for one person.",
+      "Every lead has an owner, for a team of up to 5.",
+      "Genesis across your connected systems, for up to 25.",
     ],
   );
 });

@@ -667,7 +667,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     setupDisplay: "$500",
     setupLine: "plus $500 setup",
     scope: "Entry managed Genesis deployment.",
-    ladder: "Genesis assists the operator.",
+    ladder: "Fast first replies, for one person.",
     automationLevel: "Focused workflows and individual productivity.",
     points: ["Entry managed deployment", "Focused workflows"],
     summary:
@@ -689,7 +689,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     setupDisplay: "$1,500",
     setupLine: "plus $1,500 setup",
     scope: "More substantial AI workflow and operational deployment.",
-    ladder: "Genesis connects and assists the team.",
+    ladder: "Every lead has an owner, for a team of up to 5.",
     automationLevel: "Cross-workflow automation and team operations.",
     points: ["Workflow and operations deployment", "Cross-workflow automation"],
     summary:
@@ -711,7 +711,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     setupDisplay: "$10,000",
     setupLine: "plus $10,000 setup",
     scope: "Advanced business-wide AI infrastructure and automation.",
-    ladder: "Genesis helps orchestrate the operation.",
+    ladder: "Genesis across your connected systems, for up to 25.",
     automationLevel:
       "Business-wide orchestration, multiple agents, deeper integrations, and more sophisticated automation.",
     points: ["Business-wide AI infrastructure", "Multi-agent orchestration"],

@@ -102,7 +102,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/assessment",
     title: "Free Business Assessment",
     description:
-      "Free assessment for service businesses, lenders and real estate teams: see where calls, follow up and handoffs still depend on someone remembering. Seven short steps.",
+      "Free assessment for service businesses, lenders and real estate teams: see where calls and follow up still depend on someone remembering. Seven short steps.",
     label: "Free Assessment",
     parent: "/solutions",
     image: null,
@@ -114,7 +114,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/pricing",
     title: "Pricing: Managed AI Plans",
     /* Business Levels first, then the church plans, which have their own page. */
-    description: `Genesis plans for service businesses, lenders and real estate teams: ${managedPlans
+    description: `Plans for service businesses, lenders and real estate teams: ${managedPlans
       .map((plan) => `Level ${plan.step} ${plan.priceDisplay}`)
       .join(", ")} a month, plus setup. Church plans from $149.`,
     label: "Pricing",
@@ -250,7 +250,7 @@ export const seoPages: readonly SeoPage[] = [
     path: "/ministry",
     title: "Church Websites and Care Software",
     description:
-      "Genesis Ministry is software for churches: a website in your own look, Hope the site assistant, guest follow up and a private care inbox. Plans from $149 a month.",
+      "Genesis Ministry is church software: your own website, Hope the site assistant, guest follow up and a private care inbox. Plans from $149 a month.",
     label: "Ministry",
     image: null,
     lastModified: "2026-11-21",

@@ -16,4 +16,15 @@
  */
 export const HAWK_IMAGE_ORIGIN = "https://images.unsplash.com";
 
-export const HAWK_IMAGE_SRC = `${HAWK_IMAGE_ORIGIN}/photo-1700420626773-e506f3724366?w=1200&h=925&fit=crop&crop=focalpoint&fp-x=0.5675&fp-y=0.5&q=70&auto=format`;
+/** The same crop at a given width (Unsplash resizes by the w= and h= parameters). */
+export function hawkImageUrl(width: number) {
+  const height = Math.round((width * 925) / 1200);
+  return `${HAWK_IMAGE_ORIGIN}/photo-1700420626773-e506f3724366?w=${width}&h=${height}&fit=crop&crop=focalpoint&fp-x=0.5675&fp-y=0.5&q=70&auto=format`;
+}
+
+export const HAWK_IMAGE_SRC = hawkImageUrl(1200);
+
+/* A phone gets a phone sized hawk: the hero's largest paint is this image, so it should not
+   wait on a desktop sized file. The effect then draws from whichever file the browser chose. */
+export const HAWK_IMAGE_SRCSET = [600, 900, 1200].map((width) => `${hawkImageUrl(width)} ${width}w`).join(", ");
+export const HAWK_IMAGE_SIZES = "100vw";

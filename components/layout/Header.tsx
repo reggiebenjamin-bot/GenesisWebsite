@@ -17,8 +17,8 @@ import {
 } from "react";
 import { setOfferPath } from "@/components/offers/offerPathState";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
-import { isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
-import { isMinistryTopic, ministryCue, ministryHero } from "@/lib/ministryPage";
+import { contact, isNavGroup, navigation, type NavGroup, type NavLink } from "@/lib/content";
+import { isMinistryTopic, ministryAssessment, ministryCue, ministryDemo, ministryHero } from "@/lib/ministryPage";
 import { offerPathByPage, offerPathFromHash } from "@/lib/offers";
 import { track } from "@/lib/analytics";
 import { useAssessingChurch } from "@/components/hooks/useAssessingChurch";
@@ -104,11 +104,25 @@ function currentPathFor(pathname: string, church: ChurchPage) {
 
 const CHURCH_PLANS: NavLink = { label: "Plans", href: "/ministry#levels" };
 
+/*
+ * The two business pages in the bar have church versions too: How It Works
+ * becomes the church's own five stages on /ministry, and AI Employees (Hawk,
+ * pipelines) becomes the guided demo of what a church gets.
+ */
+const CHURCH_ENTRIES: Readonly<Record<string, NavLink>> = {
+  "/how-it-works": { label: "How It Runs", href: "/ministry#how-it-runs" },
+  "/ai-employees": { label: "See the Demo", href: ministryDemo.tour },
+};
+
+/* The demo is static HTML in public/, not an app route: a plain anchor, so the router never prefetches it. */
+const isStaticPage = (href: string) => href.startsWith("/ministry-demo/");
+
 /* Pricing from an edition page opens with that edition already chosen. */
 const PRICING_EDITION: Record<string, string> = { "/lending": "lending", "/real-estate": "real_estate", "/business": "business" };
 
 /* On the church assessment too: a church pricing the business Levels is the wrong page. */
 function entryFor(entry: NavLink, church: ChurchPage, assessingChurch = false, pathname = ""): NavLink {
+  if ((church || assessingChurch) && CHURCH_ENTRIES[entry.href]) return CHURCH_ENTRIES[entry.href];
   if (entry.href !== "/pricing") return entry;
   if (church || assessingChurch) return CHURCH_PLANS;
   const edition = PRICING_EDITION[pathname];
@@ -266,11 +280,21 @@ export function Header() {
                     <ForChurchPage pathname={pathname}>
                       {(church) => {
                         const link = entryFor(entry, church, assessingChurch && pathname === "/assessment", pathname);
+                        if (isStaticPage(link.href)) {
+                          return (
+                            <a href={link.href} className={styles.link} onClick={() => track("ministry_demo_opened", { from: "header" })}>
+                              {link.label}
+                            </a>
+                          );
+                        }
                         return (
                           <Link
                             href={link.href}
                             aria-current={link.label === entry.label && isCurrent(pathname, entry.href) ? "page" : undefined}
                             className={styles.link}
+                            onClick={() => {
+                              if (link === CHURCH_PLANS) track("secondary_cta_clicked", { from: "header_plans", href: link.href });
+                            }}
                           >
                             {link.label}
                           </Link>
@@ -642,19 +666,20 @@ function MobileMenu({
                   </li>
                 ))}
                 {/* The desktop dropdown's assessment row, as one line: the way to the edition that fits. */}
-                {entry.feature && !church ? (
+                {/* On a church page the same row opens the church assessment, so both menus have one shape. */}
+                {entry.feature ? (
                   <li>
                     <Link
-                      href={entry.feature.href}
+                      href={church || assessingChurch ? ministryAssessment.href : entry.feature.href}
                       className={styles.sheetLink}
                       onClick={() => {
-                        trackPrimary(entry.feature!.href, "mobile_menu_editions");
+                        trackPrimary(church || assessingChurch ? ministryAssessment.href : entry.feature!.href, "mobile_menu_editions");
                         onClose();
                       }}
                     >
                       <span className={styles.sheetLinkText}>
-                        <span className={styles.sheetLinkLabel}>{entry.feature.title}</span>
-                        <span className={styles.sheetLinkDescription}>{entry.feature.eyebrow}</span>
+                        <span className={styles.sheetLinkLabel}>{church || assessingChurch ? ministryAssessment.label : entry.feature.title}</span>
+                        <span className={styles.sheetLinkDescription}>{church || assessingChurch ? ministryAssessment.lead : entry.feature.eyebrow}</span>
                       </span>
                       <span aria-hidden="true" className={styles.sheetArrow}>
                         →
@@ -668,20 +693,55 @@ function MobileMenu({
             </Fragment>
           ) : (
             <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)} data-area="side">
-              <Link
-                href={entryHere(entry).href}
-                aria-current={entryHere(entry).label === entry.label && isCurrent(pathname, entry.href) ? "page" : undefined}
-                className={styles.sheetLink}
-                onClick={onClose}
-              >
-                <span className={styles.sheetLinkLabel}>{entryHere(entry).label}</span>
-                <span aria-hidden="true" className={styles.sheetArrow}>
-                  →
-                </span>
-              </Link>
+              {isStaticPage(entryHere(entry).href) ? (
+                <a
+                  href={entryHere(entry).href}
+                  className={styles.sheetLink}
+                  onClick={() => {
+                    track("ministry_demo_opened", { from: "mobile_menu" });
+                    onClose();
+                  }}
+                >
+                  <span className={styles.sheetLinkLabel}>{entryHere(entry).label}</span>
+                  <span aria-hidden="true" className={styles.sheetArrow}>
+                    →
+                  </span>
+                </a>
+              ) : (
+                <Link
+                  href={entryHere(entry).href}
+                  aria-current={entryHere(entry).label === entry.label && isCurrent(pathname, entry.href) ? "page" : undefined}
+                  className={styles.sheetLink}
+                  onClick={() => {
+                    if (entryHere(entry) === CHURCH_PLANS) track("secondary_cta_clicked", { from: "mobile_menu_plans", href: CHURCH_PLANS.href });
+                    onClose();
+                  }}
+                >
+                  <span className={styles.sheetLinkLabel}>{entryHere(entry).label}</span>
+                  <span aria-hidden="true" className={styles.sheetArrow}>
+                    →
+                  </span>
+                </Link>
+              )}
             </div>
           ),
         )}
+        {/* For anyone who would rather talk than tap through a form. */}
+        <div className={cn(styles.sheetGroup, styles.sheetSingle)} data-area="side">
+          <a
+            href={`tel:${contact.phoneHref}`}
+            className={styles.sheetLink}
+            onClick={() => track("consultation_cta_clicked", { from: "mobile_menu_call", href: `tel:${contact.phoneHref}` })}
+          >
+            <span className={styles.sheetLinkText}>
+              <span className={styles.sheetLinkLabel}>Call {contact.phoneDisplay}</span>
+              <span className={styles.sheetLinkDescription}>Rather talk? Call us.</span>
+            </span>
+            <span aria-hidden="true" className={styles.sheetArrow}>
+              →
+            </span>
+          </a>
+        </div>
       </nav>
 
       <div className={styles.sheetFooter}>

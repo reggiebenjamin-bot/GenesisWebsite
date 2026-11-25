@@ -163,9 +163,9 @@ export const ministryPackage = {
     {
       no: "05",
       title: "Sunday notes and daily devotionals",
-      body: "Your pastor's own words, shaped into Sunday notes with the scripture, the key points and questions for small groups. From the Shepherd plan, a short devotional each morning too. Nothing goes out until a person approves it.",
+      body: "Your pastor's own words, shaped into Sunday notes with the scripture, the key points and questions for small groups. From the Shepherd plan, a short devotional each morning too, shaped from your pastors' own words, like Sunday's message or a short note. Nothing goes out until a person approves it.",
       points: ["From your pastor's own words", "Scripture, points and questions", "Daily devotionals from the Shepherd plan"],
-      plan: "Devotionals from Shepherd",
+      plan: "Devotionals: Shepherd plan and up",
       links: [
         { label: "See Sunday's Notes", href: `${ministryDemo.template("bold-dark")}#/notes` },
         { label: "See a Devotional", href: "/ministry-demo/platform/member-devotional.html?church=bold-dark" },
@@ -193,7 +193,7 @@ export type MinistryLook = {
 
 export const ministryLooks = {
   eyebrow: "Four looks",
-  title: "Pick the look that sounds like your church.",
+  title: "Pick the look that feels like your church.",
   aside:
     "Each look is a complete church website built to the same standard underneath, shown here with a made up sample church.",
   /** Added to the aside once the previews are published and the cards open them. */
@@ -254,7 +254,7 @@ export type MinistryPlatformRow = {
 export const ministryPlatform = {
   eyebrow: "The Genesis Ministry platform",
   title: "Guests, care and a member app, in one place.",
-  aside: "Genesis AI drafts and summarizes. A person on your team always decides.",
+  aside: "Hope works in two places: on your website it answers guests, and in your workspace it drafts and summarizes for your team. A person on your team always decides.",
   rows: [
     {
       id: "frontOffice",
@@ -298,12 +298,12 @@ export const ministryProtection = {
   rules: [
     {
       title: "Prayer stays with your pastors and prayer team.",
-      plan: "From Shepherd",
+      plan: "Shepherd plan and up",
       body: "Only your pastors and the prayer team you choose can see prayer requests. Nobody else in your church can open them. On the Care plan, prayer forms go by email to the pastors' address only.",
     },
     {
       title: "A person approves every draft.",
-      body: "Genesis AI drafts welcome notes, follow up notes and posts, and none of them goes out until someone on your team approves it. Only two things are sent without a person: Hope's answers from your approved facts, and the fixed crisis reply.",
+      body: "Hope drafts welcome notes, follow up notes and posts, and none of them goes out until someone on your team approves it. Only two things are sent without a person: Hope's answers from your approved facts, and the fixed crisis reply.",
     },
     {
       title: "Hope answers only from your approved facts.",
@@ -316,7 +316,7 @@ export const ministryProtection = {
     {
       title: "Every person has one private record.",
       /* Person pages and the record of every open start at Shepherd; Plus adds the screen to search it. */
-      plan: "From Shepherd",
+      plan: "Shepherd plan and up",
       body: "Each person has one page, not copies in five places. Every open is recorded from the Shepherd plan, and the Plus plan adds the Access Record screen to search it.",
     },
   ],
@@ -546,7 +546,7 @@ export const ministryFaq = {
     {
       question: "What does the AI do, and what does it not do?",
       answer:
-        "Genesis AI drafts and summarizes: a welcome note for a first time guest, a summary of the week's care, a suggested next step. Every draft waits for a person to approve it. On your website, Hope answers visitors on its own, but only from the facts your church approved. It does not counsel, and it does not answer prayer. Anyone in crisis gets a fixed reply written by people, with 988 and 911.",
+        "Hope is one assistant that works in two places. In your workspace it drafts and summarizes: a welcome note for a first time guest, a summary of the week's care, a suggested next step. Every draft waits for a person to approve it. On your website, Hope answers visitors on its own, but only from the facts your church approved. It does not counsel, and it does not answer prayer. Anyone in crisis gets a fixed reply written by people, with 988 and 911.",
     },
     {
       question: "Can we use our own photos?",
@@ -555,7 +555,7 @@ export const ministryFaq = {
     },
     {
       question: "What does Genesis Ministry cost?",
-      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes on your website. Shepherd and Plus add daily devotionals, the member app and email to members who opt in. More than one campus? Enterprise is scoped with you on a call.`,
+      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes on your website. Shepherd and Plus add daily devotionals, the member app and email to members who opt in. Devotionals are shaped from your pastors' own words too, and each one waits for a pastor to approve it. More than one campus? Enterprise is scoped with you on a call.`,
     },
     {
       question: "What does customization cost?",

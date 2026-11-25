@@ -4,11 +4,14 @@
    property is transitioned together on one curve, so it resizes as one move
    rather than a sequence of jumps. */
 
+/* viewport-fit=cover: the bar keeps clear of the notch on a phone held sideways (left and
+   right) and of the status bar when the site is opened from the home screen (top). */
 .header {
   position: fixed;
   top: 0;
-  right: 0;
-  left: 0;
+  right: env(safe-area-inset-right);
+  left: env(safe-area-inset-left);
+  border-top: env(safe-area-inset-top) solid var(--color-ink);
   z-index: 100;
   display: flex;
   justify-content: center;
@@ -435,6 +438,7 @@
   position: fixed;
   inset: 0;
   z-index: 200;
+  padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -450,7 +454,8 @@
   top: 0;
   z-index: 1;
   display: flex;
-  min-height: 64px;
+  min-height: calc(64px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
   align-items: center;
   justify-content: space-between;
   padding-inline: 16px 6px;
@@ -640,14 +645,15 @@
   }
 }
 
-/* The site does not set viewport-fit=cover, so the browser keeps the page clear of the home
-   indicator and env(safe-area-inset-*) is always 0 here: plain padding is enough. */
+/* The site sets viewport-fit=cover, so the sticky footer keeps itself clear of the home
+   indicator, and the sheet clear of the notch and the rounded corners on a phone held sideways. */
 .sheetFooter {
   position: sticky;
   bottom: 0;
   display: grid;
   gap: 4px;
   padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgb(8 9 14 / 0), var(--color-ink) 30%);
 }
 
@@ -683,10 +689,10 @@
   }
 }
 
-/* The feature tile takes only the height its words need, so it never sits
-   half empty beside a longer list. */
+/* The feature tile runs the full height of the list beside it, with its action
+   pinned to the bottom (margin-top: auto), so the panel has no empty corner. */
 .feature {
-  align-self: start;
+  align-self: stretch;
 }
 
 /* "Close Menu" under the sticky button: a quiet text action within thumb reach. */

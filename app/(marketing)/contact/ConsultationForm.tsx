@@ -217,7 +217,8 @@ export function ConsultationForm({
       >
         <Eyebrow>Request received</Eyebrow>
         <h2 className="mt-4 text-[clamp(1.7rem,3vw,2.6rem)]">
-          Thanks, we have it. Here is what happens next.
+          {/* A call request books no time by itself, so the heading says what happens to set one. */}
+          {check ? "Thanks, we have it. Here is what happens next." : "Thanks, we have it. We reply within one business day to set a time."}
         </h2>
         <p className="mt-5 text-muted-dark">
           {check

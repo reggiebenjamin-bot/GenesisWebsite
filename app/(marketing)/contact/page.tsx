@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { TextLink } from "@/components/ui/Button";
+import { TrackClick } from "@/components/ui/TrackClick";
 import { Eyebrow, PageIntro, Section } from "@/components/ui/Section";
 import { ASSESSMENT_REVIEW_TOPIC, assessmentReviewNote } from "@/lib/assessment";
 import { contact } from "@/lib/content";
@@ -113,12 +114,11 @@ export default async function ContactPage({
       <p className="mt-5 text-[0.98rem] leading-relaxed text-muted-dark">{copy.aside.body}</p>
 
       <p className="mt-7 text-[0.9rem] text-muted-dark">{copy.aside.areasLead}</p>
-      <ul className="mt-3 flex flex-wrap gap-1.5">
-        {copy.aside.areas.map((area) => (
-          <li
-            key={area}
-            className="rounded-[6px] border border-line-light bg-white/55 px-3 py-1 text-[0.82rem]"
-          >
+      {/* A plain list, not chips: these are topics, and nothing here is meant to be tapped. */}
+      <ul className="mt-2 flex flex-wrap text-[0.95rem] leading-relaxed text-ink">
+        {copy.aside.areas.map((area, index) => (
+          <li key={area}>
+            {index > 0 ? <span aria-hidden="true" className="px-2 text-ink/35">&middot;</span> : null}
             {area}
           </li>
         ))}
@@ -133,12 +133,16 @@ export default async function ContactPage({
       {church && !websiteCheck ? (
         <div className="mt-7 grid gap-1">
           <p className="text-[0.95rem] leading-relaxed text-muted-dark">{ministryContact.aside.plans.line}</p>
-          <TextLink href={ministryContact.aside.plans.link.href} className="w-fit">
-            {ministryContact.aside.plans.link.label}
-          </TextLink>
+          <TrackClick event="secondary_cta_clicked" from="contact_church_plans">
+            <TextLink href={ministryContact.aside.plans.link.href} className="w-fit">
+              {ministryContact.aside.plans.link.label}
+            </TextLink>
+          </TrackClick>
         </div>
       ) : null}
 
+      {/* A call or an email is a first conversation too, so each is counted like a Book a Call. */}
+      <TrackClick event="consultation_cta_clicked" from="contact_aside" selector="a[href^='tel:'],a[href^='mailto:']">
       <div className="mt-10 grid gap-2 border-t border-line-light pt-7">
         <p className="text-[0.9rem] text-muted-dark">
           Prefer to contact Genesis directly?
@@ -156,6 +160,7 @@ export default async function ContactPage({
           {contact.phoneDisplay}
         </a>
       </div>
+      </TrackClick>
     </aside>
   );
 

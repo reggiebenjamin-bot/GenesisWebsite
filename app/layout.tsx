@@ -27,6 +27,9 @@ const verification = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  /* The page runs edge to edge on an iPhone; .safe-area (globals.css) and the header keep
+     words and buttons clear of the notch, the rounded corners and the home indicator. */
+  viewportFit: "cover",
   themeColor: "#08090e",
   colorScheme: "dark light",
 };

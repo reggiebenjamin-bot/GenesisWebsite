@@ -126,7 +126,8 @@
 }
 
 @media (max-width: 700px) {
-  .page { padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  /* The layout's .safe-area already keeps the page clear of the notch and home indicator. */
+  .page { padding: 10px 12px 20px; }
   .pageHeader { margin-bottom: 10px; }
   .returnNav { width: 100%; justify-content: flex-start; gap: 16px; }
   .returnLink { font-size: 0.75rem; }

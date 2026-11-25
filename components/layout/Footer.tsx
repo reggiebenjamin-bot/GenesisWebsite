@@ -2,7 +2,7 @@ import Link from "next/link";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { contact, navigation, navigationLinks, uniqueByHref, type NavItem } from "@/lib/content";
 import { allEditions } from "@/lib/editions";
-import { FooterDisclaimer, FooterTagline } from "./FooterDisclaimer";
+import { FooterDisclaimer, FooterTagline, ForBusinessOnly } from "./FooterDisclaimer";
 import { Logo } from "./Logo";
 
 const columnLabel =
@@ -77,6 +77,9 @@ const columns = [
   { label: "Tools and classes", links: inColumn(toolPages) },
 ];
 
+/* The four business editions, by path: each footer click reports edition_link_clicked. */
+const BUSINESS_EDITION_LINKS = ["/lending", "/real-estate", "/business", "/enterprise"].map((href) => `a[href='${href}']`).join(",");
+
 /* The legal row holds only the legal pages. */
 const legalLinks = [
   { label: "Privacy", href: "/privacy" },
@@ -95,9 +98,8 @@ export function Footer() {
             <FooterTagline />
           </div>
 
-          {columns.map((column) => (
-            <div key={column.label}>
-              <p className={columnLabel}>{column.label}</p>
+          {columns.map((column) => {
+            const list = (
               <div className="mt-3 grid">
                 {column.links.map((item) =>
                   STATIC_PAGES.has(item.href) ? (
@@ -105,17 +107,43 @@ export function Footer() {
                       {item.label}
                     </a>
                   ) : (
-                    <Link key={item.href} href={item.href} className={columnLink}>
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      data-track-edition={column.label === "Editions" ? item.href.slice(1).split("?")[0] : undefined}
+                      className={columnLink}
+                    >
                       {item.label}
                     </Link>
                   ),
                 )}
               </div>
-            </div>
-          ))}
+            );
+            return (
+              <div key={column.label}>
+                <p className={columnLabel}>{column.label}</p>
+                {/* Each footer edition link reports, as the same links on the homepage do; Ministry as the church cue. */}
+                {column.label === "Editions" ? (
+                  <TrackClick event="edition_link_clicked" from="footer" selector={BUSINESS_EDITION_LINKS}>
+                    <TrackClick event="ministry_cue_clicked" from="footer" selector="a[href='/ministry']">
+                      {list}
+                    </TrackClick>
+                  </TrackClick>
+                ) : column.label === "Product" ? (
+                  <TrackClick event="secondary_cta_clicked" from="footer_product" selector="a[href='/solutions'],a[href='/how-it-works'],a[href='/pricing'],a[href='/ai-employees']">
+                    {list}
+                  </TrackClick>
+                ) : (
+                  list
+                )}
+              </div>
+            );
+          })}
 
           <div className="max-sm:col-span-full">
             <p className={columnLabel}>Contact</p>
+            {/* A call or an email is a first conversation too, so each is counted like a Book a Call. */}
+            <TrackClick event="consultation_cta_clicked" from="footer_contact" selector="a[href^='tel:'],a[href^='mailto:']">
             <div className="mt-3 grid">
               <a href={`mailto:${contact.email}`} className={columnLink}>
                 {contact.email}
@@ -124,6 +152,7 @@ export function Footer() {
                 {contact.phoneDisplay}
               </a>
             </div>
+            </TrackClick>
             <p className={`${columnLabel} mt-6`}>Follow</p>
             <div className="mt-3 grid">
               <a href={contact.linkedin} target="_blank" rel="noreferrer" className={columnLink}>
@@ -138,16 +167,19 @@ export function Footer() {
       </TrackClick>
 
       <div className="shell border-t border-line-dark pt-4 text-[0.875rem] text-ivory/66">
-        <div className="flex flex-wrap items-center gap-x-6">
-          <span className="text-ivory/55">Service areas</span>
-          {serviceAreas.map((item) => (
-            <Link key={item.href} href={item.href} className={columnLink}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
+        {/* The Texas service business pages, for a business reader only: a church page leaves the row out. */}
+        <ForBusinessOnly>
+          <div className="mb-2 flex flex-wrap items-center gap-x-6 border-b border-line-dark pb-1">
+            <span className="text-ivory/55">Service areas</span>
+            {serviceAreas.map((item) => (
+              <Link key={item.href} href={item.href} className={columnLink}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </ForBusinessOnly>
         {/* One baseline: copyright, the legal links, then the one disclaimer. */}
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-x-8 gap-y-1 border-t border-line-dark pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-1 pt-1">
           <p>© {new Date().getFullYear()} Genesis AI. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-6">
             {legalLinks.map((item) => (

@@ -104,7 +104,7 @@ export const aiEmployeePersonas: readonly AiEmployeePersona[] = [
       lending:
         "Ava answers borrower questions from approved information, offers open times for a call, confirms appointments, and routes anything that needs a loan officer.",
       real_estate:
-        "Ava answers buyer and seller questions from approved information, offers open times, confirms showings, and routes anything that needs an agent.",
+        "Ava answers buyer and seller questions from approved information, offers open times, routes anything that needs an agent, and from Level 03 confirms showings too.",
       business:
         "Ava answers customer questions from approved information, offers open times, confirms appointments, and routes anything that needs a person on the job.",
     },
@@ -196,7 +196,7 @@ export const aiEmployeesEnterprise = {
   eyebrow: "Enterprise",
   name: "Done For You",
   /** Public title. No price. */
-  publicTitle: "Done for you, scoped on a call",
+  publicTitle: "Done for you, scoped on a call.",
   /** Kept for webhooks and tests. Never render on marketing pages. */
   priceLine: "$15,000 setup plus $2,500 a month.",
   setupDisplay: "$15,000",

@@ -197,6 +197,12 @@ html[data-offer-path="custom-infrastructure"] [data-offer-panel="agent"] {
    the viewport. */
 /* Each section can say roughly how tall it is (--section-size), so the page
    height and anchor positions barely move as sections render. */
+/* viewport-fit=cover: the page's backgrounds run under the notch and the home indicator,
+   and this keeps everything inside them clear of both. */
+.safe-area {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 .site-section {
   content-visibility: auto;
   contain-intrinsic-size: auto var(--section-size, 900px);

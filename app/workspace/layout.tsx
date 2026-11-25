@@ -17,7 +17,7 @@ export default function WorkspaceLayout({ children }: Readonly<{ children: React
       >
         Skip to main content
       </a>
-      <main id="main-content">{children}</main>
+      <main id="main-content" className="safe-area">{children}</main>
     </WorkspaceAccountBoundary>
   );
 }

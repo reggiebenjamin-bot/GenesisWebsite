@@ -156,7 +156,12 @@ export const personaQuestion: Question = {
  * stay the CRM labels. Only the words a visitor reads say more, and they
  * name no integration Genesis does not have.
  */
-const crmChoices: readonly Choice[] = crmOptions.map((option) => ({
+/* Shown with the common answers first (none yet, then a CRM by its everyday names) and
+   GoHighLevel, which most small owners do not know by name, last. The values do not change. */
+const CRM_ORDER = ["none", "other", "ghl"] as const;
+const crmChoices: readonly Choice[] = [...crmOptions]
+  .sort((a, b) => CRM_ORDER.indexOf(a.value) - CRM_ORDER.indexOf(b.value))
+  .map((option) => ({
   value: option.label,
   label:
     option.value === "other"
@@ -948,7 +953,7 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
     title: "A few people carry the welcome",
     plan: "shepherd",
     body: "Welcome and follow up appear to rest on one or two people, so a busy week or a sick day means people wait.",
-    fit: "Genesis AI drafts welcome and follow up notes for your team, and none goes out until a person approves it.",
+    fit: "Hope drafts welcome and follow up notes for your team, and none goes out until a person approves it.",
     review: "Who carries follow up",
     weight: (a) =>
       signals(

@@ -64,7 +64,7 @@ export const editions: readonly Edition[] = [
     eyebrow: "Genesis Real Estate Pros",
     audience: "For agents and investors",
     headline: "Software that works every buyer and seller lead the same day.",
-    body: "Seller and buyer leads get worked the same day, showings get booked, and the deal board stays current. Built for agents, investors and teams.",
+    body: "Every seller and buyer lead gets a same day reply, a guided first touch and follow up. Showings booked and a live deal board come with Level 03. Built for agents, investors and teams.",
     points: ["Same day lead response", "Showings booked, from Level 03", "Live deal board, from Level 03"],
     ctas: [
       { label: "Assess My Business", href: "/assessment?persona=real-estate" },

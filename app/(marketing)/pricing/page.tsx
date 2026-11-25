@@ -72,17 +72,6 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
               <h1 className="mt-4 text-[clamp(2.6rem,6vw,5.4rem)] leading-[1.02] font-light tracking-[-0.045em] text-balance">
                 Three Levels, one price list.
               </h1>
-              {/* A pastor sees the church plans before any business price. */}
-              {church ? null : (
-                <TrackClick event="edition_link_clicked" from="pricing_hero_churches">
-                  <p className="mt-3 text-[0.95rem] text-muted-dark">
-                    Leading a church?{" "}
-                    <Link href="/ministry#levels" data-track-edition="ministry" className={textLink}>
-                      See Ministry plans from {ministryFrom}
-                    </Link>
-                  </p>
-                </TrackClick>
-              )}
             </div>
             <div className="grid gap-3">
               <p className="max-w-[52ch] text-[1rem] leading-relaxed text-muted-dark">{managedOverview.pricing.body}</p>
@@ -94,11 +83,25 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
                   </Link>
                 </p>
               </TrackClick>
+              {/* Most readers here price a business, so the business lede comes first; a pastor
+                  still finds the church plans on the first screen, after it. */}
+              {church ? null : (
+                <TrackClick event="edition_link_clicked" from="pricing_hero_churches">
+                  <p className="text-[0.95rem] text-muted-dark">
+                    Leading a church?{" "}
+                    <Link href="/ministry#levels" data-track-edition="ministry" className={textLink}>
+                      See Ministry plans from {ministryFrom}
+                    </Link>
+                  </p>
+                </TrackClick>
+              )}
             </div>
           </div>
 
           {church ? <ChurchPlans className="mb-6" /> : null}
 
+          {/* The outline goes h1, h2, then the h3 card titles. */}
+          <h2 className="sr-only">The three Levels</h2>
           <ManagedComparison checkout initialEdition={edition} />
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 border-t border-line-light pt-6">
@@ -115,7 +118,9 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
               <TrackClick event="consultation_cta_clicked" from="pricing_levels">
                 <TextLink href="/contact?topic=pricing#consultation-form">Book a Call</TextLink>
               </TrackClick>
-              <TextLink href="/solutions">See How It Is Built</TextLink>
+              <TrackClick event="secondary_cta_clicked" from="pricing_levels">
+                <TextLink href="/solutions">See How It Is Built</TextLink>
+              </TrackClick>
             </div>
           </div>
 

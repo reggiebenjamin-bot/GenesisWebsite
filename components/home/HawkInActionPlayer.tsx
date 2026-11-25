@@ -147,6 +147,11 @@ export function HawkInActionPlayer() {
           className="pointer-events-none absolute top-[17.5%] bottom-[9%] left-[16.6%] z-[1] w-[6%] min-w-4 bg-[linear-gradient(90deg,rgb(18_19_23)_35%,rgb(18_19_23/0))] md:hidden"
         />
 
+      </div>
+
+      {/* The pause control sits under the frame, beside the film button, so it never covers the
+          film's captions or its words at any size. */}
+      <div className="mt-6 flex justify-center gap-3">
         {/* Moving content longer than five seconds needs a way to stop it (WCAG 2.2.2). */}
         {showLoop ? (
           <button
@@ -155,28 +160,24 @@ export function HawkInActionPlayer() {
             aria-pressed={paused}
             aria-label={paused ? "Play loop" : "Pause loop"}
             title={paused ? "Play loop" : "Pause loop"}
-            /* Top right and icon only, clear of the burned-in captions and the demo's input bar. */
-            className="absolute top-3 right-3 z-10 grid size-11 place-items-center rounded-[6px] border border-ivory/25 bg-ink/75 text-ivory backdrop-blur-sm transition-colors duration-200 hover:border-gold-light"
+            className="secondary-action grid size-[52px] shrink-0 place-items-center"
           >
             {paused ? (
-              <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3 fill-current">
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 fill-current">
                 <path d="M3 1.5v13l11-6.5z" />
               </svg>
             ) : (
-              <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3 fill-current">
+              <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 fill-current">
                 <path d="M3 2h3.5v12H3zM9.5 2H13v12H9.5z" />
               </svg>
             )}
           </button>
         ) : null}
-      </div>
-
-      <div className="mt-6 flex justify-center">
         {/* A secondary action: the page's one gold button is the assessment. */}
         <button
           type="button"
           onClick={openSpot}
-          className="secondary-action inline-flex min-h-[52px] items-center justify-center gap-3 px-6 max-sm:w-full"
+          className="secondary-action inline-flex min-h-[52px] items-center justify-center gap-3 px-6 max-sm:min-w-0 max-sm:flex-1"
         >
           <span className="inline-flex items-center gap-3">
             <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 fill-current">
