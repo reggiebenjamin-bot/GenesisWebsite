@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lampstand Church | Columbus, OH | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Lampstand Church, a made-up worship-led church in the Short North, Columbus, Ohio, shown in the Genesis Ministry Bold and Dark look. Sundays at 10 AM and 6 PM.">
@@ -540,7 +540,7 @@ body.chat-open .chat-fab .i-x{display:inline}
   .tile .ph{height:240px}
   .msg-grid .player-col{order:-1}
   .player .art{right:5%}
-  .player .art small{font-size:10px;margin-bottom:6px}
+  .player .art small{font-size:12px;margin-bottom:6px}
   .player .dur{display:none}
   .rv-ctrl{margin-top:22px}
   .signup{flex-direction:column}
@@ -558,7 +558,7 @@ body.chat-open .chat-fab .i-x{display:inline}
   .mplay{top:calc((100vw - 42px) * 9 / 32)}
   .modal-close{top:-54px}
   /* The Sundays bar */
-  .sbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:65;align-items:center;gap:12px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  .sbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:65;align-items:center;gap:12px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));
     background:rgba(20,17,14,.97);border-top:1px solid var(--char);transform:translateY(110%);visibility:hidden;transition:none}
   .sbar.show{transform:none;visibility:visible;transition:transform .4s var(--ease)}
   .sbar .sb-chat{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--bone);color:var(--kiln);cursor:pointer}
@@ -566,7 +566,7 @@ body.chat-open .chat-fab .i-x{display:inline}
   .sbar .sb-t{flex:1;min-width:0;line-height:1.15}
   .sbar .sb-t small{display:block;font:600 10.5px/1 var(--body);letter-spacing:.15em;text-transform:uppercase;color:var(--flare);margin-bottom:4px}
   .sbar .sb-t b{font:800 21px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
-  .sbar .btn{min-height:46px;padding:0 16px;font-size:15px}
+  .sbar .btn{min-height:44px;padding:0 16px;font-size:15px}
   /* Keyboard focus and in-page jumps stop above the bar, never behind it */
   html{scroll-padding-bottom:calc(67px + env(safe-area-inset-bottom) + 12px)}
   /* One floating thing at a time: the chat circle waits until the first screen is passed, and hides while the bar is up (the bar has its own chat button) */
@@ -701,12 +701,14 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lampstand Church is a made-up church, shown in the Bold and Dark look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lampstand Church is a made-up church, shown in the Bold and Dark look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
 
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="top">
@@ -748,6 +750,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         </div></div>
       </div>
       <a href="#watch">Watch</a>
+      <a href="#/notes">Notes</a>
       <a href="#next">Events</a>
       <a href="#/give" data-demo="give">Give</a>
     </nav>
@@ -791,13 +794,14 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="sub" href="#/serve">Serve Teams</a>
     </details>
     <a href="#watch">Watch</a>
+    <a href="#/notes">Notes</a>
     <a href="#next">Events</a>
     <a href="#/give" data-demo="give">Give</a>
   </nav>
   <div class="mfoot">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">→</span></a>
     <p class="mtimes"><b>Sundays 10 AM &amp; 6 PM</b>1180 Foundry Row, Columbus, Ohio</p>
-    <p class="mquiet"><a href="tel:+16145550142">(614) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="mquiet"><span class="fake-tel">(614) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -951,7 +955,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <h2 class="title-sm" id="msg-title">Shine where you are</h2>
       <p class="msg-meta"><span>November 15, 2026</span><span>Talia</span><span>38 min</span></p>
       <p class="body-copy"><b>Lamps On, part 3.</b> Catch up on Sunday night, or send it to the friend who needs it this week.</p>
-      <a class="btn btn-outline" href="#/messages">All Messages</a>
+      <a class="btn btn-outline" href="#/notes">All Sermon Notes</a>
     </div>
     <div class="player-col reveal">
       <button type="button" class="player" data-modal="message" aria-label="Play the latest message, Shine where you are, from November 15, 2026">
@@ -1061,13 +1065,13 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <li><a href="#watch">Latest Message</a></li>
           <li><a href="#watch">Live Sundays at 6</a></li>
           <li><a href="#/podcast">Podcast</a></li>
-          <li><a href="#/sermon-notes">Sermon Notes</a></li>
+          <li><a href="#/notes">Sermon Notes</a></li>
         </ul>
       </div>
       <div>
         <h3>Reach Us</h3>
         <ul>
-          <li><a href="tel:+16145550142">(614) 555-0142</a></li>
+          <li><span class="fake-tel">(614) 555-0142</span></li>
           <li><a href="mailto:lampstand@example.org">lampstand@example.org</a></li>
           <li><button type="button" data-open-chat>Ask a Question</button></li>
           <li><a href="#prayer-request">Prayer Requests</a></li>
@@ -1095,11 +1099,11 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
 </button>
 <div class="chat" id="chat" role="dialog" aria-label="Ask Lampstand" aria-hidden="true">
   <div class="chat-head">
-    <div><b>Ask Lampstand</b><small>Preview assistant. A real person follows up.</small></div>
+    <div><b>Ask Lampstand</b><small>Preview assistant. Tap a question for a sample answer.</small></div>
     <button type="button" class="sq" id="chat-close" aria-label="Close chat"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
   </div>
   <div class="chat-body" id="chat-body">
-    <div class="bub bot">Hey, welcome to Lampstand. I can help with service times, parking, kids and more. What can I help with?</div>
+    <div class="bub bot">Hey, welcome to Lampstand. Tap a question about service times, parking, kids and more.</div>
     <div class="chips" id="chips">
       <button type="button" class="chip" data-q="times">Service Times</button>
       <button type="button" class="chip" data-q="park">Where do I park?</button>
@@ -1384,7 +1388,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   var modal = doc.getElementById('modal'), mclose = doc.getElementById('modal-close'), lastFocus = null;
   var M = {
     campaign: { img: 'photos/foundry-hall.jpg', label: 'The Foundry Project', title: 'Make the Foundry home', text: 'On the live site, the church’s campaign film plays right here.', cta: 'Give to the Foundry', href: '#/give', demo: 'give' },
-    message: { img: 'photos/candle-flame.jpg', label: 'Lamps On, part 3', title: 'Shine where you are', text: 'On the live site, the newest YouTube message from the church plays right here.', cta: 'All Messages', href: '#/messages' }
+    message: { img: 'photos/candle-flame.jpg', label: 'Lamps On, part 3', title: 'Shine where you are', text: 'On the live site, the newest YouTube message from the church plays right here.', cta: 'All Sermon Notes', href: '#/notes' }
   };
   var mcta = doc.getElementById('modal-cta');
   var openModal = function (key, from) {
@@ -1490,6 +1494,23 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   setInterval(checkPast, 400);
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--bone);--nv-muted:var(--ash);--nv-accent:var(--flare);--nv-on-accent:var(--kiln);--nv-surface:var(--soot);--nv-line:var(--char);--nv-line-strong:var(--char-2);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--body);--nv-r:var(--r);--nv-r-lg:var(--r)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv .nv-h1,.nv h2,.nv-title,.nv-date b{text-transform:uppercase;letter-spacing:.01em}
+.nv-title{font-size:clamp(26px,3vw,36px)}
+.nv-verse p{font-size:clamp(20px,2vw,23px)}
+.nv-head{border-bottom:1px solid var(--char)}
+</style>
+<script>window.NOTES_SITE = {"slug":"bold-dark","times":"Sundays at 10 AM and 6 PM","address":"1180 Foundry Row, Columbus","cls":{"wrap":"wrap","label":"label","h1":"title-sm","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1654,7 +1675,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

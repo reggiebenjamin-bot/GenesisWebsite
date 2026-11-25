@@ -246,7 +246,8 @@ test("each plan and Enterprise books a call that names what was picked", () => {
 });
 
 test("each plan keeps exactly what its draft level included", () => {
-  /* Care was Level 01 (Welcome), Shepherd was Level 02 (Connect), Plus was Level 03 (Shepherd). */
+  /* Care was Level 01 (Welcome), Shepherd was Level 02 (Connect), Plus was Level 03 (Shepherd).
+     Sunday sermon notes come with every plan; daily devotionals, with email, from Shepherd. */
   assert.deepEqual(
     ministryLevels.levels.map((plan) => [plan.summary, [...plan.bullets]]),
     [
@@ -259,6 +260,7 @@ test("each plan keeps exactly what its draft level included", () => {
           "Hope on your website",
           "Plan a Visit and prayer forms by email",
           "Newsletter sign up",
+          "Sunday sermon notes on your website",
         ],
       ],
       [
@@ -271,6 +273,7 @@ test("each plan keeps exactly what its draft level included", () => {
           "Care inbox",
           "Team roles, with your prayer team named",
           "Hope drafts that wait for approval",
+          "Daily devotionals, in the member app and by email",
         ],
       ],
       [

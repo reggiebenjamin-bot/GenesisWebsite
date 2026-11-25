@@ -152,6 +152,13 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* The sample strip is a design-preview strip, not a button. */
 .v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px}
 .gm-preview-strip b{font-weight:700}
+/* The strip's dot is its first span only; the words and Talk With Genesis are ordinary text. */
+.v2-fixture-badge.gm-preview-strip .gm-strip-words,.v2-fixture-badge.gm-preview-strip .gm-strip-words span,.v2-fixture-badge.gm-preview-strip .gm-strip-talk span{width:auto;height:auto;border-radius:0;background:none;flex:none}
+.gm-strip-talk{display:inline-flex;align-items:center;min-height:44px;margin-left:10px;padding:0 4px;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.gm-strip-talk:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:4px}
+@media (max-width:520px){.gm-strip-long{display:none}}
+/* A phone on its side keeps the strip at 28px: Talk With Genesis stays in Hope's answers there. */
+@media (max-height:500px){.gm-strip-talk{display:none}}
 /* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
    page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
 .v2-fixture-badge.gm-preview-strip{background:linear-gradient(rgba(232,149,90,.12),rgba(232,149,90,.12)),var(--v2-bg,#0d0e10)}
@@ -185,7 +192,7 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* The plan level shown in this preview. Sits in the account area of the sidebar. */
 .gm-plan-switch{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:3px;border:1px solid var(--v2-border);border-radius:var(--v2-radius-sm);background:var(--v2-surface)}
 .gm-plan-switch>span{padding:0 4px 0 6px;color:var(--v2-muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.gm-plan-switch a{flex:1 1 auto;min-height:30px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
+.gm-plan-switch a{flex:1 1 auto;min-height:44px;display:grid;place-items:center;padding:0 7px;border-radius:6px;white-space:nowrap;color:var(--v2-text-2);font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;text-decoration:none}
 .gm-plan-switch a:hover{background:var(--v2-hover);color:var(--v2-text)}
 /* The plan shown is marked like the current nav row (one gold fill in the sidebar: the action). */
 .gm-plan-switch a[aria-current="true"]{background:var(--v2-accent-soft);box-shadow:inset 0 0 0 1px rgba(var(--v2-accent-rgb),.32);color:var(--v2-text)}
@@ -695,7 +702,7 @@ a.v2-sidebar-action{text-decoration:none}
 /* Light theme: the dark preview pictures sit on a dark ground at near full strength, never muddy grey. */
 [data-theme="light"] .gm-locked-thumb{background:#0d0e10}
 [data-theme="light"] .gm-locked-thumb img{opacity:.85;filter:none}
-.gm-locked-thumb figcaption{position:absolute;left:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(13,14,16,.82);color:#f4efe8;font-size:11px;font-weight:700;letter-spacing:.04em}
+.gm-locked-thumb figcaption{position:absolute;left:10px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(13,14,16,.82);color:#f4efe8;font-size:12px;font-weight:700;letter-spacing:.04em}
 @media (max-width:1100px){.gm-locked-card.has-thumb{grid-template-columns:minmax(0,1fr)}.gm-locked-thumb{max-width:420px}}
 
 /* The fixed footer of an outreach email. */
@@ -813,7 +820,8 @@ section.v2-card>h2:first-child,div.v2-card>h2:first-child{margin-top:0}
 .hd-g .gm-skip-screen:hover{color:var(--v2-text)}
 .hd-card .gm-skip-screen{color:inherit;opacity:.78;font-family:var(--hd-font,inherit)}
 .hd-g .gm-skip-screen:focus-visible,.hd-card .gm-skip-screen:focus-visible{outline:2px solid var(--v2-focus,currentColor);outline-offset:2px;border-radius:4px}
-@media (max-width:860px),(pointer:coarse){.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{min-height:44px;margin-top:2px}}
+/* Skip to Next Screen is a 44px target at every width (review of November 24: 17px tall on desktop). */
+.hd-g .gm-skip-screen,.hd-card .gm-skip-screen{min-height:44px;margin-top:2px}
 /* Round 2: the card keeps room for the link from the moment a step is drawn, so the link never makes
    the card taller after the card and its target were placed (on phones that hid the target's foot).
    Every step card but the last carries it; the last links on, the Done card and the invite never do. */
@@ -916,10 +924,12 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
    9. Review round 1 (November 22): phones.
    ========================================================================== */
 /* Genesis OS keeps 136px at the foot of a phone for its bottom nav and the Hawk button
-   (os/refine-phone.css). This preview has no bottom nav, so the work area ends 12px above the round
-   Genesis button instead: the sample strip (44px), the top bar (58px) and the button's band (72px). */
+   (os/refine-phone.css). This preview has no bottom nav, and a band kept empty for the round Hope
+   button read as a thick black bar on a phone (review of November 24). So the work area runs to the
+   foot of the screen under the sample strip (44px) and the top bar (58px), and its own bottom padding
+   lets the last card scroll clear of the round button, which floats in the corner. */
 @media (max-width:860px){
-  body.v2-showing-sample .v2-main{height:calc(100dvh - 44px - 58px - 72px)!important}
+  body.v2-showing-sample .v2-main{height:calc(100dvh - 44px - 58px)!important;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))!important;scroll-padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
 }
 /* A short, wide window (200 percent zoom of a laptop): the member tour card docks at the foot of the
    screen (../shared/hope-demo.js shortDock), so Skip to Next Screen moves up beside the step count and
@@ -951,3 +961,31 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 
 /* 911 and 988: a 44px tap area around each number, without moving the words. */
 a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
+
+/* ==========================================================================
+   Sermon notes review (November 24): small type, even pairs, and a phone on its side.
+   ========================================================================== */
+/* The plan lock badge ("Shepherd", "Plus", "Included in Shepherd") keeps a 12px floor everywhere. */
+.gm-nav-lock{font-size:12px;letter-spacing:.01em}
+/* A locked screen's two actions are one even pair (stacked full width under 480px). */
+.gm-locked-card .gm-locked-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:440px}
+.gm-locked-card .gm-locked-actions .v2-button{width:100%;margin:0;justify-content:center;text-align:center}
+@media (max-width:480px){.gm-locked-card .gm-locked-actions{grid-template-columns:minmax(0,1fr);max-width:none}}
+/* A phone held on its side (844 by 390): the sample strip is 28px, the top bar 48px, and the work area
+   takes the rest of the screen, so a workspace screen keeps most of the 390px for its own words. */
+@media (max-height:500px) and (orientation:landscape) and (max-width:960px){
+  .v2-fixture-badge{height:28px!important;min-height:28px!important;font-size:12px}
+  body.v2-showing-sample .v2-shell{height:calc(100dvh - 28px);margin-top:28px}
+  body.v2-showing-sample .v2-drawer{top:28px;height:calc(100dvh - 28px)}
+  body.v2-showing-sample .v2-sidebar{top:28px;height:calc(100dvh - 28px)}
+}
+@media (max-height:500px) and (orientation:landscape) and (max-width:860px){
+  .v2-mobile-top{height:48px!important}
+  body.v2-showing-sample .v2-main{height:calc(100dvh - 28px - 48px)!important}
+  body.v2-showing-sample .v2-genesis-scrim{top:28px}
+  /* The page's back link and Take the Tour share one row from 600px wide. */
+  .v2-page-head:has(.v2-page-back){display:flex!important;align-items:center;justify-content:space-between;gap:10px}
+  .v2-page-head:has(.v2-page-back) .v2-page-actions{margin-top:0!important}
+}
+/* The Notes screens and the publish sheet: eyebrows, badges, pulse labels and the stepper keep a 12px floor. */
+body[data-page="notes"] .v2-eyebrow,body[data-page="notes"] .v2-badge,body[data-page="notes"] .v2-pulse-item small,body[data-page="notes"] .v2-view-picker>span,body[data-page="notes"] .v2-stepper li{font-size:12px;letter-spacing:.06em}

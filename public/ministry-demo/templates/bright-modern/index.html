@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lightwell Church | Raleigh, NC | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Lightwell Church, a made-up young church in downtown Raleigh, North Carolina, shown in the Genesis Ministry Bright and Modern look. Sundays at 9:00 and 10:45 AM.">
@@ -125,7 +125,7 @@ a:hover > .go,a:focus-visible > .go,a.go:hover,a.go:focus-visible,.card:hover .g
 .menu-panel a:hover::after,.menu-panel a:focus-visible::after{opacity:1;transform:translate(0,-50%)}
 .nav-cta{display:flex;align-items:center;gap:8px;margin-left:12px}
 .nav-cta .btn{min-height:46px;padding:0 20px;font-size:15px}
-.hamburger{display:none;width:44px;height:44px;border:1px solid var(--rule);border-radius:var(--r);background:#fff;align-items:center;justify-content:center;cursor:pointer}
+.hamburger{display:none;width:46px;height:46px;border:1px solid var(--rule);border-radius:var(--r);background:#fff;align-items:center;justify-content:center;cursor:pointer}
 .hamburger svg{width:22px;height:22px}
 
 /* Phone menu: a full sheet under the header */
@@ -340,7 +340,7 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .f-dir .arw{margin-left:8px;transition:transform .3s var(--ease)}
 .f-dir:hover .arw{transform:translateX(4px)}
 .f-col h3{font:600 12.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--sky);margin:13px 0 18px}
-.f-col a,.f-col button{display:flex;align-items:center;min-height:36px;color:#E9EEF7;text-decoration:none;font-size:16px;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.f-col a,.f-col button{display:flex;align-items:center;min-height:36px;min-width:44px;width:fit-content;color:#E9EEF7;text-decoration:none;font-size:16px;background:none;border:0;padding:0;cursor:pointer;text-align:left}
 .f-col a:hover,.f-col button:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
 .f-social{display:flex;gap:10px;margin-top:18px}
 .f-social a{flex:none;width:44px;height:44px;border:1px solid rgba(255,255,255,.22);border-radius:var(--r);display:grid;place-items:center;transition:background-color .2s ease,border-color .2s ease}
@@ -351,12 +351,12 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .f-bottom a::before{content:"";position:absolute;inset:-13px -6px}
 .f-bottom a:hover{color:#fff}
 .f-bottom .sep{margin-inline:8px;opacity:.6}
-.f-word{display:block;font:800 clamp(110px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
+.f-word{display:block;font:800 clamp(80px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
 
 /* ---------- Phone Sundays bar ---------- */
 .sbar{display:none}
 @media (max-width:760px){
-  .sbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);border-top:1px solid var(--rule);box-shadow:0 -12px 30px -20px rgba(11,18,32,.4);padding:10px 16px calc(10px + env(safe-area-inset-bottom));transform:translateY(115%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s linear .35s}
+  .sbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.98);border-top:1px solid var(--rule);box-shadow:0 -12px 30px -20px rgba(11,18,32,.4);padding:8px 16px calc(8px + env(safe-area-inset-bottom));transform:translateY(115%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s linear .35s}
   body.sb-open .sbar{transform:none;visibility:visible;transition:transform .35s var(--ease),visibility 0s}
   /* Keyboard focus and in-page jumps stop above the bar, never behind it */
   html{scroll-padding-bottom:calc(65px + env(safe-area-inset-bottom) + 12px)}
@@ -643,6 +643,9 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){.site-header{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
+.f-col .fake-tel{display:flex;color:#E9EEF7;font-size:16px}
 </style>
 </head>
 <body>
@@ -665,7 +668,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></symbol>
 </svg>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lightwell Church is a made-up church, shown in the Bright and Modern look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lightwell Church is a made-up church, shown in the Bright and Modern look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
 
 <header class="site-header" id="hdr">
   <div class="wrap nav">
@@ -691,7 +694,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <div class="mcta">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 10:45 AM</b><span>1218 Brightwater Ave, Raleigh</span></p>
-    <p class="mquiet"><a href="tel:+19195550142">(919) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="mquiet"><span class="fake-tel">(919) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -850,7 +853,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         <h2 class="h-md" id="msg-title" style="margin-top:var(--label-gap)">Room for questions</h2>
         <p class="msg-meta">Open Doors, week 3&nbsp;&middot; Pastor Theo&nbsp;&middot; November&nbsp;15,&nbsp;2026</p>
         <p class="muted">Catch up on Sunday in the car, on a walk or during nap time. Every message is online by Monday morning.</p>
-        <a class="btn btn-outline" href="#/messages">All Messages</a>
+        <a class="btn btn-outline" href="#/notes">All Sermon Notes</a>
       </div>
       <button class="player reveal" type="button" aria-label="Play the message Room for questions" data-modal="Room for questions" data-modal-sub="The message video plays here on the live site." data-modal-img="photos/pastor-teaching.jpg">
         <img src="photos/pastor-teaching.jpg" alt="" width="1800" height="2250" loading="lazy">
@@ -929,7 +932,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       </div>
       <nav class="f-col" aria-label="Explore">
         <h3>Explore</h3>
-        <a href="#plan-a-visit">Plan Your Visit</a><a href="#about">Who We Are</a><a href="#/beliefs">What We Believe</a><a href="#message">Watch</a><a href="#/events">Events</a><a href="#/give" data-demo="give">Give</a>
+        <a href="#plan-a-visit">Plan Your Visit</a><a href="#about">Who We Are</a><a href="#/beliefs">What We Believe</a><a href="#message">Watch</a><a href="#/notes">Sermon Notes</a><a href="#/events">Events</a><a href="#/give" data-demo="give">Give</a>
       </nav>
       <nav class="f-col" aria-label="Connect">
         <h3>Connect</h3>
@@ -937,7 +940,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       </nav>
       <div class="f-col">
         <h3>Reach us</h3>
-        <a href="tel:+19195550142">(919) 555-0142</a><a href="#/contact">Contact Us</a><button type="button" data-open-chat>Ask a Question</button>
+        <span class="fake-tel">(919) 555-0142</span><a href="#/contact">Contact Us</a><button type="button" data-open-chat>Ask a Question</button>
         <div class="f-social">
           <a href="#/instagram" data-demo="Instagram" aria-label="Lightwell on Instagram"><svg aria-hidden="true"><use href="#i-ig"/></svg></a>
           <a href="#/facebook" data-demo="Facebook" aria-label="Lightwell on Facebook"><svg aria-hidden="true"><use href="#i-fb"/></svg></a>
@@ -971,7 +974,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <button class="chat-x" type="button" aria-label="Close chat"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
   </div>
   <div class="chat-body" id="chat-body" aria-live="polite">
-    <p class="bub bot">Hi, I am Hope. I can help with Sunday times, kids, parking or anything else. What would you like to know?</p>
+    <p class="bub bot">Hi, I am Hope. Tap a question about Sunday times, kids or parking.</p>
     <div class="chips">
       <button class="chip" type="button" data-q="times">Service times</button>
       <button class="chip" type="button" data-q="kids">What about my kids?</button>
@@ -1080,6 +1083,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     { label: "Connect", items: [["Plan Your Visit", "Times, parking and kids.", "#plan-a-visit"], ["Get Connected", "All the ways in.", "#visit"], ["Start Here", "New here? Begin with lunch.", "#/start-here"], ["Small Groups", "Find a group near you.", "#/groups"], ["Ask About Baptism", "Baptism Sunday is December 6.", "#baptism"], ["Prayer Requests", "On a real site, a person reads each one.", "#prayer-request"], ["Contact Us", "Call, email or send a note.", "#contact"]] },
     { label: "Ministries", items: [["All Ministries", "Something for every age.", "#/ministries"], ["Lightwell Kids", "Nursery through 5th grade.", "#/kids"], ["Students and Young Adults", "Grades 6 to 12 and twentysomethings.", "#/students"], ["Freedom", "Recovery and healing groups.", "#/freedom"], ["Serve Teams", "Find your spot on a team.", "#/serve"]] },
     { label: "Watch", href: "#message" },
+    { label: "Notes", href: "#/notes" },
     { label: "Events", href: "#/events" },
     { label: "Give", href: "#/give", demo: "give" },
   ];
@@ -1334,7 +1338,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     times: "We meet every Sunday at 9:00 and 10:45 AM at 1218 Brightwater Ave. Each gathering runs about 75 minutes.",
     kids: "Lightwell Kids runs at both gatherings for babies through 5th grade. Check-in opens 20 minutes early, and every volunteer is background checked.",
     park: "There is free parking in the lot behind the building, plus street parking on Brightwater. Look for the blue flags.",
-    other: "Good question. A real person from our team will follow up. You can also call (919) 555-0142.",
+    other: "On a real church site, a real person from our team would help with that. In this demo, nothing is sent.",
   };
   const ask = (text, key) => {
     const me = document.createElement("p"); me.className = "bub me"; me.textContent = text; body.appendChild(me);
@@ -1357,6 +1361,22 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   onScroll();
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--ink);--nv-muted:var(--graphite);--nv-accent:var(--cobalt);--nv-on-accent:#fff;--nv-surface:var(--cloud);--nv-line:var(--rule);--nv-line-strong:var(--rule-strong);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--display);--nv-r:var(--r);--nv-r-lg:var(--r-lg)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv .nv-h1,.nv h2,.nv-title{letter-spacing:-.025em;font-weight:700}
+.nv-head{background:var(--cloud)}
+.nv-today{background:var(--sky);border-color:transparent}
+</style>
+<script>window.NOTES_SITE = {"slug":"bright-modern","times":"Sundays at 9:00 and 10:45 AM","address":"1218 Brightwater Ave, Raleigh","cls":{"wrap":"wrap","label":"label","h1":"h-md","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1519,7 +1539,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

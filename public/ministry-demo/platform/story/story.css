@@ -187,6 +187,8 @@ button { font: inherit; color: inherit; }
 :root[data-theme="light"] .preview-strip::before { background: var(--gold-dark); }
 /* On phones the sample-data disclosure is 12.5px, never smaller. */
 @media (max-width: 640px) { .preview-strip { font-size: 0.78rem; letter-spacing: 0.12em; } }
+@media (max-height: 500px) { .preview-strip { font-size: 0.75rem; letter-spacing: 0.12em; } }
+@media (max-height: 430px) { :root { --header-h: 52px; } }
 
 .site-header {
   position: sticky; top: 0; z-index: 40;
@@ -391,7 +393,7 @@ button { font: inherit; color: inherit; }
 .s-paper .frame-bar, .s-ivory .frame-bar, :root[data-theme="light"] .s-ink .frame-bar { --frame-bar: #f3eee6; }
 .frame-bar > span { flex: none; width: 6px; height: 6px; border-radius: 50%; background: rgb(127 127 127 / 0.45); }
 .frame-bar > span:nth-of-type(3) { background: var(--gold); }
-.frame-bar em { min-width: 0; margin-left: 8px; font-family: var(--font-mono); font-style: normal; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.frame-bar em { min-width: 0; margin-left: 8px; font-family: var(--font-mono); font-style: normal; font-size: 0.75rem; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .frame img { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; }
 
 /* ── closes and footer ────────────────────────────────────────────── */

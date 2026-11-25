@@ -17,7 +17,8 @@
  * What is copied follows "Uploading the preview" in the source's
  * platform/DESIGN.md (section 12):
  *   - index.html (the gallery);
- *   - shared/crisis-words.js and shared/hope-demo.js;
+ *   - shared/crisis-words.js, shared/hope-demo.js, shared/notes-data.js and
+ *     shared/notes-site.js (the sermon notes and devotionals);
  *   - platform/, without platform/DESIGN.md;
  *   - templates/<slug>/ for each look, without its shots/, except the two
  *     screenshots per look the gallery shows (shots/desktop/home-01.jpg and
@@ -234,7 +235,14 @@ function leftOut(r) {
   return null;
 }
 
-const REQUIRED = ["index.html", "shared/crisis-words.js", "shared/hope-demo.js", "platform"];
+const REQUIRED = [
+  "index.html",
+  "shared/crisis-words.js",
+  "shared/hope-demo.js",
+  "shared/notes-data.js",
+  "shared/notes-site.js",
+  "platform",
+];
 const templates = readdirSync(join(SOURCE, "templates"))
   .filter((slug) => statSync(join(SOURCE, "templates", slug)).isDirectory())
   .map((slug) => `templates/${slug}`);

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0e10">
+<title>Notes · Genesis Ministry · Design preview</title>
+<meta name="description" content="Genesis Ministry design preview: sermon notes and daily devotionals, shaped only from the pastor's own words, with sample data.">
+<script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#f6f4ef":"#0d0e10";})();</script>
+<link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="shared/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/gambetta-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared/genesis.css">
+<style>
+  /* Notes only. Prefix: nt-. The page is the Genesis OS Deals pattern; these only arrange it. */
+  .nt-page a.v2-mobile-deal-row{color:inherit;text-decoration:none}
+  .nt-page .v2-deal-table .v2-primary-cell>span{white-space:normal;overflow:visible;text-overflow:clip}
+  .nt-page .v2-primary-cell>.v2-deal-row-link{display:flex}
+  .nt-page .v2-mobile-deal-identity small{white-space:normal;overflow:visible;text-overflow:clip}
+  .nt-where{color:var(--v2-text-2);font-size:13px}
+  .nt-foot{display:flex;align-items:flex-start;gap:10px;margin:0;color:var(--v2-fine);font-size:12px;line-height:1.6}
+  .nt-foot svg{flex:none;margin-top:2px;color:var(--v2-positive)}
+  .nt-empty{padding:28px 12px;text-align:center}
+  @media (max-width:860px){#nt-ask{display:none}}
+  /* Small type keeps a 12px floor on this screen. */
+  .nt-page .v2-eyebrow,.nt-page .v2-pulse-item small,.nt-page .v2-view-picker>span{font-size:12px;letter-spacing:.06em}
+  /* The title row carries Take the Tour, so the two New buttons below are one even pair. */
+  .nt-titlerow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .nt-titlerow h1{margin:0}
+  .nt-titlerow .gm-head-actions{display:flex;flex:none}
+  .nt-titlerow .gm-head-actions .v2-button{margin:0}
+  #nt-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+  #nt-actions .v2-button{width:100%;min-height:44px;margin:0;justify-content:center;flex-wrap:wrap;text-align:center;line-height:1.2;white-space:normal}
+  #nt-actions .nt-lock{display:flex;justify-content:center;flex:1 1 100%}
+  #nt-actions .nt-lock .gm-nav-lock{margin:2px 0 0}
+  .nt-video{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;color:var(--v2-text-2);font-size:13.5px;line-height:1.5}
+  @media (max-width:860px){.nt-titlerow .gm-tour-btn{width:44px;min-width:44px;padding:0;justify-content:center}.nt-titlerow .gm-tour-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}}
+  @media (max-width:860px){.nt-page .v2-next-actions{grid-template-columns:minmax(0,1fr)!important}}
+  /* Wide screens (review of November 24): Take the Tour joins the right-aligned row of header actions as
+     its last, quiet button, every header button shares one top line, and the title block keeps the rest
+     of the width, so the subtitle never breaks around a button. Phones keep the icon in the title row. */
+  #nt-tour{display:none}
+  #nt-next:empty{min-height:246px}
+  @media (max-width:860px){#nt-next:empty{min-height:410px}}
+  @media (min-width:861px){
+    .nt-page .v2-page-head{flex-wrap:wrap;align-items:flex-start;row-gap:14px}
+    .nt-page .v2-page-head>div:first-child{flex:1 1 360px;min-width:0}
+    #nt-head-actions{display:none!important}
+    #nt-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:flex-start;margin-left:auto;min-width:0}
+    #nt-actions .v2-button{width:auto;white-space:nowrap}
+    #nt-tour{display:inline-flex}
+  }
+  /* The byline sits on its own line under the scripture, never as a stray "· Pastor Priya". */
+  .nt-by{display:block}
+  .nt-video svg{flex:none;width:16px;height:16px;margin-top:2px;color:var(--v2-muted)}
+</style>
+</head>
+<body data-side="church" data-page="notes" data-title="Notes">
+
+<main id="v2-main" class="v2-main">
+  <div class="v2-page v2-deals-page nt-page">
+
+    <header class="v2-page-head">
+      <div>
+        <div class="v2-eyebrow" id="nt-eyebrow">Notes</div>
+        <div class="nt-titlerow"><h1 id="nt-title">All Notes</h1><div class="gm-head-actions" id="nt-head-actions"></div></div>
+        <p id="nt-sub">Sermon notes and daily devotionals.</p>
+      </div>
+      <div class="v2-page-actions" id="nt-actions">
+        <a class="v2-button" href="church-note.html?new=sermon&amp;way=file" id="nt-new-sermon"></a>
+        <a class="v2-button" href="church-note.html?new=devotional" id="nt-new-devo"></a>
+        <button class="v2-button v2-button-quiet" type="button" data-gm-action="open-hope" data-gm-prompt="What was Sunday's message about?" id="nt-ask"></button>
+        <button class="v2-button v2-button-quiet" type="button" data-gm-action="start-tour" id="nt-tour"></button>
+      </div>
+    </header>
+
+    <!-- On phones the second-level column becomes this picker, as in Genesis OS -->
+    <label class="v2-view-picker v2-deal-view-picker"><span>View</span><select class="v2-select v2-nselect" id="nt-view" aria-label="View"></select></label>
+
+    <section class="v2-pulse v2-deal-pulse" aria-label="Notes summary" data-tour="notes.pulse" id="nt-pulse"></section>
+
+    <!-- The one panel: Sunday's notes to shape -->
+    <section class="v2-card v2-next-move v2-deal-next" aria-labelledby="nt-next-title" data-tour="notes.next" id="nt-next"></section>
+
+    <div class="v2-toolbar v2-deal-toolbar" role="toolbar" aria-label="Notes tools" id="nt-toolbar">
+      <label class="v2-search"><span class="sr-only">Search notes</span><input class="v2-input" id="nt-search" type="search" value="" placeholder="Search title, scripture, series&hellip;" autocomplete="off"></label>
+      <button class="v2-button" id="nt-filters" type="button" aria-controls="nt-filter-panel" aria-expanded="false"></button>
+      <select class="v2-select v2-nselect" id="nt-sort" aria-label="Sort notes">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="status">Status</option>
+      </select>
+    </div>
+    <div class="v2-filter-panel v2-deal-filter-panel" id="nt-filter-panel" hidden>
+      <label class="v2-field"><span>Type</span><select class="v2-select v2-nselect" id="nt-f-type"><option value="">Any Type</option><option value="sermon">Sermon Notes</option><option value="devotional">Devotionals</option></select></label>
+      <label class="v2-field"><span>Status</span><select class="v2-select v2-nselect" id="nt-f-status"><option value="">Any Status</option><option value="published">Published</option><option value="scheduled">Scheduled</option><option value="draft">Draft</option></select></label>
+      <button class="v2-button v2-button-quiet" type="button" id="nt-f-clear">Clear Filters</button>
+    </div>
+
+    <div id="nt-body" data-tour="notes.list"></div>
+
+    <section class="v2-section" aria-labelledby="nt-protect-title" data-tour="notes.protect">
+      <div class="v2-section-head"><div><h2 id="nt-protect-title">How notes protect the pulpit and the people</h2><p>On every plan.</p></div></div>
+      <div class="v2-card"><ul class="gm-protect-list" id="nt-protect"></ul></div>
+    </section>
+
+    <section class="v2-section" aria-label="Archive, never delete">
+      <p class="nt-foot" id="nt-foot"></p>
+    </section>
+  </div>
+</main>
+
+<script src="shared/data.js"></script>
+<script src="shared/charts.js"></script>
+<script src="../shared/crisis-words.js"></script>
+<script src="../shared/notes-data.js"></script>
+<script src="shared/app.js"></script>
+<script>
+GM.ready(function (ctx) {
+  "use strict";
+  var D = ctx.data, esc = GM.esc, c = ctx.church, HOPE = GM.assistant.name, ic = GM.v2Icon;
+  var N = window.GM_NOTES, NC = N.church(c.slug);
+  var $ = function (id) { return document.getElementById(id); };
+  var SHEP = GM.isIncluded("devotionals");
+  var VIEWS = { all: "All Notes", sermons: "Sermon Notes", devotionals: "Devotionals", scheduled: "Scheduled" };
+  var view = VIEWS[ctx.view] ? ctx.view : "all";
+  var state = { q: "", type: "", status: "", sort: "newest" };
+
+  /* A decision made in the editor stays for this tab (church-note.html writes gm.notes.<id>). */
+  function decided(n) { return N.decision(n.id); }
+  function statusOf(n) { var d = decided(n).state; return d === "scheduled" || d === "published" ? d : n.status; }
+  /* "Sun 8:30 AM": when a scheduled note goes out (the time the pastor chose, or the default). */
+  function whenShort(n) { var w = decided(n).when; return w ? w.replace(/^(\w{3})\w*, \w+ \d+ at /, "$1 ").replace(/:00 (AM|PM)/, " $1") : N.dayShort(n.date) + " " + N.shortTime(N.defaultAt(n)); }
+  function speaker(n) { return N.speaker(n, c.pastors); }
+  function badge(n) {
+    var s = statusOf(n);
+    if (s === "published") return GM.pill("Published", "positive");
+    if (s === "scheduled") return GM.pill("Scheduled " + whenShort(n), "info");
+    return GM.pill("Draft", "gold");
+  }
+  function where(n) {
+    if (n.kind === "devotional") return "Website, App, Email";
+    return SHEP ? "Website, App, Email" : "Website";
+  }
+  function typeName(n) { return n.kind === "sermon" ? "Sermon notes" : "Devotional"; }
+  function ref(n) { return n.ref || n.verses[0].ref; }
+  var notes = N.all(c.slug).filter(function (n) { return SHEP || n.kind === "sermon"; });
+
+  /* ---------- Head ---------- */
+  $("nt-eyebrow").textContent = "Notes · " + c.short;
+  $("nt-title").textContent = VIEWS[view];
+  $("nt-new-sermon").innerHTML = ic("note") + "<span>New Sermon Notes</span>";
+  $("nt-new-devo").innerHTML = ic("book") + "<span>New Devotional</span>";
+  /* On Care the lock sits under the label, so the two buttons stay one width. */
+  if (!SHEP) $("nt-new-devo").insertAdjacentHTML("beforeend", '<span class="nt-lock"><em class="gm-nav-lock" title="Included in Shepherd">' + GM.icon("lock") + "Included in Shepherd</em></span>");
+  $("nt-ask").textContent = "Ask " + HOPE; $("nt-ask").insertAdjacentHTML("afterbegin", ic("genesis"));
+  $("nt-tour").innerHTML = ic("help") + "<span>Take the Tour</span>";
+  var sermons = NC.sermons.length, devos = NC.devotionals.length;
+  function scheduledCount() { return notes.filter(function (n) { return statusOf(n) === "scheduled"; }).length; }
+  function paintSub() {
+    var sc = scheduledCount();
+    $("nt-sub").textContent = SHEP
+      ? sermons + " sermon notes this month and " + devos + " devotionals this week. " + sc + " scheduled."
+      : sermons + " sermon notes on your website this month. " + (sc ? sc + " scheduled." : "Sunday's notes are a draft.");
+  }
+  $("nt-view").innerHTML = Object.keys(VIEWS).map(function (k) { return '<option value="' + k + '"' + (k === view ? " selected" : "") + ">" + esc(VIEWS[k]) + (k === "devotionals" && !SHEP ? ", Included in Shepherd" : "") + "</option>"; }).join("");
+  $("nt-view").addEventListener("change", function () { GM.go(this.value === "all" ? "church-notes.html" : "church-notes.html?view=" + this.value); });
+
+  /* ---------- The numbers row ---------- */
+  function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
+  function paintPulse() {
+    var sc = scheduledCount(), td = N.todays(c.slug);
+    $("nt-pulse").innerHTML = pulse("Sunday notes", sermons, sermons + " published on the website") +
+      pulse("Scheduled", sc, SHEP ? "Devotionals at 6 AM, Sunday notes at " + N.shortTime(NC.sundayAt) : "Sunday's notes once you tap Schedule") +
+      (SHEP ? pulse("Today's devotional", "6 AM", td ? td.title + ", out this morning" : "Out each morning") : pulse("Website notes", "Sundays", "Every Sunday, on every plan"));
+  }
+
+  /* ---------- The panel: Sunday's notes to shape ---------- */
+  function paintNext() {
+    var d = NC.draft, s = statusOf(d), wayName = { outline: "a typed outline", file: d.manuscript ? "a Word manuscript" : "a Word file", video: "the link to a run-through video", memo: "a voice memo" }[d.way];
+    var wayShort = { outline: "outline", file: /\.pdf$/.test((d.file || {}).name || "") ? "PDF" : "Word file", video: "run-through video", memo: "voice memo" }[d.way];
+    if (s !== "draft") {
+      var when = decided(d).when, noVideo = !N.videoAdded(d.id);
+      $("nt-next").innerHTML = '<div><div class="v2-eyebrow">Sunday\'s notes</div><h2 class="v2-serif-headline" id="nt-next-title">' + (s === "published" ? "Published" : "Scheduled for " + esc(when || N.dateLong(d.date) + " at " + NC.sundayAt)) + "</h2><h3>" + esc(N.shaped(d).title) + " · " + esc(speaker(d)) + "</h3>" +
+        '<div class="v2-next-meta">' + badge(d) + (noVideo ? GM.pill("Video not linked yet", "neutral") : "") + '</div><p class="v2-next-reason">Demo only. Nothing was sent.<span class="v2-next-why">It goes to ' + esc(where(d)) + (s === "published" ? "." : " when Sunday comes.") + "</span></p>" +
+        (noVideo ? '<p class="nt-video">' + ic("link") + "<span>Sunday's video not linked yet. Add it after Sunday, when the message is online, so the notes and " + esc(HOPE) + "'s answer link to it.</span></p>" : "") + "</div>" +
+        '<div class="v2-next-actions">' + (noVideo ? '<a class="v2-button" href="church-note.html?id=' + esc(d.id) + '">' + ic("link") + "Add the Video Link</a>" : "") + '<a class="v2-button v2-button-primary" href="church-note.html?id=' + esc(d.id) + '">' + ic("arrow") + "Open Sunday's Notes</a></div>";
+      return;
+    }
+    $("nt-next").innerHTML =
+      '<div><div class="v2-eyebrow">Notes to shape</div><h2 class="v2-serif-headline" id="nt-next-title">' + esc(N.dateLong(d.date)) + ": " + esc(speaker(d) + "'s " + wayShort) + " is in</h2><h3>" + esc(d.title) + " · " + esc(d.series + ", " + d.part.toLowerCase()) + " · " + N.refHTML(d.ref) + "</h3>" +
+      '<div class="v2-next-meta">' + GM.pill("Draft", "gold") + GM.pill("Came in " + d.came.replace(/ at .*/, ""), "neutral") + "</div>" +
+      '<p class="v2-next-reason">Came in ' + esc(d.came) + " as " + esc(wayName) + ". Shape it, check every line, then schedule it for Sunday at " + esc(N.shortTime(NC.sundayAt)) + ', before the first service.<span class="v2-next-why">' + esc(HOPE) + " shapes only " + esc(speaker(d) + "'s") + " own words. Nothing goes out without your tap.</span></p></div>" +
+      '<div class="v2-next-actions">' +
+        '<button class="v2-button v2-button-premium" type="button" data-gm-action="ask-hope" data-gm-prompt="What was Sunday\'s message about?">' + ic("genesis") + "Ask " + esc(HOPE) + "</button>" +
+        '<a class="v2-button v2-button-primary" href="church-note.html?new=sermon">' + ic("arrow") + "Shape Sunday's Notes</a>" +
+      "</div>";
+  }
+
+  /* ---------- Filters ---------- */
+  $("nt-filters").innerHTML = ic("filter") + "Filters";
+  $("nt-filters").addEventListener("click", function () { var p = $("nt-filter-panel"), open = p.hidden; p.hidden = !open; this.setAttribute("aria-expanded", String(open)); });
+  [["nt-f-type", "type"], ["nt-f-status", "status"]].forEach(function (x) { $(x[0]).addEventListener("change", function () { state[x[1]] = this.value; paintBody(); }); });
+  $("nt-f-clear").addEventListener("click", function () { $("nt-f-type").value = ""; $("nt-f-status").value = ""; state.type = state.status = ""; paintBody(); });
+  $("nt-search").addEventListener("input", function () { state.q = this.value.trim().toLowerCase(); paintBody(); });
+  $("nt-sort").addEventListener("change", function () { state.sort = this.value; paintBody(); });
+  if (!SHEP) { $("nt-f-type").disabled = true; }
+
+  function filtered() {
+    var list = notes.filter(function (n) {
+      var s = statusOf(n);
+      if (view === "sermons" && n.kind !== "sermon") return false;
+      if (view === "devotionals" && n.kind !== "devotional") return false;
+      if (view === "scheduled" && s !== "scheduled") return false;
+      if (state.type && n.kind !== state.type) return false;
+      if (state.status && s !== state.status) return false;
+      if (state.q && (n.title + " " + ref(n) + " " + (n.series || "") + " " + speaker(n) + " " + typeName(n)).toLowerCase().indexOf(state.q) < 0) return false;
+      return true;
+    });
+    var rank = { draft: 0, scheduled: 1, published: 2 };
+    return list.sort(function (a, b) {
+      if (state.sort === "oldest") return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      if (state.sort === "status") return rank[statusOf(a)] - rank[statusOf(b)] || (a.date < b.date ? 1 : -1);
+      return a.date < b.date ? 1 : a.date > b.date ? -1 : (a.kind === "sermon" ? -1 : 1);
+    });
+  }
+
+  /* ---------- The list: the real deals table, phone rows below 1024 ---------- */
+  function paintBody() {
+    var list = filtered();
+    var total = notes.filter(function (n) { return view === "all" || (view === "sermons" ? n.kind === "sermon" : view === "devotionals" ? n.kind === "devotional" : statusOf(n) === "scheduled"); }).length;
+    var rows = list.map(function (n) {
+      return '<tr data-nt-row="' + esc(n.id) + '"><td class="v2-primary-cell"><a class="v2-deal-row-link" href="church-note.html?id=' + esc(n.id) + '"><b>' + esc(n.title) + "</b></a><span>" + N.refHTML(ref(n)) + '<span class="nt-by">' + esc(speaker(n)) + "</span></span></td>" +
+        "<td>" + GM.pill(typeName(n), n.kind === "sermon" ? "neutral" : "info") + "</td><td>" + badge(n) + '</td><td class="nt-where">' + esc(where(n)) + "</td><td>" + esc(N.dateShort(n.date).replace(/, 2026$/, "")) + "</td></tr>";
+    }).join("");
+    var mobile = list.map(function (n) {
+      return '<a class="v2-mobile-deal-row" data-nt-row="' + esc(n.id) + '" href="church-note.html?id=' + esc(n.id) + '"><span class="v2-mobile-deal-identity"><b>' + esc(n.title) + "</b><small>" + esc(typeName(n)) + " · " + N.refHTML(ref(n)) + "</small></span>" +
+        '<span class="v2-mobile-deal-why"><span class="v2-deal-why is-calm">' + esc(N.dateLong(n.date) + " · " + where(n)) + "</span>" + badge(n) + "</span>" +
+        '<span class="v2-mobile-deal-open">' + esc(speaker(n)) + " " + ic("chevron") + "</span></a>";
+    }).join("");
+    $("nt-body").innerHTML = '<section class="v2-card v2-table-card v2-deal-list" aria-label="Notes"><div class="v2-table-meta"><span role="status">' + list.length + " of " + total + " notes</span><span>Open a note to see it, change it or schedule it</span></div>" +
+      (list.length
+        ? '<div class="v2-desktop-deals"><div class="v2-table-scroll"><table class="v2-table v2-deal-table"><thead><tr><th scope="col">Title</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Where it goes</th><th scope="col">Date</th></tr></thead><tbody>' + rows + '</tbody></table></div></div><div class="v2-mobile-deals">' + mobile + "</div>"
+        : '<div class="v2-state nt-empty"><div><h2>No notes match</h2><p>Nothing fits this search and these filters. Clear them to see every note again.</p><button class="v2-button" type="button" data-nt-clear>Clear Search</button></div></div>') + "</section>";
+    GM.carryLinks($("nt-body"));
+  }
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest("[data-nt-clear]")) return;
+    $("nt-f-type").value = ""; $("nt-f-status").value = ""; $("nt-search").value = "";
+    state.type = state.status = state.q = ""; paintBody(); $("nt-search").focus();
+  });
+
+  /* ---------- How it protects people ---------- */
+  var rules = [
+    ["Your words, shaped. Never written for you.", HOPE + " shapes only what the pastor brings: an outline, a file, the video or a voice memo. It adds no teaching."],
+    ["Nothing goes out without your tap.", "Every note waits for a person to tap Publish or Schedule."],
+    ["Scripture printed word for word.", "Each verse is printed as written, with its translation named: the " + N.translation + "."],
+    ["Email only to members who chose it.", "Texting only if you turn it on. " + (D.guestSettings.textingEnabled ? "" : "Texting is off today.")]
+  ];
+  $("nt-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("");
+  $("nt-foot").innerHTML = ic("archive") + "<span>Archive, never delete. A note taken down is archived and can be brought back. " + (SHEP ? "" : "Daily devotionals, the member app and email to members who chose it come with the Shepherd plan.") + "</span>";
+
+  if (view !== "all") $("nt-next").hidden = true;
+  paintSub(); paintPulse(); paintNext(); paintBody();
+
+  GM.hope.setBriefing({
+    line: GM.greeting() + ", {name}. Sunday's notes are a draft. Start with " + speaker(NC.draft) + "'s " + ({ outline: "outline", file: "Word file", video: "run-through video", memo: "voice memo" }[NC.draft.way]) + ".",
+    chips: [{ label: "Shape Sunday's Notes", href: "church-note.html?new=sermon", primary: true }, { label: "What Is Scheduled?", ask: "What is scheduled to go out?" }]
+  });
+  GM.setTour([
+    { target: '[data-tour="notes.pulse"]', title: "Notes at a glance", text: "Sunday notes, what is scheduled and today's devotional." },
+    { target: '[data-tour="notes.next"]', title: "Sunday's notes, waiting", text: "The pastor's own words, ready to shape." },
+    { target: '[data-tour="notes.list"]', title: "Every note in one list", text: "Each with where it goes and when." },
+    { target: '[data-tour="notes.protect"]', title: "Shaped, never written", text: "Only the pastor's own words." }
+  ]);
+});
+</script>
+</body>
+</html>

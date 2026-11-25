@@ -103,7 +103,10 @@
   var AN = CFG.assistantName || "Hope";
   var GUIDE = CFG.guideName || AN;
   var GENESIS = CFG.skin === "genesis";
-  var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Motion is off for reduced motion, and under an automated check (a webdriver, or this page inside
+     shared/hope-check.html), so a scroll lands at once and the check reads the same result in any browser. */
+  var CHECKED = !!navigator.webdriver || (function () { try { return window.top !== window && /hope-check.html$/.test(window.top.location.pathname); } catch (e) { return false; } })();
+  var REDUCE = CHECKED || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   /* A page that is not a church site (the Genesis Ministry story pages) has no times or address. */
   var CHURCH = !!(CH.times || CH.address);
   var FRAMED = (function () { try { return window.self !== window.top; } catch (e) { return true; } })();
@@ -148,10 +151,10 @@
     ":root{--hd-accent:" + (BR.accent || "#2f5bea") + ";--hd-accent-ink:" + (BR.accentInk || "#ffffff") + ";--hd-accent-text:" + (BR.accentText || BR.accent || "#2f5bea") + ";--hd-ink:" + (BR.ink || "#14161a") +
       ";--hd-surface:" + (BR.surface || "#ffffff") + ";--hd-surface2:" + (BR.surface2 || "#f3f4f6") + ";--hd-line:" + (BR.line || "rgba(0,0,0,.12)") +
       ";--hd-font:" + (BR.font || "system-ui,-apple-system,Segoe UI,Roboto,sans-serif") + ";--hd-radius:" + (BR.radius || "18px") + ";--hd-btn-radius:" + (BR.buttonRadius || "999px") + ";--hd-bottom:" + (Number(CFG.bottomOffset) || 0) + "px}",
-    ".hd-launch{position:fixed;right:20px;bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
+    ".hd-launch{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
     ".hd-launch:hover{transform:translateY(-2px)}.hd-launch:focus-visible{outline:3px solid var(--hd-ink);outline-offset:3px}",
     ".hd-launch svg{width:24px;height:24px}",
-    ".hd-invite{position:fixed;right:20px;bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
+    ".hd-invite{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
     ".hd-invite.on{opacity:1;transform:none}",
     ".hd-invite p{margin:0 0 12px;padding-right:28px}.hd-invite b{font-weight:700}",
     ".hd-invite .hd-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:inherit;opacity:.6;cursor:pointer;font-size:18px;line-height:1;border-radius:8px}",
@@ -162,14 +165,14 @@
     ".hd-btn{font:600 14px/1 var(--hd-font);min-height:40px;padding:10px 16px;border-radius:var(--hd-btn-radius);border:1.5px solid var(--hd-accent);background:var(--hd-accent);color:var(--hd-accent-ink);cursor:pointer;transition:transform .2s ease,opacity .2s ease}",
     ".hd-btn.ghost{background:transparent;color:var(--hd-ink);border-color:var(--hd-line)}",
     ".hd-btn:hover{transform:translateY(-1px)}.hd-btn:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
-    ".hd-panel{position:fixed;right:20px;bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483001;width:min(380px,calc(100vw - 32px));height:min(600px,calc(100vh - 130px));display:flex;flex-direction:column;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);box-shadow:0 30px 70px -24px rgba(0,0,0,.5);font:15px/1.5 var(--hd-font);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .25s ease,transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}",
+    ".hd-panel{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483001;width:min(380px,calc(100vw - 32px));height:min(600px,calc(100vh - 130px));display:flex;flex-direction:column;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);box-shadow:0 30px 70px -24px rgba(0,0,0,.5);font:15px/1.5 var(--hd-font);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:opacity .25s ease,transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}",
     ".hd-panel.on{opacity:1;visibility:visible;transform:none;transition-delay:0s}",
     ".hd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 12px 14px 18px;border-bottom:1px solid var(--hd-line)}",
     ".hd-head .t{font-weight:700;font-size:15px;line-height:1.2}.hd-head small{display:block;font-weight:400;font-size:12px;opacity:.7}",
     ".hd-dot{width:9px;height:9px;border-radius:50%;background:var(--hd-accent);display:inline-block;margin-right:10px;vertical-align:middle}",
-    ".hd-head button{width:44px;height:44px;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
+    ".hd-head button{width:44px;height:44px;min-width:44px;min-height:44px;flex:none;border:0;background:none;color:inherit;cursor:pointer;font-size:18px;border-radius:10px}",
     ".hd-head button:focus-visible{outline:3px solid var(--hd-ink);outline-offset:-3px}",
-    ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}",
+    ".hd-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:" + (CHECKED ? "auto" : "smooth") + "}",
     ".hd-msg{max-width:88%;padding:10px 14px;border-radius:16px;white-space:pre-line;animation:hdIn .35s cubic-bezier(.2,.7,.2,1) both}",
     ".hd-bot{background:var(--hd-surface2);border-bottom-left-radius:6px;align-self:flex-start}",
     ".hd-user{background:var(--hd-accent);color:var(--hd-accent-ink);border-bottom-right-radius:6px;align-self:flex-end}",
@@ -191,14 +194,14 @@
     ".hd-foot{display:flex;flex-direction:column;border-top:1px solid var(--hd-line)}",
     ".hd-foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 10px;padding:2px 12px 6px}",
     ".hd-note{font-size:12px;line-height:1.45;opacity:.8;text-align:center;margin:0}",
-    ".hd-allq{font:600 12.5px/1.2 var(--hd-font);min-height:32px;padding:4px 2px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
+    ".hd-allq{font:600 12.5px/1.2 var(--hd-font);min-height:44px;padding:4px 2px;border:0;background:none;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:6px}",
     ".hd-allq:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
     /* The 911 and 988 line: plain and calm, always in view under the questions. Each number has a 44px
        tap area without moving the words. */
     ".hd-help{font-size:13px;line-height:1.45;text-align:center;margin:0;padding:8px 16px;background:var(--hd-surface2)}",
     ".hd-help b{font-weight:700}",
     ".hd-help a{position:relative;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
-    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -12px}",
+    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -14px}",
     ".hd-help a:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;border-radius:3px}",
     "@keyframes hdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}",
     "@keyframes hdDot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:.9;transform:translateY(-3px)}}",
@@ -220,13 +223,28 @@
     ".hd-skip{background:none;border:0;color:inherit;opacity:.8;font:600 13px var(--hd-font);cursor:pointer;padding:8px 4px;border-radius:6px}",
     ".hd-skip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;opacity:1}",
     "@media (max-width:640px){",
-    "  .hd-panel{right:0;left:0;bottom:0;width:auto;height:min(86vh,640px);border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* The open chat is a sheet that takes the phone screen, with a sliver of the page left above it so it
+       reads as a layer that closes (review of November 24: it used to stop at 640px, a third of the screen
+       left over the page). The 911 and 988 line stays in its foot. */
+    "  .hd-panel{right:0;left:0;bottom:0;top:calc(28px + env(safe-area-inset-top,0px));width:auto;height:auto;border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
+    /* Closed, Hope is a compact circle in the corner, never a band across the page. */
+    "  .hd-launch{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
+    /* Buttons on a phone: every question and action is one full-width row, 44px or taller, the same
+       padding and radius, so a group never wraps into a ragged run of different widths. */
+    "  .hd-chips{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
+    "  .hd-chip{width:100%;min-height:44px;padding:11px 14px;display:flex;align-items:center}",
+    "  .hd-card .bar .hd-row .hd-btn,.hd-invite .hd-btn{min-height:44px}",
     "  .hd-panel.on~.hd-launch,.hd-tour-on .hd-launch{opacity:0;pointer-events:none}",
     "  .hd-tour-on.hd-step-launch .hd-launch{opacity:1}",
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",
     "  .hd-card{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}",
     /* The invite is a compact card above the circle, never across the first screen. */
-    "  .hd-invite{left:auto;right:16px;max-width:min(300px,calc(100vw - 32px))}",
+    "  .hd-invite{left:auto;right:calc(16px + env(safe-area-inset-right,0px));max-width:min(300px,calc(100vw - 32px))}",
+    /* The invite's two buttons are one even pair. */
+    "  .hd-invite .hd-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hd-invite .hd-btn{width:100%;padding-inline:10px}",
+    /* At the very end of a page the closed circle would sit on the footer's last line: the footer keeps
+       room for it, so the last words can always scroll clear. */
+    "  html.hd-has-launch body>footer:last-of-type,html.hd-has-launch footer.site-footer{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}",
     /* Phone tap targets: 44px. */
     "  .hd-card .hd-btn,.hd-card .hd-skip,.hd-invite .hd-btn,.hd-chip,.hd-allq,.hd-more{min-height:44px}",
     "  .hd-skip{padding:8px 10px}",
@@ -245,6 +263,7 @@
     "  .hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}",
     "  .hd-g .v2-guide-close,.hd-g .hd-g-again{width:44px;height:44px;margin:-10px -12px -10px 0}",
     "}",
+    ".hd-g .v2-guide-foot .v2-button,.hd-g .v2-guide-controls .v2-button{min-height:44px}.hd-g .v2-guide-close{width:44px;height:44px;margin:-10px -12px -10px 0}",
     /* the Genesis OS guide (skin: "genesis") uses the host page's own .v2-guide styles; only these few extras */
     ".hd-g.v2-guide{z-index:2147482999}.hd-g-ring.v2-guide-ring{z-index:2147482998}",
     /* Mouse screens only: a touch screen keeps the 44px controls set above. */
@@ -314,7 +333,7 @@
   var isOpen = false, started = false, busy = false;
   function phoneChat() { return window.innerWidth <= 640; }
   if (!GENESIS) {
-    launch = el("button", "hd-launch"); launch.type = "button"; launch.setAttribute("aria-label", "Chat with " + AN + ", the " + SHORT + " assistant"); launch.innerHTML = ICON_CHAT;
+    launch = el("button", "hd-launch"); launch.type = "button"; document.documentElement.classList.add("hd-has-launch"); launch.setAttribute("aria-label", "Chat with " + AN + ", the " + SHORT + " assistant"); launch.innerHTML = ICON_CHAT;
     panel = el("div", "hd-panel"); panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", AN + ", the " + SHORT + " assistant"); panel.setAttribute("aria-modal", "false");
     var head = el("div", "hd-head");
     var ttl = el("div", "t"); ttl.innerHTML = '<span class="hd-dot" aria-hidden="true"></span><span class="hd-name"></span><small></small>'; ttl.querySelector(".hd-name").textContent = AN; ttl.querySelector("small").textContent = "Automated assistant for " + SHORT;
@@ -376,7 +395,7 @@
     if (launch) launch.setAttribute("aria-expanded", v ? "true" : "false");
     panel.setAttribute("aria-modal", v && phoneChat() ? "true" : "false");
     /* Someone who has used the chat is never offered the tour invite again. */
-    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { focusOn(firstQuestion() || allQ); }, 280); }
+    if (v) { store(INVITE_KEY, "1"); hideInvite(); if (!started) { started = true; greet(); } setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || a === allQ || a === panel || !panel.contains(a)) focusOn(firstQuestion() || allQ); }, 280); }
     else if (restore) {
       var back = focusable(opener) ? opener : focusable(launch) ? launch : null;
       opener = null;
@@ -571,7 +590,7 @@
     prayer: { t: CH.prayer || "On a real church site, our pastors and prayer team would be honored to pray with you: share your request, and a real person reads it." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] },
     /* A sample site with no plan says only what every plan keeps; from the Shepherd plan (?plan=2 or 3) the
        reader choice is added below. */
-    prayerwho: { t: "Prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + CRISIS_LINE, c: [SHARE, BACK] },
+    prayerwho: { t: "On a real church site, prayer requests go only to " + listOf(pastorNames().concat("our prayer team")) + ". Nobody else on staff reads them." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] },
     pastors: { t: CH.pastors || "Our pastors would love to meet you on a Sunday.", c: [{ label: "Service Times", key: "times" }] },
     values: { t: CH.values || "We are ordinary people learning to love God and one another.", c: [{ label: "I Am New Here", key: "newhere" }] },
     /* A made-up 555 number is never offered to call: the answer says what a real church site gives instead. */
@@ -628,7 +647,7 @@
     notyping: { t: "This demo answers only the questions it shows, so every answer here was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer." + CRISIS_LINE, c: [BACK] },
     real: { t: NAME + " is a made-up church for this preview. Its times, people and stories are samples, and a real church fills every part with its own.", c: [{ label: "What Does a Church Get?", key: "package", cta: true }, { label: "Take the Tour", key: "tour" }] },
     /* plain words about who is answering */
-    human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". A real person on our team follows up on anything I cannot answer" + (CH.phone ? ", and you can call us at " + CH.phone + "." : ".") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
+    human: { t: CHURCH ? "I am " + AN + ", an automated assistant for " + NAME + ". On a real church site, a real person on our team would help with anything I cannot answer" + (CH.phone && !FAKE_PHONE ? ", and you can call us at " + CH.phone + "." : ". In this demo, nothing is sent.") : "I am " + AN + ", an automated assistant for the Genesis Ministry preview. A real person at Genesis can answer anything I cannot, on a call.", c: CHURCH ? chips(CALL, BACK) : null },
     hello: { t: "Hi. I am " + AN + ", an automated assistant" + (CHURCH ? " for " + NAME : "") + ". Here is what I can help with.", c: null },
     thanks: { t: "You are welcome. Anything else I can help with?", c: null },
     /* questions a church leader asks about the product */
@@ -637,7 +656,7 @@
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     /* What a real church site does, in honest terms: this demo screens no typed words, because nobody can type here. */
-    hope: { t: "On a real church site, " + AN + " answers guests day and night from facts your team approves: times, kids, parking, next steps, giving. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and shows 988 and 911 under every answer. When " + AN + " does not know, it says so and hands the question to a person. In this demo, every answer was written and checked ahead of time. Typing comes back later, only on a real AI service with a safety check before any answer.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
+    hope: { t: "On a real church site, " + AN + " answers guests day and night from facts your team approves: times, kids, parking, next steps, giving. A guest taps a question, and every answer was written and checked ahead of time, as in this demo. " + AN + " points people to the prayer form, where they choose who reads it, hands personal questions to a real person, and shows 988 and 911 under its questions. Typing a question comes back later, only on a real AI service with a safety check before any answer. When it does, and " + AN + " does not know, it will say so and hand the question to a person.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Take the Tour", key: "tour", cta: true }] },
     backoffice: { t: "The back office starts with the Shepherd plan, at $299 a month: Today, a front office where every first-time guest gets an owner and a next step, the care inbox for prayer and messages, the member app, and drafts that wait for approval. The Plus plan, at $499 a month, adds a page for each person, the Access Record screen, the spiritual gifts conversation with a picture of the gifts across the church, and reports.", c: [{ label: "What Do We Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     menu: null,
   };
@@ -662,7 +681,7 @@
   /* Round 4: giving privacy, a phone number and app messages, in the church's own voice. */
   A.givingprivate = { t: "Genesis, which runs this " + WHERE + ", keeps no giving history, so " + AN + " and this " + WHERE + " never see what you give. Giving records stay with " + SHORT + "'s giving provider, and the church decides who on staff may see them." + (CH.phone ? " To ask who that is, call " + CH.phone + "." : ""), c: [{ label: "How Do I Give?", key: "give" }, BACK] };
   A.texting = { t: SHORT + " follows up with guests by email. A phone number you share is used only to reach you about your visit, and it is never sold or passed on for anyone's marketing.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
-  A.appmessages = { t: "In " + SHORT + "'s member app, a private message is read only by the pastors, and a prayer request only by the people you choose. " + AN + " never reads either, and other members never see them.", c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
+  A.appmessages = { t: "On a real church site, in " + SHORT + "'s member app, a private message is read only by the pastors, and a prayer request only by the people you choose. " + AN + " never reads either, and other members never see them." + DEMO_NOTE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
   A.gmdenom = { t: "Genesis Ministry is built for churches of any denomination, and it takes no side on doctrine. " + AN + " shares only what each church has written about its beliefs. A person at Genesis would be glad to tell you about the company and its team on a call.", c: function () { return chips(talkChip(), BACK); } };
   /* AI training, on every Hope, in the same words. */
   A.aitraining = { t: "No. Genesis never uses prayer, messages or member data to train AI. " + AN + " answers only from facts " + (CHURCH ? SHORT : "the church") + " approved.", c: [{ label: "How Does " + AN + " Work?", key: "hope" }, BACK] };
@@ -689,12 +708,12 @@
   if (CHURCH && SITE_PLAN === 1) {
     var CARE_PRAYER = "Your request goes by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that.";
     A.prayer = { t: "On a real church site, the pastors would be honored to pray with you. " + CARE_PRAYER + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
-    A.prayerwho = { t: CARE_PRAYER + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerwho = { t: "On a real church site, your request would go by email to " + listOf(pastorNames()) + ". You choose who may read it, and they honor that." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
     A.privacy = { t: "What you share here goes to the people at " + SHORT + " who need it. Plan Your Visit reaches the church by email. " + CARE_PRAYER + " " + PROCESSORS_LINE, c: [{ label: "Who Sees My Prayer Request?", key: "prayerwho" }, BACK] };
-    A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerfromstaff = { t: CARE_PRAYER + " If you would rather talk with just one pastor, " + (CH.phone && !FAKE_PHONE ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   } else if (CHURCH && SITE_PLAN >= 2) {
-    A.prayerwho = { t: "Only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + CRISIS_LINE, c: [SHARE, BACK] };
-    A.prayerfromstaff = { t: "When you share a request, you can choose Pastors only, so the prayer team does not read it. It still reaches every pastor, " + listOf(pastorNames()) + ". If you would rather talk with just one of them, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerwho = { t: "On a real church site, only " + listOf(pastorNames().concat("our prayer team")) + " read prayer requests. Nobody else on staff can open them, and when you share one, you choose who may read it." + DEMO_NOTE + CRISIS_LINE, c: [SHARE, BACK] };
+    A.prayerfromstaff = { t: "When you share a request, you can choose Pastors only, so the prayer team does not read it. It still reaches every pastor, " + listOf(pastorNames()) + ". If you would rather talk with just one of them, " + (CH.phone && !FAKE_PHONE ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
   }
   /* The story pages speak for Genesis Ministry, not a church: a Sunday question points to the sample
      sites, and a buyer's questions (getting started, a call) get Genesis's own answers. */
@@ -716,13 +735,28 @@
     A.care = { t: function (q) { return (sorry(q) || "I am sorry you are carrying that.") + " This is the Genesis Ministry preview, so no one reads this chat, but a pastor at your own church would be honored to walk with you." + CRISIS_LINE; }, c: [BACK] };
     A.welcome = { t: function (q) { return (/\bhope for\b/i.test(q || "") ? "Yes, there is." : "You are welcome, just as you are.") + " This is a software preview, so no one reads this chat, but a pastor at a church near you would be glad to talk with you." + CRISIS_LINE; }, c: [BACK] };
     A.free = A.price;
-    A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing you type here is sent anywhere, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
+    A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing is sent in this demo, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
     A.real = { t: "Genesis Ministry is real software from Genesis AI. The four churches in this preview are made up, with sample data, so you can try every screen without touching anyone's real information.", c: function () { return chips(A.startdemo && { label: "Start the Guided Demo", key: "startdemo", cta: true }, { label: "How Do We Get Started?", key: "start" }); } };
     A.start = { t: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "See Getting Started", href: startHref(), go: true }, { label: "What Does Each Plan Include?", key: "levels" }); } };
     A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Talk With Genesis opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
     A.contact = A.talk;
     A.human.c = function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }, { label: "Take the Tour", key: "tour" }); };
   }
+  /* Sermon notes and devotionals on a church's own site (../shared/notes-data.js, GM_NOTES, loaded by the
+     site's Notes block). Sunday notes come with every plan; the daily devotional with the Shepherd plan. */
+  var NOTES_PLAN = (function () { try { return +(new URLSearchParams(location.search).get("plan") || sessionStorage.getItem("gm.plan") || 3); } catch (e) { return 3; } })();
+  var NOTES_CH = CHURCH && window.GM_NOTES ? window.GM_NOTES.byName(NAME) || window.GM_NOTES.byName(SHORT) : null;
+  if (NOTES_CH) {
+    var NOTES_N = window.GM_NOTES, NOTES_S = NOTES_CH.sermons[0], NOTES_D = NOTES_N.todays(NOTES_CH.slug);
+    var READ_NOTES = { label: "Read Sunday's Notes", href: "#/notes/" + NOTES_S.id, go: true, cta: true };
+    A.sunday = { t: "Sunday's message was “" + NOTES_S.title + "”, " + NOTES_S.part.toLowerCase() + " of " + NOTES_S.series + ", with " + NOTES_N.speaker(NOTES_S, NOTES_CH.pastors) + ", from " + NOTES_S.ref + ". " + NOTES_S.points[0] + " The notes, with questions for small groups, are on the Notes page.",
+      c: [READ_NOTES, { label: "Watch Sunday's Message", href: NOTES_CH.watch, go: true }, BACK] };
+    A.devotional = NOTES_PLAN >= 2 && NOTES_D
+      ? { t: "Yes. Today's devotional is " + NOTES_D.title + ", from " + NOTES_D.verses[0].ref + ": a verse, a short reading and a prayer. A new one goes up each morning at 6.", c: [{ label: "Read Today's Devotional", href: "#/notes/today", go: true, cta: true }, { label: "What Was Sunday's Message About?", key: "sunday" }, BACK] }
+      : { t: "Sunday's notes are on the Notes page every week. Daily devotionals are not on this site yet. Demo: daily devotionals come with the Shepherd plan.", c: [READ_NOTES, BACK] };
+  }
+  /* Writing a sermon or a devotional: Hope never does. (The story pages and the member app have their own words.) */
+  if (CHURCH) A.sermon = { t: AN + " does not write sermons or devotionals. On a real church site, the pastors bring their own outline, file, video or voice memo, and " + AN + " shapes only those words into the notes on this site. It adds no teaching of its own, and nothing goes out until a pastor taps Publish or Schedule.", c: chips(NOTES_CH ? { label: "What Was Sunday's Message About?", key: "sunday" } : null, BACK) };
   if (CFG.answers) for (var ak in CFG.answers) if (Object.prototype.hasOwnProperty.call(CFG.answers, ak)) A[ak] = CFG.answers[ak];
   var MENU = CFG.menu && CFG.menu.length ? CFG.menu : [
     { label: "Take the Tour", key: "tour", cta: true },
@@ -748,6 +782,7 @@
     { title: "Kids and Groups", more: true, items: [
       ["Are Volunteers Background Checked?", "kidsafe"], ["Is There a Youth Group?", "students"], ["How Do I Join a Small Group?", "groups"]] },
     { title: "Sundays and Giving", more: true, items: [
+      ["What Was Sunday's Message About?", "sunday"], ["Is There a Devotional Today?", "devotional"],
       ["What Should I Wear?", "wear"], ["Can I Watch Online?", "watch"], ["How Do I Give Online?", "give"]] },
     { title: "About This Demo", more: true, items: [
       ["What Does a Church Get?", "package"], ["What Does It Cost?", "price"], ["Can We Customize It?", "custom"]] }
@@ -958,7 +993,11 @@
     /* "give it to our members" and "give this to the team" are not giving. */
     [/\b(giv(e|ing)(?! up\b)(?! (?:it|this|that|them) to\b)(?! to (?:our|my|the) (?:members|people|team|staff|families)\b)|tith\w*|donat\w*|offerings?)\b|(?<!spiritual )\bgifts?\b/i, "give"],
     /* A guest moved by Sunday ("the sermon hit me hard") hears gladness, not a schedule. */
-    [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
+    [/\b(?:sermon|message|song|songs|worship|music|service|teaching|word|words|verse|scripture|story|testimony|series|choir|devotionals?|reading|it|that|this)\b[^.?!]{0,30}\b(?:hit|moved|spoke to|speaks to|got to|blessed|encouraged|challenged|convicted|stayed with) (?:me|us|my heart|my soul)\b(?! up\b| that\b)|\bhit (?:home|close to home)\b|\bspoke to my (?:heart|soul)\b/i, "moved"],
+    /* Writing a sermon or devotional, Sunday's message and today's devotional, before "watch" hears "message". */
+    [/^\s*(?:please\s+)?(?:(?:can|could|will|would)\s+you\s+)?(?:write|draft|create|prepare)\b.{0,20}\b(?:my |our |the |a |his |her |this |next )?(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:can|could|will|would|does|do|should|is)\s+(?:you|hope|genesis|it|ai|an? ai|the (?:ai|assistant|bot))\b.{0,20}\b(?:write|writes|writing|draft|drafts|drafting|create|creates|prepare|prepares)\b.{0,20}\b(?:sermons?|homil\w*|devotionals?|bible stud(?:y|ies)|sunday (?:message|teaching))\b|\b(?:hope|genesis|ai)\s+(?:writes?|wrote|drafts?|drafted)\b.{0,20}\b(?:sermons?|devotionals?)\b|\bsermons?\b.{0,20}\b(?:written|drafted) by (?:hope|genesis|ai|you|a computer|a robot)\b|\bwho (?:writes|wrote|prepares|drafts) (?:the |your |our )?(?:sermons?|devotionals?)\b/i, "sermon"],
+    [/\b(?:what|tell me)\b.{0,30}\b(?:sunday'?s|last sunday'?s|last week'?s|this week'?s|the)\s+(?:message|sermon)\b.{0,20}\babout\b|\bsermon notes?\b|\bnotes from (?:sunday|the sermon)\b|\bprepare for (?:the |this |sunday'?s )?(?:sunday )?(?:message|sermon)\b|\b(?:sermon|message)s?\b.{0,20}\bwritten down\b/i, "sunday"],
+    [/^(?!.*\b(?:plans?|shepherd|plus|cost\w*)\b).*\b(?:devotionals?|daily (?:reading|verse))\b/i, "devotional"],
     [/\b(watch\w*|live ?stream\w*|stream\w*|sermons?|podcasts?)\b|\b(service|church|gathering|worship)s? online\b|\bonline (service|church|gathering|worship)s?\b|\b(latest|last|this week'?s|sunday'?s|recent|newest) (message|sermon|teaching)\b/i, "watch"],
     [/\b(pray\w*|hurting|sick|struggl\w*|hospital\w*|surgery|cancer)\b/i, "prayer"],
     /* A holiday or another language: the regular Sunday times would read as a yes. */
@@ -1112,8 +1151,17 @@
     var r = a.getBoundingClientRect(), w = Math.min(300, window.innerWidth - 32), right = window.innerWidth - 16, bottom = window.innerHeight - 88;
     return r.right > right - w && r.bottom > bottom - 190 && r.top < bottom;
   }
+  /* A reader who came to a church site's Notes page (#/notes) to read is not interrupted: the invite waits
+     until the page is left, and folds away if someone goes to the notes while it is up. */
+  function onNotes() { return !GENESIS && /^#\/notes/.test(location.hash || ""); }
+  if (!GENESIS) window.addEventListener("hashchange", function () { if (onNotes() && invite) hideInvite(); });
   function showInvite() {
     if (isOpen || touring || store(INVITE_KEY)) return;
+    if (onNotes()) {
+      var later = function () { if (onNotes()) return; window.removeEventListener("hashchange", later); setTimeout(showInvite, 1500); };
+      window.addEventListener("hashchange", later);
+      return;
+    }
     if (inviteWouldCover()) { if (window.innerHeight >= 500) setTimeout(showInvite, 3000); return; }
     /* An open menu sheet or one of the site's own forms keeps the screen: the invite waits. */
     if (document.body.classList.contains("menu-open") || document.body.classList.contains("fd-open")) { setTimeout(showInvite, 1500); return; }
@@ -1569,7 +1617,7 @@
     card.classList.remove("on");
     card.innerHTML = "";
     var kk = s.k || (CFG.tourTitle ? GUIDE + " · " + CFG.tourTitle : GUIDE);
-    var k = el("p", "k", kk + "  ·  " + (i + 1) + " of " + STEPS.length);
+    var k = el("p", "k", kk + "  ·  Tip " + (i + 1) + " of " + STEPS.length);
     var h = el("h3", null, s.h);
     var p = el("p", null, s.p); p.id = "hd-say"; card.setAttribute("aria-describedby", "hd-say");
     var bar = el("div", "bar");
@@ -1614,7 +1662,7 @@
     card.querySelector(".v2-guide-title").textContent = s.h;
     card.querySelector(".v2-guide-say").textContent = s.p;
     if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
-    card.querySelector(".v2-guide-count").textContent = (i + 1) + " of " + STEPS.length;
+    card.querySelector(".v2-guide-count").textContent = "Tip " + (i + 1) + " of " + STEPS.length;
     if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
     announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
     card.onclick = function (e) {

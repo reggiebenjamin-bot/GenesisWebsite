@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Prayer · Member app · Genesis Ministry · Design preview</title>
@@ -193,7 +193,7 @@ function mxStage(o) {
   if (!stage || body.classList.contains("mx-staged")) return;
   var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
   body.classList.add("mx-staged");
-  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+  body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
 
   var bar = stage.querySelector(".m-stagebar");
   var brand = bar.querySelector(".m-stage-brand");
@@ -214,7 +214,8 @@ function mxStage(o) {
 
   var SCREENS = [
     ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
-    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-notes.html", "Sunday's Notes", "member-app"],
+    ["member-devotional.html", "Devotional", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
     ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
     ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
   ];
@@ -248,7 +249,7 @@ mxStage({
   protect: [
     ["They choose who sees it", "Pastors and the prayer team, or pastors only, each with the names."],
     ["No private words in email", "Pastors get: New request. Sign in to read."],
-    ["Help on every form", "911 and 988 sit beside the form, with the church phone."],
+    ["Help on every form", "911 and 988 sit beside the form."],
     ["People reply, not AI", "{assistant.name} never drafts a reply to prayer."]
   ],
   land: { href: "church-care.html?view=prayer", label: "See the Prayer Inbox", icon: "care", module: "care" }
@@ -273,7 +274,7 @@ GM.ready(function (ctx) {
   /* ---------- The standing help line and the honest limit ---------- */
   /* Tap to ask only (owner decision, November 23, 2026): the demo's forms are filled in and send nothing,
      so no typed words ever get a reply. The same 911 and 988 line as every Hope sits beside the form. */
-  $("mp-help").innerHTML = GM.icon("call") + '<span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>. You can also call the church at ' + (/ 555-/.test(c.phone) ? esc(c.phone) : '<a href="tel:' + esc(c.phone.replace(/\D/g, "")) + '">' + esc(c.phone) + "</a>") + ".</span>";
+  $("mp-help").innerHTML = GM.icon("call") + '<span>In danger or crisis? Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</span>';
   $("mp-secret").innerHTML = GM.icon("shield") + "<span>We keep prayer private, but we never promise total secrecy. If a child, an older adult or a person with a disability is being harmed, we must report it.</span>";
 
   /* ---------- History ---------- */
@@ -355,7 +356,7 @@ GM.ready(function (ctx) {
   GM.setTour([
     { target: '[data-tour="prayer.form"]', title: "Prayer in a few taps", text: "Members are already signed in, so there is no name or email to retype. The alert to pastors carries no private words." },
     { target: '[data-tour="prayer.visibility"]', title: "They choose who sees it", text: "Pastors and the prayer team, or pastors only. Each option names the people who can read it." },
-    { target: '[data-tour="prayer.help"]', title: "Help is always on the page", text: "The standing 911 and 988 line sits beside every prayer form, with the church phone." },
+    { target: '[data-tour="prayer.help"]', title: "Help is always on the page", text: "The standing 911 and 988 line sits beside every prayer form." },
     { target: '[data-tour="prayer.secrecy"]', title: "Honest about the limits", text: "Prayer is private, but the page never promises total secrecy when someone is being harmed." },
     { target: '[data-tour="prayer.history"]', title: "A history with replies", text: "Every request, every reply, and who can see each one. Older requests are added only when the member asks." }
   ]);

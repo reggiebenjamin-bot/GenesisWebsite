@@ -365,6 +365,9 @@
     edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
     sparkle: '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
     play: '<path d="M8 5v14l11-7z"/>',
+    upload: '<path d="M12 15V4m-4.5 4.5L12 4l4.5 4.5"/><path d="M5 14v5h14v-5"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    book: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
     "hide-rail": '<path d="M4 5h16v14H4zM9 5v14M16 9l-3 3 3 3"/>'
   };
   /* For page content: gm-icon sizes. For shell parts: the real .v2-icon. */
@@ -488,7 +491,7 @@
       "</section>";
   };
   /* A dimmed picture of the real screen inside the locked card, so the calm state also shows what it adds. */
-  var LOCKED_THUMB = { today: "today", guests: "guests", care: "care", people: "people", access: "access", gifts: "gifts", reports: "reports", team: "team" };
+  var LOCKED_THUMB = { today: "today", guests: "guests", care: "care", people: "people", access: "access", gifts: "gifts", reports: "reports", team: "team", devotionals: "devotionals" };
   function lockedPage(key, item) {
     var m = D.modules[key] || { label: item ? item.label : "This" };
     var lv = D.levels[(m.level || 3) - 1];
@@ -545,7 +548,7 @@
      data-page keys that belong to this item (old page keys and record pages). */
   var NAV = {
     church: {
-      label: "Church workspace", brand: "Ministry OS", home: "church-today.html",
+      label: "Church workspace", brand: "Ministry", home: "church-today.html",
       action: { key: "add-guest", label: "Add a Guest", icon: "plus" },
       work: [
         { key: "today", label: "Today", href: "church-today.html", icon: "today", module: "today", hint: "What needs a person today", sepAfter: true },
@@ -566,6 +569,13 @@
             { key: "archived", label: "Archived", href: "church-care.html?view=archived" }
           ] },
         { key: "people", label: "People", href: "church-person.html", icon: "people", module: "people", hint: "One record per person" },
+        { key: "notes", label: "Notes", href: "church-notes.html", icon: "note", module: "notes", hint: "Sermon notes and daily devotionals", match: ["note"],
+          views: [
+            { key: "all", label: "All Notes", href: "church-notes.html", also: ["church-note.html"] },
+            { key: "sermons", label: "Sermon Notes", href: "church-notes.html?view=sermons" },
+            { key: "devotionals", label: "Devotionals", href: "church-notes.html?view=devotionals", module: "devotionals" },
+            { key: "scheduled", label: "Scheduled", href: "church-notes.html?view=scheduled" }
+          ] },
         { key: "website", label: "Website", href: "church-website.html", icon: "website", module: "website", hint: "The website, brand board, social plan and form emails" }
       ],
       intelligence: [
@@ -665,6 +675,14 @@
     }).join("") + "</nav>";
   }
   var PREVIEW_LABEL = '<span class="gm-preview-label" role="note">Design preview. Sample data shown.</span>';
+  /* The sample strip at the top of every workspace and member screen. */
+  GM.previewStripHTML = function () {
+    return '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span><span class="gm-strip-words">Design preview<span class="gm-strip-long">. Sample data shown</span>.</span>' + talkLinkHTML() + "</div>";
+  };
+  /* Talk With Genesis, always in view in the sample strip: a pastor who lands deep in the demo can still reach a person. */
+  function talkLinkHTML() {
+    return D.genesisContact ? '<a class="gm-strip-talk" href="' + esc(D.genesisContact) + '" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>' : "";
+  }
 
   /* ------------------------------------------------------------------ shell: church and genesis (Genesis OS) */
   /* Account-menu links. */
@@ -725,11 +743,11 @@
     var hopeLocked = side === "church" && !GM.isIncluded("genesis");
 
     /* As in Genesis OS: WORK, ASSISTANT (Ask Hope, no count badge, as Ask Hawk has none), INTELLIGENCE, SYSTEM. */
-    var nav = '<div class="v2-nav-group"><div class="v2-nav-label">Work</div>' + cfg.work.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
+    var nav = '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Your Week" : "Work") + '</div>' + cfg.work.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
       '<div class="v2-nav-group v2-genesis-nav"><div class="v2-nav-label">Assistant</div><a href="#v2-genesis-panel" data-route="genesis" data-gm-action="open-hope" data-tour="shell.genesis" aria-label="Ask ' + esc(ASSISTANT.name) + (hopeLocked ? ", included in the Shepherd plan" : "") + '">' + vIcon("genesis") + "<span>Ask " + esc(ASSISTANT.name) + "</span>" +
       (hopeLocked ? lockFor("genesis") : "") + "</a></div>" +
-      '<div class="v2-nav-group"><div class="v2-nav-label">Intelligence</div>' + cfg.intelligence.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
-      (cfg.system ? '<div class="v2-nav-group"><div class="v2-nav-label">System</div>' + cfg.system.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" : "");
+      '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Your People" : "Intelligence") + '</div>' + cfg.intelligence.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" +
+      (cfg.system ? '<div class="v2-nav-group"><div class="v2-nav-label">' + (side === "church" ? "Settings" : "System") + '</div>' + cfg.system.map(function (it) { return navLink(it, curKey); }).join("") + "</div>" : "");
 
     /* A page shown as another person (data-viewer: Nadia on Guests, Renee on Find) says so in the account
        row, so the change of greeting and of what is shown reads as a deliberate role preview. */
@@ -799,7 +817,7 @@
     root.querySelector(".v2-shell").appendChild(main);
     body.insertBefore(root, body.firstChild);
     body.insertAdjacentHTML("afterbegin", '<a class="v2-skip-link" href="#v2-main">Skip to workspace</a>');
-    body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+    body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
     body.classList.add("v2-showing-sample");
 
     /* The round Genesis button floats over the page, so it comes after the page in Tab order (WCAG 2.4.3). */
@@ -1298,7 +1316,7 @@
   /* The crisis reply's numbers, one tap each, as on the church's own site and the member app. */
   function crisisLinks() {
     var links = [{ label: "Call 988", href: "tel:988", primary: true }, { label: "Text 988", href: "sms:988" }, { label: "Call 911", href: "tel:911" }];
-    if (GM.side !== "genesis" && GM.church && GM.church.phone) links.push({ label: "Call " + GM.church.short, href: "tel:" + String(GM.church.phone).replace(/[^\d+]/g, "") });
+    if (GM.side !== "genesis" && GM.church && GM.church.phone && !/ 555-/.test(GM.church.phone)) links.push({ label: "Call " + GM.church.short, href: "tel:" + String(GM.church.phone).replace(/[^\d+]/g, "") });
     return links;
   }
   function crisisAnswer() {
@@ -1546,6 +1564,12 @@
          approval line and the header orb step aside so the replies have room; at 400 percent the
          composer is one line (Enter sends) and the header is compact, so the log never shrinks to nothing. */
       '@media (max-height:500px){.aria-footer{display:none!important}.aria-actions-row .hawk-header-orb{display:none}}' +
+      /* Phones (review of November 24): the dock's buttons line up. The briefing actions share one row in two
+         equal halves across the full width of the dock, Hear the Sample Briefing takes the full row under them, and every question is a
+         full-width row, so no group wraps into a ragged run of pill widths. Each is 44px or taller. */
+      '@media (max-width:640px){.aria-welcome{width:100%;max-width:none;padding-left:0;padding-right:0;box-sizing:border-box}.hawk-briefing-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%;box-sizing:border-box}.hawk-briefing-chips>.hawk-chip:only-child,.hawk-briefing-chips>.hawk-chip:last-child:nth-child(odd){grid-column:1/-1}.hawk-chip{width:100%;min-height:44px;padding:0 10px;justify-content:center;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.hawk-voice-row{width:100%;box-sizing:border-box}.hawk-hear{width:100%;min-height:44px;justify-content:center}' +
+      '.gm-dock-qs-row{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.gm-dock-q{width:100%;min-height:44px;padding:10px 14px;box-sizing:border-box}}' +
       '@media (max-height:320px){.composer__toolbar{display:none!important}.aria-actions-row{min-height:0;padding-top:0;padding-bottom:0}.aria-control-panel,.aria-control-panel__inner{padding-top:0;padding-bottom:4px}}' +
       '.hawk-core .hawk-core-mark,.hawk-core[data-state] .hawk-core-mark{filter:none}.hawk-core--orb .hawk-core-mark{width:21.73px}.hawk-core--orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,rgba(8,9,14,.92) 0%,rgba(8,9,14,.88) 56%,rgba(8,9,14,.45) 72%,rgba(8,9,14,0) 88%);pointer-events:none}</style>';
     dock = { host: host, root: root, thread: root.querySelector(".aria-thread"), scroll: root.querySelector(".aria-scroll"), qs: root.querySelector(".gm-dock-qs"), cores: [] };
@@ -1723,13 +1747,14 @@
   function dockQuestions() {
     if (GM.side === "genesis") return [{ title: "", items: ["How much does it cost?", "What does each plan include?"] }];
     if (!GM.isIncluded("genesis")) return [
-      { title: "", items: ["How much does it cost?", "What does each plan include?", "Does Care include text messaging?", "Can we add one more staff seat on Care?"] },
+      { title: "", items: ["How much does it cost?", "What does each plan include?", "Does Care include text messaging?", "Can we add one more staff seat on Care?", "Do sermon notes come with Care?", "Is there a devotional today?"] },
       { title: "On the Care Plan", more: true, items: ["Will the email a member gets show the text of their prayer request?", "Can the office manager see guest phone numbers on Care?", "Can two staff members share one login?", "Can we import people from Planning Center?"] },
       { title: "Data and Trust", more: true, items: ["Is Genesis HIPAA compliant?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
     ];
     return [
       { title: "", items: ["Who should I call first today?", "What is waiting in care?", "What follow-ups are overdue?", "What does each plan include?"] },
-      { title: "Care and Privacy", more: true, items: ["Who can see how much each family gives?", "Who can see members' phone numbers?", "If a prayer request mentions abuse, does Hope report it to the police?", "Does Hope learn from our members' private messages?", "Can Hope write my sermon?"] },
+      { title: "Care and Privacy", more: true, items: ["Who can see how much each family gives?", "Who can see members' phone numbers?", "If a prayer request mentions abuse, does Hope report it to the police?", "Does Hope learn from our members' private messages?"] },
+      { title: "Notes", more: true, items: ["What was Sunday's message about?", "Is there a devotional today?", "What is scheduled to go out?", "Can Hope write my sermon?"] },
       { title: "Plans and Data", more: true, items: ["How much does it cost?", "Can we keep Planning Center?", "Do you share our data with third parties?", "Will you delete our data if we leave Genesis?", "Is this a real church I can visit?"] }
     ].map(function (g) { return { title: g.title, more: g.more, items: g.items.map(function (q) { return q.replace(/\bHope\b/g, ASSISTANT.name); }) }; });
   }
@@ -2128,6 +2153,9 @@
     if (GM.side !== "member") { syncRailRestore(item || {}); }
     /* The guided demo: tours for every screen, the demo path and the scripted answers. */
     GM.sharedPath = SHARED;
+    /* The sermon notes and devotionals (one source for the sites, the workspace and the member app), before
+       the guided demo builds its answers from them. Pages that draw notes load it with their own script tag. */
+    if (!window.GM_NOTES) loadScript(SHARED + "../../shared/notes-data.js", function () {});
     loadScript(SHARED + "demo.js", function () {});
   }
 

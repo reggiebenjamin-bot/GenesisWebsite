@@ -123,7 +123,7 @@ header.site.scrolled{box-shadow:0 1px 0 var(--line),0 14px 30px -26px rgba(58,38
 .brand:hover .mark{transform:rotate(-10deg)}
 .wm{display:flex;flex-direction:column;line-height:1}
 .wm-1{font:600 27px/0.9 var(--display);letter-spacing:-.01em}
-.wm-2{font:800 10.5px/1 var(--body);letter-spacing:.24em;text-transform:uppercase;margin-top:5px;color:var(--cocoa-soft)}
+.wm-2{font:800 11.5px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;margin-top:5px;color:var(--cocoa-soft)}
 .navlinks{display:flex;align-items:center;gap:2px}
 .navlinks>a,.drop>button{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 15px;border-radius:999px;border:0;background:transparent;font:700 16px/1 var(--body);color:var(--cocoa);text-decoration:none;cursor:pointer;transition:background-color .2s ease}
 .navlinks>a:hover,.drop>button:hover,.drop.open>button{background:var(--sage)}
@@ -598,7 +598,7 @@ body.fd-open{overflow:hidden}
   .nav{height:70px}
   .brand .mark{width:40px;height:40px}
   .wm-1{font-size:24px}
-  .wm-2{font-size:9.5px;letter-spacing:.22em}
+  .wm-2{font-size:12px;letter-spacing:.12em}
   .hero{padding-top:14px}
   .hero h1{font-size:clamp(58px,16.5vw,72px)}
   .hero-photo{aspect-ratio:1.12/1;border-radius:28px}
@@ -685,6 +685,8 @@ body.fd-open{overflow:hidden}
 html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{animation-play-state:paused!important}
 /* A short window (400 percent zoom, a phone on its side): the header scrolls away and the Sundays bar steps aside */
 @media (max-height:500px){header.site{position:static}.sbar{display:none!important}}
+/* A made-up 555 number is plain text, never a call link: nobody would answer. */
+.fake-tel{display:inline-flex;align-items:center;min-height:44px}
 </style>
 </head>
 <body>
@@ -701,7 +703,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   </symbol>
 </svg>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="long">Goldenrod Commons Church is a made-up church, shown in the Warm Community look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="long">Goldenrod Commons Church is a made-up church, shown in the Warm Community look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
 
 <header class="site" id="top">
   <div class="wrap nav">
@@ -741,6 +743,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
         </div>
       </div>
       <a href="#watch">Watch</a>
+      <a href="#/notes">Notes</a>
       <a href="#/events">Events</a>
       <a href="#/give" data-demo="give">Give</a>
     </nav>
@@ -774,13 +777,14 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <a class="sub" href="#/ministries">All Ministries</a><a class="sub" href="#/kids">Kids</a><a class="sub" href="#/youth">Youth and Young Adults</a><a class="sub" href="#/restore">Restore</a><a class="sub" href="#/serve">Serve Teams</a>
     </details>
     <a href="#watch">Watch</a>
+    <a href="#/notes">Notes</a>
     <a href="#/events">Events</a>
     <a href="#/give" data-demo="give">Give</a>
   </nav>
   <div class="mfoot">
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
     <p class="times"><b>Sundays 9:00 &amp; 10:45 AM</b><a href="https://maps.google.com/?q=Beaverdale+Des+Moines+IA" target="_blank" rel="noopener">3120 Wrenfield Ave, Des Moines</a></p>
-    <p class="quiet"><a href="tel:+15155550142">(515) 555-0142</a><button type="button" data-open-chat>Ask a Question</button></p>
+    <p class="quiet"><span class="fake-tel">(515) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
   </div>
 </div>
 
@@ -963,7 +967,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <h2 class="msg-title" id="msg-title">Casseroles and courage</h2>
           <p class="msg-meta"><span>November 15, 2026</span><span>Pastor Marcus</span></p>
           <p class="copy">Part two of our Love Thy Neighbor series. Missed Sunday, or want to pass it along to a friend? Grab a coffee and catch up here.</p>
-          <div class="actions"><a class="btn btn-light" href="#/messages">All Messages <span class="arw" aria-hidden="true">&rarr;</span></a></div>
+          <div class="actions"><a class="btn btn-light" href="#/notes">All Sermon Notes <span class="arw" aria-hidden="true">&rarr;</span></a></div>
         </div>
       </div>
     </div>
@@ -1058,6 +1062,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
           <li><a href="#/ministries">Ministries</a></li>
           <li><a href="#about">Who We Are</a></li>
           <li><a href="#watch">Watch</a></li>
+          <li><a href="#/notes">Sermon Notes</a></li>
           <li><a href="#/beliefs">What We Believe</a></li>
           <li><a href="#/events">Events</a></li>
           <li><a href="#visit">Get Connected</a></li>
@@ -1067,7 +1072,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
       <div>
         <h3>Reach us</h3>
         <ul>
-          <li><a href="tel:+15155550142">(515) 555-0142</a></li>
+          <li><span class="fake-tel">(515) 555-0142</span></li>
           <li><a href="mailto:goldenrod@example.org">goldenrod@example.org</a></li>
           <li><a href="#/contact">Contact Us</a></li>
           <li><button type="button" data-open-chat>Ask a Question</button></li>
@@ -1096,11 +1101,11 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
 <div class="cw" id="cw" role="dialog" aria-modal="true" aria-labelledby="cw-title" hidden>
   <div class="cw-head">
     <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
-    <div><b id="cw-title">Goldenrod helper</b><small>Quick answers. A real person follows up.</small></div>
+    <div><b id="cw-title">Goldenrod helper</b><small>Tap a question for a sample answer.</small></div>
     <button class="cw-x" type="button" aria-label="Close chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="cw-body" aria-live="polite">
-    <p class="bub">Hi neighbor! Ask me anything about Sundays, kids, parking or getting connected.</p>
+    <p class="bub">Hi neighbor! Tap a question about Sundays, kids, parking or getting connected.</p>
     <div class="chips">
       <button type="button" data-q="times">Service Times</button>
       <button type="button" data-q="kids">Kids on Sunday</button>
@@ -1407,7 +1412,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     times: "We meet Sundays at 9:00 and 10:45 AM at 3120 Wrenfield Ave. Coffee is on from 8:30.",
     kids: "Kids have their own rooms from nursery through fifth grade. Check-in opens 15 minutes before each service, and every volunteer is trained and background checked.",
     park: "Park in the lot off Wrenfield or along the street. The yellow umbrellas out front mark the way in, and a greeter will be right there.",
-    person: "Of course. Leave your name and number here and someone from our welcome team will call you today."
+    person: "Of course. On a real church site, the prayer form and Plan a Visit reach our welcome team, and a real person answers. In this demo, nothing is sent."
   };
   var labels = { times: "Service times", kids: "Kids on Sunday", park: "Where do I park?", person: "Talk to a person" };
   function say(text, me) { var p = document.createElement("p"); p.className = "bub" + (me ? " me" : ""); p.textContent = text; body.appendChild(p); body.scrollTop = body.scrollHeight; }
@@ -1445,6 +1450,24 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   new MutationObserver(paint).observe(document.body, { attributes: true, attributeFilter: ["class"] });
 })();
 </script>
+<!-- notes-view:start -->
+<!-- The Notes page (sermon notes and today's devotional), inside this one page: #/notes, #/notes/<id> and
+     #/notes/today. The notes come from ../../shared/notes-data.js (GM_NOTES), one source for this site, the
+     workspace and the member app; ../../shared/notes-site.js draws and routes them. This block holds the
+     look: the --nv-* tokens in this site's own colors and type, and its own touches. -->
+<style>
+.nv{--nv-text:var(--cocoa);--nv-muted:var(--cocoa-soft);--nv-accent:var(--leaf-deep);--nv-on-accent:#fff;--nv-surface:var(--paper);--nv-line:var(--line);--nv-line-strong:rgba(58,38,24,.3);--nv-display:var(--display);--nv-body:var(--body);--nv-verse-font:var(--body);--nv-r:var(--r-sm);--nv-r-lg:var(--r-lg)}
+.nv .nv-h2{font-size:clamp(28px,3vw,40px);line-height:1.08}
+.nv-head{background:var(--sage)}
+.nv-band{box-shadow:var(--shadow-sm)}
+.nv-today{background:var(--sky)}
+.nv-title{font-weight:600}
+.nv-verse{border-radius:var(--r-sm)}
+</style>
+<script>window.NOTES_SITE = {"slug":"warm-community","times":"Sundays at 9:00 and 10:45 AM","address":"3120 Wrenfield Ave, Des Moines","cls":{"wrap":"wrap","label":"eyebrow","h1":"h-sm","btn":"btn btn-primary","btnOutline":"btn btn-outline"}};</script>
+<script src="../../shared/notes-data.js"></script>
+<script src="../../shared/notes-site.js"></script>
+<!-- notes-view:end -->
 <!-- guest-forms:start -->
 <script>
 /* Plan a Visit, prayer and inner-page links. A design preview: nothing is sent and nothing is stored. */
@@ -1607,7 +1630,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var a = e.target.closest && e.target.closest("a[href]"); if (!a || e.defaultPrevented) return;
     var h = a.getAttribute("href") || "";
     if (h === "#plan-a-visit" || h === "#prayer-request") { e.preventDefault(); openForm(h.slice(1), a); return; }
-    if (h.indexOf("#/") === 0) {
+    if (h.indexOf("#/") === 0 && h.indexOf("#/notes") !== 0) {
       e.preventDefault(); note(demoNote(a));
       var mb = $(SITE.menuButton); if (SITE.menuSheet && a.closest(SITE.menuSheet) && shown(mb)) mb.focus();
     }

@@ -333,6 +333,12 @@ export const PUBLIC_EDITS = {
     contactPath(1),
   ],
 
+  /* The four looks: Book a Call in each template preview bar opens the church consultation, by its path. */
+  "templates/bold-dark/index.html": [contactPath(1)],
+  "templates/bright-modern/index.html": [contactPath(1)],
+  "templates/classic-timeless/index.html": [contactPath(1)],
+  "templates/warm-community/index.html": [contactPath(1)],
+
   /* The hub, the overview of the platform. */
   "platform/index.html": [
     presenterHead("?present=1 shows the Growth Desk doors for this tab (story/story.js keeps it). */", THEME_SCRIPT),

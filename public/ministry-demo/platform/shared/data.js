@@ -128,10 +128,10 @@
   D.levels = [
     { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "One sign-in for the pastors, with no staff seats needed",
       summary: "A website people can find and use, with Hope answering questions and every form arriving by email.",
-      includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, answering from facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up"] },
+      includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, answering from facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up", "Sunday sermon notes on the website, shaped from the pastor's own words"] },
     { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "Up to 8 staff seats",
       summary: "Everything in Care, plus a front office for guests and a member app, so nobody falls through the cracks.",
-      includes: ["Everything in Care", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval"] },
+      includes: ["Everything in Care", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval", "Daily devotionals, notes in the member app, and email to members who opt in"] },
     { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "Up to 15 staff seats",
       summary: "Everything in Shepherd, plus one page per person, the spiritual gifts picture and reports for pastors.",
       includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "Up to 15 staff seats"] },
@@ -144,6 +144,8 @@
   /* Modules and the plan that includes each. The nav and the locked state read this. */
   D.modules = {
     website:  { label: "Website", level: 1, side: "church", adds: "The website in its chosen look, the brand board, the social marketing plan, and the forms that reach the church.", points: ["The website, with Hope answering questions", "The brand board and the social plan", "Plan a Visit and prayer forms by email"] },
+    notes:    { label: "Sermon Notes", level: 1, side: "church", adds: "Sunday sermon notes on your website, shaped from the pastor's own words and searchable.", points: ["Shaped only from the pastor's outline, file, video or voice memo", "Scripture printed with its translation named", "Nothing goes out until a person taps Publish or Schedule", "Searchable Notes page on the website"] },
+    devotionals: { label: "Devotionals", level: 2, side: "church", adds: "Daily devotionals from the pastor's own words, notes and a devotional reader in the member app, and email or text to members who opt in.", points: ["A short reading each morning: a verse, a few paragraphs and a prayer", "Scheduled ahead, at 6 AM by default", "Email only to members who chose it; texting only if the church turns it on"] },
     today:    { label: "Today", level: 2, side: "church", adds: "One calm list of what needs a person today: new guests, care waiting on us and follow-ups due.", points: ["New guests since Sunday, each with an owner", "Care waiting on us, oldest first", "Follow-ups due today and overdue", "Hope drafts ready for your approval"] },
     guests:   { label: "Guests", level: 2, side: "church", adds: "The front office: every first-time guest moves from New to Serving with an owner, a next step and a due date.", points: ["Guests arrive from Plan a Visit, Hope, connect cards, events and the newsletter", "Six stages from New to Serving", "Hope drafts welcome notes that wait for approval", "Follow-up by email by default; texting only if the church turns it on"] },
     care:     { label: "Care Inbox", level: 2, side: "church", adds: "One shared inbox for prayer and messages, with an owner on every thread and a waiting-on-us list.", points: ["Prayer visible only to pastors and the prayer team", "Alert emails carry no private words", "Every open, reply and archive is recorded", "Archive, never delete"] },
@@ -155,7 +157,7 @@
     "custom-roles": { label: "Custom Roles", level: 3, side: "church", adds: "Roles shaped to your church, like a care meals coordinator, and people named to see gift names for serving.", points: ["Custom roles with exactly what they need", "Named gift viewers", "Up to 15 staff seats"] },
     settings: { label: "Settings", level: 1, side: "church", adds: "The tools your church already uses, how follow-up and alerts travel, and when Genesis may sign in.", points: ["Giving, events and kids check-in links", "Follow-up and alert settings", "Support sessions, off by default"] },
     genesis:  { label: "Hope", level: 2, side: "church", adds: "Hope drafts welcome notes and everyday replies, and summarizes the week. A person approves everything.", points: ["Drafts are labeled and wait for approval", "Never drafts a reply to prayer or a personal message", "Never sets a gifts score"] },
-    "member-app":   { label: "Member App", level: 2, side: "member", adds: "What members see on their phones: sign in, home, prayer with history, messages and Give.", points: ["Sign in with a 6-digit code sent by email", "Adults only", "Prayer with a history and any reply", "Private message threads with the church"] },
+    "member-app":   { label: "Member App", level: 2, side: "member", adds: "What members see on their phones: sign in, home, prayer with history, messages and Give.", points: ["Sign in with a 6-digit code sent by email", "Adults only", "Prayer with a history and any reply", "Private message threads with the church", "This week's notes and today's devotional, with email to members who opt in"] },
     "member-gifts": { label: "My Gifts", level: 3, side: "member", adds: "The spiritual gifts conversation, one statement at a time, in the church's own voice.", points: ["Saves after every tap", "Results kept under My Gifts", "Names shared with pastors only after a yes"] }
   };
 
@@ -237,6 +239,10 @@
     { key: "serving",    label: "Serving",    hint: "On a team" }
   ];
   D.guestSources = ["Plan a Visit form", "Hope conversation", "Connect card", "Event sign-up", "Newsletter"];
+  /* Sermon notes and devotionals (the notes themselves are in ../../shared/notes-data.js, GM_NOTES):
+     when each goes out by default, and the share of members who chose email for each. Opt-ins show only
+     as rounded counts for the church's size. Texting follows D.guestSettings.textingEnabled. */
+  D.notesSettings = { sermonAt: "Sunday, 30 minutes before the first service", devotionalAt: "6:00 AM", translation: "King James Version", emailOptIn: { notes: 0.4, devotionals: 0.3 } };
   D.guestSettings = { followUpChannel: "Email", textingEnabled: false, textingNote: "Texting is off. Guest follow-up goes by email unless the church turns texting on." };
 
   D.guests = [
@@ -308,7 +314,7 @@
       text: "Interview for a teaching job this Thursday. Please pray I can rest the night before.",
       replies: [{ from: "s-sofia", at: "2026-08-05T08:30", text: "Praying for Thursday, Sarah. You are ready." }, { from: "member", at: "2026-08-12T17:45", text: "I got the job! Thank you for praying." }] }
   ];
-  D.crisisLine = "If you or someone else is in danger, call 911. To talk with someone now, call or text 988.";
+  D.crisisLine = "In danger or crisis? Call 911, or call or text 988.";
 
   /* ------------------------------------------------------------------ care: message threads */
   /* kind: "everyday" = staff can see it, Genesis may draft a reply.

@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Gifts to Explore · Member app · Genesis Ministry · Design preview</title>
@@ -194,7 +194,7 @@ function mxStage(o) {
   if (!stage || body.classList.contains("mx-staged")) return;
   var esc = GM.esc, c = GM.church, D = GM.data, here = location.pathname.split("/").pop() || "member-home.html";
   body.classList.add("mx-staged");
-  body.insertAdjacentHTML("beforeend", '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span>Design preview. Sample data shown.</div>');
+  body.insertAdjacentHTML("beforeend", GM.previewStripHTML());
 
   var bar = stage.querySelector(".m-stagebar");
   var brand = bar.querySelector(".m-stage-brand");
@@ -215,7 +215,8 @@ function mxStage(o) {
 
   var SCREENS = [
     ["member-signin.html", "Sign In", "member-app"], ["member-welcome.html", "First Question", "member-app"],
-    ["member-home.html", "Home", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
+    ["member-home.html", "Home", "member-app"], ["member-notes.html", "Sunday's Notes", "member-app"],
+    ["member-devotional.html", "Devotional", "member-app"], ["member-prayer.html", "Prayer", "member-app"],
     ["member-messages.html", "Messages", "member-app"], ["member-give.html", "Give", "member-app"],
     ["member-gifts.html", "Gifts Conversation", "member-gifts"], ["member-gifts-result.html", "Gifts to Explore", "member-gifts"]
   ];
