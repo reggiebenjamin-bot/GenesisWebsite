@@ -39,13 +39,13 @@
   @media (max-width:860px){.nt-page .v2-next-actions{grid-template-columns:minmax(0,1fr)!important}}
   /* Wide screens (review of November 24): Take the Tour joins the right-aligned row of header actions as
      its last, quiet button, every header button shares one top line, and the title block keeps the rest
-     of the width, so the subtitle never breaks around a button. Phones keep the icon in the title row. */
+     of the width (the actions move under it when both do not fit), so the subtitle never breaks around a button. Phones keep the icon in the title row. */
   #nt-tour{display:none}
   #nt-next:empty{min-height:246px}
   @media (max-width:860px){#nt-next:empty{min-height:410px}}
   @media (min-width:861px){
     .nt-page .v2-page-head{flex-wrap:wrap;align-items:flex-start;row-gap:14px}
-    .nt-page .v2-page-head>div:first-child{flex:1 1 360px;min-width:0}
+    .nt-page .v2-page-head>div:first-child{flex:1 1 440px;min-width:0}
     #nt-head-actions{display:none!important}
     #nt-actions{display:flex;flex-wrap:nowrap;justify-content:flex-end;align-items:flex-start;margin-left:auto;min-width:0}
     #nt-actions .v2-button{width:auto;white-space:nowrap}
