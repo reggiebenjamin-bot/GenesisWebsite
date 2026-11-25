@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalDraft, type LegalSection } from "@/components/sections/LegalDraft";
+import { LegalPage, type LegalSection } from "@/components/sections/LegalPage";
 import { contact } from "@/lib/content";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -43,14 +43,8 @@ const sections: readonly LegalSection[] = [
       `You can ask us about the information we hold, ask us to correct it, or opt out of non essential messages. Reach us from the contact page, or email ${contact.email}.`,
     ],
   },
-  {
-    heading: "This is a draft",
-    body: [
-      "This draft will be replaced with a reviewed privacy notice after legal review. Until then, treat it as a plain summary of how the software handles information.",
-    ],
-  },
 ];
 
 export default function PrivacyPage() {
-  return <LegalDraft path="/privacy" eyebrow="Legal" title="Privacy policy" sections={sections} />;
+  return <LegalPage path="/privacy" eyebrow="Legal" title="Privacy policy" sections={sections} />;
 }

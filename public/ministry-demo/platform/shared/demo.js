@@ -121,7 +121,7 @@
     start: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Choose Talk With Genesis to begin.",
     upgrade: "Each plan adds to the one before, so a church can start on Care and move up to Shepherd or Plus as it grows. A person at Genesis sets up the change with you.",
     cancel: "How a plan ends is set with Genesis on a call, before you sign anything. If you ever leave, your data is yours: we hand over a full export of your people, guests, care history and the access record, then delete our copy once you confirm you have it.",
-    discount: PRICES + " Any other terms are set with Genesis on a call.",
+    discount: PRICES + " No setup fee.",
     pcokeep: "Yes. Genesis Ministry works beside Planning Center, Subsplash and your giving provider, and does not replace them. Give opens your own giving page, and events, groups and kids check-in open the tool you already use. At onboarding we can import your people list from a Planning Center or Subsplash export, so nobody is entered twice.",
     importpeople: "Yes. At onboarding we can import your people list from a spreadsheet or CSV export of the tool you use today, such as Planning Center or Subsplash. Records also grow as people sign in. Genesis does not replace those tools, and a live Planning Center sync is on the roadmap.",
     signin: "Members sign in with their email address and a 6-digit code sent by email, or with Google, so there is no password to remember. Member accounts are for adults 18 and older, confirmed once. Signing in the first time creates the account.",
@@ -364,7 +364,7 @@
      call first. */
   ANSWERS.fees = function (q) {
     if (/\b(go(?:es)? up|going up|increase\w*|raise\w*|rise|rising|change over time|lock\w* in|next year|after (?:the first|a|one) year|year two)\b/i.test(String(q || ""))) return PRICES + " How a price is held over time is set in writing with Genesis before you sign anything.";
-    return "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. Anything more, like customization beyond the template, is quoted in writing before you sign. Any other terms are set with Genesis on a call.";
+    return "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. No setup fee. Anything more, like customization beyond the template, is quoted in writing before you sign.";
   };
   /* The Care plan's own answers: forms arrive by email, so there is no inbox, archive or list to import yet. */
   var NO_IMPORT = / ?(?:At onboarding|There is no live sync today: at onboarding) we can import your people list from a[^.]*\./;
@@ -764,6 +764,12 @@
     "member-gifts:done": { href: "member-gifts.html?step=done", label: "The Last Step", module: "member-gifts" }
   };
   function pathIndex(key) { for (var i = 0; i < PATH.length; i++) if (PATH[i].key === key) return i; return -1; }
+  /* Partway through the guided demo, one screen offers a quiet walkthrough booking. */
+  function midpointScreen() {
+    var stops = PATH.filter(function (e) { return e.key !== "index" && open(e); });
+    if (stops.length < 3) return false;
+    return stops[Math.floor(stops.length / 2)].key === KEY;
+  }
   function hrefOf(e) { return e.href || e.key.split(":")[0] + ".html"; }
   function open(e) { return !e.module || GM.isIncluded(e.module); }
   /* Walk the path from index i, skipping screens outside the plan, and say what was skipped. */
@@ -1444,9 +1450,11 @@
       /* The last screen of a church buyer's demo: the assistant closes this screen in the church's own voice, then
          Genesis closes the week's story in its own guide card (showChurchClose), not in the church's chat. */
       finale: last
-        ? { text: tour ? fill(tour.done) : "", chips: [{ label: "Take the Tour Again", key: "tour" }] }
+        ? { text: tour ? fill(tour.done) : "", chat: false, chips: [{ label: "Take the Tour Again", key: "tour" }] }
         : { text: (tour ? fill(tour.done) : "") + (nx && nx.note ? "\n\n" + nx.note : ""), chips: [{ label: "Take the Tour Again", key: "tour" }].concat(chipsAbout.slice(0, 2)) },
-      onTourEnd: function (finished) { if (finished && last) setTimeout(function () { showChurchClose(nx); }, 0); },
+      saleClose: !!last,
+      onSaleClose: showSaleClose,
+      walkthrough: midpointScreen() ? { href: CONTACT, label: "Book a walkthrough" } : null,
       autoStartParam: "tour",
       keepParams: ["church", "plan", "from", "pace"],
       autoInvite: false,
@@ -1467,35 +1475,64 @@
     };
   }
 
-  /* The church buyer's demo ends on a member screen. The church's own chat stays the church's: the
-     week's story closes in the Genesis guide card, the same Done card the workspace uses, with the
-     plans, how a church gets started and the way back. */
-  function showChurchClose(nx) {
+  /* The guided demo ends on the three plans. Each button opens the church consultation
+     with that plan already in the note. Shepherd is the plan we recommend. */
+  var SALE_PLANS = [
+    { id: "care", name: "Care", price: "$149", href: "/contact?topic=ministry-care" },
+    { id: "shepherd", name: "Shepherd", price: "$299", href: "/contact?topic=ministry-shepherd", recommended: true },
+    { id: "plus", name: "Plus", price: "$499", href: "/contact?topic=ministry-plus" }
+  ];
+  var saleShown = false;
+  function trackMinistry(event, props) {
+    var payload = { event: event };
+    if (props) for (var k in props) payload[k] = props[k];
+    try {
+      if (Array.isArray(window.dataLayer)) window.dataLayer.push(payload);
+      if (typeof window.gtag === "function") window.gtag("event", event, props || {});
+    } catch (e) {}
+  }
+  function showSaleClose() {
+    if (saleShown) return;
+    saleShown = true;
+    trackMinistry("ministry_demo_completed", { plan: GM && GM.plan ? String(GM.plan) : "" });
     var chatClose = document.querySelector('.hd-panel.on .hd-head button[aria-label="Close chat"]');
     if (chatClose) chatClose.click();
-    var old = document.querySelector(".gm-close-card"); if (old) old.remove();
+    var old = document.querySelector(".gm-sale"); if (old) old.remove();
     var card = document.createElement("section");
-    card.className = "v2-guide gm-close-card";
-    card.setAttribute("role", "region");
-    card.setAttribute("aria-label", GUIDE + ", the end of the demo");
-    var start = "journey.html#start";
-    card.innerHTML = '<div class="v2-guide-head"><span class="v2-guide-eyebrow"></span><span class="v2-guide-count">Done</span>' +
-      '<button class="v2-guide-icon v2-guide-close" type="button" data-close aria-label="Close" title="Close"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>' +
-      '<p class="v2-guide-say" role="status"></p>' + (nx && nx.note ? '<p class="v2-guide-note"></p>' : "") +
-      '<div class="v2-guide-controls"><a class="v2-button v2-button-primary" data-levels></a><a class="v2-button" data-talk target="_blank" rel="noopener"></a><a class="v2-button" data-start></a><a class="v2-button v2-button-quiet" data-home></a></div>';
-    card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + " · The week";
-    card.querySelector(".v2-guide-say").textContent = churchClose();
-    if (nx && nx.note) card.querySelector(".v2-guide-note").textContent = nx.note;
-    var lv = card.querySelector("[data-levels]"); lv.href = nx && nx.href ? nx.href : GM.levelsHref; lv.textContent = "See the Plans";
-    var tk = card.querySelector("[data-talk]"); tk.href = CONTACT; tk.innerHTML = "Talk With Genesis<span class=\"sr-only\"> (opens in a new tab)</span>";
-    var st = card.querySelector("[data-start]"); st.href = start; st.textContent = "How to Get Started";
-    var hm = card.querySelector("[data-home]"); hm.href = "index.html?church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan; hm.textContent = "Back to the Overview";
-    function close() { card.remove(); var t = document.querySelector(".mx-tour") || document.getElementById("gm-main"); if (t && t.focus) try { t.focus({ preventScroll: true }); } catch (e) {} }
+    card.className = "gm-sale";
+    card.setAttribute("role", "dialog");
+    card.setAttribute("aria-modal", "true");
+    card.setAttribute("aria-labelledby", "gm-sale-title");
+    var plans = SALE_PLANS.map(function (plan) {
+      return '<article class="gm-sale-plan' + (plan.recommended ? " is-recommended" : "") + '">' +
+        '<p class="gm-sale-rec">' + (plan.recommended ? "Recommended" : "") + "</p>" +
+        "<h3>" + plan.name + "</h3>" +
+        '<p class="gm-sale-price"><b>' + plan.price + '</b> <span>per month</span></p>' +
+        '<p class="gm-sale-fee">No setup fee</p>' +
+        '<a class="gm-sale-start" data-plan="' + plan.id + '" href="' + plan.href + '">Start with ' + plan.name + "</a>" +
+        "</article>";
+    }).join("");
+    card.innerHTML = '<div class="gm-sale-head"><p class="gm-sale-kicker">Genesis Ministry</p>' +
+      '<button type="button" class="gm-sale-x" data-close>Close</button></div>' +
+      '<h2 id="gm-sale-title">Choose your plan</h2>' +
+      '<p class="gm-sale-next">We confirm a time within one business day.</p>' +
+      '<div class="gm-sale-plans">' + plans + "</div>" +
+      '<p class="gm-sale-backwrap"><a class="gm-sale-back" href="index.html#levels">Back to the overview</a></p>';
+    card.querySelectorAll(".gm-sale-start").forEach(function (a) {
+      a.addEventListener("click", function () {
+        trackMinistry("ministry_demo_plan_clicked", { plan: a.getAttribute("data-plan") || "" });
+      });
+    });
+    function close() {
+      card.remove();
+      var t = document.querySelector(".mx-tour") || document.getElementById("gm-main");
+      if (t && t.focus) try { t.focus({ preventScroll: true }); } catch (e) {}
+    }
     card.querySelector("[data-close]").addEventListener("click", close);
     card.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); close(); } });
     document.body.appendChild(card);
-    /* After the chat has let go of focus. */
-    setTimeout(function () { try { lv.focus({ preventScroll: true }); } catch (e) {} }, 320);
+    var focus = card.querySelector(".is-recommended .gm-sale-start") || card.querySelector(".gm-sale-start");
+    setTimeout(function () { try { if (focus) focus.focus({ preventScroll: true }); } catch (e) {} }, 50);
   }
 
   /* ------------------------------------------------------------------ Genesis screens: the real guide */
@@ -1509,10 +1546,10 @@
       tour: function () { return compile(tour); },
       next: nx,
       /* A church buyer's demo ends on the church side. */
-      finale: { text: (tour ? fill(tour.done) : "") + (last ? " " + churchClose() : ""), askLabel: "Ask " + AN,
-        /* See the Plans (the gold Next) already opens the overview, so the second way on is a call. */
-        /* The last card of a church buyer's demo, as on the week card: a call, how to start, and the way back. */
-        links: last ? [{ label: "Talk With Genesis", href: CONTACT }, { label: "How to Get Started", href: "journey.html#start" }, { label: "Back to the Overview", href: "index.html?church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan }] : [] },
+      finale: { text: (tour ? fill(tour.done) : "") + (last ? " " + churchClose() : ""), askLabel: "Ask " + AN, links: [] },
+      saleClose: !!last,
+      onSaleClose: showSaleClose,
+      walkthrough: midpointScreen() ? { href: CONTACT, label: "Book a walkthrough" } : null,
       openChat: function (prompt) { GM.hope.open(prompt || ""); },
       autoStartParam: "tour",
       keepParams: ["church", "plan", "from", "pace"],
@@ -1658,6 +1695,8 @@
     if (a && isDemoLink(a) && /church-today\.html/.test(a.getAttribute("href"))) a.setAttribute("href", addParam(a.getAttribute("href"), "tour", "1"));
   }, true);
   function init() {
+    document.documentElement.classList.add("gm-guided");
+    if (KEY === "church-today" && P.get("tour") === "1") trackMinistry("ministry_demo_started", { plan: GM && GM.plan ? String(GM.plan) : "" });
     var tour = currentTour();
     var nx = nextFor();
     GM.demo.next = nx;

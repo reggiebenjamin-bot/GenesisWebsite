@@ -44,6 +44,7 @@ export function MinistryLevels() {
               </span>
               <span className="text-[0.9rem] text-muted-dark">{priceUnit}</span>
             </p>
+            <p className="mt-2 text-[0.85rem] text-muted-dark">{ministryLevels.setupLine}</p>
 
             <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">
               {plan.bullets.map((bullet) => (

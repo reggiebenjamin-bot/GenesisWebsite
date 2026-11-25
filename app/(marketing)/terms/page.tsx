@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalDraft, type LegalSection } from "@/components/sections/LegalDraft";
+import { LegalPage, type LegalSection } from "@/components/sections/LegalPage";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata("/terms");
@@ -29,14 +29,8 @@ const sections: readonly LegalSection[] = [
       "Any Genesis classes are education only. They are not professional, legal, financial or investment advice.",
     ],
   },
-  {
-    heading: "This is a draft",
-    body: [
-      "This draft will be replaced with reviewed terms of service after legal review. Until then, treat it as a plain summary of how the software may be used.",
-    ],
-  },
 ];
 
 export default function TermsPage() {
-  return <LegalDraft path="/terms" eyebrow="Legal" title="Terms of service" sections={sections} />;
+  return <LegalPage path="/terms" eyebrow="Legal" title="Terms of service" sections={sections} />;
 }

@@ -211,7 +211,12 @@ test("growthDeskRefs also finds the words of the Growth Desk's work, outside the
 });
 
 test("siteRefs lists links to the rest of geai.us, and only the consultation, by its path, is allowed", () => {
-  assert.deepEqual(SITE_LINKS, ["/contact?topic=ministry-demo"]);
+  assert.deepEqual(SITE_LINKS, [
+    "/contact?topic=ministry-demo",
+    "/contact?topic=ministry-care",
+    "/contact?topic=ministry-shepherd",
+    "/contact?topic=ministry-plus",
+  ]);
   const page = '<a href="/contact?topic=ministry-demo">Talk</a><a href="/pricing">Pricing</a><a href="//cdn.x/y.js">CDN</a><a href="index.html">Hub</a>';
   assert.deepEqual(siteRefs("platform/index.html", page), ["/contact?topic=ministry-demo", "/pricing"]);
   assert.deepEqual(
@@ -331,7 +336,18 @@ test("every public page and the end of the guided demo offer the church consulta
   }
   const demo = read("platform/shared/demo.js");
   assert.ok(demo.includes(`var CONTACT = (D && D.genesisContact) || (STORY && STORY.contact) || "${SITE_LINKS[0]}";`));
-  assert.match(demo, /links: last \? \[\{ label: "Talk With Genesis", href: CONTACT \}, \{ label: "How to Get Started", href: "journey\.html#start" \}/);
+  assert.match(demo, /Start with ' \+ plan\.name/);
+  assert.match(demo, /\/contact\?topic=ministry-care/);
+  assert.match(demo, /\/contact\?topic=ministry-shepherd/);
+  assert.match(demo, /\/contact\?topic=ministry-plus/);
+  assert.match(demo, /We confirm a time within one business day/);
+  assert.match(demo, /Book a walkthrough/);
+  assert.match(demo, /No setup fee/);
+  const analytics = readFileSync(join(process.cwd(), "lib", "analytics.ts"), "utf8");
+  for (const event of ["ministry_demo_started", "ministry_demo_completed", "ministry_demo_plan_clicked"]) {
+    assert.match(demo, new RegExp(event));
+    assert.match(analytics, new RegExp(`"${event}"`));
+  }
   assert.ok(read("platform/shared/data.js").includes(`D.genesisContact = "${SITE_LINKS[0]}";`));
   assert.ok(read("platform/story/story.js").includes(`var GENESIS_CONTACT_URL = "${SITE_LINKS[0]}";`));
   assert.ok(read("platform/shared/app.js").includes(`{ key: "consult", label: "Talk With Genesis", href: "${SITE_LINKS[0]}", icon: "call"`));

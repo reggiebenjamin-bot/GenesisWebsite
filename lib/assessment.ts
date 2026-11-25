@@ -27,7 +27,7 @@ export type Step = {
 const choices = (...labels: string[]): readonly Choice[] =>
   labels.map((label) => ({ value: label, label }));
 
-/** Steps 1–7. The eighth step asks who to send it to, and is its own form. */
+/** Steps 1 to 7. The eighth step asks who to send it to, and is its own form. */
 export const assessmentSteps: readonly Step[] = [
   {
     id: "business",
@@ -37,22 +37,23 @@ export const assessmentSteps: readonly Step[] = [
         id: "persona",
         kind: "single",
         label: "Which best describes your business?",
-        options: choices(
-          "Agent / Solo Operator",
-          "Real Estate Team",
-          "Brokerage",
-          "Lender",
-          "Investor / Acquisitions",
-          "Developer",
-          "Service business / trades (HVAC and more)",
-          "Other",
-        ),
+        options: [
+          ...choices("Agent / Solo Operator", "Real Estate Team", "Brokerage"),
+          /* Value stays "Lender" so the result still opens the lending pricing path. */
+          { value: "Lender", label: "Financing team" },
+          ...choices(
+            "Investor / Acquisitions",
+            "Developer",
+            "Service business / trades (HVAC and more)",
+            "Other",
+          ),
+        ],
       },
       {
         id: "team_size",
         kind: "single",
         label: "How many people actively work inside the operation?",
-        options: choices("Just me", "2–5", "6–15", "16–50", "50+"),
+        options: choices("Just me", "2 to 5", "6 to 15", "16 to 50", "50+"),
       },
     ],
   },
@@ -282,7 +283,7 @@ type Finding = ResultCategory & { weight: number };
 
 /*
  * Each category and the answers that point at it. A category only appears
- * when the answers actually carry a signal for it — nothing is shown to fill
+ * when the answers actually carry a signal for it. Nothing is shown to fill
  * a quota, and nothing is scored into a percentage it could not support.
  */
 const categories: readonly (ResultCategory & { weight: (answers: Answers) => number })[] = [

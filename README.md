@@ -126,7 +126,7 @@ price outside the plan prices). The plans are Care at $149 a month, Shepherd
 at $299 and Plus at $499, as cards, with Enterprise (more than one campus) as
 the line under them, scoped on a call. They replace the draft levels Welcome,
 Connect and Shepherd, and keep what those levels included, in order, until
-the owner lists each plan's contents. No setup fee is named. The section
+the owner lists each plan's contents. There is no setup fee. The section
 keeps its `#levels` anchor, and `ministryServiceSchema` in `lib/schema.ts`
 carries the three prices as structured data.
 

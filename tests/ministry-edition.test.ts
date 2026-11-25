@@ -41,7 +41,7 @@ const PRICE = /[$€£]|\bper month\b|\ba month\b|\bfree trial\b|\bsetup\b/i;
 const PLAN_AMOUNTS = ["$149", "$299", "$499"];
 /** Where a price may appear: the plan cards, the price sentence and what is built from them. */
 function mayShowPrice(path: string, text: string): boolean {
-  if (/^ministryLevels\.(levels\[\d\]\.priceDisplay|priceUnit)$/.test(path)) return true;
+  if (/^ministryLevels\.(levels\[\d\]\.priceDisplay|priceUnit|setupLine)$/.test(path)) return true;
   if (/^ministryConsultationNotes\.ministry-(care|shepherd|plus)$/.test(path)) return true;
   return text.includes(ministryPriceAnswer);
 }
@@ -257,7 +257,7 @@ test("the price sentence is the same on the page and in the demo", () => {
   );
 });
 
-test("the questions give the prices, and no setup fee is named", () => {
+test("the questions give the prices, and Ministry has no setup fee", () => {
   const cost = ministryFaq.items.find((item) => item.question === "What does Genesis Ministry cost?");
   assert.ok(cost, "there is a price question");
   assert.ok(cost.answer.startsWith(ministryPriceAnswer), cost.answer);
@@ -265,7 +265,10 @@ test("the questions give the prices, and no setup fee is named", () => {
   const custom = ministryFaq.items.find((item) => /customization/i.test(item.question));
   assert.ok(custom);
   assert.doesNotMatch(custom.answer, /set with Genesis|on a call/);
-  assert.doesNotMatch(JSON.stringify(ministryPage), /setup fee|set up fee|one time fee/i);
+  assert.equal(ministryLevels.setupLine, "No setup fee");
+  const named = JSON.stringify(ministryPage).match(/setup fee/gi) ?? [];
+  assert.deepEqual(named, ["setup fee"]);
+  assert.doesNotMatch(JSON.stringify(ministryPage), /set up fee|one time fee|setup fees not named|TBD/i);
 });
 
 test("the structured data carries the three plans at the prices the cards print", () => {
@@ -296,7 +299,9 @@ test("the business pricing page points churches to the Ministry plans", () => {
   assert.match(pricing, /href="\/ministry#levels">See the Ministry Plans</);
   /* Its own card with its own heading, so the business setup lines below never read as a church's. */
   assert.match(pricing, /Genesis Ministry, for churches/);
-  assert.doesNotMatch(pricing.slice(pricing.indexOf("pricing-churches-title"), pricing.indexOf("</aside>")), /setup/i);
+  const churchCard = pricing.slice(pricing.indexOf("pricing-churches-title"), pricing.indexOf("</aside>"));
+  assert.match(churchCard, /No setup fee/);
+  assert.doesNotMatch(churchCard, /\$500|\$1,500|\$10,000/);
   assert.doesNotMatch(pricing, /set with Genesis on a call|Ministry Levels/);
   assert.match(seoPage("/ministry").description, /Plans from \$149 a month\./);
 });

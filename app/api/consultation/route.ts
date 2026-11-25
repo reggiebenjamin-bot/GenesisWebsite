@@ -28,8 +28,8 @@ const allowedRoles = new Set([
 ]);
 const allowedTeamSizes = new Set([
   "Just me",
-  "2–4",
-  "5–50",
+  "2 to 4",
+  "5 to 50",
   "50+",
   // The church staff sizes the form offers on a Genesis Ministry link.
   ...ministryContact.form.staffSizes,
