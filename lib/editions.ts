@@ -129,7 +129,7 @@ export const ministryEdition: Edition = {
   points: ["Every guest followed up", "Prayer kept with your pastors", "A person approves every draft"],
   ctas: [
     { label: "Book a Call", href: "/contact?topic=ministry#consultation-form" },
-    { label: "Take the Guided Demo", href: "/ministry-demo/platform/index.html?tour=1&church=bold-dark" },
+    { label: "Take the Guided Demo", href: "/ministry-demo/platform/index.html?tour=1&church=bold-dark&pace=short" },
   ],
   disclaimer: "Genesis is software. It supports your pastors and care teams and never replaces them.",
 };

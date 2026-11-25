@@ -142,45 +142,45 @@ export const processSteps = [
     title: "Consultation",
     summary: "Free fit conversation",
     description:
-      "A focused, no-cost conversation about how leads, deals, communication, documents, data, and handoffs move through the business today.",
+      "A free call about how your calls, leads and follow up work today, and where things slip.",
     method:
-      "Understand the operation, its priorities, and where work currently depends on manual memory, disconnected systems, or repeated coordination.",
+      "We learn how your business runs and where work still depends on someone remembering to do it.",
   },
   {
     number: "02",
     title: "Scoping",
     summary: "Recommendation and next step",
     description:
-      "Define the implementation boundary: what should stay, what needs to connect, where work is breaking down, and where automation or intelligence would be useful.",
+      "We agree on what Genesis will do: which tools stay, what connects, and which jobs the AI employees take on.",
     method:
-      "Define what should remain, what needs to communicate, which workflows need structure, where automation is appropriate, and what stays with people.",
+      "We agree on what stays, what connects, what the AI employees handle and what stays with your people.",
   },
   {
     number: "03",
     title: "Implementation",
     summary: "The system build",
     description:
-      "Configure the agreed foundation, integrations, workflows, AI capabilities, and optional CRM around the operation.",
+      "We set up Genesis inside the tools you already use and train the AI employees on how you work.",
     method:
-      "Configure the agreed operational foundation, integrations, workflows, AI capabilities, and optional CRM.",
+      "We connect your phone, inbox, calendar and CRM, and set up the AI employees for your business.",
   },
   {
     number: "04",
     title: "Launch",
     summary: "Live in the operation",
     description:
-      "Put the platform into daily use, validate the workflow, and make sure the system is carrying the work it was designed to carry.",
+      "Your team starts using Genesis every day, and we check that calls, replies and follow up all happen as planned.",
     method:
-      "Move the system into daily use, validate that information and actions are moving correctly, and support adoption through the agreed launch boundary.",
+      "Your team starts using it, and we check every call, reply and follow up lands where it should.",
   },
   {
     number: "05",
     title: "Managed Platform",
     summary: "Support and improve when included",
     description:
-      "When ongoing management is included, Genesis keeps the agreed infrastructure supported, current, and improving as the business changes.",
+      "When your plan includes it, we keep Genesis running and improve it as your business grows.",
     method:
-      "Where ongoing management is part of the engagement, Genesis supports and refines the system as business priorities, processes, and volume change.",
+      "When your plan includes it, we keep Genesis running and adjust it as your business changes.",
   },
 ] as const;
 
@@ -255,31 +255,31 @@ export const faqs: readonly Faq[] = [
   {
     question: "What is Genesis?",
     answer:
-      "Genesis is AI infrastructure for service businesses, lenders and real estate teams. It connects business systems, workflows, communication, data, automation, and AI capabilities around the way the operation actually works.",
+      "Genesis gives service businesses, lenders and real estate teams AI employees that answer calls, reply to every lead, follow up and keep your pipeline moving, inside the tools you already use.",
     paths: ["agent", "custom-infrastructure"],
   },
   {
     question: "Is Genesis another CRM?",
     answer:
-      "No. CRM can be one part of the system, and Genesis CRM is optional. The broader job is connecting how work moves between communication, data, documents, workflows, deal activity, automation, and the people responsible for decisions.",
+      "No. Genesis can work with the CRM you already have, and Genesis CRM is optional. The job is making sure every call, lead and next step reaches the right person on time.",
     paths: ["custom-infrastructure"],
   },
   {
     question: "Do we have to replace our current systems?",
     answer:
-      "Not automatically. Genesis reviews the existing environment first and keeps useful systems where appropriate. The objective is a better-connected operation, not replacement for its own sake.",
+      "Usually not. We look at what you use today first and keep what works. Genesis connects your tools rather than replacing them for the sake of it.",
     paths: ["custom-infrastructure"],
   },
   {
     question: "Is Genesis mainly a collection of AI agents?",
     answer:
-      "No. AI agents are one capability inside Genesis. The larger value comes from how systems, data, context, workflows, automation, and human responsibilities are structured around them.",
+      "No. The AI employees are one part. The value is that they work inside your phone, inbox, calendar and CRM, with clear jobs and a person who decides what matters.",
     paths: ["custom-infrastructure"],
   },
   {
     question: "Does Genesis replace human judgment?",
     answer:
-      "No. Genesis can organize information, surface context, automate defined work, and support decisions. Human users remain responsible for decisions that require human judgment, professional responsibility, or regulated authority.",
+      "No. Genesis handles the routine work and brings you what needs a decision. Your people still make the calls that need judgment, a license or professional responsibility.",
     paths: ["custom-infrastructure"],
   },
   {

@@ -18,10 +18,11 @@ export const lendingPage = {
   headline: "Software that helps lending teams move faster on every borrower inquiry.",
   lede:
     "Brokers and lender desks use Genesis to capture, qualify and follow up with borrower inquiries faster, so no inquiry sits waiting for a reply.",
+  /* In Level order: what every Level does first, and the Level 03 follow up last, with its Level named. */
   benefits: [
-    "AI follow up that reaches every borrower inquiry quickly and keeps the conversation moving.",
-    "Guided intake that gathers what each borrower inquiry needs in one clean pass.",
+    "An instant first reply to every borrower inquiry, then guided intake that gathers what it needs in one clean pass.",
     "A pipeline organized so every borrower inquiry has a clear owner and a clear next step.",
+    "From Level 03, AI follow up that keeps every borrower conversation moving.",
   ],
   ctas: {
     primary: {

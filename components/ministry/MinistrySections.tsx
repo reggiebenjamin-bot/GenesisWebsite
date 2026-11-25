@@ -332,6 +332,11 @@ export function MinistryPackage() {
               <p className={cn("font-display text-[0.75rem] tracking-[0.12em]", lead ? "text-gold" : "text-gold-dark")}>
                 {item.no}
               </p>
+              {"plan" in item && item.plan ? (
+                <p className="mt-3 w-fit rounded-full border border-gold-dark/40 px-2.5 py-0.5 font-mono text-[0.7rem] font-semibold tracking-[0.12em] text-gold-dark uppercase">
+                  {item.plan}
+                </p>
+              ) : null}
               <h3 className="mt-3 text-[1.45rem] font-light leading-[1.1] tracking-[-0.03em]">{item.title}</h3>
               <p className={cn("mt-3 text-[0.95rem] leading-relaxed", lead ? "text-ivory/72" : "text-muted-dark")}>
                 {item.body}
@@ -571,13 +576,14 @@ export function MinistryProtection() {
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div>
+                {/* The plan tag is its own small chip above the heading, never run into the heading text. */}
+                {"plan" in rule ? (
+                  <p className="mb-2 w-fit rounded-full border border-gold/45 px-2.5 py-0.5 font-mono text-[0.7rem] font-semibold tracking-[0.12em] text-gold uppercase">
+                    {rule.plan}
+                  </p>
+                ) : null}
                 <h3 className="text-[clamp(1.15rem,1.6vw,1.35rem)] leading-snug font-medium tracking-[-0.015em] text-ivory">
                   {rule.title}
-                  {"plan" in rule ? (
-                    <span className="ml-2 inline-block align-[3px] font-mono text-[0.75rem] font-semibold tracking-[0.12em] text-gold uppercase">
-                      {rule.plan}
-                    </span>
-                  ) : null}
                 </h3>
                 <p className="mt-2 max-w-[52ch] text-[0.95rem] leading-relaxed text-muted-light">{rule.body}</p>
               </div>

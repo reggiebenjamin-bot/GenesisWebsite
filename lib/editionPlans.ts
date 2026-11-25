@@ -37,6 +37,12 @@ export type EditionPricing = {
   footer: string;
   /** Edition bullets for each Level. */
   bullets: Record<ManagedPlanId, readonly string[]>;
+  /**
+   * What each Level brings, as the end of one plain sentence for the "What
+   * changes between the Levels?" answer. Written by hand, with every bullet
+   * of that Level in it, so the answer reads as sentences, not a joined list.
+   */
+  faq: Record<ManagedPlanId, string>;
 };
 
 export const editionPricing: Record<EditionKey, EditionPricing> = {
@@ -66,6 +72,12 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
         "Genesis working across your connected systems",
         "Several AI employees working together",
       ],
+    },
+    faq: {
+      "managed-750": "calls answered, quotes followed up and appointments confirmed",
+      "managed-1750": "team roles and routing rules, plus automation across workflows and handoffs",
+      "managed-4500":
+        "priority onboarding and configuration, with Genesis working across your connected systems and several AI employees working together",
     },
   },
   real_estate: {
@@ -97,6 +109,11 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
         "Live deal board",
       ],
     },
+    faq: {
+      "managed-750": "every buyer and seller lead captured, a guided first touch and follow up, and same day lead response",
+      "managed-1750": "clean buyer and seller lanes, call scripts for every stage, and team roles and routing rules",
+      "managed-4500": "priority onboarding and configuration, showings booked and a live deal board",
+    },
   },
   lending: {
     key: "lending",
@@ -124,6 +141,11 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
         "AI follow up that keeps every borrower conversation moving",
       ],
     },
+    faq: {
+      "managed-750": "an instant first reply and guided intake for every borrower inquiry",
+      "managed-1750": "document follow up, so every borrower inquiry has a clear owner and a clear next step",
+      "managed-4500": "file status in one view and AI follow up that keeps every borrower conversation moving",
+    },
   },
 };
 
@@ -144,22 +166,15 @@ export function pricingPathForPersona(persona: string | undefined): string {
   return editionPricing[personaEdition(persona) ?? "business"].pricingPath;
 }
 
-/* "Instant first reply" reads "instant first reply" mid sentence; "AI follow up" keeps its capitals. */
-const lowerFirst = (text: string) =>
-  /^[A-Z][a-z]/.test(text) ? text.charAt(0).toLowerCase() + text.slice(1) : text;
-const listOf = (items: readonly string[]) =>
-  items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
-
 /**
- * "What changes between the Levels?" in one edition's own words, built from
- * its own Level bullets, so a lender reads about borrower inquiries and
- * documents, never about quotes and appointments.
+ * "What changes between the Levels?" in one edition's own words, from its
+ * handwritten faq lines, so a lender reads about borrower inquiries and
+ * documents, never about quotes and appointments, and names like Genesis and
+ * AI keep their capitals.
  */
 export function levelsFaqAnswer(key: EditionKey): string {
-  const [one, two, three] = editionLevels(key).map(({ plan, bullets }) => ({
-    plan,
-    adds: listOf(bullets.filter((bullet) => !bullet.startsWith("Everything in")).map(lowerFirst)),
-  }));
+  const { faq } = editionPricing[key];
+  const [one, two, three] = managedPlans.map((plan) => ({ plan, adds: faq[plan.id] }));
   return [
     `Level 01 is one user, with ${one.adds}.`,
     `Level 02 covers ${two.plan.userLimit.toLowerCase()} and adds ${two.adds}.`,

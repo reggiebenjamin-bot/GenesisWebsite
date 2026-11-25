@@ -6,6 +6,7 @@ import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { track } from "@/lib/analytics";
+import { editionPricing, isEditionKey } from "@/lib/editionPlans";
 import { managedOverview, managedPlans } from "@/lib/offers";
 
 /* The gold hairline gets stronger with the level. */
@@ -18,7 +19,7 @@ const TIER_EDGES = [
 /* The editions that share these Levels, in the nav order. */
 export const MANAGED_EDITIONS = [
   { value: "lending", label: "Lending" },
-  { value: "real_estate", label: "Real Estate Pros" },
+  { value: "real_estate", label: "Real Estate Pros", short: "Real Estate" },
   { value: "business", label: "Business" },
 ] as const;
 
@@ -74,6 +75,17 @@ export function ManagedComparison({
           <div>
             <Heading className="text-[clamp(1.15rem,1.7vw,1.35rem)] leading-snug tracking-[-0.02em]">{plan.ladder}</Heading>
             <p className="mt-2 text-[0.95rem] leading-relaxed">{plan.day}</p>
+            {/* With an edition chosen, the card says what that edition's Level includes. */}
+            {checkout && isEditionKey(edition) ? (
+              <ul aria-label={`Level ${plan.step} in ${editionPricing[edition].name}`} className="mt-3 grid gap-1.5">
+                {editionPricing[edition].bullets[plan.id].map((bullet) => (
+                  <li key={bullet} className="grid grid-cols-[8px_minmax(0,1fr)] gap-2.5 text-[0.92rem] leading-snug">
+                    <span aria-hidden="true" className="mt-[0.42rem] size-1.5 rounded-full bg-gold-dark" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
 
           <Detail label="Users" value={plan.userLimit} note={<UserLimitNote plan={plan} className="text-muted-dark" />} />
@@ -140,7 +152,14 @@ export function ManagedComparison({
                   aria-hidden="true"
                   className="grid size-4 shrink-0 place-items-center rounded-full border-[1.5px] border-ink/55 bg-white peer-checked:border-gold-light peer-checked:bg-gold-light max-sm:hidden"
                 />
-                {option.label}
+                {"short" in option ? (
+                  <>
+                    <span className="sm:hidden">{option.short}</span>
+                    <span className="max-sm:hidden">{option.label}</span>
+                  </>
+                ) : (
+                  option.label
+                )}
               </label>
             ))}
             <span id="managed-edition-help" className="col-span-3 text-[0.84rem] text-muted-dark sm:w-auto">

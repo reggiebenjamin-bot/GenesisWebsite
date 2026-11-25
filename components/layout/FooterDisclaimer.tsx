@@ -52,7 +52,7 @@ export function FooterTagline() {
     <ForChurch>
       {(church) => (
         <>
-          <p className="mt-6 font-display text-[0.75rem] leading-[1.5] tracking-[0.12em] text-gold uppercase">
+          <p className="mt-6 font-display text-[0.75rem] leading-[1.5] tracking-[0.12em] text-balance text-gold uppercase">
             {church ? "Software for churches" : genesisPositioning.category}
           </p>
           <p className="mt-3 max-w-sm text-[0.95rem] text-ivory/62">

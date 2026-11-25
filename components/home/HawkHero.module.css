@@ -148,21 +148,6 @@
   text-decoration-color: var(--color-gold-light);
 }
 
-/* Churches have their own edition and their own plans: the one gold word in the row. */
-.builtForChurch {
-  margin-left: 4px;
-  padding-inline: 12px;
-  border: 1px solid rgb(242 216 149 / 0.45);
-  background: rgb(201 165 94 / 0.1);
-  color: var(--color-gold-light);
-  text-decoration: none;
-}
-
-.builtForChurch:hover {
-  border-color: var(--color-gold-light);
-  background: rgb(201 165 94 / 0.18);
-}
-
 .eyebrowShort {
   display: none;
 }

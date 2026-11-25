@@ -104,9 +104,15 @@ function currentPathFor(pathname: string, church: ChurchPage) {
 
 const CHURCH_PLANS: NavLink = { label: "Plans", href: "/ministry#levels" };
 
+/* Pricing from an edition page opens with that edition already chosen. */
+const PRICING_EDITION: Record<string, string> = { "/lending": "lending", "/real-estate": "real_estate", "/business": "business" };
+
 /* On the church assessment too: a church pricing the business Levels is the wrong page. */
-function entryFor(entry: NavLink, church: ChurchPage, assessingChurch = false): NavLink {
-  return (church || assessingChurch) && entry.href === "/pricing" ? CHURCH_PLANS : entry;
+function entryFor(entry: NavLink, church: ChurchPage, assessingChurch = false, pathname = ""): NavLink {
+  if (entry.href !== "/pricing") return entry;
+  if (church || assessingChurch) return CHURCH_PLANS;
+  const edition = PRICING_EDITION[pathname];
+  return edition ? { ...entry, href: `/pricing?edition=${edition}` } : entry;
 }
 
 /** Which header button was pressed, for the analytics event it sends. */
@@ -259,11 +265,11 @@ export function Header() {
                   ) : (
                     <ForChurchPage pathname={pathname}>
                       {(church) => {
-                        const link = entryFor(entry, church, assessingChurch && pathname === "/assessment");
+                        const link = entryFor(entry, church, assessingChurch && pathname === "/assessment", pathname);
                         return (
                           <Link
                             href={link.href}
-                            aria-current={link === entry && isCurrent(pathname, link.href) ? "page" : undefined}
+                            aria-current={link.label === entry.label && isCurrent(pathname, entry.href) ? "page" : undefined}
                             className={styles.link}
                           >
                             {link.label}
@@ -535,7 +541,7 @@ function MobileMenu({
   returnFocus: RefObject<HTMLButtonElement | null>;
 }) {
   const primary = primaryFor(church, assessingChurch, pathname);
-  const entryHere = (entry: NavLink) => entryFor(entry, church, assessingChurch);
+  const entryHere = (entry: NavLink) => entryFor(entry, church, assessingChurch, pathname);
   const sheet = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const labelId = useId();
@@ -658,35 +664,13 @@ function MobileMenu({
                 ) : null}
               </ul>
             </div>
-            {/* The church path, right under the editions: a business owner sees the editions
-                and the assessment first. Hidden where the reader is already in the church context. */}
-            {entry.label === "Editions" && !church ? (
-            <Link
-              href={ministryCue.href}
-              aria-label={ministryCue.ariaLabel}
-              className={styles.sheetCue}
-              data-area="cue"
-              onClick={() => {
-                track("ministry_cue_clicked", { from: "mobile_menu_cue" });
-                onClose();
-              }}
-            >
-              <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-gold" />
-              <span className={styles.sheetCueText}>
-                <span className={styles.sheetCueLead}>{ministryCue.lead}</span>
-                <span className={styles.sheetCueLabel}>{ministryCue.label}</span>
-              </span>
-              <span aria-hidden="true" className={styles.sheetArrow}>
-                →
-              </span>
-            </Link>
-            ) : null}
+            {/* Churches have their own Ministry row in Editions, so no second church card here. */}
             </Fragment>
           ) : (
             <div key={entry.label} className={cn(styles.sheetGroup, styles.sheetSingle)} data-area="side">
               <Link
                 href={entryHere(entry).href}
-                aria-current={entryHere(entry) === entry && isCurrent(pathname, entry.href) ? "page" : undefined}
+                aria-current={entryHere(entry).label === entry.label && isCurrent(pathname, entry.href) ? "page" : undefined}
                 className={styles.sheetLink}
                 onClick={onClose}
               >

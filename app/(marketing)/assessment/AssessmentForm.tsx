@@ -53,9 +53,9 @@ const inverseAction =
   "inline-flex min-h-[52px] w-full items-center justify-center rounded-[6px] border border-ivory/40 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ivory transition-colors duration-200 hover:border-ivory";
 /* Paired buttons share one width: full width and stacked on phones, two equal columns from sm up. */
 const actionPair = "grid w-full gap-3 sm:max-w-[36rem] sm:grid-cols-2";
-/* Back and Continue under each step: one part to two on a phone, two 180px buttons from sm up. */
+/* Back and Continue under each step: two equal columns on a phone, two 180px buttons from sm up. */
 const stepPair =
-  "mt-4 grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-3 border-t border-line-light pt-6 sm:flex sm:items-center sm:justify-between";
+  "mt-4 grid grid-cols-2 gap-3 border-t border-line-light pt-6 sm:flex sm:items-center sm:justify-between";
 const backAction =
   "inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[6px] border border-ink/30 px-4 text-[0.94rem] font-bold text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory sm:w-auto sm:min-w-[180px]";
 
@@ -96,7 +96,7 @@ export function AssessmentExperience({ initialPersona }: { initialPersona?: stri
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+28px)] pb-16 text-ivory md:pt-[calc(var(--header-height)+44px)] md:pb-[72px] [@media(max-height:500px)]:pt-[calc(var(--header-height)+12px)] [@media(max-height:500px)]:pb-10">
         <div className="shell max-w-[56rem]">
           <Eyebrow>{copy.eyebrow}</Eyebrow>
-          <h1 className="mt-4 max-w-[24ch] text-[clamp(2rem,4.2vw,3.4rem)] leading-[1.04] text-balance [@media(max-height:500px)]:text-[1.6rem]">
+          <h1 className="mt-4 max-w-[24ch] font-light text-[clamp(2.1rem,4.2vw,3.4rem)] leading-[1.04] text-balance [@media(max-height:500px)]:text-[1.6rem]">
             {done ? (church ? assessmentCopy.churchDoneHeadline : assessmentCopy.doneHeadline) : copy.headline}
           </h1>
           {done ? null : (
@@ -585,8 +585,8 @@ export function AssessmentForm({
               {missing.length ? "Please choose an answer for the highlighted question." : ""}
             </p>
 
-            {/* Back and Continue are one even pair: the same height, an outlined Back beside the gold
-                Continue (one part to two on a phone, the same width from sm up). */}
+            {/* Back and Continue are one even pair: the same height and the same width, an outlined
+                Back beside the gold Continue. */}
             <div className={cn(stepPair, index === 0 && "max-sm:grid-cols-1")}>
               {index > 0 ? (
                 <button type="button" onClick={() => goTo(Math.max(index - 1, 0))} className={backAction}>
@@ -689,8 +689,9 @@ export function AssessmentForm({
               </div>
             ) : null}
 
-            <div className={cn(stepPair, "mt-0")}>
-              <button type="button" onClick={() => goTo(CONTACT_STEP - 1)} className={backAction}>
+            {/* The last step's label is longer: on a phone the two stack full width, the snapshot first. */}
+            <div className={cn(stepPair, "mt-0 max-sm:grid-cols-1")}>
+              <button type="button" onClick={() => goTo(CONTACT_STEP - 1)} className={cn(backAction, "max-sm:order-last")}>
                 <span aria-hidden="true">←</span> Back
               </button>
               <SubmitButton type="submit" disabled={status === "submitting"} className="w-full sm:w-auto sm:min-w-[180px]">
@@ -1014,7 +1015,7 @@ function BusinessResults({
               callLabel={results.ctaPrimary}
               secondary={
                 suggested?.step
-                  ? { label: `Start Level ${suggested.step}`, href: edition.pricingHref }
+                  ? { label: `See Level ${suggested.step} Pricing`, href: edition.pricingHref }
                   : { label: `See ${edition.name}`, href: edition.href }
               }
               review={who.review}

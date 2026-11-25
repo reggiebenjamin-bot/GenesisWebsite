@@ -72,7 +72,7 @@ export function PageIntro({
       <section className="border-b border-line-dark bg-ink pt-[calc(var(--header-height)+32px)] pb-12 text-ivory md:pt-[calc(var(--header-height)+48px)] md:pb-14">
         <div className="shell">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <h1 className="mt-4 max-w-[22ch] text-[clamp(2.1rem,4.2vw,3.4rem)] text-balance">{title}</h1>
+          <h1 className="mt-4 max-w-[22ch] font-light text-[clamp(2.1rem,4.2vw,3.4rem)] text-balance">{title}</h1>
           <p className="mt-4 max-w-2xl text-[1.02rem] text-ivory/72">{paragraphs[0]}</p>
         </div>
       </section>
@@ -83,7 +83,7 @@ export function PageIntro({
     <section className="flex min-h-[620px] items-end border-b border-line-dark bg-ink pt-[calc(var(--header-height)+110px)] pb-[110px] text-ivory md:min-h-[720px]">
       <div className="shell max-w-[980px]">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="mt-6 text-[clamp(2.8rem,6vw,5.5rem)] text-balance">{title}</h1>
+        <h1 className="mt-6 font-light text-[clamp(2.8rem,6vw,5.5rem)] text-balance">{title}</h1>
         <div className="mt-7 grid max-w-2xl gap-4 text-[1.08rem] text-ivory/72">
           {paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>

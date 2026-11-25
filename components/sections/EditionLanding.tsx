@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Card, ClosingBand, SectionIntro, Sheet } from "@/components/ui/Blocks";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
@@ -11,6 +12,7 @@ import { faqs, pricingFaqs } from "@/lib/content";
 import { levelsFaqAnswer, type EditionKey } from "@/lib/editionPlans";
 import type { Edition, EditionCta } from "@/lib/editions";
 import { breadcrumbSchema, editionServiceSchema, enterpriseServiceSchema, faqPageSchema, graph } from "@/lib/schema";
+import { cn } from "@/lib/utils";
 
 /* The site's secondary action on ink: dark with a gold hairline, the same height as the gold primary. */
 const secondaryCta = "secondary-action inline-flex min-h-[52px] w-full items-center justify-center px-6";
@@ -95,6 +97,7 @@ function editionFaqsFor(key?: EditionKey) {
 }
 
 /** Pages built for a trade or a market, linked from the edition they belong to. */
+/* A trade list gets its own short row; one or two market pages read as a sentence under the team instead. */
 const related: Partial<Record<string, { title: string; links: readonly { label: string; href: string }[] }>> = {
   "/business": {
     title: "Built for your trade",
@@ -109,11 +112,11 @@ const related: Partial<Record<string, { title: string; links: readonly { label: 
     ],
   },
   "/lending": {
-    title: "Built for Texas lenders",
+    title: "Working in Texas? See",
     links: [{ label: "Texas Lenders", href: "/texas/lenders" }],
   },
   "/real-estate": {
-    title: "Built for Texas real estate",
+    title: "Working in Texas real estate? See",
     links: [
       { label: "Texas Investors", href: "/texas/investors" },
       { label: "Fix and Flip", href: "/texas/fix-and-flip" },
@@ -174,12 +177,15 @@ export function EditionLanding({
             className="hero-mark mx-auto h-[84px] w-[84px]"
           />
           <div className="hero-rule mx-auto mt-6 h-px w-16 bg-gold" />
-          <Eyebrow className="hero-eyebrow mt-8">
-            {edition.eyebrow}
-            <span aria-hidden="true" className="px-3 text-ivory/30">
-              /
+          {/* Two parts that wrap at the slash, never leaving one word alone on a line. */}
+          <Eyebrow className="hero-eyebrow mt-8 text-balance">
+            <span className="inline-block">
+              {edition.eyebrow}
+              <span aria-hidden="true" className="px-3 text-ivory/30">
+                /
+              </span>
             </span>
-            {edition.audience}
+            <span className="inline-block">{edition.audience}</span>
           </Eyebrow>
           <h1 className="hero-title mx-auto mt-5 max-w-[20ch] font-light text-[clamp(2.6rem,6vw,5.4rem)] leading-[1.02] tracking-[-0.045em] text-balance">
             {edition.headline}
@@ -191,7 +197,8 @@ export function EditionLanding({
         </div>
       </section>
 
-      <Sheet surface="paper" rise aria-labelledby="edition-title" className="site-section">
+      {/* On a phone the next section's own top space is the gap, so the two never stack into one wide blank. */}
+      <Sheet surface="paper" rise aria-labelledby="edition-title" className={cn("site-section", children && "max-md:pb-6")}>
         <h2 id="edition-title" className="sr-only">
           What {edition.name} does
         </h2>
@@ -263,7 +270,23 @@ export function EditionLanding({
             </Card>
           ))}
         </ul>
-        {trades ? (
+        {trades && trades.links.length <= 2 ? (
+          <p className="mt-8 text-[0.95rem] leading-relaxed text-muted-dark">
+            {trades.title}{" "}
+            {trades.links.map((link, index) => (
+              <Fragment key={link.href}>
+                {index > 0 ? " or " : null}
+                <Link
+                  href={link.href}
+                  className="inline-flex min-h-11 items-center font-bold text-ink underline decoration-ink/30 underline-offset-4 hover:text-gold-dark"
+                >
+                  {link.label}
+                </Link>
+              </Fragment>
+            ))}
+            .
+          </p>
+        ) : trades ? (
           <div className="mt-14 border-t border-line-light pt-8">
             <p className="text-[1.05rem] font-medium tracking-[-0.01em]">{trades.title}</p>
             <ul className="mt-3 flex flex-wrap gap-x-6">
@@ -289,6 +312,28 @@ export function EditionLanding({
         </div>
       </Sheet>
 
+      {/* Enterprise has no Levels: its close offers the scoping call first. */}
+      {pricingKey ? null : (
+        <ClosingBand
+          title="See where your business is carrying extra work."
+          line="Book a call and we will scope your locations and systems."
+          actions={
+            <div className="grid w-full max-w-[34rem] gap-3 sm:grid-cols-2">
+              <TrackClick event="consultation_cta_clicked" from={`edition_${slug}_close`}>
+                <ConsultationButton href={actions[1]?.href ?? "/contact#consultation-form"} className="w-full">
+                  Book a Call
+                </ConsultationButton>
+              </TrackClick>
+              <TrackClick event="assessment_link_clicked" from={`edition_${slug}_close`} selector="a[href^='/assessment']">
+                <CtaLink href={actions[0]?.href ?? "/assessment"} className={secondaryCta}>
+                  <span>Assess My Business</span>
+                </CtaLink>
+              </TrackClick>
+            </div>
+          }
+        />
+      )}
+      {pricingKey ? (
       <ClosingBand
         title="See where your business is carrying extra work."
         line="Answer a few questions and we will point you to the Level that fits."
@@ -311,6 +356,7 @@ export function EditionLanding({
           </div>
         }
       />
+      ) : null}
     </>
   );
 }

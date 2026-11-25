@@ -673,7 +673,7 @@ export const managedPlans: readonly ManagedPlan[] = [
     summary:
       "For an operator or smaller team beginning to move repeatable work into a managed Genesis environment.",
     fit: "For operations beginning with a managed foundation and focused workflows.",
-    day: "One person. Every new inquiry gets a fast reply and a follow up, so none sits waiting.",
+    day: "One person. Every new inquiry gets a fast first reply, so none sits waiting.",
     ...undefinedEntitlements,
   },
   {

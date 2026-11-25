@@ -713,16 +713,10 @@
   outline-offset: 2px;
 }
 
-/* A phone on its side keeps the footer one row high: the button, then Close Menu beside it. */
+/* A phone on its side keeps the footer one row high: just the full width button. The X at the
+   top right closes the menu, so a narrow Close Menu link never sits beside a wide button. */
 @media (max-height: 500px) {
-  .sheetFooter {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-  }
-
   .sheetClose {
-    width: auto;
-    padding-inline: 12px;
+    display: none;
   }
 }

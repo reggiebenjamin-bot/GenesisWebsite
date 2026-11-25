@@ -91,8 +91,8 @@ test("the homepage features Ministry as a fifth edition card, built like the oth
   /* Disclaimers live in the footer and on each edition page, not stacked under the cards. */
   assert.doesNotMatch(story, /\{ministryEdition\.disclaimer\}/);
   assert.doesNotMatch(story, /FUNDING_LINE/);
-  /* Its plans start where the plan cards say: "Plans from $149 a month", built from ministryLevels. */
-  assert.match(story, /Plans from \$\{ministryLevels\.levels\[0\]\.priceDisplay\} a month/);
+  /* Its plans start where the plan cards say, in the other cards' words: "From $149 a month", built from ministryLevels. */
+  assert.match(story, /`From \$\{ministryLevels\.levels\[0\]\.priceDisplay\} a month`/);
   /* The same structure as the other cards: no mark of its own, so the G is not repeated per card. */
   assert.doesNotMatch(story, /\/brand\/mark-gold-on-light\.svg/);
   /* The Levels block names the church plans too, linked to /ministry#levels. */
@@ -137,7 +137,7 @@ test("the hero books a call, then opens the guided demo", () => {
   assert.match(ministryHero.primary.href, /^\/contact\b/);
   assert.equal(ministryHero.secondary.label, "Take the Guided Demo");
   /* The guided demo starts as Lampstand Church, the sample church in the stills. */
-  assert.equal(ministryHero.secondary.href, "/ministry-demo/platform/index.html?tour=1&church=bold-dark");
+  assert.equal(ministryHero.secondary.href, "/ministry-demo/platform/index.html?tour=1&church=bold-dark&pace=short");
   assert.deepEqual(
     ministryEdition.ctas.map((cta) => cta.href),
     [ministryHero.primary.href, ministryHero.secondary.href],
@@ -268,7 +268,7 @@ test("each plan keeps exactly what its draft level included", () => {
         [
           "Everything in Care",
           "The Today view",
-          "Guest pipeline",
+          "One list of every new guest",
           "Member app",
           "Care inbox",
           "Team roles, with your prayer team named",
@@ -281,7 +281,7 @@ test("each plan keeps exactly what its draft level included", () => {
         [
           "Everything in Shepherd",
           "Person pages",
-          "Access record",
+          "A record of who opened each person's page",
           "Spiritual gifts, with a church wide view for pastors",
           "Reports",
           "Custom roles and named gift viewers",

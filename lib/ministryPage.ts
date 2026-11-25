@@ -34,7 +34,9 @@ export const ministryDemo = {
   platform: "/ministry-demo/platform/index.html",
   /* Starts as Lampstand Church, the sample church in the stills on /ministry. Its
      account is on Plus, the plan the demo opens at, so no plan note shows. */
-  tour: "/ministry-demo/platform/index.html?tour=1&church=bold-dark",
+  /* pace=short: five screens (Today, Guests, the Care Inbox, Sunday's Notes, the member app), about two
+     minutes on a phone, with See Every Screen on its last card. */
+  tour: "/ministry-demo/platform/index.html?tour=1&church=bold-dark&pace=short",
   template: (slug: string) => `/ministry-demo/templates/${slug}/index.html`,
 } as const;
 
@@ -109,7 +111,7 @@ export const ministryHero = {
   primary: { label: "Book a Call", href: consult("ministry") },
   secondary: { label: "Take the Guided Demo", href: ministryDemo.tour },
   filmLabel:
-    "A guided film of Genesis Ministry: the church website, Hope, the guest pipeline, the care inbox and the member app, shown with a made up sample church.",
+    "A guided film of Genesis Ministry: the church website, Hope, the list of every new guest, the care inbox and the member app, shown with a made up sample church.",
   /** Describes the poster image when it is shown without the film. Keep it true to the still. */
   stillAlt:
     "The Today view for Lampstand Church, a made up sample church, in the light theme. Hope's briefing puts today's list in order and starts with Maya T., a first time guest visiting on Sunday, and 4 drafts wait for a person's judgment.",
@@ -124,6 +126,8 @@ export type MinistryPackageItem = {
   points: readonly string[];
   /** Where to see it in the demo. */
   links?: readonly { label: string; href: string }[];
+  /** A plan tag for a part that is not in every plan, shown as a small chip. */
+  plan?: string;
 };
 
 export const ministryPackage = {
@@ -141,7 +145,7 @@ export const ministryPackage = {
     {
       no: "02",
       title: "A brand board",
-      body: "One page that keeps your church consistent: logo lockups, colors, type, photo direction, buttons and the voice you write in.",
+      body: "One page that keeps your church consistent: logo versions, colors, type, photo direction, buttons and the voice you write in.",
       points: ["Logo, color and type", "Photo direction", "Voice and tone"],
     },
     {
@@ -159,8 +163,9 @@ export const ministryPackage = {
     {
       no: "05",
       title: "Sunday notes and daily devotionals",
-      body: "Your pastor's own words, shaped into Sunday notes with the scripture, the key points and questions for small groups, plus a short devotional each morning. Nothing goes out until a person approves it.",
-      points: ["From your pastor's own words", "Scripture, points and questions", "A person approves every line"],
+      body: "Your pastor's own words, shaped into Sunday notes with the scripture, the key points and questions for small groups. From the Shepherd plan, a short devotional each morning too. Nothing goes out until a person approves it.",
+      points: ["From your pastor's own words", "Scripture, points and questions", "Daily devotionals from the Shepherd plan"],
+      plan: "Devotionals from Shepherd",
       links: [
         { label: "See Sunday's Notes", href: `${ministryDemo.template("bold-dark")}#/notes` },
         { label: "See a Devotional", href: "/ministry-demo/platform/member-devotional.html?church=bold-dark" },
@@ -169,8 +174,8 @@ export const ministryPackage = {
     {
       no: "06",
       title: "The platform, by plan",
-      body: "A front office for guests, a back office for care and a member app on phones. Which parts you get depends on the plan you choose.",
-      points: ["Front office for guests", "Back office for care", "Member app"],
+      body: "Tools for welcoming guests, tools for caring for people and a member app on phones. Which parts you get depends on the plan you choose.",
+      points: ["For guests", "For care", "Member app"],
     },
   ] satisfies readonly MinistryPackageItem[],
 } as const;
@@ -248,28 +253,28 @@ export type MinistryPlatformRow = {
  */
 export const ministryPlatform = {
   eyebrow: "The Genesis Ministry platform",
-  title: "A front office, a back office and an app, built for care.",
+  title: "Guests, care and a member app, in one place.",
   aside: "Genesis AI drafts and summarizes. A person on your team always decides.",
   rows: [
     {
       id: "frontOffice",
-      eyebrow: "Front office",
+      eyebrow: "For guests",
       title: "No first time guest falls through the cracks.",
-      body: "Every guest who fills in a card, a form or a chat with Hope lands in one guest pipeline. The Today view shows your team who to welcome and who is ready for a next step.",
-      points: ["One guest pipeline", "The Today view", "Welcome notes drafted for approval"],
+      body: "Every guest who fills in a card, a form or a chat with Hope lands in one list of new guests. The Today view shows your team who to welcome and who is ready for a next step.",
+      points: ["One list of every new guest", "The Today view", "Welcome notes drafted for approval"],
       filmLabel:
-        "Silent looping film of the front office with sample data: a new guest arrives in the pipeline and a welcome note waits for a person to approve it.",
+        "Silent looping film of the guest tools with sample data: a new guest arrives in the guest list and a welcome note waits for a person to approve it.",
       stillAlt:
         "The Guests view for Lampstand Church, a made up sample church. It counts 18 guests with an open next step, 4 new this week and 6 follow ups due, and shows Maya T. as the guest to welcome first, with her welcome note ready for review.",
     },
     {
       id: "backOffice",
-      eyebrow: "Back office",
+      eyebrow: "For care",
       title: "One record per person. Care that stays private.",
-      body: "Prayer requests and messages arrive in a shared care inbox for the people who should see them. Each person has one page, and an access record shows who opened it.",
-      points: ["Shared care inbox", "Person pages and an access record", "Gifts and reports, with a church wide view for pastors"],
+      body: "Prayer requests and messages arrive in a shared care inbox for the people who should see them. Each person has one page, with a record of who opened it.",
+      points: ["Shared care inbox", "Person pages, with a record of who opened each one", "Gifts and reports, with a church wide view for pastors"],
       filmLabel:
-        "Silent looping film of the back office with sample data: a prayer request reaches the care inbox and a pastor opens one person's page.",
+        "Silent looping film of the care tools with sample data: a prayer request reaches the care inbox and a pastor opens one person's page.",
       stillAlt:
         "The shared care inbox for Lampstand Church, a made up sample church. Six conversations wait on the team, oldest first. Prayer requests show only a topic behind a lock, beside everyday messages like Kwame A.'s question about serving.",
     },
@@ -391,7 +396,7 @@ export const ministryLevels = {
       bullets: [
         "Everything in Care",
         "The Today view",
-        "Guest pipeline",
+        "One list of every new guest",
         "Member app",
         "Care inbox",
         "Team roles, with your prayer team named",
@@ -410,7 +415,7 @@ export const ministryLevels = {
       bullets: [
         "Everything in Shepherd",
         "Person pages",
-        "Access record",
+        "A record of who opened each person's page",
         "Spiritual gifts, with a church wide view for pastors",
         "Reports",
         "Custom roles and named gift viewers",

@@ -26,7 +26,7 @@ function editionFrom(value: string | string[] | undefined): string {
 const textLink =
   "inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 transition-colors duration-200 hover:text-gold-dark";
 
-const fromMinistryPlans = `Genesis Ministry, for churches: plans from ${ministryLevels.levels[0].priceDisplay} a month`;
+const ministryFrom = `${ministryLevels.levels[0].priceDisplay} a month`;
 
 /** The church plans in one slim row, with its own heading so a pastor never takes the business Levels for theirs. */
 function ChurchPlans({ className = "" }: { className?: string }) {
@@ -36,10 +36,11 @@ function ChurchPlans({ className = "" }: { className?: string }) {
       className={`flex flex-wrap items-center justify-between gap-x-10 gap-y-1 rounded-[6px] border border-gold/45 bg-gold-light/10 px-5 py-3 ${className}`}
     >
       <div className="max-w-[70ch] text-[0.95rem]">
-        <h2 id="pricing-churches-title" className="text-[1rem] font-semibold tracking-normal">
-          {fromMinistryPlans}
+        {/* The site's small heading; the line under it carries the prices. */}
+        <h2 id="pricing-churches-title" className="text-[1.15rem] leading-[1.38] font-normal tracking-[-0.01em]">
+          Genesis Ministry, for churches.
         </h2>
-        <p className="text-muted-dark">
+        <p className="mt-2 text-muted-dark">
           {ministryPriceAnswer} Enterprise, for more than one campus, is scoped on a call.
         </p>
       </div>
@@ -68,9 +69,20 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
           <div className="mb-[clamp(24px,3vw,40px)] grid gap-5 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
             <div>
               <Eyebrow>Pricing</Eyebrow>
-              <h1 className="mt-4 text-[clamp(2.6rem,6vw,5.4rem)] leading-[1.02] tracking-[-0.045em] text-balance">
+              <h1 className="mt-4 text-[clamp(2.6rem,6vw,5.4rem)] leading-[1.02] font-light tracking-[-0.045em] text-balance">
                 Three Levels, one price list.
               </h1>
+              {/* A pastor sees the church plans before any business price. */}
+              {church ? null : (
+                <TrackClick event="edition_link_clicked" from="pricing_hero_churches">
+                  <p className="mt-3 text-[0.95rem] text-muted-dark">
+                    Leading a church?{" "}
+                    <Link href="/ministry#levels" data-track-edition="ministry" className={textLink}>
+                      See Ministry plans from {ministryFrom}
+                    </Link>
+                  </p>
+                </TrackClick>
+              )}
             </div>
             <div className="grid gap-3">
               <p className="max-w-[52ch] text-[1rem] leading-relaxed text-muted-dark">{managedOverview.pricing.body}</p>
@@ -92,9 +104,11 @@ export default async function PricingPage({ searchParams }: PageProps<"/pricing"
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 border-t border-line-light pt-6">
             <p className="max-w-[60ch] text-[0.9rem] text-muted-dark">
               {managedOverview.pricing.closing} More than 25 users is{" "}
-              <Link href="/enterprise" className={textLink}>
-                Genesis Enterprise
-              </Link>
+              <TrackClick event="edition_link_clicked" from="pricing_enterprise">
+                <Link href="/enterprise" data-track-edition="enterprise" className={textLink}>
+                  Genesis Enterprise
+                </Link>
+              </TrackClick>
               .
             </p>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-1">

@@ -99,7 +99,7 @@ const PIPE: { icon: IconType; rows: number; lit?: number }[] = [
 export function FrontOfficePoster() {
   const midY = PIPE_Y + cardSize.h / 2;
   return (
-    <Poster label="Front office / Guest pipeline">
+    <Poster label="For guests / Every new guest">
       <Scene viewBox="0 0 720 405" className={styles.scene}>
         <Rings cx={360} cy={190} radii={[150, 210, 270]} />
         {PIPE.slice(0, -1).map((_, i) => {
@@ -169,7 +169,7 @@ export function BackOfficePoster() {
   const rimL = PLATE_X - PLATE_W / 2;
   const rimR = PLATE_X + PLATE_W / 2;
   return (
-    <Poster label="Back office / Care inbox">
+    <Poster label="For care / Care inbox">
       <Scene viewBox="0 0 720 405" className={styles.scene}>
         <Rings cx={PLATE_X} cy={PLATE_Y + 10} radii={[120, 170, 228]} />
         {SOURCES.map((source) => {

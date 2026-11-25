@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 /* The three business editions share the Levels, so each card can say where they start. */
 const PRICED_EDITIONS = new Set(["/lending", "/real-estate", "/business"]);
 const levelsFrom = `From ${managedPlans[0].priceDisplay} a month`;
-const ministryFrom = `Plans from ${ministryLevels.levels[0].priceDisplay} a month`;
+const ministryFrom = `From ${ministryLevels.levels[0].priceDisplay} a month`;
 
 /* Where each edition card says it starts. Enterprise has no list price: it is scoped on a call. */
 function startsAt(href: string) {
@@ -27,8 +27,9 @@ function startsAt(href: string) {
   return "Scoped on a call";
 }
 
-/* Three across, then two: every card the same width as its row. */
-const CARD_SPANS = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3"] as const;
+/* Three across, then Enterprise under the first column and Ministry across the other two, so every
+   card edge lines up with the columns above it. */
+const CARD_SPANS = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-4"] as const;
 
 /** The line that closes every edition card: where it starts, then where the card goes, stacked the same on every card. */
 function EditionFooter({ price, action }: { price: string; action: string }) {

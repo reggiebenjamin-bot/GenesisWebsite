@@ -657,7 +657,7 @@ const categories: readonly BusinessCategory[] = [
       `Calls that come in ${n.busy} or after hours may reach no one, and a caller who reaches no one usually calls the next business.`,
     fit: {
       business: { text: "Genesis Business starts with calls answered.", level: "01" },
-      lending: { text: "Genesis Lending starts with an instant first reply to every borrower inquiry.", level: "01" },
+      lending: { text: "Every borrower inquiry gets an instant first reply, so a borrower who could not reach you still hears back right away.", level: "01" },
       real_estate: { text: "Genesis Real Estate Pros starts with same day lead response.", level: "01" },
     },
     weight: (a) =>
@@ -674,7 +674,7 @@ const categories: readonly BusinessCategory[] = [
     body: (n) => `Next steps with ${n.customers} still depend on someone noticing, remembering or starting them by hand.`,
     fit: {
       business: { text: "Quotes followed up and appointments confirmed.", level: "01" },
-      lending: { text: "Document follow up, and from Level 03 AI follow up that keeps every borrower conversation moving.", level: "02" },
+      lending: { text: "Document follow up comes with Level 02, and AI follow up that keeps every borrower conversation moving comes with Level 03.", level: "02" },
       real_estate: { text: "A guided first touch and follow up for every lead.", level: "01" },
     },
     weight: (a) =>
@@ -873,7 +873,7 @@ export function planLabelBeside(plan: MinistryPlanId, suggested: MinistryPlanId 
 const LINKED_TOOLS = ["Planning Center", "Breeze", "Church Community Builder", "Subsplash", "Pushpay", "Tithe.ly", "Realm", "Rock RMS"];
 
 const GUEST_PIPELINE_LINE =
-  "Every guest who fills in a card, a form or a chat with Hope lands in one guest pipeline, so nobody chases them across inboxes.";
+  "Every guest who fills in a card, a form or a chat with Hope lands in one list of new guests, so nobody chases them across inboxes.";
 const TOOLS_FIT_DEFAULT = `${GUEST_PIPELINE_LINE} Genesis Ministry links to the tools you already use for giving, check in or your app, rather than syncing with them: your website and Hope send people there.`;
 
 /**
@@ -893,7 +893,7 @@ const churchCategories: readonly (ChurchFinding & { weight: (answers: Answers) =
     title: "Guests can wait too long to hear from you",
     plan: "shepherd",
     body: "First time guests may not hear from anyone in time, because follow up depends on someone noticing and remembering.",
-    fit: "Every guest lands in one guest pipeline, and the Today view shows your team who to welcome next.",
+    fit: "Every new guest lands in one list, and the Today view shows your team who to welcome next.",
     review: "Guests and follow up",
     weight: (a) =>
       signals(
@@ -1031,7 +1031,7 @@ export function suggestedMinistryPlan(answers: Answers, findings: readonly Churc
   const wantsCareView = many(answers, "church_pain_points").includes("Knowing who needs care next");
   const reason =
     id === "shepherd"
-      ? "The guest pipeline, the care inbox and drafts that wait for approval all start with Shepherd."
+      ? "The list of every new guest, the care inbox and drafts that wait for approval all start with Shepherd."
       : "The website and Hope are in every plan, so Care is a good place to start.";
   const later =
     id !== "plus" && largerStaff && wantsCareView

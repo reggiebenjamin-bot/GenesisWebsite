@@ -197,7 +197,7 @@ test("church findings use church words, stay at three, and name only what Minist
     ...ministryFaq.items.map((item) => item.answer),
   ].join(" ");
   const named: Record<string, RegExp> = {
-    "guest-follow-up": /Guest pipeline|Today view/,
+    "guest-follow-up": /list of every new guest|Today view/,
     "care-scattered": /Care inbox/i,
     "first-impression": /Hope/,
     "few-hands": /drafts that wait for approval/,

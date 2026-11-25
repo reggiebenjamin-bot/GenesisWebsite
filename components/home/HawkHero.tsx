@@ -81,7 +81,7 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
       </p>
       {/* The page's one H1 is the headline a visitor sees, with the plain line under it saying
           who Genesis is for and what it does. */}
-      <h1 className={cn("mt-5 text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance", styles.title)}>
+      <h1 className={cn("mt-5 font-light text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance", styles.title)}>
         {hero.title} <span className="text-gold-light">{hero.accent}</span>
       </h1>
       {/* One plain line under the headline, then the buttons: who Genesis is for and what it does. */}
@@ -95,7 +95,7 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
 
       <p className={cn("mt-4 text-[0.88rem] text-ivory/66", styles.reassure)}>{heroReassurance}</p>
 
-      {/* One tap to the page built for you: every edition, churches included, in one quiet row. */}
+      {/* One tap to the page built for you: every edition, churches included, in one quiet row, all four styled alike. */}
       <nav aria-label="Built for" className={cn("mt-3", styles.builtFor)}>
         <span className={styles.builtForLabel}>Built for</span>
         <TrackClick event="edition_link_clicked" from="hero" selector="a[data-edition]">
@@ -107,7 +107,7 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
                     href={edition.href}
                     data-edition={edition.href === ministryCue.href ? undefined : edition.href.slice(1)}
                     data-track-edition={edition.href.slice(1)}
-                    className={cn(styles.builtForLink, edition.href === ministryCue.href && styles.builtForChurch)}
+                    className={styles.builtForLink}
                   >
                     {edition.label}
                   </Link>

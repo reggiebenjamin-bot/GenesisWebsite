@@ -88,7 +88,7 @@ export function Footer() {
     <footer className="border-t border-line-dark bg-ink pt-20 pb-6 text-ivory">
       <TrackClick event="assessment_link_clicked" from="footer" selector="a[href^='/assessment']">
         {/* Two columns on a phone, so the footer is a few screens shorter. */}
-        <div className="shell grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-9 pb-[56px] sm:grid-cols-3 lg:grid-cols-[1.5fr_repeat(5,1fr)]">
+        <div className="shell grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-9 pb-[56px] sm:grid-cols-3 lg:grid-cols-[1.9fr_repeat(5,1fr)]">
           <div className="max-lg:col-span-full">
             {/* The G alone, as in the header. */}
             <Logo light wordmark={false} priority={false} />
