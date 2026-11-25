@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>/* viewport-fit=cover: on a phone held sideways the page keeps clear of the notch and the rounded corners. */@media (orientation:landscape) and (max-height:500px){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}</style>
 <title>Goldenrod Commons Church | Des Moines, IA | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Goldenrod Commons Church, a made-up neighborhood church in Des Moines, Iowa, shown in the Genesis Ministry Warm Community look. Sundays at 9:00 and 10:45 AM.">
@@ -151,6 +152,8 @@ header.site.scrolled{box-shadow:0 1px 0 var(--line),0 14px 30px -26px rgba(58,38
 .msheet{position:fixed;inset:0;z-index:90;background:var(--porch);display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;
   opacity:0;visibility:hidden;transform:translateY(16px);transition:opacity .25s ease,transform .45s var(--spring),visibility 0s linear .45s}
 .msheet.open{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+/* A second way to close the phone menu, at its foot, within thumb reach. */
+.mclose-foot{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:10px;padding:0;border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.mclose-foot:focus-visible{outline:3px solid currentColor;outline-offset:2px;border-radius:6px}
 .msheet-top{display:flex;align-items:center;justify-content:space-between;height:72px;padding:0 16px;border-bottom:1px solid var(--line);flex:none}
 .msheet-top .brand .mark{width:40px;height:40px}
 .msheet-top .wm-1{font-size:24px}
@@ -790,6 +793,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">&rarr;</span></a>
     <p class="times"><b>Sundays 9:00 &amp; 10:45 AM</b><a href="https://maps.google.com/?q=Beaverdale+Des+Moines+IA" target="_blank" rel="noopener">3120 Wrenfield Ave, Des Moines</a></p>
     <p class="quiet"><span class="fake-tel">(515) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
+    <button type="button" class="mclose-foot" data-menu-close>Close Menu</button>
   </div>
 </div>
 
@@ -1275,6 +1279,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   });
   function closeMenu() { burger.setAttribute("aria-expanded", "false"); closeLayer(sheet, "locked"); document.body.classList.remove("menu-open"); }
   $(".mclose").addEventListener("click", closeMenu);
+  $$("[data-menu-close]", sheet).forEach(function (b) { b.addEventListener("click", function () { closeMenu(); burger.focus(); }); });
   $$("a", sheet).forEach(function (a) { a.addEventListener("click", closeMenu); });
   sheet.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); trap(sheet, e); });
 

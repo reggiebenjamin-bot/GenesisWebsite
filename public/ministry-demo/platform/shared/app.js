@@ -28,6 +28,15 @@
 
   var D = window.GM_DATA;
   var GM = window.GM = window.GM || {};
+  /* Reports a demo event to the page's tag manager or gtag, if one is loaded, and does nothing
+     otherwise (the analytics provider is the owner's choice). Never breaks the page. */
+  GM.track = function (event, props) {
+    try {
+      var p = {}; for (var k in (props || {})) p[k] = props[k];
+      if (Array.isArray(window.dataLayer)) { var row = { event: event }; for (var j in p) row[j] = p[j]; window.dataLayer.push(row); }
+      if (typeof window.gtag === "function") window.gtag("event", event, p);
+    } catch (e) {}
+  };
   var body = document.body;
   var html = document.documentElement;
   GM.assistant = ASSISTANT;
@@ -788,7 +797,9 @@
       '<nav class="v2-nav">' + nav + "</nav>" +
       '<div class="v2-sidebar-foot">' + planSwitch +
       '<button class="v2-account" id="v2-account" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="v2-account-menu" data-tour="shell.switcher" aria-label="' + esc(accountName) + '" title="' + esc(accountName) + '">' + tenantAvatar(side) + '<span class="v2-account-copy">' + accountCopy + "</span>" + vIcon("chevron") + "</button>" +
-      '<div class="v2-account-menu" id="v2-account-menu" role="menu" aria-label="' + (side === "church" ? "Church workspace and plan" : "Workspaces") + '" hidden>' + accountItems(side, "sidebar") + "</div></div></aside>";
+      '<div class="v2-account-menu" id="v2-account-menu" role="menu" aria-label="' + (side === "church" ? "Church workspace and plan" : "Workspaces") + '" hidden>' + accountItems(side, "sidebar") + "</div></div>" +
+      /* On phones a second Close Menu at the foot of the sheet, within thumb reach. */
+      '<button class="gm-sheet-close-foot" type="button" data-gm-action="close-nav">Close Menu</button></aside>';
 
     var tenantLink = side === "church"
       ? '<a href="' + esc(cfg.home) + '" data-route="home"><span class="gm-tenant-mark">' + GM.church.mark + '</span><span class="gm-tenant-name">' + esc(GM.church.short) + "</span></a>"
@@ -1096,6 +1107,20 @@
     if (open) { var f = document.querySelector("#v2-sidebar .gm-sheet-close") || document.querySelector("#v2-sidebar .v2-nav a,#v2-sidebar a"); if (f) f.focus(); }
     else if (wasOpen && b && (sidebar.contains(document.activeElement) || document.activeElement === body || document.activeElement === scrim)) b.focus({ preventScroll: true });
   }
+  /* A swipe toward the left edge closes the open menu sheet, as a phone's own sheets do. */
+  (function () {
+    var x0 = null, y0 = 0;
+    document.addEventListener("touchstart", function (e) {
+      if (!body.classList.contains("v2-nav-open") || !e.target.closest || !e.target.closest("#v2-sidebar")) { x0 = null; return; }
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener("touchend", function (e) {
+      if (x0 == null) return;
+      var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+      x0 = null;
+      if (dx < -60 && Math.abs(dy) < 50) setNav(false);
+    }, { passive: true });
+  })();
   /* On load and on resize: the closed sheet stays out of the tab order on phones, and in it on wider screens. */
   function syncSheet() {
     var sidebar = document.getElementById("v2-sidebar");
@@ -1538,7 +1563,7 @@
       '.gm-dock-more{align-self:flex-start;min-height:32px;padding:4px 2px;border:0;background:none;color:#f2d895;font:600 12.5px/1.2 inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}' +
       '.gm-dock-qs-more{display:flex;flex-direction:column;gap:6px}.gm-dock-qs-more[hidden]{display:none}' +
       '.gm-dock-qs-h{margin:4px 0 0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#a4977f;font-weight:700}' +
-      '.gm-dock-demo{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#b9b0a1}.gm-dock-help{margin:0;padding:7px 10px;border-radius:8px;background:rgba(242,216,149,.08);font-size:13px;line-height:1.45;color:#f4efe8}.gm-dock-help b{font-weight:700}.gm-dock-help a{position:relative;color:#f2d895;font-weight:700}.gm-dock-help a::after{content:"";position:absolute;inset:-14px -12px}' +
+      '.gm-dock-demo{margin:2px 0 0;font-size:11.5px;line-height:1.45;color:#b9b0a1}.gm-dock-help{margin:0;padding:7px 10px;border-radius:8px;background:rgba(242,216,149,.08);font-size:13px;line-height:1.45;color:#f4efe8}.gm-dock-help b{font-weight:700}.gm-dock-help a{position:relative;z-index:1;color:#f2d895;font-weight:700}.gm-dock-help a::after{content:"";position:absolute;top:-14px;bottom:-14px;left:-16px;right:-10px}.gm-dock-help a[href="tel:988"]::after{left:-10px;right:-13px}.gm-dock-help a[href^="sms:"]::after{left:-4px;right:-6px}' +
       '@media (pointer:coarse){.gm-dock-q,.gm-dock-more{min-height:44px}}@media (max-height:500px){.gm-dock-demo{display:none}.gm-dock-qs-list{max-height:24vh}}' +
       '@media (pointer:coarse){.gm-dock-link{min-height:44px}}.gm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}' +
       /* Short windows (200 percent zoom, a phone on its side): the welcome keeps the line and the gold chip
@@ -1773,7 +1798,7 @@
       (more ? '<button type="button" class="gm-dock-more" data-dock="more" aria-expanded="false" aria-controls="gm-dock-qs-more">More Questions (' + moreCount + ')</button><div class="gm-dock-qs-more" id="gm-dock-qs-more" hidden>' + more + "</div>" : "") +
       "</div>" +
       '<p class="gm-dock-demo">Demo: ' + N + " answers sample questions only." + (care ? " On the Care plan, " + N + " works on your church's website. The workspace " + N + " comes with the Shepherd plan." : "") + "</p>" +
-      '<p class="gm-dock-help"><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.</p></div>';
+      '<p class="gm-dock-help"><b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or <a href="tel:988">call</a> or <a href="sms:988">text 988</a>.</p></div>';
   }
   function resetDock() {
     if (!dock) return;

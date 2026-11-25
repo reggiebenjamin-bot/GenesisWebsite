@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>/* viewport-fit=cover: on a phone held sideways the page keeps clear of the notch and the rounded corners. */@media (orientation:landscape) and (max-height:500px){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}</style>
 <title>Lampstand Church | Columbus, OH | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Lampstand Church, a made-up worship-led church in the Short North, Columbus, Ohio, shown in the Genesis Ministry Bold and Dark look. Sundays at 10 AM and 6 PM.">
@@ -169,6 +170,8 @@ a.tlink::after{content:none}
 .mquiet{display:flex;gap:18px;margin:14px 0 0}
 .mquiet a,.mquiet button{display:inline-flex;align-items:center;min-height:44px;background:none;border:0;padding:0;color:var(--bone);font-weight:600;text-decoration:underline;text-decoration-color:var(--flare);text-underline-offset:5px;text-decoration-thickness:2px;cursor:pointer}
 body.menu-open{overflow:hidden}
+/* A second way to close the phone menu, at its foot, within thumb reach. */
+.mclose-foot{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:10px;padding:0;border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.mclose-foot:focus-visible{outline:3px solid currentColor;outline-offset:2px;border-radius:6px}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;min-height:min(calc(100svh - var(--hh) - var(--pv)),960px);display:flex;align-items:flex-end;overflow:hidden;isolation:isolate;background:#1b120a}
@@ -807,6 +810,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit <span class="arw" aria-hidden="true">→</span></a>
     <p class="mtimes"><b>Sundays 10 AM &amp; 6 PM</b>1180 Foundry Row, Columbus, Ohio</p>
     <p class="mquiet"><span class="fake-tel">(614) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
+    <button type="button" class="mclose-foot" data-menu-close>Close Menu</button>
   </div>
 </div>
 
@@ -1308,6 +1312,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   };
   burger.addEventListener('click', function () { setMenu(!mmenu.classList.contains('open')); });
   mmenu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+  mmenu.querySelectorAll('[data-menu-close]').forEach(function (b) { b.addEventListener('click', function () { setMenu(false); burger.focus(); }); });
   doc.addEventListener('keydown', function (e) {
     if (!mmenu.classList.contains('open')) return;
     if (e.key === 'Escape') { setMenu(false); burger.focus(); return; }

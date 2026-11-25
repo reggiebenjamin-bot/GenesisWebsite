@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>/* viewport-fit=cover: on a phone held sideways the page keeps clear of the notch and the rounded corners. */@media (orientation:landscape) and (max-height:500px){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}</style>
 <title>Lightwell Church | Raleigh, NC | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Lightwell Church, a made-up young church in downtown Raleigh, North Carolina, shown in the Genesis Ministry Bright and Modern look. Sundays at 9:00 and 10:45 AM.">
@@ -39,6 +40,8 @@ html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--hdr) + 16px)}
 html,body{overflow-x:clip}
 body{margin:0;background:var(--white);color:var(--ink);font:400 17px/1.6 var(--body);font-variant-numeric:lining-nums;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body.menu-open{overflow:hidden}
+/* A second way to close the phone menu, at its foot, within thumb reach. */
+.mclose-foot{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:10px;padding:0;border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.mclose-foot:focus-visible{outline:3px solid currentColor;outline-offset:2px;border-radius:6px}
 img{display:block;max-width:100%;height:auto}
 a{color:inherit}
 button,input{font:inherit;color:inherit}
@@ -352,8 +355,8 @@ a.step:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .f-social a:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5);text-decoration:none}
 .f-social svg{width:19px;height:19px}
 .f-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;margin-top:72px;padding-block:24px;border-top:1px solid rgba(255,255,255,.14);font-size:14px;color:var(--mist)}
-.f-bottom a{position:relative;color:var(--mist);text-decoration:none}
-.f-bottom a::before{content:"";position:absolute;inset:-13px -6px}
+.f-bottom a{position:relative;display:inline-flex;align-items:center;min-height:44px;color:var(--mist);text-decoration:none}
+.f-bottom a::before{content:"";position:absolute;inset:0 -6px}
 .f-bottom a:hover{color:#fff}
 .f-bottom .sep{margin-inline:8px;opacity:.6}
 .f-word{display:block;font:800 clamp(80px,21.5vw,330px)/.78 var(--display);letter-spacing:-.065em;color:var(--ink-2);white-space:nowrap;user-select:none;margin:6px 0 -.08em -.04em}
@@ -700,6 +703,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <a class="btn btn-primary" href="#plan-a-visit">Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 10:45 AM</b><span>1218 Brightwater Ave, Raleigh</span></p>
     <p class="mquiet"><span class="fake-tel">(919) 555-0142</span><button type="button" data-open-chat>Ask a Question</button></p>
+    <button type="button" class="mclose-foot" data-menu-close>Close Menu</button>
   </div>
 </div>
 
@@ -1147,7 +1151,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     updateBar();
   };
   hb.addEventListener("click", () => setMenu(!menuOpen));
-  mm.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
+  mm.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); else if (e.target.closest("[data-menu-close]")) { setMenu(false); hb.focus(); } });
   /* Tab and Shift+Tab wrap around the header and the open sheet */
   document.addEventListener("keydown", (e) => {
     if (!menuOpen || e.key !== "Tab") return;

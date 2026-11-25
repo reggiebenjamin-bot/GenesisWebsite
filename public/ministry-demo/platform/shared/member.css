@@ -54,7 +54,9 @@
 .m-muted{color:var(--m-muted)}
 .m-small{font-size:14px}
 /* 911 and 988: a 44px tap area around each number, without moving the words. */
-a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
+a[href="tel:911"],a[href="tel:988"],a[href="sms:988"]{position:relative;z-index:1}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -13px}a[href="sms:988"]::after{content:"";position:absolute;inset:-14px -2px}
+/* viewport-fit=cover: a phone held sideways keeps the member screen clear of the notch. */
+@media (orientation:landscape) and (max-height:500px){#gm-main,.m-stagebar,.m-tabbar{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}}
 .m-link{color:var(--m-accent-ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .m-section{margin-top:26px}
 .m-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}

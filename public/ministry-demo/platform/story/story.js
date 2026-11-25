@@ -18,7 +18,7 @@
     { slug: "warm-community", name: "Goldenrod Commons Church", short: "Goldenrod Commons", city: "Des Moines", state: "IA", look: "Warm Community", leadPastor: "Pastor Marcus" }
   ];
   var CHURCHES = (D.churches && D.churches.length) ? D.churches : FALLBACK;
-  var DEFAULT_CHURCH = D.defaultChurch || "bright-modern";
+  var DEFAULT_CHURCH = D.defaultChurch || "bold-dark";
   var DEFAULT_PLAN = D.defaultPlan || 3;
 
   var params = new URLSearchParams(location.search);

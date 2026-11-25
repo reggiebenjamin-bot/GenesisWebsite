@@ -202,8 +202,11 @@
        tap area without moving the words. */
     ".hd-help{font-size:13px;line-height:1.45;text-align:center;margin:0;padding:8px 16px;background:var(--hd-surface2)}",
     ".hd-help b{font-weight:700}",
-    ".hd-help a{position:relative;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
-    ".hd-help a::after{content:\"\";position:absolute;inset:-14px -14px}",
+    ".hd-help a{position:relative;z-index:1;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px}",
+    /* Each of the three links is a 44 by 44 tap (911, call, text 988), set by its own reach so the
+       three never overlap, and the line keeps its fixed words and its height. */
+    ".hd-help a::after{content:\"\";position:absolute;top:-14px;bottom:-14px;left:-16px;right:-10px}",
+    ".hd-help a[href=\"tel:988\"]::after{left:-10px;right:-13px}.hd-help a[href^=\"sms:\"]::after{left:-4px;right:-6px}",
     ".hd-help a:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px;border-radius:3px}",
     "@keyframes hdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}",
     "@keyframes hdDot{0%,80%,100%{opacity:.25;transform:none}40%{opacity:.9;transform:translateY(-3px)}}",
@@ -214,6 +217,10 @@
        Next, End Tour) stays in view at its bottom edge. */
     ".hd-card{position:fixed;z-index:2147482999;width:min(380px,calc(100vw - 32px));max-height:calc(100dvh - 60px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;overscroll-behavior:contain;background:var(--hd-surface);color:var(--hd-ink);border-radius:var(--hd-radius);padding:20px 20px 16px;font:15px/1.55 var(--hd-font);box-shadow:0 30px 70px -20px rgba(0,0,0,.55);opacity:0;transform:translateY(10px);transition:opacity .3s ease,transform .35s cubic-bezier(.2,.7,.2,1),top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1)}",
     ".hd-card.on{opacity:1;transform:none}",
+    /* The Genesis guide's look for a member screen's tour card (guideStyle: "genesis"), from the host's v2 tokens. */
+    ".hd-card.hd-card-g{padding:14px 16px 12px;border:1px solid rgba(217,183,123,.26);border-radius:14px;background:radial-gradient(ellipse at 88% 0%,rgba(69,102,87,.22),transparent 62%),#111f25;color:var(--v2-text,#f4efe8);font:14px/1.5 var(--v2-font,system-ui,sans-serif);box-shadow:0 18px 44px rgba(9,19,23,.3)}",
+    ".hd-card.hd-card-g p{margin:6px 0 0}.hd-card.hd-card-g .v2-guide-foot .v2-button{min-height:44px}.hd-card.hd-card-g .v2-guide-close{width:44px;height:44px;margin:-10px -12px -10px 0}",
+    ".hd-card.hd-card-g .v2-guide-controls{display:grid;margin-top:12px}.hd-card.hd-card-g .hd-g-next{justify-content:center;min-height:44px}",
     ".hd-card .k{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hd-accent-text);margin:0 0 6px}",
     ".hd-card h3{font:700 19px/1.25 var(--hd-font);margin:0 0 8px}",
     ".hd-card p{margin:0 0 14px}",
@@ -348,7 +355,7 @@
        the demo note and the 911 and 988 line. */
     var foot = el("div", "hd-foot");
     var help = el("p", "hd-help");
-    help.innerHTML = '<b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or call or text <a href="tel:988">988</a>.';
+    help.innerHTML = '<b>In danger or crisis?</b> Call <a href="tel:911">911</a>, or <a href="tel:988">call</a> or <a href="sms:988">text 988</a>.';
     var footRow = el("div", "hd-foot-row");
     var note = el("p", "hd-note", DEMO_NOTE);
     /* All Questions brings the one question list to the end of the chat (never a second copy). */
@@ -1589,6 +1596,7 @@
 
   function show(i) {
     idx = i;
+    if (typeof CFG.onStep === "function") try { CFG.onStep(i, STEPS.length); } catch (e) {}
     if (STEPS[i] && typeof STEPS[i].before === "function") { try { STEPS[i].before(); } catch (e) {} }
     var root = document.documentElement;
     if (GENESIS) root.classList.add("hd-step-orb"); // the orb is findable while the step's target is picked
@@ -1617,7 +1625,34 @@
       }
     }, REDUCE ? 60 : 520);
   }
+  /* The member screens' tour card in the Genesis guide's own shape: the same eyebrow, close, count,
+     Back and Next as on the staff screens, so the guided demo reads as one walkthrough. */
+  function paintSiteGenesis(s, i, last, nh) {
+    card.classList.remove("on");
+    card.classList.add("hd-card-g");
+    var title = CFG.tourTitle || "";
+    card.innerHTML = guideHead(false, "End Tour") +
+      '<h2 class="v2-guide-title"></h2><p class="v2-guide-say" id="hd-say"></p>' + (s.note ? '<p class="v2-guide-note"></p>' : "") +
+      '<div class="v2-guide-foot"><span class="v2-guide-count"></span>' +
+      (i > 0 ? '<button class="v2-button v2-button-quiet" type="button" data-guide="back">Back</button>' : "") +
+      '<button class="v2-button' + (last && nh ? "" : " v2-button-primary") + ' v2-guide-next" type="button" data-guide="next"' + (last && nh ? "" : " data-hd-focus") + ">" + (last ? "Finish" : "Next") + "</button></div>" +
+      (last && nh ? '<div class="v2-guide-controls"><a class="v2-button v2-button-primary hd-g-next" data-hd-focus></a></div>' : "");
+    card.setAttribute("aria-describedby", "hd-say");
+    card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + (title ? " · " + title : "");
+    card.querySelector(".v2-guide-title").textContent = s.h;
+    card.querySelector(".v2-guide-say").textContent = s.p;
+    if (s.note) card.querySelector(".v2-guide-note").textContent = s.note;
+    card.querySelector(".v2-guide-count").textContent = "Tip " + (i + 1) + " of " + STEPS.length;
+    if (last && nh) { var a = card.querySelector(".hd-g-next"); a.href = nh; a.textContent = NEXT.label || "Continue the Demo"; a.insertAdjacentHTML("beforeend", ICON_ARROW); }
+    announce("Step " + (i + 1) + " of " + STEPS.length + ". " + s.h + ". " + s.p + (s.note ? " " + s.note : ""));
+    card.onclick = function (e) {
+      var b = e.target.closest("[data-guide]"); if (!b) return;
+      var act = b.getAttribute("data-guide");
+      if (act === "next") next(); else if (act === "back") back(); else if (act === "exit") endTour(false);
+    };
+  }
   function paintSite(s, i, last, nh) {
+    if (CFG.guideStyle === "genesis") { paintSiteGenesis(s, i, last, nh); return; }
     card.classList.remove("on");
     card.innerHTML = "";
     var kk = s.k || (CFG.tourTitle ? GUIDE + " · " + CFG.tourTitle : GUIDE);

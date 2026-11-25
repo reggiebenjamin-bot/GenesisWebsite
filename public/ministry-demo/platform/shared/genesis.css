@@ -161,7 +161,9 @@ html:not(.gm-booted) #v2-main,html:not(.gm-booted) #gm-main{visibility:hidden}
 .gm-strip-talk:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:4px}
 @media (max-width:520px){.gm-strip-long{display:none}}
 /* A phone on its side keeps the strip at 28px: Book a Call stays in Hope's answers there. */
-@media (max-height:500px){.gm-strip-talk{display:none}}
+/* A phone on its side keeps the strip at 28px, and Book a Call with it: the long words step aside, and the
+   link reaches 44px tall through its own hit area (the strip itself stays slim). */
+@media (max-height:500px){.gm-strip-long{display:none}.gm-strip-talk{position:relative;min-height:28px}.gm-strip-talk::after{content:"";position:absolute;inset:-8px -6px}}
 /* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
    page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
 .v2-fixture-badge.gm-preview-strip{background:linear-gradient(rgba(232,149,90,.12),rgba(232,149,90,.12)),var(--v2-bg,#0d0e10)}
@@ -257,6 +259,8 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-draft-body{margin-top:10px;padding:12px 14px;border:1px solid var(--v2-hairline,var(--v2-border));border-radius:10px;background:var(--v2-surface);color:var(--v2-text);font-size:13.5px;line-height:1.6;white-space:pre-line}
 .gm-draft-body[contenteditable="true"]{border-color:var(--v2-focus);box-shadow:0 0 0 1px var(--v2-focus);outline:none}
 .gm-draft-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+/* Edit and Not Now are a matched pair beside Approve and Send at every width. */
+.gm-draft-actions>:not([data-gm-action="approve-draft"]){min-width:104px;justify-content:center}
 .gm-draft-note{margin:10px 0 0;color:var(--v2-fine,var(--v2-muted));font-size:11.5px;line-height:1.6}
 /* On phones the approval promise is 12.5px, never smaller. */
 @media (max-width:640px){.gm-draft-note{font-size:12.5px}}
@@ -383,7 +387,7 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-link{color:var(--v2-text);text-decoration:underline;text-decoration-color:var(--v2-accent-border);text-underline-offset:3px;font-weight:600}
 .gm-link:hover{text-decoration-color:var(--v2-accent)}
 /* An inline link keeps its small look, with a 44px tall hit area around it. */
-.gm-link{position:relative}.gm-link::after{content:"";position:absolute;inset:-14px -4px}
+.gm-link{position:relative}.gm-link::after{content:"";position:absolute;inset:-15px -6px}
 .gm-prose{color:var(--v2-text-2);line-height:1.6}
 .gm-prose p+p{margin-top:10px}
 .gm-spacer{flex:1}
@@ -903,6 +907,26 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 
 /* The phone menu sheet's own Close Menu control, top right of the sheet. */
 .gm-sheet-close{display:none}
+.gm-sheet-close-foot{display:none}
+@media (max-width:860px){
+  .v2-sidebar>.gm-sheet-close-foot{display:flex;align-items:center;justify-content:center;width:calc(100% - 24px);min-height:44px;margin:4px 12px calc(12px + env(safe-area-inset-bottom,0px));padding:0;border:0;background:none;color:var(--v2-text-2,inherit);font:600 15px/1.2 inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+  .v2-sidebar>.gm-sheet-close-foot:focus-visible{outline:2px solid var(--v2-accent,#d9b77b);outline-offset:2px;border-radius:6px}
+}
+/* viewport-fit=cover: on a phone held sideways, the work area, the top bar, the strip and the menu keep
+   clear of the notch and the rounded corners. */
+@media (orientation:landscape) and (max-height:500px){
+  .v2-fixture-badge{padding-left:max(11px,env(safe-area-inset-left));padding-right:max(11px,env(safe-area-inset-right))}
+  .v2-main{padding-right:max(12px,env(safe-area-inset-right))}
+  .v2-sidebar{padding-left:env(safe-area-inset-left)}
+  .v2-genesis-opener{right:max(16px,env(safe-area-inset-right))!important}
+}
+@media (orientation:landscape) and (max-height:500px) and (max-width:860px){
+  .v2-main{padding-left:max(12px,env(safe-area-inset-left))}
+  .v2-mobile-top{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+}
+@media (orientation:landscape) and (max-height:500px) and (min-width:861px){
+  .v2-main{padding-right:max(20px,env(safe-area-inset-right))}
+}
 @media (max-width:860px){
   .v2-sidebar>.gm-sheet-close{display:inline-grid;place-items:center;position:absolute;top:8px;right:8px;z-index:2;width:44px;height:44px;min-width:44px;padding:0}
 }
@@ -918,6 +942,10 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 .v2-guide.gm-close-card{z-index:2147483001}
 /* Four ways on (See the Levels, Book a Call, How to Get Started, Back to the Overview) keep to one row. */
 @media (min-width:861px){.v2-guide.gm-close-card{width:min(588px,calc(100vw - 32px))}}
+/* Its four ways on are two even pairs: Book a Call (gold) beside See the Plans, then How to Get Started
+   beside Back to the Overview, each 44px tall and the same width. */
+.gm-close-card .v2-guide-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.gm-close-card .v2-guide-controls>.v2-button{width:100%;min-height:44px;margin:0;justify-content:center;text-align:center}
 .gm-close-card .v2-guide-head .v2-guide-count{margin-left:auto;margin-right:0}
 .gm-close-card .v2-guide-close{margin-left:8px}
 @media (max-width:860px),(pointer:coarse){
@@ -965,7 +993,7 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 #ws-kit:focus{outline:none}
 
 /* 911 and 988: a 44px tap area around each number, without moving the words. */
-a[href="tel:911"],a[href="tel:988"]{position:relative}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -12px}
+a[href="tel:911"],a[href="tel:988"],a[href="sms:988"]{position:relative;z-index:1}a[href="tel:911"]::after,a[href="tel:988"]::after{content:"";position:absolute;inset:-14px -13px}a[href="sms:988"]::after{content:"";position:absolute;inset:-14px -2px}
 
 /* ==========================================================================
    Sermon notes review (November 24): small type, even pairs, and a phone on its side.

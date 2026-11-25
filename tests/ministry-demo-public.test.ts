@@ -211,7 +211,7 @@ test("growthDeskRefs also finds the words of the Growth Desk's work, outside the
 });
 
 test("siteRefs lists links to the rest of geai.us, and only the consultation, by its path, is allowed", () => {
-  assert.deepEqual(SITE_LINKS, ["/contact?topic=ministry-demo"]);
+  assert.deepEqual(SITE_LINKS, ["/contact?topic=ministry-demo", "/ministry"]);
   const page = '<a href="/contact?topic=ministry-demo">Talk</a><a href="/pricing">Pricing</a><a href="//cdn.x/y.js">CDN</a><a href="index.html">Hub</a>';
   assert.deepEqual(siteRefs("platform/index.html", page), ["/contact?topic=ministry-demo", "/pricing"]);
   assert.deepEqual(

@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Sunday's Notes · Genesis Ministry · Design preview</title>
@@ -37,6 +37,8 @@
   .ne-outline li::marker{color:var(--v2-muted);font-size:13px}
   .ne-outline li[hidden]{display:none}
   .ne-more-lines{justify-self:start;margin:0}
+  /* On a phone Play the Sample Memo runs the full width, like the four source buttons above it. */
+  @media (max-width:640px){.ne-more-lines[data-ne-memo]{justify-self:stretch;width:100%;justify-content:center}}
   .ne-chip{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--v2-border);border-radius:12px;background:var(--v2-surface);font-size:14px}
   .ne-chip b{display:block}
   .ne-chip small{color:var(--v2-muted)}
@@ -123,6 +125,8 @@
   /* Wide screens: the bar ends 64px above the window's foot and is 72px tall, so the round Hope button
      sits 16px above the bar instead of on the right end of Shape My Notes. */
   @media (min-width:861px) and (min-height:501px){body.ne-bar-on .v2-genesis-opener{bottom:152px!important}}
+  /* Wide screens: the page keeps a 64px gutter on the right for that round button, so it never sits on a card's edge. */
+  @media (min-width:861px) and (min-height:501px){body.ne-bar-on .ne-page{padding-right:64px}}
   /* Start Over is a quiet link that asks first, never an equal twin of Publish. */
   .ne-restart-row{display:grid;gap:10px}
   .ne-restart-row>.v2-button{justify-self:start;margin:0;min-height:44px}

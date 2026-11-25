@@ -733,7 +733,7 @@
      the next plans add instead. */
   /* Which plan this demo shows, with its price, in one sentence. */
   function planShown() {
-    return GM.plan === 3 ? "You are seeing the Plus plan, $499 a month. Shepherd, $299 a month, covers Today through the Care Inbox and the member app."
+    return GM.plan === 3 ? "You are seeing the Plus plan, $499 a month. Shepherd, $299 a month, includes Today, the guest list, the care inbox and the member app."
       : GM.plan === 2 ? "You are seeing the Shepherd plan, $299 a month. Plus, $499 a month, adds person pages, the gifts picture and reports."
       : "You are seeing the Care plan, $149 a month.";
   }
@@ -937,7 +937,7 @@
       return { title: "Guests", done: "That is the front office. Every first-time guest has an owner, a next step and a date, and the guests who go quiet are caught, not lost.", steps: [
         { sel: VIEWS_SEL, h: "One pipeline, six ways to look", p: "Needs You, All Guests, By Stage, Drafts Waiting, Gone Quiet and the Guest Report. The same guests, sorted for the job in front of you.", note: reportNote },
         { sel: T("guests.pulse"), h: "The front office in three numbers", p: "Guests with an open next step, new this week, and follow-ups due." },
-        { sel: T("guests.next"), h: "The guest to welcome first", p: "Owner, next step, due date and why now, with one gold action. Guests come from Plan a Visit, {assistant}, connect cards, events and the newsletter." },
+        { sel: T("guests.next"), h: "The guest to welcome first", p: "Each guest shows who is reaching out, what happens next and by when, with one button for the next step. Guests come from Plan a Visit, {assistant}, connect cards, events and the newsletter." },
         { sel: T("guests.list"), h: "Every guest, with an owner", p: "Source, stage, next step and due date for each guest. By Stage shows the board from New to Serving." },
         { sel: T("guests.safety"), h: "Nobody falls through", p: "Checked every morning: nobody without an owner, nobody without a next step, and two guests who have gone quiet. Hector M. is away this week, so Owner Away moved his guests to Nadia K. until he is back.",
           phone: { sel: [T("guests.away"), T("guests.safety")] } },
@@ -1411,6 +1411,8 @@
     var last = nx && nx.last && ORIGIN === "church";
     return {
       look: c.look,
+      /* The tour card looks like the staff screens' guide, so the five screens read as one demo. */
+      guideStyle: "genesis",
       assistantName: AN,
       /* The guided demo is Genesis's, on every screen; the church's own assistant is the chat. */
       guideName: GUIDE,
@@ -1603,7 +1605,7 @@
     card.innerHTML = '<div class="v2-guide-head"><span class="v2-guide-eyebrow"></span><span class="v2-guide-count">Done</span>' +
       '<button class="v2-guide-icon v2-guide-close" type="button" data-close aria-label="Close" title="Close"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>' +
       '<p class="v2-guide-say" role="status"></p>' + (nx && nx.note ? '<p class="v2-guide-note"></p>' : "") +
-      '<div class="v2-guide-controls"><a class="v2-button v2-button-primary" data-levels></a><a class="v2-button" data-talk></a><a class="v2-button" data-start></a><a class="v2-button v2-button-quiet" data-home></a></div>';
+      '<div class="v2-guide-controls"><a class="v2-button v2-button-primary" data-talk></a><a class="v2-button" data-levels></a><a class="v2-button" data-start></a><a class="v2-button v2-button-quiet" data-home></a></div>';
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + " · The week";
     card.querySelector(".v2-guide-say").textContent = churchClose();
     if (nx && nx.note) card.querySelector(".v2-guide-note").textContent = nx.note;
@@ -1616,7 +1618,8 @@
     card.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); close(); } });
     document.body.appendChild(card);
     /* After the chat has let go of focus. */
-    setTimeout(function () { try { lv.focus({ preventScroll: true }); } catch (e) {} }, 320);
+    /* Book a Call is the gold primary here, as on /ministry, so it takes focus first. */
+    setTimeout(function () { try { tk.focus({ preventScroll: true }); } catch (e) {} }, 320);
   }
 
   /* ------------------------------------------------------------------ Genesis screens: the real guide */
@@ -1687,7 +1690,7 @@
     function demoHref() {
       var slug = null, plan = null;
       try { slug = sessionStorage.getItem("gm.church"); plan = sessionStorage.getItem("gm.plan"); } catch (e) {}
-      slug = slug || (STORY.church && STORY.church.slug) || "bright-modern";
+      slug = slug || (STORY.church && STORY.church.slug) || "bold-dark";
       plan = plan || String(STORY.plan || 3);
       return PRE + "church-today.html?church=" + encodeURIComponent(slug) + "&plan=" + encodeURIComponent(plan) + "&tour=1&pace=short";
     }
@@ -1786,6 +1789,12 @@
     GM.demo.next = nx;
     if (!MEMBER && GM.hope && GM.hope.addAnswers) GM.hope.addAnswers(notesDockAnswers().concat(dockAnswers()), "base");
     window.HOPE_DEMO = MEMBER ? memberConfig(tour, nx) : genesisConfig(tour, nx);
+    /* The demo's own analytics: each tour step, a finished or ended tour (GM.track, app.js). */
+    (function (cfg) {
+      var end0 = cfg.onTourEnd, step0 = cfg.onStep;
+      cfg.onStep = function (i, n) { GM.track("tour_step_viewed", { screen: KEY, tip: i + 1, tips: n }); if (step0) step0(i, n); };
+      cfg.onTourEnd = function (done) { GM.track(done ? "tour_completed" : "tour_ended_early", { screen: KEY }); if (end0) return end0(done); };
+    })(window.HOPE_DEMO);
 
     if (tour && tour.steps && tour.steps.length) {
       if (MEMBER) { var mt = document.querySelector(".mx-tour"); if (mt) mt.hidden = false; }
@@ -1816,8 +1825,15 @@
     markContactLinks();
   }
   /* Book a Call opens the contact page in the same tab, as everywhere else on the site: the demo's
-     place is in its address, so the back button returns to it. Nothing to mark. */
-  function markContactLinks() {}
+     place is in its address, so the back button returns to it. Each press is reported, with where it was. */
+  function markContactLinks() {
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a || a.getAttribute("href") !== CONTACT) return;
+      var from = a.closest(".gm-preview-strip") ? "banner" : a.closest(".gm-close-card, .hd-g, .hd-card") ? "end_card" : "page";
+      GM.track("demo_book_call_clicked", { from: from, screen: KEY });
+    }, true);
+  }
   /* A quiet "Skip to Next Screen" on every card but the last (which already links on),
      so a pastor short on time keeps the chain without clicking through every step. */
   function addSkipLink(nx) {

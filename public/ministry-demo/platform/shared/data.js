@@ -114,7 +114,8 @@
       }
     }
   ];
-  D.defaultChurch = "bright-modern";
+  /* Lampstand, the sample church in the stills on /ministry and the one the guided demo starts as. */
+  D.defaultChurch = "bold-dark";
 
   /* ------------------------------------------------------------------ levels */
   /* The three plans and their prices, as /ministry shows them.
