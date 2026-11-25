@@ -63,7 +63,9 @@ test("from other pages the toggle leads to each path's homepage", () => {
 test("each path opens the homepage with its own title; the belief sits under the Custom Infrastructure headline", () => {
   const title = (path: keyof typeof pathHeroes) =>
     `${pathHeroes[path].title} ${pathHeroes[path].accent}`;
-  assert.equal(title("custom-infrastructure"), genesisPositioning.belief);
+  assert.equal(title("custom-infrastructure"), "AI employees that answer calls and follow up for Texas businesses.");
+  assert.equal(pathHeroes["custom-infrastructure"].subline, genesisPositioning.belief);
+  assert.equal(genesisPositioning.belief, "Your business should get smarter as it grows.");
   assert.equal(pathHeroes["custom-infrastructure"].eyebrow, genesisPositioning.category);
   assert.equal(title("agent"), "Solve a specific business problem with Genesis.");
 });

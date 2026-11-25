@@ -182,9 +182,10 @@ export const pathHeroes: Readonly<
   },
   "custom-infrastructure": {
     eyebrow: genesisPositioning.category,
-    title: "Your business should get smarter",
-    accent: "as it grows.",
-    subline: "AI employees that answer calls, follow up and keep jobs, loans and deals moving for Texas businesses.",
+    /* The homepage H1, set by the owner: title and accent read as one sentence. */
+    title: "AI employees that answer calls and follow up",
+    accent: "for Texas businesses.",
+    subline: genesisPositioning.belief,
     summaryShort: "Genesis connects the systems and workflows behind your business and runs them as managed infrastructure.",
     summary:
       "Genesis maps how work moves through your business, connects the systems, data, communication, and workflows behind it, and builds managed infrastructure so more volume does not automatically mean more manual coordination.",

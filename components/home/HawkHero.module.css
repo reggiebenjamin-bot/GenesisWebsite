@@ -152,8 +152,9 @@
   display: none;
 }
 
-/* On a narrow phone the label sits on its own line, and the five links share the next rows. */
-@media (max-width: 479px) {
+/* Below tablet width the five links do not fit one row with the label, so the label sits on
+   its own line and the links always break three and two, never four and one. */
+@media (max-width: 639px) {
   .builtFor {
     flex-direction: column;
     font-size: 0.9rem;
@@ -167,7 +168,7 @@
     padding-inline: 5px;
   }
 
-  /* Five editions wrap to a second row here, so the dots step aside: a row never starts with one. */
+  /* Two rows, so the dots step aside: a row never starts with one. */
   .builtForList {
     column-gap: 4px;
   }
@@ -176,6 +177,24 @@
     content: none;
   }
 
+  /* The break after the third link: a full width, zero height item ordered between the first
+     three and the last two. The order on screen stays the order in the markup. */
+  .builtForList::after {
+    flex-basis: 100%;
+    order: 2;
+    content: "";
+  }
+
+  .builtForList > li:nth-child(-n + 3) {
+    order: 1;
+  }
+
+  .builtForList > li:nth-child(n + 4) {
+    order: 3;
+  }
+}
+
+@media (max-width: 479px) {
   .eyebrowLong {
     display: none;
   }
@@ -243,7 +262,7 @@
   }
 
   .title {
-    font-size: clamp(1.9rem, 4.6vw, 2.5rem) !important;
+    font-size: clamp(1.6rem, 3.6vw, 2rem) !important;
   }
 
   .subline {

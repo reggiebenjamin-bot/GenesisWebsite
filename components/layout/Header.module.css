@@ -463,8 +463,8 @@
   background: var(--color-ink);
 }
 
-/* The bottom padding is the sticky button's height and then some, so the last
-   row can always scroll clear of it. */
+/* The bottom padding is the pinned buttons' height less a little, plus the fade above them, so
+   the last row can always scroll clear of both. */
 .sheetBody {
   flex: 1;
   padding: 12px 16px 104px;
@@ -652,9 +652,22 @@
   bottom: 0;
   display: grid;
   gap: 4px;
-  padding: 16px;
+  padding: 8px 16px 16px;
   padding-bottom: max(16px, env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgb(8 9 14 / 0), var(--color-ink) 30%);
+  background: var(--color-ink);
+}
+
+/* The list fades out above the pinned buttons, so a row or a group label that is passing
+   under them dims away instead of being cut in half by the button's edge. */
+.sheetFooter::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 40px;
+  background: linear-gradient(180deg, rgb(8 9 14 / 0), var(--color-ink));
+  content: "";
+  pointer-events: none;
 }
 
 .sheetAccountLink {

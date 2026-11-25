@@ -1,13 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { preconnect, preload } from "react-dom";
+import { preload } from "react-dom";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { ConsultationButton } from "@/components/ui/ConsultationButton";
 import { ministryCue } from "@/lib/ministryPage";
 import { type OfferPathId, pathHeroes } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { HawkAscii } from "./HawkAscii";
-import { HAWK_IMAGE_ORIGIN, HAWK_IMAGE_SIZES, HAWK_IMAGE_SRC, HAWK_IMAGE_SRCSET } from "./hawkAsset";
+import { HAWK_IMAGE_SIZES, HAWK_IMAGE_SRC, HAWK_IMAGE_SRCSET } from "./hawkAsset";
 import styles from "./HawkHero.module.css";
 import { hawkFrameStyle } from "./hawkSettings";
 
@@ -31,7 +31,6 @@ const heroReassurance = "Free. Seven short steps. We ask for your email at the e
  * copy, with a scrim under the copy so the text stays readable.
  */
 export function HawkHero() {
-  preconnect(HAWK_IMAGE_ORIGIN, { crossOrigin: "anonymous" });
   /* The hawk, asked for early and once, with the same CORS mode the effect uses. */
   preload(HAWK_IMAGE_SRC, {
     as: "image",
@@ -86,12 +85,12 @@ function HeroCopy({ path, children }: { path: OfferPathId; children: ReactNode }
           {hero.eyebrow.replace(/ for .*$/i, "")}
         </span>
       </p>
-      {/* The page's one H1 is the headline a visitor sees, with the plain line under it saying
-          who Genesis is for and what it does. */}
-      <h1 className={cn("mt-5 font-light text-[clamp(2.75rem,6.1vw,5.6rem)] leading-[0.98] tracking-[-0.05em] text-balance", styles.title)}>
+      {/* The page's one H1 says what Genesis does and for whom. It is a full sentence, so it is set
+          smaller than a short slogan would be: about four even lines on a phone 393 to 440 wide. */}
+      <h1 className={cn("mt-5 font-light text-[clamp(2.15rem,5.4vw,4.75rem)] leading-[1] tracking-[-0.045em] text-balance", styles.title)}>
         {hero.title} <span className="text-gold-light">{hero.accent}</span>
       </h1>
-      {/* One plain line under the headline, then the buttons: who Genesis is for and what it does. */}
+      {/* The brand line, smaller, under the headline, then the buttons. */}
       {hero.subline ? (
         <p className={cn("mx-auto mt-5 max-w-[40ch] text-[clamp(1.08rem,1.5vw,1.3rem)] leading-snug text-balance text-ivory", styles.subline)}>
           {hero.subline}
