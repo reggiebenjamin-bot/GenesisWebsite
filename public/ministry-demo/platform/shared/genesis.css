@@ -153,7 +153,7 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 .v2-fixture-badge.gm-preview-strip{cursor:default;gap:8px}
 .gm-preview-strip b{font-weight:700}
 /* First paint (review of November 24, layout shift 0.55 on Today): the work area waits, hidden, until its
-   script has filled it, then shows in one step. app.js adds gm-booted after the page's ready functions. */
+   script and the guided demo have arranged it, then shows in one step (app.js adds gm-booted). */
 html:not(.gm-booted) #v2-main,html:not(.gm-booted) #gm-main{visibility:hidden}
 /* The strip's dot is its first span only; the words and Talk With Genesis are ordinary text. */
 .v2-fixture-badge.gm-preview-strip .gm-strip-words,.v2-fixture-badge.gm-preview-strip .gm-strip-words span,.v2-fixture-badge.gm-preview-strip .gm-strip-talk span{width:auto;height:auto;border-radius:0;background:none;flex:none}
