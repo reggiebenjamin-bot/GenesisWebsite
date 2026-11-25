@@ -24,7 +24,7 @@
  *     /ministry shows, or when an old draft level is left anywhere.
  *
  * The committed public/ministry-demo/ is synced from genesis-ministry commit
- * a954071 (main on November 22, 2026), exported with git archive.
+ * 2e16a05 (feat/sermon-notes on November 24, 2026), exported with git archive.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -111,7 +111,8 @@ const SHARED_DESIGN_SYSTEM = /^platform\/shared\/os\//;
  * address, so the demo cannot quietly point at a business page or a price,
  * and it links within the site it is served from.
  */
-export const SITE_LINKS = ["/contact?topic=ministry-demo"];
+/* The church consultation first (CONTACT), then the way back to Genesis Ministry from the gallery's header. */
+export const SITE_LINKS = ["/contact?topic=ministry-demo", "/ministry"];
 
 /**
  * Every forbidden reference in a text, with a little context around each.
@@ -242,8 +243,8 @@ export function applyEdits(file, text, edits) {
 /*
  * The way to reach Genesis from the demo: the church consultation on geai.us.
  * The demo is served from geai.us/ministry-demo/, so a site path works from
- * every page, and on every preview of the site. It is the one entry in
- * SITE_LINKS. The source links to the same form by its full address,
+ * every page, and on every preview of the site. It is the first entry in
+ * SITE_LINKS; the second is /ministry, the gallery header's way back. The source links to the same form by its full address,
  * https://geai.us/contact?topic=ministry-demo; the public copy uses the path.
  * As in the source, it opens in the same tab, labelled Book a Call, as everywhere else on the site.
  */
@@ -315,6 +316,21 @@ export const PUBLIC_EDITS = {
       replace: '<span class="sep" aria-hidden="true">/</span>Established congregations with history</p>',
     },
     { note: "the Today frame names Genesis Ministry, not an internal product name", find: "<em>Ministry OS · Today</em>", replace: "<em>Genesis Ministry · Today</em>" },
+    {
+      note: "the header's G mark leads back to Genesis Ministry, as the G does on geai.us",
+      find: '    <a class="brand" href="index.html" aria-label="Genesis Ministry templates">\n',
+      replace: '    <a class="brand" href="/ministry" aria-label="Back to Genesis Ministry">\n',
+    },
+    {
+      note: "the header says the way back to Genesis Ministry in words",
+      find: '    <nav class="site-nav" aria-label="Templates">\n',
+      replace: '    <nav class="site-nav" aria-label="Templates">\n      <a href="/ministry"><span aria-hidden="true">&larr;</span> Genesis Ministry</a>\n',
+    },
+    {
+      note: "the phone menu starts with the way back to Genesis Ministry",
+      find: '<div class="mobile-menu" id="story-menu" hidden>\n  <div class="shell">\n',
+      replace: '<div class="mobile-menu" id="story-menu" hidden>\n  <div class="shell">\n    <a href="/ministry">Back to Genesis Ministry <span aria-hidden="true">&#8599;</span></a>\n',
+    },
     {
       note: "the header links to the church consultation",
       find: '      <a href="platform/journey.html">The Journey</a>\n    </nav>',

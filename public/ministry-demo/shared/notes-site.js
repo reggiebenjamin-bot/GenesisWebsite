@@ -58,6 +58,9 @@
     ".nv-field label{display:block;padding-block:10px 0;font-weight:700;font-size:15px}",
     ".nv-field input{width:100%;min-height:48px;padding:10px 14px;border:1.5px solid var(--nv-line-strong,var(--nv-line));border-radius:var(--nv-r);background:var(--nv-surface);color:var(--nv-text);font:inherit;font-size:16px}",
     ".nv-field input:focus-visible{outline:3px solid var(--nv-accent);outline-offset:2px}",
+    /* The search box says what it takes, with a magnifier, so it never reads as an empty box. */
+    ".nv-search{position:relative}.nv-search svg{position:absolute;left:14px;top:50%;width:20px;height:20px;margin-top:-10px;color:var(--nv-muted);pointer-events:none}",
+    ".nv-search input{padding-left:44px}.nv-search input::placeholder{color:var(--nv-muted);opacity:1}",
     ".nv-chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}",
     ".nv-chip{min-height:44px;padding:8px 16px;border:1.5px solid var(--nv-line);border-radius:999px;background:transparent;color:var(--nv-text);font:inherit;font-size:15px;font-weight:600;cursor:pointer}",
     ".nv-chip[aria-pressed=\"true\"]{border-color:var(--nv-accent);background:var(--nv-accent);color:var(--nv-on-accent)}",
@@ -175,7 +178,7 @@
       '<ul class="nv-facts"><li>' + esc(CFG.times || "Sundays") + "</li>" + (CFG.address ? "<li>" + esc(CFG.address) + "</li>" : "") + "</ul>" +
       '<div class="nv-actions">' + visitBtn(true) + '<a class="' + cls("btnOutline") + '" href="' + esc(NC.watch) + '">Watch the Latest Message</a></div>', "nv-head");
     h += wrap('<div class="nv-split"><div><h2 class="' + cls("h2", "nv-h2") + '" id="nv-find">Find a message</h2><p>Search by title, scripture or series, or tap a series or a book of the Bible.</p></div>' +
-      '<div><div class="nv-field" role="search"><label for="nv-q">Search notes</label><input id="nv-q" type="search" autocomplete="off" enterkeyhint="search"></div>' +
+      '<div><div class="nv-field" role="search"><label for="nv-q">Search notes</label><div class="nv-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input id="nv-q" type="search" autocomplete="off" enterkeyhint="search" placeholder="Title, scripture or series"></div></div>' +
       '<ul class="nv-chips" aria-label="Series and books">' + chips.map(function (ch) { return '<li><button type="button" class="nv-chip" data-nv-chip="' + esc(ch) + '" aria-pressed="false">' + esc(ch) + "</button></li>"; }).join("") + "</ul>" +
       '<p class="nv-count" id="nv-count" aria-live="polite"></p></div></div>');
     if (SHEP && td) {
@@ -233,8 +236,38 @@
   var on = false;
   /* While a notes page shows, the home page's own h1 (hidden) is not a heading, so the page has one title. */
   function homeH1s() { return Array.prototype.filter.call(document.querySelectorAll("main h1"), function (h) { return !root.contains(h); }); }
-  function leave() { if (!on) return; on = false; root.hidden = true; root.innerHTML = ""; document.documentElement.classList.remove("nv-on"); homeH1s().forEach(function (h) { h.removeAttribute("role"); h.removeAttribute("aria-hidden"); }); }
-  function enter() { on = true; root.hidden = false; document.documentElement.classList.add("nv-on"); homeH1s().forEach(function (h) { h.setAttribute("role", "none"); h.setAttribute("aria-hidden", "true"); }); }
+  /* While the notes show, the home page's own H1 becomes a div (with everything it had), so each route
+     has one H1; leaving the notes puts the H1 back. */
+  var parked = [];
+  function retag(from, tag) {
+    var to = document.createElement(tag);
+    for (var i = 0; i < from.attributes.length; i++) to.setAttribute(from.attributes[i].name, from.attributes[i].value);
+    while (from.firstChild) to.appendChild(from.firstChild);
+    from.parentNode.replaceChild(to, from);
+    return to;
+  }
+  /* The site menu and the header say where the reader is: Notes on the notes, Home everywhere else. */
+  function markNav(onNotes) {
+    document.querySelectorAll(".mlist, header nav").forEach(function (nav) {
+      var home = nav.querySelector('a[href="#top"]'), notes = nav.querySelector('a[href="#/notes"]');
+      if (!notes) return;
+      var here = nav.querySelector("a .here");
+      var from = onNotes ? home : notes, to = onNotes ? notes : home;
+      if (onNotes) notes.setAttribute("aria-current", "page"); else notes.removeAttribute("aria-current");
+      if (home && nav.classList.contains("mlist")) { if (onNotes) home.removeAttribute("aria-current"); else home.setAttribute("aria-current", "page"); }
+      if (here && to && from && here.parentNode === from) { to.appendChild(document.createTextNode(" ")); to.appendChild(here); }
+    });
+  }
+  function leave() {
+    if (!on) return; on = false; root.hidden = true; root.innerHTML = ""; document.documentElement.classList.remove("nv-on");
+    parked.forEach(function (d) { if (d.parentNode) retag(d, "h1"); }); parked = [];
+    markNav(false);
+  }
+  function enter() {
+    on = true; root.hidden = false; document.documentElement.classList.add("nv-on");
+    if (!parked.length) parked = homeH1s().map(function (h) { return retag(h, "div"); });
+    markNav(true);
+  }
   function route() {
     var h = decodeURIComponent(location.hash || "");
     if (h.indexOf("#/notes") !== 0) {

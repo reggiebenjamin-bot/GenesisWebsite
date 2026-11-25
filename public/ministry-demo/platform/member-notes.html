@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Sunday's Notes · Member app · Genesis Ministry · Design preview</title>
@@ -354,7 +354,7 @@ GM.ready(function (ctx) {
     return '<li><a class="m-item" href="member-notes.html?id=' + esc(s.id) + '">' + GM.icon("note") + '<span class="m-item-main"><span class="m-item-title" style="display:block">' + esc(s.title) + '</span><span class="m-item-sub" style="display:block">' + N.refHTML(s.ref) + " · " + esc(N.dateLong(s.date)) + "</span></span></a></li>";
   }).join("");
   GM.carryLinks($("mn-earlier"));
-  $("mn-note").innerHTML = GM.icon("shield") + "<span>Shaped from " + esc(speaker) + "'s own words. Scripture is the " + esc(N.translation) + ".</span>";
+  $("mn-note").innerHTML = GM.icon("shield") + "<span>Shaped from " + esc(speaker) + "'s own words. Scripture is in the church's translation (the " + esc(N.translation) + " in this sample).</span>";
   mxRead($("mn-read"));
 
   /* ---------- My notes: kept in this browser tab only (sessionStorage), never sent ---------- */

@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0d0e10">
 <title>Notes · Genesis Ministry · Design preview</title>
@@ -267,7 +267,7 @@ GM.ready(function (ctx) {
   var rules = [
     ["Your words, shaped. Never written for you.", HOPE + " shapes only what the pastor brings: an outline, a file, the video or a voice memo. It adds no teaching."],
     ["Nothing goes out without your tap.", "Every note waits for a person to tap Publish or Schedule."],
-    ["Scripture printed word for word.", "Each verse is printed as written, with its translation named: the " + N.translation + "."],
+    ["Scripture printed word for word.", "Each verse is printed as written, in your church's translation, and named (the " + N.translation + " in this sample)."],
     ["Email only to members who chose it.", "Texting only if you turn it on. " + (D.guestSettings.textingEnabled ? "" : "Texting is off. Turn it on in Settings.")]
   ];
   $("nt-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("");

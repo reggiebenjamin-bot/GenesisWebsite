@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>/* viewport-fit=cover: on a phone held sideways the page keeps clear of the notch and the rounded corners. */@media (orientation:landscape) and (max-height:500px){body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}</style>
 <title>Calder Hill Chapel | Richmond, VA | Template Preview</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Template preview: Calder Hill Chapel, a made-up church in Richmond, Virginia, shown in the Genesis Ministry Classic and Timeless look. Sundays at 9:00 and 11:00 AM.">
@@ -171,6 +172,8 @@ em{font-style:italic}
 .mfoot .mquiet{display:flex;gap:20px;font-size:15.5px;margin:12px 0 0}
 .mfoot .mquiet a,.mfoot .mquiet button{background:none;border:0;padding:8px 0;color:var(--forest);font-weight:600;text-decoration:underline;text-underline-offset:4px}
 body.menu-open{overflow:hidden}
+/* A second way to close the phone menu, at its foot, within thumb reach. */
+.mclose-foot{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:10px;padding:0;border:0;background:none;color:inherit;font:inherit;font-size:16px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.mclose-foot:focus-visible{outline:3px solid currentColor;outline-offset:2px;border-radius:6px}
 
 /* =====================================================================
    HERO: words on deep forest, the chapel in an arched window
@@ -769,6 +772,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     <a class="btn btn-primary" href="#plan-a-visit" data-close>Plan Your Visit</a>
     <p class="mtimes"><b>Sundays 9:00 &amp; 11:00 AM</b><a href="https://maps.google.com/?q=Richmond+Virginia" target="_blank" rel="noopener">1418 Calder Hill Road, Richmond</a></p>
     <p class="mquiet"><span class="fake-tel">(804) 555-0142</span><button type="button" data-chat>Ask a Question</button></p>
+    <button type="button" class="mclose-foot" data-close>Close Menu</button>
   </div>
 </div>
 

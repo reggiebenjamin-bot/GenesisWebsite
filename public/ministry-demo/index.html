@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#08090e">
 <title>Genesis Ministry Templates · Design preview</title>
@@ -42,6 +42,12 @@
 .swatches li { width: 30px; height: 30px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgb(8 9 14 / 0.16); }
 .fonts { margin-top: 12px; font-size: 0.88rem; color: var(--muted); }
 .look-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+/* On a phone the three links are an even group: Brand Board and Social Plan side by side, Overview full width under them. */
+@media (max-width: 640px) {
+  .look-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .look-links > li > a { display: flex; justify-content: center; width: 100%; min-height: 44px; box-sizing: border-box; }
+  .look-links > li:nth-child(3):last-child { grid-column: 1 / -1; }
+}
 .look-foot { margin-top: auto; padding-top: 18px; }
 .package { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .package > li { display: flex; flex-direction: column; }
@@ -49,7 +55,8 @@
 .package h3 { margin-top: 12px; font-weight: 300; font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.03em; }
 .package h3 small { display: inline-block; margin-left: 8px; vertical-align: 4px; }
 .package p { margin-top: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--muted); }
-.package .points { margin-top: auto; padding-top: 20px; }
+/* The points follow the words, so a shorter card ends with space below rather than a gap in the middle. */
+.package .points { margin-top: 20px; }
 .package-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--fg-2); }
 .doors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .door { display: flex; flex-direction: column; padding: 12px; }
@@ -93,12 +100,11 @@
 <div class="preview-strip" role="note">Design preview. Sample data shown.</div>
 <header class="site-header">
   <div class="shell">
-    <a class="brand" href="index.html" aria-label="Genesis Ministry templates">
+    <a class="brand" href="/ministry" aria-label="Back to Genesis Ministry">
       <img class="mark-on-dark" src="platform/shared/brand/genesis-mark.svg" alt="" width="30" height="24"><img class="mark-on-light" src="platform/shared/brand/genesis-mark-light.svg" alt="" width="30" height="24">
-      <span class="brand-word" aria-hidden="true"><b>enesis</b><i>AI</i></span>
-      <span class="brand-edition">Edition 05 · Ministry</span>
     </a>
     <nav class="site-nav" aria-label="Templates">
+      <a href="/ministry"><span aria-hidden="true">&larr;</span> Genesis Ministry</a>
       <a href="platform/index.html">Overview</a>
       <a href="#looks">Four Looks</a>
       <a href="#package">What a Church Gets</a>
@@ -114,6 +120,7 @@
 </header>
 <div class="mobile-menu" id="story-menu" hidden>
   <div class="shell">
+    <a href="/ministry">Back to Genesis Ministry <span aria-hidden="true">&#8599;</span></a>
     <a href="platform/index.html">Overview <span aria-hidden="true">&#8599;</span></a>
     <a href="#looks">Four Looks <span aria-hidden="true">&#8599;</span></a>
     <a href="#package">What a Church Gets <span aria-hidden="true">&#8599;</span></a>
@@ -146,7 +153,7 @@
       <div class="intro split">
         <div>
           <p class="eyebrow">Four looks</p>
-          <h2 id="looks-title">Pick the look that sounds like your church.</h2>
+          <h2 id="looks-title">Pick the look that feels like your church.</h2>
         </div>
         <p class="aside">Each look is a complete church website built to the same standard underneath. Open one and look around. Each is shown with a made-up sample church.</p>
       </div>
@@ -231,9 +238,9 @@
       <ul class="package">
         <li class="card wide"><p class="eyebrow">01</p><h3>A website</h3><p>Every page a guest needs, in the look that fits you, built for phones first.</p><ul class="points"><li>One of four looks</li><li>Your content and photos</li><li>Clear on every phone</li></ul></li>
         <li class="card"><p class="eyebrow">02</p><h3>A brand board</h3><p>Logo lockups, colors, type, photo direction and voice, so everything you post matches.</p><ul class="points"><li>Logo, color and type</li><li>Voice and tone</li></ul></li>
-        <li class="card"><p class="eyebrow">03</p><h3>A social plan</h3><p>Who you are reaching, a weekly rhythm, a 30-day calendar and captions in your voice.</p><ul class="points"><li>Weekly rhythm</li><li>30-day calendar</li></ul></li>
+        <li class="card"><p class="eyebrow">03</p><h3>A social plan</h3><p>Who you are reaching, a weekly rhythm, a 30 day calendar and captions in your voice.</p><ul class="points"><li>Weekly rhythm</li><li>30 day calendar</li></ul></li>
         <li class="card"><p class="eyebrow">04</p><h3><span data-an>Hope</span></h3><p>An assistant that answers guests from your approved facts and hands prayer to real people.</p><ul class="points"><li>Answers from approved facts</li><li>988 and 911 in a crisis</li></ul></li>
-        <li class="card"><p class="eyebrow">05</p><h3>The back office <small class="badge">Shepherd and up</small></h3><p>Prayer and messages for each person, a shared staff inbox, a front office for guests and a member app. The Plus plan adds the spiritual gifts conversation and a church-wide gifts picture for the pastor.</p><ul class="points"><li>Front office for guests</li><li>Back office for care</li><li>Member app</li></ul></li>
+        <li class="card"><p class="eyebrow">05</p><h3>The back office <small class="badge">Shepherd and up</small></h3><p>Prayer and messages for each person, a shared staff inbox, a front office for guests and a member app. The Plus plan adds the spiritual gifts conversation and a church wide gifts picture for the pastor.</p><ul class="points"><li>Front office for guests</li><li>Back office for care</li><li>Member app</li></ul></li>
       </ul>
       <div class="package-note">
         <p>Customization beyond the template, such as new layouts or special features, is available for an additional cost.</p>
