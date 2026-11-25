@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { LevelAiEmployees } from "@/components/offers/LevelAiEmployees";
 import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card, ClosingBand, Points, SectionIntro, Sheet } from "@/components/ui/Blocks";
@@ -12,6 +13,7 @@ import { aiEmployeePersonas, aiEmployeesHome } from "@/lib/aiEmployees";
 import { editionPricing } from "@/lib/editionPlans";
 import { allEditions, ministryEdition } from "@/lib/editions";
 import { ministryLevels } from "@/lib/ministryPage";
+import { USAGE_BILLING_LINE } from "@/lib/legal";
 import { managedPlans } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 
@@ -239,10 +241,12 @@ export function StoryOffers() {
             <PriceTag amount={plan.priceDisplay} setup={plan.setupLine} className="mt-4" />
             <p className="mt-5 border-t border-line-light pt-4 text-[0.95rem] leading-relaxed">{plan.day}</p>
             <UserLimitNote plan={plan} className="mt-1 text-muted-dark" />
+            <LevelAiEmployees plan={plan} className="mt-4" />
           </Card>
         ))}
       </ol>
-      <div className="mt-6 grid gap-x-10 gap-y-2 text-[0.95rem] text-muted-dark lg:flex lg:flex-wrap lg:items-center lg:justify-between">
+      <p className="mt-5 max-w-[72ch] text-[0.875rem] leading-relaxed text-muted-dark">{USAGE_BILLING_LINE}</p>
+      <div className="mt-4 grid gap-x-10 gap-y-2 text-[0.95rem] text-muted-dark lg:flex lg:flex-wrap lg:items-center lg:justify-between">
         <TrackClick event="edition_link_clicked" from="home_levels">
           <p className="flex flex-wrap items-center gap-x-5">
             <span className="w-full sm:w-auto">What each Level includes:</span>

@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EditionLevels } from "@/components/offers/EditionLevels";
+import { LevelAiEmployees } from "@/components/offers/LevelAiEmployees";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FaqList } from "@/components/ui/FaqList";
 import { Card, Sheet } from "@/components/ui/Blocks";
 import { Eyebrow } from "@/components/ui/Section";
+import { USAGE_BILLING_LINE } from "@/lib/legal";
 import { managedPlans } from "@/lib/offers";
 import { breadcrumbSchema, faqPageSchema, graph } from "@/lib/schema";
 import type { TexasLanding } from "@/lib/texasPages";
@@ -128,10 +130,14 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
                   <p className="mt-2 text-[0.85rem] text-muted-dark">{plan.setupLine}</p>
                   <p className="mt-5 text-[0.92rem] leading-snug">{plan.userLimit}</p>
                   <UserLimitNote plan={plan} className="text-muted-dark" />
+                  <LevelAiEmployees plan={plan} className="mt-4" />
                 </Card>
               ))}
             </ol>
-            <p className="mt-6 text-center">
+            <p className="mx-auto mt-5 max-w-[72ch] text-center text-[0.875rem] leading-relaxed text-muted-dark">
+              {USAGE_BILLING_LINE}
+            </p>
+            <p className="mt-4 text-center">
               <Link href="/pricing" className={relatedLink}>
                 See what each Level covers
               </Link>

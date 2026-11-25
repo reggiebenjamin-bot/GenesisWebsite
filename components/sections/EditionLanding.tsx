@@ -11,6 +11,7 @@ import { aiEmployeePersonas } from "@/lib/aiEmployees";
 import { faqs, pricingFaqs } from "@/lib/content";
 import { levelsFaqAnswer, type EditionKey } from "@/lib/editionPlans";
 import type { Edition, EditionCta } from "@/lib/editions";
+import { levelAiEmployeesSummary } from "@/lib/offers";
 import { breadcrumbSchema, editionServiceSchema, enterpriseServiceSchema, faqPageSchema, graph } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
@@ -259,7 +260,7 @@ export function EditionLanding({
           titleId="edition-team-title"
           aside={
             <p className="max-w-[44ch] text-[0.95rem] leading-relaxed text-muted-dark">
-              Operations, marketing, sales and the front desk, working inside {edition.name}. {pricingKey ? "The call confirms which of them your Level puts to work." : "The call confirms which of them your build puts to work."}
+              Operations, marketing, sales and the front desk, working inside {edition.name}. {pricingKey ? levelAiEmployeesSummary() : "The call confirms which of them your build puts to work."}
             </p>
           }
         />

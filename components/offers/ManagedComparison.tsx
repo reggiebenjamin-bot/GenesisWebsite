@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { LevelAiEmployees } from "@/components/offers/LevelAiEmployees";
 import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
@@ -25,7 +26,7 @@ export const MANAGED_EDITIONS = [
 
 /**
  * The three Levels read across as well as down: the price, a plain line on
- * what the Level is, the users and the call to action, held level with each
+ * what the Level is, its AI employees, the users and the call to action, held level with each
  * other by subgrid so the cards stay the same size.
  *
  * With `checkout`, the three cards share one form: the visitor first says
@@ -50,8 +51,8 @@ export function ManagedComparison({
   /* No edition yet: a visible message by the choice, never the browser's bubble on a hidden radio. */
   const [needsEdition, setNeedsEdition] = useState(false);
   const fieldset = useRef<HTMLFieldSetElement>(null);
-  const rows = checkout ? "md:[grid-template-rows:repeat(4,auto)]" : "md:[grid-template-rows:repeat(3,auto)]";
-  const span = checkout ? "md:row-span-4" : "md:row-span-3";
+  const rows = checkout ? "md:[grid-template-rows:repeat(5,auto)]" : "md:[grid-template-rows:repeat(4,auto)]";
+  const span = checkout ? "md:row-span-5" : "md:row-span-4";
 
   const cards = (
     <ol className={`grid gap-4 md:grid-cols-3 ${rows}`}>
@@ -87,6 +88,8 @@ export function ManagedComparison({
               </ul>
             ) : null}
           </div>
+
+          <LevelAiEmployees plan={plan} />
 
           <Detail label="Users" value={plan.userLimit} note={<UserLimitNote plan={plan} className="text-muted-dark" />} />
 

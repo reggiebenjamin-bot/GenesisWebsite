@@ -1,10 +1,12 @@
 import type { CSSProperties } from "react";
+import { LevelAiEmployees } from "@/components/offers/LevelAiEmployees";
 import { PriceTag } from "@/components/offers/PriceTag";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import { Card } from "@/components/ui/Blocks";
 import { SubmitButton } from "@/components/ui/Button";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { editionLevels, editionPricing, type EditionKey } from "@/lib/editionPlans";
+import { USAGE_BILLING_LINE } from "@/lib/legal";
 
 /* The gold hairline gets stronger with the level, as on the pricing page. */
 const TIER_EDGES = [
@@ -15,7 +17,8 @@ const TIER_EDGES = [
 
 /**
  * One edition's three Levels: the same price, setup fee and user limit as the
- * Managed AI Levels, with edition bullets. Every button posts the Level and
+ * Managed AI Levels, with its AI employees and the edition bullets, and under
+ * the cards the one line on how usage is billed. Every button posts the Level and
  * the edition to the managed checkout, so all buyers land on the same three
  * Stripe checkouts.
  */
@@ -23,6 +26,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
   const { name } = editionPricing[edition];
 
   return (
+    <>
     <ol className="grid gap-4 md:grid-cols-3">
       {editionLevels(edition).map(({ plan, bullets }, index) => (
         <Card
@@ -50,6 +54,8 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
             <p className="mt-2 text-[0.92rem] leading-snug">{plan.userLimit}</p>
             <UserLimitNote plan={plan} className="text-muted-dark" />
           </div>
+
+          <LevelAiEmployees plan={plan} className="mt-5" />
 
           <ul className="mt-6 grid gap-3 border-t border-line-light pt-5">
             {bullets.map((bullet) => (
@@ -80,5 +86,7 @@ export function EditionLevels({ edition }: { edition: EditionKey }) {
         </Card>
       ))}
     </ol>
+    <p className="mt-5 max-w-[72ch] text-[0.875rem] leading-relaxed text-muted-dark">{USAGE_BILLING_LINE}</p>
+    </>
   );
 }

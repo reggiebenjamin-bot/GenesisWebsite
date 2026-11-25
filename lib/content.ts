@@ -1,5 +1,6 @@
 import { allEditions } from "./editions.ts";
-import type { OfferPathId } from "./offers.ts";
+import { USAGE_BILLING_LINE } from "./legal.ts";
+import { levelAiEmployeesSummary, type OfferPathId } from "./offers.ts";
 
 /** One short line per edition under its name in the Editions dropdown. */
 
@@ -60,6 +61,19 @@ export const contact = {
   phoneHref: "+16826475934",
   linkedin: "https://www.linkedin.com/company/genesis-ai-studio",
   facebook: "https://www.facebook.com/profile.php?id=61586903450734",
+} as const;
+
+/**
+ * Book a Call, on /contact and its success state: the reply promise, and the
+ * calendar where a visitor can choose a time without waiting for the reply.
+ */
+export const bookACall = {
+  replyPromise: "We reply within one business day.",
+  pickTime: {
+    label: "Pick a Time",
+    lead: "Or pick a time on the calendar now.",
+    href: "https://outlook.office.com/bookwithme/user/9aad5fd73bf342e9a8b09822b37992b7@powerlandgroup.com?anonymous",
+  },
 } as const;
 
 /**
@@ -283,9 +297,8 @@ export const faqs: readonly Faq[] = [
     paths: ["custom-infrastructure"],
   },
   {
-    question: "Are third-party software costs included?",
-    answer:
-      "Plan prices cover Genesis. Third-party software, licenses, model or API usage, telephony, CRM, Microsoft 365, and similar external costs are separate unless explicitly stated otherwise.",
+    question: "Are usage and other software costs included?",
+    answer: `Plan prices cover Genesis. ${USAGE_BILLING_LINE} Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.`,
     paths: ["custom-infrastructure"],
   },
 ];
@@ -297,12 +310,12 @@ export const pricingFaqs = [
     /* The all-edition answer. Each edition page builds its own from its own Level bullets
        (levelsFaqAnswer in lib/editionPlans.ts). */
     answer:
-      "How many people use Genesis, and how much it takes on. Level 01 is one user, Level 02 up to 5 users and Level 03 up to 25 users, and each Level adds to the one before. More than 25 users is Genesis Enterprise. Each edition page lists what its Levels include.",
+      "How many people use Genesis, and how much it takes on. Level 01 is one user, Level 02 up to 5 users and Level 03 up to 25 users, and each Level adds to the one before. " +
+      `${levelAiEmployeesSummary()} More than 25 users is Genesis Enterprise. Each edition page lists what its Levels include.`,
   },
   {
-    question: "Are third-party software costs included?",
-    answer:
-      "No, unless explicitly stated. Plan pricing covers Genesis; external licenses and usage are separate.",
+    question: "Are usage and other software costs included?",
+    answer: `Plan prices cover Genesis. ${USAGE_BILLING_LINE} Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.`,
   },
   {
     question: "How do I know which Level fits?",

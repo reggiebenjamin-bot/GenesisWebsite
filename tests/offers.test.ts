@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
-import { faqs, navigation, processSteps } from "../lib/content.ts";
+import { faqs, navigation, pricingFaqs, processSteps } from "../lib/content.ts";
+import { USAGE_BILLING_LINE } from "../lib/legal.ts";
 import {
   DEFAULT_OFFER_PATH,
   genesisPositioning,
   genesisTools,
   isOfferPathId,
+  levelAiEmployeesLine,
+  levelAiEmployeesSummary,
   managedOverview,
   managedPlans,
   numbersHandled,
@@ -56,7 +60,7 @@ test("from other pages the toggle leads to each path's homepage", () => {
   }
 });
 
-test("each path opens the homepage with its own title; Custom Infrastructure leads with the belief", () => {
+test("each path opens the homepage with its own title; the belief sits under the Custom Infrastructure headline", () => {
   const title = (path: keyof typeof pathHeroes) =>
     `${pathHeroes[path].title} ${pathHeroes[path].accent}`;
   assert.equal(title("custom-infrastructure"), genesisPositioning.belief);
@@ -147,10 +151,50 @@ test("each level states its user limit: 1, up to 5, up to 25", () => {
   );
 });
 
+test("each Level names its AI employees, in the owner's words", () => {
+  assert.deepEqual(
+    managedPlans.map((plan) => [plan.step, plan.priceDisplay, levelAiEmployeesLine(plan)]),
+    [
+      ["01", "$750", "Ava (front desk)"],
+      ["02", "$1,750", "Ava (front desk) and Darius (sales)"],
+      ["03", "$4,500", "Ava (front desk), Darius (sales), Hawk (operations) and Susan (marketing)"],
+    ],
+  );
+  assert.equal(
+    levelAiEmployeesSummary(),
+    "Level 01 includes Ava (front desk). Level 02 adds Darius (sales). Level 03 adds Hawk (operations) and Susan (marketing).",
+  );
+  assert.ok(pricingFaqs[0].answer.includes(levelAiEmployeesSummary()));
+  /* The homepage Levels, /pricing and every edition's Levels print them with the one shared block. */
+  for (const file of [
+    "components/home/story/StorySections.tsx",
+    "components/offers/ManagedComparison.tsx",
+    "components/offers/EditionLevels.tsx",
+    "components/sections/TexasLanding.tsx",
+  ]) {
+    assert.match(readFileSync(new URL("../" + file, import.meta.url), "utf8"), /<LevelAiEmployees plan={plan}/, file);
+  }
+});
+
+test("usage is billed to the customer's card, said once by the Levels, and nothing says otherwise", () => {
+  assert.equal(USAGE_BILLING_LINE, "Calls, texts and AI usage are billed to your card automatically through your account.");
+  assert.ok(managedOverview.thirdPartyNote.includes(USAGE_BILLING_LINE));
+  /* One printing per Levels listing: /pricing through the note, the homepage and the edition pages directly. */
+  for (const file of [
+    "components/home/story/StorySections.tsx",
+    "components/offers/EditionLevels.tsx",
+    "components/sections/TexasLanding.tsx",
+  ]) {
+    const source = readFileSync(new URL("../" + file, import.meta.url), "utf8");
+    assert.equal(source.split("{USAGE_BILLING_LINE}").length, 2, file);
+  }
+  const answers = [...faqs, ...pricingFaqs].map((faq) => faq.answer).join(" ") + managedOverview.thirdPartyNote;
+  assert.doesNotMatch(answers, /usage (is|are) (included|separate|extra)|licenses and usage/i);
+});
+
 test("undefined plan entitlements stay null until a plan matrix is approved", () => {
   for (const plan of managedPlans) {
     assert.equal(plan.additionalUserPriceUsd, null);
-    assert.equal(plan.includedAiAgents, null);
     assert.equal(plan.connectedAccounts, null);
     assert.equal(plan.integrations, null);
     assert.equal(plan.includedUsage, null);

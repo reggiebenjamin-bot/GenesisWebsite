@@ -42,6 +42,8 @@ export type AiEmployeePersona = {
   outcomes: string;
 };
 
+export type AiEmployeeId = AiEmployeePersona["id"];
+
 export const aiEmployeePersonas: readonly AiEmployeePersona[] = [
   {
     id: "hawk",

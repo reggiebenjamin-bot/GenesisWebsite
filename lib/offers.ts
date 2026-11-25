@@ -15,6 +15,9 @@
  * No path aliases in this file: tests import it directly under Node.
  */
 
+import { aiEmployeePersonas, type AiEmployeeId } from "./aiEmployees.ts";
+import { USAGE_BILLING_LINE } from "./legal.ts";
+
 export type OfferPathId = "agent" | "custom-infrastructure";
 
 export type OfferPath = {
@@ -121,7 +124,7 @@ export function offerPathHomeHref(path: OfferPathId): `/#${OfferPathId}` {
 
 export const genesisPositioning = {
   category: "AI Infrastructure for Growing Businesses",
-  /** The core belief, and the Custom Infrastructure hero's headline. */
+  /** The core belief: the brand line under the homepage headline. */
   belief: "Your business should get smarter as it grows.",
   summary:
     "Genesis helps operators and real estate teams deploy AI powered infrastructure across communication, sales, deal flow, knowledge, workflow, and execution.",
@@ -152,7 +155,8 @@ export const genesisThesis = {
 
 /**
  * The homepage opens with a title for each path, over the same hawk. The
- * accent is the closing phrase, set in gold.
+ * accent is the closing phrase, set in gold. The Custom Infrastructure title
+ * says what Genesis does and for whom; the brand belief is the line under it.
  */
 export const pathHeroes: Readonly<
   Record<
@@ -161,7 +165,7 @@ export const pathHeroes: Readonly<
       eyebrow: string;
       title: string;
       accent: string;
-      /** One plain line under the title: who Genesis is for and what it does. */
+      /** One smaller line under the title: the brand belief. */
       subline?: string;
       summary: string;
       /** A complete short version of the summary, for a phone on its side. */
@@ -592,9 +596,8 @@ export const managedOverview = {
     body: "Pick by how many people need a login. Lending, Real Estate Pros and Business share these Levels and prices; each edition page lists what its Levels include.",
     closing: "A short call confirms the right Level for your business.",
   },
-  thirdPartyNote:
-    "Plan prices cover Genesis. Third-party licenses and usage, including external software and infrastructure charges, are separate unless explicitly stated.",
-  thirdPartyShort: "Plan prices cover Genesis. Third-party licenses and usage are extra unless stated.",
+  /** Under the Levels on /pricing: what the price covers, how usage is billed, and what stays yours. */
+  thirdPartyNote: `Plan prices cover Genesis. ${USAGE_BILLING_LINE} Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.`,
 } as const;
 
 export type ManagedPlanId = "managed-750" | "managed-1750" | "managed-4500";
@@ -635,7 +638,8 @@ export type ManagedPlan = {
   /** Where larger teams go, shown under the user limit. Null when the Level has no cap note. */
   enterpriseNote: string | null;
   additionalUserPriceUsd: number | null;
-  includedAiAgents: readonly string[] | null;
+  /** The AI employees this Level includes, by persona id, in the order they are named. Set by the owner. */
+  includedAiAgents: readonly AiEmployeeId[];
   connectedAccounts: readonly string[] | null;
   integrations: readonly string[] | null;
   includedUsage: string | null;
@@ -645,7 +649,6 @@ export type ManagedPlan = {
 
 const undefinedEntitlements = {
   additionalUserPriceUsd: null,
-  includedAiAgents: null,
   connectedAccounts: null,
   integrations: null,
   includedUsage: null,
@@ -674,6 +677,7 @@ export const managedPlans: readonly ManagedPlan[] = [
       "For an operator or smaller team beginning to move repeatable work into a managed Genesis environment.",
     fit: "For operations beginning with a managed foundation and focused workflows.",
     day: "One person. Every new inquiry gets a fast first reply, so none sits waiting.",
+    includedAiAgents: ["ava"],
     ...undefinedEntitlements,
   },
   {
@@ -696,6 +700,7 @@ export const managedPlans: readonly ManagedPlan[] = [
       "For operations where the problem extends across multiple workflows, people, handoffs, and systems.",
     fit: "For businesses where the work crosses multiple people, systems, and operating workflows.",
     day: "A team of up to 5. Everything in Level 01, plus roles and routing so every lead has an owner.",
+    includedAiAgents: ["ava", "darius"],
     ...undefinedEntitlements,
   },
   {
@@ -719,9 +724,46 @@ export const managedPlans: readonly ManagedPlan[] = [
       "For businesses that need Genesis operating more broadly across connected systems, workflows, teams, and AI capabilities.",
     fit: "For organizations that need Genesis working broadly across infrastructure, workflows, integrations, and AI capabilities.",
     day: "Up to 25 people. Genesis works across your connected systems, with priority onboarding.",
+    includedAiAgents: ["ava", "darius", "hawk", "susan"],
     ...undefinedEntitlements,
   },
 ];
+
+/** "A, B and C" from a list of words. */
+function listInWords(items: readonly string[]): string {
+  return items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+}
+
+/** The AI employees a Level includes, each with its role: the one place the site reads them from. */
+export function levelAiEmployees(plan: Pick<ManagedPlan, "includedAiAgents">) {
+  return plan.includedAiAgents.map((id) => {
+    const persona = aiEmployeePersonas.find((candidate) => candidate.id === id)!;
+    return { id, name: persona.name, role: persona.role.toLowerCase() };
+  });
+}
+
+/** "Ava (front desk) and Darius (sales)": a Level's AI employees on one line, for its card. */
+export function levelAiEmployeesLine(plan: Pick<ManagedPlan, "includedAiAgents">): string {
+  return listInWords(levelAiEmployees(plan).map(({ name, role }) => `${name} (${role})`));
+}
+
+/** The label printed over that line on every Level card. */
+export const LEVEL_AI_EMPLOYEES_LABEL = "AI employees";
+
+/**
+ * Which AI employees each Level brings, as sentences: "Level 01 includes Ava
+ * (front desk). Level 02 adds Darius (sales). Level 03 adds Hawk (operations)
+ * and Susan (marketing)."
+ */
+export function levelAiEmployeesSummary(): string {
+  return managedPlans
+    .map((plan, index) => {
+      const before = index > 0 ? managedPlans[index - 1].includedAiAgents : [];
+      const added = levelAiEmployees(plan).filter(({ id }) => !before.includes(id));
+      return `Level ${plan.step} ${index === 0 ? "includes" : "adds"} ${listInWords(added.map(({ name, role }) => `${name} (${role})`))}.`;
+    })
+    .join(" ");
+}
 
 export function toolPriceLabel(price: ToolPrice) {
   return `${price.display} / ${price.unit}`;
