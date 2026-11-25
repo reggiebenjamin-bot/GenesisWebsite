@@ -6,7 +6,8 @@
  *
  * The proof standard applies: no statistics, results or testimonials. Ministry
  * shows its three plan prices (Care, Shepherd and Plus, per month); Enterprise,
- * for more than one campus, is scoped on a call. No setup fees are named.
+ * for more than one campus, is scoped on a call. There is no setup fee, and
+ * the page says so beside each price.
  *
  * Copy rules: warm, plain, short sentences. No em dashes, no emojis, and no
  * hyphens in visitor copy (the tests check all three).
@@ -15,6 +16,7 @@
  */
 
 import { ministryEdition } from "./editions.ts";
+import { USAGE_BILLING_LINE } from "./legal.ts";
 
 export type MinistryLink = { label: string; href: string };
 
@@ -339,6 +341,8 @@ export type MinistryLevel = {
   monthlyPriceUsd: number;
   /** The monthly price as the card prints it. */
   priceDisplay: string;
+  /** How many staff members can sign in on this plan. */
+  staffLogins: number;
   summary: string;
   /** Who the plan suits, from what it includes. Not a claim about which plan churches pick. */
   suits: string;
@@ -353,7 +357,12 @@ export type MinistryLevel = {
  *
  * What each plan includes is a working mapping until the owner lists it: Care
  * has exactly what Level 01 (Welcome) had, Shepherd what Level 02 (Connect)
- * had, and Plus what Level 03 (Shepherd) had. No setup fee is named.
+ * had, and Plus what Level 03 (Shepherd) had.
+ *
+ * The owner also set the staff logins (2, 5 and 15) and the terms every plan
+ * shares: no setup fee, month to month, the website live in 2 weeks and
+ * Shepherd and Plus fully live in 30 days, the move of the website and domain
+ * included, and the church's data its own, with a spreadsheet export.
  *
  * Enterprise, for more than one campus, is a line under the three cards
  * rather than a fourth card, the way Genesis Enterprise sits under the
@@ -367,12 +376,26 @@ export const ministryLevels = {
     "Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes. Prices are monthly, for one campus.",
   /** Printed beside each price, as on the edition Levels. */
   priceUnit: "per month",
+  /** Under each price, where a business Level names its setup fee. */
+  setupLine: "No setup fee",
+  /** What every plan shares, listed once under the three cards. */
+  terms: {
+    title: "With every plan",
+    /** Also the start of the answer to the price question. */
+    commitment: "No setup fee. Month to month, cancel anytime.",
+    timeline: "Your website is live in 2 weeks. Shepherd and Plus are fully live in 30 days.",
+    move: "Genesis moves your website and domain for you, included.",
+    data: "Your church owns its data, with a spreadsheet export anytime, including when you cancel.",
+  },
+  /** How usage is paid for, once, under the terms. */
+  usage: USAGE_BILLING_LINE,
   levels: [
     {
       id: "care",
       name: "Care",
       monthlyPriceUsd: 149,
       priceDisplay: "$149",
+      staffLogins: 2,
       summary: "Everything a guest sees first.",
       suits: "For a church that wants a better website and first impression.",
       bullets: [
@@ -391,6 +414,7 @@ export const ministryLevels = {
       name: "Shepherd",
       monthlyPriceUsd: 299,
       priceDisplay: "$299",
+      staffLogins: 5,
       summary: "Every guest followed up.",
       suits: "For a church with a team that follows up guests and care.",
       bullets: [
@@ -410,6 +434,7 @@ export const ministryLevels = {
       name: "Plus",
       monthlyPriceUsd: 499,
       priceDisplay: "$499",
+      staffLogins: 15,
       summary: "Care for every person, over time.",
       suits: "For a staff that wants to see care for each person over time.",
       bullets: [
@@ -419,7 +444,6 @@ export const ministryLevels = {
         "Spiritual gifts, with a church wide view for pastors",
         "Reports",
         "Custom roles and named gift viewers",
-        "More staff seats",
       ],
       action: { label: "Book a Call", href: consult("ministry-plus") },
     },
@@ -432,6 +456,19 @@ export const ministryLevels = {
   },
   footnote: "Customization beyond the template is quoted separately.",
 } as const;
+
+/** "2 staff logins": how many of a church's staff can sign in on a plan, as its card prints it. */
+export function ministryStaffLogins(plan: Pick<MinistryLevel, "staffLogins">): string {
+  return `${plan.staffLogins} staff logins`;
+}
+
+/** The shared terms in the order the page lists them. */
+export const ministryTermsList: readonly string[] = [
+  ministryLevels.terms.commitment,
+  ministryLevels.terms.timeline,
+  ministryLevels.terms.move,
+  ministryLevels.terms.data,
+];
 
 /** "Care at $149 a month", one per plan, in order. */
 const planPrices = ministryLevels.levels.map((plan) => `${plan.name} at ${plan.priceDisplay} a month`);
@@ -555,7 +592,7 @@ export const ministryFaq = {
     },
     {
       question: "What does Genesis Ministry cost?",
-      answer: `${ministryPriceAnswer} Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes on your website. Shepherd and Plus add daily devotionals, the member app and email to members who opt in. Devotionals are shaped from your pastors' own words too, and each one waits for a pastor to approve it. More than one campus? Enterprise is scoped with you on a call.`,
+      answer: `${ministryPriceAnswer} ${ministryLevels.terms.commitment} Every plan includes the website, the brand board, the social marketing plan, Hope and Sunday sermon notes on your website. Shepherd and Plus add daily devotionals, the member app and email to members who opt in. Devotionals are shaped from your pastors' own words too, and each one waits for a pastor to approve it. More than one campus? Enterprise is scoped with you on a call.`,
     },
     {
       question: "What does customization cost?",

@@ -4,7 +4,7 @@ import { join } from "node:path";
 import test from "node:test";
 import { isNavGroup, navigation, navigationLinks, uniqueByHref } from "../lib/content.ts";
 import { allEditions, editions, ministryEdition } from "../lib/editions.ts";
-import { FUNDING_LINE } from "../lib/legal.ts";
+import { FUNDING_LINE, USAGE_BILLING_LINE } from "../lib/legal.ts";
 import {
   MINISTRY_OPERATION_TYPE,
   isMinistryTopic,
@@ -24,6 +24,8 @@ import {
   ministryPriceAnswer,
   ministryProcess,
   ministryProtection,
+  ministryStaffLogins,
+  ministryTermsList,
   ministryWalkthrough,
   ministryWebsiteCheck,
 } from "../lib/ministryPage.ts";
@@ -43,6 +45,9 @@ const PLAN_AMOUNTS = ["$149", "$299", "$499"];
 /** Where a price may appear: the plan cards, the price sentence and what is built from them. */
 function mayShowPrice(path: string, text: string): boolean {
   if (/^ministryLevels\.(levels\[\d\]\.priceDisplay|priceUnit)$/.test(path)) return true;
+  /* "No setup fee" is a term every plan shares, said beside the price and in the terms. */
+  if (path === "ministryLevels.setupLine" || path === "ministryLevels.terms.commitment") return true;
+  if (path === "ministryTermsList[0]") return text === ministryLevels.terms.commitment;
   if (/^ministryConsultationNotes\.ministry-(care|shepherd|plus)$/.test(path)) return true;
   /* The line under the hero buttons: the first plan's price, built from the plans. */
   if (path === "ministryPlansCue.line") return text === `Plans from ${ministryLevels.levels[0].priceDisplay} a month.`;
@@ -285,7 +290,6 @@ test("each plan keeps exactly what its draft level included", () => {
           "Spiritual gifts, with a church wide view for pastors",
           "Reports",
           "Custom roles and named gift viewers",
-          "More staff seats",
         ],
       ],
     ],
@@ -309,7 +313,7 @@ test("the price sentence is the same on the page and in the demo", () => {
   );
 });
 
-test("the questions give the prices, and no setup fee is named", () => {
+test("the questions give the prices, and say there is no setup fee", () => {
   const cost = ministryFaq.items.find((item) => item.question === "What does Genesis Ministry cost?");
   assert.ok(cost, "there is a price question");
   assert.ok(cost.answer.startsWith(ministryPriceAnswer), cost.answer);
@@ -317,7 +321,38 @@ test("the questions give the prices, and no setup fee is named", () => {
   const custom = ministryFaq.items.find((item) => /customization/i.test(item.question));
   assert.ok(custom);
   assert.doesNotMatch(custom.answer, /set with Genesis|on a call/);
-  assert.doesNotMatch(JSON.stringify(ministryPage), /setup fee|set up fee|one time fee/i);
+  /* The only setup wording on the page is that there is none. */
+  assert.match(cost.answer, /No setup fee\. Month to month, cancel anytime\./);
+  for (const [, before] of JSON.stringify(ministryPage).matchAll(/(\w+) (?:setup|set up|one time) fee/gi)) {
+    assert.equal(before, "No");
+  }
+});
+
+test("the owner's plan terms: logins, no setup fee, month to month, timeline, the move and the data", () => {
+  assert.deepEqual(
+    ministryLevels.levels.map((plan) => [plan.name, plan.priceDisplay, ministryStaffLogins(plan)]),
+    [
+      ["Care", "$149", "2 staff logins"],
+      ["Shepherd", "$299", "5 staff logins"],
+      ["Plus", "$499", "15 staff logins"],
+    ],
+  );
+  assert.equal(ministryLevels.setupLine, "No setup fee");
+  assert.deepEqual(ministryTermsList, [
+    "No setup fee. Month to month, cancel anytime.",
+    "Your website is live in 2 weeks. Shepherd and Plus are fully live in 30 days.",
+    "Genesis moves your website and domain for you, included.",
+    "Your church owns its data, with a spreadsheet export anytime, including when you cancel.",
+  ]);
+  /* Usage is billed to the church's own card, said once under the plans, in the shared sentence. */
+  assert.equal(ministryLevels.usage, USAGE_BILLING_LINE);
+  assert.equal(USAGE_BILLING_LINE, "Calls, texts and AI usage are billed to your card automatically through your account.");
+  const cards = readFileSync(join(process.cwd(), "components", "offers", "MinistryLevels.tsx"), "utf8");
+  assert.match(cards, /setup=\{setupLine\}/);
+  assert.match(cards, /ministryStaffLogins\(plan\)/);
+  assert.match(cards, /ministryTermsList\.map/);
+  assert.equal(cards.split("{usage}").length, 2, "the usage line is printed once");
+  assert.doesNotMatch(JSON.stringify(ministryPage), /staff seats/i);
 });
 
 test("the structured data carries the three plans at the prices the cards print", () => {
