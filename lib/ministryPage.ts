@@ -122,6 +122,8 @@ export type MinistryPackageItem = {
   title: string;
   body: string;
   points: readonly string[];
+  /** Where to see it in the demo. */
+  links?: readonly { label: string; href: string }[];
 };
 
 export const ministryPackage = {
@@ -156,6 +158,16 @@ export const ministryPackage = {
     },
     {
       no: "05",
+      title: "Sunday notes and daily devotionals",
+      body: "Your pastor's own words, shaped into Sunday notes with the scripture, the key points and questions for small groups, plus a short devotional each morning. Nothing goes out until a person approves it.",
+      points: ["From your pastor's own words", "Scripture, points and questions", "A person approves every line"],
+      links: [
+        { label: "See Sunday's Notes", href: `${ministryDemo.template("bold-dark")}#/notes` },
+        { label: "See a Devotional", href: "/ministry-demo/platform/member-devotional.html?church=bold-dark" },
+      ],
+    },
+    {
+      no: "06",
       title: "The platform, by plan",
       body: "A front office for guests, a back office for care and a member app on phones. Which parts you get depends on the plan you choose.",
       points: ["Front office for guests", "Back office for care", "Member app"],
@@ -582,6 +594,7 @@ export const ministryContact = {
       "Follow up",
       "Prayer and care",
       "Hope on your website",
+      "Sermon notes and devotionals",
       "A member app",
       "Social media",
       "Tools you already use",

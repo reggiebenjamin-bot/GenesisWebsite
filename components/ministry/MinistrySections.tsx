@@ -328,7 +328,7 @@ export function MinistryPackage() {
         {[...middle, platform].map((item) => {
           const lead = item === platform;
           return (
-            <Card as="li" key={item.no} tone={lead ? "inverse" : "light"} className="flex flex-col">
+            <Card as="li" key={item.no} tone={lead ? "inverse" : "light"} className={cn("flex flex-col", lead && "md:col-span-2 lg:col-span-3")}>
               <p className={cn("font-display text-[0.75rem] tracking-[0.12em]", lead ? "text-gold" : "text-gold-dark")}>
                 {item.no}
               </p>
@@ -338,6 +338,21 @@ export function MinistryPackage() {
               </p>
               {item.no === "02" ? <BrandSample /> : null}
               <Points items={item.points} className="mt-auto pt-6" />
+              {"links" in item && item.links ? (
+                <TrackClick event="ministry_demo_opened" from="ministry_package_notes">
+                  <p className="mt-4 flex flex-wrap gap-x-5">
+                    {item.links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className="inline-flex min-h-11 items-center font-bold underline decoration-ink/30 underline-offset-4 transition-colors duration-200 hover:text-gold-dark"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </p>
+                </TrackClick>
+              ) : null}
             </Card>
           );
         })}
