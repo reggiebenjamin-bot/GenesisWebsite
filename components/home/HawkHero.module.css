@@ -152,7 +152,7 @@
   display: none;
 }
 
-/* On a narrow phone the label sits on its own line, and the four links share the next one. */
+/* On a narrow phone the label sits on its own line, and the five links share the next rows. */
 @media (max-width: 479px) {
   .builtFor {
     flex-direction: column;
@@ -165,6 +165,15 @@
 
   .builtForLink {
     padding-inline: 5px;
+  }
+
+  /* Five editions wrap to a second row here, so the dots step aside: a row never starts with one. */
+  .builtForList {
+    column-gap: 4px;
+  }
+
+  .builtForList > li + li::before {
+    content: none;
   }
 
   .eyebrowLong {
