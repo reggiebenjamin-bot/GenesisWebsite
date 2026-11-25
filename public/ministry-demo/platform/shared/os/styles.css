@@ -2104,9 +2104,10 @@ body.v2-genesis-page-open #v2-main{
 .v2-guide-foot .v2-guide-count{margin-right:auto;color:var(--v2-text-2);font-size:12px;font-weight:600;letter-spacing:0}
 .v2-guide-foot .v2-button{min-height:32px;margin-left:6px;padding-inline:16px}
 .v2-guide-do{margin-left:6px;color:var(--v2-muted);font-size:12px}
+/* The anchored card sits at 0,0 and moves by translate, so a move between steps never shifts layout. */
 .v2-guide.is-anchored{
   right:auto;bottom:auto;margin:0;width:340px;max-height:none;overflow:visible;
-  transition:top var(--v2-motion-base) var(--v2-ease-standard),left var(--v2-motion-base) var(--v2-ease-standard);
+  transition:translate var(--v2-motion-base) var(--v2-ease-standard);
 }
 .v2-guide.is-anchored::before{
   content:"";position:absolute;width:12px;height:12px;background:#111f25;

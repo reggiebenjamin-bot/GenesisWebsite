@@ -7,7 +7,7 @@
 
   /* The church edition's AI employee. Rename here and every story page follows. */
   var ASSISTANT = "Hope";
-  /* Where Talk With Genesis goes: the church consultation on geai.us, as a walkthrough of the demo. */
+  /* Where Book a Call goes: the church consultation on geai.us, as a walkthrough of the demo. */
   var GENESIS_CONTACT_URL = "/contact?topic=ministry-demo";
 
   var D = window.GM_DATA || {};

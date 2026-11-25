@@ -16,6 +16,10 @@
   /* Notes only. Prefix: nt-. The page is the Genesis OS Deals pattern; these only arrange it. */
   .nt-page a.v2-mobile-deal-row{color:inherit;text-decoration:none}
   .nt-page .v2-deal-table .v2-primary-cell>span{white-space:normal;overflow:visible;text-overflow:clip}
+  /* Room under the list, so its last rows scroll clear of the round Hope button in the corner. */
+  @media (min-width:861px){.nt-page{padding-bottom:96px}}
+  /* Search and filters: 16px type and 44px fields, so a tablet never zooms in on focus. */
+  .nt-page .v2-input,.nt-page .v2-select{min-height:44px;font-size:16px}
   .nt-page .v2-primary-cell>.v2-deal-row-link{display:flex}
   .nt-page .v2-mobile-deal-identity small{white-space:normal;overflow:visible;text-overflow:clip}
   .nt-where{color:var(--v2-text-2);font-size:13px}
@@ -167,10 +171,20 @@ GM.ready(function (ctx) {
 
   /* ---------- The numbers row ---------- */
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
+  /* What is scheduled, in words, from the scheduled notes themselves: "Fri and Sat devotionals at 6 AM". */
+  function scheduledLine() {
+    var on = notes.filter(function (n) { return statusOf(n) === "scheduled"; });
+    var days = function (list) { var d = list.map(function (n) { return N.dayShort(n.date); }); return d.length > 1 ? d.slice(0, -1).join(", ") + " and " + d[d.length - 1] : d.join(""); };
+    var devo = on.filter(function (n) { return n.kind === "devotional"; }), serm = on.filter(function (n) { return n.kind === "sermon"; });
+    var parts = [];
+    if (devo.length) parts.push(days(devo) + (devo.length > 1 ? " devotionals" : " devotional") + " at 6 AM");
+    if (serm.length) parts.push("Sunday's notes at " + whenShort(serm[0]).replace(/^\w+ /, ""));
+    return parts.length ? parts.join(", ") : "Nothing scheduled yet";
+  }
   function paintPulse() {
     var sc = scheduledCount(), td = N.todays(c.slug);
     $("nt-pulse").innerHTML = pulse("Sunday notes", sermons, sermons + " published on the website") +
-      pulse("Scheduled", sc, SHEP ? "Devotionals at 6 AM, Sunday notes at " + N.shortTime(NC.sundayAt) : "Sunday's notes once you tap Schedule") +
+      pulse("Scheduled", sc, SHEP ? scheduledLine() : (sc ? scheduledLine() : "Sunday's notes once you tap Schedule")) +
       (SHEP ? pulse("Today's devotional", "6 AM", td ? td.title + ", out this morning" : "Out each morning") : pulse("Website notes", "Sundays", "Every Sunday, on every plan"));
   }
 
@@ -254,7 +268,7 @@ GM.ready(function (ctx) {
     ["Your words, shaped. Never written for you.", HOPE + " shapes only what the pastor brings: an outline, a file, the video or a voice memo. It adds no teaching."],
     ["Nothing goes out without your tap.", "Every note waits for a person to tap Publish or Schedule."],
     ["Scripture printed word for word.", "Each verse is printed as written, with its translation named: the " + N.translation + "."],
-    ["Email only to members who chose it.", "Texting only if you turn it on. " + (D.guestSettings.textingEnabled ? "" : "Texting is off today.")]
+    ["Email only to members who chose it.", "Texting only if you turn it on. " + (D.guestSettings.textingEnabled ? "" : "Texting is off. Turn it on in Settings.")]
   ];
   $("nt-protect").innerHTML = rules.map(function (r) { return "<li>" + ic("shield") + "<b>" + esc(r[0]) + "</b><span>" + esc(r[1]) + "</span></li>"; }).join("");
   $("nt-foot").innerHTML = ic("archive") + "<span>Archive, never delete. A note taken down is archived and can be brought back. " + (SHEP ? "" : "Daily devotionals, the member app and email to members who chose it come with the Shepherd plan.") + "</span>";

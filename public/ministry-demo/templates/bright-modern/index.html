@@ -99,6 +99,11 @@ a:hover > .go,a:focus-visible > .go,a.go:hover,a.go:focus-visible,.card:hover .g
 .preview .pv-mid{display:none}
 @media (max-width:1099px){.preview .pv-long,.preview .more,.preview .long{display:none}.preview .pv-mid{display:inline}}
 @media (max-width:640px){.preview .pv-mid{display:none}}
+/* One row on a phone: the tag, All Looks and Book a Call. Every control in the strip is a 44px target. */
+.preview .pv-sm{display:none}
+@media (max-width:640px){.preview{flex-wrap:nowrap;column-gap:12px}.preview .pv-lg{display:none}.preview .pv-sm{display:inline}}
+:root{--pv:44px}
+.preview a{min-height:44px}
 @media (max-width:360px){.preview{padding-left:8px;padding-right:8px;column-gap:8px;font-size:12px}.preview .tag{font-size:9.5px;letter-spacing:.06em}}
 
 /* ---------- Header ---------- */
@@ -413,7 +418,7 @@ body .hd-panel,body .hd-card{border-radius:12px}
 body .hd-invite{border-radius:var(--r-lg)}
 body .hd-invite p{padding-right:22px}
 body .hd-card h3{font-family:var(--display);font-weight:780;font-size:22px;letter-spacing:-.022em}
-body .hd-launch{transition:transform .25s var(--ease),bottom .35s var(--ease),opacity .25s ease}
+body .hd-launch{transition:transform .25s var(--ease),translate .35s var(--ease),opacity .25s ease}
 body .hd-invite{transition:opacity .35s ease,transform .35s var(--ease),bottom .35s var(--ease)}
 @media (min-width:761px){body{--hd-bottom:0px}}
 /* One layer at a time: Hope's circle and invite step aside while the menu sheet or a form is open */
@@ -668,7 +673,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
   <symbol id="i-yt" viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></symbol>
 </svg>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lightwell Church is a made-up church, shown in the Bright and Modern look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lightwell Church is a made-up church, shown in the Bright and Modern look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out><span class="pv-lg">Back to the Four Looks</span><span class="pv-sm">All Looks</span></a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
 
 <header class="site-header" id="hdr">
   <div class="wrap nav">
@@ -950,7 +955,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     </div>
     <div class="f-bottom">
       <span>&copy; 2026 Lightwell Church, Raleigh, North Carolina</span>
-      <span>Template preview of a made-up church by Genesis&nbsp;Ministry<span class="sep" aria-hidden="true">&middot;</span><a href="#/privacy">Privacy</a><span class="sep" aria-hidden="true">&middot;</span><a href="#/staff">Staff Login</a></span>
+      <span>Template preview of a made-up church by Genesis&nbsp;Ministry.</span>
+      <span><a href="#/privacy">Privacy</a><span class="sep" aria-hidden="true">&middot;</span><a href="#/staff">Staff Login</a></span>
     </div>
     <span class="f-word" aria-hidden="true">lightwell</span>
   </div>
@@ -1453,8 +1459,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var t = $(".fd-title", fd), done = $(".fd-done", fd);
     /* A crisis reply stands alone: no template preview link under the 988 and 911 numbers. */
     $$(".fd-demo", fd).forEach(function (d) { d.style.display = crisis ? "none" : ""; });
-    /* The preview line under a crisis reply: nothing was sent, so call or text 988 now. */
-    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. Please call or text 988 now." : n.getAttribute("data-fine"); });
+    /* The preview line under a crisis reply: nothing was sent, so the standing 911 and 988 line. */
+    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. In danger or crisis? Call 911, or call or text 988." : n.getAttribute("data-fine"); });
     if (!t.hasAttribute("data-title")) t.setAttribute("data-title", t.textContent);
     $(".fd-form", fd).hidden = true;
     done.hidden = false;
@@ -1603,7 +1609,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     "startHere": "So glad you found us. Come on a Sunday at 9:00 or 10:45, grab a coffee from 8:30 and tell us it is your first time. When you are ready, come to Start Here, a lunch with Theo and Priya where you hear where Lightwell is headed and find your spot.",
     "give": "You can give online in about a minute, once or every month. Your giving stocks the pantry, builds the bright new kids' rooms for Room to Grow and keeps the coffee on for whoever walks in next.",
     "watch": "Every message is online by Monday morning. The newest is Room for questions, week 3 of Open Doors, with Pastor Theo. It works great in the car, on a walk or during nap time.",
-    "prayer": "On a real church site, a real person reads every request, big or small, and would love to pray with you. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "prayer": "On a real church site, a real person reads every request, big or small, and would love to pray with you. In this demo, nothing is sent. In danger or crisis? Call 911, or call or text 988.",
     "values": "We are a young church for people who are still figuring it out. So, all of us. We care about honest questions, real friendships, grace for the tired and loving Raleigh well."
   },
   "brand": {

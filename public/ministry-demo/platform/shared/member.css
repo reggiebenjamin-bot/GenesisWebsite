@@ -319,7 +319,8 @@ body.mx-staged .mx-card .gm-protect-list>li:nth-child(n){border-right:0;margin-r
   .m-app .m-top{position:static;padding:4px 18px}
   .m-app .m-top .m-church{min-height:44px}
   .m-app .m-tabbar{position:sticky;bottom:0;padding:2px 8px calc(2px + env(safe-area-inset-bottom,0px))}
-  .m-app .m-tabbar a{min-height:44px;grid-auto-flow:column;gap:6px;padding:2px 4px}
+  /* The icon and its label stay together in the middle of the tab, and the active bar sits over them. */
+  .m-app .m-tabbar a{min-height:44px;grid-auto-flow:column;justify-content:center;align-items:center;gap:6px;padding:2px 4px}
   .m-app .m-tabbar a .gm-icon{width:20px;height:20px}
   .m-app .m-tabbar a[aria-current="page"]::before{top:-3px}
   .m-app .m-main{padding-top:14px}

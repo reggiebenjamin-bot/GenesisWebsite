@@ -89,6 +89,11 @@ a.tlink::after{content:none}
 .preview .pv-mid{display:none}
 @media (max-width:1099px){.preview .pv-long,.preview .more,.preview .long{display:none}.preview .pv-mid{display:inline}}
 @media (max-width:640px){.preview .pv-mid{display:none}}
+/* One row on a phone: the tag, All Looks and Book a Call. Every control in the strip is a 44px target. */
+.preview .pv-sm{display:none}
+@media (max-width:640px){.preview{flex-wrap:nowrap;column-gap:12px}.preview .pv-lg{display:none}.preview .pv-sm{display:inline}}
+:root{--pv:44px}
+.preview a{min-height:44px}
 @media (max-width:360px){.preview{padding-left:8px;padding-right:8px;column-gap:8px;font-size:12px}.preview .tag{font-size:9.5px;letter-spacing:.06em}}
 
 /* ---------- Buttons ---------- */
@@ -708,7 +713,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lampstand Church is a made-up church, shown in the Bold and Dark look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out>Back to the Four Looks</a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
+<div class="preview" role="note"><span class="tag">Template preview</span><span class="pv-long">Lampstand Church is a made-up church, shown in the Bold and Dark look from Genesis Ministry.</span><span class="pv-mid">A made-up church.</span><a href="../../index.html" data-out><span class="pv-lg">Back to the Four Looks</span><span class="pv-sm">All Looks</span></a><a href="/contact?topic=ministry-demo" data-out>Book a Call</a></div>
 
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="top">
@@ -1589,8 +1594,8 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     var t = $(".fd-title", fd), done = $(".fd-done", fd);
     /* A crisis reply stands alone: no template preview link under the 988 and 911 numbers. */
     $$(".fd-demo", fd).forEach(function (d) { d.style.display = crisis ? "none" : ""; });
-    /* The preview line under a crisis reply: nothing was sent, so call or text 988 now. */
-    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. Please call or text 988 now." : n.getAttribute("data-fine"); });
+    /* The preview line under a crisis reply: nothing was sent, so the standing 911 and 988 line. */
+    $$(".fd-done .fd-fine", fd).forEach(function (n) { if (!n.hasAttribute("data-fine")) n.setAttribute("data-fine", n.textContent); n.textContent = crisis ? "This is a preview with a made-up church. Nothing was sent. In danger or crisis? Call 911, or call or text 988." : n.getAttribute("data-fine"); });
     if (!t.hasAttribute("data-title")) t.setAttribute("data-title", t.textContent);
     $(".fd-form", fd).hidden = true;
     done.hidden = false;
@@ -1739,7 +1744,7 @@ html.motion-paused *,html.motion-paused *::before,html.motion-paused *::after{an
     "startHere": "So glad you found us. Come on a Sunday, at 10 AM or 6 PM, and follow the amber flags. We will meet you at the door and point you to the coffee. After a visit or two, come to Start Here: one hour of lunch with Andre and Talia, and you will know where you fit.",
     "give": "You can give online in about a minute, once or every month. Every gift keeps the lights on, stocks our Thursday pantry and helps us buy the Foundry, our first permanent home.",
     "watch": "Every message is on YouTube after Sunday, and the 6 PM gathering streams live each week. The latest is Shine where you are, part 3 of Lamps On, with Pastor Talia.",
-    "prayer": "On a real church site, the people you choose would pray for you that same day: tell us what is heavy, and we would be honored to pray with you. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency.",
+    "prayer": "On a real church site, the people you choose would pray for you that same day: tell us what is heavy, and we would be honored to pray with you. In this demo, nothing is sent. In danger or crisis? Call 911, or call or text 988.",
     "values": "Nobody lights a lamp to hide it. We worship loud, teach honestly and keep room for every voice, then carry that light into every corner of Columbus."
   },
   "brand": {

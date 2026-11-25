@@ -379,7 +379,7 @@ button { font: inherit; color: inherit; }
 }
 .text-link:hover { color: var(--accent); border-color: var(--accent); }
 .chip-link {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border-radius: 6px;
   border: 1px solid var(--card-line); background: var(--chip); color: var(--fg);
   font-size: 0.82rem; font-weight: 500; text-decoration: none; transition: border-color .2s, color .2s;
 }

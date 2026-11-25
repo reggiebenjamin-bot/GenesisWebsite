@@ -67,6 +67,7 @@
   .ne-line-text{margin:0;font-size:15px;line-height:1.5;color:var(--v2-text);overflow-wrap:anywhere}
   .ne-src{display:block;margin-top:4px;color:var(--v2-muted);font-size:12px}
   .ne-wrote{display:block;margin:6px 0 0;padding:6px 0 0 10px;border-left:2px solid var(--v2-border);color:var(--v2-text-2);font-size:13px;line-height:1.5;quotes:none;overflow-wrap:anywhere}
+  .ne-wrote-shared{margin:0 0 10px}
   .ne-wrote b{color:var(--v2-muted);font-weight:700}
   .ne-line>.v2-icon-button{width:44px;height:44px;min-height:44px;margin:-4px -4px 0 0}
   .ne-n{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:50%;background:var(--v2-surface-2,rgba(255,255,255,.08));font-size:12px;font-weight:700;vertical-align:1px}
@@ -119,7 +120,9 @@
     .ne-bar{position:static;padding:12px 0 4px;background:transparent}
     .ne-bar .v2-button{min-height:44px}
   }
-  @media (min-width:861px) and (min-height:501px){body.ne-bar-on .v2-genesis-opener{bottom:96px!important}}
+  /* Wide screens: the bar ends 64px above the window's foot and is 72px tall, so the round Hope button
+     sits 16px above the bar instead of on the right end of Shape My Notes. */
+  @media (min-width:861px) and (min-height:501px){body.ne-bar-on .v2-genesis-opener{bottom:152px!important}}
   /* Start Over is a quiet link that asks first, never an equal twin of Publish. */
   .ne-restart-row{display:grid;gap:10px}
   .ne-restart-row>.v2-button{justify-self:start;margin:0;min-height:44px}
@@ -472,8 +475,10 @@ GM.ready(function (ctx) {
       btns.push('<button type="button" class="v2-button" data-ne-act="down" data-ne-f="' + field + '" data-ne-i="' + i + '"' + (opts.last ? " disabled" : "") + ">Move Down</button>");
     }
     var srcLine = l.edited ? "Edited by you" + (N.srcList(l.src).length ? " · " + fromText(l.src).replace(/^From /, "from ") : "") : fromText(l.src);
+    /* A line kept in the pastor's exact words has no second quote, so its source says so. */
+    if (!l.edited && l.alt && same(l.alt, l.text)) srcLine += spoken() ? ", in your exact words" : ", word for word";
     /* Written words are "You wrote"; a voice memo or a video's captions are "You said". */
-    var wrote = l.alt && (l.edited || !same(l.alt, l.text)) ? '<q class="ne-wrote"><b>' + (spoken() ? "You said:" : "You wrote:") + "</b> " + N.refsHTML(l.alt) + "</q>" : "";
+    var wrote = !opts.sharedQuote && l.alt && (l.edited || !same(l.alt, l.text)) ? '<q class="ne-wrote"><b>' + (spoken() ? "You said:" : "You wrote:") + "</b> " + N.refsHTML(l.alt) + "</q>" : "";
     var help = l.help ? '<p class="ne-help" role="note">In danger or crisis? <a href="tel:911">Call 911</a>, or <a href="tel:988">call</a> or <a href="sms:988">text 988</a>.</p>' : "";
     var fold = isOpen
       ? '<div class="ne-fold" id="' + id + '"><label for="ne-ta-' + field + "-" + i + '">Change the words<textarea class="v2-textarea ne-ta" id="ne-ta-' + field + "-" + i + '" rows="3" maxlength="400" data-ne-ta="' + key + '">' + esc(l.text) + "</textarea></label>" +
@@ -544,7 +549,9 @@ GM.ready(function (ctx) {
       h += scripture;
       h += '<div class="ne-field"><h3>Key points</h3><ul class="ne-lines">' + m.points.map(function (l, i) { return lineRow("points", i, l, "key point " + (i + 1), { num: i + 1, removable: m.points.length > 1, movable: true, first: i === 0, last: i === m.points.length - 1 }); }).join("") + "</ul>" + removedHTML("points") + "</div>";
       if (m.more && m.more.length || removedHTML("more")) h += '<div class="ne-field"><h3>From the message</h3><ul class="ne-lines">' + (m.more || []).map(function (l, i) { return lineRow("more", i, l, "the line from the message", { removable: true }); }).join("") + "</ul>" + removedHTML("more") + "</div>";
-      h += '<div class="ne-field"><h3>For small groups</h3><ul class="ne-lines">' + m.questions.map(function (l, i) { return lineRow("questions", i, l, "question " + (i + 1), { removable: m.questions.length > 1, movable: true, first: i === 0, last: i === m.questions.length - 1 }); }).join("") + "</ul>" + removedHTML("questions") + "</div>";
+      /* When every question came from the same words, the quote shows once, under the heading. */
+      var qAlt = m.questions.length > 1 && m.questions[0].alt && m.questions.every(function (l) { return !l.edited && l.alt === m.questions[0].alt && !same(l.alt, l.text); }) ? m.questions[0].alt : "";
+      h += '<div class="ne-field"><h3>For small groups</h3>' + (qAlt ? '<q class="ne-wrote ne-wrote-shared"><b>' + (spoken() ? "You said:" : "You wrote:") + "</b> " + N.refsHTML(qAlt) + "</q>" : "") + '<ul class="ne-lines">' + m.questions.map(function (l, i) { return lineRow("questions", i, l, "question " + (i + 1), { removable: m.questions.length > 1, movable: true, first: i === 0, last: i === m.questions.length - 1, sharedQuote: !!qAlt }); }).join("") + "</ul>" + removedHTML("questions") + "</div>";
       h += '<div class="ne-field"><h3>For this week</h3><ul class="ne-lines">' + lineRow("week", 0, m.week, "for this week") + "</ul></div>";
       /* The run-through video only shapes the notes. Members get the message's own video, added after Sunday. */
       h += '<div class="ne-field"><h3>The video</h3><p class="ne-meta">' + (N.videoAdded(note.id) ? "Linked after Sunday: " + esc(note.posted) : "Added after Sunday, when the message is online. It plays on the website from the message section.") + (way === "video" ? " Your run-through video only shaped these notes. Members never see that link." : "") + "</p></div>";

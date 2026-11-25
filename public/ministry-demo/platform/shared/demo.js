@@ -37,7 +37,7 @@
     "Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. " +
     "Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. " +
     "Enterprise, for more than one campus, is scoped on a call.";
-  /* Where Talk With Genesis goes: one address for the whole preview (GM_DATA.genesisContact). */
+  /* Where Book a Call goes: one address for the whole preview (GM_DATA.genesisContact). */
   var CONTACT = (D && D.genesisContact) || (STORY && STORY.contact) || "/contact?topic=ministry-demo";
   /* Staff seats at each plan, from the plans themselves. Everyone who signs in to the workspace, the
      prayer team too, uses a seat; members never do. */
@@ -117,8 +117,8 @@
     worksbeside: "Genesis Ministry works beside Planning Center, Breeze, Subsplash and your giving provider, and does not replace them. Give opens your own giving page, and events, groups and kids check-in open the tool you already use. There is no live sync today: at onboarding we can import your people list from an export, so nobody is entered twice.",
     different: "Planning Center, Breeze and Subsplash keep your church's records and the tools around them. Genesis Ministry is the part guests and members meet: the website and " + AN + ", a front office where every first-time guest gets an owner and a next step, the care inbox and the member app, with a person approving every draft. It works beside the tool you use, so you keep it.",
     /* A church's web address is settled during scoping, so Hope says where it is settled. */
-    domain: "Your web address is settled during scoping, with a person at Genesis: which address the new site uses and how the move is handled. Choose Talk With Genesis to confirm it for your church.",
-    start: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Choose Talk With Genesis to begin.",
+    domain: "Your web address is settled during scoping, with a person at Genesis: which address the new site uses and how the move is handled. Choose Book a Call to confirm it for your church.",
+    start: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Choose Book a Call to begin.",
     upgrade: "Each plan adds to the one before, so a church can start on Care and move up to Shepherd or Plus as it grows. A person at Genesis sets up the change with you.",
     cancel: "How a plan ends is set with Genesis on a call, before you sign anything. If you ever leave, your data is yours: we hand over a full export of your people, guests, care history and the access record, then delete our copy once you confirm you have it.",
     discount: PRICES + " Any other terms are set with Genesis on a call.",
@@ -144,7 +144,7 @@
     accessrecord: "From the Shepherd plan, every open, reply, change and archive of prayer and private threads is written down. It names the record, never what it says, and nobody can edit it. A mistake is corrected with a new entry, and a blocked try is recorded too. The Plus plan adds the Access Record screen to search and export it.",
     oncall: "From the Shepherd plan, each church names a pastor on call in Team. On a real church site, when a message or prayer request sounds like someone is in danger, the person sees 988 and 911 right away, and the pastor on call gets an email and a phone notification with no private words. A pastor follows up and sets the next check-in.",
     /* What a pastor asks before booking a call. */
-    call: "Choose Talk With Genesis, and a person at Genesis will set up a call. They walk you through it with your own church in mind: the look, your content and the plan that fits.",
+    call: "Choose Book a Call, and a person at Genesis will set up a call. They walk you through it with your own church in mind: the look, your content and the plan that fits.",
     seats: seatsText(),
     contract: "Contract terms are set with Genesis on a call, before you sign anything. " + PRICES + " Scoping includes a demo in the look you choose.",
     trial: "A trial is set with Genesis on a call. Scoping includes a demo in the look you choose, with your own church in mind.",
@@ -158,18 +158,18 @@
     company: "Genesis AI makes Genesis OS, and Genesis Ministry is its edition for churches. A person at Genesis walks each church through scoping, the build and launch, then keeps the platform running.",
     size: "Genesis Ministry is built for churches of about 100 to 1,000 people. A smaller church can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.",
     /* A pastor's buying and planning questions. The ones settled on a call are set in writing then. */
-    keepsite: "Whether " + AN + " can be added to a website you already have is settled during scoping, with a person at Genesis. Every plan today comes with a new website in one of four looks, with " + AN + " built in. Choose Talk With Genesis to talk it through for your church.",
+    keepsite: "Whether " + AN + " can be added to a website you already have is settled during scoping, with a person at Genesis. Every plan today comes with a new website in one of four looks, with " + AN + " built in. Choose Book a Call to talk it through for your church.",
     givingsee: "Nobody sees giving in Genesis. Give opens your church's own giving page, and the app keeps no giving history, so no role here, not a pastor and not the prayer team, can see what anyone gives. Giving records stay with your giving provider.",
     careplan: "Care is the first plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.",
     schedule: "Genesis Ministry does not schedule volunteers. Keep Planning Center Services, or the tool you use for rotas today. From the Shepherd plan, every first-time guest has an owner and a next step, and Serving is the last stage on the guest path.",
     permember: "No. Each plan is one monthly price for the church, not a price per member: Care at $149, Shepherd at $299 and Plus at $499 a month. Plans count staff seats, and member accounts never use a seat.",
     phones: "The member app is made for phones, iPhone and Android alike, and it comes with the Shepherd plan. How your members get it is set up with Genesis during scoping. Members sign in with a code sent by email, so there is no password to remember.",
-    language: "The four looks are written in English today. A site in Spanish, or in two languages, is settled during scoping with a person at Genesis. Choose Talk With Genesis to ask for your church.",
+    language: "The four looks are written in English today. A site in Spanish, or in two languages, is settled during scoping with a person at Genesis. Choose Book a Call to ask for your church.",
     growth: "Genesis Ministry is built for churches of about 100 to 1,000 people. When a church grows past that, a person at Genesis reviews the fit with you, and Enterprise is there when a second campus opens.",
     support: "Genesis runs the platform for you, so a person at Genesis is your support. Support hours, and how to reach someone on a Sunday morning, are set in writing during scoping, before you sign anything.",
     attendance: "Genesis Ministry does not take attendance or run check-in. Keep the check-in tool you use today. From the Plus plan, Reports count guests, care and the guest path, never names.",
     checkin: "Kids check-in stays in the tool you use today, such as Planning Center Check-Ins. In Genesis Ministry, the kids check-in link opens that tool, so families never learn a second system.",
-    references: "A person at Genesis can talk with you about other churches and references on a call. Choose Talk With Genesis to set it up.",
+    references: "A person at Genesis can talk with you about other churches and references on a call. Choose Book a Call to set it up.",
     whobuilds: "Genesis builds it with your content. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds the site with your words and photos, Launch takes it live with your staff, and the Managed Platform keeps it running.",
     hipaa: "Genesis Ministry does not claim HIPAA compliance today. HIPAA covers health care providers and insurers, and most churches are not covered by it. Prayer and care stay behind role checks the system enforces, and during scoping we share the security and backup details in writing.",
     websitecost: "The website is in every plan. Care, at $149 a month, is the website in one of four looks with " + AN + " on it, and each plan adds to that. Customization beyond the template is available for an additional cost.",
@@ -220,7 +220,7 @@
   /* Sermon notes and devotionals (../../shared/notes-data.js): shaped only from the pastor's own words. */
   ANSWERS.notes = "A pastor brings Sunday's outline, a Word or PDF file, the message's video link or a voice memo, and " + AN + " shapes only those words into a notes page: the title, the scripture printed with its translation named, three or four key points, questions for small groups and the video. The pastor checks every line, then taps Publish or Schedule, 30 minutes before the first service on Sunday by default. " + AN + " never writes a sermon and adds no teaching. Sunday notes on the website come with every plan. Daily devotionals, notes in the member app and email to members who chose it come with the Shepherd plan, $299 a month.";
   ANSWERS.devotionals = "Sunday notes on the website come with every plan, the Care plan included. The Shepherd plan, $299 a month, adds daily devotionals shaped from the pastor's own words (a verse, a few short paragraphs and a prayer, out at 6 AM), the notes and a devotional reader in the member app, and email to members who chose it. Texting goes only to members who opt in, and only if the church turns texting on. The Plus plan, $499 a month, includes all of it.";
-  ANSWERS.confidential = "A pastor can talk with you about what stays private and the few things they must report to keep someone safe. If anyone is in danger right now, call 911, or call or text 988.";
+  ANSWERS.confidential = "A pastor can talk with you about what stays private and the few things they must report to keep someone safe. In danger or crisis? Call 911, or call or text 988.";
   ANSWERS.aiprayerco = ANSWERS.aiprayer;
   /* What a pastor types to the workspace Hope. */
   ANSWERS.chat = "In this preview, answers are scripted from sample data, and nothing is sent in this demo. In your workspace, " + AN + " only sees what you can see, and never sends anything without a person's approval.";
@@ -238,11 +238,11 @@
   ANSWERS.websiteown = "If you ever leave, we hand over your website content, " + AN + "'s approved facts and the brand board, on every plan. Who holds the web address and the site's code after you leave is set in writing with a person at Genesis before you sign anything.";
   ANSWERS.exportterms = "Any fee for an export, and how long your data stays available after you cancel, are set in writing before you sign anything. A person at Genesis can confirm them on a call.";
   ANSWERS.chatexport = "I would rather not guess whether " + AN + "'s chat history is part of an export. A person at Genesis can confirm it on a call, and how long chats are kept is set in writing during scoping.";
-  ANSWERS.grief = "I am so sorry for your loss. Please take care of yourself, and lean on your pastors and the people who love you. If you are in crisis, call or text 988, or 911 in an emergency.";
+  ANSWERS.grief = "I am so sorry for your loss. Please take care of yourself, and lean on your pastors and the people who love you. In danger or crisis? Call 911, or call or text 988.";
   ANSWERS.textwho = "Texting is off unless the church turns it on, and it is for guest follow-up only. Who on staff sees a guest's texts is set with a person at Genesis during scoping.";
   ANSWERS.minortext = "Texting is for guest follow-up only, and it is off unless the church turns it on. Member accounts are for adults 18 and older, and kids are cared for through their parents and the church's kids ministry.";
   var beliefsAll = ANSWERS.beliefs;
-  ANSWERS.beliefs = function (q) { return beliefsAll + (/\b(?:die|dies|dying|death|dead)\b/i.test(String(q || "")) ? " If you are in crisis, call or text 988, or 911 in an emergency." : ""); };
+  ANSWERS.beliefs = function (q) { return beliefsAll + (/\b(?:die|dies|dying|death|dead)\b/i.test(String(q || "")) ? " In danger or crisis? Call 911, or call or text 988." : ""); };
   var autoAll = ANSWERS.autoreply;
   ANSWERS.autoreply = function (q) { return /\b(?:decid\w*|choos\w*|picks?|assign\w*)\b/i.test(String(q || "")) ? "No. A person decides who gets a follow-up, and " + AN + " never decides on its own or sends anything without a person's approval." : autoAll; };
   /* A yes or no question gets Yes or No first; "how" and "who" questions get the answer itself. */
@@ -636,12 +636,12 @@
     "aiprayerco", "processors", "otherchurches", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "value", "serving", "faithcompany", "privacypolicy",
     "prayerfromstaff", "prayernotify", "memberemail", "hopeprays", "contactsee", "givingfees", "autoreply", "madeup", "soc2", "denomfit", "advice", "sermon", "confidential", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "texting",
     "multisite", "sharelogin", "prayeranon", "prayerwall", "pastornotes", "legalrequest", "freeplan", "bibletrans", "websiteown", "exportterms", "chatexport", "grief", "textwho", "minortext", "notes", "devotionals"];
-  /* Answers that a person at Genesis settles: Talk With Genesis sits under each one, on every Hope. */
+  /* Answers that a person at Genesis settles: Book a Call sits under each one, on every Hope. */
   var TALK_KEYS = ["call", "start", "domain", "keepsite", "language", "support", "references", "contract", "trial", "cancel", "discount", "fees", "growth", "whobuilds", "processors", "prayerforward", "guestchats", "faithcompany", "soc2"];
   /* Trust and policy answers the workspace dock gives before a screen's own answers ("Who covers when
      the pastor on call is away?" on a person page is about on-call cover, not that person). */
   var FIRST_KEYS = ["givingsee", "model", "staffaccess", "removeaccess", "givingexport", "exportwho", "grouptext", "textcost", "aitraining", "aiprayerco", "chat", "processors", "otherchurches", "sell", "reporting", "minormessage", "prayerforward", "pastorsonly", "guestchats", "oncallcover", "prayerfromstaff", "prayernotify", "memberemail", "hopeprays", "contactsee", "confidential", "sermon"];
-  function talkChips() { return [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]; }
+  function talkChips() { return [{ label: "Book a Call", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]; }
   function addMore(answers, a, chips) { MORE_KEYS.forEach(function (k) { if (!answers[k]) answers[k] = a(ANSWERS[k], TALK_KEYS.indexOf(k) >= 0 ? talkChips() : chips); }); return answers; }
   /* Inside a church's own screens, the on-call answer names who is on call there. */
   if (GM && GM.church && GM.side !== "genesis" && GM.plan >= 2) ANSWERS.oncall +=" At " + GM.church.short + ", " + GM.church.carePastor + " is the pastor on call.";
@@ -721,7 +721,12 @@
   /* The short way through goes from Member Prayer straight into the gifts conversation (its own first
      screen is one card of what to expect, which the conversation itself shows). */
   var SHORT_SKIP = P.get("pace") === "short" ? ["member-gifts"] : [];
-  var PATH = PATH_ALL.filter(function (e) { return (!e.plans || e.plans.indexOf(GM.plan) >= 0) && (!e.desk || ORIGIN === "desk") && SHORT_SKIP.indexOf(e.key) < 0; })
+  /* The short way through is five screens a pastor can see in about two minutes on a phone: Today,
+     Guests, the Care Inbox, Sunday's Notes and the member app, with its devotional. Its last card
+     offers every screen. Desk runs (from=desk) keep the whole path. */
+  var SHORT_KEYS = ["church-today", "church-guests", "church-care", "church-note", "member-home", "index"];
+  var SHORT_RUN = P.get("pace") === "short" && ORIGIN === "church";
+  var PATH = PATH_ALL.filter(function (e) { return (!e.plans || e.plans.indexOf(GM.plan) >= 0) && (!e.desk || ORIGIN === "desk") && SHORT_SKIP.indexOf(e.key) < 0 && (!SHORT_RUN || SHORT_KEYS.indexOf(e.key) >= 0); })
     .map(function (e) { return SHORT_SKIP.length && e.key === "member-gifts:talk" ? Object.assign({}, e, { label: "The Gifts Conversation" }) : e; });
   /* The church buyer's demo closes the week's story on its last screen: Maya, the first-time guest,
      and Sarah, who asked the church to pray for her mom. On the Care plan (the website only) it says what
@@ -1341,8 +1346,8 @@
   /* ------------------------------------------------------------------ Genesis screens: the dock */
   function dockAnswers() {
     var list = RULES.map(function (r) {
-      /* Talk With Genesis is a link under the answer, opening the contact page in a new tab. */
-      var v = ANSWERS[r[1]], talk = TALK_KEYS.indexOf(r[1]) >= 0, link = { label: "Talk With Genesis", href: CONTACT };
+      /* Book a Call is a link under the answer, opening the contact page in a new tab. */
+      var v = ANSWERS[r[1]], talk = TALK_KEYS.indexOf(r[1]) >= 0, link = { label: "Book a Call", href: CONTACT };
       var ans = !talk ? v : typeof v === "function" ? function (q) { return { text: v(q), link: link }; } : { text: v, link: link };
       return { match: r[0], answer: ans, first: FIRST_KEYS.indexOf(r[1]) >= 0 };
     });
@@ -1432,8 +1437,8 @@
         /* The gifts conversation comes with Plus: below Plus the answer says so plainly, never a gifts flow the app does not have. */
         giftswho: GIFTS_OFF ? a(GIFTS_OFF_LINE, [toMessages]) : a("Only you, unless you say yes. With a yes, " + listNames(giftNames) + " see your name with your gifts. The church's gifts picture shows counts only, never names.", [{ label: "How Is It Added Up?", key: "giftsinfo" }]),
         aimine: a("No. " + AN + " never reads or answers prayer. Only the people you chose can read it, and a person writes every reply.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        pastor: a(lead.name + " leads " + c.name + ", and " + care.name + " cares for the church family. " + (FAKE_PHONE ? "On a real church site, you would reach one of them by sending a Message and choosing Something private, for a pastor. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency." : "To reach one of them, send a Message and choose Something private, for a pastor. Or call the church at " + c.phone + "."), [toMessages]),
-        talk: a("You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". If you are in danger, call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
+        pastor: a(lead.name + " leads " + c.name + ", and " + care.name + " cares for the church family. " + (FAKE_PHONE ? "On a real church site, you would reach one of them by sending a Message and choosing Something private, for a pastor. In this demo, nothing is sent. In danger or crisis? Call 911, or call or text 988." : "To reach one of them, send a Message and choose Something private, for a pastor. Or call the church at " + c.phone + "."), [toMessages]),
+        talk: a("You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". In danger or crisis? Call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         remove: a("On Home, choose Ask to Remove My Information, and a pastor confirms it with you. Nothing is thrown away by accident before then, and you can also ask for a copy first.", [toHome]),
         kids: a(c.kidsCheckIn + " The church website has the rest, from ages to what to expect on a first Sunday.", [{ label: "What Time Is Sunday?", key: "times" }]),
         pco: a(ANSWERS.pco, [{ label: "What Does Each Plan Include?", key: "levels" }]),
@@ -1448,17 +1453,17 @@
         /* Everyday member questions: a reply, giving, baptism, emails, and a hard week. */
         replies: a("Replies are in Messages and under each prayer request. Right now " + care.name + " has replied to you in Messages.", [{ label: "Open Messages", href: GM.url("member-messages.html"), go: true, cta: true }, { label: "Who Reads My Messages?", key: "messageswho" }]),
         givingprivate: a("Give opens " + poss(c.short) + " own giving form. This app keeps no giving history, so nobody here sees what you give. Receipts stay with the church's giving provider.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        baptism: a((c.baptism || "Ask the church about baptism, and a pastor will talk it through with you first.") + (FAKE_PHONE ? " On a real church site, you would ask by sending a Message, and a pastor would reply. In this demo, nothing is sent. If you are in crisis, call or text 988, or 911 in an emergency." : " To ask, send a Message, or call the church at " + c.phone + "."), [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
+        baptism: a((c.baptism || "Ask the church about baptism, and a pastor will talk it through with you first.") + (FAKE_PHONE ? " On a real church site, you would ask by sending a Message, and a pastor would reply. In this demo, nothing is sent. In danger or crisis? Call 911, or call or text 988." : " To ask, send a Message, or call the church at " + c.phone + "."), [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
         emails: a("Emails from the app never carry private words. They say only that you have a reply, and you sign in to read it. To change what you receive, ask the church office in Messages.", [toMessages]),
         /* A member asking for the privacy page. */
         privacypolicy: a(poss(c.short) + " website has a privacy page that says who sees what you share. In the app, a prayer request is read only by the people you choose, a private message only by the pastors, and every reply comes from a person.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages]),
         /* A belief question goes to a pastor, never the hard-week or crisis answer. */
         beliefs: a("Thank you for asking. That deserves a real conversation, not a quick answer from me. " + lead.name + " and " + care.name + " would be glad to talk it through with you. Send a Message and choose Something private, for a pastor, or call the church at " + c.phone + ".", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
-        hardship: a("I am so sorry. You do not have to carry this alone. You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". If you are in danger, call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
-        call: a(ANSWERS.call, [{ label: "Talk With Genesis", href: CONTACT }]),
-        start: a(ANSWERS.start, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]),
+        hardship: a("I am so sorry. You do not have to carry this alone. You can write to the church in Messages, and a real person will answer. If it cannot wait, call the church at " + c.phone + ". In danger or crisis? Call 911, or call or text 988.", [toMessages, { label: "Can I Talk to a Pastor?", key: "pastor" }]),
+        call: a(ANSWERS.call, [{ label: "Book a Call", href: CONTACT }]),
+        start: a(ANSWERS.start, [{ label: "Book a Call", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]),
         /* A member's questions that share words with a buyer's: the church's own voice, never scoping or
-           Talk With Genesis. The plans and their prices stay, for a pastor trying the preview. */
+           Book a Call. The plans and their prices stay, for a pastor trying the preview. */
         domain: a("That is a question for the church office. Send a Message, and someone from " + c.short + " will answer.", [toMessages]),
         keepsite: a("That is a question for the church office. Send a Message, and someone from " + c.short + " will answer.", [toMessages]),
         sell: a("No. " + c.short + " never sells what you share, and neither does Genesis, which runs this app for the church. Nothing is passed on for anyone's marketing. A few service providers, such as hosting, email delivery and the AI service behind " + AN + ", handle it under contract only to run the app. " + AN + " never reads prayer.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages]),
@@ -1468,12 +1473,12 @@
         discount: a("The app is free for members. Giving is always your choice, through the church's own giving form.", [{ label: "How Do I Give?", key: "give" }]),
         fees: a("Members never pay to use the app. Giving is always your choice, through the church's own giving form.", [{ label: "How Do I Give?", key: "give" }]),
         cancel: a("You can stop using the app at any time. To have your information removed, choose Ask to Remove My Information on Home, and a pastor confirms it with you.", [toHome]),
-        support: a("If something in the app is not working, send a Message to the church office, and someone will help. If you are in danger, call 911, or call or text 988.", [toMessages]),
+        support: a("If something in the app is not working, send a Message to the church office, and someone will help. In danger or crisis? Call 911, or call or text 988.", [toMessages]),
         language: a("The app is in English today. If you would like help in another language, send a Message to the church office, and someone will do what they can.", [toMessages]),
         references: a("That is a question for the church office. Send a Message, and someone from " + c.short + " will answer.", [toMessages]),
         /* Family at home, and what a pastor must report. */
-        messagesprivate: a("A private message is read only by " + listNames(pastors) + ", and a prayer request only by the people you chose. Nothing goes to anyone in your family, and the email you get says only that you have a reply, so you sign in to read it. If someone at home can open your email or phone, sign out when you finish. If you are not safe at home, call 911, or call or text 988.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
-        confidential: a("A pastor can talk with you about what stays private and the few things they must report to keep someone safe. Send a Message and choose Something private, for a pastor, or call the church at " + c.phone + ". If anyone is in danger right now, call 911, or call or text 988.", [toMessages]),
+        messagesprivate: a("A private message is read only by " + listNames(pastors) + ", and a prayer request only by the people you chose. Nothing goes to anyone in your family, and the email you get says only that you have a reply, so you sign in to read it. If someone at home can open your email or phone, sign out when you finish. In danger or crisis? Call 911, or call or text 988.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
+        confidential: a("A pastor can talk with you about what stays private and the few things they must report to keep someone safe. Send a Message and choose Something private, for a pastor, or call the church at " + c.phone + ". In danger or crisis? Call 911, or call or text 988.", [toMessages]),
         prayerfromstaff: a("You choose who reads each request: the pastors and the prayer team, or Pastors only. A request marked Pastors only is read by " + listNames(pastors) + " and not by the prayer team. It cannot be kept from one pastor, so if you would rather talk with just one of them, send a Message and choose Something private, for a pastor.", [toMessages, { label: "Who Sees Prayer Requests?", key: "prayerwho" }]),
         /* Round 4: a member's own privacy questions: contact details, location, a copy, the church's tools, emails. */
         contactsee: a("Other members never see your phone number, email or address: the app has no member directory. Inside the church, who sees contact details is set by each staff member's role, such as the pastors and whoever follows up with guests.", [{ label: "Who Sees Prayer Requests?", key: "prayerwho" }, toMessages]),
@@ -1598,12 +1603,12 @@
     card.innerHTML = '<div class="v2-guide-head"><span class="v2-guide-eyebrow"></span><span class="v2-guide-count">Done</span>' +
       '<button class="v2-guide-icon v2-guide-close" type="button" data-close aria-label="Close" title="Close"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>' +
       '<p class="v2-guide-say" role="status"></p>' + (nx && nx.note ? '<p class="v2-guide-note"></p>' : "") +
-      '<div class="v2-guide-controls"><a class="v2-button v2-button-primary" data-levels></a><a class="v2-button" data-talk target="_blank" rel="noopener"></a><a class="v2-button" data-start></a><a class="v2-button v2-button-quiet" data-home></a></div>';
+      '<div class="v2-guide-controls"><a class="v2-button v2-button-primary" data-levels></a><a class="v2-button" data-talk></a><a class="v2-button" data-start></a><a class="v2-button v2-button-quiet" data-home></a></div>';
     card.querySelector(".v2-guide-eyebrow").textContent = GUIDE + " · The week";
     card.querySelector(".v2-guide-say").textContent = churchClose();
     if (nx && nx.note) card.querySelector(".v2-guide-note").textContent = nx.note;
     var lv = card.querySelector("[data-levels]"); lv.href = nx && nx.href ? nx.href : GM.levelsHref; lv.textContent = "See the Plans";
-    var tk = card.querySelector("[data-talk]"); tk.href = CONTACT; tk.innerHTML = "Talk With Genesis<span class=\"sr-only\"> (opens in a new tab)</span>";
+    var tk = card.querySelector("[data-talk]"); tk.href = CONTACT; tk.textContent = "Book a Call";
     var st = card.querySelector("[data-start]"); st.href = start; st.textContent = "How to Get Started";
     var hm = card.querySelector("[data-home]"); hm.href = "index.html?church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan; hm.textContent = "Back to the Overview";
     function close() { card.remove(); var t = document.querySelector(".mx-tour") || document.getElementById("gm-main"); if (t && t.focus) try { t.focus({ preventScroll: true }); } catch (e) {} }
@@ -1628,7 +1633,7 @@
       finale: { text: (tour ? fill(tour.done) : "") + (last ? " " + churchClose() : ""), askLabel: "Ask " + AN,
         /* See the Plans (the gold Next) already opens the overview, so the second way on is a call. */
         /* The last card of a church buyer's demo, as on the week card: a call, how to start, and the way back. */
-        links: last ? [{ label: "Talk With Genesis", href: CONTACT }, { label: "How to Get Started", href: "journey.html#start" }, { label: "Back to the Overview", href: "index.html?church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan }] : [] },
+        links: last ? [{ label: "Book a Call", href: CONTACT }].concat(SHORT_RUN ? [{ label: "See Every Screen", href: "church-today.html?tour=1&church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan }] : [], [{ label: "How to Get Started", href: "journey.html#start" }, { label: "Back to the Overview", href: "index.html?church=" + encodeURIComponent(GM.church.slug) + "&plan=" + GM.plan }]) : [] },
       openChat: function (prompt) { GM.hope.open(prompt || ""); },
       autoStartParam: "tour",
       keepParams: ["church", "plan", "from", "pace"],
@@ -1716,15 +1721,15 @@
         custom: a(ANSWERS.custom, [{ label: "What Does It Cost?", key: "price" }]),
         levels: a(ANSWERS.levels, [{ label: "What Does It Cost?", key: "price" }, { label: "Can We Customize It?", key: "custom" }]),
         price: a(ANSWERS.price, [{ label: "What Does Each Plan Include?", key: "levels" }]),
-        call: a(ANSWERS.call, [{ label: "Talk With Genesis", href: CONTACT }]),
+        call: a(ANSWERS.call, [{ label: "Book a Call", href: CONTACT }]),
         /* A buyer's next question after these is usually "can we talk", so the call is one tap away. */
-        trial: a(ANSWERS.trial, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]),
-        contract: a(ANSWERS.contract, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does It Cost?", key: "price" }]),
-        company: a(ANSWERS.company, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Is Genesis Ministry?", key: "platform" }]),
-        size: a(ANSWERS.size, [{ label: "What Does Each Plan Include?", key: "levels" }, { label: "Talk With Genesis", href: CONTACT }]),
-        domain: a(ANSWERS.domain, [{ label: "Talk With Genesis", href: CONTACT }]),
-        cancel: a(ANSWERS.cancel, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does It Cost?", key: "price" }]),
-        discount: a(ANSWERS.discount, [{ label: "Talk With Genesis", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }])
+        trial: a(ANSWERS.trial, [{ label: "Book a Call", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }]),
+        contract: a(ANSWERS.contract, [{ label: "Book a Call", href: CONTACT }, { label: "What Does It Cost?", key: "price" }]),
+        company: a(ANSWERS.company, [{ label: "Book a Call", href: CONTACT }, { label: "What Is Genesis Ministry?", key: "platform" }]),
+        size: a(ANSWERS.size, [{ label: "What Does Each Plan Include?", key: "levels" }, { label: "Book a Call", href: CONTACT }]),
+        domain: a(ANSWERS.domain, [{ label: "Book a Call", href: CONTACT }]),
+        cancel: a(ANSWERS.cancel, [{ label: "Book a Call", href: CONTACT }, { label: "What Does It Cost?", key: "price" }]),
+        discount: a(ANSWERS.discount, [{ label: "Book a Call", href: CONTACT }, { label: "What Does Each Plan Include?", key: "levels" }])
       }, a, more),
       match: RULES.map(function (r) { return [r[0], r[1] === "prayer" ? "prayerwho" : r[1] === "crisis" ? "crisisinfo" : r[1]]; }),
       fallback: "I am not sure about that one, and I would rather not guess. A person at Genesis can answer it on a call, and the guided demo shows every screen with sample data. For now, try one of these.",
@@ -1810,19 +1815,9 @@
     addSkipLink(nx);
     markContactLinks();
   }
-  /* Talk With Genesis always opens the contact page in a new tab, and says so to screen readers,
-     wherever it is drawn (the Done cards, the chat chips are opened by hope-demo.js itself). */
-  function markContactLinks() {
-    if (!("MutationObserver" in window)) return;
-    var mark = function () {
-      document.querySelectorAll('a[href="' + CONTACT + '"]:not([target])').forEach(function (a) {
-        a.target = "_blank"; a.rel = "noopener";
-        if (!a.querySelector(".sr-only")) a.insertAdjacentHTML("beforeend", '<span class="sr-only"> (opens in a new tab)</span>');
-      });
-    };
-    mark();
-    new MutationObserver(mark).observe(document.body, { childList: true, subtree: true });
-  }
+  /* Book a Call opens the contact page in the same tab, as everywhere else on the site: the demo's
+     place is in its address, so the back button returns to it. Nothing to mark. */
+  function markContactLinks() {}
   /* A quiet "Skip to Next Screen" on every card but the last (which already links on),
      so a pastor short on time keeps the chain without clicking through every step. */
   function addSkipLink(nx) {

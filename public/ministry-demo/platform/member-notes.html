@@ -53,7 +53,8 @@
   .m-app .mn-copy{display:grid;gap:10px;margin-top:16px}
   .m-app .mn-copy .m-btn{width:100%;min-height:48px}
   .m-app .mn-sunday{margin:8px 0 0}
-  .m-app .mn-sunday .m-btn{width:100%;font-weight:600}
+  /* The Sunday preview is a quiet text link under Follow Along, never a second button of the same kind. */
+  .m-app .mn-sunday-link{display:inline-flex;align-items:center;min-height:44px;font-size:15px;font-weight:600;color:var(--m-accent-ink);text-decoration:underline;text-underline-offset:3px}
   /* One disabled look across the reader: a dashed outline in full-contrast type, never a faded button. */
   .m-app .mn-two .m-btn:disabled{opacity:1;border-style:dashed;cursor:default;color:var(--m-muted)}
   /* While following, the tab bar steps aside so the point and its two buttons fit, even on a phone on its side. */
@@ -68,7 +69,8 @@
   body.mn-following .mn-reader{display:none}
   /* Reading comfort, the same on the notes and the devotional reader (prefix mx-read): text size and,
      in the bright looks, Night Reading. Kept on this phone (localStorage), and the page reads fine without it. */
-  .m-app .mx-read{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+  /* A-, A+ and Night Reading share the row in equal columns, one height, so no button reads as an odd one out. */
+  .m-app .mx-read{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin:12px 0 0}
   .m-app .mx-read .m-btn{min-height:44px;min-width:44px;padding:6px 12px;font-size:15px}
   .m-app .mx-read .m-btn[aria-pressed="true"]{border-color:var(--m-accent);box-shadow:inset 0 0 0 1.5px var(--m-accent)}
   .m-app.mx-night{--m-bg:#15161a!important;--m-surface:#1d1f24!important;--m-surface-2:#24262c!important;--m-surface-3:#2c2f36!important;--m-text:#ece8e1!important;--m-muted:#b9b3a9!important;--m-line:#373a41!important;--m-line-strong:#4c5059!important;--m-accent-ink:#e9d5a6!important;--m-accent-soft:rgba(233,213,166,.16)!important;color-scheme:dark!important}
@@ -97,8 +99,8 @@
   .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
   .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
   .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
-  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
-  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-stagebar .v2-button{min-height:44px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:44px;min-height:44px}
   .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
   @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
   .mx-about,.mx-screens{display:none}
@@ -156,7 +158,7 @@
   /* ==== end member stage ==== */
 </style>
 </head>
-<body data-side="member" data-page="home" data-title="Sunday's Notes">
+<body data-side="member" data-page="notes" data-title="Sunday's Notes">
 
 <main id="gm-main" class="m-main">
   <div class="mn-reader">
@@ -408,7 +410,7 @@ GM.ready(function (ctx) {
     $("mn-follow").addEventListener("touchstart", function (e) { if (e.target.closest("textarea")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     $("mn-follow").addEventListener("touchend", function (e) { if (x0 == null) return; var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1); }, { passive: true });
     /* On a weekday the demo offers the Sunday morning view, where Follow Along comes first. */
-    if (!SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").innerHTML = '<a class="m-btn m-btn--sm" href="' + esc(GM.url("member-notes.html", { id: n.id, day: "sun" })) + '">Preview: Follow Along During the Sermon</a>'; }
+    if (!SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").innerHTML = '<a class="mn-sunday-link" href="' + esc(GM.url("member-notes.html", { id: n.id, day: "sun" })) + '">See how Follow Along looks on Sunday</a>'; }
     if (SUNDAY && n.id === latest.id) { $("mn-sunday").hidden = false; $("mn-sunday").textContent = "Demo: Sunday, " + N.dateLong(n.date).replace(/^Sunday, /, "") + ", at " + NC.sundayAt + ", as members sit down."; }
     if (ctx.params.get("follow") === "1") { at = 0; follow(true); }
   }

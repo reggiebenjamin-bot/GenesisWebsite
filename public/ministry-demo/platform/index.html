@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#08090e">
 <title>Genesis Ministry · Edition 05 · Design preview</title>
 <meta name="description" content="Edition 05 of Genesis OS for churches: the website, the front office, the back office and the member app, with three plans and the rules that protect people.">
-<script>(function(){try{var p=new URLSearchParams(location.search);if(p.get("tour")==="1"){var c=p.get("church")||sessionStorage.getItem("gm.church")||"bright-modern";var pl=p.get("plan")||"3";if(!/^[a-z-]+$/.test(c))c="bright-modern";if(!/^[123]$/.test(pl))pl="3";location.replace("church-today.html?tour=1&church="+c+"&plan="+pl);}}catch(e){}})();</script>
+<script>(function(){try{var p=new URLSearchParams(location.search);if(p.get("tour")==="1"){var c=p.get("church")||sessionStorage.getItem("gm.church")||"bright-modern";var pl=p.get("plan")||"3";if(!/^[a-z-]+$/.test(c))c="bright-modern";if(!/^[123]$/.test(pl))pl="3";location.replace("church-today.html?tour=1&church="+c+"&plan="+pl+(p.get("pace")==="short"?"&pace=short":""));}}catch(e){}})();</script>
 <script>(function(){var t="dark";try{var q=new URLSearchParams(location.search).get("theme");var s=localStorage.getItem("gm.theme");t=(q==="light"||q==="dark")?q:(s==="light"?"light":"dark");}catch(e){}document.documentElement.setAttribute("data-theme",t);document.documentElement.style.colorScheme=t;document.documentElement.style.backgroundColor=t==="light"?"#faf7f2":"#08090e";})();</script>
 <link rel="icon" href="shared/brand/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="shared/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -157,7 +157,7 @@
       <a href="#levels">Plans</a>
       <a href="journey.html">The Journey</a>
       <a href="../index.html">The Templates</a>
-      <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>
+      <a data-contact href="/contact?topic=ministry-demo">Book a Call</a>
     </nav>
     <div class="header-actions">
       <button type="button" class="icon-btn theme-toggle" data-story-theme aria-label="Switch to light theme" title="Light theme">
@@ -176,7 +176,7 @@
     <a href="#levels">Plans <span aria-hidden="true">&#8599;</span></a>
     <a href="journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>
     <a href="../index.html">The Templates <span aria-hidden="true">&#8599;</span></a>
-    <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis <span aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    <a data-contact href="/contact?topic=ministry-demo">Book a Call <span aria-hidden="true">&#8599;</span></a>
     <a class="btn btn-primary" data-carry href="church-today.html?tour=1&amp;plan=3&amp;pace=short">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
   </div>
 </div>
@@ -460,7 +460,7 @@
       </ol>
       <div class="levels-foot">
         <p>Customization beyond the template is available for an additional cost.</p>
-        <a class="btn btn-gold btn-compact" data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis <span class="arrow" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        <a class="btn btn-gold btn-compact" data-contact href="/contact?topic=ministry-demo">Book a Call <span class="arrow" aria-hidden="true">&#8599;</span></a>
       </div>
     </div>
   </section>
@@ -472,7 +472,7 @@
       <p class="line">Start on Today as <span data-church="leadPastor">Pastor Theo</span> at <span data-church="name">Lightwell Church</span>, then follow Maya's first visit and Sarah's prayer request through the week, a few stops on each screen. Every screen keeps the sample data. When you are ready, a person at Genesis will walk you through it with your own church in mind.</p>
       <div class="actions">
         <a class="btn btn-primary" data-carry href="church-today.html?tour=1&amp;plan=3&amp;pace=short">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
-        <a class="btn btn-gold" data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis <span class="arrow" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        <a class="btn btn-gold" data-contact href="/contact?topic=ministry-demo">Book a Call <span class="arrow" aria-hidden="true">&#8599;</span></a>
         <a class="btn btn-secondary" href="journey.html"><span>See the Journey</span></a>
       </div>
       <p class="foot">Genesis is software. It supports your pastors and care teams and never replaces them. Every church, person and number in this preview is made up.</p>
@@ -488,7 +488,7 @@
       <a href="journey.html">The Journey</a>
       <a href="../index.html">The Templates</a>
       <a href="#levels">Choose Your Plan</a>
-      <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>
+      <a data-contact href="/contact?topic=ministry-demo">Book a Call</a>
     </nav>
     <p>Edition 05, Genesis Ministry. Design preview. Sample data shown.</p>
   </div>

@@ -151,10 +151,10 @@
     ":root{--hd-accent:" + (BR.accent || "#2f5bea") + ";--hd-accent-ink:" + (BR.accentInk || "#ffffff") + ";--hd-accent-text:" + (BR.accentText || BR.accent || "#2f5bea") + ";--hd-ink:" + (BR.ink || "#14161a") +
       ";--hd-surface:" + (BR.surface || "#ffffff") + ";--hd-surface2:" + (BR.surface2 || "#f3f4f6") + ";--hd-line:" + (BR.line || "rgba(0,0,0,.12)") +
       ";--hd-font:" + (BR.font || "system-ui,-apple-system,Segoe UI,Roboto,sans-serif") + ";--hd-radius:" + (BR.radius || "18px") + ";--hd-btn-radius:" + (BR.buttonRadius || "999px") + ";--hd-bottom:" + (Number(CFG.bottomOffset) || 0) + "px}",
-    ".hd-launch{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
+    ".hd-launch{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));translate:0 calc(0px - var(--hd-bottom,0px));z-index:2147483000;width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;background:var(--hd-accent);color:var(--hd-accent-ink);box-shadow:0 12px 30px -10px rgba(0,0,0,.45);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.7,.2,1),translate .5s cubic-bezier(.2,.7,.2,1),opacity .25s ease}",
     ".hd-launch:hover{transform:translateY(-2px)}.hd-launch:focus-visible{outline:3px solid var(--hd-ink);outline-offset:3px}",
     ".hd-launch svg{width:24px;height:24px}",
-    ".hd-invite{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1)}",
+    ".hd-invite{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + env(safe-area-inset-bottom,0px));translate:0 calc(0px - var(--hd-bottom,0px));z-index:2147483000;max-width:290px;background:var(--hd-surface);color:var(--hd-ink);border:1px solid var(--hd-line);border-radius:var(--hd-radius);padding:16px 16px 14px;font:15px/1.5 var(--hd-font);box-shadow:0 24px 50px -24px rgba(0,0,0,.45);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s cubic-bezier(.2,.7,.2,1),translate .5s cubic-bezier(.2,.7,.2,1)}",
     ".hd-invite.on{opacity:1;transform:none}",
     ".hd-invite p{margin:0 0 12px;padding-right:28px}.hd-invite b{font-weight:700}",
     ".hd-invite .hd-x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:none;color:inherit;opacity:.6;cursor:pointer;font-size:18px;line-height:1;border-radius:8px}",
@@ -179,6 +179,8 @@
     /* Small type keeps 4.5:1 or more on every church's surface. */
     ".hd-from{font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.8;margin:4px 2px -4px}",
     ".hd-chips{display:flex;flex-wrap:wrap;gap:8px;animation:hdIn .35s .05s cubic-bezier(.2,.7,.2,1) both}",
+    /* Two choices side by side (the greeting's Take the Tour and Start the Guided Demo) share one even width. */
+    "@media (min-width:641px){.hd-chips:has(>.hd-chip:nth-child(2):last-child){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hd-chips:has(>.hd-chip:nth-child(2):last-child)>.hd-chip{display:flex;align-items:center;justify-content:center;min-height:44px;text-align:center}}",
     ".hd-chip{font:600 13.5px/1.2 var(--hd-font);padding:9px 13px;min-height:40px;border-radius:var(--hd-btn-radius);border:1.5px solid var(--hd-line);background:var(--hd-surface);color:var(--hd-ink);cursor:pointer;text-align:left}",
     ".hd-chip.cta{background:var(--hd-accent);border-color:var(--hd-accent);color:var(--hd-accent-ink)}",
     ".hd-chip:focus-visible{outline:3px solid var(--hd-ink);outline-offset:2px}",
@@ -228,7 +230,7 @@
        left over the page). The 911 and 988 line stays in its foot. */
     "  .hd-panel{right:0;left:0;bottom:0;top:calc(28px + env(safe-area-inset-top,0px));width:auto;height:auto;border-radius:var(--hd-radius) var(--hd-radius) 0 0;transform-origin:bottom center;padding-bottom:env(safe-area-inset-bottom,0px)}",
     /* Closed, Hope is a compact circle in the corner, never a band across the page. */
-    "  .hd-launch{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + var(--hd-bottom) + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
+    "  .hd-launch{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:48px;height:48px}.hd-launch svg{width:22px;height:22px}",
     /* Buttons on a phone: every question and action is one full-width row, 44px or taller, the same
        padding and radius, so a group never wraps into a ragged run of different widths. */
     "  .hd-chips{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}",
@@ -239,7 +241,7 @@
     "  .hd-step-launch .hd-card{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto}",
     "  .hd-card{left:12px!important;right:12px;width:auto;top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))}",
     /* The invite is a compact card above the circle, never across the first screen. */
-    "  .hd-invite{left:auto;right:calc(16px + env(safe-area-inset-right,0px));max-width:min(300px,calc(100vw - 32px))}",
+    "  .hd-invite{left:auto;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:min(300px,calc(100vw - 32px))}",
     /* The invite's two buttons are one even pair. */
     "  .hd-invite .hd-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hd-invite .hd-btn{width:100%;padding-inline:10px}",
     /* At the very end of a page the closed circle would sit on the footer's last line: the footer keeps
@@ -252,7 +254,7 @@
     "  .hd-invite p{padding-right:34px}",
     /* While the invite is up it takes the circle's place, so the two never stack over the page. */
     "  html.hd-invite-on .hd-launch{opacity:0;visibility:hidden;pointer-events:none}",
-    "  html.hd-invite-on .hd-invite{bottom:calc(16px + var(--hd-bottom) + env(safe-area-inset-bottom,0px))}",
+    "  /* (The invite already sits in the circle place on a phone; see .hd-invite above.) */",
     "}",
     /* Touch screens of any width (a tablet held in landscape): 44px targets too. */
     "@media (pointer:coarse){",
@@ -526,7 +528,7 @@
   /* The page's way to talk with Genesis (the story pages carry a[data-contact]), and the journey's
      getting started chapter. */
   function contactHref() { if (LINKS.contact) return LINKS.contact; var a = $("a[data-contact]"); return a ? a.href : ""; }
-  function talkChip(cta) { var h = contactHref(); return h ? { label: "Talk With Genesis", href: h, cta: cta !== false } : null; }
+  function talkChip(cta) { var h = contactHref(); return h ? { label: "Book a Call", href: h, cta: cta !== false } : null; }
   function startHref() {
     var present = document.documentElement.hasAttribute("data-present"), hash = present ? "#launch" : "#start";
     if (/(^|\/)journey\.html$/.test(location.pathname)) return hash;
@@ -545,7 +547,7 @@
   }
   function listOf(a) { return a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
   var SHARE = { label: "Share a Prayer Request", run: sharePrayer, cta: true };
-  var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
+  var CRISIS_LINE = " In danger or crisis? Call 911, or call or text 988.";
   /* Said after what a real church site would do: the demo sends nothing. */
   var DEMO_NOTE = " In this demo, nothing is sent.";
   /* The member app's Messages tab, when the page has one. */
@@ -652,7 +654,7 @@
     thanks: { t: "You are welcome. Anything else I can help with?", c: null },
     /* questions a church leader asks about the product */
     /* The same plan contents as the plan cards and the workspace Hope (platform/shared/demo.js LEVELS_TEXT). */
-    package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks " + (CFG.look && CFG.look !== "Genesis Ministry" ? " (this one is " + LOOK + ")" : "") + ", the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
+    package: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Care is the website in one of four looks " + (CFG.look && CFG.look !== "Genesis Ministry" ? " (this one is " + LOOK + ")" : "") + ", the brand board, the social marketing plan, " + AN + " on the website (an assistant like me, answering from facts the church approves), Plan a Visit and prayer forms by email, and newsletter sign-up. Shepherd is everything in Care, plus Today, one list of every new guest, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. Enterprise, for more than one campus, is scoped on a call.", c: chips({ label: "What Is the Back Office?", key: "backoffice", cta: true }, { label: "Can We Customize It?", key: "custom" }, LINKS.brandBoard && { label: "See the Brand Board", href: LINKS.brandBoard }, LINKS.socialPlan && { label: "See the Social Plan", href: LINKS.socialPlan }) },
     custom: { t: "Every template is filled with your church's content, photos and colors. Changes beyond the template, such as new page layouts or special features, are available for an additional cost.", c: [{ label: "What Does It Cost?", key: "price" }, { label: "How Does " + AN + " Work?", key: "hope" }, { label: "Take the Tour", key: "tour", cta: true }] },
     price: { t: "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month. Enterprise, for more than one campus, is scoped on a call. Customization beyond the template is available for an additional cost.", c: [{ label: "What Does a Church Get?", key: "package" }, { label: "Can We Customize It?", key: "custom" }] },
     /* What a real church site does, in honest terms: this demo screens no typed words, because nobody can type here. */
@@ -692,16 +694,16 @@
   A.chat = { t: "I am an automated assistant, and nobody at " + SHORT + " watches this chat. If you leave your name or ask for a person, the welcome team sees your question so they can follow up. For anything private, use the prayer form, where you choose who reads it." + CRISIS_LINE, c: [SHARE, BACK] };
   /* A pastor's question about abuse or danger: who acts, and the numbers. Hope reports to no one. */
   A.reporting = { t: CHURCH
-    ? "Our pastors follow " + SHORT + "'s child protection and reporting policy, and a real person handles every report. I am an automated assistant, so please do not wait on me: if you or someone else is in danger, call 911, or call or text 988." + (CH.phone ? " You can call the church at " + CH.phone + "." : "")
+    ? "Our pastors follow " + SHORT + "'s child protection and reporting policy, and a real person handles every report. I am an automated assistant, so please do not wait on me. In danger or crisis? Call 911, or call or text 988." + (CH.phone ? " You can call the church at " + CH.phone + "." : "")
     : AN + " never reports to anyone, and it never reads prayer words. Your pastors follow your child protection and reporting policy. On a real church site, every " + AN + " answer and every form shows 988 and 911, and from the Shepherd plan a prayer request or message that sounds like someone is in danger alerts the pastor on call, with no private words. In this demo, nothing is checked or sent.", c: function () { return CHURCH ? CRISIS_CHIPS : chips(talkChip(), BACK); } };
   /* Keeping a request from one pastor, who reads a member's messages at home, and what a pastor must report. */
   A.prayerfromstaff = { t: "A prayer request reaches all of our pastors, " + listOf(pastorNames()) + ", so it cannot be kept from one of them. If you would rather talk with just one pastor, " + (CH.phone ? "call " + CH.phone + " and ask for them." : "ask for them on Sunday.") + CRISIS_LINE, c: [SHARE, BACK] };
-  A.messagesprivate = { t: "What you share with " + SHORT + " never goes to anyone in your family. A prayer request goes only to the pastors and the people they trust to pray. If someone at home can open your email or phone, keep that in mind before you write. If you are not safe at home, call 911, or call or text 988.", c: [SHARE, BACK] };
-  A.confidential = { t: "A pastor can talk with you about what stays private and the few things they must report to keep someone safe." + (CH.phone ? " Call " + CH.phone + " to find a time." : "") + " If anyone is in danger right now, call 911, or call or text 988.", c: function () { return chips(CALL, BACK); } };
+  A.messagesprivate = { t: "What you share with " + SHORT + " never goes to anyone in your family. A prayer request goes only to the pastors and the people they trust to pray. If someone at home can open your email or phone, keep that in mind before you write. In danger or crisis? Call 911, or call or text 988.", c: [SHARE, BACK] };
+  A.confidential = { t: "A pastor can talk with you about what stays private and the few things they must report to keep someone safe." + (CH.phone ? " Call " + CH.phone + " to find a time." : "") + " In danger or crisis? Call 911, or call or text 988.", c: function () { return chips(CALL, BACK); } };
   A.careplan = { t: "Care is the first Genesis Ministry plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.", c: function () { return chips(talkChip(), { label: "What Does a Church Get?", key: "package" }); } };
   /* Round 5: prayer is never printed or read aloud, and an age answer for a teenager on a church site. */
   A.prayerpublic = { t: function () { return "Your request is never printed or read aloud, and other members never see it. " + (CHURCH && +(new URLSearchParams(location.search).get("plan") || 0) === 1 ? "It goes by email to " + listOf(pastorNames()) + "." : "Only the people you choose read it: " + listOf(pastorNames().concat("our prayer team")) + ", or the pastors only.") + CRISIS_LINE; }, c: [SHARE, BACK] };
-  if (CHURCH && !A.age) A.age = { t: "You are welcome here. Accounts and private messages are for adults 18 and older, so the best way to reach the student team is in person at Students, or with a parent or guardian" + (CH.phone ? " by calling " + CH.phone : "") + ". If you are ever not safe, call 911, or call or text 988.", c: [{ label: "Students", key: "students" }, BACK] };
+  if (CHURCH && !A.age) A.age = { t: "You are welcome here. Accounts and private messages are for adults 18 and older, so the best way to reach the student team is in person at Students, or with a parent or guardian" + (CH.phone ? " by calling " + CH.phone : "") + ". In danger or crisis? Call 911, or call or text 988.", c: [{ label: "Students", key: "students" }, BACK] };
   /* The Care plan of a church site (the Website screen passes ?plan=1): prayer forms go by email to the
      pastors, and there is no prayer team inbox yet. */
   var SITE_PLAN = +(new URLSearchParams(location.search).get("plan") || 0);
@@ -738,7 +740,7 @@
     A.chat = { t: "This is the Genesis Ministry preview. Its answers are scripted, nothing is sent in this demo, and no one reads this chat.", c: function () { return chips(talkChip(), BACK); } };
     A.real = { t: "Genesis Ministry is real software from Genesis AI. The four churches in this preview are made up, with sample data, so you can try every screen without touching anyone's real information.", c: function () { return chips(A.startdemo && { label: "Start the Guided Demo", key: "startdemo", cta: true }, { label: "How Do We Get Started?", key: "start" }); } };
     A.start = { t: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.", c: function () { return chips(talkChip(), { label: "See Getting Started", href: startHref(), go: true }, { label: "What Does Each Plan Include?", key: "levels" }); } };
-    A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Talk With Genesis opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
+    A.talk = { t: function () { return "A person at Genesis would be glad to walk you through it with your own church in mind." + (contactHref() ? " Book a Call opens a short form on geai.us, and someone writes back to find a time." : " Ask for a walkthrough at geai.us."); }, c: function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }); } };
     A.contact = A.talk;
     A.human.c = function () { return chips(talkChip(), { label: "How Do We Get Started?", key: "start" }, { label: "Take the Tour", key: "tour" }); };
   }
@@ -865,7 +867,7 @@
     q = WORDS.plain(q);
     /* Someone who told Hope about their own life is thanked and pointed to a person. */
     if (CHURCH && ABOUT_SELF.test(q) && !ASKING.test(q) && !/\?\s*$/.test(q) && !BUYER_WORDS.test(q))
-      return { t: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. " + SHORT + " would want to help too" + (CH.phone && !/ 555-/.test(CH.phone) ? ": call " + CH.phone + ", and a real person will hear you out." : ", and a real person there would be glad to hear more."), c: chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, { label: "Talk to a Person", key: A.talk ? "talk" : "contact" }, BACK) };
+      return { t: "Thank you for telling me. In danger or crisis? Call 911, or call or text 988. " + SHORT + " would want to help too" + (CH.phone && !/ 555-/.test(CH.phone) ? ": call " + CH.phone + ", and a real person will hear you out." : ", and a real person there would be glad to hear more."), c: chips({ label: "Call 988", href: "tel:988", go: true, cta: true }, { label: "Text 988", href: "sms:988", go: true }, { label: "Call 911", href: "tel:911", go: true }, { label: "Talk to a Person", key: A.talk ? "talk" : "contact" }, BACK) };
     if (CHURCH && BUYER_WORDS.test(q) && !CFG.fallback)
       return { t: "I am not sure about that one, and I would rather not guess. It is " + ON_CALL + "." + CRISIS_LINE, c: chips(talkChip(), { label: "What Does a Church Get?", key: "package", cta: !talkChip() }, { label: "What Does It Cost?", key: "price" }) };
     return { t: (CFG.fallback || (CHURCH
@@ -1070,6 +1072,8 @@
     addUser(c.label);
     if (c.run) { c.run(); return; }
     if (c.go) { var dest = c.go === true ? c.href : c.go; if (/^#./.test(dest || "")) goAnchor(dest); else location.href = dest; return; }
+    /* Book a Call opens in the same tab, like the rest of the site; Back returns to this page. */
+    if (c.href && /\/contact\b/.test(c.href)) { location.href = c.href; return; }
     if (c.href) { window.open(c.href, "_blank", "noopener"); say("Opened in a new tab. Anything else I can show you?", MENU.slice(0, 4)); return; }
     answer(c.key);
   }
@@ -1678,7 +1682,7 @@
     card.removeAttribute("data-side");
     card.removeAttribute("aria-modal");
     card.setAttribute("role", "region");
-    card.style.left = card.style.top = card.style.maxHeight = "";
+    card.style.left = card.style.top = card.style.maxHeight = card.style.translate = "";
     card.style.removeProperty("--v2-guide-arrow");
     card.setAttribute("aria-label", "Guided demo with " + GUIDE + ", done");
     card.setAttribute("aria-describedby", "hd-say");
@@ -1888,7 +1892,7 @@
     if (sd !== root.classList.contains("hd-side-on")) { root.classList.toggle("hd-side-on", sd); place(); return; }
     if (sd) {
       card.classList.remove("is-anchored", "is-top"); card.removeAttribute("data-side");
-      card.style.left = ""; card.style.removeProperty("--v2-guide-arrow");
+      card.style.left = ""; card.style.translate = ""; card.style.removeProperty("--v2-guide-arrow");
       card.classList.add("hd-g-side");
       var sTop = topBars() + 8;
       card.style.top = sTop + "px"; card.style.maxHeight = Math.max(160, vh - sTop - 12) + "px";
@@ -1898,6 +1902,9 @@
       return;
     }
     if (vw > 860) {
+      /* The first placement lands at once, with no slide from the corner. */
+      var firstPlace = !card.classList.contains("is-anchored");
+      if (firstPlace) card.style.transition = "none";
       card.classList.add("is-anchored"); card.classList.remove("is-top");
       var w = card.offsetWidth || 340, h = card.offsetHeight || 180, gap = 16, m = 12;
       /* The card never covers the sidebar: on a wide window its left edge stays right of it. */
@@ -1917,14 +1924,16 @@
         L = Math.max(lm, Math.min(L, vw - m - w)); T = Math.max(m, Math.min(T, vh - h - m));
         var across = side === "right" || side === "left";
         var arrow = Math.max(18, Math.min(across ? cy - T : cx - L, (across ? h : w) - 18));
-        card.style.left = Math.round(L) + "px"; card.style.top = Math.round(T) + "px";
+        card.style.left = "0px"; card.style.top = "0px";
+        card.style.translate = Math.round(L) + "px " + Math.round(T) + "px";
         card.style.setProperty("--v2-guide-arrow", Math.round(arrow) + "px");
         card.setAttribute("data-side", side);
+        if (firstPlace) requestAnimationFrame(function () { requestAnimationFrame(function () { card.style.transition = ""; }); });
         return;
       }
     }
     card.classList.remove("is-anchored"); card.removeAttribute("data-side");
-    card.style.left = card.style.top = "";
+    card.style.left = card.style.top = card.style.translate = card.style.transition = "";
     var cw = card.offsetWidth || 440, ch = card.offsetHeight || 160, g = 12;
     var cl = vw / 2 - cw / 2, cb = vh - (vw <= 860 ? 12 : 20);
     var under = box.right + g > cl && box.left - g < cl + cw && box.bottom + g > cb - ch;

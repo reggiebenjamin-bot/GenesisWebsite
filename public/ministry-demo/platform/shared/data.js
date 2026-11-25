@@ -120,7 +120,7 @@
   /* The three plans and their prices, as /ministry shows them.
      D.pricingLine is the one sentence with every price. */
   D.pricingLine = "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
-  /* Where "Talk With Genesis" goes, everywhere in the preview: the story pages (story/story.js reads the
+  /* Where "Book a Call" goes, everywhere in the preview: the story pages (story/story.js reads the
      same address), the guided demo's last card and Hope's answer to "how do I book a call".
      It is the one address to change if the contact page moves. */
   D.genesisContact = "/contact?topic=ministry-demo";

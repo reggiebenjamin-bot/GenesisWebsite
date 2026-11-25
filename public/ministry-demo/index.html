@@ -63,9 +63,24 @@
 .door p.line { margin-top: 10px; max-width: 54ch; font-size: 0.95rem; line-height: 1.55; color: var(--muted); }
 .door .foot { margin-top: auto; padding-top: 18px; }
 @media (max-width: 1023px) { .package { grid-template-columns: repeat(2, minmax(0, 1fr)); } .package .wide { grid-column: 1 / -1; } }
+/* Paired and closing buttons share one width and one height in a row; the filled gold one leads. */
+.hero-actions .btn, .close-band .actions .btn { flex: 1 1 0; min-width: 0; max-width: 300px; min-height: 52px; }
+.close-band .actions .btn { max-width: 260px; }
+/* Two-part eyebrows wrap evenly, never leaving one word alone. */
+.eyebrow { text-wrap: balance; }
+/* A phone on its side: no mark and no tall hero, so the title and both buttons share the first screen. */
+@media (max-height: 500px) {
+  .hero { padding: 28px 0 56px; }
+  .hero-mark, .hero-rule { display: none; }
+  .hero .eyebrow { margin-top: 0; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+  .hero-actions { margin-top: 20px; flex-direction: row; flex-wrap: nowrap; justify-content: center; }
+  .close-band .actions { flex-direction: row; flex-wrap: nowrap; }
+}
 @media (max-width: 860px) { .looks, .doors { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn, .close-band .actions .btn { max-width: none; flex: 0 0 auto; }
   .package { grid-template-columns: 1fr; }
   .package .wide { grid-column: auto; }
   .look, .door { padding: 8px; }
@@ -88,7 +103,7 @@
       <a href="#looks">Four Looks</a>
       <a href="#package">What a Church Gets</a>
       <a href="platform/journey.html">The Journey</a>
-      <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>
+      <a data-contact href="/contact?topic=ministry-demo">Book a Call</a>
     </nav>
     <div class="header-actions">
       <button type="button" class="icon-btn theme-toggle" data-story-theme aria-label="Switch to light theme" title="Light theme"><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg></button>
@@ -103,7 +118,7 @@
     <a href="#looks">Four Looks <span aria-hidden="true">&#8599;</span></a>
     <a href="#package">What a Church Gets <span aria-hidden="true">&#8599;</span></a>
     <a href="platform/journey.html">The Journey <span aria-hidden="true">&#8599;</span></a>
-    <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis <span aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+    <a data-contact href="/contact?topic=ministry-demo">Book a Call <span aria-hidden="true">&#8599;</span></a>
     <a class="btn btn-primary" data-carry href="platform/church-today.html?tour=1&amp;plan=3&amp;pace=short">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
   </div>
 </div>
@@ -119,7 +134,7 @@
         <h1 id="gallery-title">Four looks. <span class="accent">One standard.</span></h1>
         <p class="lede">Every template is built to one standard: fast on phones, warm, clear about Sunday, and easy for a small team to keep fresh. Open any site and <span data-an>Hope</span> will give you a short guided tour.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="platform/index.html">Tour the Platform <span class="arrow" aria-hidden="true">&#8599;</span></a>
+          <a class="btn btn-gold" href="platform/index.html">Tour the Platform <span class="arrow" aria-hidden="true">&#8599;</span></a>
           <a class="btn btn-secondary" href="platform/journey.html"><span>Walk Through a Guest's First Visit</span></a>
         </div>
       </div>
@@ -255,8 +270,8 @@
       <h2 id="close-title">See it working.</h2>
       <p class="line">Start the guided demo, or open the overview and choose the church and plan to show. When you are ready, a person at Genesis will walk you through it with your own church in mind.</p>
       <div class="actions">
-        <a class="btn btn-primary" data-carry href="platform/church-today.html?tour=1&amp;plan=3&amp;pace=short">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
-        <a class="btn btn-gold" data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis <span class="arrow" aria-hidden="true">&#8599;</span><span class="sr-only"> (opens in a new tab)</span></a>
+        <a class="btn btn-gold" data-carry href="platform/church-today.html?tour=1&amp;plan=3&amp;pace=short">Start the Guided Demo <span class="arrow" aria-hidden="true">&#8599;</span></a>
+        <a class="btn btn-secondary" data-contact href="/contact?topic=ministry-demo"><span>Book a Call</span></a>
         <a class="btn btn-secondary" href="platform/index.html"><span>Open the Overview</span></a>
       </div>
       <p class="foot">Template previews use fictional churches and free stock photos. Photo credits live with each template.</p>
@@ -272,7 +287,7 @@
       <a href="platform/journey.html">The Journey</a>
       <a data-carry href="platform/church-today.html?tour=1&amp;plan=3&amp;pace=short">Guided Demo</a>
       <a href="platform/index.html#levels">Plans</a>
-      <a data-contact href="/contact?topic=ministry-demo" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>
+      <a data-contact href="/contact?topic=ministry-demo">Book a Call</a>
     </nav>
     <p>Edition 05, Genesis Ministry. Design preview. Sample data shown.</p>
   </div>
