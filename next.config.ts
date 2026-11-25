@@ -35,6 +35,16 @@ const nextConfig: NextConfig = {
         source: "/ministry-demo/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
+      /*
+       * The homepage hawk is the largest image on the first screen. Its file
+       * names are treated as versions: if the picture or its crop ever
+       * changes, save it under a new name (components/home/hawkAsset.ts)
+       * rather than over these, because browsers keep them for a year.
+       */
+      {
+        source: "/images/home/:file(hawk-hero-\\d+\\.webp)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
     ];
   },
   async redirects() {

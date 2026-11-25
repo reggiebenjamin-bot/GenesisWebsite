@@ -9,6 +9,7 @@ import { bookACall, contact } from "@/lib/content";
 import { ASSESSMENT_HANDOFF_KEY, readAssessmentHandoff } from "@/lib/assessmentHandoff";
 import { MINISTRY_OPERATION_TYPE, ministryContact, ministryPlanFromTopic } from "@/lib/ministryPage";
 import { managedPlans } from "@/lib/offers";
+import { TEXT_ARROW } from "@/lib/utils";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
@@ -49,7 +50,7 @@ function PickATime({ from }: { from: string }) {
         className="inline-flex min-h-[52px] w-full items-center justify-center gap-2.5 rounded-[6px] border border-ink/30 px-6 text-center text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-ink transition-colors duration-200 hover:bg-ink hover:text-ivory"
       >
         {bookACall.pickTime.label}
-        <span aria-hidden="true">↗</span>
+        <span aria-hidden="true">{TEXT_ARROW}</span>
         <span className="sr-only">(opens in a new tab)</span>
       </a>
     </TrackClick>

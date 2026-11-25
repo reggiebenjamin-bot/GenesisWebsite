@@ -527,7 +527,7 @@ export const ministryProcess = {
       title: "Launch",
       summary: "Live, with your team ready",
       description:
-        "Your team learns the Today view and the care inbox, and the site goes live when you are ready.",
+        "Your team learns the Today view and the care inbox, and your website goes live within 2 weeks of starting.",
     },
     {
       number: "05",

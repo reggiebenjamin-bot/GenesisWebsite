@@ -173,9 +173,12 @@ test("each Level names its AI employees, in the owner's words", () => {
     "components/offers/ManagedComparison.tsx",
     "components/offers/EditionLevels.tsx",
     "components/sections/TexasLanding.tsx",
+    "components/ai-employees/AiEmployeesPage.tsx",
   ]) {
     assert.match(readFileSync(new URL("../" + file, import.meta.url), "utf8"), /<LevelAiEmployees plan={plan}/, file);
   }
+  /* All four names are on the Level 03 card, so the Business Edition says four, not "several". */
+  assert.equal(managedPlans[2].includedAiAgents.length, 4);
 });
 
 test("usage is billed to the customer's card, said once by the Levels, and nothing says otherwise", () => {
@@ -186,10 +189,18 @@ test("usage is billed to the customer's card, said once by the Levels, and nothi
     "components/home/story/StorySections.tsx",
     "components/offers/EditionLevels.tsx",
     "components/sections/TexasLanding.tsx",
+    "components/ai-employees/AiEmployeesPage.tsx",
   ]) {
     const source = readFileSync(new URL("../" + file, import.meta.url), "utf8");
     assert.equal(source.split("{USAGE_BILLING_LINE}").length, 2, file);
   }
+  /* The questions point to that line in other words, so no page prints it twice. */
+  for (const faq of [...faqs, ...pricingFaqs]) assert.ok(!faq.answer.includes(USAGE_BILLING_LINE), faq.question);
+  /* A Texas page with an edition gets its Levels from the edition block alone. */
+  assert.match(
+    readFileSync(new URL("../components/sections/TexasLanding.tsx", import.meta.url), "utf8"),
+    /page[.]pricing && !page[.]edition [?]/,
+  );
   const answers = [...faqs, ...pricingFaqs].map((faq) => faq.answer).join(" ") + managedOverview.thirdPartyNote;
   assert.doesNotMatch(answers, /usage (is|are) (included|separate|extra)|licenses and usage/i);
 });

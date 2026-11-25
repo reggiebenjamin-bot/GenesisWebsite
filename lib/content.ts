@@ -1,6 +1,14 @@
 import { allEditions } from "./editions.ts";
-import { USAGE_BILLING_LINE } from "./legal.ts";
 import { levelAiEmployeesSummary, type OfferPathId } from "./offers.ts";
+
+/**
+ * The answer to "Are usage and other software costs included?". The exact
+ * usage line (USAGE_BILLING_LINE) is printed once beside the prices, so this
+ * points to it in other words rather than printing it a second time.
+ */
+export const USAGE_QUESTION = "Are usage and other software costs included?";
+const USAGE_AND_SOFTWARE_ANSWER =
+  "Plan prices cover Genesis. Usage is on top of the plan and goes on your own card, as the note beside the prices says. Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.";
 
 /** One short line per edition under its name in the Editions dropdown. */
 
@@ -297,8 +305,8 @@ export const faqs: readonly Faq[] = [
     paths: ["custom-infrastructure"],
   },
   {
-    question: "Are usage and other software costs included?",
-    answer: `Plan prices cover Genesis. ${USAGE_BILLING_LINE} Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.`,
+    question: USAGE_QUESTION,
+    answer: USAGE_AND_SOFTWARE_ANSWER,
     paths: ["custom-infrastructure"],
   },
 ];
@@ -314,8 +322,8 @@ export const pricingFaqs = [
       `${levelAiEmployeesSummary()} More than 25 users is Genesis Enterprise. Each edition page lists what its Levels include.`,
   },
   {
-    question: "Are usage and other software costs included?",
-    answer: `Plan prices cover Genesis. ${USAGE_BILLING_LINE} Software you already pay for, such as your CRM or Microsoft 365, stays on your own accounts.`,
+    question: USAGE_QUESTION,
+    answer: USAGE_AND_SOFTWARE_ANSWER,
   },
   {
     question: "How do I know which Level fits?",

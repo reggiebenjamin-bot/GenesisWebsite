@@ -1,3 +1,4 @@
+import { LevelAiEmployees } from "@/components/offers/LevelAiEmployees";
 import { UserLimitNote } from "@/components/offers/UserLimitNote";
 import Image from "next/image";
 import { Suspense } from "react";
@@ -16,6 +17,7 @@ import {
   inquiryMessages,
   softwareDisclaimer,
 } from "@/lib/aiEmployees";
+import { USAGE_BILLING_LINE } from "@/lib/legal";
 import { managedPlans } from "@/lib/offers";
 import { LeadWorkflowSection } from "./LeadWorkflowSection";
 import { StatusNotice } from "./StatusNotice";
@@ -164,6 +166,7 @@ export function AiEmployeesPage() {
               <p className="mt-3 text-[0.85rem] text-gold-light">{plan.userLimit}</p>
               <UserLimitNote plan={plan} className="text-ivory/70" />
               <p className="mt-6 text-[0.98rem] leading-relaxed text-ivory/80">{plan.summary}</p>
+              <LevelAiEmployees plan={plan} tone="dark" className="mt-6" />
               <div className="mt-auto pt-8">
                 <Link href="/pricing#custom-infrastructure" className={`${goldButton} w-full`}>
                   <span>{aiEmployeesPricing.planAction}</span>
@@ -172,7 +175,9 @@ export function AiEmployeesPage() {
             </Card>
           ))}
         </ol>
-
+        <p className="mx-auto mt-5 max-w-[72ch] text-center text-[0.875rem] leading-relaxed text-ivory/60">
+          {USAGE_BILLING_LINE}
+        </p>
       </Sheet>
 
       <Sheet surface="paper" id="expert" aria-labelledby="expert-title" className="site-section">

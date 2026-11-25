@@ -3,7 +3,13 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { HAWK_IMAGE_SRC, HAWK_IMAGE_SRCSET, HAWK_IMAGE_WIDTHS } from "../components/home/hawkAsset.ts";
 import { aiEmployeePersonas } from "../lib/aiEmployees.ts";
-import { GA_MEASUREMENT_ID_ENV, gaMeasurementId } from "../lib/analytics.ts";
+import {
+  GA_MEASUREMENT_ID_ENV,
+  analyticsPageLocation,
+  gaConfigCommands,
+  gaMeasurementId,
+  gaPageViewCommands,
+} from "../lib/analytics.ts";
 import {
   CHURCH_PERSONA,
   assessmentFindings,
@@ -234,7 +240,49 @@ test("Google Analytics 4 loads only with a measurement ID in NEXT_PUBLIC_GA_MEAS
   assert.match(loader, /googletagmanager\.com\/gtag\/js\?id=\$\{id\}/);
   assert.match(read("app/layout.tsx"), /<GoogleAnalytics \/>/);
   /* No measurement ID is written into the repository. */
-  for (const file of ["components/seo/GoogleAnalytics.tsx", "lib/analytics.ts", "app/layout.tsx"]) {
+  for (const file of ["components/seo/GoogleAnalytics.tsx", "components/seo/GaPageViews.tsx", "lib/analytics.ts", "app/layout.tsx"]) {
     assert.doesNotMatch(read(file), /["'`]G-[A-Z0-9]{6,}["'`]/, file);
   }
+});
+
+test("Google Analytics is never told a query string, so a checkout session ID stays on this site", () => {
+  const secret = "cs_live_a1B2c3D4e5";
+  const welcome = `https://geai.us/welcome?session_id=${secret}#top`;
+  assert.equal(analyticsPageLocation(welcome), "https://geai.us/welcome");
+  assert.equal(analyticsPageLocation("https://geai.us/contact?topic=ministry-care"), "https://geai.us/contact");
+  assert.equal(analyticsPageLocation("https://geai.us/"), "https://geai.us/");
+  for (const bad of [undefined, null, "", "not a url", "javascript:alert(1)", "about:blank"]) {
+    assert.equal(analyticsPageLocation(bad), "", String(bad));
+  }
+
+  /* The automatic page view reports the browser's full address, so it is switched off. */
+  const config = gaConfigCommands("G-TEST123456", new Date(0));
+  assert.deepEqual(config, [
+    ["js", new Date(0)],
+    ["config", "G-TEST123456", { send_page_view: false }],
+  ]);
+
+  /* Every command a page load sends, with the secret in both the address and the referrer. */
+  const view = gaPageViewCommands({ url: welcome, referrer: `https://geai.us/welcome/status?session_id=${secret}`, title: "Welcome" });
+  assert.deepEqual(view, [
+    ["set", { page_location: "https://geai.us/welcome", page_referrer: "https://geai.us/welcome/status" }],
+    [
+      "event",
+      "page_view",
+      { page_location: "https://geai.us/welcome", page_referrer: "https://geai.us/welcome/status", page_title: "Welcome" },
+    ],
+  ]);
+  const sent = JSON.stringify([...config, ...view]);
+  assert.doesNotMatch(sent, /session_id|cs_live|\?|#/);
+  assert.deepEqual(gaPageViewCommands({ url: "about:blank" }), []);
+  assert.equal((gaPageViewCommands({ url: "https://geai.us/pricing" })[0][1] as { page_referrer: string }).page_referrer, "");
+
+  /* The components send only those commands: no inline config, and no raw address handed to gtag. */
+  const loader = read("components/seo/GoogleAnalytics.tsx");
+  assert.doesNotMatch(loader, /gtag\(|dangerouslySetInnerHTML/);
+  assert.match(loader, /<GaPageViews id=\{id\} \/>/);
+  const views = read("components/seo/GaPageViews.tsx");
+  assert.match(views, /send\(gaConfigCommands\(id\)\)/);
+  assert.match(views, /send\(gaPageViewCommands\(/);
+  assert.doesNotMatch(views, /location\.search|useSearchParams/);
 });

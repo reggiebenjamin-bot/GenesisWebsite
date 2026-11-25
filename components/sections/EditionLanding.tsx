@@ -8,7 +8,7 @@ import { FaqList } from "@/components/ui/FaqList";
 import { Eyebrow } from "@/components/ui/Section";
 import { TrackClick } from "@/components/ui/TrackClick";
 import { aiEmployeePersonas } from "@/lib/aiEmployees";
-import { faqs, pricingFaqs } from "@/lib/content";
+import { faqs, pricingFaqs, USAGE_QUESTION } from "@/lib/content";
 import { levelsFaqAnswer, type EditionKey } from "@/lib/editionPlans";
 import type { Edition, EditionCta } from "@/lib/editions";
 import { levelAiEmployeesSummary } from "@/lib/offers";
@@ -84,7 +84,8 @@ const enterpriseScopeFaq = {
 
 function editionFaqsFor(key?: EditionKey) {
   return [
-    ...pricingFaqs.filter((faq) => key || faq.question !== "How do I know which Level fits?").map((faq) =>
+    /* Enterprise has no Levels and no list price, so the Level and usage questions are left off its page. */
+    ...pricingFaqs.filter((faq) => key || (faq.question !== "How do I know which Level fits?" && faq.question !== USAGE_QUESTION)).map((faq) =>
       faq.question !== "What changes between the Levels?"
         ? faq
         : key

@@ -60,7 +60,7 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
       "managed-750": ["Calls answered", "Quotes followed up", "Appointments confirmed"],
       /* Each Level adds only what that Level is (lib/offers.ts): team routing and
          automation across workflows at Level 02, business wide infrastructure,
-         several AI employees working together and priority onboarding at Level 03. */
+         all four AI employees working together and priority onboarding at Level 03. */
       "managed-1750": [
         "Everything in Level 01",
         "Team roles and routing rules",
@@ -70,14 +70,14 @@ export const editionPricing: Record<EditionKey, EditionPricing> = {
         "Everything in Level 02",
         "Priority onboarding and configuration",
         "Genesis working across your connected systems",
-        "Several AI employees working together",
+        "All four AI employees working together",
       ],
     },
     faq: {
       "managed-750": "calls answered, quotes followed up and appointments confirmed",
       "managed-1750": "team roles and routing rules, plus automation across workflows and handoffs",
       "managed-4500":
-        "priority onboarding and configuration, with Genesis working across your connected systems and several AI employees working together",
+        "priority onboarding and configuration, with Genesis working across your connected systems and all four AI employees working together",
     },
   },
   real_estate: {

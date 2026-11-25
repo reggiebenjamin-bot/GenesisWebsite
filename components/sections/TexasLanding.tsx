@@ -107,7 +107,8 @@ export function TexasLanding({ page }: { page: TexasLanding }) {
           </div>
         ) : null}
 
-        {page.pricing ? (
+        {/* An edition page already lists the Levels above, so the plain plan cards never print beside them. */}
+        {page.pricing && !page.edition ? (
           <div className="mt-16">
             <h2 className="text-center text-[1.35rem] font-light tracking-[-0.02em]">
               Plans

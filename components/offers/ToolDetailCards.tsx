@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, Disclosure, Figure } from "@/components/ui/Blocks";
 import { genesisTools } from "@/lib/offers";
+import { TEXT_ARROW } from "@/lib/utils";
 
 const chip =
   "inline-flex items-center gap-1.5 rounded-[6px] border border-line-light bg-white/55 px-2.5 py-1 text-[0.78rem]";
@@ -64,7 +65,7 @@ export function ToolDetailCards() {
                   className="inline-flex min-h-11 shrink-0 items-center gap-1.5 text-[0.88rem] font-bold text-ink transition-colors duration-200 hover:text-gold-dark"
                 >
                   Explore {tool.name}
-                  <span aria-hidden="true">↗</span>
+                  <span aria-hidden="true">{TEXT_ARROW}</span>
                 </Link>
               </div>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { TEXT_ARROW } from "@/lib/utils";
 
 const base =
   "inline-flex min-h-[52px] min-w-[min(240px,100%)] items-center justify-center gap-3 rounded-[6px] border px-6 text-[0.94rem] leading-[1.15] font-bold tracking-[0.01em] text-center transition-colors duration-200";
@@ -66,7 +67,7 @@ export function TextLink({
       {...props}
     >
       {children}
-      <span aria-hidden="true">↗</span>
+      <span aria-hidden="true">{TEXT_ARROW}</span>
     </Link>
   );
 }

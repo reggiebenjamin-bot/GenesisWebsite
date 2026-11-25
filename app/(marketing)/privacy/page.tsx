@@ -26,6 +26,12 @@ const sections: readonly LegalSection[] = [
     ],
   },
   {
+    heading: "Analytics and cookies",
+    body: [
+      "We use Google Analytics to see how the site is used, such as which pages are visited and which buttons are pressed. Google Analytics sets cookies in your browser to tell one visit from another. We send it the page you are on without anything after the question mark in the address, and we do not send it your name, email, phone number or payment details. You can block these cookies in your browser settings, and the site will still work.",
+    ],
+  },
+  {
     heading: "How we use information",
     body: [
       "We use your information to run the software, support your account, answer your questions, and keep the service working.",
@@ -34,7 +40,7 @@ const sections: readonly LegalSection[] = [
   {
     heading: "We do not sell personal information",
     body: [
-      "We do not sell your personal information. We share it only with the service providers that help us run Genesis, such as Stripe and Clerk, and only as needed to provide the software.",
+      "We do not sell your personal information. We share it only with the service providers that help us run Genesis, such as Stripe, Clerk and Google Analytics, and only as needed to provide the software.",
     ],
   },
   {

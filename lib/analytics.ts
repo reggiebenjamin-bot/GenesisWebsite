@@ -3,7 +3,8 @@
  *
  * The provider is Google Analytics 4. It loads only when
  * NEXT_PUBLIC_GA_MEASUREMENT_ID is set (components/seo/GoogleAnalytics.tsx,
- * in the root layout). `track` sends to gtag when the page has one, or to a
+ * in the root layout), and it is only ever told the origin and path of a
+ * page, never the query string. `track` sends to gtag when the page has one, or to a
  * tag manager's dataLayer, and does nothing at all when it has neither, so no
  * dashboard can show a number that was never measured.
  */
@@ -18,6 +19,52 @@ export const GA_MEASUREMENT_ID_ENV = "NEXT_PUBLIC_GA_MEASUREMENT_ID";
 export function gaMeasurementId(value: string | undefined = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID): string {
   const id = (value ?? "").trim();
   return /^G-[A-Z0-9]{4,20}$/.test(id) ? id : "";
+}
+
+/**
+ * The address reported to analytics: the origin and the path, never the query
+ * string or the fragment. A query can carry a secret (the Stripe checkout
+ * session ID on /welcome opens the workspace) or what a visitor typed, so
+ * none of it leaves the site. Anything that is not an http(s) address is "".
+ */
+export function analyticsPageLocation(url: string | undefined | null): string {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return "";
+    return parsed.origin + parsed.pathname;
+  } catch {
+    return "";
+  }
+}
+
+export type GaCommand = [command: string, ...rest: unknown[]];
+
+/**
+ * The first commands Google Analytics gets on a page load. The automatic
+ * page view is turned off, because it reports the full address, query string
+ * included. Page views are sent by gaPageViewCommands instead.
+ */
+export function gaConfigCommands(id: string, now: Date = new Date()): GaCommand[] {
+  return [
+    ["js", now],
+    ["config", id, { send_page_view: false }],
+  ];
+}
+
+/**
+ * One page view, with the address and the referrer cut down to origin and
+ * path. The `set` comes first so every later event on the page (a `track`
+ * call) reports the same trimmed address rather than the browser's own.
+ */
+export function gaPageViewCommands(page: { url: string; referrer?: string; title?: string }): GaCommand[] {
+  const location = analyticsPageLocation(page.url);
+  if (!location) return [];
+  const view = { page_location: location, page_referrer: analyticsPageLocation(page.referrer) };
+  return [
+    ["set", view],
+    ["event", "page_view", { ...view, page_title: page.title ?? "" }],
+  ];
 }
 
 export type AnalyticsEvent =
