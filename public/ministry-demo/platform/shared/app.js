@@ -2152,15 +2152,15 @@
     GM.ctx = ctx;
     readyFns.forEach(function (fn) { if (!locked || customLocked) fn(ctx); });
     readyFns = [];
-    /* The page is drawn: show it in one step, so nothing on it jumps while its parts fill in. */
-    html.classList.add("gm-booted");
     if (GM.side !== "member") { syncRailRestore(item || {}); }
     /* The guided demo: tours for every screen, the demo path and the scripted answers. */
     GM.sharedPath = SHARED;
     /* The sermon notes and devotionals (one source for the sites, the workspace and the member app), before
        the guided demo builds its answers from them. Pages that draw notes load it with their own script tag. */
     if (!window.GM_NOTES) loadScript(SHARED + "../../shared/notes-data.js", function () {});
-    loadScript(SHARED + "demo.js", function () {});
+    /* The page is drawn once the guided demo has arranged it too: show it then, in one step, so nothing on it
+       jumps while its parts fill in. */
+    loadScript(SHARED + "demo.js", function () { requestAnimationFrame(function () { html.classList.add("gm-booted"); }); });
   }
 
   function memberLocked(key) {
