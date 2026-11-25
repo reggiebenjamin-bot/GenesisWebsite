@@ -245,14 +245,14 @@ export function applyEdits(file, text, edits) {
  * every page, and on every preview of the site. It is the one entry in
  * SITE_LINKS. The source links to the same form by its full address,
  * https://geai.us/contact?topic=ministry-demo; the public copy uses the path.
- * As in the source, it opens in a new tab, labelled Talk With Genesis.
+ * As in the source, it opens in the same tab, labelled Book a Call, as everywhere else on the site.
  */
 const CONTACT = SITE_LINKS[0];
 const SOURCE_CONTACT = `https://geai.us${CONTACT}`;
-const TALK = "Talk With Genesis";
+const TALK = "Book a Call";
 /** A link to the consultation, as the source draws its own (story.js keeps its address). */
 const talkLink = (arrow = false) =>
-  `<a data-contact href="${CONTACT}" target="_blank" rel="noopener">${TALK}${arrow ? ' <span aria-hidden="true">&#8599;</span>' : ""}<span class="sr-only"> (opens in a new tab)</span></a>`;
+  `<a data-contact href="${CONTACT}">${TALK}${arrow ? ' <span aria-hidden="true">&#8599;</span>' : ""}</a>`;
 
 /** The source's address for the consultation becomes the site path, the stated number of times. */
 const contactPath = (count) => ({ note: "Talk With Genesis opens the church consultation on this site, by its path", find: SOURCE_CONTACT, replace: CONTACT, count });
@@ -417,11 +417,11 @@ export const PUBLIC_EDITS = {
   "platform/story/story.js": [
     {
       note: "Talk With Genesis is the church consultation on this site; the note to confirm its address is done",
-      from: "  /* Where Talk With Genesis goes: the geai.us consultation form, opened as a Genesis Ministry\n",
+      from: "  /* Where Book a Call goes: the geai.us consultation form, opened as a Genesis Ministry\n",
       to: "  var GENESIS_CONTACT_URL = ",
       maxLines: 3,
       keep: /var |function /,
-      replace: "  /* Where Talk With Genesis goes: the church consultation on geai.us, as a walkthrough of the demo. */\n",
+      replace: "  /* Where Book a Call goes: the church consultation on geai.us, as a walkthrough of the demo. */\n",
     },
     contactPath(1),
     {

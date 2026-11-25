@@ -596,7 +596,7 @@
         { key: "member-app", label: "Member App", href: "member-home.html", icon: "device", hint: "What members see on their phones" },
         { key: "website", label: "Church Website", hrefFn: function () { return GM.church.site; }, icon: "website", hint: "The website in its chosen look" },
         { key: "levels", label: "Compare Plans", href: LEVELS_HREF, icon: "levels", hint: "Care, Shepherd, Plus, Enterprise" },
-        { key: "consult", label: "Talk With Genesis", href: "/contact?topic=ministry-demo", icon: "call", hint: "A free conversation with Genesis about your church" }
+        { key: "consult", label: "Book a Call", href: "/contact?topic=ministry-demo", icon: "call", hint: "A free conversation with Genesis about your church" }
       ]
     },
     member: [
@@ -679,9 +679,9 @@
   GM.previewStripHTML = function () {
     return '<div class="v2-fixture-badge gm-preview-strip" role="note"><span aria-hidden="true"></span><span class="gm-strip-words">Design preview<span class="gm-strip-long">. Sample data shown</span>.</span>' + talkLinkHTML() + "</div>";
   };
-  /* Talk With Genesis, always in view in the sample strip: a pastor who lands deep in the demo can still reach a person. */
+  /* Book a Call, always in view in the sample strip: a pastor who lands deep in the demo can still reach a person. */
   function talkLinkHTML() {
-    return D.genesisContact ? '<a class="gm-strip-talk" href="' + esc(D.genesisContact) + '" target="_blank" rel="noopener">Talk With Genesis<span class="sr-only"> (opens in a new tab)</span></a>' : "";
+    return D.genesisContact ? '<a class="gm-strip-talk" href="' + esc(D.genesisContact) + '">Book a Call</a>' : "";
   }
 
   /* ------------------------------------------------------------------ shell: church and genesis (Genesis OS) */
@@ -1299,7 +1299,7 @@
   /* extraAnswers: a page's own (checked first). baseAnswers: the guided demo's product answers
      (shared/demo.js), checked before the built-in ones and answered on every plan. */
   var extraAnswers = [], baseAnswers = [];
-  /* An answer is text, or { text, link: { label, href } } for one link under it (Talk With Genesis).
+  /* An answer is text, or { text, link: { label, href } } for one link under it (Book a Call).
      An answer function that returns null passes the question on to the next rule. */
   function pickAnswer(list, text) {
     for (var i = 0; i < list.length; i++) {
@@ -1342,10 +1342,10 @@
   var PRODUCT_ASK = /\b(?:genesis|hope|plans?|price|cost|workspace|dashboard|guests?|care inbox|inbox|drafts?|reports?|seats?|team|roles?|app|website|site|screen|export|data|settings?|members?|staff|volunteers?|summary|follow[- ]?ups?)\b/i;
   function aboutSelf(t) { t = String(t || ""); return SELF_WORDS.test(t) && !/\?\s*$/.test(t) && !/^\s*(?:how|what|which|who|where|when|why|can|could|do|does|did|is|are|will|would|should|show|tell|give|open|help me (?:find|see|with))\b/i.test(t) && !PRODUCT_ASK.test(t); }
   function selfAnswer() {
-    return { text: "Thank you for telling me. If you are in crisis, call or text 988, or 911 in an emergency. Please reach a person you trust today.", links: [{ label: "Call 988", href: "tel:988", primary: true }, { label: "Text 988", href: "sms:988" }, { label: "Call 911", href: "tel:911" }] };
+    return { text: "Thank you for telling me. In danger or crisis? Call 911, or call or text 988. Please reach a person you trust today.", links: [{ label: "Call 988", href: "tel:988", primary: true }, { label: "Text 988", href: "sms:988" }, { label: "Call 911", href: "tel:911" }] };
   }
   /* Every fallback ends with the numbers, so a crisis no rule heard still sees 988 and 911. */
-  var CRISIS_LINE = " If you are in crisis, call or text 988, or 911 in an emergency.";
+  var CRISIS_LINE = " In danger or crisis? Call 911, or call or text 988.";
   function rawAnswer(text) {
     text = plainText(text);
     /* The safety pre-check (../shared/crisis-words.js) comes before everything, on every plan and on
@@ -1372,7 +1372,7 @@
       /* Someone telling about their own life gets the numbers, never a sales call. */
       if (aboutSelf(text)) return selfAnswer();
       /* An honest line and a person, as on every other plan. */
-      return { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website, and " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE, link: { label: "Talk With Genesis", href: D.genesisContact } };
+      return { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. On the " + GM.level().code + " plan I answer questions on " + GM.poss(GM.church.short) + " website, and " + ASSISTANT.name + " in this workspace, with drafts and summaries, comes with the Shepherd plan." + CRISIS_LINE, link: { label: "Book a Call", href: D.genesisContact } };
     }
     /* Trust and policy answers come before a screen's own answers; then the screen's, the rest of the
        guided demo's and the built-in ones. */
@@ -1385,7 +1385,7 @@
     return GM.side === "genesis"
       ? "In this preview I answer from the sample data."
       /* A pastor's question no answer covers gets an honest line and a person, never a list of what I can do. */
-      : { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. In this workspace I can also help with this week's summary, follow-ups due, care waiting on us and drafts waiting for approval." + CRISIS_LINE, link: { label: "Talk With Genesis", href: D.genesisContact } };
+      : { text: "I would rather not guess about that one. A person at Genesis can answer it on a call. In this workspace I can also help with this week's summary, follow-ups due, care waiting on us and drafts waiting for approval." + CRISIS_LINE, link: { label: "Book a Call", href: D.genesisContact } };
   }
 
   /* How Hope greets the viewer: pastors by title ("Pastor Theo"), everyone else by first name ("Nadia"). */
@@ -1718,9 +1718,10 @@
   }
   function appendAssistant(ans) {
     var text = ans && typeof ans === "object" ? ans.text : ans, links = ans && typeof ans === "object" ? (ans.links || (ans.link ? [ans.link] : [])) : [];
-    /* One or more links under the answer: Talk With Genesis, or the crisis reply's numbers a phone can dial. */
+    /* One or more links under the answer: Book a Call, or the crisis reply's numbers a phone can dial. */
     var linkHTML = links.filter(function (l) { return l && l.href; }).map(function (l) {
-      var ext = /^https?:/i.test(l.href);
+      /* Book a Call opens in the same tab: the demo's place is in its address, and Back returns to it. */
+      var ext = /^https?:/i.test(l.href) && !/\/contact\b/.test(l.href);
       return '<a class="gm-dock-link' + (l.primary ? " gm-dock-link-primary" : "") + '" href="' + esc(l.href) + '"' + (ext ? ' target="_blank" rel="noopener"' : "") + ">" + esc(l.label) + (ext ? '<span class="gm-sr"> (opens in a new tab)</span>' : "") + "</a>";
     }).join("");
     if (linkHTML) linkHTML = '<p class="gm-dock-link-row">' + linkHTML + "</p>";

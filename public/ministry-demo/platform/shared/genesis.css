@@ -155,12 +155,12 @@ body[data-side="member"]{font-size:14px;line-height:1.5;-webkit-font-smoothing:a
 /* First paint (review of November 24, layout shift 0.55 on Today): the work area waits, hidden, until its
    script and the guided demo have arranged it, then shows in one step (app.js adds gm-booted). */
 html:not(.gm-booted) #v2-main,html:not(.gm-booted) #gm-main{visibility:hidden}
-/* The strip's dot is its first span only; the words and Talk With Genesis are ordinary text. */
+/* The strip's dot is its first span only; the words and Book a Call are ordinary text. */
 .v2-fixture-badge.gm-preview-strip .gm-strip-words,.v2-fixture-badge.gm-preview-strip .gm-strip-words span,.v2-fixture-badge.gm-preview-strip .gm-strip-talk span{width:auto;height:auto;border-radius:0;background:none;flex:none}
 .gm-strip-talk{display:inline-flex;align-items:center;min-height:44px;margin-left:10px;padding:0 4px;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .gm-strip-talk:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:4px}
 @media (max-width:520px){.gm-strip-long{display:none}}
-/* A phone on its side keeps the strip at 28px: Talk With Genesis stays in Hope's answers there. */
+/* A phone on its side keeps the strip at 28px: Book a Call stays in Hope's answers there. */
 @media (max-height:500px){.gm-strip-talk{display:none}}
 /* The strip's tint sits on a solid base, so content scrolling under it (member pages scroll the
    page itself) never prints through. The dock floats where Genesis OS puts it, over the strip. */
@@ -202,7 +202,7 @@ html:not(.gm-booted) #v2-main,html:not(.gm-booted) #gm-main{visibility:hidden}
 @media (min-width:861px) and (max-width:1279px){body:not(.v2-sidebar-expanded) .gm-plan-switch{display:none}}
 @media (max-width:860px){.gm-plan-switch{margin:0 8px 8px}}
 /* A short window: the plan switch is one slim line, so more of the nav shows above it. */
-@media (min-width:861px) and (max-height:960px){.gm-plan-switch{margin-bottom:6px;padding:2px}.gm-plan-switch>span{display:none}.gm-plan-switch a{min-height:26px}}
+@media (min-width:861px) and (max-height:960px){.gm-plan-switch{margin-bottom:6px;padding:2px}.gm-plan-switch>span{display:none}.gm-plan-switch a{min-height:26px;position:relative}.gm-plan-switch a::after{content:"";position:absolute;inset:-9px 0}}
 /* Shorter still (1280 by 800): the plan switch moves into the account menu, as the folded sidebar does,
    so Reports and the System group stay in view. */
 @media (min-width:861px) and (max-height:860px){.gm-plan-switch{display:none}.v2-account-menu .gm-menu-plan{display:grid;gap:2px}}
@@ -382,6 +382,8 @@ hope-dock{display:flex;height:100%;min-height:0}
 .gm-em{font-family:"Gambetta",Georgia,serif;font-style:italic;font-weight:500;color:var(--v2-accent-strong)}
 .gm-link{color:var(--v2-text);text-decoration:underline;text-decoration-color:var(--v2-accent-border);text-underline-offset:3px;font-weight:600}
 .gm-link:hover{text-decoration-color:var(--v2-accent)}
+/* An inline link keeps its small look, with a 44px tall hit area around it. */
+.gm-link{position:relative}.gm-link::after{content:"";position:absolute;inset:-14px -4px}
 .gm-prose{color:var(--v2-text-2);line-height:1.6}
 .gm-prose p+p{margin-top:10px}
 .gm-spacer{flex:1}
@@ -914,7 +916,7 @@ body.v2-genesis-open .hd-invite,body.v2-genesis-open .v2-guide.hd-g:not(.is-anch
 /* The close of a church buyer's demo on a member screen: the Genesis Done card, docked at the bottom
    the way Genesis OS docks it, above the stage around the phone. */
 .v2-guide.gm-close-card{z-index:2147483001}
-/* Four ways on (See the Levels, Talk With Genesis, How to Get Started, Back to the Overview) keep to one row. */
+/* Four ways on (See the Levels, Book a Call, How to Get Started, Back to the Overview) keep to one row. */
 @media (min-width:861px){.v2-guide.gm-close-card{width:min(588px,calc(100vw - 32px))}}
 .gm-close-card .v2-guide-head .v2-guide-count{margin-left:auto;margin-right:0}
 .gm-close-card .v2-guide-close{margin-left:8px}

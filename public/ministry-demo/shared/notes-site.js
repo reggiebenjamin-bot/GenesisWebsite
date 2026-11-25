@@ -41,6 +41,9 @@
     ".nv{color:var(--nv-text);font-family:var(--nv-body)}",
     ".nv-sec{padding-block:clamp(40px,6vw,88px)}",
     ".nv-sec+.nv-sec{padding-top:0}",
+    /* Find a message gets a real section gap under the page's head, as the other sections do. */
+    ".nv-head+.nv-sec{padding-top:clamp(32px,4vw,56px)}",
+    ".nv-keep{white-space:nowrap}",
     ".nv h1,.nv h2,.nv h3{font-family:var(--nv-display);color:var(--nv-text);margin:0}",
     ".nv-head p{max-width:62ch;margin:14px 0 0;font-size:18px;line-height:1.6;color:var(--nv-muted)}",
     ".nv-facts{display:flex;flex-wrap:wrap;gap:6px 18px;margin:16px 0 0;padding:0;list-style:none;font-weight:600;color:var(--nv-text)}",
@@ -135,7 +138,7 @@
   function rowsHTML(list) {
     return list.map(function (n) {
       return '<li><a class="nv-row" href="#/notes/' + esc(n.id) + '"><span class="nv-date" aria-hidden="true"><b>' + N.dayNum(n.date) + "</b><small>" + esc(N.dateShort(n.date).slice(0, 3)) + "</small></span>" +
-        '<span><span class="nv-title">' + esc(n.title) + '</span><span class="nv-row-sub">' + N.refHTML(n.ref) + esc(" · " + speaker(n) + " · " + n.series + ", " + n.part.toLowerCase()) + '</span><span class="sr-only">, ' + esc(N.dateLong(n.date)) + "</span>" + soon(n) + "</span>" + ARROW + "</a></li>";
+        '<span><span class="nv-title">' + esc(n.title) + '</span><span class="nv-row-sub">' + N.refHTML(n.ref) + esc(" · " + speaker(n) + " · ") + '<span class="nv-keep">' + esc(n.series + ", " + n.part.toLowerCase()) + "</span></span>" + '<span class="sr-only">, ' + esc(N.dateLong(n.date)) + "</span>" + soon(n) + "</span>" + ARROW + "</a></li>";
     }).join("");
   }
   /* A scheduled draft shows in this demo before its time, so its row says when it really goes up. */
@@ -180,7 +183,7 @@
         "<p>" + esc(td.verses[0].ref) + ": " + esc(td.verses[0].text) + "</p>" +
         '<div class="nv-actions"><a class="' + cls("btn") + '" href="#/notes/today">Read Today\'s Devotional</a></div></div>');
     }
-    h += wrap('<h2 class="' + cls("h2", "nv-h2") + '" id="nv-all">Every Sunday</h2><div id="nv-results" style="margin-top:20px"></div>');
+    h += wrap('<h2 class="' + cls("h2", "nv-h2") + '" id="nv-all">Recent Messages</h2><div id="nv-results" style="margin-top:20px"></div>');
     h += closing();
     root.innerHTML = h;
     var q = root.querySelector("#nv-q");
@@ -228,8 +231,10 @@
 
   /* ---------- Routing ---------- */
   var on = false;
-  function leave() { if (!on) return; on = false; root.hidden = true; root.innerHTML = ""; document.documentElement.classList.remove("nv-on"); }
-  function enter() { on = true; root.hidden = false; document.documentElement.classList.add("nv-on"); }
+  /* While a notes page shows, the home page's own h1 (hidden) is not a heading, so the page has one title. */
+  function homeH1s() { return Array.prototype.filter.call(document.querySelectorAll("main h1"), function (h) { return !root.contains(h); }); }
+  function leave() { if (!on) return; on = false; root.hidden = true; root.innerHTML = ""; document.documentElement.classList.remove("nv-on"); homeH1s().forEach(function (h) { h.removeAttribute("role"); h.removeAttribute("aria-hidden"); }); }
+  function enter() { on = true; root.hidden = false; document.documentElement.classList.add("nv-on"); homeH1s().forEach(function (h) { h.setAttribute("role", "none"); h.setAttribute("aria-hidden", "true"); }); }
   function route() {
     var h = decodeURIComponent(location.hash || "");
     if (h.indexOf("#/notes") !== 0) {

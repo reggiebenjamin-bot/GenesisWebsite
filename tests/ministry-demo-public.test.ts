@@ -331,10 +331,39 @@ test("every public page and the end of the guided demo offer the church consulta
   }
   const demo = read("platform/shared/demo.js");
   assert.ok(demo.includes(`var CONTACT = (D && D.genesisContact) || (STORY && STORY.contact) || "${SITE_LINKS[0]}";`));
-  assert.match(demo, /links: last \? \[\{ label: "Talk With Genesis", href: CONTACT \}, \{ label: "How to Get Started", href: "journey\.html#start" \}/);
+  assert.match(demo, /links: last \? \[\{ label: "Book a Call", href: CONTACT \}\]\.concat\(SHORT_RUN \? \[\{ label: "See Every Screen"/);
+  assert.match(demo, /\{ label: "How to Get Started", href: "journey\.html#start" \}/);
   assert.ok(read("platform/shared/data.js").includes(`D.genesisContact = "${SITE_LINKS[0]}";`));
   assert.ok(read("platform/story/story.js").includes(`var GENESIS_CONTACT_URL = "${SITE_LINKS[0]}";`));
-  assert.ok(read("platform/shared/app.js").includes(`{ key: "consult", label: "Talk With Genesis", href: "${SITE_LINKS[0]}", icon: "call"`));
+  assert.ok(read("platform/shared/app.js").includes(`{ key: "consult", label: "Book a Call", href: "${SITE_LINKS[0]}", icon: "call"`));
+  /* Book a Call, the site's own words, opens in the same tab. */
+  for (const file of walk(DEMO).filter((name) => TEXT.test(name))) {
+    assert.doesNotMatch(read(file), /Talk With Genesis/, `${file} still says Talk With Genesis`);
+    assert.doesNotMatch(read(file), /data-contact[^>]*target="_blank"/, `${file} opens Book a Call in a new tab`);
+  }
+});
+
+/* The crisis line is fixed wording. A hand-written variant fails, so one can never come back. */
+test("every crisis sentence in the public demo uses the fixed line", { skip: !existsSync(DEMO) }, () => {
+  const FIXED = "In danger or crisis? Call 911, or call or text 988.";
+  const VARIANTS = [
+    /If you are in crisis, call or text 988/,
+    /or 911 in an emergency/,
+    /If you are in danger, call 911/,
+    /in danger right now, call 911/,
+    /not safe(?: at home)?, call 911/,
+    /Please call or text 988 now/,
+  ];
+  let fixed = 0;
+  for (const file of walk(DEMO).filter((name) => TEXT.test(name))) {
+    const text = read(file);
+    for (const variant of VARIANTS) assert.doesNotMatch(text, variant, `${file} has a hand-written crisis line`);
+    fixed += text.split(FIXED).length - 1;
+  }
+  assert.ok(fixed >= 10, "the fixed line is used across the demo");
+  for (const file of ["platform/shared/app.js", "shared/hope-demo.js"]) {
+    assert.ok(read(file).includes(`var CRISIS_LINE = " ${FIXED}";`), `${file} appends the fixed line`);
+  }
 });
 
 test("Hope on the sample sites answers a price question with the price answer", { skip: !existsSync(DEMO) }, () => {

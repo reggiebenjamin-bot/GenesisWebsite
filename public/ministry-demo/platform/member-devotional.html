@@ -47,7 +47,7 @@
   .m-app .md-soon b{font-size:15px;color:var(--m-text)}
   .m-app .md-soon small{font-size:12.5px;color:var(--m-muted)}
   .m-app .md-email-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px}
-  .m-app .md-email-row .m-btn{min-height:44px}
+  .m-app .md-email-row .m-btn{min-height:48px;width:100%;justify-content:center}
   .m-app .md-email-row .m-link{display:inline-flex;align-items:center;min-height:44px;font-size:15px}
   .m-app .md-by{margin:12px 0 0;color:var(--m-muted);font-size:14px}
   .md-btns{display:grid;gap:10px;margin-top:18px}
@@ -61,7 +61,8 @@
   .m-app .md-sched a{display:inline-flex;align-items:center;min-height:44px;color:var(--m-accent-ink);font-weight:700}
   /* Reading comfort, the same on the notes and the devotional reader (prefix mx-read): text size and,
      in the bright looks, Night Reading. Kept on this phone (localStorage), and the page reads fine without it. */
-  .m-app .mx-read{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+  /* A-, A+ and Night Reading share the row in equal columns, one height, so no button reads as an odd one out. */
+  .m-app .mx-read{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin:12px 0 0}
   .m-app .mx-read .m-btn{min-height:44px;min-width:44px;padding:6px 12px;font-size:15px}
   .m-app .mx-read .m-btn[aria-pressed="true"]{border-color:var(--m-accent);box-shadow:inset 0 0 0 1.5px var(--m-accent)}
   .m-app.mx-night{--m-bg:#15161a!important;--m-surface:#1d1f24!important;--m-surface-2:#24262c!important;--m-surface-3:#2c2f36!important;--m-text:#ece8e1!important;--m-muted:#b9b3a9!important;--m-line:#373a41!important;--m-line-strong:#4c5059!important;--m-accent-ink:#e9d5a6!important;--m-accent-soft:rgba(233,213,166,.16)!important;color-scheme:dark!important}
@@ -90,8 +91,8 @@
   .mx-staged .m-stage-brand{gap:9px;margin-right:10px}
   .mx-staged .m-stage-brand b{font-size:15px;font-weight:700;line-height:1.15}
   .mx-staged .m-stage-brand small{font-size:11px;line-height:1.3}
-  .mx-staged .m-stagebar .v2-button{min-height:40px;margin:0;font-size:12.5px}
-  .mx-staged .m-stagebar .v2-icon-button{width:40px}
+  .mx-staged .m-stagebar .v2-button{min-height:44px;margin:0;font-size:12.5px}
+  .mx-staged .m-stagebar .v2-icon-button{width:44px;min-height:44px}
   .mx-staged .m-device{height:min(880px,calc(100vh - 160px));margin:24px auto 16px}
   @media (min-width:521px){.mx-staged .m-device>.m-app{min-height:0}}
   .mx-about,.mx-screens{display:none}
@@ -149,7 +150,7 @@
   /* ==== end member stage ==== */
 </style>
 </head>
-<body data-side="member" data-page="home" data-title="Today's Devotional">
+<body data-side="member" data-page="notes" data-title="Today's Devotional">
 
 <main id="gm-main" class="m-main">
   <p class="m-note md-sched" id="md-sched" hidden></p>
