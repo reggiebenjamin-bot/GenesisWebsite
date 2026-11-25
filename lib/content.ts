@@ -47,8 +47,8 @@ export type ProofItem = {
 
 export const contact = {
   email: "info@geai.us",
-  phoneDisplay: "+1 682 647 5934",
-  phoneHref: "+16826475934",
+  phoneDisplay: "+1 469 557 2658",
+  phoneHref: "+14695572658",
   linkedin: "https://www.linkedin.com/company/genesis-ai-studio",
   facebook: "https://www.facebook.com/profile.php?id=61586903450734",
 } as const;
