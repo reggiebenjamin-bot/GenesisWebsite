@@ -113,6 +113,8 @@ import {
   localRefs,
   oldPlanRefs,
   planProblems,
+  TERMS_FILES,
+  termsProblems,
   scriptErrors,
   siteRefs,
 } from "./ministry-demo-public.mjs";
@@ -309,6 +311,21 @@ if (!withGrowthDesk) {
     fail(
       `the plans in ${PLAN_DATA} are not the ones /ministry shows:\n  ${wrong.join("\n  ")}\n` +
         "  Update MINISTRY_PLANS in scripts/ministry-demo-public.mjs and ministryLevels in lib/ministryPage.ts together, or fix the source.",
+    );
+  }
+}
+
+/* Hope's fees, contract and cancel answers must state the terms /ministry
+   shows: no setup fee, month to month (termsProblems). */
+if (!withGrowthDesk) {
+  const wrong = TERMS_FILES.flatMap((file) => {
+    const at = join(STAGE, ...file.split("/"));
+    return existsSync(at) ? termsProblems(readFileSync(at, "utf8"), file) : [`${file} was not copied`];
+  });
+  if (wrong.length) {
+    fail(
+      `Hope's terms are not the ones /ministry shows (no setup fee, month to month):\n  ${wrong.join("\n  ")}\n` +
+        "  Fix the source, or update TERMS_WORDS in scripts/ministry-demo-public.mjs and ministryLevels in lib/ministryPage.ts together.",
     );
   }
 }

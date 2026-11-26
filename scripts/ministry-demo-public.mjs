@@ -24,9 +24,12 @@
  *     /ministry shows, or when an old draft level is left anywhere. On
  *     November 24, 2026 the owner set the staff logins too (2, 5 and 15),
  *     and the sync stops when the source gives a plan any other number.
+ *     The same day the owner set the terms: no setup fee, month to month.
+ *     The sync stops when Hope's fees, contract or cancel answer says
+ *     anything else (termsProblems).
  *
  * The committed public/ministry-demo/ is synced from genesis-ministry commit
- * f7c0702 (feat/sermon-notes on November 25, 2026), exported with git archive.
+ * cf08e4c (feat/sermon-notes on November 25, 2026), exported with git archive.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -891,6 +894,40 @@ export function planProblems(data) {
   /* Every price the data names is one of the three. */
   for (const [price] of data.matchAll(/\$\d[\d,]*/g)) {
     if (!MINISTRY_PLANS.some((plan) => plan.price === price)) problems.push(`it names ${price}, which is not a plan price`);
+  }
+  return problems;
+}
+
+/**
+ * Hope's two scripts, whose fees, contract and cancel answers state the terms
+ * /ministry shows ("No setup fee. Month to month, cancel anytime.").
+ */
+export const TERMS_FILES = ["platform/shared/demo.js", "shared/hope-demo.js"];
+
+/** The words each of Hope's scripts must say about the terms. */
+export const TERMS_WORDS = ["There is no setup fee.", "Plans are month to month, with no setup fee, and"];
+
+/** The old answers, which left the same terms to a call. */
+const OLD_TERMS = [
+  { what: "contract terms left to a call", pattern: /Contract terms are (?:set|" \+ ON_CALL)/ },
+  { what: "how a plan ends left to a call", pattern: /How a plan ends is (?:set|" \+ ON_CALL)/ },
+];
+
+/**
+ * What is wrong with the terms in one of Hope's scripts. An empty list means
+ * it says there is no setup fee and the plans are month to month.
+ *
+ * @param {string} text the text of the script
+ * @param {string} file its path in the demo, for the message
+ * @returns {string[]}
+ */
+export function termsProblems(text, file) {
+  const problems = [];
+  for (const words of TERMS_WORDS) {
+    if (!text.includes(words)) problems.push(`${file} does not say "${words}"`);
+  }
+  for (const { what, pattern } of OLD_TERMS) {
+    if (pattern.test(text)) problems.push(`${file} still has ${what}`);
   }
   return problems;
 }

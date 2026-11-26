@@ -12,6 +12,8 @@ import {
   PRICE_ANSWER,
   PUBLIC_EDITS,
   SITE_LINKS,
+  TERMS_FILES,
+  TERMS_WORDS,
   applyEdits,
   growthDeskRefs,
   localRefs,
@@ -19,7 +21,9 @@ import {
   planProblems,
   scriptErrors,
   siteRefs,
+  termsProblems,
 } from "../scripts/ministry-demo-public.mjs";
+import { ministryLevels } from "../lib/ministryPage.ts";
 
 /* ── the edits ─────────────────────────────────────────────────────── */
 
@@ -130,6 +134,11 @@ test("the plans are Care, Shepherd and Plus, and Hope's price answer names all t
     ],
   );
   assert.deepEqual(MINISTRY_PLANS.map((plan) => plan.staffLogins), [2, 5, 15]);
+  /* The sync guard and /ministry state the same plans: names, prices and staff logins. */
+  assert.deepEqual(
+    MINISTRY_PLANS.map((plan) => plan.staffLogins),
+    ministryLevels.levels.map((plan) => plan.staffLogins),
+  );
   assert.equal(
     PRICE_ANSWER,
     "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.",
@@ -165,6 +174,23 @@ test("planProblems accepts the plans as /ministry shows them and names anything 
   assert.match(planProblems(good.replace('price: "Scoped on a call", seats', 'price: "$999", seats')).join("\n"), /Enterprise is not scoped on a call/);
   assert.ok(DRAFT_LEVEL_MARK.test('{ n: 1, code: "Level 01", name: "Welcome", draft: true'));
   assert.ok(!DRAFT_LEVEL_MARK.test('{ n: 1, code: "Care", name: "Care", price: "$149 a month"'));
+});
+
+test("termsProblems wants no setup fee and month to month, and names the old answers", () => {
+  const good = TERMS_WORDS.join(" ") + " you can cancel anytime.";
+  assert.deepEqual(termsProblems(good, "a.js"), []);
+  assert.deepEqual(termsProblems("Plans are month to month, with no setup fee, and you can cancel anytime.", "a.js"), [
+    'a.js does not say "There is no setup fee."',
+  ]);
+  assert.deepEqual(termsProblems(good + ' contract: "Contract terms are set with Genesis on a call."', "a.js"), [
+    "a.js still has contract terms left to a call",
+  ]);
+  assert.deepEqual(termsProblems(good + ' t: "How a plan ends is " + ON_CALL', "a.js"), [
+    "a.js still has how a plan ends left to a call",
+  ]);
+  /* /ministry says the same thing. */
+  assert.equal(ministryLevels.setupLine, "No setup fee");
+  assert.match(JSON.stringify(ministryLevels), /No setup fee\. Month to month, cancel anytime\./);
 });
 
 test("the plan checks look only at the demo's own pages and scripts", () => {
@@ -420,4 +446,9 @@ test("the public data carries no Growth Desk sample data", { skip: !existsSync(D
   for (const working of ["shared/hope-check.html", "shared/test.html", "platform/DESIGN.md", "LAUNCH.md", "README.md"]) {
     assert.ok(!existsSync(join(DEMO, working)), `${working} is not published`);
   }
+});
+
+test("the public demo states the terms /ministry shows: no setup fee, month to month", { skip: !existsSync(DEMO) }, () => {
+  for (const file of TERMS_FILES) assert.deepEqual(termsProblems(read(file), file), []);
+  assert.ok(TERMS_WORDS.length > 0);
 });

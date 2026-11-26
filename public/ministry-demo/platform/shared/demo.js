@@ -120,7 +120,7 @@
     domain: "Your web address is settled during scoping, with a person at Genesis: which address the new site uses and how the move is handled. Choose Book a Call to confirm it for your church.",
     start: "Every church starts the same way. Consultation is a free conversation. Scoping brings a guided demo and a proposal with a look and a plan. Implementation builds it with your content, Launch takes it live with your staff, and the Managed Platform keeps it running. Choose Book a Call to begin.",
     upgrade: "Each plan adds to the one before, so a church can start on Care and move up to Shepherd or Plus as it grows. A person at Genesis sets up the change with you.",
-    cancel: "How a plan ends is set with Genesis on a call, before you sign anything. If you ever leave, your data is yours: we hand over a full export of your people, guests, care history and the access record, then delete our copy once you confirm you have it.",
+    cancel: "Plans are month to month, with no setup fee, and you can cancel anytime. If you ever leave, your data is yours: we hand over a full export of your people, guests, care history and the access record, then delete our copy once you confirm you have it.",
     discount: PRICES + " Any other terms are set with Genesis on a call.",
     pcokeep: "Yes. Genesis Ministry works beside Planning Center, Subsplash and your giving provider, and does not replace them. Give opens your own giving page, and events, groups and kids check-in open the tool you already use. At onboarding we can import your people list from a Planning Center or Subsplash export, so nobody is entered twice.",
     importpeople: "Yes. At onboarding we can import your people list from a spreadsheet or CSV export of the tool you use today, such as Planning Center or Subsplash. Records also grow as people sign in. Genesis does not replace those tools, and a live Planning Center sync is on the roadmap.",
@@ -146,7 +146,7 @@
     /* What a pastor asks before booking a call. */
     call: "Choose Book a Call, and a person at Genesis will set up a call. They walk you through it with your own church in mind: the look, your content and the plan that fits.",
     seats: seatsText(),
-    contract: "Contract terms are set with Genesis on a call, before you sign anything. " + PRICES + " Scoping includes a demo in the look you choose.",
+    contract: "Plans are month to month, with no setup fee, and you can cancel anytime. " + PRICES + " Scoping includes a demo in the look you choose.",
     trial: "A trial is set with Genesis on a call. Scoping includes a demo in the look you choose, with your own church in mind.",
     model: AN + " is Genesis's assistant. It runs on an outside AI service under contract, which never trains on your data, and the provider is named in writing during scoping. " + AN + " answers only from facts the church approved, never writes a reply to prayer or a private message, and a person approves everything that goes out.",
     turnoff: "Yes. A pastor can turn " + AN + " off on the website or in the workspace at any time.",
@@ -266,13 +266,13 @@
   ANSWERS.seats = function (q) {
     q = String(q || "");
     /* On Care: the plan's own staff logins, then what Shepherd and Plus have. */
-    if (careFor(q) && /\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q)) {
+    if (careFor(q) && /\b(add|more|extra|another|buy|additional)\b.{0,20}\b(?:seats?|(?:staff )?log-?ins?)\b/i.test(q)) {
       var lvs = (D && D.levels) || [], c1 = lvs[0] && lvs[0].seats ? lvs[0].seats : "2 staff logins", c2 = lvs[1] && lvs[1].seats ? lvs[1].seats.replace(/ staff logins?$/, "") : "5", c3 = lvs[2] && lvs[2].seats ? lvs[2].seats.replace(/ staff logins?$/, "") : "15";
       return "The Care plan has " + c1 + ". Shepherd has " + c2 + " and Plus has " + c3 + ", and Team roles come with Shepherd.";
     }
     /* "How much is an extra seat?" is a price question: no "Yes." first. */
-    if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q) && /\b(how much|cost|costs|price|prices|pricing|charge)\b/i.test(q)) return SEAT_MORE.trim() + " " + seatsAll.replace(SEAT_MORE, "");
-    if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q)) return "Yes." + SEAT_MORE + " " + seatsAll.replace(SEAT_MORE, "");
+    if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\b(?:seats?|(?:staff )?log-?ins?)\b/i.test(q) && /\b(how much|cost|costs|price|prices|pricing|charge)\b/i.test(q)) return SEAT_MORE.trim() + " " + seatsAll.replace(SEAT_MORE, "");
+    if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\b(?:seats?|(?:staff )?log-?ins?)\b/i.test(q)) return "Yes." + SEAT_MORE + " " + seatsAll.replace(SEAT_MORE, "");
     /* "Do the volunteers on our prayer team each need a staff seat?" gets Yes first. */
     if (/\b(volunteers?|prayer team|part[- ]time|ushers?|greeters?)\b/i.test(q) && yesNo(q)) return "Yes." + SEAT_WHO + " " + seatsAll.replace(SEAT_WHO, "");
     return seatsAll;
@@ -356,24 +356,27 @@
     var st = /\b(\d{1,3})\s*(?:staff|people on staff|employees|staff members)\b/i.exec(q), staff = st ? +st[1] : 0;
     var m = /\b(\d{2,5})\b(?!\s*(?:staff|people on staff|employees|seats?))/.exec(q), n = m ? +m[1] : 0;
     var lv = (D && D.levels) || [], s2 = lv[1] ? lv[1].seats.toLowerCase() : "5 staff logins", s3 = lv[2] ? lv[2].seats.toLowerCase() : "15 staff logins";
+    /* The staff login counts, from the plans themselves. */
+    var c2 = parseInt(s2, 10) || 5, c3 = parseInt(s3, 10) || 15;
     var base = "Genesis Ministry is built for churches of about 100 to 1,000 people.";
     if (n > 1000) return base + " For a church of " + n + ", a person at Genesis confirms the fit with you on a call. Enterprise is for more than one campus.";
     if (n && n < 100) return base + " A church of " + n + " can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.";
-    if (n && (staff > 2 || n >= 200)) return "For a church of about " + n + (staff ? " with " + staff + " staff" : "") + ", Shepherd is a good fit at $299 a month: the guest pipeline, the Care Inbox and the member app, with " + s2 + ". Plus, at $499 a month, adds person pages, the gifts picture and reports, with " + s3 + "." + (staff > 15 ? " More staff logins are available for an additional cost." : "") + " A person at Genesis can confirm it with your own church in mind.";
+    if (n && staff > c2 && staff <= c3) return "For a church of about " + n + " with " + staff + " staff, Plus is a good fit at $499 a month: the guest pipeline, the Care Inbox and the member app, plus person pages, the gifts picture and reports, with " + s3 + ". Shepherd, at $299 a month, has " + s2 + ", and more staff logins are available for an additional cost. A person at Genesis can confirm it with your own church in mind.";
+    if (n && (staff > 2 || n >= 200)) return "For a church of about " + n + (staff ? " with " + staff + " staff" : "") + ", Shepherd is a good fit at $299 a month: the guest pipeline, the Care Inbox and the member app, with " + s2 + ". Plus, at $499 a month, adds person pages, the gifts picture and reports, with " + s3 + "." + (staff > c3 ? " More staff logins are available for an additional cost." : "") + " A person at Genesis can confirm it with your own church in mind.";
     if (n) return "For a church of about " + n + ", Care fits if you want the website and " + AN + " first, at $149 a month. Shepherd, at $299 a month, adds the guest pipeline, the Care Inbox and the member app, with " + s2 + ". A person at Genesis can confirm it with your own church in mind.";
     return base + " A smaller church can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.";
   };
-  /* Fees and price changes: the plan price is the plan, and anything more is settled in writing on a
-     call first. */
+  /* Fees and price changes: no setup fee, the plan price is the plan month to month, and anything more
+     is quoted in writing first. */
   ANSWERS.fees = function (q) {
     if (/\b(go(?:es)? up|going up|increase\w*|raise\w*|rise|rising|change over time|lock\w* in|next year|after (?:the first|a|one) year|year two)\b/i.test(String(q || ""))) return PRICES + " How a price is held over time is set in writing with Genesis before you sign anything.";
-    return "The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month. Anything more, like customization beyond the template, is quoted in writing before you sign. Any other terms are set with Genesis on a call.";
+    return "There is no setup fee. The monthly price is the plan: Care at $149, Shepherd at $299 and Plus at $499 a month, month to month. Anything more, like customization beyond the template, is quoted in writing before you sign.";
   };
   /* The Care plan's own answers: forms arrive by email, so there is no inbox, archive or list to import yet. */
   var NO_IMPORT = / ?(?:At onboarding|There is no live sync today: at onboarding) we can import your people list from a[^.]*\./;
   /* Leaving on Care: the forms already live in the church's own email, so the export is the site. */
   var CARE_DATA = "On the Care plan your forms live in your own email, so there is nothing of yours in a Genesis inbox to hand back. If you ever leave, we hand over your website content, " + AN + "'s approved facts and the brand board, then delete our copy once you confirm you have it.";
-  var CANCEL_TERMS = "How a plan ends is set with Genesis on a call, before you sign anything. ";
+  var CANCEL_TERMS = "Plans are month to month, with no setup fee, and you can cancel anytime. ";
   if (CARE || STORY_CARE) {
     ANSWERS.crisis = ANSWERS.crisis01;
     ANSWERS.oncall = ANSWERS.oncall01;
@@ -453,6 +456,8 @@
     rx(aiTraining, "aitraining"),
     /* Round 5: questions that shared a word with another answer and got it. */
     [/\b(?:more than one|multiple|two|three|several|second|another|extra|separate)\b.{0,20}\b(?:web ?sites?|domains?)\b|\b(?:more than one|multiple|two|three|several|extra|separate)\b.{0,20}\bsites\b/i, "multisite"],
+    /* "Can we add one more staff login?" is a staff login question, not a shared login one. */
+    [/\b(?:add|more|extra|another|additional)\b.{0,20}\b(?:staff )?log-?ins?\b/i, "seats"],
     [/\b(?:share|sharing|shared|same|one)\b.{0,15}\b(?:login|log-?ins?|sign-?ins?|accounts?|passwords?)\b/i, "sharelogin"],
     [/\b(?:police|subpoena\w*|courts?|law enforcement|warrants?)\b.{0,40}\b(?:data|records?|hand|give|ask\w*|request\w*)\b|\b(?:hand|give|turn)\w*\b.{0,30}\b(?:data|records?)\b.{0,30}\b(?:police|courts?|law enforcement)\b/i, "legalrequest"],
     [/\b(?:directors?|ministry leaders?|teachers?|coaches?|deacons?|elders?)\b.*\b(?:read|see|open|access)\w*\b.*\bprayers?\b/i, "prayer"],
@@ -537,7 +542,7 @@
     rx(oneCampus, "onecampus"),
     [/\b(limit|cap|maximum|max)\b.{0,40}\b(members?|people|adults|accounts)\b|\bhow many (members|people|adults)\b.{0,30}\b(use|sign|join|have|on)\b.{0,20}\b(app|accounts?|it|this)\b|\bunlimited (members|users|accounts|people)\b/i, "memberlimit"],
     [/\b(per|each|a|every) (member|person|head|attendee)\b.{0,20}\b(price|pricing|charge|cost|fee)\b|\b(charge|price|bill|pay)\w*\b.{0,15}\b(per|by the|for each|by) (member|person|head|attendee)\b|\bper[- ](member|person|head|attendee)\b/i, "permember"],
-    [/\b(staff )?seats?\b|\bhow many (staff|users|logins|accounts|people can (sign|log) in)\b|\bseat (limit|count)\b|\b(users?|logins?) (are )?included\b/i, "seats"],
+    [/\b(staff )?seats?\b|\bstaff log-?ins?\b|\bhow many (staff|users|logins|accounts|people can (sign|log) in)\b|\bseat (limit|count)\b|\b(users?|logins?) (are )?included\b/i, "seats"],
     [/\bdowngrad\w*|\bdrop(ping)? (down |back )?(from|to|a plan)\b|\b(move|moving|go|going|step|stepping) (back )?down (a |to (a |the )?|from )?(plan|tier|level|care|shepherd)\b|\bback (down )?to (care|shepherd)\b/i, "downgrade"],
     [/\b(setup|set-up|set up|onboarding|start-?up|activation|hidden|extra|additional|other|one-time|upfront|up-front|surprise)\s+(fees?|costs?|charges?)\b|\bfees?\b|\bhidden (costs?|charges?)\b|\bprices?\b.{0,20}\b(go(es)? up|going up|increase|rise|change)\b|\b(raise|increase)\w* (the |your |our )?prices?\b|\bprice (increase|lock|guarantee)\b/i, "fees"],
     fnRule(planFeature, "planfeature"),
