@@ -129,6 +129,7 @@ test("the plans are Care, Shepherd and Plus, and Hope's price answer names all t
       ["03", "Shepherd", "Plus", "$499"],
     ],
   );
+  assert.deepEqual(MINISTRY_PLANS.map((plan) => plan.staffLogins), [2, 5, 15]);
   assert.equal(
     PRICE_ANSWER,
     "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.",
@@ -139,14 +140,15 @@ test("the plans are Care, Shepherd and Plus, and Hope's price answer names all t
 test("planProblems accepts the plans as /ministry shows them and names anything else", () => {
   const good = [
     `  D.pricingLine = "${PRICE_ANSWER}";`,
-    '    { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "One sign-in" },',
-    '    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "Up to 8 staff seats" },',
-    '    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "Up to 15 staff seats" },',
+    '    { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "2 staff logins" },',
+    '    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "5 staff logins" },',
+    '    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "15 staff logins" },',
     '    { n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", seats: "Scoped on a call" },',
   ].join("\n");
   assert.deepEqual(planProblems(good), []);
   assert.deepEqual(planProblems(good.replace('"$299 a month"', '"$249 a month"')), [
     "the Shepherd plan is not named with its price, $299 a month",
+    "the Shepherd plan does not have 5 staff logins",
     "it names $249, which is not a plan price",
   ]);
   assert.deepEqual(planProblems(good.replace("Plus at $499", "Plus at $599")), [
@@ -154,6 +156,12 @@ test("planProblems accepts the plans as /ministry shows them and names anything 
     "it names $599, which is not a plan price",
   ]);
   assert.match(planProblems(good + '\n{ n: 1, code: "Level 01", name: "Welcome", draft: true }').join("\n"), /still has the draft levels/);
+  assert.deepEqual(planProblems(good.replace('seats: "5 staff logins"', 'seats: "Up to 8 staff seats"')), [
+    "the Shepherd plan does not have 5 staff logins",
+  ]);
+  assert.deepEqual(planProblems(good.replace('seats: "2 staff logins"', 'seats: "One sign-in"')), [
+    "the Care plan does not have 2 staff logins",
+  ]);
   assert.match(planProblems(good.replace('price: "Scoped on a call", seats', 'price: "$999", seats')).join("\n"), /Enterprise is not scoped on a call/);
   assert.ok(DRAFT_LEVEL_MARK.test('{ n: 1, code: "Level 01", name: "Welcome", draft: true'));
   assert.ok(!DRAFT_LEVEL_MARK.test('{ n: 1, code: "Care", name: "Care", price: "$149 a month"'));

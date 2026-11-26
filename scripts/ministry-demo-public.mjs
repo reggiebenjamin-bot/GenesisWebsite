@@ -21,10 +21,12 @@
  *     $499, with Enterprise scoped on a call. The source now names the plans
  *     and their prices itself, so nothing is renamed here any more. Instead
  *     the sync stops when the source's plans or prices differ from the ones
- *     /ministry shows, or when an old draft level is left anywhere.
+ *     /ministry shows, or when an old draft level is left anywhere. On
+ *     November 24, 2026 the owner set the staff logins too (2, 5 and 15),
+ *     and the sync stops when the source gives a plan any other number.
  *
  * The committed public/ministry-demo/ is synced from genesis-ministry commit
- * 2e16a05 (feat/sermon-notes on November 24, 2026), exported with git archive.
+ * f7c0702 (feat/sermon-notes on November 25, 2026), exported with git archive.
  *
  * The owner's decision: the Growth Desk (platform/sales-*, Genesis's own tool
  * for finding and selling to churches) is not part of the public demo. No
@@ -267,9 +269,9 @@ const contactPath = (count) => ({ note: "Talk With Genesis opens the church cons
  * Enterprise, for more than one campus, stays scoped on a call.
  */
 export const MINISTRY_PLANS = [
-  { level: "01", was: "Welcome", name: "Care", price: "$149" },
-  { level: "02", was: "Connect", name: "Shepherd", price: "$299" },
-  { level: "03", was: "Shepherd", name: "Plus", price: "$499" },
+  { level: "01", was: "Welcome", name: "Care", price: "$149", staffLogins: 2 },
+  { level: "02", was: "Connect", name: "Shepherd", price: "$299", staffLogins: 5 },
+  { level: "03", was: "Shepherd", name: "Plus", price: "$499", staffLogins: 15 },
 ];
 
 /** "Care at $149 a month", one per plan, in order. */
@@ -867,9 +869,9 @@ export const DRAFT_LEVEL_MARK = /code: "Level 01", name: "Welcome"/;
 
 /**
  * What is wrong with the plans in the source's data, against the plans and
- * prices /ministry shows: each plan by name with its monthly price,
- * Enterprise scoped on a call, and D.pricingLine word for word the price
- * answer. Empty when they match.
+ * prices /ministry shows: each plan by name with its monthly price and its
+ * staff logins, Enterprise scoped on a call, and D.pricingLine word for word
+ * the price answer. Empty when they match.
  * @param {string} data the text of platform/shared/data.js
  * @returns {string[]}
  */
@@ -880,6 +882,9 @@ export function planProblems(data) {
   for (const plan of MINISTRY_PLANS) {
     if (!data.includes(`code: "${plan.name}", name: "${plan.name}", price: "${plan.price} a month",`)) {
       problems.push(`the ${plan.name} plan is not named with its price, ${plan.price} a month`);
+    }
+    if (!data.includes(`code: "${plan.name}", name: "${plan.name}", price: "${plan.price} a month", seats: "${plan.staffLogins} staff logins"`)) {
+      problems.push(`the ${plan.name} plan does not have ${plan.staffLogins} staff logins`);
     }
   }
   if (!data.includes('code: "Enterprise", name: "Enterprise", price: "Scoped on a call",')) problems.push("Enterprise is not scoped on a call");

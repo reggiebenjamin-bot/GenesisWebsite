@@ -451,7 +451,7 @@ if (editReport.length) {
     console.log(`    ${file}`);
     for (const line of lines) console.log(`      ${line}`);
   }
-  console.log("  Checked: the plans and prices are the ones /ministry shows (Care $149, Shepherd $299, Plus $499 a month).");
+  console.log("  Checked: the plans, prices and staff logins are the ones /ministry shows (Care $149 with 2, Shepherd $299 with 5, Plus $499 with 15).");
   console.log("  Checked: no public file keeps a Level 01 to 03 label, a draft level note or pricing set with Genesis.");
   console.log('  Checked: no public file names a sales-* page, the words "Growth Desk" or the Growth Desk\'s work.');
   console.log(`  Checked: the only geai.us link is ${SITE_LINKS.join(", ")}, by its path.`);

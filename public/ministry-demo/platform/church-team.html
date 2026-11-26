@@ -127,13 +127,19 @@ GM.ready(function (ctx) {
       { at: "2026-08-28T17:30", by: "s-lead", who: null, initials: "MD", kind: "Stepped down", text: "Mateo D. stepped down from the Prayer Team. Access ended the same day." }
     ],
     order: ["pastor", "prayer", "staff", "admin"],
-    seats: { 1: 0, 2: 8, 3: 15 }
+    /* Staff logins with each plan (GM_DATA.levels[].seats says the same in words). */
+    seats: { 1: 2, 2: 5, 3: 15 }
   };
 
   var team = D.staff.map(function (s) { return GM.staff(s.id); });
   team.sort(function (a, b) { return PAGE.order.indexOf(a.roleKey) - PAGE.order.indexOf(b.roleKey); });
   var churchSeats = team.filter(function (s) { return s.roleKey !== "admin"; });
-  var seatsAllowed = PAGE.seats[ctx.plan] || 15;
+  /* The sample church has more people than the Shepherd plan's logins, so the rest show as added
+     logins (an additional cost, as the plans screen says). */
+  var seatsPlan = PAGE.seats[ctx.plan] || 15;
+  var seatsAdded = Math.max(0, churchSeats.length - seatsPlan);
+  var seatsAllowed = seatsPlan + seatsAdded;
+  var seatsSplit = seatsAdded ? seatsPlan + " with the plan, " + seatsAdded + " added" : "";
   var canPrayer = team.filter(function (s) { return s.caps.indexOf("pastor") >= 0 || s.caps.indexOf("prayer") >= 0; });
   var canGifts = team.filter(function (s) { return s.caps.indexOf("giftNames") >= 0; });
   var sofia = GM.staff("s-sofia");
@@ -148,7 +154,7 @@ GM.ready(function (ctx) {
   var isMe = function (s) { return viewer && viewer.id === s.id; };
 
   /* ---------- Head ---------- */
-  $("tm-sub").textContent = team.length + " people, " + churchSeats.length + " in staff seats. Only " + lead.name + " changes a role.";
+  $("tm-sub").textContent = team.length + " people, " + churchSeats.length + " with staff logins. Only " + lead.name + " changes a role.";
   $("tm-invite-btn").innerHTML = ic("plus") + "Invite a Team Member";
   $("tm-ask").textContent = "Ask " + HOPE; $("tm-ask").insertAdjacentHTML("afterbegin", GM.v2Icon("genesis"));
   $("tm-view").addEventListener("change", function () { GM.go(this.value === "access" ? "church-access.html" : "church-team.html"); });
@@ -156,7 +162,7 @@ GM.ready(function (ctx) {
   /* ---------- The numbers ---------- */
   function pulse(label, value, note) { return '<div class="v2-pulse-item"><small>' + esc(label) + '</small><b class="v2-serif-number">' + esc(value) + '</b><span data-detail-min="standard">' + esc(note) + "</span></div>"; }
   $("tm-pulse").innerHTML =
-    pulse("Staff seats in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + ". " + (shepherd ? "Custom roles included." : "The Plus plan adds custom roles and more seats.")) +
+    pulse("Staff logins in use", churchSeats.length + " of " + seatsAllowed, ctx.level.code + ". " + (seatsSplit ? seatsSplit + ". " : "") + (shepherd ? "Custom roles included." : "The Plus plan adds custom roles and more staff logins.")) +
     pulse("Can open prayer", canPrayer.length, "Two pastors and the prayer team. Nobody else.") +
     pulse("Two-step sign in", "On", "For all " + team.length + ", through church Google accounts.");
 
@@ -164,7 +170,7 @@ GM.ready(function (ctx) {
   var confirmed = false;
   function paintNext() {
     if (confirmed) {
-      $("tm-next").innerHTML = '<div><div class="v2-eyebrow">Roles to confirm</div><h2 class="v2-serif-headline" id="tm-next-title">Every role is confirmed</h2><h3>' + team.length + " people, " + churchSeats.length + " staff seats in use</h3>" +
+      $("tm-next").innerHTML = '<div><div class="v2-eyebrow">Roles to confirm</div><h2 class="v2-serif-headline" id="tm-next-title">Every role is confirmed</h2><h3>' + team.length + " people, " + churchSeats.length + " staff logins in use</h3>" +
         '<div class="v2-next-meta">' + GM.pill("All confirmed", "positive") + '</div><p class="v2-next-reason">Nothing waits on you here.<span class="v2-next-why">New roles and anyone named for gift names appear here for the lead pastor to confirm.</span></p><p class="v2-muted-copy gm-demo-note" id="tm-confirm-note">Demo only: this confirmation was not saved, and nothing was sent or changed. Reload the page to see the role waiting again.</p></div>' +
         '<div class="v2-next-actions"><a class="v2-button v2-button-quiet" href="church-access.html">' + ic("access") + "Open the Access Record</a></div>";
       return;
@@ -212,7 +218,7 @@ GM.ready(function (ctx) {
         "<dl><div><dt>Role</dt><dd>" + esc(role(s.roleKey).label) + "</dd></div><div><dt>Opens prayer</dt><dd>" + (prayer(s) ? "Yes" : "No") + "</dd></div>" +
         "<div><dt>Gift names</dt><dd>" + (!shepherd ? "Plus" : gifts(s) ? (s.roleKey === "pastor" ? "Yes" : "Named") : "No") + "</dd></div><div><dt>Two-step</dt><dd>On</dd></div></dl></article>";
     }).join("");
-    $("tm-team").innerHTML = '<div class="v2-table-meta"><span>' + (rows.length === team.length ? team.length + " people · " + churchSeats.length + " use a staff seat" : fmt.plural(rows.length, "person", "people") + " shown of " + team.length) + "</span><span>Only the lead pastor changes a role</span></div>" +
+    $("tm-team").innerHTML = '<div class="v2-table-meta"><span>' + (rows.length === team.length ? team.length + " people · " + churchSeats.length + " use a staff login" : fmt.plural(rows.length, "person", "people") + " shown of " + team.length) + "</span><span>Only the lead pastor changes a role</span></div>" +
       (rows.length
         ? '<div class="v2-table-scroll"><table class="v2-table v2-table-static v2-report-team-table"><caption class="sr-only">Team members, their role, whether they can open prayer and see gift names, and when they last signed in. Two-step sign in is on for everyone.</caption><thead><tr><th scope="col">Person</th><th scope="col">Role</th><th scope="col">Opens prayer</th><th scope="col">Gift names</th><th scope="col">Last sign in</th><th scope="col"><span class="sr-only">Change</span></th></tr></thead><tbody>' + desktop + '</tbody></table></div><div class="v2-report-mobile-rows">' + mobile + "</div>"
         : '<div class="v2-card v2-state v2-state-empty"><div><h2 class="v2-state-title">Nobody matches</h2><p>Clear the search or choose Every Role.</p></div></div>') +
@@ -358,7 +364,7 @@ GM.ready(function (ctx) {
         '<p class="gm-drawer-note gm-demo-note">Demo only: a sample name and email are filled in, and they cannot be changed here. Nothing is sent.</p>' +
         '<label class="v2-field"><span>Role</span><select class="v2-select v2-nselect" name="role" id="tm-inv-role">' + roleOptions("staff") + '</select><small class="v2-muted-copy" id="tm-inv-hint"></small></label>' +
         '<label class="v2-field"><span>Gift names</span><select class="v2-select v2-nselect" name="gifts"><option>Cannot See Gift Names</option><option>Named to See Gift Names</option></select></label>' +
-        '<p class="gm-drawer-note">' + esc(open + " of " + seatsAllowed + " staff seats are open. " + lead.name + " is emailed when the invitation is accepted, and it is written to the access record.") + "</p>" +
+        '<p class="gm-drawer-note">' + esc((open > 0 ? open + " of " + seatsAllowed + " staff logins are open. " : "All " + seatsAllowed + " staff logins are in use. Another one is an additional cost, quoted in writing first. ") + lead.name + " is emailed when the invitation is accepted, and it is written to the access record.") + "</p>" +
         '<div class="gm-drawer-foot"><button class="v2-button v2-button-primary" type="submit">' + ic("send") + 'Send Invitation</button><button class="v2-button v2-button-quiet" type="button" data-gm-action="close-drawer">Cancel</button></div></form></div></aside>';
     layer.hidden = false;
     var hint = function () { $("tm-inv-hint").textContent = role($("tm-inv-role").value).sees; };
@@ -385,7 +391,7 @@ GM.ready(function (ctx) {
   GM.hope.addAnswers([
     { match: /genesis support|support session|when (did|does|do|can) genesis|genesis (last )?(sign|log)/i, answer: "Genesis Support holds the Website Admin role, for the site and settings. It signs in to this workspace only in a support session you open, and there have been none in the last 90 days. It cannot read pastoral content, and any session would be written to the access record." },
     { match: /who can (open|see|read) prayer|prayer team|open prayer/i, answer: canPrayer.map(function (s) { return s.name; }).join(", ") + " can open prayer requests. Other staff and website admins cannot, and the system enforces it. Every open is written to the access record." },
-    { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff seats are in use on the " + ctx.level.code + " plan. Genesis Support does not use a seat. " + D.pricingLine + "" },
+    { match: /seat/i, answer: churchSeats.length + " of " + seatsAllowed + " staff logins are in use on the " + ctx.level.code + " plan" + (seatsSplit ? ": " + seatsSplit : "") + ". Genesis Support does not use one. " + D.pricingLine + "" },
     { match: /two.?step|sign in|password|login/i, answer: "Two-step sign in is on for all " + team.length + " people, through the church's Google account. There are no shared passwords. Members sign in with a 6-digit code by email, and adults only." },
     { match: /^(?!.*\b(?:genesis|our data)\b).*(?:step(s|ped)? down|\b(?:leaves?|left|leaving) (?:the )?(?:team|staff|church)\b|\bremove\w* (?:someone|them|him|her|a (?:person|pastor|staff member|volunteer))\b|\bend\w* (?:their |his |her )?access\b)/i, answer: "When someone steps down, access ends that day, their open care moves to " + care.name + ", nothing they wrote is deleted, and " + lead.name + " gets a plain email. Their opens stay in the access record." },
     { match: /^(?!.*\b(?:phone|numbers?|emails?|giv\w*|prayer)\b).*\b(?:roles?|change (?:a |their |his |her |someone'?s )?role|who changes)\b/i, answer: "Only " + lead.name + " changes a role. Each change is emailed to the lead pastor with no private words and kept in the access record. " + sofia.name + "'s new Prayer Team role is waiting to be confirmed." }
@@ -394,7 +400,7 @@ GM.ready(function (ctx) {
   /* ---------- Guided tour ---------- */
   GM.setTour([
     { target: '[data-tour="shell.views"]', title: "Team Roles and the Access Record", text: "Two views of one question: who can see what, and who actually opened it." },
-    { target: '[data-tour="team.glance"]', title: "Seats and safety at a glance", text: "Seats in use against the plan, who can open prayer, and two-step sign in for everyone." },
+    { target: '[data-tour="team.glance"]', title: "Logins and safety at a glance", text: "Staff logins in use against the plan, who can open prayer, and two-step sign in for everyone." },
     { target: '[data-tour="team.next"]', title: "A new role waits for the lead pastor", text: "Sofia R. joined the Prayer Team. The lead pastor confirms what she can see; the change was already emailed and recorded." },
     { target: '[data-tour="team.list"]', title: "One role per person", text: "Pastor, Prayer Team, Staff or Admin. Only the lead pastor changes a role." },
     { target: '[data-tour="team.prayer"]', title: "Prayer stays with the people who pray", text: "Pastors and the prayer team can open prayer. Nobody else, and the system enforces it." },

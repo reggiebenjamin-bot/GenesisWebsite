@@ -33,28 +33,28 @@
 
   /* ------------------------------------------------------------------ scripted answers */
   var PRICES = (D && D.pricingLine) || "Genesis Ministry has three plans: Care at $149 a month, Shepherd at $299 a month and Plus at $499 a month.";
-  var LEVELS_TEXT = PRICES + " Care is the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. " +
-    "Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with up to 8 staff seats. " +
-    "Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with up to 15 staff seats. " +
+  var LEVELS_TEXT = PRICES + " Care is the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up, with 2 staff logins. " +
+    "Shepherd is everything in Care, plus Today, the guest pipeline, the member app, the care inbox and drafts that wait for approval, with 5 staff logins. " +
+    "Plus is everything in Shepherd, plus person pages, the Access Record screen, the spiritual gifts picture, reports, custom roles and named gift viewers, with 15 staff logins. " +
     "Enterprise, for more than one campus, is scoped on a call.";
   /* Where Book a Call goes: one address for the whole preview (GM_DATA.genesisContact). */
   var CONTACT = (D && D.genesisContact) || (STORY && STORY.contact) || "/contact?topic=ministry-demo";
-  /* Staff seats at each plan, from the plans themselves. Everyone who signs in to the workspace, the
-     prayer team too, uses a seat; members never do. */
-  var SEAT_WHO = " Everyone who signs in to the workspace uses a staff seat, prayer team volunteers included. Members never use one.";
-  var SEAT_MORE = " More seats are available for an additional cost, quoted in writing before you sign.";
+  /* Staff logins at each plan, from the plans themselves. Everyone who signs in to the workspace, the
+     prayer team too, uses one; members never do. */
+  var SEAT_WHO = " Everyone who signs in to the workspace uses a staff login, prayer team volunteers included. Members never use one.";
+  var SEAT_MORE = " More staff logins are available for an additional cost, quoted in writing before you sign.";
   function seatsText() {
     var lv = (D && D.levels) || [];
-    if (!lv.length) return "Staff seats depend on the plan." + SEAT_WHO + SEAT_MORE;
+    if (!lv.length) return "Staff logins depend on the plan." + SEAT_WHO + SEAT_MORE;
     return lv.map(function (l) { var t = String(l.seats || ""); return l.name + ": " + t.charAt(0).toLowerCase() + t.slice(1) + "."; }).join(" ") + SEAT_WHO + SEAT_MORE;
   }
-  /* One plan, in the words of LEVELS_TEXT, with its price and seats from D.levels. */
+  /* One plan, in the words of LEVELS_TEXT, with its price and staff logins from D.levels. */
   function planText(n) {
     var l = ((D && D.levels) || [])[n - 1];
     if (!l) return LEVELS_TEXT;
-    var seats = String(l.seats || "").replace(/\.?$/, ".");
+    var seats = "It comes with " + String(l.seats || "").replace(/\.?$/, ".");
     var body = {
-      1: "the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. One sign-in for the pastors. No staff seats are needed, because every form arrives by email.",
+      1: "the website in one of four looks, the brand board, the social marketing plan, " + AN + " on the website, Plan a Visit and prayer forms by email, and newsletter sign-up. Every form arrives by email. " + seats,
       2: "everything in Care, plus Today, the guest pipeline, the member app, the care inbox for prayer and messages, team roles with the prayer team named, and drafts that wait for approval. Every open of prayer is recorded. " + seats,
       3: "everything in Shepherd, plus a page for each person, the Access Record screen, the spiritual gifts conversation and the pastor's gifts picture, reports, custom roles and named gift viewers. " + seats
     }[n];
@@ -162,7 +162,7 @@
     givingsee: "Nobody sees giving in Genesis. Give opens your church's own giving page, and the app keeps no giving history, so no role here, not a pastor and not the prayer team, can see what anyone gives. Giving records stay with your giving provider.",
     careplan: "Care is the first plan, at $149 a month: the website, " + AN + " on it and forms by email. The Care Inbox is a screen that comes with the Shepherd plan: one shared inbox for prayer and messages, with an owner on every thread and every open recorded.",
     schedule: "Genesis Ministry does not schedule volunteers. Keep Planning Center Services, or the tool you use for rotas today. From the Shepherd plan, every first-time guest has an owner and a next step, and Serving is the last stage on the guest path.",
-    permember: "No. Each plan is one monthly price for the church, not a price per member: Care at $149, Shepherd at $299 and Plus at $499 a month. Plans count staff seats, and member accounts never use a seat.",
+    permember: "No. Each plan is one monthly price for the church, not a price per member: Care at $149, Shepherd at $299 and Plus at $499 a month. Plans count staff logins, and member accounts never use one.",
     phones: "The member app is made for phones, iPhone and Android alike, and it comes with the Shepherd plan. How your members get it is set up with Genesis during scoping. Members sign in with a code sent by email, so there is no password to remember.",
     language: "The four looks are written in English today. A site in Spanish, or in two languages, is settled during scoping with a person at Genesis. Choose Book a Call to ask for your church.",
     growth: "Genesis Ministry is built for churches of about 100 to 1,000 people. When a church grows past that, a person at Genesis reviews the fit with you, and Enterprise is there when a second campus opens.",
@@ -228,7 +228,7 @@
      pastor notes, a legal request, a free plan, a Bible translation, leaving with the website, export
      terms, chat history, a loss, and texting asked a different way. */
   ANSWERS.multisite = "Each plan includes one church website, for one campus. More than one site or campus is Enterprise, scoped with a person at Genesis on a call.";
-  ANSWERS.sharelogin = function (q) { return careFor(q) ? "On the Care plan, the pastors share one sign-in, with no staff seats. From the Shepherd plan, each staff member signs in as themselves, so every open is recorded." : "Each staff member signs in as themselves, so every open is recorded and access can end the day someone leaves. On the Care plan, the pastors share one sign-in."; };
+  ANSWERS.sharelogin = function (q) { return careFor(q) ? "The Care plan has 2 staff logins, so two people each sign in as themselves. From the Shepherd plan, every open is recorded." : "Each staff member signs in as themselves, so every open is recorded and access can end the day someone leaves. The Care plan has 2 staff logins, Shepherd has 5 and Plus has 15."; };
   ANSWERS.prayeranon = "A prayer request is read only by the people the person chooses, and other members never see it. Whether your church offers a way to share one without a name is set with a person at Genesis on a call.";
   ANSWERS.prayerwall = "Genesis Ministry keeps prayer private: a request is read only by the people the person chose, and it is never posted for other members to see. A public prayer wall is not part of it today, and a person at Genesis can talk through what your church has in mind on a call.";
   ANSWERS.pastornotes = "Pastor notes stay with the pastors, and " + AN + " never reads or writes them. Exactly which roles on your staff can open them is set up with a person at Genesis, who can walk you through it on a call.";
@@ -265,10 +265,10 @@
   var seatsAll = ANSWERS.seats;
   ANSWERS.seats = function (q) {
     q = String(q || "");
-    /* Round 5: on Care there are no staff seats to add. */
+    /* On Care: the plan's own staff logins, then what Shepherd and Plus have. */
     if (careFor(q) && /\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q)) {
-      var lvs = (D && D.levels) || [], c2 = lvs[1] && lvs[1].seats ? lvs[1].seats.replace(/^Up to/, "up to").replace(/ staff seats?$/, "") : "up to 8", c3 = lvs[2] && lvs[2].seats ? lvs[2].seats.replace(/^Up to/, "up to").replace(/ staff seats?$/, "") : "up to 15";
-      return "The Care plan has one sign-in for the pastors. Staff seats and Team roles come with Shepherd (" + c2 + ") and Plus (" + c3 + ").";
+      var lvs = (D && D.levels) || [], c1 = lvs[0] && lvs[0].seats ? lvs[0].seats : "2 staff logins", c2 = lvs[1] && lvs[1].seats ? lvs[1].seats.replace(/ staff logins?$/, "") : "5", c3 = lvs[2] && lvs[2].seats ? lvs[2].seats.replace(/ staff logins?$/, "") : "15";
+      return "The Care plan has " + c1 + ". Shepherd has " + c2 + " and Plus has " + c3 + ", and Team roles come with Shepherd.";
     }
     /* "How much is an extra seat?" is a price question: no "Yes." first. */
     if (/\b(add|more|extra|another|buy|additional)\b.{0,20}\bseats?\b/i.test(q) && /\b(how much|cost|costs|price|prices|pricing|charge)\b/i.test(q)) return SEAT_MORE.trim() + " " + seatsAll.replace(SEAT_MORE, "");
@@ -287,11 +287,11 @@
   ANSWERS.plancare = planText(1);
   ANSWERS.planshepherd = planText(2);
   ANSWERS.planplus = planText(3);
-  /* Members are not staff seats. */
+  /* Members are not staff logins. */
   ANSWERS.memberlimit = (function () {
     var lv = (D && D.levels) || [], s2 = lv[1] && lv[1].seats, s3 = lv[2] && lv[2].seats;
-    var seats = s2 && s3 ? " The Shepherd plan has " + s2.replace(/^Up to/, "up to") + " and the Plus plan " + s3.replace(/^Up to/, "up to") + "." : "";
-    return "Plans count staff seats, not members." + seats + " Member accounts are for adults 18 and older and never use a staff seat. Genesis Ministry is built for churches of about 100 to 1,000 people, and for a larger church Genesis confirms the fit on a call.";
+    var seats = s2 && s3 ? " The Shepherd plan has " + s2 + " and the Plus plan has " + s3 + "." : "";
+    return "Plans count staff logins, not members." + seats + " Member accounts are for adults 18 and older and never use a staff login. Genesis Ministry is built for churches of about 100 to 1,000 people, and for a larger church Genesis confirms the fit on a call.";
   })();
   var AN_RX = String(AN).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -355,11 +355,11 @@
     q = String(q || "").replace(/(\d),(\d{3})/g, "$1$2");
     var st = /\b(\d{1,3})\s*(?:staff|people on staff|employees|staff members)\b/i.exec(q), staff = st ? +st[1] : 0;
     var m = /\b(\d{2,5})\b(?!\s*(?:staff|people on staff|employees|seats?))/.exec(q), n = m ? +m[1] : 0;
-    var lv = (D && D.levels) || [], s2 = lv[1] ? lv[1].seats.toLowerCase() : "up to 8 staff seats", s3 = lv[2] ? lv[2].seats.toLowerCase() : "up to 15 staff seats";
+    var lv = (D && D.levels) || [], s2 = lv[1] ? lv[1].seats.toLowerCase() : "5 staff logins", s3 = lv[2] ? lv[2].seats.toLowerCase() : "15 staff logins";
     var base = "Genesis Ministry is built for churches of about 100 to 1,000 people.";
     if (n > 1000) return base + " For a church of " + n + ", a person at Genesis confirms the fit with you on a call. Enterprise is for more than one campus.";
     if (n && n < 100) return base + " A church of " + n + " can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.";
-    if (n && (staff > 8 || n >= 200)) return "For a church of about " + n + (staff ? " with " + staff + " staff" : "") + ", Shepherd is a good fit at $299 a month: the guest pipeline, the Care Inbox and the member app, with " + s2 + ". Plus, at $499 a month, adds person pages, the gifts picture and reports, with " + s3 + "." + (staff > 15 ? " More seats are available for an additional cost." : "") + " A person at Genesis can confirm it with your own church in mind.";
+    if (n && (staff > 2 || n >= 200)) return "For a church of about " + n + (staff ? " with " + staff + " staff" : "") + ", Shepherd is a good fit at $299 a month: the guest pipeline, the Care Inbox and the member app, with " + s2 + ". Plus, at $499 a month, adds person pages, the gifts picture and reports, with " + s3 + "." + (staff > 15 ? " More staff logins are available for an additional cost." : "") + " A person at Genesis can confirm it with your own church in mind.";
     if (n) return "For a church of about " + n + ", Care fits if you want the website and " + AN + " first, at $149 a month. Shepherd, at $299 a month, adds the guest pipeline, the Care Inbox and the member app, with " + s2 + ". A person at Genesis can confirm it with your own church in mind.";
     return base + " A smaller church can start with Care, the website and " + AN + " at $149 a month, and add more as it grows.";
   };
@@ -1051,7 +1051,7 @@
     ] },
     "church-team": { title: "Team Roles", done: "That is Team. Roles decide who sees what, and every change goes to the lead pastor.", steps: [
       { sel: VIEWS_SEL, h: "Roles and the record", p: GM.plan >= 3 ? "Team Roles decide who can see what. The Access Record shows what people actually opened." : "Team Roles decide who can see what. Every open is recorded, and the Plus plan adds the Access Record screen to search it." },
-      { sel: T("team.glance"), h: "Seats and safety", p: "Staff seats in use for this plan, who can open prayer, and two-step sign in for everyone. The Shepherd plan names the prayer team; the Plus plan adds custom roles and named gift viewers." },
+      { sel: T("team.glance"), h: "Logins and safety", p: "Staff logins in use for this plan, who can open prayer, and two-step sign in for everyone. The Shepherd plan names the prayer team; the Plus plan adds custom roles and named gift viewers." },
       { sel: T("team.next"), h: "A role to confirm", p: "A new prayer team member waits for the lead pastor, with one gold Confirm action." },
       { sel: T("team.list"), h: "Every person and role", p: "Role, whether they open prayer or see gift names, and the last sign in. Two-step sign in is on for everyone.", focus: [".v2-table-meta, .v2-table thead, .v2-table tbody tr:nth-child(-n+3)"] },
       { sel: T("team.prayer"), h: "Who can open prayer", p: "Pastors and the prayer team, enforced by the system, with the last blocked try." },

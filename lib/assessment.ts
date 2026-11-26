@@ -12,8 +12,8 @@
 import { CRM_QUESTION, crmOptions } from "./crm.ts";
 import { editions, ministryEdition } from "./editions.ts";
 import { editionLevels, pricingPathForPersona } from "./editionPlans.ts";
-import { managedPlans } from "./offers.ts";
-import { ministryContact, ministryHero, ministryLevels } from "./ministryPage.ts";
+import { LEVEL_AI_EMPLOYEES_LABEL, levelAiEmployeeNames, managedPlans } from "./offers.ts";
+import { ministryContact, ministryHero, ministryLevels, ministryStaffLogins } from "./ministryPage.ts";
 import {
   CHURCH_PERSONA,
   LENDER_PERSONA,
@@ -57,7 +57,8 @@ export function assessmentEdition(persona: string | undefined): EditionRecommend
     name: ministryEdition.name,
     body: ministryEdition.body,
     points: ministryEdition.points,
-    plans: ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month`),
+    /* "Care, $149 a month, 2 staff logins": short enough for one line of the results card on a phone. */
+    plans: ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month, ${ministryStaffLogins(plan)}`),
     enterprise: ministryLevels.enterprise.line,
     stepNote:
       "Genesis Ministry is built for churches of about 100 to 1,000 people. The next questions are about guests and care at your church, and your results show the plan that fits.",
@@ -1131,7 +1132,11 @@ export function businessRecommendation(
     name: edition.name,
     href: edition.href,
     body: edition.body,
-    levels: managedPlans.map((plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}`),
+    /* Names without roles keep Level 03 to three lines of the results card on a phone; the Levels page gives each role. */
+    levels: managedPlans.map(
+      (plan) =>
+        `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}. ${LEVEL_AI_EMPLOYEES_LABEL}: ${levelAiEmployeeNames(plan)}`,
+    ),
     disclaimer: edition.disclaimer,
     pricingHref: pricingPathForPersona(persona),
     suggested: suggestedLevel(key, teamSize),

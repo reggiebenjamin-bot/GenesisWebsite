@@ -748,6 +748,11 @@ export function levelAiEmployeesLine(plan: Pick<ManagedPlan, "includedAiAgents">
   return listInWords(levelAiEmployees(plan).map(({ name, role }) => `${name} (${role})`));
 }
 
+/** "Ava, Darius, Hawk and Susan": a Level's AI employees by name alone, for a line with no room for roles. */
+export function levelAiEmployeeNames(plan: Pick<ManagedPlan, "includedAiAgents">): string {
+  return listInWords(levelAiEmployees(plan).map(({ name }) => name));
+}
+
 /** The label printed over that line on every Level card. */
 export const LEVEL_AI_EMPLOYEES_LABEL = "AI employees";
 

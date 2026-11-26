@@ -127,15 +127,15 @@
   D.genesisContact = "/contact?topic=ministry-demo";
   D.customLine = "Customization beyond the template is available for an additional cost.";
   D.levels = [
-    { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "One sign-in for the pastors, with no staff seats needed",
+    { n: 1, code: "Care", name: "Care", price: "$149 a month", seats: "2 staff logins",
       summary: "A website people can find and use, with Hope answering questions and every form arriving by email.",
       includes: ["The website in one of four looks", "The brand board", "The social marketing plan", "Hope on the website, answering from facts the church approves", "Plan a Visit and prayer forms delivered by email", "Newsletter sign-up", "Sunday sermon notes on the website, shaped from the pastor's own words"] },
-    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "Up to 8 staff seats",
+    { n: 2, code: "Shepherd", name: "Shepherd", price: "$299 a month", seats: "5 staff logins",
       summary: "Everything in Care, plus a front office for guests and a member app, so nobody falls through the cracks.",
       includes: ["Everything in Care", "The Today view", "The Front Office guest pipeline", "The member app: sign in, home, prayer with history, messages, Give", "The care inbox for prayer and messages, with every open recorded", "Team roles: pastor, prayer team, staff and admin, with the prayer team named", "Hope drafts that wait for approval", "Daily devotionals, notes in the member app, and email to members who opt in"] },
-    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "Up to 15 staff seats",
+    { n: 3, code: "Plus", name: "Plus", price: "$499 a month", seats: "15 staff logins",
       summary: "Everything in Shepherd, plus one page per person, the spiritual gifts picture and reports for pastors.",
-      includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "Up to 15 staff seats"] },
+      includes: ["Everything in Shepherd", "Person pages and the Access Record screen", "The spiritual gifts conversation and the pastor's gifts picture", "Reports", "Custom roles and named gift viewers", "15 staff logins"] },
     { n: 4, code: "Enterprise", name: "Enterprise", price: "Scoped on a call", seats: "Scoped on a call",
       summary: "For multi-campus churches. Everything in Plus, scoped on a call.",
       includes: ["Everything in Plus", "More than one campus", "Scoped on a call"] }
@@ -154,8 +154,8 @@
     access:   { label: "Access Record", level: 3, side: "church", adds: "The Access Record screen: search and export every open, reply, change and archive. From the Shepherd plan every open is already recorded. The Plus plan adds this screen.", points: ["Search by person, record or action", "Export a copy, and the export is recorded too", "Nobody can edit an entry"] },
     gifts:    { label: "Gifts", level: 3, side: "church", adds: "The spiritual gifts conversation for members and a church-wide picture for pastors.", points: ["Plain arithmetic scoring; the AI never sets a score", "The chart stays hidden until 25 people finish", "Small counts show as fewer than 5", "Names only for people who said yes"] },
     reports:  { label: "Reports", level: 3, side: "church", adds: "Plain reports on guests, care and response times, counts only.", points: ["Guest path from first contact to serving", "Care volume and how fast we reply", "Counts only, never names or private words"] },
-    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. The Shepherd plan has the four roles and a named prayer team; the Plus plan adds custom roles, named gift viewers and more seats.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
-    "custom-roles": { label: "Custom Roles", level: 3, side: "church", adds: "Roles shaped to your church, like a care meals coordinator, and people named to see gift names for serving.", points: ["Custom roles with exactly what they need", "Named gift viewers", "Up to 15 staff seats"] },
+    team:     { label: "Team Roles", level: 2, side: "church", adds: "Who holds each role and what each role can see. The Shepherd plan has the four roles and a named prayer team; the Plus plan adds custom roles, named gift viewers and more staff logins.", points: ["Pastor, prayer team, staff and admin roles", "The prayer team named by the pastors", "Changes are emailed to the lead pastor", "Two-step sign in for everyone"] },
+    "custom-roles": { label: "Custom Roles", level: 3, side: "church", adds: "Roles shaped to your church, like a care meals coordinator, and people named to see gift names for serving.", points: ["Custom roles with exactly what they need", "Named gift viewers", "15 staff logins"] },
     settings: { label: "Settings", level: 1, side: "church", adds: "The tools your church already uses, how follow-up and alerts travel, and when Genesis may sign in.", points: ["Giving, events and kids check-in links", "Follow-up and alert settings", "Support sessions, off by default"] },
     genesis:  { label: "Hope", level: 2, side: "church", adds: "Hope drafts welcome notes and everyday replies, and summarizes the week. A person approves everything.", points: ["Drafts are labeled and wait for approval", "Never drafts a reply to prayer or a personal message", "Never sets a gifts score"] },
     "member-app":   { label: "Member App", level: 2, side: "member", adds: "What members see on their phones: sign in, home, prayer with history, messages and Give.", points: ["Sign in with a 6-digit code sent by email", "Adults only", "Prayer with a history and any reply", "Private message threads with the church", "This week's notes and today's devotional, with email to members who opt in"] },

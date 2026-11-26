@@ -594,7 +594,7 @@
       /* SYSTEM in the Genesis OS order: Help first. */
       system: [
         { key: "help", label: "Help", action: "start-tour", icon: "help", hint: "A short guided tour of this screen" },
-        { key: "team", label: "Team", href: "church-team.html", icon: "team", module: "team", hint: "Roles, seats and the access record", match: ["access"],
+        { key: "team", label: "Team", href: "church-team.html", icon: "team", module: "team", hint: "Roles, logins and the access record", match: ["access"],
           views: [
             { key: "roles", label: "Team Roles", href: "church-team.html" },
             { key: "access", label: "Access Record", href: "church-access.html", module: "access", page: "access" }

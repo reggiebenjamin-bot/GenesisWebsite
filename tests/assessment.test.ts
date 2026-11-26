@@ -45,7 +45,7 @@ test("assessment results stay empty when answers carry no friction signal", () =
 test("a church can say so, and the result recommends Genesis Ministry", async () => {
   const { CHURCH_PERSONA, assessmentCopy, assessmentEdition, assessmentSteps } = await import("../lib/assessment.ts");
   const { pricingPathForPersona } = await import("../lib/editionPlans.ts");
-  const { ministryLevels } = await import("../lib/ministryPage.ts");
+  const { ministryLevels, ministryStaffLogins } = await import("../lib/ministryPage.ts");
 
   const persona = assessmentSteps[0].questions.find((question) => question.id === "persona");
   assert.ok(persona && persona.kind === "single");
@@ -67,9 +67,16 @@ test("a church can say so, and the result recommends Genesis Ministry", async ()
   assert.doesNotMatch(recommended.eyebrow, /Edition/);
   assert.deepEqual(
     recommended.plans,
-    ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month`),
+    ministryLevels.levels.map((plan) => `${plan.name}, ${plan.priceDisplay} a month, ${ministryStaffLogins(plan)}`),
   );
-  assert.deepEqual(recommended.plans, ["Care, $149 a month", "Shepherd, $299 a month", "Plus, $499 a month"]);
+  /* The owner set the staff logins on November 24, 2026: 2, 5 and 15. */
+  assert.deepEqual(recommended.plans, [
+    "Care, $149 a month, 2 staff logins",
+    "Shepherd, $299 a month, 5 staff logins",
+    "Plus, $499 a month, 15 staff logins",
+  ]);
+  /* Each line stays short enough for the results card on a 393px wide phone. */
+  for (const line of recommended.plans) assert.ok(line.length <= 40, line);
 
   for (const other of values.filter((value) => value !== CHURCH_PERSONA)) {
     assert.equal(assessmentEdition(other), null, `${other} keeps the business results`);
@@ -340,7 +347,7 @@ test("a church picks staff sizes the church contact form also offers", async () 
 
 test("business results name the edition built for the persona, with its Levels and its disclaimer", async () => {
   const { businessRecommendation, CHURCH_PERSONA } = await import("../lib/assessment.ts");
-  const { managedPlans } = await import("../lib/offers.ts");
+  const { LEVEL_AI_EMPLOYEES_LABEL, levelAiEmployeeNames, managedPlans } = await import("../lib/offers.ts");
   const { FUNDING_LINE } = await import("../lib/legal.ts");
 
   const { LENDER_PERSONA, SERVICE_PERSONA } = await import("../lib/personas.ts");
@@ -366,8 +373,18 @@ test("business results name the edition built for the persona, with its Levels a
   assert.equal(businessRecommendation(LENDER_PERSONA, undefined)?.suggested, null);
   assert.deepEqual(
     lender.levels,
-    managedPlans.map((plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}`),
+    managedPlans.map(
+      (plan) => `Level ${plan.step}, ${plan.priceDisplay} a month, ${plan.setupLine}. ${LEVEL_AI_EMPLOYEES_LABEL}: ${levelAiEmployeeNames(plan)}`,
+    ),
   );
+  /* Each Level names its AI employees, as the owner set them on November 24, 2026. */
+  assert.deepEqual(lender.levels, [
+    "Level 01, $750 a month, plus $500 setup. AI employees: Ava",
+    "Level 02, $1,750 a month, plus $1,500 setup. AI employees: Ava and Darius",
+    "Level 03, $4,500 a month, plus $10,000 setup. AI employees: Ava, Darius, Hawk and Susan",
+  ]);
+  /* Three lines at most in the results card on a 393px wide phone. */
+  for (const line of lender.levels) assert.ok(line.length <= 90, line);
 });
 
 test("business findings speak the visitor's trade and name only what the edition lists", async () => {
